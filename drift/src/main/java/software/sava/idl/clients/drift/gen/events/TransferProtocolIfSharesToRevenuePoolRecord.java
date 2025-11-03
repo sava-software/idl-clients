@@ -1,0 +1,81 @@
+package software.sava.idl.clients.drift.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record TransferProtocolIfSharesToRevenuePoolRecord(Discriminator discriminator,
+                                                          long ts,
+                                                          int marketIndex,
+                                                          long amount,
+                                                          BigInteger shares,
+                                                          long ifVaultAmountBefore,
+                                                          BigInteger protocolSharesBefore,
+                                                          long transferAmount) implements DriftEvent {
+
+  public static final int BYTES = 74;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
+
+  public static TransferProtocolIfSharesToRevenuePoolRecord read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createDiscriminator(_data, _offset, 8);
+    int i = _offset + discriminator.length();
+    final var ts = getInt64LE(_data, i);
+    i += 8;
+    final var marketIndex = getInt16LE(_data, i);
+    i += 2;
+    final var amount = getInt64LE(_data, i);
+    i += 8;
+    final var shares = getInt128LE(_data, i);
+    i += 16;
+    final var ifVaultAmountBefore = getInt64LE(_data, i);
+    i += 8;
+    final var protocolSharesBefore = getInt128LE(_data, i);
+    i += 16;
+    final var transferAmount = getInt64LE(_data, i);
+    return new TransferProtocolIfSharesToRevenuePoolRecord(discriminator,
+                                                           ts,
+                                                           marketIndex,
+                                                           amount,
+                                                           shares,
+                                                           ifVaultAmountBefore,
+                                                           protocolSharesBefore,
+                                                           transferAmount);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, ts);
+    i += 8;
+    putInt16LE(_data, i, marketIndex);
+    i += 2;
+    putInt64LE(_data, i, amount);
+    i += 8;
+    putInt128LE(_data, i, shares);
+    i += 16;
+    putInt64LE(_data, i, ifVaultAmountBefore);
+    i += 8;
+    putInt128LE(_data, i, protocolSharesBefore);
+    i += 16;
+    putInt64LE(_data, i, transferAmount);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

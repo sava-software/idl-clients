@@ -1,0 +1,168 @@
+{
+  "basePackage": "software.sava.idl.clients",
+  "baseModuleName": "software.sava.idl.clients",
+  "commons": {
+    "source": "core",
+    "module": "core",
+    "package": "core.gen"
+  },
+  "genPackageName": "gen",
+  "exportPackages": true,
+  "tabLength": 2,
+  "programs": [
+    {
+      "name": "Drift",
+      "source": "drift",
+      "package": "drift",
+      "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
+    },
+    {
+      "name": "Drift Merkle Distributor",
+      "source": "drift",
+      "module": "drift",
+      "package": "drift.merkle.distributor",
+      "program": "E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x"
+    },
+    {
+      "name": "Drift Vaults",
+      "source": "drift",
+      "module": "drift",
+      "package": "drift.vaults",
+      "program": "vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR",
+      "typeRefs": [
+        {
+          "refProgram": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
+          "srcMismatch": "ERROR",
+          "matchOnTypeName": true,
+          "excludeTypes": [],
+          "explicitRules": []
+        }
+      ]
+    },
+    {
+      "name": "Kamino Farms",
+      "source": "kamino",
+      "module": "kamino",
+      "package": "kamino.farms",
+      "program": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+    },
+    {
+      "name": "Kamino Lend",
+      "source": "kamino",
+      "module": "kamino",
+      "package": "kamino.lend",
+      "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
+    },
+    {
+      "name": "Kamino Scope",
+      "source": "kamino",
+      "module": "kamino",
+      "package": "kamino.scope",
+      "program": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ"
+    },
+    {
+      "name": "Kamino Vaults",
+      "source": "kamino",
+      "module": "kamino",
+      "package": "kamino.vaults",
+      "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+      "typeRefs": [
+        {
+          "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+          "srcMismatch": "WARN_KEEP_REF",
+          "matchOnTypeName": true,
+          "excludeTypes": [
+            "ReserveConfig",
+            "Reserve"
+          ],
+          "explicitRules": []
+        },
+        {
+          "refProgram": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+          "srcMismatch": "WARN_KEEP_REF",
+          "matchOnTypeName": true,
+          "excludeTypes": [],
+          "explicitRules": []
+        },
+        {
+          "refProgram": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
+          "srcMismatch": "WARN_KEEP_REF",
+          "matchOnTypeName": true,
+          "excludeTypes": [
+            "TimeUnit"
+          ],
+          "explicitRules": []
+        }
+      ]
+    },
+    {
+      "name": "Pyth Lazer",
+      "source": "oracles",
+      "module": "oracles",
+      "package": "pyth.lazer",
+      "program": "pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt"
+    },
+    {
+      "name": "Pyth Push",
+      "source": "oracles",
+      "module": "oracles",
+      "package": "pyth.push",
+      "program": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT"
+    },
+    {
+      "name": "Pyth Receiver",
+      "source": "oracles",
+      "module": "oracles",
+      "package": "pyth.receiver",
+      "program": "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ",
+      "typeRefs": [
+        {
+          "refProgram": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT",
+          "srcMismatch": "ERROR",
+          "matchOnTypeName": true,
+          "excludeTypes": [],
+          "explicitRules": []
+        }
+      ]
+    },
+    {
+      "name": "Solana Attestation Service",
+      "source": "spl",
+      "module": "spl",
+      "package": "attestation_service",
+      "program": "22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG",
+      "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json"
+    },
+    {
+      "name": "Stake",
+      "source": "spl",
+      "module": "spl",
+      "package": "stake",
+      "program": "Stake11111111111111111111111111111111111111",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/program/idl.json"
+    },
+    {
+      "name": "Switchboard On-Demand",
+      "source": "oracles",
+      "module": "oracles",
+      "package": "switchboard.on_demand",
+      "program": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv"
+    },
+    {
+      "name": "Token",
+      "source": "spl",
+      "module": "spl",
+      "package": "token",
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "idlType": "codama",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/program/idl.json",
+      "additionalPrograms": [
+        {
+          "name": "Associated Token",
+          "package": "associated_token",
+          "program": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ]
+    }
+  ]
+}
