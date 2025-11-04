@@ -132,7 +132,7 @@ public sealed interface FarmsError extends ProgramError permits
       case 6060 -> InvalidTransferOwnershipStakeAmount.INSTANCE;
       case 6061 -> InvalidTransferOwnershipNewOwner.INSTANCE;
       case 6062 -> InvalidTransferOwnershipFarmStateDepositWarmupPeriod.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Farms error code: " + errorCode);
+      default -> null;
     };
   }
 

@@ -66,7 +66,7 @@ public sealed interface DriftVaultsError extends ProgramError permits
       case 6027 -> InvalidVaultClass.INSTANCE;
       case 6028 -> InvalidBorrowAmount.INSTANCE;
       case 6029 -> InvalidRepayAmount.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected DriftVaults error code: " + errorCode);
+      default -> null;
     };
   }
 

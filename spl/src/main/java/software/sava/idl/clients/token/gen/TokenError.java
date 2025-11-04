@@ -46,7 +46,7 @@ public sealed interface TokenError extends ProgramError permits
       case 17 -> AccountFrozen.INSTANCE;
       case 18 -> MintDecimalsMismatch.INSTANCE;
       case 19 -> NonNativeNotSupported.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Token error code: " + errorCode);
+      default -> null;
     };
   }
 

@@ -696,7 +696,7 @@ public sealed interface DriftError extends ProgramError permits
       case 6342 -> Unauthorized.INSTANCE;
       case 6343 -> InvalidLpPoolId.INSTANCE;
       case 6344 -> MarketIndexNotFoundAmmCache.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Drift error code: " + errorCode);
+      default -> null;
     };
   }
 

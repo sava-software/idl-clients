@@ -266,7 +266,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6127 -> OperationNotPermittedMarketImmutable.INSTANCE;
       case 6128 -> OrderCreationDisabled.INSTANCE;
       case 6129 -> NoUpgradeAuthority.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected KaminoLending error code: " + errorCode);
+      default -> null;
     };
   }
 

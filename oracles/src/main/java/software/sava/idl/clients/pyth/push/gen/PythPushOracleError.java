@@ -10,7 +10,7 @@ public sealed interface PythPushOracleError extends ProgramError permits
     return switch (errorCode) {
       case 6000 -> UpdatesNotMonotonic.INSTANCE;
       case 6001 -> PriceFeedMessageMismatch.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected PythPushOracle error code: " + errorCode);
+      default -> null;
     };
   }
 

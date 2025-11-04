@@ -36,7 +36,7 @@ public sealed interface LockedVoterError extends ProgramError permits
       case 6012 -> InvalidUnstakingLockDuration.INSTANCE;
       case 6013 -> PartialUnstakingAmountIsNotZero.INSTANCE;
       case 6014 -> PartialUnstakingIsNotEnded.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected LockedVoter error code: " + errorCode);
+      default -> null;
     };
   }
 

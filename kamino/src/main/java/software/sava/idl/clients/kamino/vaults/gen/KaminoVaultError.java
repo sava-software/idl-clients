@@ -104,7 +104,7 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7046 -> WrongAdminOrAllocationAdmin.INSTANCE;
       case 7047 -> ReserveHasNonZeroAllocationOrCTokens.INSTANCE;
       case 7048 -> DepositAmountGreaterThanRequestedAmount.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected KaminoVault error code: " + errorCode);
+      default -> null;
     };
   }
 

@@ -48,7 +48,7 @@ public sealed interface MerkleDistributorError extends ProgramError permits
       case 6018 -> ClaimingIsNotStarted.INSTANCE;
       case 6019 -> CannotCloseDistributor.INSTANCE;
       case 6020 -> CannotCloseClaimStatus.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected MerkleDistributor error code: " + errorCode);
+      default -> null;
     };
   }
 

@@ -26,7 +26,7 @@ public sealed interface GovernError extends ProgramError permits
       case 6007 -> NotYesNoProposal.INSTANCE;
       case 6008 -> NotOptionProposal.INSTANCE;
       case 6009 -> InvalidOptionDescriptions.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Govern error code: " + errorCode);
+      default -> null;
     };
   }
 

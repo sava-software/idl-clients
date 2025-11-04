@@ -64,7 +64,7 @@ public sealed interface PythSolanaReceiverError extends ProgramError permits
       case 6026 -> TargetGovernanceAuthorityMismatch.INSTANCE;
       case 6027 -> NonexistentGovernanceAuthorityTransferRequest.INSTANCE;
       case 6028 -> ZeroMinimumSignatures.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected PythSolanaReceiver error code: " + errorCode);
+      default -> null;
     };
   }
 

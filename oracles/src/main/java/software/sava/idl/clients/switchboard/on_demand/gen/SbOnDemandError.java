@@ -148,7 +148,7 @@ public sealed interface SbOnDemandError extends ProgramError permits
       case 6068 -> InvalidOperator.INSTANCE;
       case 6069 -> Max128SampleValue.INSTANCE;
       case 6070 -> RewardAlreadyPaid.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected SbOnDemand error code: " + errorCode);
+      default -> null;
     };
   }
 

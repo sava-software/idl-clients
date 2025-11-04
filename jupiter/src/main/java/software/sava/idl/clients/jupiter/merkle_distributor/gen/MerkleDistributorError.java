@@ -62,7 +62,7 @@ public sealed interface MerkleDistributorError extends ProgramError permits
       case 6025 -> SameOperator.INSTANCE;
       case 6026 -> InvalidLocker.INSTANCE;
       case 6027 -> EscrowIsNotMaxLock.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected MerkleDistributor error code: " + errorCode);
+      default -> null;
     };
   }
 

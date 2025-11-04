@@ -60,7 +60,7 @@ public sealed interface JupiterError extends ProgramError permits
       case 6024 -> InsufficientFunds.INSTANCE;
       case 6025 -> InvalidTokenAccount.INSTANCE;
       case 6026 -> BondingCurveAlreadyCompleted.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Jupiter error code: " + errorCode);
+      default -> null;
     };
   }
 

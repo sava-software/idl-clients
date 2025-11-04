@@ -120,7 +120,7 @@ public sealed interface ScopeError extends ProgramError permits
       case 6054 -> CompositeOracleInvalidSourceIndex.INSTANCE;
       case 6055 -> CappedFlooredBothCapAndFloorAreNone.INSTANCE;
       case 6056 -> MissingPriceAccount.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected Scope error code: " + errorCode);
+      default -> null;
     };
   }
 

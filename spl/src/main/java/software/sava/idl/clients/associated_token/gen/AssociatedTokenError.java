@@ -8,7 +8,7 @@ public sealed interface AssociatedTokenError extends ProgramError permits
   static AssociatedTokenError getInstance(final int errorCode) {
     return switch (errorCode) {
       case 0 -> InvalidOwner.INSTANCE;
-      default -> throw new IllegalStateException("Unexpected AssociatedToken error code: " + errorCode);
+      default -> null;
     };
   }
 
