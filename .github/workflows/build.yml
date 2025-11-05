@@ -30,7 +30,7 @@ jobs:
 
       - name: Generate Source & Check
         run: |
-          ./idl-src-gen/genSrc.sh --config="main_net_programs.json" --rpc="${{ secrets.RPC_URL }}"
+          ./idl-src-gen/genSrc.sh --config="../main_net_programs.json" --rpc="${{ secrets.RPC_URL }}"
           ./gradlew --stacktrace -PjavaVersion=${{ steps.setup.outputs.java-version }} check
         env:
           ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ env.GITHUB_ACTOR }}
