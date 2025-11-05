@@ -74,3 +74,5 @@ gradle.properties
 # Node/Yarn (if any tooling pulls it in locally)
 node_modules/
 **/.cache/
+/protocol-v2/
+/drift-protocol-v2-docs/

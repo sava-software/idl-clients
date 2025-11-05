@@ -230,7 +230,7 @@ public interface DriftProgramClient {
                         final PublicKey authority,
                         final int marketIndex);
 
-  default Instruction settlePnl(short[] marketIndexes, SettlePnlMode mode) {
+  default Instruction settlePnl(final short[] marketIndexes, final SettlePnlMode mode) {
     return settlePnl(mainUserAccount(), authority(), marketIndexes, mode);
   }
 
