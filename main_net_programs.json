@@ -11,6 +11,13 @@
   "tabLength": 2,
   "programs": [
     {
+      "name": "CCTP Message Transmitter V2",
+      "source": "cctp",
+      "package": "cctp.message_transmitter.v2",
+      "module": "cctp",
+      "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
+    },
+    {
       "name": "Drift",
       "source": "drift",
       "package": "drift",
