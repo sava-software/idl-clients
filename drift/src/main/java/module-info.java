@@ -1,6 +1,7 @@
 module software.sava.idl.clients.software.sava.idl.clients.drift {
   exports software.sava.idl.clients.drift.gen.types;
   exports software.sava.idl.clients.drift.gen;
+  exports software.sava.idl.clients.drift;
   requires java.net.http;
   requires org.bouncycastle.provider;
   requires transitive software.sava.core;

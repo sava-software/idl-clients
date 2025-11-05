@@ -586,25 +586,25 @@ public final class FarmsProgram {
   public static final Discriminator REWARD_USER_ONCE_DISCRIMINATOR = toDiscriminator(219, 137, 57, 22, 94, 186, 96, 114);
 
   public static List<AccountMeta> rewardUserOnceKeys(final AccountMeta invokedFarmsProgramMeta                                                     ,
-                                                     final PublicKey farmAdminKey,
+                                                     final PublicKey delegateAuthorityKey,
                                                      final PublicKey farmStateKey,
                                                      final PublicKey userStateKey) {
     return List.of(
-      createWritableSigner(farmAdminKey),
+      createWritableSigner(delegateAuthorityKey),
       createWrite(farmStateKey),
       createWrite(userStateKey)
     );
   }
 
   public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
-                                           final PublicKey farmAdminKey,
+                                           final PublicKey delegateAuthorityKey,
                                            final PublicKey farmStateKey,
                                            final PublicKey userStateKey,
                                            final long rewardIndex,
                                            final long amount) {
     final var keys = rewardUserOnceKeys(
       invokedFarmsProgramMeta,
-      farmAdminKey,
+      delegateAuthorityKey,
       farmStateKey,
       userStateKey
     );
@@ -845,24 +845,24 @@ public final class FarmsProgram {
   public static final Discriminator HARVEST_REWARD_DISCRIMINATOR = toDiscriminator(68, 200, 228, 233, 184, 32, 226, 188);
 
   public static List<AccountMeta> harvestRewardKeys(final AccountMeta invokedFarmsProgramMeta                                                    ,
-                                                    final PublicKey ownerKey,
+                                                    final PublicKey payerKey,
                                                     final PublicKey userStateKey,
                                                     final PublicKey farmStateKey,
                                                     final PublicKey globalConfigKey,
                                                     final PublicKey rewardMintKey,
-                                                    final PublicKey userRewardAtaKey,
+                                                    final PublicKey userRewardTokenAccountKey,
                                                     final PublicKey rewardsVaultKey,
                                                     final PublicKey rewardsTreasuryVaultKey,
                                                     final PublicKey farmVaultsAuthorityKey,
                                                     final PublicKey scopePricesKey,
                                                     final PublicKey tokenProgramKey) {
     return List.of(
-      createWritableSigner(ownerKey),
+      createWritableSigner(payerKey),
       createWrite(userStateKey),
       createWrite(farmStateKey),
       createRead(globalConfigKey),
       createRead(rewardMintKey),
-      createWrite(userRewardAtaKey),
+      createWrite(userRewardTokenAccountKey),
       createWrite(rewardsVaultKey),
       createWrite(rewardsTreasuryVaultKey),
       createRead(farmVaultsAuthorityKey),
@@ -872,12 +872,12 @@ public final class FarmsProgram {
   }
 
   public static Instruction harvestReward(final AccountMeta invokedFarmsProgramMeta,
-                                          final PublicKey ownerKey,
+                                          final PublicKey payerKey,
                                           final PublicKey userStateKey,
                                           final PublicKey farmStateKey,
                                           final PublicKey globalConfigKey,
                                           final PublicKey rewardMintKey,
-                                          final PublicKey userRewardAtaKey,
+                                          final PublicKey userRewardTokenAccountKey,
                                           final PublicKey rewardsVaultKey,
                                           final PublicKey rewardsTreasuryVaultKey,
                                           final PublicKey farmVaultsAuthorityKey,
@@ -886,12 +886,12 @@ public final class FarmsProgram {
                                           final long rewardIndex) {
     final var keys = harvestRewardKeys(
       invokedFarmsProgramMeta,
-      ownerKey,
+      payerKey,
       userStateKey,
       farmStateKey,
       globalConfigKey,
       rewardMintKey,
-      userRewardAtaKey,
+      userRewardTokenAccountKey,
       rewardsVaultKey,
       rewardsTreasuryVaultKey,
       farmVaultsAuthorityKey,

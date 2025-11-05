@@ -31,6 +31,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                     If true, the farm is frozen and no more deposits are allowed
 /// @param isFarmDelegated Indicates if the farm is a delegate farm
 ///                        If true, the farm is a delegate farm and the `delegate_authority` is set*
+/// @param isRewardUserOnceEnabled If set to 1, indicates that the "reward user once" feature is enabled
 /// @param withdrawAuthority Withdraw authority for the farm, allowed to lock deposited funds and withdraw them
 ///                          Set to `default()` if unused (only the depositors can withdraw their funds)
 /// @param depositWarmupPeriod Delay between a user deposit and the moment it is considered as staked
@@ -58,6 +59,8 @@ public record FarmState(PublicKey _address,
                         int timeUnit,
                         int isFarmFrozen,
                         int isFarmDelegated,
+                        int isRewardUserOnceEnabled,
+                        int isHarvestingPermissionless,
                         byte[] padding0,
                         PublicKey withdrawAuthority,
                         int depositWarmupPeriod,
@@ -85,7 +88,7 @@ public record FarmState(PublicKey _address,
 
   public static final int BYTES = 8336;
   public static final int REWARD_INFOS_LEN = 10;
-  public static final int PADDING_0_LEN = 5;
+  public static final int PADDING_0_LEN = 3;
   public static final int PADDING_LEN = 74;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -106,7 +109,9 @@ public record FarmState(PublicKey _address,
   public static final int TIME_UNIT_OFFSET = 7360;
   public static final int IS_FARM_FROZEN_OFFSET = 7361;
   public static final int IS_FARM_DELEGATED_OFFSET = 7362;
-  public static final int PADDING_0_OFFSET = 7363;
+  public static final int IS_REWARD_USER_ONCE_ENABLED_OFFSET = 7363;
+  public static final int IS_HARVESTING_PERMISSIONLESS_OFFSET = 7364;
+  public static final int PADDING_0_OFFSET = 7365;
   public static final int WITHDRAW_AUTHORITY_OFFSET = 7368;
   public static final int DEPOSIT_WARMUP_PERIOD_OFFSET = 7400;
   public static final int WITHDRAWAL_COOLDOWN_PERIOD_OFFSET = 7404;
@@ -189,6 +194,14 @@ public record FarmState(PublicKey _address,
 
   public static Filter createIsFarmDelegatedFilter(final int isFarmDelegated) {
     return Filter.createMemCompFilter(IS_FARM_DELEGATED_OFFSET, new byte[]{(byte) isFarmDelegated});
+  }
+
+  public static Filter createIsRewardUserOnceEnabledFilter(final int isRewardUserOnceEnabled) {
+    return Filter.createMemCompFilter(IS_REWARD_USER_ONCE_ENABLED_OFFSET, new byte[]{(byte) isRewardUserOnceEnabled});
+  }
+
+  public static Filter createIsHarvestingPermissionlessFilter(final int isHarvestingPermissionless) {
+    return Filter.createMemCompFilter(IS_HARVESTING_PERMISSIONLESS_OFFSET, new byte[]{(byte) isHarvestingPermissionless});
   }
 
   public static Filter createWithdrawAuthorityFilter(final PublicKey withdrawAuthority) {
@@ -355,7 +368,11 @@ public record FarmState(PublicKey _address,
     ++i;
     final var isFarmDelegated = _data[i] & 0xFF;
     ++i;
-    final var padding0 = new byte[5];
+    final var isRewardUserOnceEnabled = _data[i] & 0xFF;
+    ++i;
+    final var isHarvestingPermissionless = _data[i] & 0xFF;
+    ++i;
+    final var padding0 = new byte[3];
     i += Borsh.readArray(padding0, _data, i);
     final var withdrawAuthority = readPubKey(_data, i);
     i += 32;
@@ -419,6 +436,8 @@ public record FarmState(PublicKey _address,
                          timeUnit,
                          isFarmFrozen,
                          isFarmDelegated,
+                         isRewardUserOnceEnabled,
+                         isHarvestingPermissionless,
                          padding0,
                          withdrawAuthority,
                          depositWarmupPeriod,
@@ -474,7 +493,11 @@ public record FarmState(PublicKey _address,
     ++i;
     _data[i] = (byte) isFarmDelegated;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 5, _data, i);
+    _data[i] = (byte) isRewardUserOnceEnabled;
+    ++i;
+    _data[i] = (byte) isHarvestingPermissionless;
+    ++i;
+    i += Borsh.writeArrayChecked(padding0, 3, _data, i);
     withdrawAuthority.write(_data, i);
     i += 32;
     putInt32LE(_data, i, depositWarmupPeriod);

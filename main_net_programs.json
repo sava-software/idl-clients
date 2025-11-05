@@ -99,10 +99,6 @@
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
           "srcMismatch": "WARN_KEEP_REF",
           "matchOnTypeName": true,
-          "excludeTypes": [
-            "ReserveConfig",
-            "Reserve"
-          ],
           "explicitRules": []
         },
         {
