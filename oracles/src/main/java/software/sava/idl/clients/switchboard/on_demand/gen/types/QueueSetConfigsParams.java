@@ -23,10 +23,8 @@ public record QueueSetConfigsParams(PublicKey authority,
     if (_data[i] == 0) {
       authority = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       authority = readPubKey(_data, i);
       i += 32;
     }
@@ -34,10 +32,8 @@ public record QueueSetConfigsParams(PublicKey authority,
     if (_data[i] == 0) {
       reward = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       reward = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -46,7 +42,6 @@ public record QueueSetConfigsParams(PublicKey authority,
       nodeTimeout = OptionalLong.empty();
     } else {
       ++i;
-    ;
       nodeTimeout = OptionalLong.of(getInt64LE(_data, i));
     }
     return new QueueSetConfigsParams(authority, reward, nodeTimeout);

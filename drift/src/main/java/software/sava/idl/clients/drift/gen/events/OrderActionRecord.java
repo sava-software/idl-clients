@@ -80,10 +80,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       filler = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       filler = readPubKey(_data, i);
       i += 32;
     }
@@ -91,10 +89,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       fillerReward = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       fillerReward = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -102,10 +98,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       fillRecordId = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       fillRecordId = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -113,10 +107,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       baseAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       baseAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -124,10 +116,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       quoteAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       quoteAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -135,10 +125,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -146,10 +134,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -157,10 +143,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       referrerReward = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       referrerReward = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -168,10 +152,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       quoteAssetAmountSurplus = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       quoteAssetAmountSurplus = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -179,10 +161,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       spotFulfillmentMethodFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       spotFulfillmentMethodFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -190,10 +170,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       taker = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       taker = readPubKey(_data, i);
       i += 32;
     }
@@ -201,10 +179,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerOrderId = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerOrderId = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -212,10 +188,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerOrderDirection = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerOrderDirection = PositionDirection.read(_data, i);
       i += Borsh.len(takerOrderDirection);
     }
@@ -223,10 +197,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerOrderBaseAssetAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerOrderBaseAssetAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -234,10 +206,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerOrderCumulativeBaseAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerOrderCumulativeBaseAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -245,10 +215,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -256,10 +224,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       maker = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maker = readPubKey(_data, i);
       i += 32;
     }
@@ -267,10 +233,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerOrderId = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerOrderId = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -278,10 +242,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerOrderDirection = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerOrderDirection = PositionDirection.read(_data, i);
       i += Borsh.len(makerOrderDirection);
     }
@@ -289,10 +251,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerOrderBaseAssetAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerOrderBaseAssetAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -300,10 +260,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerOrderCumulativeBaseAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerOrderCumulativeBaseAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -311,10 +269,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -326,10 +282,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerExistingQuoteEntryAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerExistingQuoteEntryAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -337,10 +291,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       takerExistingBaseAssetAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takerExistingBaseAssetAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -348,10 +300,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerExistingQuoteEntryAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerExistingQuoteEntryAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -359,10 +309,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       makerExistingBaseAssetAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       makerExistingBaseAssetAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -370,10 +318,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       triggerPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       triggerPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -381,10 +327,8 @@ public record OrderActionRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       builderIdx = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       builderIdx = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -393,7 +337,6 @@ public record OrderActionRecord(Discriminator discriminator,
       builderFee = OptionalLong.empty();
     } else {
       ++i;
-    ;
       builderFee = OptionalLong.of(getInt64LE(_data, i));
     }
     return new OrderActionRecord(discriminator,

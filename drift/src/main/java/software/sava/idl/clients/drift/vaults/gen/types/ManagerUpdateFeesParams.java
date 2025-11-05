@@ -25,10 +25,8 @@ public record ManagerUpdateFeesParams(long timelockDuration,
     if (_data[i] == 0) {
       newManagementFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       newManagementFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -36,10 +34,8 @@ public record ManagerUpdateFeesParams(long timelockDuration,
     if (_data[i] == 0) {
       newProfitShare = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       newProfitShare = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -48,7 +44,6 @@ public record ManagerUpdateFeesParams(long timelockDuration,
       newHurdleRate = OptionalInt.empty();
     } else {
       ++i;
-    ;
       newHurdleRate = OptionalInt.of(getInt32LE(_data, i));
     }
     return new ManagerUpdateFeesParams(timelockDuration,

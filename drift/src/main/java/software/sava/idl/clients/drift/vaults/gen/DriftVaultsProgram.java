@@ -1677,7 +1677,6 @@ public final class DriftVaultsProgram {
         repayValue = OptionalLong.empty();
       } else {
         ++i;
-      ;
         repayValue = OptionalLong.of(getInt64LE(_data, i));
       }
       return new ManagerRepayIxData(discriminator, repaySpotMarketIndex, repayAmount, repayValue);

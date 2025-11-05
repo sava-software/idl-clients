@@ -40,7 +40,6 @@ public record DeleteUserRecord(Discriminator discriminator,
       keeper = null;
     } else {
       ++i;
-    ;
       keeper = readPubKey(_data, i);
     }
     return new DeleteUserRecord(discriminator,

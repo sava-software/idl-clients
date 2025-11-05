@@ -1128,10 +1128,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         depositAmount = OptionalLong.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         depositAmount = OptionalLong.of(getInt64LE(_data, i));
         i += 8;
       }
@@ -1140,7 +1138,6 @@ public final class DriftProgram {
         borrowAmount = OptionalLong.empty();
       } else {
         ++i;
-      ;
         borrowAmount = OptionalLong.of(getInt64LE(_data, i));
       }
       return new TransferPoolsIxData(discriminator,
@@ -1250,7 +1247,6 @@ public final class DriftProgram {
         amount = OptionalLong.empty();
       } else {
         ++i;
-      ;
         amount = OptionalLong.of(getInt64LE(_data, i));
       }
       return new TransferPerpPositionIxData(discriminator, marketIndex, amount);
@@ -1394,7 +1390,6 @@ public final class DriftProgram {
         orderId = OptionalInt.empty();
       } else {
         ++i;
-      ;
         orderId = OptionalInt.of(getInt32LE(_data, i));
       }
       return new CancelOrderIxData(discriminator, orderId);
@@ -1555,10 +1550,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         marketType = null;
         ++i;
-      ;
       } else {
         ++i;
-      ;
         marketType = MarketType.read(_data, i);
         i += Borsh.len(marketType);
       }
@@ -1566,10 +1559,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         marketIndex = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         marketIndex = OptionalInt.of(getInt16LE(_data, i));
         i += 2;
       }
@@ -1578,7 +1569,6 @@ public final class DriftProgram {
         direction = null;
       } else {
         ++i;
-      ;
         direction = PositionDirection.read(_data, i);
       }
       return new CancelOrdersIxData(discriminator, marketType, marketIndex, direction);
@@ -1724,10 +1714,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         orderId = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         orderId = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -1889,7 +1877,6 @@ public final class DriftProgram {
         successCondition = OptionalInt.empty();
       } else {
         ++i;
-      ;
         successCondition = OptionalInt.of(getInt32LE(_data, i));
       }
       return new PlaceAndTakePerpOrderIxData(discriminator, params, successCondition);
@@ -2319,10 +2306,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fulfillmentType = null;
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fulfillmentType = SpotFulfillmentType.read(_data, i);
         i += Borsh.len(fulfillmentType);
       }
@@ -2331,7 +2316,6 @@ public final class DriftProgram {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
-      ;
         makerOrderId = OptionalInt.of(getInt32LE(_data, i));
       }
       return new PlaceAndTakeSpotOrderIxData(discriminator, params, fulfillmentType, makerOrderId);
@@ -2441,7 +2425,6 @@ public final class DriftProgram {
         fulfillmentType = null;
       } else {
         ++i;
-      ;
         fulfillmentType = SpotFulfillmentType.read(_data, i);
       }
       return new PlaceAndMakeSpotOrderIxData(discriminator, params, takerOrderId, fulfillmentType);
@@ -2774,10 +2757,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         limitPrice = OptionalLong.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         limitPrice = OptionalLong.of(getInt64LE(_data, i));
         i += 8;
       }
@@ -2786,7 +2767,6 @@ public final class DriftProgram {
         reduceOnly = null;
       } else {
         ++i;
-      ;
         reduceOnly = SwapReduceOnly.read(_data, i);
       }
       return new EndSwapIxData(discriminator,
@@ -3717,10 +3697,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         orderId = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         orderId = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -3729,7 +3707,6 @@ public final class DriftProgram {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
-      ;
         makerOrderId = OptionalInt.of(getInt32LE(_data, i));
       }
       return new FillPerpOrderIxData(discriminator, orderId, makerOrderId);
@@ -3869,10 +3846,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         orderId = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         orderId = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -3880,10 +3855,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fulfillmentType = null;
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fulfillmentType = SpotFulfillmentType.read(_data, i);
         i += Borsh.len(fulfillmentType);
       }
@@ -3892,7 +3865,6 @@ public final class DriftProgram {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
-      ;
         makerOrderId = OptionalInt.of(getInt32LE(_data, i));
       }
       return new FillSpotOrderIxData(discriminator, orderId, fulfillmentType, makerOrderId);
@@ -4627,7 +4599,6 @@ public final class DriftProgram {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
-      ;
         limitPrice = OptionalLong.of(getInt64LE(_data, i));
       }
       return new LiquidatePerpIxData(discriminator, marketIndex, liquidatorMaxBaseAssetAmount, limitPrice);
@@ -4829,7 +4800,6 @@ public final class DriftProgram {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
-      ;
         limitPrice = OptionalLong.of(getInt64LE(_data, i));
       }
       return new LiquidateSpotIxData(discriminator,
@@ -5211,7 +5181,6 @@ public final class DriftProgram {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
-      ;
         limitPrice = OptionalLong.of(getInt64LE(_data, i));
       }
       return new LiquidateBorrowForPerpPnlIxData(discriminator,
@@ -5338,7 +5307,6 @@ public final class DriftProgram {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
-      ;
         limitPrice = OptionalLong.of(getInt64LE(_data, i));
       }
       return new LiquidatePerpPnlForDepositIxData(discriminator,
@@ -9107,7 +9075,6 @@ public final class DriftProgram {
         depth = null;
       } else {
         ++i;
-      ;
         depth = getInt128LE(_data, i);
       }
       return new RecenterPerpMarketAmmCrankIxData(discriminator, depth);
@@ -9471,10 +9438,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         optionalLpFeeTransferScalar = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         optionalLpFeeTransferScalar = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -9483,7 +9448,6 @@ public final class DriftProgram {
         optionalLpNetPnlTransferScalar = OptionalInt.empty();
       } else {
         ++i;
-      ;
         optionalLpNetPnlTransferScalar = OptionalInt.of(_data[i] & 0xFF);
       }
       return new UpdatePerpMarketLpPoolFeeTransferScalarIxData(discriminator, optionalLpFeeTransferScalar, optionalLpNetPnlTransferScalar);
@@ -11402,7 +11366,6 @@ public final class DriftProgram {
         minBorrowRate = OptionalInt.empty();
       } else {
         ++i;
-      ;
         minBorrowRate = OptionalInt.of(_data[i] & 0xFF);
       }
       return new UpdateSpotMarketBorrowRateIxData(discriminator,
@@ -14099,10 +14062,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         numberOfUsers = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         numberOfUsers = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -14111,7 +14072,6 @@ public final class DriftProgram {
         numberOfUsersWithBase = OptionalInt.empty();
       } else {
         ++i;
-      ;
         numberOfUsersWithBase = OptionalInt.of(getInt32LE(_data, i));
       }
       return new UpdatePerpMarketNumberOfUsersIxData(discriminator, numberOfUsers, numberOfUsersWithBase);
@@ -14342,10 +14302,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostTaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostTaker = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14353,10 +14311,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostMaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostMaker = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14365,7 +14321,6 @@ public final class DriftProgram {
         fuelBoostPosition = OptionalInt.empty();
       } else {
         ++i;
-      ;
         fuelBoostPosition = OptionalInt.of(_data[i] & 0xFF);
       }
       return new UpdatePerpMarketFuelIxData(discriminator, fuelBoostTaker, fuelBoostMaker, fuelBoostPosition);
@@ -14446,10 +14401,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         protectedMakerLimitPriceDivisor = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         protectedMakerLimitPriceDivisor = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14458,7 +14411,6 @@ public final class DriftProgram {
         protectedMakerDynamicDivisor = OptionalInt.empty();
       } else {
         ++i;
-      ;
         protectedMakerDynamicDivisor = OptionalInt.of(_data[i] & 0xFF);
       }
       return new UpdatePerpMarketProtectedMakerParamsIxData(discriminator, protectedMakerLimitPriceDivisor, protectedMakerDynamicDivisor);
@@ -14795,10 +14747,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostDeposits = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostDeposits = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14806,10 +14756,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostBorrows = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostBorrows = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14817,10 +14765,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostTaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostTaker = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14828,10 +14774,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostMaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostMaker = OptionalInt.of(_data[i] & 0xFF);
         ++i;
       }
@@ -14840,7 +14784,6 @@ public final class DriftProgram {
         fuelBoostInsurance = OptionalInt.empty();
       } else {
         ++i;
-      ;
         fuelBoostInsurance = OptionalInt.of(_data[i] & 0xFF);
       }
       return new UpdateSpotMarketFuelIxData(discriminator,
@@ -14961,10 +14904,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostDeposits = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostDeposits = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -14972,10 +14913,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostBorrows = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostBorrows = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -14983,10 +14922,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostTaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostTaker = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -14994,10 +14931,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         fuelBoostMaker = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         fuelBoostMaker = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
@@ -15006,7 +14941,6 @@ public final class DriftProgram {
         fuelBoostInsurance = OptionalInt.empty();
       } else {
         ++i;
-      ;
         fuelBoostInsurance = OptionalInt.of(getInt32LE(_data, i));
       }
       return new InitUserFuelIxData(discriminator,
@@ -16021,7 +15955,6 @@ public final class DriftProgram {
         currentUsers = OptionalInt.empty();
       } else {
         ++i;
-      ;
         currentUsers = OptionalInt.of(getInt32LE(_data, i));
       }
       return new UpdateHighLeverageModeConfigIxData(discriminator, maxUsers, reduceOnly, currentUsers);
@@ -16199,7 +16132,6 @@ public final class DriftProgram {
         currentUsers = OptionalInt.empty();
       } else {
         ++i;
-      ;
         currentUsers = OptionalInt.of(getInt32LE(_data, i));
       }
       return new UpdateProtectedMakerModeConfigIxData(discriminator, maxUsers, reduceOnly, currentUsers);
@@ -17524,10 +17456,8 @@ public final class DriftProgram {
       if (_data[i] == 0) {
         constituentDerivativeIndex = OptionalInt.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         constituentDerivativeIndex = OptionalInt.of(getInt16LE(_data, i));
         i += 2;
       }

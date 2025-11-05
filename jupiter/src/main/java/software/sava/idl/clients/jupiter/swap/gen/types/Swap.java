@@ -915,7 +915,6 @@ public sealed interface Swap extends RustEnum permits
         remainingAccountsInfo = null;
       } else {
         ++i;
-      ;
         remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       }
       return new WhirlpoolSwapV2(aToB, remainingAccountsInfo);
@@ -1620,7 +1619,6 @@ public sealed interface Swap extends RustEnum permits
         remainingAccountsInfo = null;
       } else {
         ++i;
-      ;
         remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       }
       return new DefiTuna(aToB, remainingAccountsInfo);

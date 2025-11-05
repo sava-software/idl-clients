@@ -33,10 +33,8 @@ public record PerpBankruptcyRecord(int marketIndex,
     if (_data[i] == 0) {
       clawbackUser = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       clawbackUser = readPubKey(_data, i);
       i += 32;
     }
@@ -44,10 +42,8 @@ public record PerpBankruptcyRecord(int marketIndex,
     if (_data[i] == 0) {
       clawbackUserPayment = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       clawbackUserPayment = getInt128LE(_data, i);
       i += 16;
     }

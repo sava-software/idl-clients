@@ -48,7 +48,6 @@ public record PullFeedInitParams(byte[] feedHash,
       permitWriteByAuthority = null;
     } else {
       ++i;
-    ;
       permitWriteByAuthority = _data[i] == 1;
     }
     return new PullFeedInitParams(feedHash,

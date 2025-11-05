@@ -26,10 +26,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     if (_data[i] == 0) {
       quoteOwedFromLpPool = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       quoteOwedFromLpPool = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -37,10 +35,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     if (_data[i] == 0) {
       lastSettleSlot = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       lastSettleSlot = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -48,10 +44,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     if (_data[i] == 0) {
       lastFeePoolTokenAmount = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       lastFeePoolTokenAmount = getInt128LE(_data, i);
       i += 16;
     }
@@ -59,10 +53,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     if (_data[i] == 0) {
       lastNetPnlPoolTokenAmount = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       lastNetPnlPoolTokenAmount = getInt128LE(_data, i);
       i += 16;
     }
@@ -70,10 +62,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     if (_data[i] == 0) {
       ammPositionScalar = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       ammPositionScalar = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -82,7 +72,6 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       ammInventoryLimit = OptionalLong.empty();
     } else {
       ++i;
-    ;
       ammInventoryLimit = OptionalLong.of(getInt64LE(_data, i));
     }
     return new OverrideAmmCacheParams(quoteOwedFromLpPool,

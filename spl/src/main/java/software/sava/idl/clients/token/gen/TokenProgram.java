@@ -143,7 +143,7 @@ public final class TokenProgram {
         freezeAuthority = null;
       } else {
         ++i;
-      ;
+
         freezeAuthority = readPubKey(_data, i);
       }
       return new InitializeMintIxData(discriminator,
@@ -762,7 +762,7 @@ public final class TokenProgram {
         newAuthority = null;
       } else {
         ++i;
-      ;
+
         newAuthority = readPubKey(_data, i);
       }
       return new SetAuthorityIxData(discriminator, authorityType, newAuthority);
@@ -2165,7 +2165,7 @@ public final class TokenProgram {
         freezeAuthority = null;
       } else {
         ++i;
-      ;
+
         freezeAuthority = readPubKey(_data, i);
       }
       return new InitializeMint2IxData(discriminator,

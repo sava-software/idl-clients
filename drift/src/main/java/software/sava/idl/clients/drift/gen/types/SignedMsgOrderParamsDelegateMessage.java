@@ -40,10 +40,8 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     if (_data[i] == 0) {
       takeProfitOrderParams = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       takeProfitOrderParams = SignedMsgTriggerOrderParams.read(_data, i);
       i += Borsh.len(takeProfitOrderParams);
     }
@@ -51,10 +49,8 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     if (_data[i] == 0) {
       stopLossOrderParams = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       stopLossOrderParams = SignedMsgTriggerOrderParams.read(_data, i);
       i += Borsh.len(stopLossOrderParams);
     }
@@ -62,10 +58,8 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     if (_data[i] == 0) {
       maxMarginRatio = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxMarginRatio = OptionalInt.of(getInt16LE(_data, i));
       i += 2;
     }
@@ -73,10 +67,8 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     if (_data[i] == 0) {
       builderIdx = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       builderIdx = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -84,10 +76,8 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     if (_data[i] == 0) {
       builderFeeTenthBps = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       builderFeeTenthBps = OptionalInt.of(getInt16LE(_data, i));
       i += 2;
     }
@@ -96,7 +86,6 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       isolatedPositionDeposit = OptionalLong.empty();
     } else {
       ++i;
-    ;
       isolatedPositionDeposit = OptionalLong.of(getInt64LE(_data, i));
     }
     return new SignedMsgOrderParamsDelegateMessage(signedMsgOrderParams,

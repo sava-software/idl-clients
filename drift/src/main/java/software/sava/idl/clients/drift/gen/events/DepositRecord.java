@@ -79,7 +79,6 @@ public record DepositRecord(Discriminator discriminator,
       transferUser = null;
     } else {
       ++i;
-    ;
       transferUser = readPubKey(_data, i);
     }
     return new DepositRecord(discriminator,

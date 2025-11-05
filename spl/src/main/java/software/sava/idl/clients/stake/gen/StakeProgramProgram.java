@@ -511,10 +511,8 @@ public final class StakeProgramProgram {
       if (_data[i] == 0) {
         unixTimestamp = OptionalLong.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         unixTimestamp = OptionalLong.of(getInt64LE(_data, i));
         i += 8;
       }
@@ -522,10 +520,8 @@ public final class StakeProgramProgram {
       if (_data[i] == 0) {
         epoch = OptionalLong.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         epoch = OptionalLong.of(getInt64LE(_data, i));
         i += 8;
       }
@@ -534,7 +530,6 @@ public final class StakeProgramProgram {
         custodian = null;
       } else {
         ++i;
-      ;
         custodian = readPubKey(_data, i);
       }
       return new SetLockupIxData(discriminator, unixTimestamp, epoch, custodian);
@@ -1016,10 +1011,8 @@ public final class StakeProgramProgram {
       if (_data[i] == 0) {
         unixTimestamp = OptionalLong.empty();
         ++i;
-      ;
       } else {
         ++i;
-      ;
         unixTimestamp = OptionalLong.of(getInt64LE(_data, i));
         i += 8;
       }
@@ -1028,7 +1021,6 @@ public final class StakeProgramProgram {
         epoch = OptionalLong.empty();
       } else {
         ++i;
-      ;
         epoch = OptionalLong.of(getInt64LE(_data, i));
       }
       return new SetLockupCheckedIxData(discriminator, unixTimestamp, epoch);

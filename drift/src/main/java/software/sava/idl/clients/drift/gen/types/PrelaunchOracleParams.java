@@ -23,10 +23,8 @@ public record PrelaunchOracleParams(int perpMarketIndex,
     if (_data[i] == 0) {
       price = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       price = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -35,7 +33,6 @@ public record PrelaunchOracleParams(int perpMarketIndex,
       maxPrice = OptionalLong.empty();
     } else {
       ++i;
-    ;
       maxPrice = OptionalLong.of(getInt64LE(_data, i));
     }
     return new PrelaunchOracleParams(perpMarketIndex, price, maxPrice);

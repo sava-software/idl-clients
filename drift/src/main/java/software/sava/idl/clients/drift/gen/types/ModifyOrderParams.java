@@ -34,10 +34,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       direction = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       direction = PositionDirection.read(_data, i);
       i += Borsh.len(direction);
     }
@@ -45,10 +43,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       baseAssetAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       baseAssetAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -56,10 +52,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       price = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       price = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -67,10 +61,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       reduceOnly = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       reduceOnly = _data[i] == 1;
       ++i;
     }
@@ -78,10 +70,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       postOnly = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       postOnly = PostOnlyParam.read(_data, i);
       i += Borsh.len(postOnly);
     }
@@ -89,10 +79,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       bitFlags = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       bitFlags = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -100,10 +88,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       maxTs = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxTs = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -111,10 +97,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       triggerPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       triggerPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -122,10 +106,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       triggerCondition = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       triggerCondition = OrderTriggerCondition.read(_data, i);
       i += Borsh.len(triggerCondition);
     }
@@ -133,10 +115,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       oraclePriceOffset = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       oraclePriceOffset = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -144,10 +124,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       auctionDuration = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       auctionDuration = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -155,10 +133,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       auctionStartPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       auctionStartPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -166,10 +142,8 @@ public record ModifyOrderParams(PositionDirection direction,
     if (_data[i] == 0) {
       auctionEndPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       auctionEndPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -178,7 +152,6 @@ public record ModifyOrderParams(PositionDirection direction,
       policy = OptionalInt.empty();
     } else {
       ++i;
-    ;
       policy = OptionalInt.of(_data[i] & 0xFF);
     }
     return new ModifyOrderParams(direction,

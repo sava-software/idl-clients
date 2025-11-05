@@ -28,7 +28,6 @@ public record OracleInitSVMParams(long recentSlot,
     if (_data[i] == 0) {
       secpAuthority = null;
       ++i;
-    ;
     } else {
       ++i;
       secpAuthority = new byte[64];

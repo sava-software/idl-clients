@@ -31,10 +31,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       maxWeightDeviation = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxWeightDeviation = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -42,10 +40,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       swapFeeMin = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       swapFeeMin = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -53,10 +49,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       swapFeeMax = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       swapFeeMax = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -64,10 +58,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       maxBorrowTokenAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxBorrowTokenAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -75,10 +67,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       oracleStalenessThreshold = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       oracleStalenessThreshold = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -86,10 +76,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       costToTradeBps = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       costToTradeBps = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -97,10 +85,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       constituentDerivativeIndex = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       constituentDerivativeIndex = OptionalInt.of(getInt16LE(_data, i));
       i += 2;
     }
@@ -108,10 +94,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       derivativeWeight = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       derivativeWeight = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -119,10 +103,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       volatility = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       volatility = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -130,10 +112,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       gammaExecution = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       gammaExecution = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -141,10 +121,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     if (_data[i] == 0) {
       gammaInventory = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       gammaInventory = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -153,7 +131,6 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       xi = OptionalInt.empty();
     } else {
       ++i;
-    ;
       xi = OptionalInt.of(_data[i] & 0xFF);
     }
     return new ConstituentParams(maxWeightDeviation,

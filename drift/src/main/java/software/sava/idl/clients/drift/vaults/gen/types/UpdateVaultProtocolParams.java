@@ -19,10 +19,8 @@ public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt pr
     if (_data[i] == 0) {
       protocolFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       protocolFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -31,7 +29,6 @@ public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt pr
       protocolProfitShare = OptionalInt.empty();
     } else {
       ++i;
-    ;
       protocolProfitShare = OptionalInt.of(getInt32LE(_data, i));
     }
     return new UpdateVaultProtocolParams(protocolFee, protocolProfitShare);

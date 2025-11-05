@@ -22,10 +22,8 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
     if (_data[i] == 0) {
       quoteAssetAmountWithUnsettledLp = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       quoteAssetAmountWithUnsettledLp = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -33,10 +31,8 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
     if (_data[i] == 0) {
       netUnsettledFundingPnl = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       netUnsettledFundingPnl = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -44,10 +40,8 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
     if (_data[i] == 0) {
       updateAmmSummaryStats = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       updateAmmSummaryStats = _data[i] == 1;
       ++i;
     }
@@ -56,7 +50,6 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
       excludeTotalLiqFee = null;
     } else {
       ++i;
-    ;
       excludeTotalLiqFee = _data[i] == 1;
     }
     return new UpdatePerpMarketSummaryStatsParams(quoteAssetAmountWithUnsettledLp,

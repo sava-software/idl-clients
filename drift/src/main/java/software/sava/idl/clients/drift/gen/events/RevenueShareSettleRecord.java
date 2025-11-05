@@ -38,10 +38,8 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       builder = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       builder = readPubKey(_data, i);
       i += 32;
     }
@@ -49,10 +47,8 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     if (_data[i] == 0) {
       referrer = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       referrer = readPubKey(_data, i);
       i += 32;
     }

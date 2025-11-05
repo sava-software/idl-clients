@@ -31,7 +31,6 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       feedHash = null;
       ++i;
-    ;
     } else {
       ++i;
       feedHash = new byte[32];
@@ -41,10 +40,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       authority = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       authority = readPubKey(_data, i);
       i += 32;
     }
@@ -52,10 +49,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       maxVariance = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxVariance = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -63,10 +58,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       minResponses = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       minResponses = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -74,7 +67,6 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       name = null;
       ++i;
-    ;
     } else {
       ++i;
       name = new byte[32];
@@ -84,7 +76,6 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       ipfsHash = null;
       ++i;
-    ;
     } else {
       ++i;
       ipfsHash = new byte[32];
@@ -94,10 +85,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       minSampleSize = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       minSampleSize = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -105,10 +94,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     if (_data[i] == 0) {
       maxStaleness = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxStaleness = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -117,7 +104,6 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       permitWriteByAuthority = null;
     } else {
       ++i;
-    ;
       permitWriteByAuthority = _data[i] == 1;
     }
     return new PullFeedSetConfigsParams(feedHash,

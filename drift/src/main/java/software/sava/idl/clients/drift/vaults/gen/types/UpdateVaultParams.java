@@ -27,10 +27,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       redeemPeriod = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       redeemPeriod = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -38,10 +36,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       maxTokens = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxTokens = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -49,10 +45,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       managementFee = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       managementFee = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -60,10 +54,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       minDepositAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       minDepositAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -71,10 +63,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       profitShare = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       profitShare = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -82,10 +72,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     if (_data[i] == 0) {
       hurdleRate = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       hurdleRate = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -94,7 +82,6 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       permissioned = null;
     } else {
       ++i;
-    ;
       permissioned = _data[i] == 1;
     }
     return new UpdateVaultParams(redeemPeriod,

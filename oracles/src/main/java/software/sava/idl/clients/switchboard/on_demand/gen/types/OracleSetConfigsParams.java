@@ -16,10 +16,8 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
     if (_data[i] == 0) {
       newAuthority = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       newAuthority = readPubKey(_data, i);
       i += 32;
     }

@@ -58,10 +58,8 @@ public record OrderParams(OrderType orderType,
     if (_data[i] == 0) {
       maxTs = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxTs = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -69,10 +67,8 @@ public record OrderParams(OrderType orderType,
     if (_data[i] == 0) {
       triggerPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       triggerPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -82,10 +78,8 @@ public record OrderParams(OrderType orderType,
     if (_data[i] == 0) {
       oraclePriceOffset = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       oraclePriceOffset = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
@@ -93,10 +87,8 @@ public record OrderParams(OrderType orderType,
     if (_data[i] == 0) {
       auctionDuration = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       auctionDuration = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -104,10 +96,8 @@ public record OrderParams(OrderType orderType,
     if (_data[i] == 0) {
       auctionStartPrice = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       auctionStartPrice = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -116,7 +106,6 @@ public record OrderParams(OrderType orderType,
       auctionEndPrice = OptionalLong.empty();
     } else {
       ++i;
-    ;
       auctionEndPrice = OptionalLong.of(getInt64LE(_data, i));
     }
     return new OrderParams(orderType,

@@ -66,10 +66,8 @@ public record Config(PublicKey _address,
     if (_data[i] == 0) {
       targetGovernanceAuthority = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       targetGovernanceAuthority = readPubKey(_data, i);
       i += 32;
     }

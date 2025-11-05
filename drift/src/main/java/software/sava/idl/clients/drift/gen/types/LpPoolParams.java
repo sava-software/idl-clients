@@ -28,10 +28,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     if (_data[i] == 0) {
       maxSettleQuoteAmount = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxSettleQuoteAmount = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -39,10 +37,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     if (_data[i] == 0) {
       volatility = OptionalLong.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       volatility = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -50,10 +46,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     if (_data[i] == 0) {
       gammaExecution = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       gammaExecution = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -61,10 +55,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     if (_data[i] == 0) {
       xi = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       xi = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
@@ -72,10 +64,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     if (_data[i] == 0) {
       maxAum = null;
       ++i;
-    ;
     } else {
       ++i;
-    ;
       maxAum = getInt128LE(_data, i);
       i += 16;
     }
@@ -84,7 +74,6 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       whitelistMint = null;
     } else {
       ++i;
-    ;
       whitelistMint = readPubKey(_data, i);
     }
     return new LpPoolParams(maxSettleQuoteAmount,

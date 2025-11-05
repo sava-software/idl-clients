@@ -22,10 +22,8 @@ public record CappedFlooredData(int sourceEntry,
     if (_data[i] == 0) {
       capEntry = OptionalInt.empty();
       ++i;
-    ;
     } else {
       ++i;
-    ;
       capEntry = OptionalInt.of(getInt16LE(_data, i));
       i += 2;
     }
@@ -34,7 +32,6 @@ public record CappedFlooredData(int sourceEntry,
       floorEntry = OptionalInt.empty();
     } else {
       ++i;
-    ;
       floorEntry = OptionalInt.of(getInt16LE(_data, i));
     }
     return new CappedFlooredData(sourceEntry, capEntry, floorEntry);
