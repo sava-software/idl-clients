@@ -74,10 +74,11 @@ var tokenProgram = PublicKey.fromBase58Encoded("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf
 long amount = 1_000_000; // in native units (e.g., 1 USDC = 1_000_000 for 6 decimals)
 
 Instruction depositIx = drift.deposit(userTokenAccount, tokenProgram, usdc, amount);
+
 Instruction withdrawIx = drift.withdraw(userTokenAccount, tokenProgram, usdc, amount);
 ```
 
-## Placing Orders (Spot and Perp)
+## Order Execution
 
 ```java
 int marketIndex = 0;
@@ -89,20 +90,17 @@ var builder = new OrderParamsBuilder(
     0, // marketIndex
     OrderTriggerCondition.Above
 );
+byte orderId = 123;
 var params = builder.orderType(OrderType.Limit)
+    .userOrderId(orderId)
     .marketType(MarketType.Spot)
     .reduceOnly(false)
     .postOnly(PostOnlyParam.MustPostOnly)
     .createParams();
 
 Instruction placeOrderIx = drift.placeOrder(params);
-```
 
-## Cancel orders:
-
-```java
-int orderId = 123;
-Instruction cancelIx = drift.cancelOrder(orderId);
+Instruction cancelOrderIx = drift.cancelOrder(orderId);
 ```
 
 ## Settling PnL and Funding
