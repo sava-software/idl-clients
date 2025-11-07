@@ -1,4 +1,4 @@
-module software.sava.idl.clients.software.sava.idl.clients.drift {
+module software.sava.idl.clients.drift {
   exports software.sava.idl.clients.drift.gen.types;
   exports software.sava.idl.clients.drift.gen;
   exports software.sava.idl.clients.drift;
