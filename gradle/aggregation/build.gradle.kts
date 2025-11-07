@@ -11,3 +11,16 @@ dependencies {
   nmcpAggregation(project(":idl-clients-oracles"))
   nmcpAggregation(project(":idl-clients-spl"))
 }
+
+tasks.register("publishToGitHubPackages") {
+  group = "publishing"
+  dependsOn(
+    ":idl-clients-cctp:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-core:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-drift:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-jupiter:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-kamino:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-oracles:publishMavenJavaPublicationToSavaGithubPackagesRepository",
+    ":idl-clients-spl:publishMavenJavaPublicationToSavaGithubPackagesRepository"
+  )
+}
