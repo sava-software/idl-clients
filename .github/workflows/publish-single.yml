@@ -1,12 +1,13 @@
-name: Publish Release
+name: Publish Single Module
 
 on:
-  create:
+  push:
     tags:
-      - '*-\d+\.\d+\.\d+'
+      - '*-[0-9]*.[0-9]*.[0-9]*'
 
 jobs:
   publish:
+    if: ${{ github.ref_type == 'tag' && (github.ref_name matches '^[^-]+-\d+\.\d+\.\d+$') }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -21,6 +22,16 @@ jobs:
           jdk-src: ${{ vars.JDK_SRC }}
           gradle-java-version: ${{ vars.GRADLE_JAVA_VERSION }}
 
+      - name: Parse tag for module and version
+        id: parse_tag
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          MODULE="${TAG%%-*}"
+          VERSION="${TAG#*-}"
+          echo "module=$MODULE" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Checkout IDL Source Generator
         uses: actions/checkout@v4
         with:
@@ -31,13 +42,13 @@ jobs:
       - name: Generate Source & Check
         run: |
           ./idl-src-gen/genSrc.sh --config="../main_net_programs.json" --rpc="${{ secrets.RPC_URL }}"
-          ./gradlew --stacktrace -PjavaVersion=${{ steps.setup.outputs.java-version }} -Pversion=${{ github.ref_name }} check
+          ./gradlew --stacktrace -PjavaVersion=${{ steps.setup.outputs.java-version }} check
         env:
           ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ env.GITHUB_ACTOR }}
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Maven Central
-        run: ./gradlew --stacktrace -Psign=true -PjavaVersion=${{ steps.setup.outputs.java-version }} -Pversion=${{ github.ref_name }} :aggregation:publishAggregationToCentralPortal
+        run: ./gradlew --stacktrace -Psign=true -PjavaVersion=${{ steps.setup.outputs.java-version }} -Pversion=${{ steps.parse_tag.outputs.version }} -Pnmcp.publish.project=${{ steps.parse_tag.outputs.module }} :aggregation:publishAggregationToCentralPortal
         env:
           GPG_PUBLISH_SECRET: ${{ secrets.GPG_PUBLISH_SECRET }}
           GPG_PUBLISH_PHRASE: ${{ secrets.GPG_PUBLISH_PHRASE }}
@@ -47,7 +58,7 @@ jobs:
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Github Packages
-        run: ./gradlew --stacktrace -Psign=true -PjavaVersion=${{ steps.setup.outputs.java-version }} -Pversion=${{ github.ref_name }} :aggregation:publishToGitHubPackages
+        run: ./gradlew --stacktrace -Psign=true -PjavaVersion=${{ steps.setup.outputs.java-version }} -Pversion=${{ steps.parse_tag.outputs.version }} :idl-clients-core:publishMavenJavaPublicationToSavaGithubPackagesRepository :idl-clients-${{ steps.parse_tag.outputs.module }}:publishMavenJavaPublicationToSavaGithubPackagesRepository
         env:
           GPG_PUBLISH_SECRET: ${{ secrets.GPG_PUBLISH_SECRET }}
           GPG_PUBLISH_PHRASE: ${{ secrets.GPG_PUBLISH_PHRASE }}

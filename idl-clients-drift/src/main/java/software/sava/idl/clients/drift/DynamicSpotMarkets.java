@@ -48,6 +48,7 @@ public record DynamicSpotMarkets(SpotMarkets mainNet, SpotMarkets devNet) {
         .replaceAll("//.*", "")
         .replaceAll("\\s+", " ")
         .replaceAll("OracleSource\\.(\\w+)", "\"$1\"")
+        .replaceAll("MarketStatus\\.(\\w+)", "\"$1\"")
         .replace("WRAPPED_SOL_MINT", "\"So11111111111111111111111111111111111111112\"")
         .replaceAll("new PublicKey\\( *\"(\\w+)\" *\\)", "\"$1\"");
   }

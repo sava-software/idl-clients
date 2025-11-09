@@ -2,16 +2,15 @@ package software.sava.idl.clients.drift;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.idl.clients.drift.gen.types.MarketStatus;
 import software.sava.idl.clients.drift.gen.types.OracleSource;
 import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static software.sava.idl.clients.drift.SpotMarketConfig.DECODE_HEX;
 import static software.sava.idl.clients.drift.SpotMarketConfig.parseOracleSource;
@@ -30,7 +29,10 @@ public record PerpMarketConfig(String fullName,
                                PublicKey pythFeedId,
                                long pythLazerId,
                                AccountMeta readMarketPDA,
-                               AccountMeta writeMarketPDA) implements MarketConfig {
+                               AccountMeta writeMarketPDA,
+                               MarketStatus marketStatus) implements MarketConfig {
+
+  private static final System.Logger logger = System.getLogger(MarketConfig.class.getName());
 
   public static List<PerpMarketConfig> parseConfigs(final JsonIterator ji, final DriftAccounts driftAccounts) {
     final var configs = new ArrayList<PerpMarketConfig>();
@@ -52,6 +54,9 @@ public record PerpMarketConfig(String fullName,
 
   private static final class Parser implements FieldBufferPredicate {
 
+    private static Map<String, MarketStatus> STATUS_MAP = Arrays.stream(MarketStatus.values())
+        .collect(Collectors.toUnmodifiableMap(e -> e.name().toUpperCase(), e -> e));
+
     private String fullName;
     private Set<String> categories;
     private String symbol;
@@ -62,6 +67,7 @@ public record PerpMarketConfig(String fullName,
     private OracleSource oracleSource;
     private PublicKey pythFeedId;
     private long pythLazerId;
+    private MarketStatus marketStatus;
 
     private PerpMarketConfig create(final DriftAccounts driftAccounts) {
       final AccountMeta readOracle;
@@ -89,7 +95,8 @@ public record PerpMarketConfig(String fullName,
           pythFeedId,
           pythLazerId,
           AccountMeta.createRead(marketPDA),
-          AccountMeta.createWrite(marketPDA)
+          AccountMeta.createWrite(marketPDA),
+          marketStatus
       );
     }
 
@@ -119,7 +126,10 @@ public record PerpMarketConfig(String fullName,
         pythFeedId = ji.applyChars(DECODE_HEX);
       } else if (fieldEquals("pythLazerId", buf, offset, len)) {
         pythLazerId = ji.readLong();
+      } else if (fieldEquals("marketStatus", buf, offset, len)) {
+        marketStatus = STATUS_MAP.get(ji.readString().toUpperCase());
       } else {
+        logger.log(System.Logger.Level.INFO, "Skipping unknown Drift Config field " + new String(buf, offset, len));
         ji.skip();
       }
       return true;

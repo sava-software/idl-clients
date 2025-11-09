@@ -6,8 +6,7 @@
 var rpc = SolanaRpcClient.create("https://api.mainnet-beta.solana.com");
 var feePayer = KeyPair.fromBase58Secret(/* your secret key */);
 var nativeClient = new NativeProgramAccountClient(rpc, feePayer);
-var driftAccounts = DriftAccounts.MAIN_NET;
-var drift = DriftProgramClient.createClient(nativeClient, driftAccounts);
+var drift = DriftProgramClient.createClient(nativeClient);
 ```
 
 ## Accounts and PDAs
@@ -19,7 +18,7 @@ var signerPda = driftAccounts.driftSignerPDA();
 var stateKey = driftAccounts.stateKey();
 
 var mainUser = drift.mainUserAccount(); // User Account 0
-var user0 = drift.deriveUserAccount(0);
+var user1 = drift.deriveUserAccount(1);
 ```
 
 ## Market Metadata
