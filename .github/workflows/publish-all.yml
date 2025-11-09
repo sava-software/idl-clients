@@ -7,7 +7,6 @@ on:
 
 jobs:
   publish:
-    if: ${{ github.ref_type == 'tag' && (github.ref_name matches '^\d+\.\d+\.\d+$') }}
     runs-on: ubuntu-latest
 
     permissions:
