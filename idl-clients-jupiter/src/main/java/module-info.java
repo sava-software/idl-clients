@@ -7,6 +7,8 @@ module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.swap.gen;
   exports software.sava.idl.clients.jupiter.voter.gen.types;
   exports software.sava.idl.clients.jupiter.voter.gen;
+  exports software.sava.idl.clients.jupiter.voter;
+  exports software.sava.idl.clients.jupiter;
   requires java.net.http;
   requires transitive software.sava.core;
   requires transitive software.sava.idl.clients.core;

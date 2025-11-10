@@ -12,10 +12,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param status Status of the reserve Active/Obsolete/Hidden
 /// @param assetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
 /// @param hostFixedInterestRateBps Flat rate that goes to the host
-/// @param reserved1 DEPRECATED Space that used to hold 2 fields:
-///                  - Boost for side (debt or collateral)
-///                  - Reward points multiplier per obligation type
-///                  Can be re-used after making sure all underlying production account data is zeroed.
+/// @param minDeleveragingBonusBps Starting bonus for deleveraging-related liquidations, in bps.
+/// @param reserved1 Past reserved space - feel free to reuse.
 /// @param protocolOrderExecutionFeePct Cut of the order execution bonus that the protocol receives, as a percentage
 /// @param protocolTakeRatePct Protocol take rate is the amount borrowed interest protocol receives, as a percentage
 /// @param protocolLiquidationFeePct Cut of the liquidation bonus that the protocol receives, as a percentage
@@ -61,6 +59,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record ReserveConfig(int status,
                             int assetTier,
                             int hostFixedInterestRateBps,
+                            int minDeleveragingBonusBps,
                             byte[] reserved1,
                             int protocolOrderExecutionFeePct,
                             int protocolTakeRatePct,
@@ -90,7 +89,7 @@ public record ReserveConfig(int status,
                             long deleveragingBonusIncreaseBpsPerDay) implements Borsh {
 
   public static final int BYTES = 920;
-  public static final int RESERVED_1_LEN = 9;
+  public static final int RESERVED_1_LEN = 7;
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
 
@@ -105,7 +104,9 @@ public record ReserveConfig(int status,
     ++i;
     final var hostFixedInterestRateBps = getInt16LE(_data, i);
     i += 2;
-    final var reserved1 = new byte[9];
+    final var minDeleveragingBonusBps = getInt16LE(_data, i);
+    i += 2;
+    final var reserved1 = new byte[7];
     i += Borsh.readArray(reserved1, _data, i);
     final var protocolOrderExecutionFeePct = _data[i] & 0xFF;
     ++i;
@@ -161,6 +162,7 @@ public record ReserveConfig(int status,
     return new ReserveConfig(status,
                              assetTier,
                              hostFixedInterestRateBps,
+                             minDeleveragingBonusBps,
                              reserved1,
                              protocolOrderExecutionFeePct,
                              protocolTakeRatePct,
@@ -199,7 +201,9 @@ public record ReserveConfig(int status,
     ++i;
     putInt16LE(_data, i, hostFixedInterestRateBps);
     i += 2;
-    i += Borsh.writeArrayChecked(reserved1, 9, _data, i);
+    putInt16LE(_data, i, minDeleveragingBonusBps);
+    i += 2;
+    i += Borsh.writeArrayChecked(reserved1, 7, _data, i);
     _data[i] = (byte) protocolOrderExecutionFeePct;
     ++i;
     _data[i] = (byte) protocolTakeRatePct;
