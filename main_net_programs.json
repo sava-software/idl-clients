@@ -131,21 +131,21 @@
       "name": "Pyth Lazer",
       "source": "idl-clients-oracles",
       "module": "oracles",
-      "package": "pyth.lazer",
+      "package": "oracles.pyth.lazer",
       "program": "pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt"
     },
     {
       "name": "Pyth Push",
       "source": "idl-clients-oracles",
       "module": "oracles",
-      "package": "pyth.push",
+      "package": "oracles.pyth.push",
       "program": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT"
     },
     {
       "name": "Pyth Receiver",
       "source": "idl-clients-oracles",
       "module": "oracles",
-      "package": "pyth.receiver",
+      "package": "oracles.pyth.receiver",
       "program": "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ",
       "typeRefs": [
         {
@@ -161,7 +161,7 @@
       "name": "Solana Attestation Service",
       "source": "idl-clients-spl",
       "module": "spl",
-      "package": "attestation_service",
+      "package": "spl.attestation_service",
       "program": "22zoJMtdu4tQc2PzL74ZUT7FrwgB1Udec8DdW4yw4BdG",
       "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json"
     },
@@ -169,7 +169,7 @@
       "name": "Stake",
       "source": "idl-clients-spl",
       "module": "spl",
-      "package": "stake",
+      "package": "spl.stake",
       "program": "Stake11111111111111111111111111111111111111",
       "idlURL": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/program/idl.json"
     },
@@ -177,21 +177,21 @@
       "name": "Switchboard On-Demand",
       "source": "idl-clients-oracles",
       "module": "oracles",
-      "package": "switchboard.on_demand",
+      "package": "oracles.switchboard.on_demand",
       "program": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv"
     },
     {
       "name": "Token",
       "source": "idl-clients-spl",
       "module": "spl",
-      "package": "token",
+      "package": "spl.token",
       "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       "idlType": "codama",
       "idlURL": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/program/idl.json",
       "additionalPrograms": [
         {
           "name": "Associated Token",
-          "package": "associated_token",
+          "package": "spl.associated_token",
           "program": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
         }
       ]

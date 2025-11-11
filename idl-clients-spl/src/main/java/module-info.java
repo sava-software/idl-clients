@@ -1,11 +1,12 @@
 module software.sava.idl.clients.spl {
-  exports software.sava.idl.clients.associated_token.gen;
-  exports software.sava.idl.clients.attestation_service.gen.types;
-  exports software.sava.idl.clients.attestation_service.gen;
-  exports software.sava.idl.clients.stake.gen.types;
-  exports software.sava.idl.clients.stake.gen;
-  exports software.sava.idl.clients.token.gen.types;
-  exports software.sava.idl.clients.token.gen;
+  exports software.sava.idl.clients.spl.associated_token.gen;
+  exports software.sava.idl.clients.spl.attestation_service.gen.types;
+  exports software.sava.idl.clients.spl.attestation_service.gen;
+  exports software.sava.idl.clients.spl.stake.gen.types;
+  exports software.sava.idl.clients.spl.stake.gen;
+  exports software.sava.idl.clients.spl.token.gen.types;
+  exports software.sava.idl.clients.spl.token.gen;
+  exports software.sava.idl.clients.spl;
   requires java.net.http;
   requires org.bouncycastle.provider;
   requires transitive software.sava.core;

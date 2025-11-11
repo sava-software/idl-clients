@@ -1,0 +1,377 @@
+package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.borsh.Borsh;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// An Queue represents a round-robin queue of oracle oracles who attest on-chain
+/// whether a Switchboard Function was executed within an enclave against an expected set of
+/// enclave measurements.
+/// 
+/// For an oracle to join the queue, the oracle must first submit their enclave quote on-chain and
+/// wait for an existing oracle to attest their quote. If the oracle's quote matches an expected
+/// measurement within the queues mr_enclaves config, it is granted permissions and will start
+/// being assigned update requests.
+///
+/// @param authority The address of the authority which is permitted to add/remove allowed enclave measurements.
+/// @param mrEnclaves Allowed enclave measurements.
+/// @param oracleKeys The addresses of the quote oracles who have a valid
+///                   verification status and have heartbeated on-chain recently.
+/// @param maxQuoteVerificationAge The maximum allowable time until a EnclaveAccount needs to be re-verified on-chain.
+/// @param lastHeartbeat The unix timestamp when the last quote oracle heartbeated on-chain.
+/// @param oracleMinStake The minimum number of lamports a quote oracle needs to lock-up in order to heartbeat and verify other quotes.
+/// @param mrEnclavesLen The number of allowed enclave measurements.
+/// @param oracleKeysLen The length of valid quote oracles for the given attestation queue.
+/// @param reward The reward paid to quote oracles for attesting on-chain.
+/// @param currIdx Incrementer used to track the current quote oracle permitted to run any available functions.
+/// @param gcIdx Incrementer used to garbage collect and remove stale quote oracles.
+public record QueueAccountData(PublicKey _address,
+                               Discriminator discriminator,
+                               PublicKey authority,
+                               byte[][] mrEnclaves,
+                               PublicKey[] oracleKeys,
+                               long maxQuoteVerificationAge,
+                               long lastHeartbeat,
+                               long nodeTimeout,
+                               long oracleMinStake,
+                               long allowAuthorityOverrideAfter,
+                               int mrEnclavesLen,
+                               int oracleKeysLen,
+                               int reward,
+                               int currIdx,
+                               int gcIdx,
+                               int requireAuthorityHeartbeatPermission,
+                               int requireAuthorityVerifyPermission,
+                               int requireUsagePermissions,
+                               int signerBump,
+                               PublicKey mint,
+                               long lutSlot,
+                               int allowSubsidies,
+                               byte[] ebuf6,
+                               PublicKey ncn,
+                               long resrved,
+                               VaultInfo[] vaults,
+                               byte[] ebuf4,
+                               byte[] ebuf2,
+                               byte[] ebuf1) implements Borsh {
+
+  public static final int BYTES = 6280;
+  public static final int MR_ENCLAVES_LEN = 32;
+  public static final int ORACLE_KEYS_LEN = 128;
+  public static final int EBUF_6_LEN = 15;
+  public static final int VAULTS_LEN = 4;
+  public static final int EBUF_4_LEN = 32;
+  public static final int EBUF_2_LEN = 256;
+  public static final int EBUF_1_LEN = 512;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(217, 194, 55, 127, 184, 83, 138, 1);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int MR_ENCLAVES_OFFSET = 40;
+  public static final int ORACLE_KEYS_OFFSET = 1064;
+  public static final int MAX_QUOTE_VERIFICATION_AGE_OFFSET = 5160;
+  public static final int LAST_HEARTBEAT_OFFSET = 5168;
+  public static final int NODE_TIMEOUT_OFFSET = 5176;
+  public static final int ORACLE_MIN_STAKE_OFFSET = 5184;
+  public static final int ALLOW_AUTHORITY_OVERRIDE_AFTER_OFFSET = 5192;
+  public static final int MR_ENCLAVES_LEN_OFFSET = 5200;
+  public static final int ORACLE_KEYS_LEN_OFFSET = 5204;
+  public static final int REWARD_OFFSET = 5208;
+  public static final int CURR_IDX_OFFSET = 5212;
+  public static final int GC_IDX_OFFSET = 5216;
+  public static final int REQUIRE_AUTHORITY_HEARTBEAT_PERMISSION_OFFSET = 5220;
+  public static final int REQUIRE_AUTHORITY_VERIFY_PERMISSION_OFFSET = 5221;
+  public static final int REQUIRE_USAGE_PERMISSIONS_OFFSET = 5222;
+  public static final int SIGNER_BUMP_OFFSET = 5223;
+  public static final int MINT_OFFSET = 5224;
+  public static final int LUT_SLOT_OFFSET = 5256;
+  public static final int ALLOW_SUBSIDIES_OFFSET = 5264;
+  public static final int EBUF_6_OFFSET = 5265;
+  public static final int NCN_OFFSET = 5280;
+  public static final int RESRVED_OFFSET = 5312;
+  public static final int VAULTS_OFFSET = 5320;
+  public static final int EBUF_4_OFFSET = 5480;
+  public static final int EBUF_2_OFFSET = 5512;
+  public static final int EBUF_1_OFFSET = 5768;
+
+  public static Filter createAuthorityFilter(final PublicKey authority) {
+    return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
+  }
+
+  public static Filter createMaxQuoteVerificationAgeFilter(final long maxQuoteVerificationAge) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, maxQuoteVerificationAge);
+    return Filter.createMemCompFilter(MAX_QUOTE_VERIFICATION_AGE_OFFSET, _data);
+  }
+
+  public static Filter createLastHeartbeatFilter(final long lastHeartbeat) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastHeartbeat);
+    return Filter.createMemCompFilter(LAST_HEARTBEAT_OFFSET, _data);
+  }
+
+  public static Filter createNodeTimeoutFilter(final long nodeTimeout) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, nodeTimeout);
+    return Filter.createMemCompFilter(NODE_TIMEOUT_OFFSET, _data);
+  }
+
+  public static Filter createOracleMinStakeFilter(final long oracleMinStake) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, oracleMinStake);
+    return Filter.createMemCompFilter(ORACLE_MIN_STAKE_OFFSET, _data);
+  }
+
+  public static Filter createAllowAuthorityOverrideAfterFilter(final long allowAuthorityOverrideAfter) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, allowAuthorityOverrideAfter);
+    return Filter.createMemCompFilter(ALLOW_AUTHORITY_OVERRIDE_AFTER_OFFSET, _data);
+  }
+
+  public static Filter createMrEnclavesLenFilter(final int mrEnclavesLen) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, mrEnclavesLen);
+    return Filter.createMemCompFilter(MR_ENCLAVES_LEN_OFFSET, _data);
+  }
+
+  public static Filter createOracleKeysLenFilter(final int oracleKeysLen) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, oracleKeysLen);
+    return Filter.createMemCompFilter(ORACLE_KEYS_LEN_OFFSET, _data);
+  }
+
+  public static Filter createRewardFilter(final int reward) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, reward);
+    return Filter.createMemCompFilter(REWARD_OFFSET, _data);
+  }
+
+  public static Filter createCurrIdxFilter(final int currIdx) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, currIdx);
+    return Filter.createMemCompFilter(CURR_IDX_OFFSET, _data);
+  }
+
+  public static Filter createGcIdxFilter(final int gcIdx) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, gcIdx);
+    return Filter.createMemCompFilter(GC_IDX_OFFSET, _data);
+  }
+
+  public static Filter createRequireAuthorityHeartbeatPermissionFilter(final int requireAuthorityHeartbeatPermission) {
+    return Filter.createMemCompFilter(REQUIRE_AUTHORITY_HEARTBEAT_PERMISSION_OFFSET, new byte[]{(byte) requireAuthorityHeartbeatPermission});
+  }
+
+  public static Filter createRequireAuthorityVerifyPermissionFilter(final int requireAuthorityVerifyPermission) {
+    return Filter.createMemCompFilter(REQUIRE_AUTHORITY_VERIFY_PERMISSION_OFFSET, new byte[]{(byte) requireAuthorityVerifyPermission});
+  }
+
+  public static Filter createRequireUsagePermissionsFilter(final int requireUsagePermissions) {
+    return Filter.createMemCompFilter(REQUIRE_USAGE_PERMISSIONS_OFFSET, new byte[]{(byte) requireUsagePermissions});
+  }
+
+  public static Filter createSignerBumpFilter(final int signerBump) {
+    return Filter.createMemCompFilter(SIGNER_BUMP_OFFSET, new byte[]{(byte) signerBump});
+  }
+
+  public static Filter createMintFilter(final PublicKey mint) {
+    return Filter.createMemCompFilter(MINT_OFFSET, mint);
+  }
+
+  public static Filter createLutSlotFilter(final long lutSlot) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lutSlot);
+    return Filter.createMemCompFilter(LUT_SLOT_OFFSET, _data);
+  }
+
+  public static Filter createAllowSubsidiesFilter(final int allowSubsidies) {
+    return Filter.createMemCompFilter(ALLOW_SUBSIDIES_OFFSET, new byte[]{(byte) allowSubsidies});
+  }
+
+  public static Filter createNcnFilter(final PublicKey ncn) {
+    return Filter.createMemCompFilter(NCN_OFFSET, ncn);
+  }
+
+  public static Filter createResrvedFilter(final long resrved) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, resrved);
+    return Filter.createMemCompFilter(RESRVED_OFFSET, _data);
+  }
+
+  public static QueueAccountData read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static QueueAccountData read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static QueueAccountData read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], QueueAccountData> FACTORY = QueueAccountData::read;
+
+  public static QueueAccountData read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var authority = readPubKey(_data, i);
+    i += 32;
+    final var mrEnclaves = new byte[32][32];
+    i += Borsh.readArray(mrEnclaves, _data, i);
+    final var oracleKeys = new PublicKey[128];
+    i += Borsh.readArray(oracleKeys, _data, i);
+    final var maxQuoteVerificationAge = getInt64LE(_data, i);
+    i += 8;
+    final var lastHeartbeat = getInt64LE(_data, i);
+    i += 8;
+    final var nodeTimeout = getInt64LE(_data, i);
+    i += 8;
+    final var oracleMinStake = getInt64LE(_data, i);
+    i += 8;
+    final var allowAuthorityOverrideAfter = getInt64LE(_data, i);
+    i += 8;
+    final var mrEnclavesLen = getInt32LE(_data, i);
+    i += 4;
+    final var oracleKeysLen = getInt32LE(_data, i);
+    i += 4;
+    final var reward = getInt32LE(_data, i);
+    i += 4;
+    final var currIdx = getInt32LE(_data, i);
+    i += 4;
+    final var gcIdx = getInt32LE(_data, i);
+    i += 4;
+    final var requireAuthorityHeartbeatPermission = _data[i] & 0xFF;
+    ++i;
+    final var requireAuthorityVerifyPermission = _data[i] & 0xFF;
+    ++i;
+    final var requireUsagePermissions = _data[i] & 0xFF;
+    ++i;
+    final var signerBump = _data[i] & 0xFF;
+    ++i;
+    final var mint = readPubKey(_data, i);
+    i += 32;
+    final var lutSlot = getInt64LE(_data, i);
+    i += 8;
+    final var allowSubsidies = _data[i] & 0xFF;
+    ++i;
+    final var ebuf6 = new byte[15];
+    i += Borsh.readArray(ebuf6, _data, i);
+    final var ncn = readPubKey(_data, i);
+    i += 32;
+    final var resrved = getInt64LE(_data, i);
+    i += 8;
+    final var vaults = new VaultInfo[4];
+    i += Borsh.readArray(vaults, VaultInfo::read, _data, i);
+    final var ebuf4 = new byte[32];
+    i += Borsh.readArray(ebuf4, _data, i);
+    final var ebuf2 = new byte[256];
+    i += Borsh.readArray(ebuf2, _data, i);
+    final var ebuf1 = new byte[512];
+    Borsh.readArray(ebuf1, _data, i);
+    return new QueueAccountData(_address,
+                                discriminator,
+                                authority,
+                                mrEnclaves,
+                                oracleKeys,
+                                maxQuoteVerificationAge,
+                                lastHeartbeat,
+                                nodeTimeout,
+                                oracleMinStake,
+                                allowAuthorityOverrideAfter,
+                                mrEnclavesLen,
+                                oracleKeysLen,
+                                reward,
+                                currIdx,
+                                gcIdx,
+                                requireAuthorityHeartbeatPermission,
+                                requireAuthorityVerifyPermission,
+                                requireUsagePermissions,
+                                signerBump,
+                                mint,
+                                lutSlot,
+                                allowSubsidies,
+                                ebuf6,
+                                ncn,
+                                resrved,
+                                vaults,
+                                ebuf4,
+                                ebuf2,
+                                ebuf1);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    authority.write(_data, i);
+    i += 32;
+    i += Borsh.writeArrayChecked(mrEnclaves, 32, _data, i);
+    i += Borsh.writeArrayChecked(oracleKeys, 128, _data, i);
+    putInt64LE(_data, i, maxQuoteVerificationAge);
+    i += 8;
+    putInt64LE(_data, i, lastHeartbeat);
+    i += 8;
+    putInt64LE(_data, i, nodeTimeout);
+    i += 8;
+    putInt64LE(_data, i, oracleMinStake);
+    i += 8;
+    putInt64LE(_data, i, allowAuthorityOverrideAfter);
+    i += 8;
+    putInt32LE(_data, i, mrEnclavesLen);
+    i += 4;
+    putInt32LE(_data, i, oracleKeysLen);
+    i += 4;
+    putInt32LE(_data, i, reward);
+    i += 4;
+    putInt32LE(_data, i, currIdx);
+    i += 4;
+    putInt32LE(_data, i, gcIdx);
+    i += 4;
+    _data[i] = (byte) requireAuthorityHeartbeatPermission;
+    ++i;
+    _data[i] = (byte) requireAuthorityVerifyPermission;
+    ++i;
+    _data[i] = (byte) requireUsagePermissions;
+    ++i;
+    _data[i] = (byte) signerBump;
+    ++i;
+    mint.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, lutSlot);
+    i += 8;
+    _data[i] = (byte) allowSubsidies;
+    ++i;
+    i += Borsh.writeArrayChecked(ebuf6, 15, _data, i);
+    ncn.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, resrved);
+    i += 8;
+    i += Borsh.writeArrayChecked(vaults, 4, _data, i);
+    i += Borsh.writeArrayChecked(ebuf4, 32, _data, i);
+    i += Borsh.writeArrayChecked(ebuf2, 256, _data, i);
+    i += Borsh.writeArrayChecked(ebuf1, 512, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}
