@@ -119,7 +119,6 @@ public record Token(PublicKey _address,
       i += 32 + 4;
     } else {
       i += 4;
-
       delegate = readPubKey(_data, i);
       i += 32;
     }
@@ -131,7 +130,6 @@ public record Token(PublicKey _address,
       i += 8 + 4;
     } else {
       i += 4;
-
       isNative = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
@@ -142,7 +140,6 @@ public record Token(PublicKey _address,
       closeAuthority = null;
     } else {
       i += 4;
-
       closeAuthority = readPubKey(_data, i);
     }
     return new Token(_address,

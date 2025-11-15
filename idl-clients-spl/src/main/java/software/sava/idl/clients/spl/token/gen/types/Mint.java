@@ -84,7 +84,6 @@ public record Mint(PublicKey _address,
       i += 32 + 4;
     } else {
       i += 4;
-
       mintAuthority = readPubKey(_data, i);
       i += 32;
     }
@@ -99,7 +98,6 @@ public record Mint(PublicKey _address,
       freezeAuthority = null;
     } else {
       i += 4;
-
       freezeAuthority = readPubKey(_data, i);
     }
     return new Mint(_address,
