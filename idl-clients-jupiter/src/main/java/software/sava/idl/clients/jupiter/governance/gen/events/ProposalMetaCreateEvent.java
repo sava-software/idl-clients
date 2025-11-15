@@ -2,6 +2,8 @@ package software.sava.idl.clients.jupiter.governance.gen.events;
 
 import java.lang.String;
 
+import java.util.Arrays;
+
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
@@ -43,14 +45,20 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     i += 32;
     final var proposal = readPubKey(_data, i);
     i += 32;
-    final var title = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
-    final var descriptionLink = Borsh.string(_data, i);
+    final int _titleLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
+    final var title = new String(_title, UTF_8);
+    i += _title.length;
+    final int _descriptionLinkLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
+    final var descriptionLink = new String(_descriptionLink, UTF_8);
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,
                                        proposal,
-                                       title, title.getBytes(UTF_8),
-                                       descriptionLink, descriptionLink.getBytes(UTF_8));
+                                       title, _title,
+                                       descriptionLink, _descriptionLink);
   }
 
   @Override
@@ -67,6 +75,6 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32 + 32 + Borsh.lenVector(_title) + Borsh.lenVector(_descriptionLink);
+    return discriminator.length() + 32 + 32 + _title.length + _descriptionLink.length;
   }
 }

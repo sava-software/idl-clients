@@ -5,7 +5,9 @@ import software.sava.core.borsh.Borsh;
 public sealed interface JupiterEvent extends Borsh permits
     FeeEvent,
     SwapEvent,
-    SwapsEvent {
+    SwapsEvent,
+    CandidateSwapResults,
+    BestSwapOutAmountViolation {
 
   static JupiterEvent read(final byte[] _data, final int _offset) {
     if (FeeEvent.DISCRIMINATOR.equals(_data, _offset)) {
@@ -14,6 +16,10 @@ public sealed interface JupiterEvent extends Borsh permits
       return SwapEvent.read(_data, _offset);
     } else if (SwapsEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return SwapsEvent.read(_data, _offset);
+    } else if (CandidateSwapResults.DISCRIMINATOR.equals(_data, _offset)) {
+      return CandidateSwapResults.read(_data, _offset);
+    } else if (BestSwapOutAmountViolation.DISCRIMINATOR.equals(_data, _offset)) {
+      return BestSwapOutAmountViolation.read(_data, _offset);
     } else {
       return null;
     }

@@ -32,8 +32,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator INITIALIZE_VAULT_DISCRIMINATOR = toDiscriminator(48, 191, 163, 44, 71, 129, 63, 164);
 
-  public static List<AccountMeta> initializeVaultKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                      ,
-                                                      final PublicKey vaultKey,
+  public static List<AccountMeta> initializeVaultKeys(final PublicKey vaultKey,
                                                       final PublicKey tokenAccountKey,
                                                       final PublicKey driftUserStatsKey,
                                                       final PublicKey driftUserKey,
@@ -79,7 +78,6 @@ public final class DriftVaultsProgram {
                                             final PublicKey tokenProgramKey,
                                             final VaultParams params) {
     final var keys = initializeVaultKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       tokenAccountKey,
       driftUserStatsKey,
@@ -97,7 +95,7 @@ public final class DriftVaultsProgram {
     return initializeVault(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction initializeVault(final AccountMeta invokedDriftVaultsProgramMeta                                            ,
+  public static Instruction initializeVault(final AccountMeta invokedDriftVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final VaultParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -140,8 +138,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator INITIALIZE_VAULT_WITH_PROTOCOL_DISCRIMINATOR = toDiscriminator(176, 2, 248, 66, 116, 82, 52, 112);
 
-  public static List<AccountMeta> initializeVaultWithProtocolKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                  ,
-                                                                  final PublicKey vaultKey,
+  public static List<AccountMeta> initializeVaultWithProtocolKeys(final PublicKey vaultKey,
                                                                   final PublicKey vaultProtocolKey,
                                                                   final PublicKey tokenAccountKey,
                                                                   final PublicKey driftUserStatsKey,
@@ -190,7 +187,6 @@ public final class DriftVaultsProgram {
                                                         final PublicKey tokenProgramKey,
                                                         final VaultWithProtocolParams params) {
     final var keys = initializeVaultWithProtocolKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultProtocolKey,
       tokenAccountKey,
@@ -209,7 +205,7 @@ public final class DriftVaultsProgram {
     return initializeVaultWithProtocol(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction initializeVaultWithProtocol(final AccountMeta invokedDriftVaultsProgramMeta                                                        ,
+  public static Instruction initializeVaultWithProtocol(final AccountMeta invokedDriftVaultsProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final VaultWithProtocolParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -252,8 +248,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_DELEGATE_DISCRIMINATOR = toDiscriminator(190, 202, 103, 138, 167, 197, 25, 9);
 
-  public static List<AccountMeta> updateDelegateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                     ,
-                                                     final PublicKey vaultKey,
+  public static List<AccountMeta> updateDelegateKeys(final PublicKey vaultKey,
                                                      final PublicKey managerKey,
                                                      final PublicKey driftUserKey,
                                                      final PublicKey driftProgramKey) {
@@ -272,7 +267,6 @@ public final class DriftVaultsProgram {
                                            final PublicKey driftProgramKey,
                                            final PublicKey delegate) {
     final var keys = updateDelegateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserKey,
@@ -281,7 +275,7 @@ public final class DriftVaultsProgram {
     return updateDelegate(invokedDriftVaultsProgramMeta, keys, delegate);
   }
 
-  public static Instruction updateDelegate(final AccountMeta invokedDriftVaultsProgramMeta                                           ,
+  public static Instruction updateDelegate(final AccountMeta invokedDriftVaultsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final PublicKey delegate) {
     final byte[] _data = new byte[40];
@@ -325,8 +319,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_MARGIN_TRADING_ENABLED_DISCRIMINATOR = toDiscriminator(244, 34, 229, 140, 91, 65, 200, 67);
 
-  public static List<AccountMeta> updateMarginTradingEnabledKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                 ,
-                                                                 final PublicKey vaultKey,
+  public static List<AccountMeta> updateMarginTradingEnabledKeys(final PublicKey vaultKey,
                                                                  final PublicKey managerKey,
                                                                  final PublicKey driftUserKey,
                                                                  final PublicKey driftProgramKey) {
@@ -345,7 +338,6 @@ public final class DriftVaultsProgram {
                                                        final PublicKey driftProgramKey,
                                                        final boolean enabled) {
     final var keys = updateMarginTradingEnabledKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserKey,
@@ -354,7 +346,7 @@ public final class DriftVaultsProgram {
     return updateMarginTradingEnabled(invokedDriftVaultsProgramMeta, keys, enabled);
   }
 
-  public static Instruction updateMarginTradingEnabled(final AccountMeta invokedDriftVaultsProgramMeta                                                       ,
+  public static Instruction updateMarginTradingEnabled(final AccountMeta invokedDriftVaultsProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final boolean enabled) {
     final byte[] _data = new byte[9];
@@ -398,8 +390,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_USER_POOL_ID_DISCRIMINATOR = toDiscriminator(219, 86, 73, 106, 56, 218, 128, 109);
 
-  public static List<AccountMeta> updateUserPoolIdKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                       ,
-                                                       final PublicKey vaultKey,
+  public static List<AccountMeta> updateUserPoolIdKeys(final PublicKey vaultKey,
                                                        final PublicKey managerKey,
                                                        final PublicKey driftUserKey,
                                                        final PublicKey driftProgramKey) {
@@ -418,7 +409,6 @@ public final class DriftVaultsProgram {
                                              final PublicKey driftProgramKey,
                                              final int poolId) {
     final var keys = updateUserPoolIdKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserKey,
@@ -427,7 +417,7 @@ public final class DriftVaultsProgram {
     return updateUserPoolId(invokedDriftVaultsProgramMeta, keys, poolId);
   }
 
-  public static Instruction updateUserPoolId(final AccountMeta invokedDriftVaultsProgramMeta                                             ,
+  public static Instruction updateUserPoolId(final AccountMeta invokedDriftVaultsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int poolId) {
     final byte[] _data = new byte[9];
@@ -471,8 +461,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_VAULT_PROTOCOL_DISCRIMINATOR = toDiscriminator(205, 248, 117, 191, 35, 252, 172, 133);
 
-  public static List<AccountMeta> updateVaultProtocolKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                          ,
-                                                          final PublicKey vaultKey,
+  public static List<AccountMeta> updateVaultProtocolKeys(final PublicKey vaultKey,
                                                           final PublicKey protocolKey,
                                                           final PublicKey vaultProtocolKey) {
     return List.of(
@@ -488,7 +477,6 @@ public final class DriftVaultsProgram {
                                                 final PublicKey vaultProtocolKey,
                                                 final UpdateVaultProtocolParams params) {
     final var keys = updateVaultProtocolKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       protocolKey,
       vaultProtocolKey
@@ -496,7 +484,7 @@ public final class DriftVaultsProgram {
     return updateVaultProtocol(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction updateVaultProtocol(final AccountMeta invokedDriftVaultsProgramMeta                                                ,
+  public static Instruction updateVaultProtocol(final AccountMeta invokedDriftVaultsProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final UpdateVaultProtocolParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -537,8 +525,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_VAULT_DISCRIMINATOR = toDiscriminator(67, 229, 185, 188, 226, 11, 210, 60);
 
-  public static List<AccountMeta> updateVaultKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                  ,
-                                                  final PublicKey vaultKey,
+  public static List<AccountMeta> updateVaultKeys(final PublicKey vaultKey,
                                                   final PublicKey managerKey) {
     return List.of(
       createWrite(vaultKey),
@@ -551,14 +538,13 @@ public final class DriftVaultsProgram {
                                         final PublicKey managerKey,
                                         final UpdateVaultParams params) {
     final var keys = updateVaultKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey
     );
     return updateVault(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction updateVault(final AccountMeta invokedDriftVaultsProgramMeta                                        ,
+  public static Instruction updateVault(final AccountMeta invokedDriftVaultsProgramMeta,
                                         final List<AccountMeta> keys,
                                         final UpdateVaultParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -599,8 +585,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_VAULT_MANAGER_DISCRIMINATOR = toDiscriminator(246, 80, 162, 207, 228, 28, 133, 170);
 
-  public static List<AccountMeta> updateVaultManagerKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                         ,
-                                                         final PublicKey vaultKey,
+  public static List<AccountMeta> updateVaultManagerKeys(final PublicKey vaultKey,
                                                          final PublicKey managerKey) {
     return List.of(
       createWrite(vaultKey),
@@ -613,14 +598,13 @@ public final class DriftVaultsProgram {
                                                final PublicKey managerKey,
                                                final PublicKey manager) {
     final var keys = updateVaultManagerKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey
     );
     return updateVaultManager(invokedDriftVaultsProgramMeta, keys, manager);
   }
 
-  public static Instruction updateVaultManager(final AccountMeta invokedDriftVaultsProgramMeta                                               ,
+  public static Instruction updateVaultManager(final AccountMeta invokedDriftVaultsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey manager) {
     final byte[] _data = new byte[40];
@@ -664,8 +648,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator UPDATE_CUMULATIVE_FUEL_AMOUNT_DISCRIMINATOR = toDiscriminator(90, 71, 219, 233, 12, 81, 211, 11);
 
-  public static List<AccountMeta> updateCumulativeFuelAmountKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                 ,
-                                                                 final PublicKey vaultKey,
+  public static List<AccountMeta> updateCumulativeFuelAmountKeys(final PublicKey vaultKey,
                                                                  final PublicKey vaultDepositorKey,
                                                                  final PublicKey signerKey,
                                                                  final PublicKey driftUserStatsKey) {
@@ -683,7 +666,6 @@ public final class DriftVaultsProgram {
                                                        final PublicKey signerKey,
                                                        final PublicKey driftUserStatsKey) {
     final var keys = updateCumulativeFuelAmountKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       signerKey,
@@ -692,15 +674,14 @@ public final class DriftVaultsProgram {
     return updateCumulativeFuelAmount(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction updateCumulativeFuelAmount(final AccountMeta invokedDriftVaultsProgramMeta                                                       ,
+  public static Instruction updateCumulativeFuelAmount(final AccountMeta invokedDriftVaultsProgramMeta,
                                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, UPDATE_CUMULATIVE_FUEL_AMOUNT_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_VAULT_DEPOSITOR_DISCRIMINATOR = toDiscriminator(112, 174, 162, 232, 89, 92, 205, 168);
 
-  public static List<AccountMeta> initializeVaultDepositorKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                               ,
-                                                               final PublicKey vaultKey,
+  public static List<AccountMeta> initializeVaultDepositorKeys(final PublicKey vaultKey,
                                                                final PublicKey vaultDepositorKey,
                                                                final PublicKey authorityKey,
                                                                final PublicKey payerKey,
@@ -724,7 +705,6 @@ public final class DriftVaultsProgram {
                                                      final PublicKey rentKey,
                                                      final PublicKey systemProgramKey) {
     final var keys = initializeVaultDepositorKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -735,15 +715,14 @@ public final class DriftVaultsProgram {
     return initializeVaultDepositor(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction initializeVaultDepositor(final AccountMeta invokedDriftVaultsProgramMeta                                                     ,
+  public static Instruction initializeVaultDepositor(final AccountMeta invokedDriftVaultsProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, INITIALIZE_VAULT_DEPOSITOR_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_TOKENIZED_VAULT_DEPOSITOR_DISCRIMINATOR = toDiscriminator(50, 183, 239, 21, 59, 150, 51, 227);
 
-  public static List<AccountMeta> initializeTokenizedVaultDepositorKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                        ,
-                                                                        final PublicKey vaultKey,
+  public static List<AccountMeta> initializeTokenizedVaultDepositorKeys(final PublicKey vaultKey,
                                                                         final PublicKey vaultDepositorKey,
                                                                         final PublicKey mintAccountKey,
                                                                         final PublicKey metadataAccountKey,
@@ -777,7 +756,6 @@ public final class DriftVaultsProgram {
                                                               final PublicKey systemProgramKey,
                                                               final InitializeTokenizedVaultDepositorParams params) {
     final var keys = initializeTokenizedVaultDepositorKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       mintAccountKey,
@@ -791,7 +769,7 @@ public final class DriftVaultsProgram {
     return initializeTokenizedVaultDepositor(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction initializeTokenizedVaultDepositor(final AccountMeta invokedDriftVaultsProgramMeta                                                              ,
+  public static Instruction initializeTokenizedVaultDepositor(final AccountMeta invokedDriftVaultsProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final InitializeTokenizedVaultDepositorParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -832,8 +810,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator TOKENIZE_SHARES_DISCRIMINATOR = toDiscriminator(166, 4, 14, 227, 21, 161, 121, 122);
 
-  public static List<AccountMeta> tokenizeSharesKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                     ,
-                                                     final PublicKey vaultKey,
+  public static List<AccountMeta> tokenizeSharesKeys(final PublicKey vaultKey,
                                                      final PublicKey vaultDepositorKey,
                                                      final PublicKey authorityKey,
                                                      final PublicKey tokenizedVaultDepositorKey,
@@ -865,7 +842,6 @@ public final class DriftVaultsProgram {
                                            final long amount,
                                            final WithdrawUnit unit) {
     final var keys = tokenizeSharesKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -878,7 +854,7 @@ public final class DriftVaultsProgram {
     return tokenizeShares(invokedDriftVaultsProgramMeta, keys, amount, unit);
   }
 
-  public static Instruction tokenizeShares(final AccountMeta invokedDriftVaultsProgramMeta                                           ,
+  public static Instruction tokenizeShares(final AccountMeta invokedDriftVaultsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
                                            final WithdrawUnit unit) {
@@ -928,8 +904,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator REDEEM_TOKENS_DISCRIMINATOR = toDiscriminator(246, 98, 134, 41, 152, 33, 120, 69);
 
-  public static List<AccountMeta> redeemTokensKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                   ,
-                                                   final PublicKey vaultKey,
+  public static List<AccountMeta> redeemTokensKeys(final PublicKey vaultKey,
                                                    final PublicKey vaultDepositorKey,
                                                    final PublicKey authorityKey,
                                                    final PublicKey tokenizedVaultDepositorKey,
@@ -963,7 +938,6 @@ public final class DriftVaultsProgram {
                                          final PublicKey tokenProgramKey,
                                          final long tokensToBurn) {
     final var keys = redeemTokensKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -977,7 +951,7 @@ public final class DriftVaultsProgram {
     return redeemTokens(invokedDriftVaultsProgramMeta, keys, tokensToBurn);
   }
 
-  public static Instruction redeemTokens(final AccountMeta invokedDriftVaultsProgramMeta                                         ,
+  public static Instruction redeemTokens(final AccountMeta invokedDriftVaultsProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long tokensToBurn) {
     final byte[] _data = new byte[16];
@@ -1021,8 +995,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator DEPOSIT_DISCRIMINATOR = toDiscriminator(242, 35, 198, 137, 82, 225, 242, 182);
 
-  public static List<AccountMeta> depositKeys(final AccountMeta invokedDriftVaultsProgramMeta                                              ,
-                                              final PublicKey vaultKey,
+  public static List<AccountMeta> depositKeys(final PublicKey vaultKey,
                                               final PublicKey vaultDepositorKey,
                                               final PublicKey authorityKey,
                                               final PublicKey vaultTokenAccountKey,
@@ -1062,7 +1035,6 @@ public final class DriftVaultsProgram {
                                     final PublicKey tokenProgramKey,
                                     final long amount) {
     final var keys = depositKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -1078,7 +1050,7 @@ public final class DriftVaultsProgram {
     return deposit(invokedDriftVaultsProgramMeta, keys, amount);
   }
 
-  public static Instruction deposit(final AccountMeta invokedDriftVaultsProgramMeta                                    ,
+  public static Instruction deposit(final AccountMeta invokedDriftVaultsProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long amount) {
     final byte[] _data = new byte[16];
@@ -1122,8 +1094,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator REQUEST_WITHDRAW_DISCRIMINATOR = toDiscriminator(137, 95, 187, 96, 250, 138, 31, 182);
 
-  public static List<AccountMeta> requestWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                      ,
-                                                      final PublicKey vaultKey,
+  public static List<AccountMeta> requestWithdrawKeys(final PublicKey vaultKey,
                                                       final PublicKey vaultDepositorKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey driftUserStatsKey,
@@ -1146,7 +1117,6 @@ public final class DriftVaultsProgram {
                                             final long withdrawAmount,
                                             final WithdrawUnit withdrawUnit) {
     final var keys = requestWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -1156,7 +1126,7 @@ public final class DriftVaultsProgram {
     return requestWithdraw(invokedDriftVaultsProgramMeta, keys, withdrawAmount, withdrawUnit);
   }
 
-  public static Instruction requestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                            ,
+  public static Instruction requestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long withdrawAmount,
                                             final WithdrawUnit withdrawUnit) {
@@ -1206,8 +1176,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator CANCEL_REQUEST_WITHDRAW_DISCRIMINATOR = toDiscriminator(26, 109, 1, 81, 102, 15, 6, 106);
 
-  public static List<AccountMeta> cancelRequestWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                            ,
-                                                            final PublicKey vaultKey,
+  public static List<AccountMeta> cancelRequestWithdrawKeys(final PublicKey vaultKey,
                                                             final PublicKey vaultDepositorKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey driftUserStatsKey,
@@ -1228,7 +1197,6 @@ public final class DriftVaultsProgram {
                                                   final PublicKey driftUserStatsKey,
                                                   final PublicKey driftUserKey) {
     final var keys = cancelRequestWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -1238,15 +1206,14 @@ public final class DriftVaultsProgram {
     return cancelRequestWithdraw(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction cancelRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                                  ,
+  public static Instruction cancelRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                                   final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, CANCEL_REQUEST_WITHDRAW_DISCRIMINATOR);
   }
 
   public static final Discriminator WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 18, 70, 156, 148, 109, 161, 34);
 
-  public static List<AccountMeta> withdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                               ,
-                                               final PublicKey vaultKey,
+  public static List<AccountMeta> withdrawKeys(final PublicKey vaultKey,
                                                final PublicKey vaultDepositorKey,
                                                final PublicKey authorityKey,
                                                final PublicKey vaultTokenAccountKey,
@@ -1288,7 +1255,6 @@ public final class DriftVaultsProgram {
                                      final PublicKey driftProgramKey,
                                      final PublicKey tokenProgramKey) {
     final var keys = withdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -1305,15 +1271,14 @@ public final class DriftVaultsProgram {
     return withdraw(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction withdraw(final AccountMeta invokedDriftVaultsProgramMeta                                     ,
+  public static Instruction withdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, WITHDRAW_DISCRIMINATOR);
   }
 
   public static final Discriminator LIQUIDATE_DISCRIMINATOR = toDiscriminator(223, 179, 226, 125, 48, 46, 39, 74);
 
-  public static List<AccountMeta> liquidateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                ,
-                                                final PublicKey vaultKey,
+  public static List<AccountMeta> liquidateKeys(final PublicKey vaultKey,
                                                 final PublicKey vaultDepositorKey,
                                                 final PublicKey authorityKey,
                                                 final PublicKey adminKey,
@@ -1340,7 +1305,6 @@ public final class DriftVaultsProgram {
                                       final PublicKey driftUserKey,
                                       final PublicKey driftProgramKey) {
     final var keys = liquidateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       authorityKey,
@@ -1352,15 +1316,14 @@ public final class DriftVaultsProgram {
     return liquidate(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction liquidate(final AccountMeta invokedDriftVaultsProgramMeta                                      ,
+  public static Instruction liquidate(final AccountMeta invokedDriftVaultsProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, LIQUIDATE_DISCRIMINATOR);
   }
 
   public static final Discriminator RESET_DELEGATE_DISCRIMINATOR = toDiscriminator(204, 13, 61, 153, 97, 83, 146, 98);
 
-  public static List<AccountMeta> resetDelegateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                    ,
-                                                    final PublicKey vaultKey,
+  public static List<AccountMeta> resetDelegateKeys(final PublicKey vaultKey,
                                                     final PublicKey driftUserKey,
                                                     final PublicKey driftProgramKey) {
     return List.of(
@@ -1375,7 +1338,6 @@ public final class DriftVaultsProgram {
                                           final PublicKey driftUserKey,
                                           final PublicKey driftProgramKey) {
     final var keys = resetDelegateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       driftUserKey,
       driftProgramKey
@@ -1383,15 +1345,14 @@ public final class DriftVaultsProgram {
     return resetDelegate(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction resetDelegate(final AccountMeta invokedDriftVaultsProgramMeta                                          ,
+  public static Instruction resetDelegate(final AccountMeta invokedDriftVaultsProgramMeta,
                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, RESET_DELEGATE_DISCRIMINATOR);
   }
 
   public static final Discriminator RESET_FUEL_SEASON_DISCRIMINATOR = toDiscriminator(199, 122, 192, 255, 32, 99, 63, 200);
 
-  public static List<AccountMeta> resetFuelSeasonKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                      ,
-                                                      final PublicKey vaultKey,
+  public static List<AccountMeta> resetFuelSeasonKeys(final PublicKey vaultKey,
                                                       final PublicKey vaultDepositorKey,
                                                       final PublicKey adminKey,
                                                       final PublicKey driftUserStatsKey,
@@ -1412,7 +1373,6 @@ public final class DriftVaultsProgram {
                                             final PublicKey driftUserStatsKey,
                                             final PublicKey driftStateKey) {
     final var keys = resetFuelSeasonKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       adminKey,
@@ -1422,15 +1382,14 @@ public final class DriftVaultsProgram {
     return resetFuelSeason(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction resetFuelSeason(final AccountMeta invokedDriftVaultsProgramMeta                                            ,
+  public static Instruction resetFuelSeason(final AccountMeta invokedDriftVaultsProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, RESET_FUEL_SEASON_DISCRIMINATOR);
   }
 
   public static final Discriminator RESET_VAULT_FUEL_SEASON_DISCRIMINATOR = toDiscriminator(190, 107, 13, 176, 10, 102, 134, 168);
 
-  public static List<AccountMeta> resetVaultFuelSeasonKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                           ,
-                                                           final PublicKey vaultKey,
+  public static List<AccountMeta> resetVaultFuelSeasonKeys(final PublicKey vaultKey,
                                                            final PublicKey adminKey,
                                                            final PublicKey driftStateKey) {
     return List.of(
@@ -1445,7 +1404,6 @@ public final class DriftVaultsProgram {
                                                  final PublicKey adminKey,
                                                  final PublicKey driftStateKey) {
     final var keys = resetVaultFuelSeasonKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       adminKey,
       driftStateKey
@@ -1453,15 +1411,14 @@ public final class DriftVaultsProgram {
     return resetVaultFuelSeason(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction resetVaultFuelSeason(final AccountMeta invokedDriftVaultsProgramMeta                                                 ,
+  public static Instruction resetVaultFuelSeason(final AccountMeta invokedDriftVaultsProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, RESET_VAULT_FUEL_SEASON_DISCRIMINATOR);
   }
 
   public static final Discriminator MANAGER_BORROW_DISCRIMINATOR = toDiscriminator(176, 237, 83, 189, 102, 73, 14, 153);
 
-  public static List<AccountMeta> managerBorrowKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                    ,
-                                                    final PublicKey vaultKey,
+  public static List<AccountMeta> managerBorrowKeys(final PublicKey vaultKey,
                                                     final PublicKey vaultTokenAccountKey,
                                                     final PublicKey managerKey,
                                                     final PublicKey driftUserStatsKey,
@@ -1502,7 +1459,6 @@ public final class DriftVaultsProgram {
                                           final int borrowSpotMarketIndex,
                                           final long borrowAmount) {
     final var keys = managerBorrowKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultTokenAccountKey,
       managerKey,
@@ -1518,7 +1474,7 @@ public final class DriftVaultsProgram {
     return managerBorrow(invokedDriftVaultsProgramMeta, keys, borrowSpotMarketIndex, borrowAmount);
   }
 
-  public static Instruction managerBorrow(final AccountMeta invokedDriftVaultsProgramMeta                                          ,
+  public static Instruction managerBorrow(final AccountMeta invokedDriftVaultsProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int borrowSpotMarketIndex,
                                           final long borrowAmount) {
@@ -1569,8 +1525,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_REPAY_DISCRIMINATOR = toDiscriminator(202, 56, 50, 3, 1, 40, 93, 128);
 
-  public static List<AccountMeta> managerRepayKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                   ,
-                                                   final PublicKey vaultKey,
+  public static List<AccountMeta> managerRepayKeys(final PublicKey vaultKey,
                                                    final PublicKey vaultTokenAccountKey,
                                                    final PublicKey managerKey,
                                                    final PublicKey driftUserStatsKey,
@@ -1612,7 +1567,6 @@ public final class DriftVaultsProgram {
                                          final long repayAmount,
                                          final OptionalLong repayValue) {
     final var keys = managerRepayKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultTokenAccountKey,
       managerKey,
@@ -1634,7 +1588,7 @@ public final class DriftVaultsProgram {
     );
   }
 
-  public static Instruction managerRepay(final AccountMeta invokedDriftVaultsProgramMeta                                         ,
+  public static Instruction managerRepay(final AccountMeta invokedDriftVaultsProgramMeta,
                                          final List<AccountMeta> keys,
                                          final int repaySpotMarketIndex,
                                          final long repayAmount,
@@ -1701,8 +1655,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_UPDATE_BORROW_DISCRIMINATOR = toDiscriminator(193, 183, 210, 205, 223, 11, 240, 138);
 
-  public static List<AccountMeta> managerUpdateBorrowKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                          ,
-                                                          final PublicKey vaultKey,
+  public static List<AccountMeta> managerUpdateBorrowKeys(final PublicKey vaultKey,
                                                           final PublicKey managerKey,
                                                           final PublicKey driftUserStatsKey,
                                                           final PublicKey driftUserKey) {
@@ -1721,7 +1674,6 @@ public final class DriftVaultsProgram {
                                                 final PublicKey driftUserKey,
                                                 final long newBorrowValue) {
     final var keys = managerUpdateBorrowKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserStatsKey,
@@ -1730,7 +1682,7 @@ public final class DriftVaultsProgram {
     return managerUpdateBorrow(invokedDriftVaultsProgramMeta, keys, newBorrowValue);
   }
 
-  public static Instruction managerUpdateBorrow(final AccountMeta invokedDriftVaultsProgramMeta                                                ,
+  public static Instruction managerUpdateBorrow(final AccountMeta invokedDriftVaultsProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long newBorrowValue) {
     final byte[] _data = new byte[16];
@@ -1774,8 +1726,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_DEPOSIT_DISCRIMINATOR = toDiscriminator(73, 3, 16, 168, 143, 226, 201, 254);
 
-  public static List<AccountMeta> managerDepositKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                     ,
-                                                     final PublicKey vaultKey,
+  public static List<AccountMeta> managerDepositKeys(final PublicKey vaultKey,
                                                      final PublicKey managerKey,
                                                      final PublicKey vaultTokenAccountKey,
                                                      final PublicKey driftUserStatsKey,
@@ -1812,7 +1763,6 @@ public final class DriftVaultsProgram {
                                            final PublicKey tokenProgramKey,
                                            final long amount) {
     final var keys = managerDepositKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       vaultTokenAccountKey,
@@ -1827,7 +1777,7 @@ public final class DriftVaultsProgram {
     return managerDeposit(invokedDriftVaultsProgramMeta, keys, amount);
   }
 
-  public static Instruction managerDeposit(final AccountMeta invokedDriftVaultsProgramMeta                                           ,
+  public static Instruction managerDeposit(final AccountMeta invokedDriftVaultsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount) {
     final byte[] _data = new byte[16];
@@ -1871,8 +1821,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_REQUEST_WITHDRAW_DISCRIMINATOR = toDiscriminator(10, 238, 194, 232, 76, 55, 68, 4);
 
-  public static List<AccountMeta> managerRequestWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                             ,
-                                                             final PublicKey vaultKey,
+  public static List<AccountMeta> managerRequestWithdrawKeys(final PublicKey vaultKey,
                                                              final PublicKey managerKey,
                                                              final PublicKey driftUserStatsKey,
                                                              final PublicKey driftUserKey) {
@@ -1892,7 +1841,6 @@ public final class DriftVaultsProgram {
                                                    final long withdrawAmount,
                                                    final WithdrawUnit withdrawUnit) {
     final var keys = managerRequestWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserStatsKey,
@@ -1901,7 +1849,7 @@ public final class DriftVaultsProgram {
     return managerRequestWithdraw(invokedDriftVaultsProgramMeta, keys, withdrawAmount, withdrawUnit);
   }
 
-  public static Instruction managerRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                                   ,
+  public static Instruction managerRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long withdrawAmount,
                                                    final WithdrawUnit withdrawUnit) {
@@ -1951,8 +1899,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANGER_CANCEL_WITHDRAW_REQUEST_DISCRIMINATOR = toDiscriminator(235, 253, 32, 176, 145, 94, 162, 244);
 
-  public static List<AccountMeta> mangerCancelWithdrawRequestKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                  ,
-                                                                  final PublicKey vaultKey,
+  public static List<AccountMeta> mangerCancelWithdrawRequestKeys(final PublicKey vaultKey,
                                                                   final PublicKey managerKey,
                                                                   final PublicKey driftUserStatsKey,
                                                                   final PublicKey driftUserKey) {
@@ -1970,7 +1917,6 @@ public final class DriftVaultsProgram {
                                                         final PublicKey driftUserStatsKey,
                                                         final PublicKey driftUserKey) {
     final var keys = mangerCancelWithdrawRequestKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftUserStatsKey,
@@ -1979,15 +1925,14 @@ public final class DriftVaultsProgram {
     return mangerCancelWithdrawRequest(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction mangerCancelWithdrawRequest(final AccountMeta invokedDriftVaultsProgramMeta                                                        ,
+  public static Instruction mangerCancelWithdrawRequest(final AccountMeta invokedDriftVaultsProgramMeta,
                                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, MANGER_CANCEL_WITHDRAW_REQUEST_DISCRIMINATOR);
   }
 
   public static final Discriminator MANAGER_WITHDRAW_DISCRIMINATOR = toDiscriminator(201, 248, 190, 143, 86, 43, 183, 254);
 
-  public static List<AccountMeta> managerWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                      ,
-                                                      final PublicKey vaultKey,
+  public static List<AccountMeta> managerWithdrawKeys(final PublicKey vaultKey,
                                                       final PublicKey managerKey,
                                                       final PublicKey vaultTokenAccountKey,
                                                       final PublicKey driftUserStatsKey,
@@ -2026,7 +1971,6 @@ public final class DriftVaultsProgram {
                                             final PublicKey driftProgramKey,
                                             final PublicKey tokenProgramKey) {
     final var keys = managerWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       vaultTokenAccountKey,
@@ -2042,15 +1986,14 @@ public final class DriftVaultsProgram {
     return managerWithdraw(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction managerWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                            ,
+  public static Instruction managerWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, MANAGER_WITHDRAW_DISCRIMINATOR);
   }
 
   public static final Discriminator MANAGER_UPDATE_FUEL_DISTRIBUTION_MODE_DISCRIMINATOR = toDiscriminator(23, 201, 108, 210, 88, 53, 123, 91);
 
-  public static List<AccountMeta> managerUpdateFuelDistributionModeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                        ,
-                                                                        final PublicKey vaultKey,
+  public static List<AccountMeta> managerUpdateFuelDistributionModeKeys(final PublicKey vaultKey,
                                                                         final PublicKey managerKey) {
     return List.of(
       createWrite(vaultKey),
@@ -2063,14 +2006,13 @@ public final class DriftVaultsProgram {
                                                               final PublicKey managerKey,
                                                               final int fuelDistributionMode) {
     final var keys = managerUpdateFuelDistributionModeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey
     );
     return managerUpdateFuelDistributionMode(invokedDriftVaultsProgramMeta, keys, fuelDistributionMode);
   }
 
-  public static Instruction managerUpdateFuelDistributionMode(final AccountMeta invokedDriftVaultsProgramMeta                                                              ,
+  public static Instruction managerUpdateFuelDistributionMode(final AccountMeta invokedDriftVaultsProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final int fuelDistributionMode) {
     final byte[] _data = new byte[9];
@@ -2114,8 +2056,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator ADMIN_INIT_FEE_UPDATE_DISCRIMINATOR = toDiscriminator(39, 31, 253, 244, 241, 5, 72, 152);
 
-  public static List<AccountMeta> adminInitFeeUpdateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                         ,
-                                                         final PublicKey vaultKey,
+  public static List<AccountMeta> adminInitFeeUpdateKeys(final PublicKey vaultKey,
                                                          final PublicKey adminKey,
                                                          final PublicKey feeUpdateKey,
                                                          final PublicKey systemProgramKey) {
@@ -2133,7 +2074,6 @@ public final class DriftVaultsProgram {
                                                final PublicKey feeUpdateKey,
                                                final PublicKey systemProgramKey) {
     final var keys = adminInitFeeUpdateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       adminKey,
       feeUpdateKey,
@@ -2142,15 +2082,14 @@ public final class DriftVaultsProgram {
     return adminInitFeeUpdate(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction adminInitFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta                                               ,
+  public static Instruction adminInitFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta,
                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, ADMIN_INIT_FEE_UPDATE_DISCRIMINATOR);
   }
 
   public static final Discriminator ADMIN_DELETE_FEE_UPDATE_DISCRIMINATOR = toDiscriminator(189, 83, 182, 110, 132, 133, 77, 36);
 
-  public static List<AccountMeta> adminDeleteFeeUpdateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                           ,
-                                                           final PublicKey vaultKey,
+  public static List<AccountMeta> adminDeleteFeeUpdateKeys(final PublicKey vaultKey,
                                                            final PublicKey adminKey,
                                                            final PublicKey feeUpdateKey) {
     return List.of(
@@ -2165,7 +2104,6 @@ public final class DriftVaultsProgram {
                                                  final PublicKey adminKey,
                                                  final PublicKey feeUpdateKey) {
     final var keys = adminDeleteFeeUpdateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       adminKey,
       feeUpdateKey
@@ -2173,15 +2111,14 @@ public final class DriftVaultsProgram {
     return adminDeleteFeeUpdate(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction adminDeleteFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta                                                 ,
+  public static Instruction adminDeleteFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, ADMIN_DELETE_FEE_UPDATE_DISCRIMINATOR);
   }
 
   public static final Discriminator ADMIN_UPDATE_VAULT_CLASS_DISCRIMINATOR = toDiscriminator(103, 11, 101, 120, 92, 136, 230, 215);
 
-  public static List<AccountMeta> adminUpdateVaultClassKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                            ,
-                                                            final PublicKey vaultKey,
+  public static List<AccountMeta> adminUpdateVaultClassKeys(final PublicKey vaultKey,
                                                             final PublicKey adminKey,
                                                             final PublicKey systemProgramKey) {
     return List.of(
@@ -2197,7 +2134,6 @@ public final class DriftVaultsProgram {
                                                   final PublicKey systemProgramKey,
                                                   final int newVaultClass) {
     final var keys = adminUpdateVaultClassKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       adminKey,
       systemProgramKey
@@ -2205,7 +2141,7 @@ public final class DriftVaultsProgram {
     return adminUpdateVaultClass(invokedDriftVaultsProgramMeta, keys, newVaultClass);
   }
 
-  public static Instruction adminUpdateVaultClass(final AccountMeta invokedDriftVaultsProgramMeta                                                  ,
+  public static Instruction adminUpdateVaultClass(final AccountMeta invokedDriftVaultsProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int newVaultClass) {
     final byte[] _data = new byte[9];
@@ -2249,8 +2185,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_UPDATE_FEES_DISCRIMINATOR = toDiscriminator(205, 156, 240, 90, 150, 60, 144, 53);
 
-  public static List<AccountMeta> managerUpdateFeesKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                        ,
-                                                        final PublicKey vaultKey,
+  public static List<AccountMeta> managerUpdateFeesKeys(final PublicKey vaultKey,
                                                         final PublicKey managerKey,
                                                         final PublicKey feeUpdateKey) {
     return List.of(
@@ -2266,7 +2201,6 @@ public final class DriftVaultsProgram {
                                               final PublicKey feeUpdateKey,
                                               final ManagerUpdateFeesParams params) {
     final var keys = managerUpdateFeesKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       feeUpdateKey
@@ -2274,7 +2208,7 @@ public final class DriftVaultsProgram {
     return managerUpdateFees(invokedDriftVaultsProgramMeta, keys, params);
   }
 
-  public static Instruction managerUpdateFees(final AccountMeta invokedDriftVaultsProgramMeta                                              ,
+  public static Instruction managerUpdateFees(final AccountMeta invokedDriftVaultsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final ManagerUpdateFeesParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2315,8 +2249,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator MANAGER_CANCEL_FEE_UPDATE_DISCRIMINATOR = toDiscriminator(176, 204, 109, 177, 90, 244, 69, 156);
 
-  public static List<AccountMeta> managerCancelFeeUpdateKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                             ,
-                                                             final PublicKey vaultKey,
+  public static List<AccountMeta> managerCancelFeeUpdateKeys(final PublicKey vaultKey,
                                                              final PublicKey managerKey,
                                                              final PublicKey feeUpdateKey) {
     return List.of(
@@ -2331,7 +2264,6 @@ public final class DriftVaultsProgram {
                                                    final PublicKey managerKey,
                                                    final PublicKey feeUpdateKey) {
     final var keys = managerCancelFeeUpdateKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       feeUpdateKey
@@ -2339,15 +2271,14 @@ public final class DriftVaultsProgram {
     return managerCancelFeeUpdate(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction managerCancelFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta                                                   ,
+  public static Instruction managerCancelFeeUpdate(final AccountMeta invokedDriftVaultsProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, MANAGER_CANCEL_FEE_UPDATE_DISCRIMINATOR);
   }
 
   public static final Discriminator APPLY_PROFIT_SHARE_DISCRIMINATOR = toDiscriminator(112, 235, 54, 165, 178, 81, 25, 10);
 
-  public static List<AccountMeta> applyProfitShareKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                       ,
-                                                       final PublicKey vaultKey,
+  public static List<AccountMeta> applyProfitShareKeys(final PublicKey vaultKey,
                                                        final PublicKey vaultDepositorKey,
                                                        final PublicKey managerKey,
                                                        final PublicKey driftUserStatsKey,
@@ -2377,7 +2308,6 @@ public final class DriftVaultsProgram {
                                              final PublicKey driftSignerKey,
                                              final PublicKey driftProgramKey) {
     final var keys = applyProfitShareKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       managerKey,
@@ -2390,15 +2320,14 @@ public final class DriftVaultsProgram {
     return applyProfitShare(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction applyProfitShare(final AccountMeta invokedDriftVaultsProgramMeta                                             ,
+  public static Instruction applyProfitShare(final AccountMeta invokedDriftVaultsProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, APPLY_PROFIT_SHARE_DISCRIMINATOR);
   }
 
   public static final Discriminator APPLY_REBASE_DISCRIMINATOR = toDiscriminator(161, 115, 9, 131, 136, 29, 147, 155);
 
-  public static List<AccountMeta> applyRebaseKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                  ,
-                                                  final PublicKey vaultKey,
+  public static List<AccountMeta> applyRebaseKeys(final PublicKey vaultKey,
                                                   final PublicKey vaultDepositorKey,
                                                   final PublicKey driftUserKey) {
     return List.of(
@@ -2413,7 +2342,6 @@ public final class DriftVaultsProgram {
                                         final PublicKey vaultDepositorKey,
                                         final PublicKey driftUserKey) {
     final var keys = applyRebaseKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultDepositorKey,
       driftUserKey
@@ -2421,15 +2349,14 @@ public final class DriftVaultsProgram {
     return applyRebase(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction applyRebase(final AccountMeta invokedDriftVaultsProgramMeta                                        ,
+  public static Instruction applyRebase(final AccountMeta invokedDriftVaultsProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, APPLY_REBASE_DISCRIMINATOR);
   }
 
   public static final Discriminator APPLY_REBASE_TOKENIZED_DEPOSITOR_DISCRIMINATOR = toDiscriminator(218, 169, 190, 71, 150, 184, 77, 166);
 
-  public static List<AccountMeta> applyRebaseTokenizedDepositorKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                    ,
-                                                                    final PublicKey vaultKey,
+  public static List<AccountMeta> applyRebaseTokenizedDepositorKeys(final PublicKey vaultKey,
                                                                     final PublicKey tokenizedVaultDepositorKey,
                                                                     final PublicKey driftUserKey) {
     return List.of(
@@ -2444,7 +2371,6 @@ public final class DriftVaultsProgram {
                                                           final PublicKey tokenizedVaultDepositorKey,
                                                           final PublicKey driftUserKey) {
     final var keys = applyRebaseTokenizedDepositorKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       tokenizedVaultDepositorKey,
       driftUserKey
@@ -2452,15 +2378,14 @@ public final class DriftVaultsProgram {
     return applyRebaseTokenizedDepositor(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction applyRebaseTokenizedDepositor(final AccountMeta invokedDriftVaultsProgramMeta                                                          ,
+  public static Instruction applyRebaseTokenizedDepositor(final AccountMeta invokedDriftVaultsProgramMeta,
                                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, APPLY_REBASE_TOKENIZED_DEPOSITOR_DISCRIMINATOR);
   }
 
   public static final Discriminator FORCE_WITHDRAW_DISCRIMINATOR = toDiscriminator(106, 41, 34, 48, 17, 177, 59, 255);
 
-  public static List<AccountMeta> forceWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                    ,
-                                                    final PublicKey vaultKey,
+  public static List<AccountMeta> forceWithdrawKeys(final PublicKey vaultKey,
                                                     final PublicKey managerKey,
                                                     final PublicKey vaultDepositorKey,
                                                     final PublicKey vaultTokenAccountKey,
@@ -2502,7 +2427,6 @@ public final class DriftVaultsProgram {
                                           final PublicKey driftProgramKey,
                                           final PublicKey tokenProgramKey) {
     final var keys = forceWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       vaultDepositorKey,
@@ -2519,15 +2443,14 @@ public final class DriftVaultsProgram {
     return forceWithdraw(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction forceWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                          ,
+  public static Instruction forceWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, FORCE_WITHDRAW_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(187, 179, 243, 70, 248, 90, 92, 147);
 
-  public static List<AccountMeta> initializeInsuranceFundStakeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                   ,
-                                                                   final PublicKey vaultKey,
+  public static List<AccountMeta> initializeInsuranceFundStakeKeys(final PublicKey vaultKey,
                                                                    final PublicKey managerKey,
                                                                    final PublicKey payerKey,
                                                                    final PublicKey rentKey,
@@ -2573,7 +2496,6 @@ public final class DriftVaultsProgram {
                                                          final PublicKey systemProgramKey,
                                                          final int marketIndex) {
     final var keys = initializeInsuranceFundStakeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       payerKey,
@@ -2591,7 +2513,7 @@ public final class DriftVaultsProgram {
     return initializeInsuranceFundStake(invokedDriftVaultsProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction initializeInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta                                                         ,
+  public static Instruction initializeInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -2635,8 +2557,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator ADD_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(251, 144, 115, 11, 222, 47, 62, 236);
 
-  public static List<AccountMeta> addInsuranceFundStakeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                            ,
-                                                            final PublicKey vaultKey,
+  public static List<AccountMeta> addInsuranceFundStakeKeys(final PublicKey vaultKey,
                                                             final PublicKey managerKey,
                                                             final PublicKey driftSpotMarketKey,
                                                             final PublicKey driftSpotMarketVaultKey,
@@ -2683,7 +2604,6 @@ public final class DriftVaultsProgram {
                                                   final int marketIndex,
                                                   final long amount) {
     final var keys = addInsuranceFundStakeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftSpotMarketKey,
@@ -2701,7 +2621,7 @@ public final class DriftVaultsProgram {
     return addInsuranceFundStake(invokedDriftVaultsProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction addInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta                                                  ,
+  public static Instruction addInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int marketIndex,
                                                   final long amount) {
@@ -2752,8 +2672,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator REQUEST_REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(142, 70, 204, 92, 73, 106, 180, 52);
 
-  public static List<AccountMeta> requestRemoveInsuranceFundStakeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                      ,
-                                                                      final PublicKey vaultKey,
+  public static List<AccountMeta> requestRemoveInsuranceFundStakeKeys(final PublicKey vaultKey,
                                                                       final PublicKey managerKey,
                                                                       final PublicKey driftSpotMarketKey,
                                                                       final PublicKey insuranceFundStakeKey,
@@ -2782,7 +2701,6 @@ public final class DriftVaultsProgram {
                                                             final int marketIndex,
                                                             final long amount) {
     final var keys = requestRemoveInsuranceFundStakeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftSpotMarketKey,
@@ -2794,7 +2712,7 @@ public final class DriftVaultsProgram {
     return requestRemoveInsuranceFundStake(invokedDriftVaultsProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction requestRemoveInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta                                                            ,
+  public static Instruction requestRemoveInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int marketIndex,
                                                             final long amount) {
@@ -2845,8 +2763,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(128, 166, 142, 9, 254, 187, 143, 174);
 
-  public static List<AccountMeta> removeInsuranceFundStakeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                               ,
-                                                               final PublicKey vaultKey,
+  public static List<AccountMeta> removeInsuranceFundStakeKeys(final PublicKey vaultKey,
                                                                final PublicKey managerKey,
                                                                final PublicKey driftSpotMarketKey,
                                                                final PublicKey insuranceFundStakeKey,
@@ -2889,7 +2806,6 @@ public final class DriftVaultsProgram {
                                                      final PublicKey tokenProgramKey,
                                                      final int marketIndex) {
     final var keys = removeInsuranceFundStakeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftSpotMarketKey,
@@ -2906,7 +2822,7 @@ public final class DriftVaultsProgram {
     return removeInsuranceFundStake(invokedDriftVaultsProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction removeInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta                                                     ,
+  public static Instruction removeInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -2950,8 +2866,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator CANCEL_REQUEST_REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(97, 235, 78, 62, 212, 42, 241, 127);
 
-  public static List<AccountMeta> cancelRequestRemoveInsuranceFundStakeKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                            ,
-                                                                            final PublicKey vaultKey,
+  public static List<AccountMeta> cancelRequestRemoveInsuranceFundStakeKeys(final PublicKey vaultKey,
                                                                             final PublicKey managerKey,
                                                                             final PublicKey driftSpotMarketKey,
                                                                             final PublicKey insuranceFundStakeKey,
@@ -2979,7 +2894,6 @@ public final class DriftVaultsProgram {
                                                                   final PublicKey driftProgramKey,
                                                                   final int marketIndex) {
     final var keys = cancelRequestRemoveInsuranceFundStakeKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       managerKey,
       driftSpotMarketKey,
@@ -2991,7 +2905,7 @@ public final class DriftVaultsProgram {
     return cancelRequestRemoveInsuranceFundStake(invokedDriftVaultsProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction cancelRequestRemoveInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta                                                                  ,
+  public static Instruction cancelRequestRemoveInsuranceFundStake(final AccountMeta invokedDriftVaultsProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -3035,8 +2949,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator PROTOCOL_REQUEST_WITHDRAW_DISCRIMINATOR = toDiscriminator(189, 46, 14, 31, 7, 254, 150, 132);
 
-  public static List<AccountMeta> protocolRequestWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                              ,
-                                                              final PublicKey vaultKey,
+  public static List<AccountMeta> protocolRequestWithdrawKeys(final PublicKey vaultKey,
                                                               final PublicKey vaultProtocolKey,
                                                               final PublicKey protocolKey,
                                                               final PublicKey driftUserStatsKey,
@@ -3059,7 +2972,6 @@ public final class DriftVaultsProgram {
                                                     final long withdrawAmount,
                                                     final WithdrawUnit withdrawUnit) {
     final var keys = protocolRequestWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultProtocolKey,
       protocolKey,
@@ -3069,7 +2981,7 @@ public final class DriftVaultsProgram {
     return protocolRequestWithdraw(invokedDriftVaultsProgramMeta, keys, withdrawAmount, withdrawUnit);
   }
 
-  public static Instruction protocolRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                                    ,
+  public static Instruction protocolRequestWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long withdrawAmount,
                                                     final WithdrawUnit withdrawUnit) {
@@ -3119,8 +3031,7 @@ public final class DriftVaultsProgram {
 
   public static final Discriminator PROTOCOL_CANCEL_WITHDRAW_REQUEST_DISCRIMINATOR = toDiscriminator(194, 217, 171, 94, 56, 253, 179, 242);
 
-  public static List<AccountMeta> protocolCancelWithdrawRequestKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                                    ,
-                                                                    final PublicKey vaultKey,
+  public static List<AccountMeta> protocolCancelWithdrawRequestKeys(final PublicKey vaultKey,
                                                                     final PublicKey vaultProtocolKey,
                                                                     final PublicKey protocolKey,
                                                                     final PublicKey driftUserStatsKey,
@@ -3141,7 +3052,6 @@ public final class DriftVaultsProgram {
                                                           final PublicKey driftUserStatsKey,
                                                           final PublicKey driftUserKey) {
     final var keys = protocolCancelWithdrawRequestKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultProtocolKey,
       protocolKey,
@@ -3151,15 +3061,14 @@ public final class DriftVaultsProgram {
     return protocolCancelWithdrawRequest(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction protocolCancelWithdrawRequest(final AccountMeta invokedDriftVaultsProgramMeta                                                          ,
+  public static Instruction protocolCancelWithdrawRequest(final AccountMeta invokedDriftVaultsProgramMeta,
                                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, PROTOCOL_CANCEL_WITHDRAW_REQUEST_DISCRIMINATOR);
   }
 
   public static final Discriminator PROTOCOL_WITHDRAW_DISCRIMINATOR = toDiscriminator(166, 24, 188, 209, 21, 251, 63, 199);
 
-  public static List<AccountMeta> protocolWithdrawKeys(final AccountMeta invokedDriftVaultsProgramMeta                                                       ,
-                                                       final PublicKey vaultKey,
+  public static List<AccountMeta> protocolWithdrawKeys(final PublicKey vaultKey,
                                                        final PublicKey vaultProtocolKey,
                                                        final PublicKey protocolKey,
                                                        final PublicKey vaultTokenAccountKey,
@@ -3201,7 +3110,6 @@ public final class DriftVaultsProgram {
                                              final PublicKey driftProgramKey,
                                              final PublicKey tokenProgramKey) {
     final var keys = protocolWithdrawKeys(
-      invokedDriftVaultsProgramMeta,
       vaultKey,
       vaultProtocolKey,
       protocolKey,
@@ -3218,7 +3126,7 @@ public final class DriftVaultsProgram {
     return protocolWithdraw(invokedDriftVaultsProgramMeta, keys);
   }
 
-  public static Instruction protocolWithdraw(final AccountMeta invokedDriftVaultsProgramMeta                                             ,
+  public static Instruction protocolWithdraw(final AccountMeta invokedDriftVaultsProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, PROTOCOL_WITHDRAW_DISCRIMINATOR);
   }

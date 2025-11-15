@@ -2,6 +2,7 @@ package software.sava.idl.clients.jupiter.governance.gen.types;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
@@ -68,10 +69,16 @@ public record ProposalMeta(PublicKey _address,
     int i = _offset + discriminator.length();
     final var proposal = readPubKey(_data, i);
     i += 32;
-    final var title = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
-    final var descriptionLink = Borsh.string(_data, i);
-    return new ProposalMeta(_address, discriminator, proposal, title, title.getBytes(UTF_8), descriptionLink, descriptionLink.getBytes(UTF_8));
+    final int _titleLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
+    final var title = new String(_title, UTF_8);
+    i += _title.length;
+    final int _descriptionLinkLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
+    final var descriptionLink = new String(_descriptionLink, UTF_8);
+    return new ProposalMeta(_address, discriminator, proposal, title, _title, descriptionLink, _descriptionLink);
   }
 
   @Override
@@ -86,6 +93,6 @@ public record ProposalMeta(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32 + Borsh.lenVector(_title) + Borsh.lenVector(_descriptionLink);
+    return 8 + 32 + _title.length + _descriptionLink.length;
   }
 }

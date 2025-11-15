@@ -2,6 +2,7 @@ package software.sava.idl.clients.spl.attestation_service.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -29,8 +30,7 @@ public final class SolanaAttestationServiceProgram {
 
   public static final Discriminator CREATE_CREDENTIAL_DISCRIMINATOR = toDiscriminator(205, 74, 60, 212, 63, 198, 196, 109);
 
-  public static List<AccountMeta> createCredentialKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                       ,
-                                                       final PublicKey payerKey,
+  public static List<AccountMeta> createCredentialKeys(final PublicKey payerKey,
                                                        final PublicKey credentialKey,
                                                        final PublicKey authorityKey,
                                                        final PublicKey systemProgramKey) {
@@ -50,7 +50,6 @@ public final class SolanaAttestationServiceProgram {
                                              final String name,
                                              final PublicKey[] signers) {
     final var keys = createCredentialKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       credentialKey,
       authorityKey,
@@ -59,12 +58,12 @@ public final class SolanaAttestationServiceProgram {
     return createCredential(invokedSolanaAttestationServiceProgramMeta, keys, name, signers);
   }
 
-  public static Instruction createCredential(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                             ,
+  public static Instruction createCredential(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                              final List<AccountMeta> keys,
                                              final String name,
                                              final PublicKey[] signers) {
     final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_name) + Borsh.lenVector(signers)];
+    final byte[] _data = new byte[12 + _name.length + Borsh.lenVector(signers)];
     int i = CREATE_CREDENTIAL_DISCRIMINATOR.write(_data, 0);
     i += Borsh.writeVector(_name, _data, i);
     Borsh.writeVector(signers, _data, i);
@@ -88,10 +87,13 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var name = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
+      final int _nameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final var name = new String(_name, UTF_8);
+      i += _name.length;
       final var signers = Borsh.readPublicKeyVector(_data, i);
-      return new CreateCredentialIxData(discriminator, name, name.getBytes(UTF_8), signers);
+      return new CreateCredentialIxData(discriminator, name, _name, signers);
     }
 
     @Override
@@ -104,15 +106,14 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_name) + Borsh.lenVector(signers);
+      return 8 + _name.length + Borsh.lenVector(signers);
     }
   }
 
   public static final Discriminator CREATE_SCHEMA_DISCRIMINATOR = toDiscriminator(105, 171, 40, 140, 30, 91, 30, 134);
 
   /// @param credentialKey Credential the Schema is associated with
-  public static List<AccountMeta> createSchemaKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                   ,
-                                                   final PublicKey payerKey,
+  public static List<AccountMeta> createSchemaKeys(final PublicKey payerKey,
                                                    final PublicKey authorityKey,
                                                    final PublicKey credentialKey,
                                                    final PublicKey schemaKey,
@@ -138,7 +139,6 @@ public final class SolanaAttestationServiceProgram {
                                          final byte[] layout,
                                          final String[] fieldNames) {
     final var keys = createSchemaKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -155,7 +155,7 @@ public final class SolanaAttestationServiceProgram {
     );
   }
 
-  public static Instruction createSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                         ,
+  public static Instruction createSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                          final List<AccountMeta> keys,
                                          final String name,
                                          final String description,
@@ -163,7 +163,7 @@ public final class SolanaAttestationServiceProgram {
                                          final String[] fieldNames) {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _description = description.getBytes(UTF_8);
-    final byte[] _data = new byte[16 + Borsh.lenVector(_name) + Borsh.lenVector(_description) + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames)];
+    final byte[] _data = new byte[16 + _name.length + _description.length + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames)];
     int i = CREATE_SCHEMA_DISCRIMINATOR.write(_data, 0);
     i += Borsh.writeVector(_name, _data, i);
     i += Borsh.writeVector(_description, _data, i);
@@ -201,16 +201,22 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var name = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var description = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
+      final int _nameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final var name = new String(_name, UTF_8);
+      i += _name.length;
+      final int _descriptionLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
+      final var description = new String(_description, UTF_8);
+      i += _description.length;
       final var layout = Borsh.readbyteVector(_data, i);
       i += Borsh.lenVector(layout);
       final var fieldNames = Borsh.readStringVector(_data, i);
       return new CreateSchemaIxData(discriminator,
-                                    name, name.getBytes(UTF_8),
-                                    description, description.getBytes(UTF_8),
+                                    name, _name,
+                                    description, _description,
                                     layout,
                                     fieldNames, Borsh.getBytes(fieldNames));
     }
@@ -227,7 +233,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_name) + Borsh.lenVector(_description) + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames);
+      return 8 + _name.length + _description.length + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames);
     }
   }
 
@@ -235,8 +241,7 @@ public final class SolanaAttestationServiceProgram {
 
   /// @param credentialKey Credential the Schema is associated with
   /// @param schemaKey Credential the Schema is associated with
-  public static List<AccountMeta> changeSchemaStatusKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                         ,
-                                                         final PublicKey authorityKey,
+  public static List<AccountMeta> changeSchemaStatusKeys(final PublicKey authorityKey,
                                                          final PublicKey credentialKey,
                                                          final PublicKey schemaKey) {
     return List.of(
@@ -254,7 +259,6 @@ public final class SolanaAttestationServiceProgram {
                                                final PublicKey schemaKey,
                                                final boolean isPaused) {
     final var keys = changeSchemaStatusKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       authorityKey,
       credentialKey,
       schemaKey
@@ -262,7 +266,7 @@ public final class SolanaAttestationServiceProgram {
     return changeSchemaStatus(invokedSolanaAttestationServiceProgramMeta, keys, isPaused);
   }
 
-  public static Instruction changeSchemaStatus(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                               ,
+  public static Instruction changeSchemaStatus(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                final List<AccountMeta> keys,
                                                final boolean isPaused) {
     final byte[] _data = new byte[9];
@@ -307,8 +311,7 @@ public final class SolanaAttestationServiceProgram {
   public static final Discriminator CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR = toDiscriminator(98, 184, 218, 252, 193, 76, 188, 159);
 
   /// @param credentialKey Credential the Schema is associated with
-  public static List<AccountMeta> changeAuthorizedSignersKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                              ,
-                                                              final PublicKey payerKey,
+  public static List<AccountMeta> changeAuthorizedSignersKeys(final PublicKey payerKey,
                                                               final PublicKey authorityKey,
                                                               final PublicKey credentialKey,
                                                               final PublicKey systemProgramKey) {
@@ -328,7 +331,6 @@ public final class SolanaAttestationServiceProgram {
                                                     final PublicKey systemProgramKey,
                                                     final PublicKey[] signers) {
     final var keys = changeAuthorizedSignersKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -337,7 +339,7 @@ public final class SolanaAttestationServiceProgram {
     return changeAuthorizedSigners(invokedSolanaAttestationServiceProgramMeta, keys, signers);
   }
 
-  public static Instruction changeAuthorizedSigners(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                    ,
+  public static Instruction changeAuthorizedSigners(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final PublicKey[] signers) {
     final byte[] _data = new byte[8 + Borsh.lenVector(signers)];
@@ -380,8 +382,7 @@ public final class SolanaAttestationServiceProgram {
 
   /// @param credentialKey Credential the Schema is associated with
   /// @param schemaKey Credential the Schema is associated with
-  public static List<AccountMeta> changeSchemaDescriptionKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                              ,
-                                                              final PublicKey payerKey,
+  public static List<AccountMeta> changeSchemaDescriptionKeys(final PublicKey payerKey,
                                                               final PublicKey authorityKey,
                                                               final PublicKey credentialKey,
                                                               final PublicKey schemaKey,
@@ -405,7 +406,6 @@ public final class SolanaAttestationServiceProgram {
                                                     final PublicKey systemProgramKey,
                                                     final String description) {
     final var keys = changeSchemaDescriptionKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -415,11 +415,11 @@ public final class SolanaAttestationServiceProgram {
     return changeSchemaDescription(invokedSolanaAttestationServiceProgramMeta, keys, description);
   }
 
-  public static Instruction changeSchemaDescription(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                    ,
+  public static Instruction changeSchemaDescription(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final String description) {
     final byte[] _description = description.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_description)];
+    final byte[] _data = new byte[12 + _description.length];
     int i = CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR.write(_data, 0);
     Borsh.writeVector(_description, _data, i);
 
@@ -442,8 +442,11 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var description = Borsh.string(_data, i);
-      return new ChangeSchemaDescriptionIxData(discriminator, description, description.getBytes(UTF_8));
+      final int _descriptionLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
+      final var description = new String(_description, UTF_8);
+      return new ChangeSchemaDescriptionIxData(discriminator, description, _description);
     }
 
     @Override
@@ -455,15 +458,14 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_description);
+      return 8 + _description.length;
     }
   }
 
   public static final Discriminator CHANGE_SCHEMA_VERSION_DISCRIMINATOR = toDiscriminator(151, 8, 113, 1, 168, 170, 69, 139);
 
   /// @param credentialKey Credential the Schema is associated with
-  public static List<AccountMeta> changeSchemaVersionKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                          ,
-                                                          final PublicKey payerKey,
+  public static List<AccountMeta> changeSchemaVersionKeys(final PublicKey payerKey,
                                                           final PublicKey authorityKey,
                                                           final PublicKey credentialKey,
                                                           final PublicKey existingSchemaKey,
@@ -490,7 +492,6 @@ public final class SolanaAttestationServiceProgram {
                                                 final byte[] layout,
                                                 final String[] fieldNames) {
     final var keys = changeSchemaVersionKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -501,7 +502,7 @@ public final class SolanaAttestationServiceProgram {
     return changeSchemaVersion(invokedSolanaAttestationServiceProgramMeta, keys, layout, fieldNames);
   }
 
-  public static Instruction changeSchemaVersion(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                ,
+  public static Instruction changeSchemaVersion(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final byte[] layout,
                                                 final String[] fieldNames) {
@@ -550,8 +551,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param authorityKey Authorized signer of the Schema's Credential
   /// @param credentialKey Credential the Schema is associated with
   /// @param schemaKey Schema the Attestation is associated with
-  public static List<AccountMeta> createAttestationKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                        ,
-                                                        final PublicKey payerKey,
+  public static List<AccountMeta> createAttestationKeys(final PublicKey payerKey,
                                                         final PublicKey authorityKey,
                                                         final PublicKey credentialKey,
                                                         final PublicKey schemaKey,
@@ -581,7 +581,6 @@ public final class SolanaAttestationServiceProgram {
                                               final byte[] data,
                                               final long expiry) {
     final var keys = createAttestationKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -598,7 +597,7 @@ public final class SolanaAttestationServiceProgram {
     );
   }
 
-  public static Instruction createAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                              ,
+  public static Instruction createAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                               final List<AccountMeta> keys,
                                               final PublicKey nonce,
                                               final byte[] data,
@@ -656,8 +655,7 @@ public final class SolanaAttestationServiceProgram {
   public static final Discriminator CLOSE_ATTESTATION_DISCRIMINATOR = toDiscriminator(249, 84, 133, 23, 48, 175, 252, 221);
 
   /// @param authorityKey Authorized signer of the Schema's Credential
-  public static List<AccountMeta> closeAttestationKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                       ,
-                                                       final PublicKey payerKey,
+  public static List<AccountMeta> closeAttestationKeys(final PublicKey payerKey,
                                                        final PublicKey authorityKey,
                                                        final PublicKey credentialKey,
                                                        final PublicKey attestationKey,
@@ -685,7 +683,6 @@ public final class SolanaAttestationServiceProgram {
                                              final PublicKey systemProgramKey,
                                              final PublicKey attestationProgramKey) {
     final var keys = closeAttestationKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -697,7 +694,7 @@ public final class SolanaAttestationServiceProgram {
     return closeAttestation(invokedSolanaAttestationServiceProgramMeta, keys);
   }
 
-  public static Instruction closeAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                             ,
+  public static Instruction closeAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, CLOSE_ATTESTATION_DISCRIMINATOR);
   }
@@ -707,8 +704,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param credentialKey Credential the Schema is associated with
   /// @param mintKey Mint of Schema Token
   /// @param sasPdaKey Program derived address used as program signer authority
-  public static List<AccountMeta> tokenizeSchemaKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                     ,
-                                                     final PublicKey payerKey,
+  public static List<AccountMeta> tokenizeSchemaKeys(final PublicKey payerKey,
                                                      final PublicKey authorityKey,
                                                      final PublicKey credentialKey,
                                                      final PublicKey schemaKey,
@@ -742,7 +738,6 @@ public final class SolanaAttestationServiceProgram {
                                            final PublicKey tokenProgramKey,
                                            final long maxSize) {
     final var keys = tokenizeSchemaKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -755,7 +750,7 @@ public final class SolanaAttestationServiceProgram {
     return tokenizeSchema(invokedSolanaAttestationServiceProgramMeta, keys, maxSize);
   }
 
-  public static Instruction tokenizeSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                           ,
+  public static Instruction tokenizeSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long maxSize) {
     final byte[] _data = new byte[16];
@@ -807,8 +802,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param sasPdaKey Program derived address used as program signer authority
   /// @param recipientTokenAccountKey Associated token account of Recipient for Attestation Token
   /// @param recipientKey Wallet to receive Attestation Token
-  public static List<AccountMeta> createTokenizedAttestationKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                                 ,
-                                                                 final PublicKey payerKey,
+  public static List<AccountMeta> createTokenizedAttestationKeys(final PublicKey payerKey,
                                                                  final PublicKey authorityKey,
                                                                  final PublicKey credentialKey,
                                                                  final PublicKey schemaKey,
@@ -868,7 +862,6 @@ public final class SolanaAttestationServiceProgram {
                                                        final String symbol,
                                                        final int mintAccountSpace) {
     final var keys = createTokenizedAttestationKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -896,7 +889,7 @@ public final class SolanaAttestationServiceProgram {
     );
   }
 
-  public static Instruction createTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                       ,
+  public static Instruction createTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final PublicKey nonce,
                                                        final byte[] data,
@@ -908,7 +901,7 @@ public final class SolanaAttestationServiceProgram {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _data = new byte[62 + Borsh.lenVector(data) + Borsh.lenVector(_name) + Borsh.lenVector(_uri) + Borsh.lenVector(_symbol)];
+    final byte[] _data = new byte[62 + Borsh.lenVector(data) + _name.length + _uri.length + _symbol.length];
     int i = CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
     i += 32;
@@ -966,20 +959,29 @@ public final class SolanaAttestationServiceProgram {
       i += Borsh.lenVector(data);
       final var expiry = getInt64LE(_data, i);
       i += 8;
-      final var name = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var uri = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var symbol = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
+      final int _nameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final var name = new String(_name, UTF_8);
+      i += _name.length;
+      final int _uriLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      final var uri = new String(_uri, UTF_8);
+      i += _uri.length;
+      final int _symbolLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      final var symbol = new String(_symbol, UTF_8);
+      i += _symbol.length;
       final var mintAccountSpace = getInt16LE(_data, i);
       return new CreateTokenizedAttestationIxData(discriminator,
                                                   nonce,
                                                   data,
                                                   expiry,
-                                                  name, name.getBytes(UTF_8),
-                                                  uri, uri.getBytes(UTF_8),
-                                                  symbol, symbol.getBytes(UTF_8),
+                                                  name, _name,
+                                                  uri, _uri,
+                                                  symbol, _symbol,
                                                   mintAccountSpace);
     }
 
@@ -1004,9 +1006,9 @@ public final class SolanaAttestationServiceProgram {
       return 8 + 32
            + Borsh.lenVector(data)
            + 8
-           + Borsh.lenVector(_name)
-           + Borsh.lenVector(_uri)
-           + Borsh.lenVector(_symbol)
+           + _name.length
+           + _uri.length
+           + _symbol.length
            + 2;
     }
   }
@@ -1017,8 +1019,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param attestationMintKey Mint of Attestation Token
   /// @param sasPdaKey Program derived address used as program signer authority
   /// @param attestationTokenAccountKey Associated token account of the related Attestation Token
-  public static List<AccountMeta> closeTokenizedAttestationKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                                ,
-                                                                final PublicKey payerKey,
+  public static List<AccountMeta> closeTokenizedAttestationKeys(final PublicKey payerKey,
                                                                 final PublicKey authorityKey,
                                                                 final PublicKey credentialKey,
                                                                 final PublicKey attestationKey,
@@ -1061,7 +1062,6 @@ public final class SolanaAttestationServiceProgram {
                                                       final PublicKey attestationTokenAccountKey,
                                                       final PublicKey tokenProgramKey) {
     final var keys = closeTokenizedAttestationKeys(
-      invokedSolanaAttestationServiceProgramMeta,
       payerKey,
       authorityKey,
       credentialKey,
@@ -1077,28 +1077,28 @@ public final class SolanaAttestationServiceProgram {
     return closeTokenizedAttestation(invokedSolanaAttestationServiceProgramMeta, keys);
   }
 
-  public static Instruction closeTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                      ,
+  public static Instruction closeTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, CLOSE_TOKENIZED_ATTESTATION_DISCRIMINATOR);
   }
 
   public static final Discriminator EMIT_EVENT_DISCRIMINATOR = toDiscriminator(82, 133, 188, 136, 167, 139, 209, 52);
 
-  public static List<AccountMeta> emitEventKeys(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                                ,
-                                                final PublicKey eventAuthorityKey) {
+  public static List<AccountMeta> emitEventKeys(final PublicKey eventAuthorityKey) {
     return List.of(
       createReadOnlySigner(eventAuthorityKey)
     );
   }
 
-  public static Instruction emitEvent(final AccountMeta invokedSolanaAttestationServiceProgramMeta, final PublicKey eventAuthorityKey) {     final var keys = emitEventKeys(
-      invokedSolanaAttestationServiceProgramMeta,
+  public static Instruction emitEvent(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
+                                      final PublicKey eventAuthorityKey) {
+    final var keys = emitEventKeys(
       eventAuthorityKey
     );
     return emitEvent(invokedSolanaAttestationServiceProgramMeta, keys);
   }
 
-  public static Instruction emitEvent(final AccountMeta invokedSolanaAttestationServiceProgramMeta                                      ,
+  public static Instruction emitEvent(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, EMIT_EVENT_DISCRIMINATOR);
   }

@@ -2,6 +2,7 @@ package software.sava.idl.clients.spl.token.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -18,7 +19,9 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -35,8 +38,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param mintKey Token mint account.
-  public static List<AccountMeta> initializeMintKeys(final AccountMeta invokedTokenProgramMeta                                                     ,
-                                                     final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeMintKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey mintKey) {
     return List.of(
       createWrite(mintKey),
@@ -63,7 +65,6 @@ public final class TokenProgram {
                                            final PublicKey mintAuthority,
                                            final PublicKey freezeAuthority) {
     final var keys = initializeMintKeys(
-      invokedTokenProgramMeta,
       solanaAccounts,
       mintKey
     );
@@ -87,7 +88,7 @@ public final class TokenProgram {
   /// @param decimals Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
-  public static Instruction initializeMint(final AccountMeta invokedTokenProgramMeta                                           ,
+  public static Instruction initializeMint(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int decimals,
                                            final PublicKey mintAuthority,
@@ -143,7 +144,6 @@ public final class TokenProgram {
         freezeAuthority = null;
       } else {
         ++i;
-
         freezeAuthority = readPubKey(_data, i);
       }
       return new InitializeMintIxData(discriminator,
@@ -187,8 +187,7 @@ public final class TokenProgram {
   /// @param accountKey The account to initialize.
   /// @param mintKey The mint this account will be associated with.
   /// @param ownerKey The new account's owner/multisignature.
-  public static List<AccountMeta> initializeAccountKeys(final AccountMeta invokedTokenProgramMeta                                                        ,
-                                                        final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeAccountKeys(final SolanaAccounts solanaAccounts,
                                                         final PublicKey accountKey,
                                                         final PublicKey mintKey,
                                                         final PublicKey ownerKey) {
@@ -220,7 +219,6 @@ public final class TokenProgram {
                                               final PublicKey mintKey,
                                               final PublicKey ownerKey) {
     final var keys = initializeAccountKeys(
-      invokedTokenProgramMeta,
       solanaAccounts,
       accountKey,
       mintKey,
@@ -240,7 +238,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  public static Instruction initializeAccount(final AccountMeta invokedTokenProgramMeta                                              ,
+  public static Instruction initializeAccount(final AccountMeta invokedTokenProgramMeta,
                                               final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     INITIALIZE_ACCOUNT_DISCRIMINATOR.write(_data, 0);
@@ -271,7 +269,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new InitializeAccountIxData(discriminator);
     }
@@ -305,8 +302,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  public static List<AccountMeta> initializeMultisigKeys(final AccountMeta invokedTokenProgramMeta                                                         ,
-                                                         final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeMultisigKeys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey multisigKey) {
     return List.of(
       createWrite(multisigKey),
@@ -333,7 +329,6 @@ public final class TokenProgram {
                                                final PublicKey multisigKey,
                                                final int m) {
     final var keys = initializeMultisigKeys(
-      invokedTokenProgramMeta,
       solanaAccounts,
       multisigKey
     );
@@ -353,7 +348,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param m The number of signers (M) required to validate this multisignature account.
-  public static Instruction initializeMultisig(final AccountMeta invokedTokenProgramMeta                                               ,
+  public static Instruction initializeMultisig(final AccountMeta invokedTokenProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int m) {
     final byte[] _data = new byte[2];
@@ -421,8 +416,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> transferKeys(final AccountMeta invokedTokenProgramMeta                                               ,
-                                               final PublicKey sourceKey,
+  public static List<AccountMeta> transferKeys(final PublicKey sourceKey,
                                                final PublicKey destinationKey,
                                                final PublicKey authorityKey) {
     return List.of(
@@ -446,7 +440,6 @@ public final class TokenProgram {
                                      final PublicKey authorityKey,
                                      final long amount) {
     final var keys = transferKeys(
-      invokedTokenProgramMeta,
       sourceKey,
       destinationKey,
       authorityKey
@@ -459,7 +452,7 @@ public final class TokenProgram {
   /// of SOL and Tokens will be transferred to the destination account.
   ///
   /// @param amount The amount of tokens to transfer.
-  public static Instruction transfer(final AccountMeta invokedTokenProgramMeta                                     ,
+  public static Instruction transfer(final AccountMeta invokedTokenProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amount) {
     final byte[] _data = new byte[9];
@@ -518,8 +511,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  public static List<AccountMeta> approveKeys(final AccountMeta invokedTokenProgramMeta                                              ,
-                                              final PublicKey sourceKey,
+  public static List<AccountMeta> approveKeys(final PublicKey sourceKey,
                                               final PublicKey delegateKey,
                                               final PublicKey ownerKey) {
     return List.of(
@@ -542,7 +534,6 @@ public final class TokenProgram {
                                     final PublicKey ownerKey,
                                     final long amount) {
     final var keys = approveKeys(
-      invokedTokenProgramMeta,
       sourceKey,
       delegateKey,
       ownerKey
@@ -554,7 +545,7 @@ public final class TokenProgram {
   /// behalf of the source account's owner.
   ///
   /// @param amount The amount of tokens the delegate is approved for.
-  public static Instruction approve(final AccountMeta invokedTokenProgramMeta                                    ,
+  public static Instruction approve(final AccountMeta invokedTokenProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long amount) {
     final byte[] _data = new byte[9];
@@ -610,8 +601,7 @@ public final class TokenProgram {
   ///
   /// @param sourceKey The source account.
   /// @param ownerKey The source account owner or its multisignature.
-  public static List<AccountMeta> revokeKeys(final AccountMeta invokedTokenProgramMeta                                             ,
-                                             final PublicKey sourceKey,
+  public static List<AccountMeta> revokeKeys(final PublicKey sourceKey,
                                              final PublicKey ownerKey) {
     return List.of(
       createWrite(sourceKey),
@@ -627,7 +617,6 @@ public final class TokenProgram {
                                    final PublicKey sourceKey,
                                    final PublicKey ownerKey) {
     final var keys = revokeKeys(
-      invokedTokenProgramMeta,
       sourceKey,
       ownerKey
     );
@@ -636,7 +625,7 @@ public final class TokenProgram {
 
   /// Revokes the delegate's authority.
   ///
-  public static Instruction revoke(final AccountMeta invokedTokenProgramMeta                                   ,
+  public static Instruction revoke(final AccountMeta invokedTokenProgramMeta,
                                    final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     REVOKE_DISCRIMINATOR.write(_data, 0);
@@ -658,7 +647,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new RevokeIxData(discriminator);
     }
@@ -683,8 +671,7 @@ public final class TokenProgram {
   ///
   /// @param ownedKey The mint or account to change the authority of.
   /// @param ownerKey The current authority or the multisignature account of the mint or account to update.
-  public static List<AccountMeta> setAuthorityKeys(final AccountMeta invokedTokenProgramMeta                                                   ,
-                                                   final PublicKey ownedKey,
+  public static List<AccountMeta> setAuthorityKeys(final PublicKey ownedKey,
                                                    final PublicKey ownerKey) {
     return List.of(
       createWrite(ownedKey),
@@ -704,7 +691,6 @@ public final class TokenProgram {
                                          final AuthorityType authorityType,
                                          final PublicKey newAuthority) {
     final var keys = setAuthorityKeys(
-      invokedTokenProgramMeta,
       ownedKey,
       ownerKey
     );
@@ -720,7 +706,7 @@ public final class TokenProgram {
   ///
   /// @param authorityType The type of authority to update.
   /// @param newAuthority The new authority
-  public static Instruction setAuthority(final AccountMeta invokedTokenProgramMeta                                         ,
+  public static Instruction setAuthority(final AccountMeta invokedTokenProgramMeta,
                                          final List<AccountMeta> keys,
                                          final AuthorityType authorityType,
                                          final PublicKey newAuthority) {
@@ -762,7 +748,6 @@ public final class TokenProgram {
         newAuthority = null;
       } else {
         ++i;
-
         newAuthority = readPubKey(_data, i);
       }
       return new SetAuthorityIxData(discriminator, authorityType, newAuthority);
@@ -791,8 +776,7 @@ public final class TokenProgram {
   /// @param mintKey The mint account.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  public static List<AccountMeta> mintToKeys(final AccountMeta invokedTokenProgramMeta                                             ,
-                                             final PublicKey mintKey,
+  public static List<AccountMeta> mintToKeys(final PublicKey mintKey,
                                              final PublicKey tokenKey,
                                              final PublicKey mintAuthorityKey) {
     return List.of(
@@ -814,7 +798,6 @@ public final class TokenProgram {
                                    final PublicKey mintAuthorityKey,
                                    final long amount) {
     final var keys = mintToKeys(
-      invokedTokenProgramMeta,
       mintKey,
       tokenKey,
       mintAuthorityKey
@@ -825,7 +808,7 @@ public final class TokenProgram {
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
   /// @param amount The amount of new tokens to mint.
-  public static Instruction mintTo(final AccountMeta invokedTokenProgramMeta                                   ,
+  public static Instruction mintTo(final AccountMeta invokedTokenProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long amount) {
     final byte[] _data = new byte[9];
@@ -882,8 +865,7 @@ public final class TokenProgram {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> burnKeys(final AccountMeta invokedTokenProgramMeta                                           ,
-                                           final PublicKey accountKey,
+  public static List<AccountMeta> burnKeys(final PublicKey accountKey,
                                            final PublicKey mintKey,
                                            final PublicKey authorityKey) {
     return List.of(
@@ -905,7 +887,6 @@ public final class TokenProgram {
                                  final PublicKey authorityKey,
                                  final long amount) {
     final var keys = burnKeys(
-      invokedTokenProgramMeta,
       accountKey,
       mintKey,
       authorityKey
@@ -916,7 +897,7 @@ public final class TokenProgram {
   /// Burns tokens by removing them from an account. `Burn` does not support
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
-  public static Instruction burn(final AccountMeta invokedTokenProgramMeta                                 ,
+  public static Instruction burn(final AccountMeta invokedTokenProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amount) {
     final byte[] _data = new byte[9];
@@ -974,8 +955,7 @@ public final class TokenProgram {
   /// @param accountKey The account to close.
   /// @param destinationKey The destination account.
   /// @param ownerKey The account's owner or its multisignature account.
-  public static List<AccountMeta> closeAccountKeys(final AccountMeta invokedTokenProgramMeta                                                   ,
-                                                   final PublicKey accountKey,
+  public static List<AccountMeta> closeAccountKeys(final PublicKey accountKey,
                                                    final PublicKey destinationKey,
                                                    final PublicKey ownerKey) {
     return List.of(
@@ -996,7 +976,6 @@ public final class TokenProgram {
                                          final PublicKey destinationKey,
                                          final PublicKey ownerKey) {
     final var keys = closeAccountKeys(
-      invokedTokenProgramMeta,
       accountKey,
       destinationKey,
       ownerKey
@@ -1007,7 +986,7 @@ public final class TokenProgram {
   /// Close an account by transferring all its SOL to the destination account.
   /// Non-native accounts may only be closed if its token amount is zero.
   ///
-  public static Instruction closeAccount(final AccountMeta invokedTokenProgramMeta                                         ,
+  public static Instruction closeAccount(final AccountMeta invokedTokenProgramMeta,
                                          final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     CLOSE_ACCOUNT_DISCRIMINATOR.write(_data, 0);
@@ -1030,7 +1009,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new CloseAccountIxData(discriminator);
     }
@@ -1056,8 +1034,7 @@ public final class TokenProgram {
   /// @param accountKey The account to freeze.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
-  public static List<AccountMeta> freezeAccountKeys(final AccountMeta invokedTokenProgramMeta                                                    ,
-                                                    final PublicKey accountKey,
+  public static List<AccountMeta> freezeAccountKeys(final PublicKey accountKey,
                                                     final PublicKey mintKey,
                                                     final PublicKey ownerKey) {
     return List.of(
@@ -1077,7 +1054,6 @@ public final class TokenProgram {
                                           final PublicKey mintKey,
                                           final PublicKey ownerKey) {
     final var keys = freezeAccountKeys(
-      invokedTokenProgramMeta,
       accountKey,
       mintKey,
       ownerKey
@@ -1087,7 +1063,7 @@ public final class TokenProgram {
 
   /// Freeze an Initialized account using the Mint's freeze_authority (if set).
   ///
-  public static Instruction freezeAccount(final AccountMeta invokedTokenProgramMeta                                          ,
+  public static Instruction freezeAccount(final AccountMeta invokedTokenProgramMeta,
                                           final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     FREEZE_ACCOUNT_DISCRIMINATOR.write(_data, 0);
@@ -1109,7 +1085,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new FreezeAccountIxData(discriminator);
     }
@@ -1135,8 +1110,7 @@ public final class TokenProgram {
   /// @param accountKey The account to thaw.
   /// @param mintKey The token mint.
   /// @param ownerKey The mint freeze authority or its multisignature account.
-  public static List<AccountMeta> thawAccountKeys(final AccountMeta invokedTokenProgramMeta                                                  ,
-                                                  final PublicKey accountKey,
+  public static List<AccountMeta> thawAccountKeys(final PublicKey accountKey,
                                                   final PublicKey mintKey,
                                                   final PublicKey ownerKey) {
     return List.of(
@@ -1156,7 +1130,6 @@ public final class TokenProgram {
                                         final PublicKey mintKey,
                                         final PublicKey ownerKey) {
     final var keys = thawAccountKeys(
-      invokedTokenProgramMeta,
       accountKey,
       mintKey,
       ownerKey
@@ -1166,7 +1139,7 @@ public final class TokenProgram {
 
   /// Thaw a Frozen account using the Mint's freeze_authority (if set).
   ///
-  public static Instruction thawAccount(final AccountMeta invokedTokenProgramMeta                                        ,
+  public static Instruction thawAccount(final AccountMeta invokedTokenProgramMeta,
                                         final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     THAW_ACCOUNT_DISCRIMINATOR.write(_data, 0);
@@ -1188,7 +1161,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new ThawAccountIxData(discriminator);
     }
@@ -1221,8 +1193,7 @@ public final class TokenProgram {
   /// @param mintKey The token mint.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> transferCheckedKeys(final AccountMeta invokedTokenProgramMeta                                                      ,
-                                                      final PublicKey sourceKey,
+  public static List<AccountMeta> transferCheckedKeys(final PublicKey sourceKey,
                                                       final PublicKey mintKey,
                                                       final PublicKey destinationKey,
                                                       final PublicKey authorityKey) {
@@ -1256,7 +1227,6 @@ public final class TokenProgram {
                                             final long amount,
                                             final int decimals) {
     final var keys = transferCheckedKeys(
-      invokedTokenProgramMeta,
       sourceKey,
       mintKey,
       destinationKey,
@@ -1280,7 +1250,7 @@ public final class TokenProgram {
   ///
   /// @param amount The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta                                            ,
+  public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount,
                                             final int decimals) {
@@ -1358,8 +1328,7 @@ public final class TokenProgram {
   /// @param mintKey The token mint.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  public static List<AccountMeta> approveCheckedKeys(final AccountMeta invokedTokenProgramMeta                                                     ,
-                                                     final PublicKey sourceKey,
+  public static List<AccountMeta> approveCheckedKeys(final PublicKey sourceKey,
                                                      final PublicKey mintKey,
                                                      final PublicKey delegateKey,
                                                      final PublicKey ownerKey) {
@@ -1392,7 +1361,6 @@ public final class TokenProgram {
                                            final long amount,
                                            final int decimals) {
     final var keys = approveCheckedKeys(
-      invokedTokenProgramMeta,
       sourceKey,
       mintKey,
       delegateKey,
@@ -1415,7 +1383,7 @@ public final class TokenProgram {
   ///
   /// @param amount The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta                                           ,
+  public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
                                            final int decimals) {
@@ -1490,8 +1458,7 @@ public final class TokenProgram {
   /// @param mintKey The mint.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  public static List<AccountMeta> mintToCheckedKeys(final AccountMeta invokedTokenProgramMeta                                                    ,
-                                                    final PublicKey mintKey,
+  public static List<AccountMeta> mintToCheckedKeys(final PublicKey mintKey,
                                                     final PublicKey tokenKey,
                                                     final PublicKey mintAuthorityKey) {
     return List.of(
@@ -1519,7 +1486,6 @@ public final class TokenProgram {
                                           final long amount,
                                           final int decimals) {
     final var keys = mintToCheckedKeys(
-      invokedTokenProgramMeta,
       mintKey,
       tokenKey,
       mintAuthorityKey
@@ -1540,7 +1506,7 @@ public final class TokenProgram {
   ///
   /// @param amount The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta                                          ,
+  public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long amount,
                                           final int decimals) {
@@ -1615,8 +1581,7 @@ public final class TokenProgram {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> burnCheckedKeys(final AccountMeta invokedTokenProgramMeta                                                  ,
-                                                  final PublicKey accountKey,
+  public static List<AccountMeta> burnCheckedKeys(final PublicKey accountKey,
                                                   final PublicKey mintKey,
                                                   final PublicKey authorityKey) {
     return List.of(
@@ -1645,7 +1610,6 @@ public final class TokenProgram {
                                         final long amount,
                                         final int decimals) {
     final var keys = burnCheckedKeys(
-      invokedTokenProgramMeta,
       accountKey,
       mintKey,
       authorityKey
@@ -1667,7 +1631,7 @@ public final class TokenProgram {
   ///
   /// @param amount The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta                                        ,
+  public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long amount,
                                         final int decimals) {
@@ -1740,8 +1704,7 @@ public final class TokenProgram {
   ///
   /// @param accountKey The account to initialize.
   /// @param mintKey The mint this account will be associated with.
-  public static List<AccountMeta> initializeAccount2Keys(final AccountMeta invokedTokenProgramMeta                                                         ,
-                                                         final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeAccount2Keys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey accountKey,
                                                          final PublicKey mintKey) {
     return List.of(
@@ -1765,7 +1728,6 @@ public final class TokenProgram {
                                                final PublicKey mintKey,
                                                final PublicKey owner) {
     final var keys = initializeAccount2Keys(
-      invokedTokenProgramMeta,
       solanaAccounts,
       accountKey,
       mintKey
@@ -1779,7 +1741,7 @@ public final class TokenProgram {
   /// not need the owner's `AccountInfo` otherwise.
   ///
   /// @param owner The new account's owner/multisignature.
-  public static Instruction initializeAccount2(final AccountMeta invokedTokenProgramMeta                                               ,
+  public static Instruction initializeAccount2(final AccountMeta invokedTokenProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey owner) {
     final byte[] _data = new byte[33];
@@ -1840,8 +1802,7 @@ public final class TokenProgram {
   /// account, and needs to have its token `amount` field updated.
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
-  public static List<AccountMeta> syncNativeKeys(final AccountMeta invokedTokenProgramMeta                                                 ,
-                                                 final PublicKey accountKey) {
+  public static List<AccountMeta> syncNativeKeys(final PublicKey accountKey) {
     return List.of(
       createWrite(accountKey)
     );
@@ -1854,8 +1815,9 @@ public final class TokenProgram {
   /// account, and needs to have its token `amount` field updated.
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
-  public static Instruction syncNative(final AccountMeta invokedTokenProgramMeta, final PublicKey accountKey) {     final var keys = syncNativeKeys(
-      invokedTokenProgramMeta,
+  public static Instruction syncNative(final AccountMeta invokedTokenProgramMeta,
+                                       final PublicKey accountKey) {
+    final var keys = syncNativeKeys(
       accountKey
     );
     return syncNative(invokedTokenProgramMeta, keys);
@@ -1867,7 +1829,7 @@ public final class TokenProgram {
   /// `system_instruction::transfer` to move lamports to a wrapped token
   /// account, and needs to have its token `amount` field updated.
   ///
-  public static Instruction syncNative(final AccountMeta invokedTokenProgramMeta                                       ,
+  public static Instruction syncNative(final AccountMeta invokedTokenProgramMeta,
                                        final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     SYNC_NATIVE_DISCRIMINATOR.write(_data, 0);
@@ -1893,7 +1855,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new SyncNativeIxData(discriminator);
     }
@@ -1918,8 +1879,7 @@ public final class TokenProgram {
   ///
   /// @param accountKey The account to initialize.
   /// @param mintKey The mint this account will be associated with.
-  public static List<AccountMeta> initializeAccount3Keys(final AccountMeta invokedTokenProgramMeta                                                         ,
-                                                         final PublicKey accountKey,
+  public static List<AccountMeta> initializeAccount3Keys(final PublicKey accountKey,
                                                          final PublicKey mintKey) {
     return List.of(
       createWrite(accountKey),
@@ -1937,7 +1897,6 @@ public final class TokenProgram {
                                                final PublicKey mintKey,
                                                final PublicKey owner) {
     final var keys = initializeAccount3Keys(
-      invokedTokenProgramMeta,
       accountKey,
       mintKey
     );
@@ -1947,7 +1906,7 @@ public final class TokenProgram {
   /// Like InitializeAccount2, but does not require the Rent sysvar to be provided.
   ///
   /// @param owner The new account's owner/multisignature.
-  public static Instruction initializeAccount3(final AccountMeta invokedTokenProgramMeta                                               ,
+  public static Instruction initializeAccount3(final AccountMeta invokedTokenProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey owner) {
     final byte[] _data = new byte[33];
@@ -2001,8 +1960,7 @@ public final class TokenProgram {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  public static List<AccountMeta> initializeMultisig2Keys(final AccountMeta invokedTokenProgramMeta                                                          ,
-                                                          final PublicKey multisigKey) {
+  public static List<AccountMeta> initializeMultisig2Keys(final PublicKey multisigKey) {
     return List.of(
       createWrite(multisigKey)
     );
@@ -2016,7 +1974,6 @@ public final class TokenProgram {
                                                 final PublicKey multisigKey,
                                                 final int m) {
     final var keys = initializeMultisig2Keys(
-      invokedTokenProgramMeta,
       multisigKey
     );
     return initializeMultisig2(invokedTokenProgramMeta, keys, m);
@@ -2025,7 +1982,7 @@ public final class TokenProgram {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param m The number of signers (M) required to validate this multisignature account.
-  public static Instruction initializeMultisig2(final AccountMeta invokedTokenProgramMeta                                                ,
+  public static Instruction initializeMultisig2(final AccountMeta invokedTokenProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int m) {
     final byte[] _data = new byte[2];
@@ -2079,8 +2036,7 @@ public final class TokenProgram {
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
   /// @param mintKey The mint to initialize.
-  public static List<AccountMeta> initializeMint2Keys(final AccountMeta invokedTokenProgramMeta                                                      ,
-                                                      final PublicKey mintKey) {
+  public static List<AccountMeta> initializeMint2Keys(final PublicKey mintKey) {
     return List.of(
       createWrite(mintKey)
     );
@@ -2098,7 +2054,6 @@ public final class TokenProgram {
                                             final PublicKey mintAuthority,
                                             final PublicKey freezeAuthority) {
     final var keys = initializeMint2Keys(
-      invokedTokenProgramMeta,
       mintKey
     );
     return initializeMint2(
@@ -2115,7 +2070,7 @@ public final class TokenProgram {
   /// @param decimals Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
-  public static Instruction initializeMint2(final AccountMeta invokedTokenProgramMeta                                            ,
+  public static Instruction initializeMint2(final AccountMeta invokedTokenProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int decimals,
                                             final PublicKey mintAuthority,
@@ -2165,7 +2120,6 @@ public final class TokenProgram {
         freezeAuthority = null;
       } else {
         ++i;
-
         freezeAuthority = readPubKey(_data, i);
       }
       return new InitializeMint2IxData(discriminator,
@@ -2202,8 +2156,7 @@ public final class TokenProgram {
   /// the return data as a little-endian `u64`.
   ///
   /// @param mintKey The mint to calculate for.
-  public static List<AccountMeta> getAccountDataSizeKeys(final AccountMeta invokedTokenProgramMeta                                                         ,
-                                                         final PublicKey mintKey) {
+  public static List<AccountMeta> getAccountDataSizeKeys(final PublicKey mintKey) {
     return List.of(
       createRead(mintKey)
     );
@@ -2216,8 +2169,9 @@ public final class TokenProgram {
   /// the return data as a little-endian `u64`.
   ///
   /// @param mintKey The mint to calculate for.
-  public static Instruction getAccountDataSize(final AccountMeta invokedTokenProgramMeta, final PublicKey mintKey) {     final var keys = getAccountDataSizeKeys(
-      invokedTokenProgramMeta,
+  public static Instruction getAccountDataSize(final AccountMeta invokedTokenProgramMeta,
+                                               final PublicKey mintKey) {
+    final var keys = getAccountDataSizeKeys(
       mintKey
     );
     return getAccountDataSize(invokedTokenProgramMeta, keys);
@@ -2229,7 +2183,7 @@ public final class TokenProgram {
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
-  public static Instruction getAccountDataSize(final AccountMeta invokedTokenProgramMeta                                               ,
+  public static Instruction getAccountDataSize(final AccountMeta invokedTokenProgramMeta,
                                                final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     GET_ACCOUNT_DATA_SIZE_DISCRIMINATOR.write(_data, 0);
@@ -2255,7 +2209,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new GetAccountDataSizeIxData(discriminator);
     }
@@ -2285,8 +2238,7 @@ public final class TokenProgram {
   /// with the Associated Token Account program.
   ///
   /// @param accountKey The account to initialize.
-  public static List<AccountMeta> initializeImmutableOwnerKeys(final AccountMeta invokedTokenProgramMeta                                                               ,
-                                                               final PublicKey accountKey) {
+  public static List<AccountMeta> initializeImmutableOwnerKeys(final PublicKey accountKey) {
     return List.of(
       createWrite(accountKey)
     );
@@ -2301,8 +2253,9 @@ public final class TokenProgram {
   /// with the Associated Token Account program.
   ///
   /// @param accountKey The account to initialize.
-  public static Instruction initializeImmutableOwner(final AccountMeta invokedTokenProgramMeta, final PublicKey accountKey) {     final var keys = initializeImmutableOwnerKeys(
-      invokedTokenProgramMeta,
+  public static Instruction initializeImmutableOwner(final AccountMeta invokedTokenProgramMeta,
+                                                     final PublicKey accountKey) {
+    final var keys = initializeImmutableOwnerKeys(
       accountKey
     );
     return initializeImmutableOwner(invokedTokenProgramMeta, keys);
@@ -2316,7 +2269,7 @@ public final class TokenProgram {
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
-  public static Instruction initializeImmutableOwner(final AccountMeta invokedTokenProgramMeta                                                     ,
+  public static Instruction initializeImmutableOwner(final AccountMeta invokedTokenProgramMeta,
                                                      final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR.write(_data, 0);
@@ -2344,7 +2297,6 @@ public final class TokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new InitializeImmutableOwnerIxData(discriminator);
     }
@@ -2375,8 +2327,7 @@ public final class TokenProgram {
   /// with `String::from_utf8`.
   ///
   /// @param mintKey The mint to calculate for.
-  public static List<AccountMeta> amountToUiAmountKeys(final AccountMeta invokedTokenProgramMeta                                                       ,
-                                                       final PublicKey mintKey) {
+  public static List<AccountMeta> amountToUiAmountKeys(final PublicKey mintKey) {
     return List.of(
       createRead(mintKey)
     );
@@ -2397,7 +2348,6 @@ public final class TokenProgram {
                                              final PublicKey mintKey,
                                              final long amount) {
     final var keys = amountToUiAmountKeys(
-      invokedTokenProgramMeta,
       mintKey
     );
     return amountToUiAmount(invokedTokenProgramMeta, keys, amount);
@@ -2413,7 +2363,7 @@ public final class TokenProgram {
   /// with `String::from_utf8`.
   ///
   /// @param amount The amount of tokens to reformat.
-  public static Instruction amountToUiAmount(final AccountMeta invokedTokenProgramMeta                                             ,
+  public static Instruction amountToUiAmount(final AccountMeta invokedTokenProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
     final byte[] _data = new byte[9];
@@ -2479,8 +2429,7 @@ public final class TokenProgram {
   /// the return data as a little-endian `u64`.
   ///
   /// @param mintKey The mint to calculate for.
-  public static List<AccountMeta> uiAmountToAmountKeys(final AccountMeta invokedTokenProgramMeta                                                       ,
-                                                       final PublicKey mintKey) {
+  public static List<AccountMeta> uiAmountToAmountKeys(final PublicKey mintKey) {
     return List.of(
       createRead(mintKey)
     );
@@ -2499,7 +2448,6 @@ public final class TokenProgram {
                                              final PublicKey mintKey,
                                              final String uiAmount) {
     final var keys = uiAmountToAmountKeys(
-      invokedTokenProgramMeta,
       mintKey
     );
     return uiAmountToAmount(invokedTokenProgramMeta, keys, uiAmount);
@@ -2513,13 +2461,15 @@ public final class TokenProgram {
   /// the return data as a little-endian `u64`.
   ///
   /// @param uiAmount The ui_amount of tokens to reformat.
-  public static Instruction uiAmountToAmount(final AccountMeta invokedTokenProgramMeta                                             ,
+  public static Instruction uiAmountToAmount(final AccountMeta invokedTokenProgramMeta,
                                              final List<AccountMeta> keys,
                                              final String uiAmount) {
     final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
-    final byte[] _data = new byte[5 + Borsh.lenVector(_uiAmount)];
+    final byte[] _data = new byte[5 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(_uiAmount, _data, i);
+    putInt32LE(_data, i, _uiAmount.length);
+    i += 4;
+    System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
 
     return Instruction.createInstruction(invokedTokenProgramMeta, keys, _data);
   }
@@ -2550,8 +2500,11 @@ public final class TokenProgram {
       int i = _offset;
       final var discriminator = _data[i] & 0xFF;
       ++i;
-      final var uiAmount = Borsh.string(_data, i);
-      return new UiAmountToAmountIxData(discriminator, uiAmount, uiAmount.getBytes(UTF_8));
+      final int _uiAmountLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _uiAmount = Arrays.copyOfRange(_data, i, i + _uiAmountLength);
+      final var uiAmount = new String(_uiAmount, UTF_8);
+      return new UiAmountToAmountIxData(discriminator, uiAmount, _uiAmount);
     }
 
     @Override
@@ -2559,13 +2512,16 @@ public final class TokenProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      i += Borsh.writeVector(_uiAmount, _data, i);
+      putInt32LE(_data, i, _uiAmount.length);
+      i += 4;
+      System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
+      i += _uiAmount.length;
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 1 + Borsh.lenVector(_uiAmount);
+      return 1 + _uiAmount.length;
     }
   }
 

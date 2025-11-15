@@ -35,8 +35,7 @@ public final class MerkleDistributorProgram {
   ///                 Also has the authority to set the clawback receiver and change itself.
   /// @param systemProgramKey The System program.
   /// @param tokenProgramKey The Token program.
-  public static List<AccountMeta> newDistributorKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                     ,
-                                                     final PublicKey distributorKey,
+  public static List<AccountMeta> newDistributorKeys(final PublicKey distributorKey,
                                                      final PublicKey baseKey,
                                                      final PublicKey clawbackReceiverKey,
                                                      final PublicKey mintKey,
@@ -79,7 +78,6 @@ public final class MerkleDistributorProgram {
                                            final PublicKey tokenProgramKey,
                                            final NewDistributorParams params) {
     final var keys = newDistributorKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       baseKey,
       clawbackReceiverKey,
@@ -94,7 +92,7 @@ public final class MerkleDistributorProgram {
 
   /// ADMIN FUNCTIONS ////
   ///
-  public static Instruction newDistributor(final AccountMeta invokedMerkleDistributorProgramMeta                                           ,
+  public static Instruction newDistributor(final AccountMeta invokedMerkleDistributorProgramMeta,
                                            final List<AccountMeta> keys,
                                            final NewDistributorParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -145,8 +143,7 @@ public final class MerkleDistributorProgram {
   ///                 Also has the authority to set the clawback receiver and change itself.
   /// @param destinationTokenAccountKey account receive token back
   /// @param tokenProgramKey The Token program.
-  public static List<AccountMeta> closeDistributorKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                       ,
-                                                       final PublicKey distributorKey,
+  public static List<AccountMeta> closeDistributorKeys(final PublicKey distributorKey,
                                                        final PublicKey tokenVaultKey,
                                                        final PublicKey adminKey,
                                                        final PublicKey destinationTokenAccountKey,
@@ -175,7 +172,6 @@ public final class MerkleDistributorProgram {
                                              final PublicKey destinationTokenAccountKey,
                                              final PublicKey tokenProgramKey) {
     final var keys = closeDistributorKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       tokenVaultKey,
       adminKey,
@@ -187,7 +183,7 @@ public final class MerkleDistributorProgram {
 
   /// only available in test phase
   ///
-  public static Instruction closeDistributor(final AccountMeta invokedMerkleDistributorProgramMeta                                             ,
+  public static Instruction closeDistributor(final AccountMeta invokedMerkleDistributorProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, CLOSE_DISTRIBUTOR_DISCRIMINATOR);
   }
@@ -196,8 +192,7 @@ public final class MerkleDistributorProgram {
 
   /// only available in test phase
   ///
-  public static List<AccountMeta> closeClaimStatusKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                       ,
-                                                       final PublicKey claimStatusKey,
+  public static List<AccountMeta> closeClaimStatusKeys(final PublicKey claimStatusKey,
                                                        final PublicKey claimantKey,
                                                        final PublicKey adminKey) {
     return List.of(
@@ -214,7 +209,6 @@ public final class MerkleDistributorProgram {
                                              final PublicKey claimantKey,
                                              final PublicKey adminKey) {
     final var keys = closeClaimStatusKeys(
-      invokedMerkleDistributorProgramMeta,
       claimStatusKey,
       claimantKey,
       adminKey
@@ -224,7 +218,7 @@ public final class MerkleDistributorProgram {
 
   /// only available in test phase
   ///
-  public static Instruction closeClaimStatus(final AccountMeta invokedMerkleDistributorProgramMeta                                             ,
+  public static Instruction closeClaimStatus(final AccountMeta invokedMerkleDistributorProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, CLOSE_CLAIM_STATUS_DISCRIMINATOR);
   }
@@ -233,8 +227,7 @@ public final class MerkleDistributorProgram {
 
   /// @param distributorKey MerkleDistributor.
   /// @param adminKey Payer to create the distributor.
-  public static List<AccountMeta> setActivationPointKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                         ,
-                                                         final PublicKey distributorKey,
+  public static List<AccountMeta> setActivationPointKeys(final PublicKey distributorKey,
                                                          final PublicKey adminKey) {
     return List.of(
       createWrite(distributorKey),
@@ -249,14 +242,13 @@ public final class MerkleDistributorProgram {
                                                final PublicKey adminKey,
                                                final long activationPoint) {
     final var keys = setActivationPointKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       adminKey
     );
     return setActivationPoint(invokedMerkleDistributorProgramMeta, keys, activationPoint);
   }
 
-  public static Instruction setActivationPoint(final AccountMeta invokedMerkleDistributorProgramMeta                                               ,
+  public static Instruction setActivationPoint(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long activationPoint) {
     final byte[] _data = new byte[16];
@@ -304,8 +296,7 @@ public final class MerkleDistributorProgram {
   /// @param fromKey Distributor ATA containing the tokens to distribute.
   /// @param clawbackReceiverKey The Clawback token account.
   /// @param tokenProgramKey SPL Token program.
-  public static List<AccountMeta> clawbackKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                               ,
-                                               final PublicKey distributorKey,
+  public static List<AccountMeta> clawbackKeys(final PublicKey distributorKey,
                                                final PublicKey fromKey,
                                                final PublicKey clawbackReceiverKey,
                                                final PublicKey tokenProgramKey) {
@@ -327,7 +318,6 @@ public final class MerkleDistributorProgram {
                                      final PublicKey clawbackReceiverKey,
                                      final PublicKey tokenProgramKey) {
     final var keys = clawbackKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       fromKey,
       clawbackReceiverKey,
@@ -336,7 +326,7 @@ public final class MerkleDistributorProgram {
     return clawback(invokedMerkleDistributorProgramMeta, keys);
   }
 
-  public static Instruction clawback(final AccountMeta invokedMerkleDistributorProgramMeta                                     ,
+  public static Instruction clawback(final AccountMeta invokedMerkleDistributorProgramMeta,
                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, CLAWBACK_DISCRIMINATOR);
   }
@@ -346,8 +336,7 @@ public final class MerkleDistributorProgram {
   /// @param distributorKey The MerkleDistributor.
   /// @param newClawbackAccountKey New clawback account
   /// @param adminKey Admin signer
-  public static List<AccountMeta> setClawbackReceiverKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                          ,
-                                                          final PublicKey distributorKey,
+  public static List<AccountMeta> setClawbackReceiverKeys(final PublicKey distributorKey,
                                                           final PublicKey newClawbackAccountKey,
                                                           final PublicKey adminKey) {
     return List.of(
@@ -365,7 +354,6 @@ public final class MerkleDistributorProgram {
                                                 final PublicKey newClawbackAccountKey,
                                                 final PublicKey adminKey) {
     final var keys = setClawbackReceiverKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       newClawbackAccountKey,
       adminKey
@@ -373,7 +361,7 @@ public final class MerkleDistributorProgram {
     return setClawbackReceiver(invokedMerkleDistributorProgramMeta, keys);
   }
 
-  public static Instruction setClawbackReceiver(final AccountMeta invokedMerkleDistributorProgramMeta                                                ,
+  public static Instruction setClawbackReceiver(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, SET_CLAWBACK_RECEIVER_DISCRIMINATOR);
   }
@@ -383,8 +371,7 @@ public final class MerkleDistributorProgram {
   /// @param distributorKey The MerkleDistributor.
   /// @param adminKey Admin signer
   /// @param newAdminKey New admin account
-  public static List<AccountMeta> setAdminKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                               ,
-                                               final PublicKey distributorKey,
+  public static List<AccountMeta> setAdminKeys(final PublicKey distributorKey,
                                                final PublicKey adminKey,
                                                final PublicKey newAdminKey) {
     return List.of(
@@ -402,7 +389,6 @@ public final class MerkleDistributorProgram {
                                      final PublicKey adminKey,
                                      final PublicKey newAdminKey) {
     final var keys = setAdminKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       adminKey,
       newAdminKey
@@ -410,7 +396,7 @@ public final class MerkleDistributorProgram {
     return setAdmin(invokedMerkleDistributorProgramMeta, keys);
   }
 
-  public static Instruction setAdmin(final AccountMeta invokedMerkleDistributorProgramMeta                                     ,
+  public static Instruction setAdmin(final AccountMeta invokedMerkleDistributorProgramMeta,
                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, SET_ADMIN_DISCRIMINATOR);
   }
@@ -419,8 +405,7 @@ public final class MerkleDistributorProgram {
 
   /// @param distributorKey The MerkleDistributor.
   /// @param adminKey Admin signer
-  public static List<AccountMeta> setOperatorKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                  ,
-                                                  final PublicKey distributorKey,
+  public static List<AccountMeta> setOperatorKeys(final PublicKey distributorKey,
                                                   final PublicKey adminKey) {
     return List.of(
       createWrite(distributorKey),
@@ -435,14 +420,13 @@ public final class MerkleDistributorProgram {
                                         final PublicKey adminKey,
                                         final PublicKey newOperator) {
     final var keys = setOperatorKeys(
-      invokedMerkleDistributorProgramMeta,
       distributorKey,
       adminKey
     );
     return setOperator(invokedMerkleDistributorProgramMeta, keys, newOperator);
   }
 
-  public static Instruction setOperator(final AccountMeta invokedMerkleDistributorProgramMeta                                        ,
+  public static Instruction setOperator(final AccountMeta invokedMerkleDistributorProgramMeta,
                                         final List<AccountMeta> keys,
                                         final PublicKey newOperator) {
     final byte[] _data = new byte[40];
@@ -496,7 +480,7 @@ public final class MerkleDistributorProgram {
   /// @param operatorKey operator
   /// @param tokenProgramKey SPL Token program.
   /// @param systemProgramKey The System program.
-  public static List<AccountMeta> newClaimKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                               ,
+  public static List<AccountMeta> newClaimKeys(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                final PublicKey distributorKey,
                                                final PublicKey claimStatusKey,
                                                final PublicKey fromKey,
@@ -561,7 +545,7 @@ public final class MerkleDistributorProgram {
 
   /// USER FUNCTIONS /////
   ///
-  public static Instruction newClaim(final AccountMeta invokedMerkleDistributorProgramMeta                                     ,
+  public static Instruction newClaim(final AccountMeta invokedMerkleDistributorProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amountUnlocked,
                                      final long amountLocked,
@@ -626,7 +610,7 @@ public final class MerkleDistributorProgram {
   /// @param claimantKey Who is claiming the tokens.
   /// @param operatorKey operator
   /// @param tokenProgramKey SPL Token program.
-  public static List<AccountMeta> claimLockedKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                  ,
+  public static List<AccountMeta> claimLockedKeys(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                   final PublicKey distributorKey,
                                                   final PublicKey claimStatusKey,
                                                   final PublicKey fromKey,
@@ -673,7 +657,7 @@ public final class MerkleDistributorProgram {
     return claimLocked(invokedMerkleDistributorProgramMeta, keys);
   }
 
-  public static Instruction claimLocked(final AccountMeta invokedMerkleDistributorProgramMeta                                        ,
+  public static Instruction claimLocked(final AccountMeta invokedMerkleDistributorProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, CLAIM_LOCKED_DISCRIMINATOR);
   }
@@ -688,7 +672,7 @@ public final class MerkleDistributorProgram {
   /// @param tokenProgramKey SPL Token program.
   /// @param systemProgramKey The System program.
   /// @param voterProgramKey Voter program
-  public static List<AccountMeta> newClaimAndStakeKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                       ,
+  public static List<AccountMeta> newClaimAndStakeKeys(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                        final PublicKey distributorKey,
                                                        final PublicKey claimStatusKey,
                                                        final PublicKey fromKey,
@@ -761,7 +745,7 @@ public final class MerkleDistributorProgram {
     );
   }
 
-  public static Instruction newClaimAndStake(final AccountMeta invokedMerkleDistributorProgramMeta                                             ,
+  public static Instruction newClaimAndStake(final AccountMeta invokedMerkleDistributorProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amountUnlocked,
                                              final long amountLocked,
@@ -826,7 +810,7 @@ public final class MerkleDistributorProgram {
   /// @param operatorKey operator
   /// @param tokenProgramKey SPL Token program.
   /// @param voterProgramKey Voter program
-  public static List<AccountMeta> claimLockedAndStakeKeys(final AccountMeta invokedMerkleDistributorProgramMeta                                                          ,
+  public static List<AccountMeta> claimLockedAndStakeKeys(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                           final PublicKey distributorKey,
                                                           final PublicKey claimStatusKey,
                                                           final PublicKey fromKey,
@@ -885,7 +869,7 @@ public final class MerkleDistributorProgram {
     return claimLockedAndStake(invokedMerkleDistributorProgramMeta, keys);
   }
 
-  public static Instruction claimLockedAndStake(final AccountMeta invokedMerkleDistributorProgramMeta                                                ,
+  public static Instruction claimLockedAndStake(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, CLAIM_LOCKED_AND_STAKE_DISCRIMINATOR);
   }

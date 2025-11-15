@@ -2,6 +2,7 @@ package software.sava.idl.clients.kamino.vaults.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -27,8 +28,7 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator INIT_VAULT_DISCRIMINATOR = toDiscriminator(77, 79, 85, 150, 33, 217, 52, 106);
 
-  public static List<AccountMeta> initVaultKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                ,
-                                                final PublicKey adminAuthorityKey,
+  public static List<AccountMeta> initVaultKeys(final PublicKey adminAuthorityKey,
                                                 final PublicKey vaultStateKey,
                                                 final PublicKey baseVaultAuthorityKey,
                                                 final PublicKey tokenVaultKey,
@@ -67,7 +67,6 @@ public final class KaminoVaultProgram {
                                       final PublicKey tokenProgramKey,
                                       final PublicKey sharesTokenProgramKey) {
     final var keys = initVaultKeys(
-      invokedKaminoVaultProgramMeta,
       adminAuthorityKey,
       vaultStateKey,
       baseVaultAuthorityKey,
@@ -83,15 +82,14 @@ public final class KaminoVaultProgram {
     return initVault(invokedKaminoVaultProgramMeta, keys);
   }
 
-  public static Instruction initVault(final AccountMeta invokedKaminoVaultProgramMeta                                      ,
+  public static Instruction initVault(final AccountMeta invokedKaminoVaultProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, INIT_VAULT_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_DISCRIMINATOR = toDiscriminator(5, 54, 213, 112, 75, 232, 117, 37);
 
-  public static List<AccountMeta> updateReserveAllocationKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                              ,
-                                                              final PublicKey signerKey,
+  public static List<AccountMeta> updateReserveAllocationKeys(final PublicKey signerKey,
                                                               final PublicKey vaultStateKey,
                                                               final PublicKey baseVaultAuthorityKey,
                                                               final PublicKey reserveCollateralMintKey,
@@ -126,7 +124,6 @@ public final class KaminoVaultProgram {
                                                     final long weight,
                                                     final long cap) {
     final var keys = updateReserveAllocationKeys(
-      invokedKaminoVaultProgramMeta,
       signerKey,
       vaultStateKey,
       baseVaultAuthorityKey,
@@ -140,7 +137,7 @@ public final class KaminoVaultProgram {
     return updateReserveAllocation(invokedKaminoVaultProgramMeta, keys, weight, cap);
   }
 
-  public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta                                                    ,
+  public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long weight,
                                                     final long cap) {
@@ -191,8 +188,7 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator DEPOSIT_DISCRIMINATOR = toDiscriminator(242, 35, 198, 137, 82, 225, 242, 182);
 
-  public static List<AccountMeta> depositKeys(final AccountMeta invokedKaminoVaultProgramMeta                                              ,
-                                              final PublicKey userKey,
+  public static List<AccountMeta> depositKeys(final PublicKey userKey,
                                               final PublicKey vaultStateKey,
                                               final PublicKey tokenVaultKey,
                                               final PublicKey tokenMintKey,
@@ -238,7 +234,6 @@ public final class KaminoVaultProgram {
                                     final PublicKey programKey,
                                     final long maxAmount) {
     final var keys = depositKeys(
-      invokedKaminoVaultProgramMeta,
       userKey,
       vaultStateKey,
       tokenVaultKey,
@@ -256,7 +251,7 @@ public final class KaminoVaultProgram {
     return deposit(invokedKaminoVaultProgramMeta, keys, maxAmount);
   }
 
-  public static Instruction deposit(final AccountMeta invokedKaminoVaultProgramMeta                                    ,
+  public static Instruction deposit(final AccountMeta invokedKaminoVaultProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long maxAmount) {
     final byte[] _data = new byte[16];
@@ -300,8 +295,7 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 18, 70, 156, 148, 109, 161, 34);
 
-  public static List<AccountMeta> withdrawKeys(final AccountMeta invokedKaminoVaultProgramMeta                                               ,
-                                               final PublicKey withdrawFromAvailableUserKey,
+  public static List<AccountMeta> withdrawKeys(final PublicKey withdrawFromAvailableUserKey,
                                                final PublicKey withdrawFromAvailableVaultStateKey,
                                                final PublicKey withdrawFromAvailableTokenVaultKey,
                                                final PublicKey withdrawFromAvailableBaseVaultAuthorityKey,
@@ -380,7 +374,6 @@ public final class KaminoVaultProgram {
                                      final PublicKey programKey,
                                      final long sharesAmount) {
     final var keys = withdrawKeys(
-      invokedKaminoVaultProgramMeta,
       withdrawFromAvailableUserKey,
       withdrawFromAvailableVaultStateKey,
       withdrawFromAvailableTokenVaultKey,
@@ -409,7 +402,7 @@ public final class KaminoVaultProgram {
     return withdraw(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
-  public static Instruction withdraw(final AccountMeta invokedKaminoVaultProgramMeta                                     ,
+  public static Instruction withdraw(final AccountMeta invokedKaminoVaultProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long sharesAmount) {
     final byte[] _data = new byte[16];
@@ -454,8 +447,7 @@ public final class KaminoVaultProgram {
   public static final Discriminator INVEST_DISCRIMINATOR = toDiscriminator(13, 245, 180, 103, 254, 182, 121, 4);
 
   /// @param reserveKey CPI accounts
-  public static List<AccountMeta> investKeys(final AccountMeta invokedKaminoVaultProgramMeta                                             ,
-                                             final PublicKey payerKey,
+  public static List<AccountMeta> investKeys(final PublicKey payerKey,
                                              final PublicKey payerTokenAccountKey,
                                              final PublicKey vaultStateKey,
                                              final PublicKey tokenVaultKey,
@@ -510,7 +502,6 @@ public final class KaminoVaultProgram {
                                    final PublicKey tokenProgramKey,
                                    final PublicKey instructionSysvarAccountKey) {
     final var keys = investKeys(
-      invokedKaminoVaultProgramMeta,
       payerKey,
       payerTokenAccountKey,
       vaultStateKey,
@@ -531,15 +522,14 @@ public final class KaminoVaultProgram {
     return invest(invokedKaminoVaultProgramMeta, keys);
   }
 
-  public static Instruction invest(final AccountMeta invokedKaminoVaultProgramMeta                                   ,
+  public static Instruction invest(final AccountMeta invokedKaminoVaultProgramMeta,
                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, INVEST_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_VAULT_CONFIG_DISCRIMINATOR = toDiscriminator(122, 3, 21, 222, 158, 255, 238, 157);
 
-  public static List<AccountMeta> updateVaultConfigKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                        ,
-                                                        final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> updateVaultConfigKeys(final PublicKey vaultAdminAuthorityKey,
                                                         final PublicKey vaultStateKey,
                                                         final PublicKey klendProgramKey) {
     return List.of(
@@ -556,7 +546,6 @@ public final class KaminoVaultProgram {
                                               final VaultConfigField entry,
                                               final byte[] data) {
     final var keys = updateVaultConfigKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       klendProgramKey
@@ -564,7 +553,7 @@ public final class KaminoVaultProgram {
     return updateVaultConfig(invokedKaminoVaultProgramMeta, keys, entry, data);
   }
 
-  public static Instruction updateVaultConfig(final AccountMeta invokedKaminoVaultProgramMeta                                              ,
+  public static Instruction updateVaultConfig(final AccountMeta invokedKaminoVaultProgramMeta,
                                               final List<AccountMeta> keys,
                                               final VaultConfigField entry,
                                               final byte[] data) {
@@ -611,8 +600,7 @@ public final class KaminoVaultProgram {
   public static final Discriminator WITHDRAW_PENDING_FEES_DISCRIMINATOR = toDiscriminator(131, 194, 200, 140, 175, 244, 217, 183);
 
   /// @param lendingMarketKey CPI accounts
-  public static List<AccountMeta> withdrawPendingFeesKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                          ,
-                                                          final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> withdrawPendingFeesKeys(final PublicKey vaultAdminAuthorityKey,
                                                           final PublicKey vaultStateKey,
                                                           final PublicKey reserveKey,
                                                           final PublicKey tokenVaultKey,
@@ -667,7 +655,6 @@ public final class KaminoVaultProgram {
                                                 final PublicKey reserveCollateralTokenProgramKey,
                                                 final PublicKey instructionSysvarAccountKey) {
     final var keys = withdrawPendingFeesKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       reserveKey,
@@ -688,15 +675,14 @@ public final class KaminoVaultProgram {
     return withdrawPendingFees(invokedKaminoVaultProgramMeta, keys);
   }
 
-  public static Instruction withdrawPendingFees(final AccountMeta invokedKaminoVaultProgramMeta                                                ,
+  public static Instruction withdrawPendingFees(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, WITHDRAW_PENDING_FEES_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_ADMIN_DISCRIMINATOR = toDiscriminator(161, 176, 40, 213, 60, 184, 179, 228);
 
-  public static List<AccountMeta> updateAdminKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                  ,
-                                                  final PublicKey pendingAdminKey,
+  public static List<AccountMeta> updateAdminKeys(final PublicKey pendingAdminKey,
                                                   final PublicKey vaultStateKey) {
     return List.of(
       createWritableSigner(pendingAdminKey),
@@ -704,23 +690,24 @@ public final class KaminoVaultProgram {
     );
   }
 
-  public static Instruction updateAdmin(final AccountMeta invokedKaminoVaultProgramMeta, final PublicKey pendingAdminKey, final PublicKey vaultStateKey) {     final var keys = updateAdminKeys(
-      invokedKaminoVaultProgramMeta,
+  public static Instruction updateAdmin(final AccountMeta invokedKaminoVaultProgramMeta,
+                                        final PublicKey pendingAdminKey,
+                                        final PublicKey vaultStateKey) {
+    final var keys = updateAdminKeys(
       pendingAdminKey,
       vaultStateKey
     );
     return updateAdmin(invokedKaminoVaultProgramMeta, keys);
   }
 
-  public static Instruction updateAdmin(final AccountMeta invokedKaminoVaultProgramMeta                                        ,
+  public static Instruction updateAdmin(final AccountMeta invokedKaminoVaultProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, UPDATE_ADMIN_DISCRIMINATOR);
   }
 
   public static final Discriminator GIVE_UP_PENDING_FEES_DISCRIMINATOR = toDiscriminator(177, 200, 120, 134, 110, 217, 147, 81);
 
-  public static List<AccountMeta> giveUpPendingFeesKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                        ,
-                                                        final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> giveUpPendingFeesKeys(final PublicKey vaultAdminAuthorityKey,
                                                         final PublicKey vaultStateKey,
                                                         final PublicKey klendProgramKey) {
     return List.of(
@@ -736,7 +723,6 @@ public final class KaminoVaultProgram {
                                               final PublicKey klendProgramKey,
                                               final long maxAmountToGiveUp) {
     final var keys = giveUpPendingFeesKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       klendProgramKey
@@ -744,7 +730,7 @@ public final class KaminoVaultProgram {
     return giveUpPendingFees(invokedKaminoVaultProgramMeta, keys, maxAmountToGiveUp);
   }
 
-  public static Instruction giveUpPendingFees(final AccountMeta invokedKaminoVaultProgramMeta                                              ,
+  public static Instruction giveUpPendingFees(final AccountMeta invokedKaminoVaultProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long maxAmountToGiveUp) {
     final byte[] _data = new byte[16];
@@ -788,8 +774,7 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator INITIALIZE_SHARES_METADATA_DISCRIMINATOR = toDiscriminator(3, 15, 172, 114, 200, 0, 131, 32);
 
-  public static List<AccountMeta> initializeSharesMetadataKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                               ,
-                                                               final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> initializeSharesMetadataKeys(final PublicKey vaultAdminAuthorityKey,
                                                                final PublicKey vaultStateKey,
                                                                final PublicKey sharesMintKey,
                                                                final PublicKey baseVaultAuthorityKey,
@@ -822,7 +807,6 @@ public final class KaminoVaultProgram {
                                                      final String symbol,
                                                      final String uri) {
     final var keys = initializeSharesMetadataKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       sharesMintKey,
@@ -841,7 +825,7 @@ public final class KaminoVaultProgram {
     );
   }
 
-  public static Instruction initializeSharesMetadata(final AccountMeta invokedKaminoVaultProgramMeta                                                     ,
+  public static Instruction initializeSharesMetadata(final AccountMeta invokedKaminoVaultProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final String name,
                                                      final String symbol,
@@ -849,7 +833,7 @@ public final class KaminoVaultProgram {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
-    final byte[] _data = new byte[20 + Borsh.lenVector(_name) + Borsh.lenVector(_symbol) + Borsh.lenVector(_uri)];
+    final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
     int i = INITIALIZE_SHARES_METADATA_DISCRIMINATOR.write(_data, 0);
     i += Borsh.writeVector(_name, _data, i);
     i += Borsh.writeVector(_symbol, _data, i);
@@ -880,12 +864,21 @@ public final class KaminoVaultProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var name = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var symbol = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var uri = Borsh.string(_data, i);
-      return new InitializeSharesMetadataIxData(discriminator, name, name.getBytes(UTF_8), symbol, symbol.getBytes(UTF_8), uri, uri.getBytes(UTF_8));
+      final int _nameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final var name = new String(_name, UTF_8);
+      i += _name.length;
+      final int _symbolLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      final var symbol = new String(_symbol, UTF_8);
+      i += _symbol.length;
+      final int _uriLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      final var uri = new String(_uri, UTF_8);
+      return new InitializeSharesMetadataIxData(discriminator, name, _name, symbol, _symbol, uri, _uri);
     }
 
     @Override
@@ -899,14 +892,13 @@ public final class KaminoVaultProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_name) + Borsh.lenVector(_symbol) + Borsh.lenVector(_uri);
+      return 8 + _name.length + _symbol.length + _uri.length;
     }
   }
 
   public static final Discriminator UPDATE_SHARES_METADATA_DISCRIMINATOR = toDiscriminator(155, 34, 122, 165, 245, 137, 147, 107);
 
-  public static List<AccountMeta> updateSharesMetadataKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                           ,
-                                                           final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> updateSharesMetadataKeys(final PublicKey vaultAdminAuthorityKey,
                                                            final PublicKey vaultStateKey,
                                                            final PublicKey baseVaultAuthorityKey,
                                                            final PublicKey sharesMetadataKey,
@@ -930,7 +922,6 @@ public final class KaminoVaultProgram {
                                                  final String symbol,
                                                  final String uri) {
     final var keys = updateSharesMetadataKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       baseVaultAuthorityKey,
@@ -946,7 +937,7 @@ public final class KaminoVaultProgram {
     );
   }
 
-  public static Instruction updateSharesMetadata(final AccountMeta invokedKaminoVaultProgramMeta                                                 ,
+  public static Instruction updateSharesMetadata(final AccountMeta invokedKaminoVaultProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final String name,
                                                  final String symbol,
@@ -954,7 +945,7 @@ public final class KaminoVaultProgram {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
-    final byte[] _data = new byte[20 + Borsh.lenVector(_name) + Borsh.lenVector(_symbol) + Borsh.lenVector(_uri)];
+    final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
     int i = UPDATE_SHARES_METADATA_DISCRIMINATOR.write(_data, 0);
     i += Borsh.writeVector(_name, _data, i);
     i += Borsh.writeVector(_symbol, _data, i);
@@ -985,12 +976,21 @@ public final class KaminoVaultProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var name = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var symbol = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var uri = Borsh.string(_data, i);
-      return new UpdateSharesMetadataIxData(discriminator, name, name.getBytes(UTF_8), symbol, symbol.getBytes(UTF_8), uri, uri.getBytes(UTF_8));
+      final int _nameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
+      final var name = new String(_name, UTF_8);
+      i += _name.length;
+      final int _symbolLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
+      final var symbol = new String(_symbol, UTF_8);
+      i += _symbol.length;
+      final int _uriLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
+      final var uri = new String(_uri, UTF_8);
+      return new UpdateSharesMetadataIxData(discriminator, name, _name, symbol, _symbol, uri, _uri);
     }
 
     @Override
@@ -1004,14 +1004,13 @@ public final class KaminoVaultProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_name) + Borsh.lenVector(_symbol) + Borsh.lenVector(_uri);
+      return 8 + _name.length + _symbol.length + _uri.length;
     }
   }
 
   public static final Discriminator WITHDRAW_FROM_AVAILABLE_DISCRIMINATOR = toDiscriminator(19, 131, 112, 155, 170, 220, 34, 57);
 
-  public static List<AccountMeta> withdrawFromAvailableKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                            ,
-                                                            final PublicKey userKey,
+  public static List<AccountMeta> withdrawFromAvailableKeys(final PublicKey userKey,
                                                             final PublicKey vaultStateKey,
                                                             final PublicKey tokenVaultKey,
                                                             final PublicKey baseVaultAuthorityKey,
@@ -1057,7 +1056,6 @@ public final class KaminoVaultProgram {
                                                   final PublicKey programKey,
                                                   final long sharesAmount) {
     final var keys = withdrawFromAvailableKeys(
-      invokedKaminoVaultProgramMeta,
       userKey,
       vaultStateKey,
       tokenVaultKey,
@@ -1075,7 +1073,7 @@ public final class KaminoVaultProgram {
     return withdrawFromAvailable(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
-  public static Instruction withdrawFromAvailable(final AccountMeta invokedKaminoVaultProgramMeta                                                  ,
+  public static Instruction withdrawFromAvailable(final AccountMeta invokedKaminoVaultProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long sharesAmount) {
     final byte[] _data = new byte[16];
@@ -1119,8 +1117,7 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator REMOVE_ALLOCATION_DISCRIMINATOR = toDiscriminator(32, 220, 211, 141, 209, 231, 73, 76);
 
-  public static List<AccountMeta> removeAllocationKeys(final AccountMeta invokedKaminoVaultProgramMeta                                                       ,
-                                                       final PublicKey vaultAdminAuthorityKey,
+  public static List<AccountMeta> removeAllocationKeys(final PublicKey vaultAdminAuthorityKey,
                                                        final PublicKey vaultStateKey,
                                                        final PublicKey reserveKey) {
     return List.of(
@@ -1135,7 +1132,6 @@ public final class KaminoVaultProgram {
                                              final PublicKey vaultStateKey,
                                              final PublicKey reserveKey) {
     final var keys = removeAllocationKeys(
-      invokedKaminoVaultProgramMeta,
       vaultAdminAuthorityKey,
       vaultStateKey,
       reserveKey
@@ -1143,7 +1139,7 @@ public final class KaminoVaultProgram {
     return removeAllocation(invokedKaminoVaultProgramMeta, keys);
   }
 
-  public static Instruction removeAllocation(final AccountMeta invokedKaminoVaultProgramMeta                                             ,
+  public static Instruction removeAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, REMOVE_ALLOCATION_DISCRIMINATOR);
   }

@@ -34,8 +34,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator ACCEPT_OWNERSHIP_DISCRIMINATOR = toDiscriminator(172, 23, 43, 13, 238, 213, 85, 150);
 
-  public static List<AccountMeta> acceptOwnershipKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                      ,
-                                                      final PublicKey pendingOwnerKey,
+  public static List<AccountMeta> acceptOwnershipKeys(final PublicKey pendingOwnerKey,
                                                       final PublicKey messageTransmitterKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
@@ -54,7 +53,6 @@ public final class MessageTransmitterV2Program {
                                             final PublicKey programKey,
                                             final AcceptOwnershipParams params) {
     final var keys = acceptOwnershipKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       pendingOwnerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -63,7 +61,7 @@ public final class MessageTransmitterV2Program {
     return acceptOwnership(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction acceptOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                            ,
+  public static Instruction acceptOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                             final List<AccountMeta> keys,
                                             final AcceptOwnershipParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -106,8 +104,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator DISABLE_ATTESTER_DISCRIMINATOR = toDiscriminator(61, 171, 131, 95, 172, 15, 227, 229);
 
-  public static List<AccountMeta> disableAttesterKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                      ,
-                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> disableAttesterKeys(final SolanaAccounts solanaAccounts,
                                                       final PublicKey payerKey,
                                                       final PublicKey attesterManagerKey,
                                                       final PublicKey messageTransmitterKey,
@@ -132,7 +129,6 @@ public final class MessageTransmitterV2Program {
                                             final PublicKey programKey,
                                             final DisableAttesterParams params) {
     final var keys = disableAttesterKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       solanaAccounts,
       payerKey,
       attesterManagerKey,
@@ -143,7 +139,7 @@ public final class MessageTransmitterV2Program {
     return disableAttester(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction disableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                            ,
+  public static Instruction disableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                             final List<AccountMeta> keys,
                                             final DisableAttesterParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -186,8 +182,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator ENABLE_ATTESTER_DISCRIMINATOR = toDiscriminator(2, 11, 193, 115, 5, 148, 4, 198);
 
-  public static List<AccountMeta> enableAttesterKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                     ,
-                                                     final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> enableAttesterKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey payerKey,
                                                      final PublicKey attesterManagerKey,
                                                      final PublicKey messageTransmitterKey,
@@ -212,7 +207,6 @@ public final class MessageTransmitterV2Program {
                                            final PublicKey programKey,
                                            final EnableAttesterParams params) {
     final var keys = enableAttesterKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       solanaAccounts,
       payerKey,
       attesterManagerKey,
@@ -223,7 +217,7 @@ public final class MessageTransmitterV2Program {
     return enableAttester(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction enableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                           ,
+  public static Instruction enableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final EnableAttesterParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -266,8 +260,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(175, 175, 109, 31, 13, 152, 155, 237);
 
-  public static List<AccountMeta> initializeKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                 ,
-                                                 final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey payerKey,
                                                  final PublicKey upgradeAuthorityKey,
                                                  final PublicKey messageTransmitterKey,
@@ -298,7 +291,6 @@ public final class MessageTransmitterV2Program {
                                        final PublicKey programKey,
                                        final InitializeParams params) {
     final var keys = initializeKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       solanaAccounts,
       payerKey,
       upgradeAuthorityKey,
@@ -311,7 +303,7 @@ public final class MessageTransmitterV2Program {
     return initialize(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction initialize(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                       ,
+  public static Instruction initialize(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                        final List<AccountMeta> keys,
                                        final InitializeParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -355,30 +347,29 @@ public final class MessageTransmitterV2Program {
   public static final Discriminator IS_NONCE_USED_DISCRIMINATOR = toDiscriminator(144, 72, 107, 148, 35, 218, 31, 187);
 
   /// @param usedNonceKey Account will be explicitly loaded to avoid error when it's not initialized
-  public static List<AccountMeta> isNonceUsedKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                  ,
-                                                  final PublicKey usedNonceKey) {
+  public static List<AccountMeta> isNonceUsedKeys(final PublicKey usedNonceKey) {
     return List.of(
       createRead(usedNonceKey)
     );
   }
 
   /// @param usedNonceKey Account will be explicitly loaded to avoid error when it's not initialized
-  public static Instruction isNonceUsed(final AccountMeta invokedMessageTransmitterV2ProgramMeta, final PublicKey usedNonceKey) {     final var keys = isNonceUsedKeys(
-      invokedMessageTransmitterV2ProgramMeta,
+  public static Instruction isNonceUsed(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
+                                        final PublicKey usedNonceKey) {
+    final var keys = isNonceUsedKeys(
       usedNonceKey
     );
     return isNonceUsed(invokedMessageTransmitterV2ProgramMeta, keys);
   }
 
-  public static Instruction isNonceUsed(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                        ,
+  public static Instruction isNonceUsed(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, IS_NONCE_USED_DISCRIMINATOR);
   }
 
   public static final Discriminator PAUSE_DISCRIMINATOR = toDiscriminator(211, 22, 221, 251, 74, 121, 193, 47);
 
-  public static List<AccountMeta> pauseKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                            ,
-                                            final PublicKey pauserKey,
+  public static List<AccountMeta> pauseKeys(final PublicKey pauserKey,
                                             final PublicKey messageTransmitterKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey) {
@@ -397,7 +388,6 @@ public final class MessageTransmitterV2Program {
                                   final PublicKey programKey,
                                   final PauseParams params) {
     final var keys = pauseKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       pauserKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -406,7 +396,7 @@ public final class MessageTransmitterV2Program {
     return pause(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction pause(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                  ,
+  public static Instruction pause(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                   final List<AccountMeta> keys,
                                   final PauseParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -450,8 +440,7 @@ public final class MessageTransmitterV2Program {
   public static final Discriminator RECEIVE_MESSAGE_DISCRIMINATOR = toDiscriminator(38, 144, 127, 225, 31, 225, 238, 25);
 
   /// @param usedNonceKey Each nonce is stored in a separate PDA
-  public static List<AccountMeta> receiveMessageKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                     ,
-                                                     final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> receiveMessageKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey payerKey,
                                                      final PublicKey callerKey,
                                                      final PublicKey authorityPdaKey,
@@ -486,7 +475,6 @@ public final class MessageTransmitterV2Program {
                                            final PublicKey programKey,
                                            final ReceiveMessageParams params) {
     final var keys = receiveMessageKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       solanaAccounts,
       payerKey,
       callerKey,
@@ -500,7 +488,7 @@ public final class MessageTransmitterV2Program {
     return receiveMessage(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction receiveMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                           ,
+  public static Instruction receiveMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final ReceiveMessageParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -542,8 +530,7 @@ public final class MessageTransmitterV2Program {
   public static final Discriminator RECLAIM_EVENT_ACCOUNT_DISCRIMINATOR = toDiscriminator(94, 198, 180, 159, 131, 236, 15, 174);
 
   /// @param payeeKey rent SOL receiver, should match original rent payer
-  public static List<AccountMeta> reclaimEventAccountKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                          ,
-                                                          final PublicKey payeeKey,
+  public static List<AccountMeta> reclaimEventAccountKeys(final PublicKey payeeKey,
                                                           final PublicKey messageTransmitterKey,
                                                           final PublicKey messageSentEventDataKey) {
     return List.of(
@@ -560,7 +547,6 @@ public final class MessageTransmitterV2Program {
                                                 final PublicKey messageSentEventDataKey,
                                                 final ReclaimEventAccountParams params) {
     final var keys = reclaimEventAccountKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       payeeKey,
       messageTransmitterKey,
       messageSentEventDataKey
@@ -568,7 +554,7 @@ public final class MessageTransmitterV2Program {
     return reclaimEventAccount(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction reclaimEventAccount(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                ,
+  public static Instruction reclaimEventAccount(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final ReclaimEventAccountParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -609,8 +595,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator SEND_MESSAGE_DISCRIMINATOR = toDiscriminator(57, 40, 34, 178, 189, 10, 65, 26);
 
-  public static List<AccountMeta> sendMessageKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                  ,
-                                                  final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> sendMessageKeys(final SolanaAccounts solanaAccounts,
                                                   final PublicKey eventRentPayerKey,
                                                   final PublicKey senderAuthorityPdaKey,
                                                   final PublicKey messageTransmitterKey,
@@ -635,7 +620,6 @@ public final class MessageTransmitterV2Program {
                                         final PublicKey senderProgramKey,
                                         final SendMessageParams params) {
     final var keys = sendMessageKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       solanaAccounts,
       eventRentPayerKey,
       senderAuthorityPdaKey,
@@ -646,7 +630,7 @@ public final class MessageTransmitterV2Program {
     return sendMessage(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction sendMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                        ,
+  public static Instruction sendMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                         final List<AccountMeta> keys,
                                         final SendMessageParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -687,8 +671,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator SET_MAX_MESSAGE_BODY_SIZE_DISCRIMINATOR = toDiscriminator(168, 178, 8, 117, 217, 167, 219, 31);
 
-  public static List<AccountMeta> setMaxMessageBodySizeKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                            ,
-                                                            final PublicKey ownerKey,
+  public static List<AccountMeta> setMaxMessageBodySizeKeys(final PublicKey ownerKey,
                                                             final PublicKey messageTransmitterKey,
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
@@ -707,7 +690,6 @@ public final class MessageTransmitterV2Program {
                                                   final PublicKey programKey,
                                                   final SetMaxMessageBodySizeParams params) {
     final var keys = setMaxMessageBodySizeKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       ownerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -716,7 +698,7 @@ public final class MessageTransmitterV2Program {
     return setMaxMessageBodySize(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction setMaxMessageBodySize(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                  ,
+  public static Instruction setMaxMessageBodySize(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final SetMaxMessageBodySizeParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -759,8 +741,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator SET_SIGNATURE_THRESHOLD_DISCRIMINATOR = toDiscriminator(163, 19, 154, 168, 82, 209, 214, 219);
 
-  public static List<AccountMeta> setSignatureThresholdKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                            ,
-                                                            final PublicKey attesterManagerKey,
+  public static List<AccountMeta> setSignatureThresholdKeys(final PublicKey attesterManagerKey,
                                                             final PublicKey messageTransmitterKey,
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
@@ -779,7 +760,6 @@ public final class MessageTransmitterV2Program {
                                                   final PublicKey programKey,
                                                   final SetSignatureThresholdParams params) {
     final var keys = setSignatureThresholdKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       attesterManagerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -788,7 +768,7 @@ public final class MessageTransmitterV2Program {
     return setSignatureThreshold(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction setSignatureThreshold(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                  ,
+  public static Instruction setSignatureThreshold(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final SetSignatureThresholdParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -831,8 +811,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator TRANSFER_OWNERSHIP_DISCRIMINATOR = toDiscriminator(65, 177, 215, 73, 53, 45, 99, 47);
 
-  public static List<AccountMeta> transferOwnershipKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                        ,
-                                                        final PublicKey ownerKey,
+  public static List<AccountMeta> transferOwnershipKeys(final PublicKey ownerKey,
                                                         final PublicKey messageTransmitterKey,
                                                         final PublicKey eventAuthorityKey,
                                                         final PublicKey programKey) {
@@ -851,7 +830,6 @@ public final class MessageTransmitterV2Program {
                                               final PublicKey programKey,
                                               final TransferOwnershipParams params) {
     final var keys = transferOwnershipKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       ownerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -860,7 +838,7 @@ public final class MessageTransmitterV2Program {
     return transferOwnership(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction transferOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                              ,
+  public static Instruction transferOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                               final List<AccountMeta> keys,
                                               final TransferOwnershipParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -903,8 +881,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator UNPAUSE_DISCRIMINATOR = toDiscriminator(169, 144, 4, 38, 10, 141, 188, 255);
 
-  public static List<AccountMeta> unpauseKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                              ,
-                                              final PublicKey pauserKey,
+  public static List<AccountMeta> unpauseKeys(final PublicKey pauserKey,
                                               final PublicKey messageTransmitterKey,
                                               final PublicKey eventAuthorityKey,
                                               final PublicKey programKey) {
@@ -923,7 +900,6 @@ public final class MessageTransmitterV2Program {
                                     final PublicKey programKey,
                                     final UnpauseParams params) {
     final var keys = unpauseKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       pauserKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -932,7 +908,7 @@ public final class MessageTransmitterV2Program {
     return unpause(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction unpause(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                    ,
+  public static Instruction unpause(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                     final List<AccountMeta> keys,
                                     final UnpauseParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -975,8 +951,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator UPDATE_ATTESTER_MANAGER_DISCRIMINATOR = toDiscriminator(175, 245, 178, 104, 85, 179, 71, 16);
 
-  public static List<AccountMeta> updateAttesterManagerKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                            ,
-                                                            final PublicKey ownerKey,
+  public static List<AccountMeta> updateAttesterManagerKeys(final PublicKey ownerKey,
                                                             final PublicKey messageTransmitterKey,
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
@@ -995,7 +970,6 @@ public final class MessageTransmitterV2Program {
                                                   final PublicKey programKey,
                                                   final UpdateAttesterManagerParams params) {
     final var keys = updateAttesterManagerKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       ownerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -1004,7 +978,7 @@ public final class MessageTransmitterV2Program {
     return updateAttesterManager(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction updateAttesterManager(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                  ,
+  public static Instruction updateAttesterManager(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final UpdateAttesterManagerParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1047,8 +1021,7 @@ public final class MessageTransmitterV2Program {
 
   public static final Discriminator UPDATE_PAUSER_DISCRIMINATOR = toDiscriminator(140, 171, 211, 132, 57, 201, 16, 254);
 
-  public static List<AccountMeta> updatePauserKeys(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                                   ,
-                                                   final PublicKey ownerKey,
+  public static List<AccountMeta> updatePauserKeys(final PublicKey ownerKey,
                                                    final PublicKey messageTransmitterKey,
                                                    final PublicKey eventAuthorityKey,
                                                    final PublicKey programKey) {
@@ -1067,7 +1040,6 @@ public final class MessageTransmitterV2Program {
                                          final PublicKey programKey,
                                          final UpdatePauserParams params) {
     final var keys = updatePauserKeys(
-      invokedMessageTransmitterV2ProgramMeta,
       ownerKey,
       messageTransmitterKey,
       eventAuthorityKey,
@@ -1076,7 +1048,7 @@ public final class MessageTransmitterV2Program {
     return updatePauser(invokedMessageTransmitterV2ProgramMeta, keys, params);
   }
 
-  public static Instruction updatePauser(final AccountMeta invokedMessageTransmitterV2ProgramMeta                                         ,
+  public static Instruction updatePauser(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                          final List<AccountMeta> keys,
                                          final UpdatePauserParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];

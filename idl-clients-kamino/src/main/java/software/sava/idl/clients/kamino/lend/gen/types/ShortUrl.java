@@ -2,6 +2,7 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
@@ -13,6 +14,7 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -54,8 +56,11 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
     int i = _offset + discriminator.length();
     final var referrer = readPubKey(_data, i);
     i += 32;
-    final var shortUrl = Borsh.string(_data, i);
-    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl.getBytes(UTF_8));
+    final int _shortUrlLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
+    final var shortUrl = new String(_shortUrl, UTF_8);
+    return new ShortUrl(_address, discriminator, referrer, shortUrl, _shortUrl);
   }
 
   @Override
@@ -69,6 +74,6 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
 
   @Override
   public int l() {
-    return 8 + 32 + Borsh.lenVector(_shortUrl);
+    return 8 + 32 + _shortUrl.length;
   }
 }

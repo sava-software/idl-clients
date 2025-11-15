@@ -2,6 +2,8 @@ package software.sava.idl.clients.drift.vaults.gen.types;
 
 import java.lang.String;
 
+import java.util.Arrays;
+
 import software.sava.core.borsh.Borsh;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -28,16 +30,25 @@ public record InitializeTokenizedVaultDepositorParams(String tokenName, byte[] _
       return null;
     }
     int i = _offset;
-    final var tokenName = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
-    final var tokenSymbol = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
-    final var tokenUri = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
+    final int _tokenNameLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _tokenName = Arrays.copyOfRange(_data, i, i + _tokenNameLength);
+    final var tokenName = new String(_tokenName, UTF_8);
+    i += _tokenName.length;
+    final int _tokenSymbolLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _tokenSymbol = Arrays.copyOfRange(_data, i, i + _tokenSymbolLength);
+    final var tokenSymbol = new String(_tokenSymbol, UTF_8);
+    i += _tokenSymbol.length;
+    final int _tokenUriLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _tokenUri = Arrays.copyOfRange(_data, i, i + _tokenUriLength);
+    final var tokenUri = new String(_tokenUri, UTF_8);
+    i += _tokenUri.length;
     final var decimals = _data[i] & 0xFF;
-    return new InitializeTokenizedVaultDepositorParams(tokenName, tokenName.getBytes(UTF_8),
-                                                       tokenSymbol, tokenSymbol.getBytes(UTF_8),
-                                                       tokenUri, tokenUri.getBytes(UTF_8),
+    return new InitializeTokenizedVaultDepositorParams(tokenName, _tokenName,
+                                                       tokenSymbol, _tokenSymbol,
+                                                       tokenUri, _tokenUri,
                                                        decimals);
   }
 
@@ -54,6 +65,6 @@ public record InitializeTokenizedVaultDepositorParams(String tokenName, byte[] _
 
   @Override
   public int l() {
-    return Borsh.lenVector(_tokenName) + Borsh.lenVector(_tokenSymbol) + Borsh.lenVector(_tokenUri) + 1;
+    return _tokenName.length + _tokenSymbol.length + _tokenUri.length + 1;
   }
 }

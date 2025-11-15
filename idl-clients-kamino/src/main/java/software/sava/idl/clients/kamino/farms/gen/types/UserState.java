@@ -33,6 +33,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param pendingWithdrawalUnstakeTs After this timestamp, user can withdraw their deposit.
 /// @param bump User bump used for account address validation
 /// @param delegatee Delegatee used for initialisation - useful to check against
+/// @param rewardsIssuedCumulative Cumulative rewards issued to the user - ONLY used for stats/analytics
+///                                DO NOT USE IN ANY CALCULATIONS
+///                                Old userStates will have this field populated only from the point of release
+///                                not reflecting any historical data before this was released
 public record UserState(PublicKey _address,
                         Discriminator discriminator,
                         long userId,
@@ -51,6 +55,7 @@ public record UserState(PublicKey _address,
                         long bump,
                         PublicKey delegatee,
                         long lastStakeTs,
+                        long[] rewardsIssuedCumulative,
                         long[] padding1) implements Borsh {
 
   public static final int BYTES = 920;
@@ -58,7 +63,8 @@ public record UserState(PublicKey _address,
   public static final int REWARDS_TALLY_SCALED_LEN = 10;
   public static final int REWARDS_ISSUED_UNCLAIMED_LEN = 10;
   public static final int LAST_CLAIM_TS_LEN = 10;
-  public static final int PADDING_1_LEN = 50;
+  public static final int REWARDS_ISSUED_CUMULATIVE_LEN = 10;
+  public static final int PADDING_1_LEN = 40;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(72, 177, 85, 249, 76, 167, 186, 126);
@@ -80,7 +86,8 @@ public record UserState(PublicKey _address,
   public static final int BUMP_OFFSET = 472;
   public static final int DELEGATEE_OFFSET = 480;
   public static final int LAST_STAKE_TS_OFFSET = 512;
-  public static final int PADDING_1_OFFSET = 520;
+  public static final int REWARDS_ISSUED_CUMULATIVE_OFFSET = 520;
+  public static final int PADDING_1_OFFSET = 600;
 
   public static Filter createUserIdFilter(final long userId) {
     final byte[] _data = new byte[8];
@@ -198,7 +205,9 @@ public record UserState(PublicKey _address,
     i += 32;
     final var lastStakeTs = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[50];
+    final var rewardsIssuedCumulative = new long[10];
+    i += Borsh.readArray(rewardsIssuedCumulative, _data, i);
+    final var padding1 = new long[40];
     Borsh.readArray(padding1, _data, i);
     return new UserState(_address,
                          discriminator,
@@ -218,6 +227,7 @@ public record UserState(PublicKey _address,
                          bump,
                          delegatee,
                          lastStakeTs,
+                         rewardsIssuedCumulative,
                          padding1);
   }
 
@@ -252,7 +262,8 @@ public record UserState(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, lastStakeTs);
     i += 8;
-    i += Borsh.writeArrayChecked(padding1, 50, _data, i);
+    i += Borsh.writeArrayChecked(rewardsIssuedCumulative, 10, _data, i);
+    i += Borsh.writeArrayChecked(padding1, 40, _data, i);
     return i - _offset;
   }
 

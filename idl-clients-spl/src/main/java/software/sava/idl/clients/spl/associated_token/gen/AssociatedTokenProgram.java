@@ -26,8 +26,7 @@ public final class AssociatedTokenProgram {
   /// @param ownerKey Wallet address for the new associated token account.
   /// @param mintKey The token mint for the new associated token account.
   /// @param tokenProgramKey SPL Token program.
-  public static List<AccountMeta> createAssociatedTokenKeys(final AccountMeta invokedAssociatedTokenProgramMeta                                                            ,
-                                                            final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> createAssociatedTokenKeys(final SolanaAccounts solanaAccounts,
                                                             final PublicKey payerKey,
                                                             final PublicKey ataKey,
                                                             final PublicKey ownerKey,
@@ -59,7 +58,6 @@ public final class AssociatedTokenProgram {
                                                   final PublicKey mintKey,
                                                   final PublicKey tokenProgramKey) {
     final var keys = createAssociatedTokenKeys(
-      invokedAssociatedTokenProgramMeta,
       solanaAccounts,
       payerKey,
       ataKey,
@@ -73,7 +71,7 @@ public final class AssociatedTokenProgram {
   /// Creates an associated token account for the given wallet address and
   /// token mint Returns an error if the account exists.
   ///
-  public static Instruction createAssociatedToken(final AccountMeta invokedAssociatedTokenProgramMeta                                                  ,
+  public static Instruction createAssociatedToken(final AccountMeta invokedAssociatedTokenProgramMeta,
                                                   final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     CREATE_ASSOCIATED_TOKEN_DISCRIMINATOR.write(_data, 0);
@@ -96,7 +94,6 @@ public final class AssociatedTokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new CreateAssociatedTokenIxData(discriminator);
     }
@@ -126,8 +123,7 @@ public final class AssociatedTokenProgram {
   /// @param ownerKey Wallet address for the new associated token account.
   /// @param mintKey The token mint for the new associated token account.
   /// @param tokenProgramKey SPL Token program.
-  public static List<AccountMeta> createAssociatedTokenIdempotentKeys(final AccountMeta invokedAssociatedTokenProgramMeta                                                                      ,
-                                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> createAssociatedTokenIdempotentKeys(final SolanaAccounts solanaAccounts,
                                                                       final PublicKey payerKey,
                                                                       final PublicKey ataKey,
                                                                       final PublicKey ownerKey,
@@ -160,7 +156,6 @@ public final class AssociatedTokenProgram {
                                                             final PublicKey mintKey,
                                                             final PublicKey tokenProgramKey) {
     final var keys = createAssociatedTokenIdempotentKeys(
-      invokedAssociatedTokenProgramMeta,
       solanaAccounts,
       payerKey,
       ataKey,
@@ -175,7 +170,7 @@ public final class AssociatedTokenProgram {
   /// token mint, if it doesn't already exist. Returns an error if the
   /// account exists, but with a different owner.
   ///
-  public static Instruction createAssociatedTokenIdempotent(final AccountMeta invokedAssociatedTokenProgramMeta                                                            ,
+  public static Instruction createAssociatedTokenIdempotent(final AccountMeta invokedAssociatedTokenProgramMeta,
                                                             final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     CREATE_ASSOCIATED_TOKEN_IDEMPOTENT_DISCRIMINATOR.write(_data, 0);
@@ -199,7 +194,6 @@ public final class AssociatedTokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new CreateAssociatedTokenIdempotentIxData(discriminator);
     }
@@ -238,8 +232,7 @@ public final class AssociatedTokenProgram {
   /// @param ownerTokenMintAddressKey Token mint for the owner associated token account.
   /// @param walletAddressKey Wallet address for the owner associated token account.
   /// @param tokenProgramKey SPL Token program.
-  public static List<AccountMeta> recoverNestedAssociatedTokenKeys(final AccountMeta invokedAssociatedTokenProgramMeta                                                                   ,
-                                                                   final PublicKey nestedAssociatedAccountAddressKey,
+  public static List<AccountMeta> recoverNestedAssociatedTokenKeys(final PublicKey nestedAssociatedAccountAddressKey,
                                                                    final PublicKey nestedTokenMintAddressKey,
                                                                    final PublicKey destinationAssociatedAccountAddressKey,
                                                                    final PublicKey ownerAssociatedAccountAddressKey,
@@ -284,7 +277,6 @@ public final class AssociatedTokenProgram {
                                                          final PublicKey walletAddressKey,
                                                          final PublicKey tokenProgramKey) {
     final var keys = recoverNestedAssociatedTokenKeys(
-      invokedAssociatedTokenProgramMeta,
       nestedAssociatedAccountAddressKey,
       nestedTokenMintAddressKey,
       destinationAssociatedAccountAddressKey,
@@ -307,7 +299,7 @@ public final class AssociatedTokenProgram {
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
   ///
-  public static Instruction recoverNestedAssociatedToken(final AccountMeta invokedAssociatedTokenProgramMeta                                                         ,
+  public static Instruction recoverNestedAssociatedToken(final AccountMeta invokedAssociatedTokenProgramMeta,
                                                          final List<AccountMeta> keys) {
     final byte[] _data = new byte[1];
     RECOVER_NESTED_ASSOCIATED_TOKEN_DISCRIMINATOR.write(_data, 0);
@@ -338,7 +330,6 @@ public final class AssociatedTokenProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-
       final var discriminator = _data[_offset] & 0xFF;
       return new RecoverNestedAssociatedTokenIxData(discriminator);
     }

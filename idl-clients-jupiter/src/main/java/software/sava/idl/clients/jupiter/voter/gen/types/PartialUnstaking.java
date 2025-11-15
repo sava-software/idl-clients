@@ -4,6 +4,7 @@ import java.lang.String;
 
 import java.math.BigInteger;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
@@ -15,6 +16,7 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -105,14 +107,17 @@ public record PartialUnstaking(PublicKey _address,
     i += 8;
     final var buffers = new BigInteger[6];
     i += Borsh.read128Array(buffers, _data, i);
-    final var memo = Borsh.string(_data, i);
+    final int _memoLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
+    final var memo = new String(_memo, UTF_8);
     return new PartialUnstaking(_address,
                                 discriminator,
                                 escrow,
                                 amount,
                                 expiration,
                                 buffers,
-                                memo, memo.getBytes(UTF_8));
+                                memo, _memo);
   }
 
   @Override
@@ -135,6 +140,6 @@ public record PartialUnstaking(PublicKey _address,
          + 8
          + 8
          + Borsh.len128Array(buffers)
-         + Borsh.lenVector(_memo);
+         + _memo.length;
   }
 }

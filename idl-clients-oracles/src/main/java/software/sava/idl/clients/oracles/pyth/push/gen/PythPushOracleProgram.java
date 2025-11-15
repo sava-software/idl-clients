@@ -21,8 +21,7 @@ public final class PythPushOracleProgram {
 
   public static final Discriminator UPDATE_PRICE_FEED_DISCRIMINATOR = toDiscriminator(28, 9, 93, 150, 86, 153, 188, 115);
 
-  public static List<AccountMeta> updatePriceFeedKeys(final AccountMeta invokedPythPushOracleProgramMeta                                                      ,
-                                                      final PublicKey payerKey,
+  public static List<AccountMeta> updatePriceFeedKeys(final PublicKey payerKey,
                                                       final PublicKey pythSolanaReceiverKey,
                                                       final PublicKey encodedVaaKey,
                                                       final PublicKey configKey,
@@ -52,7 +51,6 @@ public final class PythPushOracleProgram {
                                             final int shardId,
                                             final byte[] feedId) {
     final var keys = updatePriceFeedKeys(
-      invokedPythPushOracleProgramMeta,
       payerKey,
       pythSolanaReceiverKey,
       encodedVaaKey,
@@ -70,7 +68,7 @@ public final class PythPushOracleProgram {
     );
   }
 
-  public static Instruction updatePriceFeed(final AccountMeta invokedPythPushOracleProgramMeta                                            ,
+  public static Instruction updatePriceFeed(final AccountMeta invokedPythPushOracleProgramMeta,
                                             final List<AccountMeta> keys,
                                             final PostUpdateParams params,
                                             final int shardId,

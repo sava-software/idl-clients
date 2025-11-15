@@ -2,6 +2,7 @@ package software.sava.idl.clients.kamino.lend.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -29,6 +30,7 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -38,8 +40,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator INIT_LENDING_MARKET_DISCRIMINATOR = toDiscriminator(34, 162, 116, 14, 101, 137, 94, 239);
 
-  public static List<AccountMeta> initLendingMarketKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                        ,
-                                                        final PublicKey lendingMarketOwnerKey,
+  public static List<AccountMeta> initLendingMarketKeys(final PublicKey lendingMarketOwnerKey,
                                                         final PublicKey lendingMarketKey,
                                                         final PublicKey lendingMarketAuthorityKey,
                                                         final PublicKey systemProgramKey,
@@ -61,7 +62,6 @@ public final class KaminoLendingProgram {
                                               final PublicKey rentKey,
                                               final byte[] quoteCurrency) {
     final var keys = initLendingMarketKeys(
-      invokedKaminoLendingProgramMeta,
       lendingMarketOwnerKey,
       lendingMarketKey,
       lendingMarketAuthorityKey,
@@ -71,7 +71,7 @@ public final class KaminoLendingProgram {
     return initLendingMarket(invokedKaminoLendingProgramMeta, keys, quoteCurrency);
   }
 
-  public static Instruction initLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta                                              ,
+  public static Instruction initLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final List<AccountMeta> keys,
                                               final byte[] quoteCurrency) {
     final byte[] _data = new byte[8 + Borsh.lenArray(quoteCurrency)];
@@ -116,8 +116,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator UPDATE_LENDING_MARKET_DISCRIMINATOR = toDiscriminator(209, 157, 53, 210, 97, 180, 31, 45);
 
-  public static List<AccountMeta> updateLendingMarketKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
-                                                          final PublicKey lendingMarketOwnerKey,
+  public static List<AccountMeta> updateLendingMarketKeys(final PublicKey lendingMarketOwnerKey,
                                                           final PublicKey lendingMarketKey) {
     return List.of(
       createReadOnlySigner(lendingMarketOwnerKey),
@@ -131,14 +130,13 @@ public final class KaminoLendingProgram {
                                                 final long mode,
                                                 final byte[] value) {
     final var keys = updateLendingMarketKeys(
-      invokedKaminoLendingProgramMeta,
       lendingMarketOwnerKey,
       lendingMarketKey
     );
     return updateLendingMarket(invokedKaminoLendingProgramMeta, keys, mode, value);
   }
 
-  public static Instruction updateLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta                                                ,
+  public static Instruction updateLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long mode,
                                                 final byte[] value) {
@@ -190,8 +188,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator UPDATE_LENDING_MARKET_OWNER_DISCRIMINATOR = toDiscriminator(118, 224, 10, 62, 196, 230, 184, 89);
 
-  public static List<AccountMeta> updateLendingMarketOwnerKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                               ,
-                                                               final PublicKey lendingMarketOwnerCachedKey,
+  public static List<AccountMeta> updateLendingMarketOwnerKeys(final PublicKey lendingMarketOwnerCachedKey,
                                                                final PublicKey lendingMarketKey) {
     return List.of(
       createReadOnlySigner(lendingMarketOwnerCachedKey),
@@ -199,23 +196,24 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction updateLendingMarketOwner(final AccountMeta invokedKaminoLendingProgramMeta, final PublicKey lendingMarketOwnerCachedKey, final PublicKey lendingMarketKey) {     final var keys = updateLendingMarketOwnerKeys(
-      invokedKaminoLendingProgramMeta,
+  public static Instruction updateLendingMarketOwner(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                     final PublicKey lendingMarketOwnerCachedKey,
+                                                     final PublicKey lendingMarketKey) {
+    final var keys = updateLendingMarketOwnerKeys(
       lendingMarketOwnerCachedKey,
       lendingMarketKey
     );
     return updateLendingMarketOwner(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction updateLendingMarketOwner(final AccountMeta invokedKaminoLendingProgramMeta                                                     ,
+  public static Instruction updateLendingMarketOwner(final AccountMeta invokedKaminoLendingProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, UPDATE_LENDING_MARKET_OWNER_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_RESERVE_DISCRIMINATOR = toDiscriminator(138, 245, 71, 225, 153, 4, 3, 43);
 
-  public static List<AccountMeta> initReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                  ,
-                                                  final PublicKey signerKey,
+  public static List<AccountMeta> initReserveKeys(final PublicKey signerKey,
                                                   final PublicKey lendingMarketKey,
                                                   final PublicKey lendingMarketAuthorityKey,
                                                   final PublicKey reserveKey,
@@ -263,7 +261,6 @@ public final class KaminoLendingProgram {
                                         final PublicKey collateralTokenProgramKey,
                                         final PublicKey systemProgramKey) {
     final var keys = initReserveKeys(
-      invokedKaminoLendingProgramMeta,
       signerKey,
       lendingMarketKey,
       lendingMarketAuthorityKey,
@@ -282,15 +279,14 @@ public final class KaminoLendingProgram {
     return initReserve(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction initReserve(final AccountMeta invokedKaminoLendingProgramMeta                                        ,
+  public static Instruction initReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, INIT_RESERVE_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_FARMS_FOR_RESERVE_DISCRIMINATOR = toDiscriminator(218, 6, 62, 233, 1, 33, 232, 82);
 
-  public static List<AccountMeta> initFarmsForReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
-                                                          final PublicKey lendingMarketOwnerKey,
+  public static List<AccountMeta> initFarmsForReserveKeys(final PublicKey lendingMarketOwnerKey,
                                                           final PublicKey lendingMarketKey,
                                                           final PublicKey lendingMarketAuthorityKey,
                                                           final PublicKey reserveKey,
@@ -327,7 +323,6 @@ public final class KaminoLendingProgram {
                                                 final PublicKey systemProgramKey,
                                                 final int mode) {
     final var keys = initFarmsForReserveKeys(
-      invokedKaminoLendingProgramMeta,
       lendingMarketOwnerKey,
       lendingMarketKey,
       lendingMarketAuthorityKey,
@@ -342,7 +337,7 @@ public final class KaminoLendingProgram {
     return initFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
-  public static Instruction initFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta                                                ,
+  public static Instruction initFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int mode) {
     final byte[] _data = new byte[9];
@@ -386,8 +381,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator UPDATE_RESERVE_CONFIG_DISCRIMINATOR = toDiscriminator(61, 148, 100, 70, 143, 107, 17, 13);
 
-  public static List<AccountMeta> updateReserveConfigKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
-                                                          final PublicKey signerKey,
+  public static List<AccountMeta> updateReserveConfigKeys(final PublicKey signerKey,
                                                           final PublicKey globalConfigKey,
                                                           final PublicKey lendingMarketKey,
                                                           final PublicKey reserveKey) {
@@ -408,7 +402,6 @@ public final class KaminoLendingProgram {
                                                 final byte[] value,
                                                 final boolean skipConfigIntegrityValidation) {
     final var keys = updateReserveConfigKeys(
-      invokedKaminoLendingProgramMeta,
       signerKey,
       globalConfigKey,
       lendingMarketKey,
@@ -423,7 +416,7 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction updateReserveConfig(final AccountMeta invokedKaminoLendingProgramMeta                                                ,
+  public static Instruction updateReserveConfig(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final UpdateConfigMode mode,
                                                 final byte[] value,
@@ -478,8 +471,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REDEEM_FEES_DISCRIMINATOR = toDiscriminator(215, 39, 180, 41, 173, 46, 248, 220);
 
-  public static List<AccountMeta> redeemFeesKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                 ,
-                                                 final PublicKey reserveKey,
+  public static List<AccountMeta> redeemFeesKeys(final PublicKey reserveKey,
                                                  final PublicKey reserveLiquidityMintKey,
                                                  final PublicKey reserveLiquidityFeeReceiverKey,
                                                  final PublicKey reserveSupplyLiquidityKey,
@@ -506,7 +498,6 @@ public final class KaminoLendingProgram {
                                        final PublicKey lendingMarketAuthorityKey,
                                        final PublicKey tokenProgramKey) {
     final var keys = redeemFeesKeys(
-      invokedKaminoLendingProgramMeta,
       reserveKey,
       reserveLiquidityMintKey,
       reserveLiquidityFeeReceiverKey,
@@ -518,15 +509,14 @@ public final class KaminoLendingProgram {
     return redeemFees(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction redeemFees(final AccountMeta invokedKaminoLendingProgramMeta                                       ,
+  public static Instruction redeemFees(final AccountMeta invokedKaminoLendingProgramMeta,
                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, REDEEM_FEES_DISCRIMINATOR);
   }
 
   public static final Discriminator WITHDRAW_PROTOCOL_FEE_DISCRIMINATOR = toDiscriminator(158, 201, 158, 189, 33, 93, 162, 103);
 
-  public static List<AccountMeta> withdrawProtocolFeeKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
-                                                          final PublicKey globalConfigKey,
+  public static List<AccountMeta> withdrawProtocolFeeKeys(final PublicKey globalConfigKey,
                                                           final PublicKey lendingMarketKey,
                                                           final PublicKey reserveKey,
                                                           final PublicKey reserveLiquidityMintKey,
@@ -557,7 +547,6 @@ public final class KaminoLendingProgram {
                                                 final PublicKey tokenProgramKey,
                                                 final long amount) {
     final var keys = withdrawProtocolFeeKeys(
-      invokedKaminoLendingProgramMeta,
       globalConfigKey,
       lendingMarketKey,
       reserveKey,
@@ -570,7 +559,7 @@ public final class KaminoLendingProgram {
     return withdrawProtocolFee(invokedKaminoLendingProgramMeta, keys, amount);
   }
 
-  public static Instruction withdrawProtocolFee(final AccountMeta invokedKaminoLendingProgramMeta                                                ,
+  public static Instruction withdrawProtocolFee(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount) {
     final byte[] _data = new byte[16];
@@ -612,10 +601,54 @@ public final class KaminoLendingProgram {
     }
   }
 
+  public static final Discriminator SEED_DEPOSIT_ON_INIT_RESERVE_DISCRIMINATOR = toDiscriminator(254, 197, 228, 118, 183, 206, 62, 226);
+
+  public static List<AccountMeta> seedDepositOnInitReserveKeys(final PublicKey signerKey,
+                                                               final PublicKey lendingMarketKey,
+                                                               final PublicKey reserveKey,
+                                                               final PublicKey reserveLiquidityMintKey,
+                                                               final PublicKey reserveLiquiditySupplyKey,
+                                                               final PublicKey initialLiquiditySourceKey,
+                                                               final PublicKey liquidityTokenProgramKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createRead(lendingMarketKey),
+      createWrite(reserveKey),
+      createRead(reserveLiquidityMintKey),
+      createWrite(reserveLiquiditySupplyKey),
+      createWrite(initialLiquiditySourceKey),
+      createRead(liquidityTokenProgramKey)
+    );
+  }
+
+  public static Instruction seedDepositOnInitReserve(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                     final PublicKey signerKey,
+                                                     final PublicKey lendingMarketKey,
+                                                     final PublicKey reserveKey,
+                                                     final PublicKey reserveLiquidityMintKey,
+                                                     final PublicKey reserveLiquiditySupplyKey,
+                                                     final PublicKey initialLiquiditySourceKey,
+                                                     final PublicKey liquidityTokenProgramKey) {
+    final var keys = seedDepositOnInitReserveKeys(
+      signerKey,
+      lendingMarketKey,
+      reserveKey,
+      reserveLiquidityMintKey,
+      reserveLiquiditySupplyKey,
+      initialLiquiditySourceKey,
+      liquidityTokenProgramKey
+    );
+    return seedDepositOnInitReserve(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction seedDepositOnInitReserve(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                     final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, SEED_DEPOSIT_ON_INIT_RESERVE_DISCRIMINATOR);
+  }
+
   public static final Discriminator SOCIALIZE_LOSS_DISCRIMINATOR = toDiscriminator(245, 75, 91, 0, 236, 97, 19, 3);
 
-  public static List<AccountMeta> socializeLossKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                    ,
-                                                    final PublicKey riskCouncilKey,
+  public static List<AccountMeta> socializeLossKeys(final PublicKey riskCouncilKey,
                                                     final PublicKey obligationKey,
                                                     final PublicKey lendingMarketKey,
                                                     final PublicKey reserveKey,
@@ -637,7 +670,6 @@ public final class KaminoLendingProgram {
                                           final PublicKey instructionSysvarAccountKey,
                                           final long liquidityAmount) {
     final var keys = socializeLossKeys(
-      invokedKaminoLendingProgramMeta,
       riskCouncilKey,
       obligationKey,
       lendingMarketKey,
@@ -647,7 +679,7 @@ public final class KaminoLendingProgram {
     return socializeLoss(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction socializeLoss(final AccountMeta invokedKaminoLendingProgramMeta                                          ,
+  public static Instruction socializeLoss(final AccountMeta invokedKaminoLendingProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -691,7 +723,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator SOCIALIZE_LOSS_V_2_DISCRIMINATOR = toDiscriminator(238, 95, 98, 220, 187, 40, 204, 154);
 
-  public static List<AccountMeta> socializeLossV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                      ,
+  public static List<AccountMeta> socializeLossV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final PublicKey socializeLossAccountsRiskCouncilKey,
                                                       final PublicKey socializeLossAccountsObligationKey,
                                                       final PublicKey socializeLossAccountsLendingMarketKey,
@@ -740,7 +772,7 @@ public final class KaminoLendingProgram {
     return socializeLossV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction socializeLossV2(final AccountMeta invokedKaminoLendingProgramMeta                                            ,
+  public static Instruction socializeLossV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -784,8 +816,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator MARK_OBLIGATION_FOR_DELEVERAGING_DISCRIMINATOR = toDiscriminator(164, 35, 182, 19, 0, 116, 243, 127);
 
-  public static List<AccountMeta> markObligationForDeleveragingKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                    ,
-                                                                    final PublicKey riskCouncilKey,
+  public static List<AccountMeta> markObligationForDeleveragingKeys(final PublicKey riskCouncilKey,
                                                                     final PublicKey obligationKey,
                                                                     final PublicKey lendingMarketKey) {
     return List.of(
@@ -801,7 +832,6 @@ public final class KaminoLendingProgram {
                                                           final PublicKey lendingMarketKey,
                                                           final int autodeleverageTargetLtvPct) {
     final var keys = markObligationForDeleveragingKeys(
-      invokedKaminoLendingProgramMeta,
       riskCouncilKey,
       obligationKey,
       lendingMarketKey
@@ -809,7 +839,7 @@ public final class KaminoLendingProgram {
     return markObligationForDeleveraging(invokedKaminoLendingProgramMeta, keys, autodeleverageTargetLtvPct);
   }
 
-  public static Instruction markObligationForDeleveraging(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
+  public static Instruction markObligationForDeleveraging(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int autodeleverageTargetLtvPct) {
     final byte[] _data = new byte[9];
@@ -853,7 +883,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REFRESH_RESERVE_DISCRIMINATOR = toDiscriminator(2, 218, 138, 235, 79, 201, 25, 102);
 
-  public static List<AccountMeta> refreshReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                     ,
+  public static List<AccountMeta> refreshReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                      final PublicKey reserveKey,
                                                      final PublicKey lendingMarketKey,
                                                      final PublicKey pythOracleKey,
@@ -889,14 +919,14 @@ public final class KaminoLendingProgram {
     return refreshReserve(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction refreshReserve(final AccountMeta invokedKaminoLendingProgramMeta                                           ,
+  public static Instruction refreshReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, REFRESH_RESERVE_DISCRIMINATOR);
   }
 
   public static final Discriminator REFRESH_RESERVES_BATCH_DISCRIMINATOR = toDiscriminator(144, 110, 26, 103, 162, 204, 252, 147);
 
-  public static Instruction refreshReservesBatch(final AccountMeta invokedKaminoLendingProgramMeta                                                 ,
+  public static Instruction refreshReservesBatch(final AccountMeta invokedKaminoLendingProgramMeta,
                                                  final boolean skipPriceUpdates) {
     final byte[] _data = new byte[9];
     int i = REFRESH_RESERVES_BATCH_DISCRIMINATOR.write(_data, 0);
@@ -939,8 +969,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator DEPOSIT_RESERVE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(169, 201, 30, 126, 6, 205, 102, 68);
 
-  public static List<AccountMeta> depositReserveLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                              ,
-                                                              final PublicKey ownerKey,
+  public static List<AccountMeta> depositReserveLiquidityKeys(final PublicKey ownerKey,
                                                               final PublicKey reserveKey,
                                                               final PublicKey lendingMarketKey,
                                                               final PublicKey lendingMarketAuthorityKey,
@@ -983,7 +1012,6 @@ public final class KaminoLendingProgram {
                                                     final PublicKey instructionSysvarAccountKey,
                                                     final long liquidityAmount) {
     final var keys = depositReserveLiquidityKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       reserveKey,
       lendingMarketKey,
@@ -1000,7 +1028,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction depositReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta                                                    ,
+  public static Instruction depositReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -1044,8 +1072,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REDEEM_RESERVE_COLLATERAL_DISCRIMINATOR = toDiscriminator(234, 117, 181, 125, 185, 142, 220, 29);
 
-  public static List<AccountMeta> redeemReserveCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                              ,
-                                                              final PublicKey ownerKey,
+  public static List<AccountMeta> redeemReserveCollateralKeys(final PublicKey ownerKey,
                                                               final PublicKey lendingMarketKey,
                                                               final PublicKey reserveKey,
                                                               final PublicKey lendingMarketAuthorityKey,
@@ -1088,7 +1115,6 @@ public final class KaminoLendingProgram {
                                                     final PublicKey instructionSysvarAccountKey,
                                                     final long collateralAmount) {
     final var keys = redeemReserveCollateralKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       lendingMarketKey,
       reserveKey,
@@ -1105,7 +1131,7 @@ public final class KaminoLendingProgram {
     return redeemReserveCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction redeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                    ,
+  public static Instruction redeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -1149,8 +1175,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator INIT_OBLIGATION_DISCRIMINATOR = toDiscriminator(251, 10, 231, 76, 27, 11, 159, 96);
 
-  public static List<AccountMeta> initObligationKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                     ,
-                                                     final PublicKey obligationOwnerKey,
+  public static List<AccountMeta> initObligationKeys(final PublicKey obligationOwnerKey,
                                                      final PublicKey feePayerKey,
                                                      final PublicKey obligationKey,
                                                      final PublicKey lendingMarketKey,
@@ -1184,7 +1209,6 @@ public final class KaminoLendingProgram {
                                            final PublicKey systemProgramKey,
                                            final InitObligationArgs args) {
     final var keys = initObligationKeys(
-      invokedKaminoLendingProgramMeta,
       obligationOwnerKey,
       feePayerKey,
       obligationKey,
@@ -1198,7 +1222,7 @@ public final class KaminoLendingProgram {
     return initObligation(invokedKaminoLendingProgramMeta, keys, args);
   }
 
-  public static Instruction initObligation(final AccountMeta invokedKaminoLendingProgramMeta                                           ,
+  public static Instruction initObligation(final AccountMeta invokedKaminoLendingProgramMeta,
                                            final List<AccountMeta> keys,
                                            final InitObligationArgs args) {
     final byte[] _data = new byte[8 + Borsh.len(args)];
@@ -1241,8 +1265,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator INIT_OBLIGATION_FARMS_FOR_RESERVE_DISCRIMINATOR = toDiscriminator(136, 63, 15, 186, 211, 152, 168, 164);
 
-  public static List<AccountMeta> initObligationFarmsForReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                    ,
-                                                                    final PublicKey payerKey,
+  public static List<AccountMeta> initObligationFarmsForReserveKeys(final PublicKey payerKey,
                                                                     final PublicKey ownerKey,
                                                                     final PublicKey obligationKey,
                                                                     final PublicKey lendingMarketAuthorityKey,
@@ -1282,7 +1305,6 @@ public final class KaminoLendingProgram {
                                                           final PublicKey systemProgramKey,
                                                           final int mode) {
     final var keys = initObligationFarmsForReserveKeys(
-      invokedKaminoLendingProgramMeta,
       payerKey,
       ownerKey,
       obligationKey,
@@ -1298,7 +1320,7 @@ public final class KaminoLendingProgram {
     return initObligationFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
-  public static Instruction initObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
+  public static Instruction initObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int mode) {
     final byte[] _data = new byte[9];
@@ -1342,8 +1364,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REFRESH_OBLIGATION_FARMS_FOR_RESERVE_DISCRIMINATOR = toDiscriminator(140, 144, 253, 21, 10, 74, 248, 3);
 
-  public static List<AccountMeta> refreshObligationFarmsForReserveKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                       ,
-                                                                       final PublicKey crankKey,
+  public static List<AccountMeta> refreshObligationFarmsForReserveKeys(final PublicKey crankKey,
                                                                        final PublicKey baseAccountsObligationKey,
                                                                        final PublicKey baseAccountsLendingMarketAuthorityKey,
                                                                        final PublicKey baseAccountsReserveKey,
@@ -1380,7 +1401,6 @@ public final class KaminoLendingProgram {
                                                              final PublicKey systemProgramKey,
                                                              final int mode) {
     final var keys = refreshObligationFarmsForReserveKeys(
-      invokedKaminoLendingProgramMeta,
       crankKey,
       baseAccountsObligationKey,
       baseAccountsLendingMarketAuthorityKey,
@@ -1395,7 +1415,7 @@ public final class KaminoLendingProgram {
     return refreshObligationFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
-  public static Instruction refreshObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta                                                             ,
+  public static Instruction refreshObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int mode) {
     final byte[] _data = new byte[9];
@@ -1439,8 +1459,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REFRESH_OBLIGATION_DISCRIMINATOR = toDiscriminator(33, 132, 147, 228, 151, 192, 72, 89);
 
-  public static List<AccountMeta> refreshObligationKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                        ,
-                                                        final PublicKey lendingMarketKey,
+  public static List<AccountMeta> refreshObligationKeys(final PublicKey lendingMarketKey,
                                                         final PublicKey obligationKey) {
     return List.of(
       createRead(lendingMarketKey),
@@ -1448,23 +1467,24 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction refreshObligation(final AccountMeta invokedKaminoLendingProgramMeta, final PublicKey lendingMarketKey, final PublicKey obligationKey) {     final var keys = refreshObligationKeys(
-      invokedKaminoLendingProgramMeta,
+  public static Instruction refreshObligation(final AccountMeta invokedKaminoLendingProgramMeta,
+                                              final PublicKey lendingMarketKey,
+                                              final PublicKey obligationKey) {
+    final var keys = refreshObligationKeys(
       lendingMarketKey,
       obligationKey
     );
     return refreshObligation(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction refreshObligation(final AccountMeta invokedKaminoLendingProgramMeta                                              ,
+  public static Instruction refreshObligation(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, REFRESH_OBLIGATION_DISCRIMINATOR);
   }
 
   public static final Discriminator DEPOSIT_OBLIGATION_COLLATERAL_DISCRIMINATOR = toDiscriminator(108, 209, 4, 72, 21, 22, 118, 133);
 
-  public static List<AccountMeta> depositObligationCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                  ,
-                                                                  final PublicKey ownerKey,
+  public static List<AccountMeta> depositObligationCollateralKeys(final PublicKey ownerKey,
                                                                   final PublicKey obligationKey,
                                                                   final PublicKey lendingMarketKey,
                                                                   final PublicKey depositReserveKey,
@@ -1495,7 +1515,6 @@ public final class KaminoLendingProgram {
                                                         final PublicKey instructionSysvarAccountKey,
                                                         final long collateralAmount) {
     final var keys = depositObligationCollateralKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       obligationKey,
       lendingMarketKey,
@@ -1508,7 +1527,7 @@ public final class KaminoLendingProgram {
     return depositObligationCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction depositObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                        ,
+  public static Instruction depositObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -1552,7 +1571,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator DEPOSIT_OBLIGATION_COLLATERAL_V_2_DISCRIMINATOR = toDiscriminator(137, 145, 151, 94, 167, 113, 4, 145);
 
-  public static List<AccountMeta> depositObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                    ,
+  public static List<AccountMeta> depositObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                     final PublicKey depositAccountsOwnerKey,
                                                                     final PublicKey depositAccountsObligationKey,
                                                                     final PublicKey depositAccountsLendingMarketKey,
@@ -1613,7 +1632,7 @@ public final class KaminoLendingProgram {
     return depositObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction depositObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta                                                          ,
+  public static Instruction depositObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -1657,8 +1676,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator WITHDRAW_OBLIGATION_COLLATERAL_DISCRIMINATOR = toDiscriminator(37, 116, 205, 103, 243, 192, 92, 198);
 
-  public static List<AccountMeta> withdrawObligationCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                   ,
-                                                                   final PublicKey ownerKey,
+  public static List<AccountMeta> withdrawObligationCollateralKeys(final PublicKey ownerKey,
                                                                    final PublicKey obligationKey,
                                                                    final PublicKey lendingMarketKey,
                                                                    final PublicKey lendingMarketAuthorityKey,
@@ -1692,7 +1710,6 @@ public final class KaminoLendingProgram {
                                                          final PublicKey instructionSysvarAccountKey,
                                                          final long collateralAmount) {
     final var keys = withdrawObligationCollateralKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       obligationKey,
       lendingMarketKey,
@@ -1706,7 +1723,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction withdrawObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                         ,
+  public static Instruction withdrawObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -1750,7 +1767,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator WITHDRAW_OBLIGATION_COLLATERAL_V_2_DISCRIMINATOR = toDiscriminator(202, 249, 117, 114, 231, 192, 47, 138);
 
-  public static List<AccountMeta> withdrawObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                     ,
+  public static List<AccountMeta> withdrawObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                      final PublicKey withdrawAccountsOwnerKey,
                                                                      final PublicKey withdrawAccountsObligationKey,
                                                                      final PublicKey withdrawAccountsLendingMarketKey,
@@ -1811,7 +1828,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction withdrawObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta                                                           ,
+  public static Instruction withdrawObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -1855,7 +1872,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator BORROW_OBLIGATION_LIQUIDITY_DISCRIMINATOR = toDiscriminator(121, 127, 18, 204, 73, 245, 225, 65);
 
-  public static List<AccountMeta> borrowObligationLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                ,
+  public static List<AccountMeta> borrowObligationLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                 final PublicKey ownerKey,
                                                                 final PublicKey obligationKey,
                                                                 final PublicKey lendingMarketKey,
@@ -1916,7 +1933,7 @@ public final class KaminoLendingProgram {
     return borrowObligationLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction borrowObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta                                                      ,
+  public static Instruction borrowObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -1960,7 +1977,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator BORROW_OBLIGATION_LIQUIDITY_V_2_DISCRIMINATOR = toDiscriminator(161, 128, 143, 245, 171, 199, 194, 6);
 
-  public static List<AccountMeta> borrowObligationLiquidityV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                  ,
+  public static List<AccountMeta> borrowObligationLiquidityV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                   final PublicKey borrowAccountsOwnerKey,
                                                                   final PublicKey borrowAccountsObligationKey,
                                                                   final PublicKey borrowAccountsLendingMarketKey,
@@ -2033,7 +2050,7 @@ public final class KaminoLendingProgram {
     return borrowObligationLiquidityV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction borrowObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta                                                        ,
+  public static Instruction borrowObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -2077,8 +2094,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REPAY_OBLIGATION_LIQUIDITY_DISCRIMINATOR = toDiscriminator(145, 178, 13, 225, 76, 240, 147, 72);
 
-  public static List<AccountMeta> repayObligationLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                               ,
-                                                               final PublicKey ownerKey,
+  public static List<AccountMeta> repayObligationLiquidityKeys(final PublicKey ownerKey,
                                                                final PublicKey obligationKey,
                                                                final PublicKey lendingMarketKey,
                                                                final PublicKey repayReserveKey,
@@ -2112,7 +2128,6 @@ public final class KaminoLendingProgram {
                                                      final PublicKey instructionSysvarAccountKey,
                                                      final long liquidityAmount) {
     final var keys = repayObligationLiquidityKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       obligationKey,
       lendingMarketKey,
@@ -2126,7 +2141,7 @@ public final class KaminoLendingProgram {
     return repayObligationLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction repayObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta                                                     ,
+  public static Instruction repayObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -2170,7 +2185,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REPAY_OBLIGATION_LIQUIDITY_V_2_DISCRIMINATOR = toDiscriminator(116, 174, 213, 76, 180, 53, 210, 144);
 
-  public static List<AccountMeta> repayObligationLiquidityV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                 ,
+  public static List<AccountMeta> repayObligationLiquidityV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                  final PublicKey repayAccountsOwnerKey,
                                                                  final PublicKey repayAccountsObligationKey,
                                                                  final PublicKey repayAccountsLendingMarketKey,
@@ -2235,7 +2250,7 @@ public final class KaminoLendingProgram {
     return repayObligationLiquidityV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction repayObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta                                                       ,
+  public static Instruction repayObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -2279,7 +2294,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REPAY_AND_WITHDRAW_AND_REDEEM_DISCRIMINATOR = toDiscriminator(2, 54, 152, 3, 148, 96, 109, 218);
 
-  public static List<AccountMeta> repayAndWithdrawAndRedeemKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                ,
+  public static List<AccountMeta> repayAndWithdrawAndRedeemKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                 final PublicKey repayAccountsOwnerKey,
                                                                 final PublicKey repayAccountsObligationKey,
                                                                 final PublicKey repayAccountsLendingMarketKey,
@@ -2405,7 +2420,7 @@ public final class KaminoLendingProgram {
     return repayAndWithdrawAndRedeem(invokedKaminoLendingProgramMeta, keys, repayAmount, withdrawCollateralAmount);
   }
 
-  public static Instruction repayAndWithdrawAndRedeem(final AccountMeta invokedKaminoLendingProgramMeta                                                      ,
+  public static Instruction repayAndWithdrawAndRedeem(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long repayAmount,
                                                       final long withdrawCollateralAmount) {
@@ -2456,7 +2471,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator DEPOSIT_AND_WITHDRAW_DISCRIMINATOR = toDiscriminator(141, 153, 39, 15, 64, 61, 88, 84);
 
-  public static List<AccountMeta> depositAndWithdrawKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                         ,
+  public static List<AccountMeta> depositAndWithdrawKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final PublicKey depositAccountsOwnerKey,
                                                          final PublicKey depositAccountsObligationKey,
                                                          final PublicKey depositAccountsLendingMarketKey,
@@ -2602,7 +2617,7 @@ public final class KaminoLendingProgram {
     return depositAndWithdraw(invokedKaminoLendingProgramMeta, keys, liquidityAmount, withdrawCollateralAmount);
   }
 
-  public static Instruction depositAndWithdraw(final AccountMeta invokedKaminoLendingProgramMeta                                               ,
+  public static Instruction depositAndWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long liquidityAmount,
                                                final long withdrawCollateralAmount) {
@@ -2653,7 +2668,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator DEPOSIT_RESERVE_LIQUIDITY_AND_OBLIGATION_COLLATERAL_DISCRIMINATOR = toDiscriminator(129, 199, 4, 2, 222, 39, 26, 46);
 
-  public static List<AccountMeta> depositReserveLiquidityAndObligationCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                     ,
+  public static List<AccountMeta> depositReserveLiquidityAndObligationCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                      final PublicKey ownerKey,
                                                                                      final PublicKey obligationKey,
                                                                                      final PublicKey lendingMarketKey,
@@ -2722,7 +2737,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidityAndObligationCollateral(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction depositReserveLiquidityAndObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                                           ,
+  public static Instruction depositReserveLiquidityAndObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                            final List<AccountMeta> keys,
                                                                            final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -2766,7 +2781,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator DEPOSIT_RESERVE_LIQUIDITY_AND_OBLIGATION_COLLATERAL_V_2_DISCRIMINATOR = toDiscriminator(216, 224, 191, 27, 204, 151, 102, 175);
 
-  public static List<AccountMeta> depositReserveLiquidityAndObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                       ,
+  public static List<AccountMeta> depositReserveLiquidityAndObligationCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                        final PublicKey depositAccountsOwnerKey,
                                                                                        final PublicKey depositAccountsObligationKey,
                                                                                        final PublicKey depositAccountsLendingMarketKey,
@@ -2847,7 +2862,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidityAndObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction depositReserveLiquidityAndObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta                                                                             ,
+  public static Instruction depositReserveLiquidityAndObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                              final List<AccountMeta> keys,
                                                                              final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -2891,7 +2906,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator WITHDRAW_OBLIGATION_COLLATERAL_AND_REDEEM_RESERVE_COLLATERAL_DISCRIMINATOR = toDiscriminator(75, 93, 93, 220, 34, 150, 218, 196);
 
-  public static List<AccountMeta> withdrawObligationCollateralAndRedeemReserveCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                             ,
+  public static List<AccountMeta> withdrawObligationCollateralAndRedeemReserveCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                              final PublicKey ownerKey,
                                                                                              final PublicKey obligationKey,
                                                                                              final PublicKey lendingMarketKey,
@@ -2960,7 +2975,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralAndRedeemReserveCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                                                   ,
+  public static Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                    final List<AccountMeta> keys,
                                                                                    final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -3004,7 +3019,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator WITHDRAW_OBLIGATION_COLLATERAL_AND_REDEEM_RESERVE_COLLATERAL_V_2_DISCRIMINATOR = toDiscriminator(235, 52, 119, 152, 149, 197, 20, 7);
 
-  public static List<AccountMeta> withdrawObligationCollateralAndRedeemReserveCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                               ,
+  public static List<AccountMeta> withdrawObligationCollateralAndRedeemReserveCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                                final PublicKey withdrawAccountsOwnerKey,
                                                                                                final PublicKey withdrawAccountsObligationKey,
                                                                                                final PublicKey withdrawAccountsLendingMarketKey,
@@ -3085,7 +3100,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralAndRedeemReserveCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
-  public static Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta                                                                                     ,
+  public static Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                      final List<AccountMeta> keys,
                                                                                      final long collateralAmount) {
     final byte[] _data = new byte[16];
@@ -3129,8 +3144,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator LIQUIDATE_OBLIGATION_AND_REDEEM_RESERVE_COLLATERAL_DISCRIMINATOR = toDiscriminator(177, 71, 154, 188, 226, 133, 74, 55);
 
-  public static List<AccountMeta> liquidateObligationAndRedeemReserveCollateralKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                    ,
-                                                                                    final PublicKey liquidatorKey,
+  public static List<AccountMeta> liquidateObligationAndRedeemReserveCollateralKeys(final PublicKey liquidatorKey,
                                                                                     final PublicKey obligationKey,
                                                                                     final PublicKey lendingMarketKey,
                                                                                     final PublicKey lendingMarketAuthorityKey,
@@ -3199,7 +3213,6 @@ public final class KaminoLendingProgram {
                                                                           final long minAcceptableReceivedLiquidityAmount,
                                                                           final long maxAllowedLtvOverridePercent) {
     final var keys = liquidateObligationAndRedeemReserveCollateralKeys(
-      invokedKaminoLendingProgramMeta,
       liquidatorKey,
       obligationKey,
       lendingMarketKey,
@@ -3230,7 +3243,7 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta                                                                          ,
+  public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                           final List<AccountMeta> keys,
                                                                           final long liquidityAmount,
                                                                           final long minAcceptableReceivedLiquidityAmount,
@@ -3291,7 +3304,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator LIQUIDATE_OBLIGATION_AND_REDEEM_RESERVE_COLLATERAL_V_2_DISCRIMINATOR = toDiscriminator(162, 161, 35, 143, 30, 187, 185, 103);
 
-  public static List<AccountMeta> liquidateObligationAndRedeemReserveCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta                                                                                      ,
+  public static List<AccountMeta> liquidateObligationAndRedeemReserveCollateralV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                       final PublicKey liquidationAccountsLiquidatorKey,
                                                                                       final PublicKey liquidationAccountsObligationKey,
                                                                                       final PublicKey liquidationAccountsLendingMarketKey,
@@ -3412,7 +3425,7 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta                                                                            ,
+  public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                             final List<AccountMeta> keys,
                                                                             final long liquidityAmount,
                                                                             final long minAcceptableReceivedLiquidityAmount,
@@ -3473,7 +3486,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator FLASH_REPAY_RESERVE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(185, 117, 0, 203, 96, 245, 180, 186);
 
-  public static List<AccountMeta> flashRepayReserveLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                 ,
+  public static List<AccountMeta> flashRepayReserveLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                  final PublicKey userTransferAuthorityKey,
                                                                  final PublicKey lendingMarketAuthorityKey,
                                                                  final PublicKey lendingMarketKey,
@@ -3535,7 +3548,7 @@ public final class KaminoLendingProgram {
     return flashRepayReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount, borrowInstructionIndex);
   }
 
-  public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta                                                       ,
+  public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long liquidityAmount,
                                                        final int borrowInstructionIndex) {
@@ -3586,7 +3599,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator FLASH_BORROW_RESERVE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(135, 231, 52, 167, 7, 52, 212, 193);
 
-  public static List<AccountMeta> flashBorrowReserveLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                  ,
+  public static List<AccountMeta> flashBorrowReserveLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                   final PublicKey userTransferAuthorityKey,
                                                                   final PublicKey lendingMarketAuthorityKey,
                                                                   final PublicKey lendingMarketKey,
@@ -3647,7 +3660,7 @@ public final class KaminoLendingProgram {
     return flashBorrowReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
-  public static Instruction flashBorrowReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta                                                        ,
+  public static Instruction flashBorrowReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long liquidityAmount) {
     final byte[] _data = new byte[16];
@@ -3691,8 +3704,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REQUEST_ELEVATION_GROUP_DISCRIMINATOR = toDiscriminator(36, 119, 251, 129, 34, 240, 7, 147);
 
-  public static List<AccountMeta> requestElevationGroupKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                            ,
-                                                            final PublicKey ownerKey,
+  public static List<AccountMeta> requestElevationGroupKeys(final PublicKey ownerKey,
                                                             final PublicKey obligationKey,
                                                             final PublicKey lendingMarketKey) {
     return List.of(
@@ -3708,7 +3720,6 @@ public final class KaminoLendingProgram {
                                                   final PublicKey lendingMarketKey,
                                                   final int elevationGroup) {
     final var keys = requestElevationGroupKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       obligationKey,
       lendingMarketKey
@@ -3716,7 +3727,7 @@ public final class KaminoLendingProgram {
     return requestElevationGroup(invokedKaminoLendingProgramMeta, keys, elevationGroup);
   }
 
-  public static Instruction requestElevationGroup(final AccountMeta invokedKaminoLendingProgramMeta                                                  ,
+  public static Instruction requestElevationGroup(final AccountMeta invokedKaminoLendingProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int elevationGroup) {
     final byte[] _data = new byte[9];
@@ -3760,8 +3771,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator INIT_REFERRER_TOKEN_STATE_DISCRIMINATOR = toDiscriminator(116, 45, 66, 148, 58, 13, 218, 115);
 
-  public static List<AccountMeta> initReferrerTokenStateKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                             ,
-                                                             final PublicKey payerKey,
+  public static List<AccountMeta> initReferrerTokenStateKeys(final PublicKey payerKey,
                                                              final PublicKey lendingMarketKey,
                                                              final PublicKey reserveKey,
                                                              final PublicKey referrerKey,
@@ -3788,7 +3798,6 @@ public final class KaminoLendingProgram {
                                                    final PublicKey rentKey,
                                                    final PublicKey systemProgramKey) {
     final var keys = initReferrerTokenStateKeys(
-      invokedKaminoLendingProgramMeta,
       payerKey,
       lendingMarketKey,
       reserveKey,
@@ -3800,14 +3809,14 @@ public final class KaminoLendingProgram {
     return initReferrerTokenState(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction initReferrerTokenState(final AccountMeta invokedKaminoLendingProgramMeta                                                   ,
+  public static Instruction initReferrerTokenState(final AccountMeta invokedKaminoLendingProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, INIT_REFERRER_TOKEN_STATE_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_USER_METADATA_DISCRIMINATOR = toDiscriminator(117, 169, 176, 69, 197, 23, 15, 162);
 
-  public static List<AccountMeta> initUserMetadataKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                       ,
+  public static List<AccountMeta> initUserMetadataKeys(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final PublicKey ownerKey,
                                                        final PublicKey feePayerKey,
                                                        final PublicKey userMetadataKey,
@@ -3844,7 +3853,7 @@ public final class KaminoLendingProgram {
     return initUserMetadata(invokedKaminoLendingProgramMeta, keys, userLookupTable);
   }
 
-  public static Instruction initUserMetadata(final AccountMeta invokedKaminoLendingProgramMeta                                             ,
+  public static Instruction initUserMetadata(final AccountMeta invokedKaminoLendingProgramMeta,
                                              final List<AccountMeta> keys,
                                              final PublicKey userLookupTable) {
     final byte[] _data = new byte[40];
@@ -3888,8 +3897,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator WITHDRAW_REFERRER_FEES_DISCRIMINATOR = toDiscriminator(171, 118, 121, 201, 233, 140, 23, 228);
 
-  public static List<AccountMeta> withdrawReferrerFeesKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                           ,
-                                                           final PublicKey referrerKey,
+  public static List<AccountMeta> withdrawReferrerFeesKeys(final PublicKey referrerKey,
                                                            final PublicKey referrerTokenStateKey,
                                                            final PublicKey reserveKey,
                                                            final PublicKey reserveLiquidityMintKey,
@@ -3922,7 +3930,6 @@ public final class KaminoLendingProgram {
                                                  final PublicKey lendingMarketAuthorityKey,
                                                  final PublicKey tokenProgramKey) {
     final var keys = withdrawReferrerFeesKeys(
-      invokedKaminoLendingProgramMeta,
       referrerKey,
       referrerTokenStateKey,
       reserveKey,
@@ -3936,15 +3943,14 @@ public final class KaminoLendingProgram {
     return withdrawReferrerFees(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction withdrawReferrerFees(final AccountMeta invokedKaminoLendingProgramMeta                                                 ,
+  public static Instruction withdrawReferrerFees(final AccountMeta invokedKaminoLendingProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, WITHDRAW_REFERRER_FEES_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_REFERRER_STATE_AND_SHORT_URL_DISCRIMINATOR = toDiscriminator(165, 19, 25, 127, 100, 55, 31, 90);
 
-  public static List<AccountMeta> initReferrerStateAndShortUrlKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                   ,
-                                                                   final PublicKey referrerKey,
+  public static List<AccountMeta> initReferrerStateAndShortUrlKeys(final PublicKey referrerKey,
                                                                    final PublicKey referrerStateKey,
                                                                    final PublicKey referrerShortUrlKey,
                                                                    final PublicKey referrerUserMetadataKey,
@@ -3969,7 +3975,6 @@ public final class KaminoLendingProgram {
                                                          final PublicKey systemProgramKey,
                                                          final String shortUrl) {
     final var keys = initReferrerStateAndShortUrlKeys(
-      invokedKaminoLendingProgramMeta,
       referrerKey,
       referrerStateKey,
       referrerShortUrlKey,
@@ -3980,11 +3985,11 @@ public final class KaminoLendingProgram {
     return initReferrerStateAndShortUrl(invokedKaminoLendingProgramMeta, keys, shortUrl);
   }
 
-  public static Instruction initReferrerStateAndShortUrl(final AccountMeta invokedKaminoLendingProgramMeta                                                         ,
+  public static Instruction initReferrerStateAndShortUrl(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final String shortUrl) {
     final byte[] _shortUrl = shortUrl.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_shortUrl)];
+    final byte[] _data = new byte[12 + _shortUrl.length];
     int i = INIT_REFERRER_STATE_AND_SHORT_URL_DISCRIMINATOR.write(_data, 0);
     Borsh.writeVector(_shortUrl, _data, i);
 
@@ -4007,8 +4012,11 @@ public final class KaminoLendingProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var shortUrl = Borsh.string(_data, i);
-      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, shortUrl.getBytes(UTF_8));
+      final int _shortUrlLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
+      final var shortUrl = new String(_shortUrl, UTF_8);
+      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, _shortUrl);
     }
 
     @Override
@@ -4020,14 +4028,13 @@ public final class KaminoLendingProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_shortUrl);
+      return 8 + _shortUrl.length;
     }
   }
 
   public static final Discriminator DELETE_REFERRER_STATE_AND_SHORT_URL_DISCRIMINATOR = toDiscriminator(153, 185, 99, 28, 228, 179, 187, 150);
 
-  public static List<AccountMeta> deleteReferrerStateAndShortUrlKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                                     ,
-                                                                     final PublicKey referrerKey,
+  public static List<AccountMeta> deleteReferrerStateAndShortUrlKeys(final PublicKey referrerKey,
                                                                      final PublicKey referrerStateKey,
                                                                      final PublicKey shortUrlKey,
                                                                      final PublicKey rentKey,
@@ -4048,7 +4055,6 @@ public final class KaminoLendingProgram {
                                                            final PublicKey rentKey,
                                                            final PublicKey systemProgramKey) {
     final var keys = deleteReferrerStateAndShortUrlKeys(
-      invokedKaminoLendingProgramMeta,
       referrerKey,
       referrerStateKey,
       shortUrlKey,
@@ -4058,15 +4064,14 @@ public final class KaminoLendingProgram {
     return deleteReferrerStateAndShortUrl(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction deleteReferrerStateAndShortUrl(final AccountMeta invokedKaminoLendingProgramMeta                                                           ,
+  public static Instruction deleteReferrerStateAndShortUrl(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, DELETE_REFERRER_STATE_AND_SHORT_URL_DISCRIMINATOR);
   }
 
   public static final Discriminator SET_OBLIGATION_ORDER_DISCRIMINATOR = toDiscriminator(81, 1, 99, 156, 211, 83, 78, 46);
 
-  public static List<AccountMeta> setObligationOrderKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                         ,
-                                                         final PublicKey ownerKey,
+  public static List<AccountMeta> setObligationOrderKeys(final PublicKey ownerKey,
                                                          final PublicKey obligationKey,
                                                          final PublicKey lendingMarketKey) {
     return List.of(
@@ -4083,7 +4088,6 @@ public final class KaminoLendingProgram {
                                                final int index,
                                                final ObligationOrder order) {
     final var keys = setObligationOrderKeys(
-      invokedKaminoLendingProgramMeta,
       ownerKey,
       obligationKey,
       lendingMarketKey
@@ -4091,7 +4095,7 @@ public final class KaminoLendingProgram {
     return setObligationOrder(invokedKaminoLendingProgramMeta, keys, index, order);
   }
 
-  public static Instruction setObligationOrder(final AccountMeta invokedKaminoLendingProgramMeta                                               ,
+  public static Instruction setObligationOrder(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int index,
                                                final ObligationOrder order) {
@@ -4141,8 +4145,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator INIT_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(140, 136, 214, 48, 87, 0, 120, 255);
 
-  public static List<AccountMeta> initGlobalConfigKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                       ,
-                                                       final PublicKey payerKey,
+  public static List<AccountMeta> initGlobalConfigKeys(final PublicKey payerKey,
                                                        final PublicKey globalConfigKey,
                                                        final PublicKey programDataKey,
                                                        final PublicKey systemProgramKey,
@@ -4163,7 +4166,6 @@ public final class KaminoLendingProgram {
                                              final PublicKey systemProgramKey,
                                              final PublicKey rentKey) {
     final var keys = initGlobalConfigKeys(
-      invokedKaminoLendingProgramMeta,
       payerKey,
       globalConfigKey,
       programDataKey,
@@ -4173,15 +4175,14 @@ public final class KaminoLendingProgram {
     return initGlobalConfig(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction initGlobalConfig(final AccountMeta invokedKaminoLendingProgramMeta                                             ,
+  public static Instruction initGlobalConfig(final AccountMeta invokedKaminoLendingProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, INIT_GLOBAL_CONFIG_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(164, 84, 130, 189, 111, 58, 250, 200);
 
-  public static List<AccountMeta> updateGlobalConfigKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                         ,
-                                                         final PublicKey globalAdminKey,
+  public static List<AccountMeta> updateGlobalConfigKeys(final PublicKey globalAdminKey,
                                                          final PublicKey globalConfigKey) {
     return List.of(
       createReadOnlySigner(globalAdminKey),
@@ -4195,14 +4196,13 @@ public final class KaminoLendingProgram {
                                                final UpdateGlobalConfigMode mode,
                                                final byte[] value) {
     final var keys = updateGlobalConfigKeys(
-      invokedKaminoLendingProgramMeta,
       globalAdminKey,
       globalConfigKey
     );
     return updateGlobalConfig(invokedKaminoLendingProgramMeta, keys, mode, value);
   }
 
-  public static Instruction updateGlobalConfig(final AccountMeta invokedKaminoLendingProgramMeta                                               ,
+  public static Instruction updateGlobalConfig(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final List<AccountMeta> keys,
                                                final UpdateGlobalConfigMode mode,
                                                final byte[] value) {
@@ -4248,8 +4248,7 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator UPDATE_GLOBAL_CONFIG_ADMIN_DISCRIMINATOR = toDiscriminator(184, 87, 23, 193, 156, 238, 175, 119);
 
-  public static List<AccountMeta> updateGlobalConfigAdminKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                              ,
-                                                              final PublicKey pendingAdminKey,
+  public static List<AccountMeta> updateGlobalConfigAdminKeys(final PublicKey pendingAdminKey,
                                                               final PublicKey globalConfigKey) {
     return List.of(
       createReadOnlySigner(pendingAdminKey),
@@ -4257,23 +4256,24 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedKaminoLendingProgramMeta, final PublicKey pendingAdminKey, final PublicKey globalConfigKey) {     final var keys = updateGlobalConfigAdminKeys(
-      invokedKaminoLendingProgramMeta,
+  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                    final PublicKey pendingAdminKey,
+                                                    final PublicKey globalConfigKey) {
+    final var keys = updateGlobalConfigAdminKeys(
       pendingAdminKey,
       globalConfigKey
     );
     return updateGlobalConfigAdmin(invokedKaminoLendingProgramMeta, keys);
   }
 
-  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedKaminoLendingProgramMeta                                                    ,
+  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, UPDATE_GLOBAL_CONFIG_ADMIN_DISCRIMINATOR);
   }
 
   public static final Discriminator IDL_MISSING_TYPES_DISCRIMINATOR = toDiscriminator(130, 80, 38, 153, 80, 212, 182, 253);
 
-  public static List<AccountMeta> idlMissingTypesKeys(final AccountMeta invokedKaminoLendingProgramMeta                                                      ,
-                                                      final PublicKey signerKey,
+  public static List<AccountMeta> idlMissingTypesKeys(final PublicKey signerKey,
                                                       final PublicKey globalConfigKey,
                                                       final PublicKey lendingMarketKey,
                                                       final PublicKey reserveKey) {
@@ -4298,7 +4298,6 @@ public final class KaminoLendingProgram {
                                             final UpdateLendingMarketConfigValue updateLendingMarketConfigValue,
                                             final UpdateLendingMarketMode updateLendingMarketConfigMode) {
     final var keys = idlMissingTypesKeys(
-      invokedKaminoLendingProgramMeta,
       signerKey,
       globalConfigKey,
       lendingMarketKey,
@@ -4317,7 +4316,7 @@ public final class KaminoLendingProgram {
     );
   }
 
-  public static Instruction idlMissingTypes(final AccountMeta invokedKaminoLendingProgramMeta                                            ,
+  public static Instruction idlMissingTypes(final AccountMeta invokedKaminoLendingProgramMeta,
                                             final List<AccountMeta> keys,
                                             final ReserveFarmKind reserveFarmKind,
                                             final AssetTier assetTier,

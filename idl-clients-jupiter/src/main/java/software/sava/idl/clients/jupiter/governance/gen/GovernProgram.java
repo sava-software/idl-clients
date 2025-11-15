@@ -2,6 +2,7 @@ package software.sava.idl.clients.jupiter.governance.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -36,8 +37,7 @@ public final class GovernProgram {
   /// @param smartWalletKey The Smart Wallet.
   /// @param payerKey Payer.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> createGovernorKeys(final AccountMeta invokedGovernProgramMeta                                                     ,
-                                                     final PublicKey baseKey,
+  public static List<AccountMeta> createGovernorKeys(final PublicKey baseKey,
                                                      final PublicKey governorKey,
                                                      final PublicKey smartWalletKey,
                                                      final PublicKey payerKey,
@@ -67,7 +67,6 @@ public final class GovernProgram {
                                            final PublicKey locker,
                                            final GovernanceParameters params) {
     final var keys = createGovernorKeys(
-      invokedGovernProgramMeta,
       baseKey,
       governorKey,
       smartWalletKey,
@@ -79,7 +78,7 @@ public final class GovernProgram {
 
   /// Creates a Governor.
   ///
-  public static Instruction createGovernor(final AccountMeta invokedGovernProgramMeta                                           ,
+  public static Instruction createGovernor(final AccountMeta invokedGovernProgramMeta,
                                            final List<AccountMeta> keys,
                                            final PublicKey locker,
                                            final GovernanceParameters params) {
@@ -140,8 +139,7 @@ public final class GovernProgram {
   ///                    One of the owners. Checked in the handler via SmartWallet::owner_index.
   /// @param payerKey Payer of the proposal.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> createProposalKeys(final AccountMeta invokedGovernProgramMeta                                                     ,
-                                                     final PublicKey governorKey,
+  public static List<AccountMeta> createProposalKeys(final PublicKey governorKey,
                                                      final PublicKey proposalKey,
                                                      final PublicKey smartWalletKey,
                                                      final PublicKey proposerKey,
@@ -185,7 +183,6 @@ public final class GovernProgram {
                                            final int maxOption,
                                            final ProposalInstruction[] instructions) {
     final var keys = createProposalKeys(
-      invokedGovernProgramMeta,
       governorKey,
       proposalKey,
       smartWalletKey,
@@ -208,7 +205,7 @@ public final class GovernProgram {
   /// This may be called by anyone, since the Proposal does not do anything until
   /// it is activated in activate_proposal.
   ///
-  public static Instruction createProposal(final AccountMeta invokedGovernProgramMeta                                           ,
+  public static Instruction createProposal(final AccountMeta invokedGovernProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int proposalType,
                                            final int maxOption,
@@ -273,8 +270,7 @@ public final class GovernProgram {
   /// @param governorKey The Governor.
   /// @param proposalKey The Proposal to activate.
   /// @param lockerKey The locker of the Governor that may activate the proposal.
-  public static List<AccountMeta> activateProposalKeys(final AccountMeta invokedGovernProgramMeta                                                       ,
-                                                       final PublicKey governorKey,
+  public static List<AccountMeta> activateProposalKeys(final PublicKey governorKey,
                                                        final PublicKey proposalKey,
                                                        final PublicKey lockerKey) {
     return List.of(
@@ -296,7 +292,6 @@ public final class GovernProgram {
                                              final PublicKey proposalKey,
                                              final PublicKey lockerKey) {
     final var keys = activateProposalKeys(
-      invokedGovernProgramMeta,
       governorKey,
       proposalKey,
       lockerKey
@@ -308,7 +303,7 @@ public final class GovernProgram {
   /// Only the Governor::voter may call this; that program
   /// may ensure that only certain types of users can activate proposals.
   ///
-  public static Instruction activateProposal(final AccountMeta invokedGovernProgramMeta                                             ,
+  public static Instruction activateProposal(final AccountMeta invokedGovernProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, ACTIVATE_PROPOSAL_DISCRIMINATOR);
   }
@@ -321,8 +316,7 @@ public final class GovernProgram {
   /// @param governorKey The Governor.
   /// @param proposalKey The Proposal to activate.
   /// @param proposerKey The Proposal::proposer.
-  public static List<AccountMeta> cancelProposalKeys(final AccountMeta invokedGovernProgramMeta                                                     ,
-                                                     final PublicKey governorKey,
+  public static List<AccountMeta> cancelProposalKeys(final PublicKey governorKey,
                                                      final PublicKey proposalKey,
                                                      final PublicKey proposerKey,
                                                      final PublicKey eventAuthorityKey,
@@ -349,7 +343,6 @@ public final class GovernProgram {
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey) {
     final var keys = cancelProposalKeys(
-      invokedGovernProgramMeta,
       governorKey,
       proposalKey,
       proposerKey,
@@ -362,7 +355,7 @@ public final class GovernProgram {
   /// Cancels a proposal.
   /// This is only callable by the creator of the proposal.
   ///
-  public static Instruction cancelProposal(final AccountMeta invokedGovernProgramMeta                                           ,
+  public static Instruction cancelProposal(final AccountMeta invokedGovernProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, CANCEL_PROPOSAL_DISCRIMINATOR);
   }
@@ -379,8 +372,7 @@ public final class GovernProgram {
   /// @param payerKey Payer of the queued transaction.
   /// @param smartWalletProgramKey The Smart Wallet program.
   /// @param systemProgramKey The System program.
-  public static List<AccountMeta> queueProposalKeys(final AccountMeta invokedGovernProgramMeta                                                    ,
-                                                    final PublicKey governorKey,
+  public static List<AccountMeta> queueProposalKeys(final PublicKey governorKey,
                                                     final PublicKey proposalKey,
                                                     final PublicKey transactionKey,
                                                     final PublicKey smartWalletKey,
@@ -423,7 +415,6 @@ public final class GovernProgram {
                                           final PublicKey eventAuthorityKey,
                                           final PublicKey programKey) {
     final var keys = queueProposalKeys(
-      invokedGovernProgramMeta,
       governorKey,
       proposalKey,
       transactionKey,
@@ -439,7 +430,7 @@ public final class GovernProgram {
 
   /// Queues a proposal for execution by the SmartWallet.
   ///
-  public static Instruction queueProposal(final AccountMeta invokedGovernProgramMeta                                          ,
+  public static Instruction queueProposal(final AccountMeta invokedGovernProgramMeta,
                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, QUEUE_PROPOSAL_DISCRIMINATOR);
   }
@@ -452,8 +443,7 @@ public final class GovernProgram {
   /// @param voteKey The vote.
   /// @param payerKey Payer of the Vote.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> newVoteKeys(final AccountMeta invokedGovernProgramMeta                                              ,
-                                              final PublicKey proposalKey,
+  public static List<AccountMeta> newVoteKeys(final PublicKey proposalKey,
                                               final PublicKey voteKey,
                                               final PublicKey payerKey,
                                               final PublicKey systemProgramKey) {
@@ -478,7 +468,6 @@ public final class GovernProgram {
                                     final PublicKey systemProgramKey,
                                     final PublicKey voter) {
     final var keys = newVoteKeys(
-      invokedGovernProgramMeta,
       proposalKey,
       voteKey,
       payerKey,
@@ -489,7 +478,7 @@ public final class GovernProgram {
 
   /// Creates a new Vote. Anyone can call this.
   ///
-  public static Instruction newVote(final AccountMeta invokedGovernProgramMeta                                    ,
+  public static Instruction newVote(final AccountMeta invokedGovernProgramMeta,
                                     final List<AccountMeta> keys,
                                     final PublicKey voter) {
     final byte[] _data = new byte[40];
@@ -540,8 +529,7 @@ public final class GovernProgram {
   /// @param proposalKey The Proposal.
   /// @param voteKey The Vote.
   /// @param lockerKey The Governor::locker.
-  public static List<AccountMeta> setVoteKeys(final AccountMeta invokedGovernProgramMeta                                              ,
-                                              final PublicKey governorKey,
+  public static List<AccountMeta> setVoteKeys(final PublicKey governorKey,
                                               final PublicKey proposalKey,
                                               final PublicKey voteKey,
                                               final PublicKey lockerKey) {
@@ -568,7 +556,6 @@ public final class GovernProgram {
                                     final int side,
                                     final long weight) {
     final var keys = setVoteKeys(
-      invokedGovernProgramMeta,
       governorKey,
       proposalKey,
       voteKey,
@@ -580,7 +567,7 @@ public final class GovernProgram {
   /// Sets a Vote weight and side.
   /// This may only be called by the Governor::voter.
   ///
-  public static Instruction setVote(final AccountMeta invokedGovernProgramMeta                                    ,
+  public static Instruction setVote(final AccountMeta invokedGovernProgramMeta,
                                     final List<AccountMeta> keys,
                                     final int side,
                                     final long weight) {
@@ -636,8 +623,7 @@ public final class GovernProgram {
   ///
   /// @param governorKey The Governor
   /// @param smartWalletKey The Smart Wallet.
-  public static List<AccountMeta> setGovernanceParamsKeys(final AccountMeta invokedGovernProgramMeta                                                          ,
-                                                          final PublicKey governorKey,
+  public static List<AccountMeta> setGovernanceParamsKeys(final PublicKey governorKey,
                                                           final PublicKey smartWalletKey) {
     return List.of(
       createWrite(governorKey),
@@ -655,7 +641,6 @@ public final class GovernProgram {
                                                 final PublicKey smartWalletKey,
                                                 final GovernanceParameters params) {
     final var keys = setGovernanceParamsKeys(
-      invokedGovernProgramMeta,
       governorKey,
       smartWalletKey
     );
@@ -665,7 +650,7 @@ public final class GovernProgram {
   /// Sets the GovernanceParameters.
   /// This may only be called by the Governor::smart_wallet.
   ///
-  public static Instruction setGovernanceParams(final AccountMeta invokedGovernProgramMeta                                                ,
+  public static Instruction setGovernanceParams(final AccountMeta invokedGovernProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final GovernanceParameters params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -714,8 +699,7 @@ public final class GovernProgram {
   /// @param governorKey The Governor
   /// @param rewardMintKey reward mint
   /// @param smartWalletKey The Smart Wallet.
-  public static List<AccountMeta> setVotingRewardKeys(final AccountMeta invokedGovernProgramMeta                                                      ,
-                                                      final PublicKey governorKey,
+  public static List<AccountMeta> setVotingRewardKeys(final PublicKey governorKey,
                                                       final PublicKey rewardMintKey,
                                                       final PublicKey smartWalletKey) {
     return List.of(
@@ -737,7 +721,6 @@ public final class GovernProgram {
                                             final PublicKey smartWalletKey,
                                             final long rewardPerProposal) {
     final var keys = setVotingRewardKeys(
-      invokedGovernProgramMeta,
       governorKey,
       rewardMintKey,
       smartWalletKey
@@ -748,7 +731,7 @@ public final class GovernProgram {
   /// Sets Voting Reward.
   /// This may only be called by the Governor::smart_wallet.
   ///
-  public static Instruction setVotingReward(final AccountMeta invokedGovernProgramMeta                                            ,
+  public static Instruction setVotingReward(final AccountMeta invokedGovernProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long rewardPerProposal) {
     final byte[] _data = new byte[16];
@@ -802,8 +785,7 @@ public final class GovernProgram {
   ///                 TODO: check whether vote delegrate can claim on behalf of owner?
   /// @param voterTokenAccountKey Voter token account
   /// @param tokenProgramKey Token program.
-  public static List<AccountMeta> claimRewardKeys(final AccountMeta invokedGovernProgramMeta                                                  ,
-                                                  final PublicKey governorKey,
+  public static List<AccountMeta> claimRewardKeys(final PublicKey governorKey,
                                                   final PublicKey rewardVaultKey,
                                                   final PublicKey proposalKey,
                                                   final PublicKey voteKey,
@@ -846,7 +828,6 @@ public final class GovernProgram {
                                         final PublicKey eventAuthorityKey,
                                         final PublicKey programKey) {
     final var keys = claimRewardKeys(
-      invokedGovernProgramMeta,
       governorKey,
       rewardVaultKey,
       proposalKey,
@@ -862,7 +843,7 @@ public final class GovernProgram {
 
   /// Claim rewards, for voter
   ///
-  public static Instruction claimReward(final AccountMeta invokedGovernProgramMeta                                        ,
+  public static Instruction claimReward(final AccountMeta invokedGovernProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, CLAIM_REWARD_DISCRIMINATOR);
   }
@@ -873,8 +854,7 @@ public final class GovernProgram {
   ///
   /// @param governorKey The Governor
   /// @param smartWalletKey The Smart Wallet.
-  public static List<AccountMeta> setLockerKeys(final AccountMeta invokedGovernProgramMeta                                                ,
-                                                final PublicKey governorKey,
+  public static List<AccountMeta> setLockerKeys(final PublicKey governorKey,
                                                 final PublicKey smartWalletKey) {
     return List.of(
       createWrite(governorKey),
@@ -891,7 +871,6 @@ public final class GovernProgram {
                                       final PublicKey smartWalletKey,
                                       final PublicKey newLocker) {
     final var keys = setLockerKeys(
-      invokedGovernProgramMeta,
       governorKey,
       smartWalletKey
     );
@@ -900,7 +879,7 @@ public final class GovernProgram {
 
   /// Sets the locker of the Governor.
   ///
-  public static Instruction setLocker(final AccountMeta invokedGovernProgramMeta                                      ,
+  public static Instruction setLocker(final AccountMeta invokedGovernProgramMeta,
                                       final List<AccountMeta> keys,
                                       final PublicKey newLocker) {
     final byte[] _data = new byte[40];
@@ -951,8 +930,7 @@ public final class GovernProgram {
   /// @param proposalMetaKey The ProposalMeta.
   /// @param payerKey Payer of the ProposalMeta.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> createProposalMetaKeys(final AccountMeta invokedGovernProgramMeta                                                         ,
-                                                         final PublicKey proposalKey,
+  public static List<AccountMeta> createProposalMetaKeys(final PublicKey proposalKey,
                                                          final PublicKey proposerKey,
                                                          final PublicKey proposalMetaKey,
                                                          final PublicKey payerKey,
@@ -989,7 +967,6 @@ public final class GovernProgram {
                                                final String title,
                                                final String descriptionLink) {
     final var keys = createProposalMetaKeys(
-      invokedGovernProgramMeta,
       proposalKey,
       proposerKey,
       proposalMetaKey,
@@ -1009,14 +986,14 @@ public final class GovernProgram {
 
   /// Creates a ProposalMeta.
   ///
-  public static Instruction createProposalMeta(final AccountMeta invokedGovernProgramMeta                                               ,
+  public static Instruction createProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int bump,
                                                final String title,
                                                final String descriptionLink) {
     final byte[] _title = title.getBytes(UTF_8);
     final byte[] _descriptionLink = descriptionLink.getBytes(UTF_8);
-    final byte[] _data = new byte[17 + Borsh.lenVector(_title) + Borsh.lenVector(_descriptionLink)];
+    final byte[] _data = new byte[17 + _title.length + _descriptionLink.length];
     int i = CREATE_PROPOSAL_META_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) bump;
     ++i;
@@ -1050,10 +1027,16 @@ public final class GovernProgram {
       int i = _offset + discriminator.length();
       final var bump = _data[i] & 0xFF;
       ++i;
-      final var title = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
-      final var descriptionLink = Borsh.string(_data, i);
-      return new CreateProposalMetaIxData(discriminator, bump, title, title.getBytes(UTF_8), descriptionLink, descriptionLink.getBytes(UTF_8));
+      final int _titleLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
+      final var title = new String(_title, UTF_8);
+      i += _title.length;
+      final int _descriptionLinkLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
+      final var descriptionLink = new String(_descriptionLink, UTF_8);
+      return new CreateProposalMetaIxData(discriminator, bump, title, _title, descriptionLink, _descriptionLink);
     }
 
     @Override
@@ -1068,7 +1051,7 @@ public final class GovernProgram {
 
     @Override
     public int l() {
-      return 8 + 1 + Borsh.lenVector(_title) + Borsh.lenVector(_descriptionLink);
+      return 8 + 1 + _title.length + _descriptionLink.length;
     }
   }
 
@@ -1081,8 +1064,7 @@ public final class GovernProgram {
   /// @param optionProposalMetaKey The ProposalMeta.
   /// @param payerKey Payer of the ProposalMeta.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> createOptionProposalMetaKeys(final AccountMeta invokedGovernProgramMeta                                                               ,
-                                                               final PublicKey proposalKey,
+  public static List<AccountMeta> createOptionProposalMetaKeys(final PublicKey proposalKey,
                                                                final PublicKey proposerKey,
                                                                final PublicKey optionProposalMetaKey,
                                                                final PublicKey payerKey,
@@ -1118,7 +1100,6 @@ public final class GovernProgram {
                                                      final int bump,
                                                      final String[] optionDescriptions) {
     final var keys = createOptionProposalMetaKeys(
-      invokedGovernProgramMeta,
       proposalKey,
       proposerKey,
       optionProposalMetaKey,
@@ -1132,7 +1113,7 @@ public final class GovernProgram {
 
   /// Creates an OptionProposalMeta.
   ///
-  public static Instruction createOptionProposalMeta(final AccountMeta invokedGovernProgramMeta                                                     ,
+  public static Instruction createOptionProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int bump,
                                                      final String[] optionDescriptions) {

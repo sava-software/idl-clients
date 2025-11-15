@@ -27,8 +27,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(175, 175, 109, 31, 13, 152, 155, 237);
 
-  public static List<AccountMeta> initializeKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                 ,
-                                                 final PublicKey payerKey,
+  public static List<AccountMeta> initializeKeys(final PublicKey payerKey,
                                                  final PublicKey configKey,
                                                  final PublicKey systemProgramKey) {
     return List.of(
@@ -44,7 +43,6 @@ public final class PythSolanaReceiverProgram {
                                        final PublicKey systemProgramKey,
                                        final Config initialConfig) {
     final var keys = initializeKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey,
       systemProgramKey
@@ -52,7 +50,7 @@ public final class PythSolanaReceiverProgram {
     return initialize(invokedPythSolanaReceiverProgramMeta, keys, initialConfig);
   }
 
-  public static Instruction initialize(final AccountMeta invokedPythSolanaReceiverProgramMeta                                       ,
+  public static Instruction initialize(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                        final List<AccountMeta> keys,
                                        final Config initialConfig) {
     final byte[] _data = new byte[8 + Borsh.len(initialConfig)];
@@ -93,8 +91,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator REQUEST_GOVERNANCE_AUTHORITY_TRANSFER_DISCRIMINATOR = toDiscriminator(92, 18, 67, 156, 27, 151, 183, 224);
 
-  public static List<AccountMeta> requestGovernanceAuthorityTransferKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                                         ,
-                                                                         final PublicKey payerKey,
+  public static List<AccountMeta> requestGovernanceAuthorityTransferKeys(final PublicKey payerKey,
                                                                          final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -107,14 +104,13 @@ public final class PythSolanaReceiverProgram {
                                                                final PublicKey configKey,
                                                                final PublicKey targetGovernanceAuthority) {
     final var keys = requestGovernanceAuthorityTransferKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey
     );
     return requestGovernanceAuthorityTransfer(invokedPythSolanaReceiverProgramMeta, keys, targetGovernanceAuthority);
   }
 
-  public static Instruction requestGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                               ,
+  public static Instruction requestGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final PublicKey targetGovernanceAuthority) {
     final byte[] _data = new byte[40];
@@ -158,8 +154,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator CANCEL_GOVERNANCE_AUTHORITY_TRANSFER_DISCRIMINATOR = toDiscriminator(39, 93, 70, 137, 137, 90, 248, 154);
 
-  public static List<AccountMeta> cancelGovernanceAuthorityTransferKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                                        ,
-                                                                        final PublicKey payerKey,
+  public static List<AccountMeta> cancelGovernanceAuthorityTransferKeys(final PublicKey payerKey,
                                                                         final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -167,23 +162,24 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
-  public static Instruction cancelGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta, final PublicKey payerKey, final PublicKey configKey) {     final var keys = cancelGovernanceAuthorityTransferKeys(
-      invokedPythSolanaReceiverProgramMeta,
+  public static Instruction cancelGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta,
+                                                              final PublicKey payerKey,
+                                                              final PublicKey configKey) {
+    final var keys = cancelGovernanceAuthorityTransferKeys(
       payerKey,
       configKey
     );
     return cancelGovernanceAuthorityTransfer(invokedPythSolanaReceiverProgramMeta, keys);
   }
 
-  public static Instruction cancelGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                              ,
+  public static Instruction cancelGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, CANCEL_GOVERNANCE_AUTHORITY_TRANSFER_DISCRIMINATOR);
   }
 
   public static final Discriminator ACCEPT_GOVERNANCE_AUTHORITY_TRANSFER_DISCRIMINATOR = toDiscriminator(254, 39, 222, 79, 64, 217, 205, 127);
 
-  public static List<AccountMeta> acceptGovernanceAuthorityTransferKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                                        ,
-                                                                        final PublicKey payerKey,
+  public static List<AccountMeta> acceptGovernanceAuthorityTransferKeys(final PublicKey payerKey,
                                                                         final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -191,23 +187,24 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
-  public static Instruction acceptGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta, final PublicKey payerKey, final PublicKey configKey) {     final var keys = acceptGovernanceAuthorityTransferKeys(
-      invokedPythSolanaReceiverProgramMeta,
+  public static Instruction acceptGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta,
+                                                              final PublicKey payerKey,
+                                                              final PublicKey configKey) {
+    final var keys = acceptGovernanceAuthorityTransferKeys(
       payerKey,
       configKey
     );
     return acceptGovernanceAuthorityTransfer(invokedPythSolanaReceiverProgramMeta, keys);
   }
 
-  public static Instruction acceptGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                              ,
+  public static Instruction acceptGovernanceAuthorityTransfer(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, ACCEPT_GOVERNANCE_AUTHORITY_TRANSFER_DISCRIMINATOR);
   }
 
   public static final Discriminator SET_DATA_SOURCES_DISCRIMINATOR = toDiscriminator(107, 73, 15, 119, 195, 116, 91, 210);
 
-  public static List<AccountMeta> setDataSourcesKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                     ,
-                                                     final PublicKey payerKey,
+  public static List<AccountMeta> setDataSourcesKeys(final PublicKey payerKey,
                                                      final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -220,14 +217,13 @@ public final class PythSolanaReceiverProgram {
                                            final PublicKey configKey,
                                            final DataSource[] validDataSources) {
     final var keys = setDataSourcesKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey
     );
     return setDataSources(invokedPythSolanaReceiverProgramMeta, keys, validDataSources);
   }
 
-  public static Instruction setDataSources(final AccountMeta invokedPythSolanaReceiverProgramMeta                                           ,
+  public static Instruction setDataSources(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                            final List<AccountMeta> keys,
                                            final DataSource[] validDataSources) {
     final byte[] _data = new byte[8 + Borsh.lenVector(validDataSources)];
@@ -268,8 +264,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator SET_FEE_DISCRIMINATOR = toDiscriminator(18, 154, 24, 18, 237, 214, 19, 80);
 
-  public static List<AccountMeta> setFeeKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                             ,
-                                             final PublicKey payerKey,
+  public static List<AccountMeta> setFeeKeys(final PublicKey payerKey,
                                              final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -282,14 +277,13 @@ public final class PythSolanaReceiverProgram {
                                    final PublicKey configKey,
                                    final long singleUpdateFeeInLamports) {
     final var keys = setFeeKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey
     );
     return setFee(invokedPythSolanaReceiverProgramMeta, keys, singleUpdateFeeInLamports);
   }
 
-  public static Instruction setFee(final AccountMeta invokedPythSolanaReceiverProgramMeta                                   ,
+  public static Instruction setFee(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long singleUpdateFeeInLamports) {
     final byte[] _data = new byte[16];
@@ -333,8 +327,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator SET_WORMHOLE_ADDRESS_DISCRIMINATOR = toDiscriminator(154, 174, 252, 157, 91, 215, 179, 156);
 
-  public static List<AccountMeta> setWormholeAddressKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                         ,
-                                                         final PublicKey payerKey,
+  public static List<AccountMeta> setWormholeAddressKeys(final PublicKey payerKey,
                                                          final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -347,14 +340,13 @@ public final class PythSolanaReceiverProgram {
                                                final PublicKey configKey,
                                                final PublicKey wormhole) {
     final var keys = setWormholeAddressKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey
     );
     return setWormholeAddress(invokedPythSolanaReceiverProgramMeta, keys, wormhole);
   }
 
-  public static Instruction setWormholeAddress(final AccountMeta invokedPythSolanaReceiverProgramMeta                                               ,
+  public static Instruction setWormholeAddress(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey wormhole) {
     final byte[] _data = new byte[40];
@@ -398,8 +390,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator SET_MINIMUM_SIGNATURES_DISCRIMINATOR = toDiscriminator(5, 210, 206, 124, 43, 68, 104, 149);
 
-  public static List<AccountMeta> setMinimumSignaturesKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                           ,
-                                                           final PublicKey payerKey,
+  public static List<AccountMeta> setMinimumSignaturesKeys(final PublicKey payerKey,
                                                            final PublicKey configKey) {
     return List.of(
       createReadOnlySigner(payerKey),
@@ -412,14 +403,13 @@ public final class PythSolanaReceiverProgram {
                                                  final PublicKey configKey,
                                                  final int minimumSignatures) {
     final var keys = setMinimumSignaturesKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       configKey
     );
     return setMinimumSignatures(invokedPythSolanaReceiverProgramMeta, keys, minimumSignatures);
   }
 
-  public static Instruction setMinimumSignatures(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                 ,
+  public static Instruction setMinimumSignatures(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int minimumSignatures) {
     final byte[] _data = new byte[9];
@@ -477,8 +467,7 @@ public final class PythSolanaReceiverProgram {
   /// @param guardianSetKey Instead we do the same steps in deserialize_guardian_set_checked.
   /// @param priceUpdateAccountKey The constraint is such that either the price_update_account is uninitialized or the write_authority is the write_authority.
   ///                              Pubkey::default() is the SystemProgram on Solana and it can't sign so it's impossible that price_update_account.write_authority == Pubkey::default() once the account is initialized
-  public static List<AccountMeta> postUpdateAtomicKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                       ,
-                                                       final PublicKey payerKey,
+  public static List<AccountMeta> postUpdateAtomicKeys(final PublicKey payerKey,
                                                        final PublicKey guardianSetKey,
                                                        final PublicKey configKey,
                                                        final PublicKey treasuryKey,
@@ -520,7 +509,6 @@ public final class PythSolanaReceiverProgram {
                                              final PublicKey writeAuthorityKey,
                                              final PostUpdateAtomicParams params) {
     final var keys = postUpdateAtomicKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       guardianSetKey,
       configKey,
@@ -543,7 +531,7 @@ public final class PythSolanaReceiverProgram {
   /// 
   /// Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update.
   ///
-  public static Instruction postUpdateAtomic(final AccountMeta invokedPythSolanaReceiverProgramMeta                                             ,
+  public static Instruction postUpdateAtomic(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                              final List<AccountMeta> keys,
                                              final PostUpdateAtomicParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -590,8 +578,7 @@ public final class PythSolanaReceiverProgram {
   ///
   /// @param priceUpdateAccountKey The constraint is such that either the price_update_account is uninitialized or the write_authority is the write_authority.
   ///                              Pubkey::default() is the SystemProgram on Solana and it can't sign so it's impossible that price_update_account.write_authority == Pubkey::default() once the account is initialized
-  public static List<AccountMeta> postUpdateKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                 ,
-                                                 final PublicKey payerKey,
+  public static List<AccountMeta> postUpdateKeys(final PublicKey payerKey,
                                                  final PublicKey encodedVaaKey,
                                                  final PublicKey configKey,
                                                  final PublicKey treasuryKey,
@@ -625,7 +612,6 @@ public final class PythSolanaReceiverProgram {
                                        final PublicKey writeAuthorityKey,
                                        final PostUpdateParams params) {
     final var keys = postUpdateKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       encodedVaaKey,
       configKey,
@@ -641,7 +627,7 @@ public final class PythSolanaReceiverProgram {
   /// This should be called after the client has already verified the Vaa via the Wormhole contract.
   /// Check out target_chains/solana/cli/src/main.rs for an example of how to do this.
   ///
-  public static Instruction postUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta                                       ,
+  public static Instruction postUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                        final List<AccountMeta> keys,
                                        final PostUpdateParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -688,8 +674,7 @@ public final class PythSolanaReceiverProgram {
   ///
   /// @param twapUpdateAccountKey The constraint is such that either the price_update_account is uninitialized or the write_authority is the write_authority.
   ///                             Pubkey::default() is the SystemProgram on Solana and it can't sign so it's impossible that price_update_account.write_authority == Pubkey::default() once the account is initialized
-  public static List<AccountMeta> postTwapUpdateKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                     ,
-                                                     final PublicKey payerKey,
+  public static List<AccountMeta> postTwapUpdateKeys(final PublicKey payerKey,
                                                      final PublicKey startEncodedVaaKey,
                                                      final PublicKey endEncodedVaaKey,
                                                      final PublicKey configKey,
@@ -726,7 +711,6 @@ public final class PythSolanaReceiverProgram {
                                            final PublicKey writeAuthorityKey,
                                            final PostTwapUpdateParams params) {
     final var keys = postTwapUpdateKeys(
-      invokedPythSolanaReceiverProgramMeta,
       payerKey,
       startEncodedVaaKey,
       endEncodedVaaKey,
@@ -743,7 +727,7 @@ public final class PythSolanaReceiverProgram {
   /// This should be called after the client has already verified the VAAs via the Wormhole contract.
   /// Check out target_chains/solana/cli/src/main.rs for an example of how to do this.
   ///
-  public static Instruction postTwapUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta                                           ,
+  public static Instruction postTwapUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                            final List<AccountMeta> keys,
                                            final PostTwapUpdateParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -784,8 +768,7 @@ public final class PythSolanaReceiverProgram {
 
   public static final Discriminator RECLAIM_RENT_DISCRIMINATOR = toDiscriminator(218, 200, 19, 197, 227, 89, 192, 22);
 
-  public static List<AccountMeta> reclaimRentKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                  ,
-                                                  final PublicKey payerKey,
+  public static List<AccountMeta> reclaimRentKeys(final PublicKey payerKey,
                                                   final PublicKey priceUpdateAccountKey) {
     return List.of(
       createWritableSigner(payerKey),
@@ -793,23 +776,24 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
-  public static Instruction reclaimRent(final AccountMeta invokedPythSolanaReceiverProgramMeta, final PublicKey payerKey, final PublicKey priceUpdateAccountKey) {     final var keys = reclaimRentKeys(
-      invokedPythSolanaReceiverProgramMeta,
+  public static Instruction reclaimRent(final AccountMeta invokedPythSolanaReceiverProgramMeta,
+                                        final PublicKey payerKey,
+                                        final PublicKey priceUpdateAccountKey) {
+    final var keys = reclaimRentKeys(
       payerKey,
       priceUpdateAccountKey
     );
     return reclaimRent(invokedPythSolanaReceiverProgramMeta, keys);
   }
 
-  public static Instruction reclaimRent(final AccountMeta invokedPythSolanaReceiverProgramMeta                                        ,
+  public static Instruction reclaimRent(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, RECLAIM_RENT_DISCRIMINATOR);
   }
 
   public static final Discriminator RECLAIM_TWAP_RENT_DISCRIMINATOR = toDiscriminator(84, 3, 32, 238, 108, 217, 135, 39);
 
-  public static List<AccountMeta> reclaimTwapRentKeys(final AccountMeta invokedPythSolanaReceiverProgramMeta                                                      ,
-                                                      final PublicKey payerKey,
+  public static List<AccountMeta> reclaimTwapRentKeys(final PublicKey payerKey,
                                                       final PublicKey twapUpdateAccountKey) {
     return List.of(
       createWritableSigner(payerKey),
@@ -817,15 +801,17 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
-  public static Instruction reclaimTwapRent(final AccountMeta invokedPythSolanaReceiverProgramMeta, final PublicKey payerKey, final PublicKey twapUpdateAccountKey) {     final var keys = reclaimTwapRentKeys(
-      invokedPythSolanaReceiverProgramMeta,
+  public static Instruction reclaimTwapRent(final AccountMeta invokedPythSolanaReceiverProgramMeta,
+                                            final PublicKey payerKey,
+                                            final PublicKey twapUpdateAccountKey) {
+    final var keys = reclaimTwapRentKeys(
       payerKey,
       twapUpdateAccountKey
     );
     return reclaimTwapRent(invokedPythSolanaReceiverProgramMeta, keys);
   }
 
-  public static Instruction reclaimTwapRent(final AccountMeta invokedPythSolanaReceiverProgramMeta                                            ,
+  public static Instruction reclaimTwapRent(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, RECLAIM_TWAP_RENT_DISCRIMINATOR);
   }

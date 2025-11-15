@@ -166,19 +166,20 @@
       "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json"
     },
     {
-      "name": "Stake",
-      "source": "idl-clients-spl",
-      "module": "spl",
-      "package": "spl.stake",
-      "program": "Stake11111111111111111111111111111111111111",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/stake/refs/heads/main/program/idl.json"
-    },
-    {
       "name": "Switchboard On-Demand",
       "source": "idl-clients-oracles",
       "module": "oracles",
       "package": "oracles.switchboard.on_demand",
       "program": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv"
+    },
+    {
+      "name": "System",
+      "source": "idl-clients-spl",
+      "module": "spl",
+      "package": "spl.system",
+      "program": "11111111111111111111111111111111",
+      "idlType": "codama",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/system/refs/heads/main/program/idl.json"
     },
     {
       "name": "Token",

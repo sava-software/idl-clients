@@ -53,8 +53,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_USER_DISCRIMINATOR = toDiscriminator(111, 17, 185, 250, 60, 122, 38, 254);
 
-  public static List<AccountMeta> initializeUserKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey userKey,
+  public static List<AccountMeta> initializeUserKeys(final PublicKey userKey,
                                                      final PublicKey userStatsKey,
                                                      final PublicKey stateKey,
                                                      final PublicKey authorityKey,
@@ -83,7 +82,6 @@ public final class DriftProgram {
                                            final int subAccountId,
                                            final byte[] name) {
     final var keys = initializeUserKeys(
-      invokedDriftProgramMeta,
       userKey,
       userStatsKey,
       stateKey,
@@ -95,7 +93,7 @@ public final class DriftProgram {
     return initializeUser(invokedDriftProgramMeta, keys, subAccountId, name);
   }
 
-  public static Instruction initializeUser(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction initializeUser(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int subAccountId,
                                            final byte[] name) {
@@ -147,8 +145,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_USER_STATS_DISCRIMINATOR = toDiscriminator(254, 243, 72, 98, 251, 130, 168, 213);
 
-  public static List<AccountMeta> initializeUserStatsKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey userStatsKey,
+  public static List<AccountMeta> initializeUserStatsKeys(final PublicKey userStatsKey,
                                                           final PublicKey stateKey,
                                                           final PublicKey authorityKey,
                                                           final PublicKey payerKey,
@@ -172,7 +169,6 @@ public final class DriftProgram {
                                                 final PublicKey rentKey,
                                                 final PublicKey systemProgramKey) {
     final var keys = initializeUserStatsKeys(
-      invokedDriftProgramMeta,
       userStatsKey,
       stateKey,
       authorityKey,
@@ -183,15 +179,14 @@ public final class DriftProgram {
     return initializeUserStats(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initializeUserStats(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction initializeUserStats(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_USER_STATS_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_SIGNED_MSG_USER_ORDERS_DISCRIMINATOR = toDiscriminator(164, 99, 156, 126, 156, 57, 99, 180);
 
-  public static List<AccountMeta> initializeSignedMsgUserOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey signedMsgUserOrdersKey,
+  public static List<AccountMeta> initializeSignedMsgUserOrdersKeys(final PublicKey signedMsgUserOrdersKey,
                                                                     final PublicKey authorityKey,
                                                                     final PublicKey payerKey,
                                                                     final PublicKey rentKey,
@@ -213,7 +208,6 @@ public final class DriftProgram {
                                                           final PublicKey systemProgramKey,
                                                           final int numOrders) {
     final var keys = initializeSignedMsgUserOrdersKeys(
-      invokedDriftProgramMeta,
       signedMsgUserOrdersKey,
       authorityKey,
       payerKey,
@@ -223,7 +217,7 @@ public final class DriftProgram {
     return initializeSignedMsgUserOrders(invokedDriftProgramMeta, keys, numOrders);
   }
 
-  public static Instruction initializeSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction initializeSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int numOrders) {
     final byte[] _data = new byte[10];
@@ -267,8 +261,7 @@ public final class DriftProgram {
 
   public static final Discriminator RESIZE_SIGNED_MSG_USER_ORDERS_DISCRIMINATOR = toDiscriminator(137, 10, 87, 150, 18, 115, 79, 168);
 
-  public static List<AccountMeta> resizeSignedMsgUserOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey signedMsgUserOrdersKey,
+  public static List<AccountMeta> resizeSignedMsgUserOrdersKeys(final PublicKey signedMsgUserOrdersKey,
                                                                 final PublicKey authorityKey,
                                                                 final PublicKey userKey,
                                                                 final PublicKey payerKey,
@@ -290,7 +283,6 @@ public final class DriftProgram {
                                                       final PublicKey systemProgramKey,
                                                       final int numOrders) {
     final var keys = resizeSignedMsgUserOrdersKeys(
-      invokedDriftProgramMeta,
       signedMsgUserOrdersKey,
       authorityKey,
       userKey,
@@ -300,7 +292,7 @@ public final class DriftProgram {
     return resizeSignedMsgUserOrders(invokedDriftProgramMeta, keys, numOrders);
   }
 
-  public static Instruction resizeSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction resizeSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int numOrders) {
     final byte[] _data = new byte[10];
@@ -344,8 +336,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_SIGNED_MSG_WS_DELEGATES_DISCRIMINATOR = toDiscriminator(40, 132, 96, 219, 184, 193, 80, 8);
 
-  public static List<AccountMeta> initializeSignedMsgWsDelegatesKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey signedMsgWsDelegatesKey,
+  public static List<AccountMeta> initializeSignedMsgWsDelegatesKeys(final PublicKey signedMsgWsDelegatesKey,
                                                                      final PublicKey authorityKey,
                                                                      final PublicKey rentKey,
                                                                      final PublicKey systemProgramKey) {
@@ -364,7 +355,6 @@ public final class DriftProgram {
                                                            final PublicKey systemProgramKey,
                                                            final PublicKey[] delegates) {
     final var keys = initializeSignedMsgWsDelegatesKeys(
-      invokedDriftProgramMeta,
       signedMsgWsDelegatesKey,
       authorityKey,
       rentKey,
@@ -373,7 +363,7 @@ public final class DriftProgram {
     return initializeSignedMsgWsDelegates(invokedDriftProgramMeta, keys, delegates);
   }
 
-  public static Instruction initializeSignedMsgWsDelegates(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction initializeSignedMsgWsDelegates(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final PublicKey[] delegates) {
     final byte[] _data = new byte[8 + Borsh.lenVector(delegates)];
@@ -414,8 +404,7 @@ public final class DriftProgram {
 
   public static final Discriminator CHANGE_SIGNED_MSG_WS_DELEGATE_STATUS_DISCRIMINATOR = toDiscriminator(252, 202, 252, 219, 179, 27, 84, 138);
 
-  public static List<AccountMeta> changeSignedMsgWsDelegateStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey signedMsgWsDelegatesKey,
+  public static List<AccountMeta> changeSignedMsgWsDelegateStatusKeys(final PublicKey signedMsgWsDelegatesKey,
                                                                       final PublicKey authorityKey,
                                                                       final PublicKey systemProgramKey) {
     return List.of(
@@ -432,7 +421,6 @@ public final class DriftProgram {
                                                             final PublicKey delegate,
                                                             final boolean add) {
     final var keys = changeSignedMsgWsDelegateStatusKeys(
-      invokedDriftProgramMeta,
       signedMsgWsDelegatesKey,
       authorityKey,
       systemProgramKey
@@ -440,7 +428,7 @@ public final class DriftProgram {
     return changeSignedMsgWsDelegateStatus(invokedDriftProgramMeta, keys, delegate, add);
   }
 
-  public static Instruction changeSignedMsgWsDelegateStatus(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction changeSignedMsgWsDelegateStatus(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final PublicKey delegate,
                                                             final boolean add) {
@@ -491,8 +479,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_FUEL_OVERFLOW_DISCRIMINATOR = toDiscriminator(88, 223, 132, 161, 208, 88, 142, 42);
 
-  public static List<AccountMeta> initializeFuelOverflowKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey fuelOverflowKey,
+  public static List<AccountMeta> initializeFuelOverflowKeys(final PublicKey fuelOverflowKey,
                                                              final PublicKey userStatsKey,
                                                              final PublicKey authorityKey,
                                                              final PublicKey payerKey,
@@ -516,7 +503,6 @@ public final class DriftProgram {
                                                    final PublicKey rentKey,
                                                    final PublicKey systemProgramKey) {
     final var keys = initializeFuelOverflowKeys(
-      invokedDriftProgramMeta,
       fuelOverflowKey,
       userStatsKey,
       authorityKey,
@@ -527,15 +513,14 @@ public final class DriftProgram {
     return initializeFuelOverflow(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initializeFuelOverflow(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction initializeFuelOverflow(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_FUEL_OVERFLOW_DISCRIMINATOR);
   }
 
   public static final Discriminator SWEEP_FUEL_DISCRIMINATOR = toDiscriminator(175, 107, 19, 56, 165, 241, 43, 69);
 
-  public static List<AccountMeta> sweepFuelKeys(final AccountMeta invokedDriftProgramMeta                                                ,
-                                                final PublicKey fuelOverflowKey,
+  public static List<AccountMeta> sweepFuelKeys(final PublicKey fuelOverflowKey,
                                                 final PublicKey userStatsKey,
                                                 final PublicKey authorityKey,
                                                 final PublicKey signerKey) {
@@ -553,7 +538,6 @@ public final class DriftProgram {
                                       final PublicKey authorityKey,
                                       final PublicKey signerKey) {
     final var keys = sweepFuelKeys(
-      invokedDriftProgramMeta,
       fuelOverflowKey,
       userStatsKey,
       authorityKey,
@@ -562,15 +546,14 @@ public final class DriftProgram {
     return sweepFuel(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction sweepFuel(final AccountMeta invokedDriftProgramMeta                                      ,
+  public static Instruction sweepFuel(final AccountMeta invokedDriftProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, SWEEP_FUEL_DISCRIMINATOR);
   }
 
   public static final Discriminator RESET_FUEL_SEASON_DISCRIMINATOR = toDiscriminator(199, 122, 192, 255, 32, 99, 63, 200);
 
-  public static List<AccountMeta> resetFuelSeasonKeys(final AccountMeta invokedDriftProgramMeta                                                      ,
-                                                      final PublicKey userStatsKey,
+  public static List<AccountMeta> resetFuelSeasonKeys(final PublicKey userStatsKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey stateKey,
                                                       final PublicKey adminKey) {
@@ -588,7 +571,6 @@ public final class DriftProgram {
                                             final PublicKey stateKey,
                                             final PublicKey adminKey) {
     final var keys = resetFuelSeasonKeys(
-      invokedDriftProgramMeta,
       userStatsKey,
       authorityKey,
       stateKey,
@@ -597,15 +579,14 @@ public final class DriftProgram {
     return resetFuelSeason(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction resetFuelSeason(final AccountMeta invokedDriftProgramMeta                                            ,
+  public static Instruction resetFuelSeason(final AccountMeta invokedDriftProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, RESET_FUEL_SEASON_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_REFERRER_NAME_DISCRIMINATOR = toDiscriminator(235, 126, 231, 10, 42, 164, 26, 61);
 
-  public static List<AccountMeta> initializeReferrerNameKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey referrerNameKey,
+  public static List<AccountMeta> initializeReferrerNameKeys(final PublicKey referrerNameKey,
                                                              final PublicKey userKey,
                                                              final PublicKey userStatsKey,
                                                              final PublicKey authorityKey,
@@ -633,7 +614,6 @@ public final class DriftProgram {
                                                    final PublicKey systemProgramKey,
                                                    final byte[] name) {
     final var keys = initializeReferrerNameKeys(
-      invokedDriftProgramMeta,
       referrerNameKey,
       userKey,
       userStatsKey,
@@ -645,7 +625,7 @@ public final class DriftProgram {
     return initializeReferrerName(invokedDriftProgramMeta, keys, name);
   }
 
-  public static Instruction initializeReferrerName(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction initializeReferrerName(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final byte[] name) {
     final byte[] _data = new byte[8 + Borsh.lenArray(name)];
@@ -690,8 +670,7 @@ public final class DriftProgram {
 
   public static final Discriminator DEPOSIT_DISCRIMINATOR = toDiscriminator(242, 35, 198, 137, 82, 225, 242, 182);
 
-  public static List<AccountMeta> depositKeys(final AccountMeta invokedDriftProgramMeta                                              ,
-                                              final PublicKey stateKey,
+  public static List<AccountMeta> depositKeys(final PublicKey stateKey,
                                               final PublicKey userKey,
                                               final PublicKey userStatsKey,
                                               final PublicKey authorityKey,
@@ -721,7 +700,6 @@ public final class DriftProgram {
                                     final long amount,
                                     final boolean reduceOnly) {
     final var keys = depositKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -739,7 +717,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction deposit(final AccountMeta invokedDriftProgramMeta                                    ,
+  public static Instruction deposit(final AccountMeta invokedDriftProgramMeta,
                                     final List<AccountMeta> keys,
                                     final int marketIndex,
                                     final long amount,
@@ -800,8 +778,7 @@ public final class DriftProgram {
 
   public static final Discriminator WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 18, 70, 156, 148, 109, 161, 34);
 
-  public static List<AccountMeta> withdrawKeys(final AccountMeta invokedDriftProgramMeta                                               ,
-                                               final PublicKey stateKey,
+  public static List<AccountMeta> withdrawKeys(final PublicKey stateKey,
                                                final PublicKey userKey,
                                                final PublicKey userStatsKey,
                                                final PublicKey authorityKey,
@@ -834,7 +811,6 @@ public final class DriftProgram {
                                      final long amount,
                                      final boolean reduceOnly) {
     final var keys = withdrawKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -853,7 +829,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction withdraw(final AccountMeta invokedDriftProgramMeta                                     ,
+  public static Instruction withdraw(final AccountMeta invokedDriftProgramMeta,
                                      final List<AccountMeta> keys,
                                      final int marketIndex,
                                      final long amount,
@@ -914,8 +890,7 @@ public final class DriftProgram {
 
   public static final Discriminator TRANSFER_DEPOSIT_DISCRIMINATOR = toDiscriminator(20, 20, 147, 223, 41, 63, 204, 111);
 
-  public static List<AccountMeta> transferDepositKeys(final AccountMeta invokedDriftProgramMeta                                                      ,
-                                                      final PublicKey fromUserKey,
+  public static List<AccountMeta> transferDepositKeys(final PublicKey fromUserKey,
                                                       final PublicKey toUserKey,
                                                       final PublicKey userStatsKey,
                                                       final PublicKey authorityKey,
@@ -941,7 +916,6 @@ public final class DriftProgram {
                                             final int marketIndex,
                                             final long amount) {
     final var keys = transferDepositKeys(
-      invokedDriftProgramMeta,
       fromUserKey,
       toUserKey,
       userStatsKey,
@@ -952,7 +926,7 @@ public final class DriftProgram {
     return transferDeposit(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction transferDeposit(final AccountMeta invokedDriftProgramMeta                                            ,
+  public static Instruction transferDeposit(final AccountMeta invokedDriftProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int marketIndex,
                                             final long amount) {
@@ -1003,8 +977,7 @@ public final class DriftProgram {
 
   public static final Discriminator TRANSFER_POOLS_DISCRIMINATOR = toDiscriminator(197, 103, 154, 25, 107, 90, 60, 94);
 
-  public static List<AccountMeta> transferPoolsKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey fromUserKey,
+  public static List<AccountMeta> transferPoolsKeys(final PublicKey fromUserKey,
                                                     final PublicKey toUserKey,
                                                     final PublicKey userStatsKey,
                                                     final PublicKey authorityKey,
@@ -1046,7 +1019,6 @@ public final class DriftProgram {
                                           final OptionalLong depositAmount,
                                           final OptionalLong borrowAmount) {
     final var keys = transferPoolsKeys(
-      invokedDriftProgramMeta,
       fromUserKey,
       toUserKey,
       userStatsKey,
@@ -1070,7 +1042,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction transferPools(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction transferPools(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int depositFromMarketIndex,
                                           final int depositToMarketIndex,
@@ -1178,8 +1150,7 @@ public final class DriftProgram {
 
   public static final Discriminator TRANSFER_PERP_POSITION_DISCRIMINATOR = toDiscriminator(23, 172, 188, 168, 134, 210, 3, 108);
 
-  public static List<AccountMeta> transferPerpPositionKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey fromUserKey,
+  public static List<AccountMeta> transferPerpPositionKeys(final PublicKey fromUserKey,
                                                            final PublicKey toUserKey,
                                                            final PublicKey userStatsKey,
                                                            final PublicKey authorityKey,
@@ -1202,7 +1173,6 @@ public final class DriftProgram {
                                                  final int marketIndex,
                                                  final OptionalLong amount) {
     final var keys = transferPerpPositionKeys(
-      invokedDriftProgramMeta,
       fromUserKey,
       toUserKey,
       userStatsKey,
@@ -1212,7 +1182,7 @@ public final class DriftProgram {
     return transferPerpPosition(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction transferPerpPosition(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction transferPerpPosition(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int marketIndex,
                                                  final OptionalLong amount) {
@@ -1269,8 +1239,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_PERP_ORDER_DISCRIMINATOR = toDiscriminator(69, 161, 93, 202, 120, 126, 76, 185);
 
-  public static List<AccountMeta> placePerpOrderKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey stateKey,
+  public static List<AccountMeta> placePerpOrderKeys(final PublicKey stateKey,
                                                      final PublicKey userKey,
                                                      final PublicKey authorityKey) {
     return List.of(
@@ -1286,7 +1255,6 @@ public final class DriftProgram {
                                            final PublicKey authorityKey,
                                            final OrderParams params) {
     final var keys = placePerpOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1294,7 +1262,7 @@ public final class DriftProgram {
     return placePerpOrder(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction placePerpOrder(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction placePerpOrder(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OrderParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1335,8 +1303,7 @@ public final class DriftProgram {
 
   public static final Discriminator CANCEL_ORDER_DISCRIMINATOR = toDiscriminator(95, 129, 237, 240, 8, 49, 223, 132);
 
-  public static List<AccountMeta> cancelOrderKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey stateKey,
+  public static List<AccountMeta> cancelOrderKeys(final PublicKey stateKey,
                                                   final PublicKey userKey,
                                                   final PublicKey authorityKey) {
     return List.of(
@@ -1352,7 +1319,6 @@ public final class DriftProgram {
                                         final PublicKey authorityKey,
                                         final OptionalInt orderId) {
     final var keys = cancelOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1360,7 +1326,7 @@ public final class DriftProgram {
     return cancelOrder(invokedDriftProgramMeta, keys, orderId);
   }
 
-  public static Instruction cancelOrder(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction cancelOrder(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final OptionalInt orderId) {
     final byte[] _data = new byte[
@@ -1410,8 +1376,7 @@ public final class DriftProgram {
 
   public static final Discriminator CANCEL_ORDER_BY_USER_ID_DISCRIMINATOR = toDiscriminator(107, 211, 250, 133, 18, 37, 57, 100);
 
-  public static List<AccountMeta> cancelOrderByUserIdKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey stateKey,
+  public static List<AccountMeta> cancelOrderByUserIdKeys(final PublicKey stateKey,
                                                           final PublicKey userKey,
                                                           final PublicKey authorityKey) {
     return List.of(
@@ -1427,7 +1392,6 @@ public final class DriftProgram {
                                                 final PublicKey authorityKey,
                                                 final int userOrderId) {
     final var keys = cancelOrderByUserIdKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1435,7 +1399,7 @@ public final class DriftProgram {
     return cancelOrderByUserId(invokedDriftProgramMeta, keys, userOrderId);
   }
 
-  public static Instruction cancelOrderByUserId(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction cancelOrderByUserId(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int userOrderId) {
     final byte[] _data = new byte[9];
@@ -1479,8 +1443,7 @@ public final class DriftProgram {
 
   public static final Discriminator CANCEL_ORDERS_DISCRIMINATOR = toDiscriminator(238, 225, 95, 158, 227, 103, 8, 194);
 
-  public static List<AccountMeta> cancelOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                   ,
-                                                   final PublicKey stateKey,
+  public static List<AccountMeta> cancelOrdersKeys(final PublicKey stateKey,
                                                    final PublicKey userKey,
                                                    final PublicKey authorityKey) {
     return List.of(
@@ -1498,7 +1461,6 @@ public final class DriftProgram {
                                          final OptionalInt marketIndex,
                                          final PositionDirection direction) {
     final var keys = cancelOrdersKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1512,7 +1474,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction cancelOrders(final AccountMeta invokedDriftProgramMeta                                         ,
+  public static Instruction cancelOrders(final AccountMeta invokedDriftProgramMeta,
                                          final List<AccountMeta> keys,
                                          final MarketType marketType,
                                          final OptionalInt marketIndex,
@@ -1591,8 +1553,7 @@ public final class DriftProgram {
 
   public static final Discriminator CANCEL_ORDERS_BY_IDS_DISCRIMINATOR = toDiscriminator(134, 19, 144, 165, 94, 240, 210, 94);
 
-  public static List<AccountMeta> cancelOrdersByIdsKeys(final AccountMeta invokedDriftProgramMeta                                                        ,
-                                                        final PublicKey stateKey,
+  public static List<AccountMeta> cancelOrdersByIdsKeys(final PublicKey stateKey,
                                                         final PublicKey userKey,
                                                         final PublicKey authorityKey) {
     return List.of(
@@ -1608,7 +1569,6 @@ public final class DriftProgram {
                                               final PublicKey authorityKey,
                                               final int[] orderIds) {
     final var keys = cancelOrdersByIdsKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1616,7 +1576,7 @@ public final class DriftProgram {
     return cancelOrdersByIds(invokedDriftProgramMeta, keys, orderIds);
   }
 
-  public static Instruction cancelOrdersByIds(final AccountMeta invokedDriftProgramMeta                                              ,
+  public static Instruction cancelOrdersByIds(final AccountMeta invokedDriftProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int[] orderIds) {
     final byte[] _data = new byte[8 + Borsh.lenVector(orderIds)];
@@ -1657,8 +1617,7 @@ public final class DriftProgram {
 
   public static final Discriminator MODIFY_ORDER_DISCRIMINATOR = toDiscriminator(47, 124, 117, 255, 201, 197, 130, 94);
 
-  public static List<AccountMeta> modifyOrderKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey stateKey,
+  public static List<AccountMeta> modifyOrderKeys(final PublicKey stateKey,
                                                   final PublicKey userKey,
                                                   final PublicKey authorityKey) {
     return List.of(
@@ -1675,7 +1634,6 @@ public final class DriftProgram {
                                         final OptionalInt orderId,
                                         final ModifyOrderParams modifyOrderParams) {
     final var keys = modifyOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1683,7 +1641,7 @@ public final class DriftProgram {
     return modifyOrder(invokedDriftProgramMeta, keys, orderId, modifyOrderParams);
   }
 
-  public static Instruction modifyOrder(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction modifyOrder(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final OptionalInt orderId,
                                         final ModifyOrderParams modifyOrderParams) {
@@ -1739,8 +1697,7 @@ public final class DriftProgram {
 
   public static final Discriminator MODIFY_ORDER_BY_USER_ID_DISCRIMINATOR = toDiscriminator(158, 77, 4, 253, 252, 194, 161, 179);
 
-  public static List<AccountMeta> modifyOrderByUserIdKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey stateKey,
+  public static List<AccountMeta> modifyOrderByUserIdKeys(final PublicKey stateKey,
                                                           final PublicKey userKey,
                                                           final PublicKey authorityKey) {
     return List.of(
@@ -1757,7 +1714,6 @@ public final class DriftProgram {
                                                 final int userOrderId,
                                                 final ModifyOrderParams modifyOrderParams) {
     final var keys = modifyOrderByUserIdKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -1765,7 +1721,7 @@ public final class DriftProgram {
     return modifyOrderByUserId(invokedDriftProgramMeta, keys, userOrderId, modifyOrderParams);
   }
 
-  public static Instruction modifyOrderByUserId(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction modifyOrderByUserId(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int userOrderId,
                                                 final ModifyOrderParams modifyOrderParams) {
@@ -1813,8 +1769,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_AND_TAKE_PERP_ORDER_DISCRIMINATOR = toDiscriminator(213, 51, 1, 187, 108, 220, 230, 224);
 
-  public static List<AccountMeta> placeAndTakePerpOrderKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> placeAndTakePerpOrderKeys(final PublicKey stateKey,
                                                             final PublicKey userKey,
                                                             final PublicKey userStatsKey,
                                                             final PublicKey authorityKey) {
@@ -1834,7 +1789,6 @@ public final class DriftProgram {
                                                   final OrderParams params,
                                                   final OptionalInt successCondition) {
     final var keys = placeAndTakePerpOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -1843,7 +1797,7 @@ public final class DriftProgram {
     return placeAndTakePerpOrder(invokedDriftProgramMeta, keys, params, successCondition);
   }
 
-  public static Instruction placeAndTakePerpOrder(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction placeAndTakePerpOrder(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final OrderParams params,
                                                   final OptionalInt successCondition) {
@@ -1898,8 +1852,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_AND_MAKE_PERP_ORDER_DISCRIMINATOR = toDiscriminator(149, 117, 11, 237, 47, 95, 89, 237);
 
-  public static List<AccountMeta> placeAndMakePerpOrderKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> placeAndMakePerpOrderKeys(final PublicKey stateKey,
                                                             final PublicKey userKey,
                                                             final PublicKey userStatsKey,
                                                             final PublicKey takerKey,
@@ -1925,7 +1878,6 @@ public final class DriftProgram {
                                                   final OrderParams params,
                                                   final int takerOrderId) {
     final var keys = placeAndMakePerpOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -1936,7 +1888,7 @@ public final class DriftProgram {
     return placeAndMakePerpOrder(invokedDriftProgramMeta, keys, params, takerOrderId);
   }
 
-  public static Instruction placeAndMakePerpOrder(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction placeAndMakePerpOrder(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final OrderParams params,
                                                   final int takerOrderId) {
@@ -1983,8 +1935,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_AND_MAKE_SIGNED_MSG_PERP_ORDER_DISCRIMINATOR = toDiscriminator(16, 26, 123, 131, 94, 29, 175, 98);
 
-  public static List<AccountMeta> placeAndMakeSignedMsgPerpOrderKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey stateKey,
+  public static List<AccountMeta> placeAndMakeSignedMsgPerpOrderKeys(final PublicKey stateKey,
                                                                      final PublicKey userKey,
                                                                      final PublicKey userStatsKey,
                                                                      final PublicKey takerKey,
@@ -2013,7 +1964,6 @@ public final class DriftProgram {
                                                            final OrderParams params,
                                                            final byte[] signedMsgOrderUuid) {
     final var keys = placeAndMakeSignedMsgPerpOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2025,7 +1975,7 @@ public final class DriftProgram {
     return placeAndMakeSignedMsgPerpOrder(invokedDriftProgramMeta, keys, params, signedMsgOrderUuid);
   }
 
-  public static Instruction placeAndMakeSignedMsgPerpOrder(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction placeAndMakeSignedMsgPerpOrder(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final OrderParams params,
                                                            final byte[] signedMsgOrderUuid) {
@@ -2076,8 +2026,7 @@ public final class DriftProgram {
   /// @param ixSysvarKey the supplied Sysvar could be anything else.
   ///                    The Instruction Sysvar has not been implemented
   ///                    in the Anchor framework yet, so this is the safe approach.
-  public static List<AccountMeta> placeSignedMsgTakerOrderKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey stateKey,
+  public static List<AccountMeta> placeSignedMsgTakerOrderKeys(final PublicKey stateKey,
                                                                final PublicKey userKey,
                                                                final PublicKey userStatsKey,
                                                                final PublicKey signedMsgUserOrdersKey,
@@ -2106,7 +2055,6 @@ public final class DriftProgram {
                                                      final byte[] signedMsgOrderParamsMessageBytes,
                                                      final boolean isDelegateSigner) {
     final var keys = placeSignedMsgTakerOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2117,7 +2065,7 @@ public final class DriftProgram {
     return placeSignedMsgTakerOrder(invokedDriftProgramMeta, keys, signedMsgOrderParamsMessageBytes, isDelegateSigner);
   }
 
-  public static Instruction placeSignedMsgTakerOrder(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction placeSignedMsgTakerOrder(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final byte[] signedMsgOrderParamsMessageBytes,
                                                      final boolean isDelegateSigner) {
@@ -2164,8 +2112,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_SPOT_ORDER_DISCRIMINATOR = toDiscriminator(45, 79, 81, 160, 248, 90, 91, 220);
 
-  public static List<AccountMeta> placeSpotOrderKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey stateKey,
+  public static List<AccountMeta> placeSpotOrderKeys(final PublicKey stateKey,
                                                      final PublicKey userKey,
                                                      final PublicKey authorityKey) {
     return List.of(
@@ -2181,7 +2128,6 @@ public final class DriftProgram {
                                            final PublicKey authorityKey,
                                            final OrderParams params) {
     final var keys = placeSpotOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -2189,7 +2135,7 @@ public final class DriftProgram {
     return placeSpotOrder(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction placeSpotOrder(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction placeSpotOrder(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OrderParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2230,8 +2176,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_AND_TAKE_SPOT_ORDER_DISCRIMINATOR = toDiscriminator(191, 3, 138, 71, 114, 198, 202, 100);
 
-  public static List<AccountMeta> placeAndTakeSpotOrderKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> placeAndTakeSpotOrderKeys(final PublicKey stateKey,
                                                             final PublicKey userKey,
                                                             final PublicKey userStatsKey,
                                                             final PublicKey authorityKey) {
@@ -2252,7 +2197,6 @@ public final class DriftProgram {
                                                   final SpotFulfillmentType fulfillmentType,
                                                   final OptionalInt makerOrderId) {
     final var keys = placeAndTakeSpotOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2267,7 +2211,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction placeAndTakeSpotOrder(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction placeAndTakeSpotOrder(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final OrderParams params,
                                                   final SpotFulfillmentType fulfillmentType,
@@ -2338,8 +2282,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_AND_MAKE_SPOT_ORDER_DISCRIMINATOR = toDiscriminator(149, 158, 85, 66, 239, 9, 243, 98);
 
-  public static List<AccountMeta> placeAndMakeSpotOrderKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> placeAndMakeSpotOrderKeys(final PublicKey stateKey,
                                                             final PublicKey userKey,
                                                             final PublicKey userStatsKey,
                                                             final PublicKey takerKey,
@@ -2366,7 +2309,6 @@ public final class DriftProgram {
                                                   final int takerOrderId,
                                                   final SpotFulfillmentType fulfillmentType) {
     final var keys = placeAndMakeSpotOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2383,7 +2325,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction placeAndMakeSpotOrder(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction placeAndMakeSpotOrder(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final OrderParams params,
                                                   final int takerOrderId,
@@ -2448,8 +2390,7 @@ public final class DriftProgram {
 
   public static final Discriminator PLACE_ORDERS_DISCRIMINATOR = toDiscriminator(60, 63, 50, 123, 12, 197, 60, 190);
 
-  public static List<AccountMeta> placeOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey stateKey,
+  public static List<AccountMeta> placeOrdersKeys(final PublicKey stateKey,
                                                   final PublicKey userKey,
                                                   final PublicKey authorityKey) {
     return List.of(
@@ -2465,7 +2406,6 @@ public final class DriftProgram {
                                         final PublicKey authorityKey,
                                         final OrderParams[] params) {
     final var keys = placeOrdersKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -2473,7 +2413,7 @@ public final class DriftProgram {
     return placeOrders(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction placeOrders(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction placeOrders(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final OrderParams[] params) {
     final byte[] _data = new byte[8 + Borsh.lenVector(params)];
@@ -2515,8 +2455,7 @@ public final class DriftProgram {
   public static final Discriminator BEGIN_SWAP_DISCRIMINATOR = toDiscriminator(174, 109, 228, 1, 242, 105, 232, 105);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> beginSwapKeys(final AccountMeta invokedDriftProgramMeta                                                ,
-                                                final PublicKey stateKey,
+  public static List<AccountMeta> beginSwapKeys(final PublicKey stateKey,
                                                 final PublicKey userKey,
                                                 final PublicKey userStatsKey,
                                                 final PublicKey authorityKey,
@@ -2559,7 +2498,6 @@ public final class DriftProgram {
                                       final int outMarketIndex,
                                       final long amountIn) {
     final var keys = beginSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2581,7 +2519,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction beginSwap(final AccountMeta invokedDriftProgramMeta                                      ,
+  public static Instruction beginSwap(final AccountMeta invokedDriftProgramMeta,
                                       final List<AccountMeta> keys,
                                       final int inMarketIndex,
                                       final int outMarketIndex,
@@ -2643,8 +2581,7 @@ public final class DriftProgram {
   public static final Discriminator END_SWAP_DISCRIMINATOR = toDiscriminator(177, 184, 27, 193, 34, 13, 210, 145);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> endSwapKeys(final AccountMeta invokedDriftProgramMeta                                              ,
-                                              final PublicKey stateKey,
+  public static List<AccountMeta> endSwapKeys(final PublicKey stateKey,
                                               final PublicKey userKey,
                                               final PublicKey userStatsKey,
                                               final PublicKey authorityKey,
@@ -2688,7 +2625,6 @@ public final class DriftProgram {
                                     final OptionalLong limitPrice,
                                     final SwapReduceOnly reduceOnly) {
     final var keys = endSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       userStatsKey,
@@ -2711,7 +2647,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction endSwap(final AccountMeta invokedDriftProgramMeta                                    ,
+  public static Instruction endSwap(final AccountMeta invokedDriftProgramMeta,
                                     final List<AccountMeta> keys,
                                     final int inMarketIndex,
                                     final int outMarketIndex,
@@ -2796,8 +2732,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_NAME_DISCRIMINATOR = toDiscriminator(135, 25, 185, 56, 165, 53, 34, 136);
 
-  public static List<AccountMeta> updateUserNameKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey userKey,
+  public static List<AccountMeta> updateUserNameKeys(final PublicKey userKey,
                                                      final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -2811,14 +2746,13 @@ public final class DriftProgram {
                                            final int subAccountId,
                                            final byte[] name) {
     final var keys = updateUserNameKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserName(invokedDriftProgramMeta, keys, subAccountId, name);
   }
 
-  public static Instruction updateUserName(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction updateUserName(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int subAccountId,
                                            final byte[] name) {
@@ -2870,8 +2804,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_CUSTOM_MARGIN_RATIO_DISCRIMINATOR = toDiscriminator(21, 221, 140, 187, 32, 129, 11, 123);
 
-  public static List<AccountMeta> updateUserCustomMarginRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey userKey,
+  public static List<AccountMeta> updateUserCustomMarginRatioKeys(final PublicKey userKey,
                                                                   final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -2885,14 +2818,13 @@ public final class DriftProgram {
                                                         final int subAccountId,
                                                         final int marginRatio) {
     final var keys = updateUserCustomMarginRatioKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserCustomMarginRatio(invokedDriftProgramMeta, keys, subAccountId, marginRatio);
   }
 
-  public static Instruction updateUserCustomMarginRatio(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction updateUserCustomMarginRatio(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int subAccountId,
                                                         final int marginRatio) {
@@ -2943,8 +2875,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_PERP_POSITION_CUSTOM_MARGIN_RATIO_DISCRIMINATOR = toDiscriminator(121, 137, 157, 155, 89, 186, 145, 113);
 
-  public static List<AccountMeta> updateUserPerpPositionCustomMarginRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                              ,
-                                                                              final PublicKey userKey,
+  public static List<AccountMeta> updateUserPerpPositionCustomMarginRatioKeys(final PublicKey userKey,
                                                                               final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -2959,7 +2890,6 @@ public final class DriftProgram {
                                                                     final int perpMarketIndex,
                                                                     final int marginRatio) {
     final var keys = updateUserPerpPositionCustomMarginRatioKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
@@ -2972,7 +2902,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateUserPerpPositionCustomMarginRatio(final AccountMeta invokedDriftProgramMeta                                                                    ,
+  public static Instruction updateUserPerpPositionCustomMarginRatio(final AccountMeta invokedDriftProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final int subAccountId,
                                                                     final int perpMarketIndex,
@@ -3033,8 +2963,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_MARGIN_TRADING_ENABLED_DISCRIMINATOR = toDiscriminator(194, 92, 204, 223, 246, 188, 31, 203);
 
-  public static List<AccountMeta> updateUserMarginTradingEnabledKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey userKey,
+  public static List<AccountMeta> updateUserMarginTradingEnabledKeys(final PublicKey userKey,
                                                                      final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -3048,14 +2977,13 @@ public final class DriftProgram {
                                                            final int subAccountId,
                                                            final boolean marginTradingEnabled) {
     final var keys = updateUserMarginTradingEnabledKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserMarginTradingEnabled(invokedDriftProgramMeta, keys, subAccountId, marginTradingEnabled);
   }
 
-  public static Instruction updateUserMarginTradingEnabled(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction updateUserMarginTradingEnabled(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int subAccountId,
                                                            final boolean marginTradingEnabled) {
@@ -3106,8 +3034,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_POOL_ID_DISCRIMINATOR = toDiscriminator(219, 86, 73, 106, 56, 218, 128, 109);
 
-  public static List<AccountMeta> updateUserPoolIdKeys(final AccountMeta invokedDriftProgramMeta                                                       ,
-                                                       final PublicKey userKey,
+  public static List<AccountMeta> updateUserPoolIdKeys(final PublicKey userKey,
                                                        final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -3121,14 +3048,13 @@ public final class DriftProgram {
                                              final int subAccountId,
                                              final int poolId) {
     final var keys = updateUserPoolIdKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserPoolId(invokedDriftProgramMeta, keys, subAccountId, poolId);
   }
 
-  public static Instruction updateUserPoolId(final AccountMeta invokedDriftProgramMeta                                             ,
+  public static Instruction updateUserPoolId(final AccountMeta invokedDriftProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int subAccountId,
                                              final int poolId) {
@@ -3179,8 +3105,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_DELEGATE_DISCRIMINATOR = toDiscriminator(139, 205, 141, 141, 113, 36, 94, 187);
 
-  public static List<AccountMeta> updateUserDelegateKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey userKey,
+  public static List<AccountMeta> updateUserDelegateKeys(final PublicKey userKey,
                                                          final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -3194,14 +3119,13 @@ public final class DriftProgram {
                                                final int subAccountId,
                                                final PublicKey delegate) {
     final var keys = updateUserDelegateKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserDelegate(invokedDriftProgramMeta, keys, subAccountId, delegate);
   }
 
-  public static Instruction updateUserDelegate(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction updateUserDelegate(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int subAccountId,
                                                final PublicKey delegate) {
@@ -3252,8 +3176,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_REDUCE_ONLY_DISCRIMINATOR = toDiscriminator(199, 71, 42, 67, 144, 19, 86, 109);
 
-  public static List<AccountMeta> updateUserReduceOnlyKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey userKey,
+  public static List<AccountMeta> updateUserReduceOnlyKeys(final PublicKey userKey,
                                                            final PublicKey authorityKey) {
     return List.of(
       createWrite(userKey),
@@ -3267,14 +3190,13 @@ public final class DriftProgram {
                                                  final int subAccountId,
                                                  final boolean reduceOnly) {
     final var keys = updateUserReduceOnlyKeys(
-      invokedDriftProgramMeta,
       userKey,
       authorityKey
     );
     return updateUserReduceOnly(invokedDriftProgramMeta, keys, subAccountId, reduceOnly);
   }
 
-  public static Instruction updateUserReduceOnly(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updateUserReduceOnly(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int subAccountId,
                                                  final boolean reduceOnly) {
@@ -3325,8 +3247,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_PROTECTED_MAKER_ORDERS_DISCRIMINATOR = toDiscriminator(114, 39, 123, 198, 187, 25, 90, 219);
 
-  public static List<AccountMeta> updateUserProtectedMakerOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey stateKey,
+  public static List<AccountMeta> updateUserProtectedMakerOrdersKeys(final PublicKey stateKey,
                                                                      final PublicKey userKey,
                                                                      final PublicKey authorityKey,
                                                                      final PublicKey protectedMakerModeConfigKey) {
@@ -3346,7 +3267,6 @@ public final class DriftProgram {
                                                            final int subAccountId,
                                                            final boolean protectedMakerOrders) {
     final var keys = updateUserProtectedMakerOrdersKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey,
@@ -3355,7 +3275,7 @@ public final class DriftProgram {
     return updateUserProtectedMakerOrders(invokedDriftProgramMeta, keys, subAccountId, protectedMakerOrders);
   }
 
-  public static Instruction updateUserProtectedMakerOrders(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction updateUserProtectedMakerOrders(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int subAccountId,
                                                            final boolean protectedMakerOrders) {
@@ -3406,8 +3326,7 @@ public final class DriftProgram {
 
   public static final Discriminator DELETE_USER_DISCRIMINATOR = toDiscriminator(186, 85, 17, 249, 219, 231, 98, 251);
 
-  public static List<AccountMeta> deleteUserKeys(final AccountMeta invokedDriftProgramMeta                                                 ,
-                                                 final PublicKey userKey,
+  public static List<AccountMeta> deleteUserKeys(final PublicKey userKey,
                                                  final PublicKey userStatsKey,
                                                  final PublicKey stateKey,
                                                  final PublicKey authorityKey) {
@@ -3425,7 +3344,6 @@ public final class DriftProgram {
                                        final PublicKey stateKey,
                                        final PublicKey authorityKey) {
     final var keys = deleteUserKeys(
-      invokedDriftProgramMeta,
       userKey,
       userStatsKey,
       stateKey,
@@ -3434,15 +3352,14 @@ public final class DriftProgram {
     return deleteUser(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction deleteUser(final AccountMeta invokedDriftProgramMeta                                       ,
+  public static Instruction deleteUser(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, DELETE_USER_DISCRIMINATOR);
   }
 
   public static final Discriminator FORCE_DELETE_USER_DISCRIMINATOR = toDiscriminator(2, 241, 195, 172, 227, 24, 254, 158);
 
-  public static List<AccountMeta> forceDeleteUserKeys(final AccountMeta invokedDriftProgramMeta                                                      ,
-                                                      final PublicKey userKey,
+  public static List<AccountMeta> forceDeleteUserKeys(final PublicKey userKey,
                                                       final PublicKey userStatsKey,
                                                       final PublicKey stateKey,
                                                       final PublicKey authorityKey,
@@ -3466,7 +3383,6 @@ public final class DriftProgram {
                                             final PublicKey keeperKey,
                                             final PublicKey driftSignerKey) {
     final var keys = forceDeleteUserKeys(
-      invokedDriftProgramMeta,
       userKey,
       userStatsKey,
       stateKey,
@@ -3477,15 +3393,14 @@ public final class DriftProgram {
     return forceDeleteUser(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction forceDeleteUser(final AccountMeta invokedDriftProgramMeta                                            ,
+  public static Instruction forceDeleteUser(final AccountMeta invokedDriftProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, FORCE_DELETE_USER_DISCRIMINATOR);
   }
 
   public static final Discriminator DELETE_SIGNED_MSG_USER_ORDERS_DISCRIMINATOR = toDiscriminator(221, 247, 128, 253, 212, 254, 46, 153);
 
-  public static List<AccountMeta> deleteSignedMsgUserOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey signedMsgUserOrdersKey,
+  public static List<AccountMeta> deleteSignedMsgUserOrdersKeys(final PublicKey signedMsgUserOrdersKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey authorityKey) {
     return List.of(
@@ -3500,7 +3415,6 @@ public final class DriftProgram {
                                                       final PublicKey stateKey,
                                                       final PublicKey authorityKey) {
     final var keys = deleteSignedMsgUserOrdersKeys(
-      invokedDriftProgramMeta,
       signedMsgUserOrdersKey,
       stateKey,
       authorityKey
@@ -3508,15 +3422,14 @@ public final class DriftProgram {
     return deleteSignedMsgUserOrders(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction deleteSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction deleteSignedMsgUserOrders(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, DELETE_SIGNED_MSG_USER_ORDERS_DISCRIMINATOR);
   }
 
   public static final Discriminator RECLAIM_RENT_DISCRIMINATOR = toDiscriminator(218, 200, 19, 197, 227, 89, 192, 22);
 
-  public static List<AccountMeta> reclaimRentKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey userKey,
+  public static List<AccountMeta> reclaimRentKeys(final PublicKey userKey,
                                                   final PublicKey userStatsKey,
                                                   final PublicKey stateKey,
                                                   final PublicKey authorityKey,
@@ -3537,7 +3450,6 @@ public final class DriftProgram {
                                         final PublicKey authorityKey,
                                         final PublicKey rentKey) {
     final var keys = reclaimRentKeys(
-      invokedDriftProgramMeta,
       userKey,
       userStatsKey,
       stateKey,
@@ -3547,15 +3459,14 @@ public final class DriftProgram {
     return reclaimRent(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction reclaimRent(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction reclaimRent(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, RECLAIM_RENT_DISCRIMINATOR);
   }
 
   public static final Discriminator ENABLE_USER_HIGH_LEVERAGE_MODE_DISCRIMINATOR = toDiscriminator(231, 24, 230, 112, 201, 173, 73, 184);
 
-  public static List<AccountMeta> enableUserHighLeverageModeKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey stateKey,
+  public static List<AccountMeta> enableUserHighLeverageModeKeys(final PublicKey stateKey,
                                                                  final PublicKey userKey,
                                                                  final PublicKey authorityKey,
                                                                  final PublicKey highLeverageModeConfigKey) {
@@ -3574,7 +3485,6 @@ public final class DriftProgram {
                                                        final PublicKey highLeverageModeConfigKey,
                                                        final int subAccountId) {
     final var keys = enableUserHighLeverageModeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey,
@@ -3583,7 +3493,7 @@ public final class DriftProgram {
     return enableUserHighLeverageMode(invokedDriftProgramMeta, keys, subAccountId);
   }
 
-  public static Instruction enableUserHighLeverageMode(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction enableUserHighLeverageMode(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int subAccountId) {
     final byte[] _data = new byte[10];
@@ -3627,8 +3537,7 @@ public final class DriftProgram {
 
   public static final Discriminator FILL_PERP_ORDER_DISCRIMINATOR = toDiscriminator(13, 188, 248, 103, 134, 217, 106, 240);
 
-  public static List<AccountMeta> fillPerpOrderKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey stateKey,
+  public static List<AccountMeta> fillPerpOrderKeys(final PublicKey stateKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey fillerKey,
                                                     final PublicKey fillerStatsKey,
@@ -3654,7 +3563,6 @@ public final class DriftProgram {
                                           final OptionalInt orderId,
                                           final OptionalInt makerOrderId) {
     final var keys = fillPerpOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -3665,7 +3573,7 @@ public final class DriftProgram {
     return fillPerpOrder(invokedDriftProgramMeta, keys, orderId, makerOrderId);
   }
 
-  public static Instruction fillPerpOrder(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction fillPerpOrder(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OptionalInt orderId,
                                           final OptionalInt makerOrderId) {
@@ -3728,8 +3636,7 @@ public final class DriftProgram {
 
   public static final Discriminator REVERT_FILL_DISCRIMINATOR = toDiscriminator(236, 238, 176, 69, 239, 10, 181, 193);
 
-  public static List<AccountMeta> revertFillKeys(final AccountMeta invokedDriftProgramMeta                                                 ,
-                                                 final PublicKey stateKey,
+  public static List<AccountMeta> revertFillKeys(final PublicKey stateKey,
                                                  final PublicKey authorityKey,
                                                  final PublicKey fillerKey,
                                                  final PublicKey fillerStatsKey) {
@@ -3747,7 +3654,6 @@ public final class DriftProgram {
                                        final PublicKey fillerKey,
                                        final PublicKey fillerStatsKey) {
     final var keys = revertFillKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -3756,15 +3662,14 @@ public final class DriftProgram {
     return revertFill(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction revertFill(final AccountMeta invokedDriftProgramMeta                                       ,
+  public static Instruction revertFill(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, REVERT_FILL_DISCRIMINATOR);
   }
 
   public static final Discriminator FILL_SPOT_ORDER_DISCRIMINATOR = toDiscriminator(212, 206, 130, 173, 21, 34, 199, 40);
 
-  public static List<AccountMeta> fillSpotOrderKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey stateKey,
+  public static List<AccountMeta> fillSpotOrderKeys(final PublicKey stateKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey fillerKey,
                                                     final PublicKey fillerStatsKey,
@@ -3791,7 +3696,6 @@ public final class DriftProgram {
                                           final SpotFulfillmentType fulfillmentType,
                                           final OptionalInt makerOrderId) {
     final var keys = fillSpotOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -3808,7 +3712,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction fillSpotOrder(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction fillSpotOrder(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OptionalInt orderId,
                                           final SpotFulfillmentType fulfillmentType,
@@ -3887,8 +3791,7 @@ public final class DriftProgram {
 
   public static final Discriminator TRIGGER_ORDER_DISCRIMINATOR = toDiscriminator(63, 112, 51, 233, 232, 47, 240, 199);
 
-  public static List<AccountMeta> triggerOrderKeys(final AccountMeta invokedDriftProgramMeta                                                   ,
-                                                   final PublicKey stateKey,
+  public static List<AccountMeta> triggerOrderKeys(final PublicKey stateKey,
                                                    final PublicKey authorityKey,
                                                    final PublicKey fillerKey,
                                                    final PublicKey userKey) {
@@ -3907,7 +3810,6 @@ public final class DriftProgram {
                                          final PublicKey userKey,
                                          final int orderId) {
     final var keys = triggerOrderKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -3916,7 +3818,7 @@ public final class DriftProgram {
     return triggerOrder(invokedDriftProgramMeta, keys, orderId);
   }
 
-  public static Instruction triggerOrder(final AccountMeta invokedDriftProgramMeta                                         ,
+  public static Instruction triggerOrder(final AccountMeta invokedDriftProgramMeta,
                                          final List<AccountMeta> keys,
                                          final int orderId) {
     final byte[] _data = new byte[12];
@@ -3960,8 +3862,7 @@ public final class DriftProgram {
 
   public static final Discriminator FORCE_CANCEL_ORDERS_DISCRIMINATOR = toDiscriminator(64, 181, 196, 63, 222, 72, 64, 232);
 
-  public static List<AccountMeta> forceCancelOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                        ,
-                                                        final PublicKey stateKey,
+  public static List<AccountMeta> forceCancelOrdersKeys(final PublicKey stateKey,
                                                         final PublicKey authorityKey,
                                                         final PublicKey fillerKey,
                                                         final PublicKey userKey) {
@@ -3979,7 +3880,6 @@ public final class DriftProgram {
                                               final PublicKey fillerKey,
                                               final PublicKey userKey) {
     final var keys = forceCancelOrdersKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -3988,15 +3888,14 @@ public final class DriftProgram {
     return forceCancelOrders(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction forceCancelOrders(final AccountMeta invokedDriftProgramMeta                                              ,
+  public static Instruction forceCancelOrders(final AccountMeta invokedDriftProgramMeta,
                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, FORCE_CANCEL_ORDERS_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_USER_IDLE_DISCRIMINATOR = toDiscriminator(253, 133, 67, 22, 103, 161, 20, 100);
 
-  public static List<AccountMeta> updateUserIdleKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey stateKey,
+  public static List<AccountMeta> updateUserIdleKeys(final PublicKey stateKey,
                                                      final PublicKey authorityKey,
                                                      final PublicKey fillerKey,
                                                      final PublicKey userKey) {
@@ -4014,7 +3913,6 @@ public final class DriftProgram {
                                            final PublicKey fillerKey,
                                            final PublicKey userKey) {
     final var keys = updateUserIdleKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       fillerKey,
@@ -4023,15 +3921,14 @@ public final class DriftProgram {
     return updateUserIdle(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateUserIdle(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction updateUserIdle(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_USER_IDLE_DISCRIMINATOR);
   }
 
   public static final Discriminator LOG_USER_BALANCES_DISCRIMINATOR = toDiscriminator(162, 21, 35, 251, 32, 57, 161, 210);
 
-  public static List<AccountMeta> logUserBalancesKeys(final AccountMeta invokedDriftProgramMeta                                                      ,
-                                                      final PublicKey stateKey,
+  public static List<AccountMeta> logUserBalancesKeys(final PublicKey stateKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey userKey) {
     return List.of(
@@ -4046,7 +3943,6 @@ public final class DriftProgram {
                                             final PublicKey authorityKey,
                                             final PublicKey userKey) {
     final var keys = logUserBalancesKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       userKey
@@ -4054,15 +3950,14 @@ public final class DriftProgram {
     return logUserBalances(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction logUserBalances(final AccountMeta invokedDriftProgramMeta                                            ,
+  public static Instruction logUserBalances(final AccountMeta invokedDriftProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, LOG_USER_BALANCES_DISCRIMINATOR);
   }
 
   public static final Discriminator DISABLE_USER_HIGH_LEVERAGE_MODE_DISCRIMINATOR = toDiscriminator(183, 155, 45, 0, 226, 85, 213, 69);
 
-  public static List<AccountMeta> disableUserHighLeverageModeKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey stateKey,
+  public static List<AccountMeta> disableUserHighLeverageModeKeys(final PublicKey stateKey,
                                                                   final PublicKey authorityKey,
                                                                   final PublicKey userKey,
                                                                   final PublicKey highLeverageModeConfigKey) {
@@ -4081,7 +3976,6 @@ public final class DriftProgram {
                                                         final PublicKey highLeverageModeConfigKey,
                                                         final boolean disableMaintenance) {
     final var keys = disableUserHighLeverageModeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       userKey,
@@ -4090,7 +3984,7 @@ public final class DriftProgram {
     return disableUserHighLeverageMode(invokedDriftProgramMeta, keys, disableMaintenance);
   }
 
-  public static Instruction disableUserHighLeverageMode(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction disableUserHighLeverageMode(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final boolean disableMaintenance) {
     final byte[] _data = new byte[9];
@@ -4134,8 +4028,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_FUEL_BONUS_DISCRIMINATOR = toDiscriminator(88, 175, 201, 190, 222, 100, 143, 57);
 
-  public static List<AccountMeta> updateUserFuelBonusKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey stateKey,
+  public static List<AccountMeta> updateUserFuelBonusKeys(final PublicKey stateKey,
                                                           final PublicKey authorityKey,
                                                           final PublicKey userKey,
                                                           final PublicKey userStatsKey) {
@@ -4153,7 +4046,6 @@ public final class DriftProgram {
                                                 final PublicKey userKey,
                                                 final PublicKey userStatsKey) {
     final var keys = updateUserFuelBonusKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       userKey,
@@ -4162,15 +4054,14 @@ public final class DriftProgram {
     return updateUserFuelBonus(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateUserFuelBonus(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction updateUserFuelBonus(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_USER_FUEL_BONUS_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_USER_STATS_REFERRER_STATUS_DISCRIMINATOR = toDiscriminator(174, 154, 72, 42, 191, 148, 145, 205);
 
-  public static List<AccountMeta> updateUserStatsReferrerStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey stateKey,
+  public static List<AccountMeta> updateUserStatsReferrerStatusKeys(final PublicKey stateKey,
                                                                     final PublicKey authorityKey,
                                                                     final PublicKey userStatsKey) {
     return List.of(
@@ -4185,7 +4076,6 @@ public final class DriftProgram {
                                                           final PublicKey authorityKey,
                                                           final PublicKey userStatsKey) {
     final var keys = updateUserStatsReferrerStatusKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       userStatsKey
@@ -4193,15 +4083,14 @@ public final class DriftProgram {
     return updateUserStatsReferrerStatus(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateUserStatsReferrerStatus(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateUserStatsReferrerStatus(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_USER_STATS_REFERRER_STATUS_DISCRIMINATOR);
   }
 
   public static final Discriminator ADMIN_DISABLE_UPDATE_PERP_BID_ASK_TWAP_DISCRIMINATOR = toDiscriminator(17, 164, 82, 45, 183, 86, 191, 199);
 
-  public static List<AccountMeta> adminDisableUpdatePerpBidAskTwapKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> adminDisableUpdatePerpBidAskTwapKeys(final PublicKey adminKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey userStatsKey) {
     return List.of(
@@ -4217,7 +4106,6 @@ public final class DriftProgram {
                                                              final PublicKey userStatsKey,
                                                              final boolean disable) {
     final var keys = adminDisableUpdatePerpBidAskTwapKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       userStatsKey
@@ -4225,7 +4113,7 @@ public final class DriftProgram {
     return adminDisableUpdatePerpBidAskTwap(invokedDriftProgramMeta, keys, disable);
   }
 
-  public static Instruction adminDisableUpdatePerpBidAskTwap(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction adminDisableUpdatePerpBidAskTwap(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final boolean disable) {
     final byte[] _data = new byte[9];
@@ -4269,8 +4157,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_PNL_DISCRIMINATOR = toDiscriminator(43, 61, 234, 45, 15, 95, 152, 153);
 
-  public static List<AccountMeta> settlePnlKeys(final AccountMeta invokedDriftProgramMeta                                                ,
-                                                final PublicKey stateKey,
+  public static List<AccountMeta> settlePnlKeys(final PublicKey stateKey,
                                                 final PublicKey userKey,
                                                 final PublicKey authorityKey,
                                                 final PublicKey spotMarketVaultKey) {
@@ -4289,7 +4176,6 @@ public final class DriftProgram {
                                       final PublicKey spotMarketVaultKey,
                                       final int marketIndex) {
     final var keys = settlePnlKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey,
@@ -4298,7 +4184,7 @@ public final class DriftProgram {
     return settlePnl(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction settlePnl(final AccountMeta invokedDriftProgramMeta                                      ,
+  public static Instruction settlePnl(final AccountMeta invokedDriftProgramMeta,
                                       final List<AccountMeta> keys,
                                       final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -4342,8 +4228,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_MULTIPLE_PNLS_DISCRIMINATOR = toDiscriminator(127, 66, 117, 57, 40, 50, 152, 127);
 
-  public static List<AccountMeta> settleMultiplePnlsKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey stateKey,
+  public static List<AccountMeta> settleMultiplePnlsKeys(final PublicKey stateKey,
                                                          final PublicKey userKey,
                                                          final PublicKey authorityKey,
                                                          final PublicKey spotMarketVaultKey) {
@@ -4363,7 +4248,6 @@ public final class DriftProgram {
                                                final short[] marketIndexes,
                                                final SettlePnlMode mode) {
     final var keys = settleMultiplePnlsKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey,
@@ -4372,7 +4256,7 @@ public final class DriftProgram {
     return settleMultiplePnls(invokedDriftProgramMeta, keys, marketIndexes, mode);
   }
 
-  public static Instruction settleMultiplePnls(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction settleMultiplePnls(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final short[] marketIndexes,
                                                final SettlePnlMode mode) {
@@ -4418,8 +4302,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_FUNDING_PAYMENT_DISCRIMINATOR = toDiscriminator(222, 90, 202, 94, 28, 45, 115, 183);
 
-  public static List<AccountMeta> settleFundingPaymentKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey stateKey,
+  public static List<AccountMeta> settleFundingPaymentKeys(final PublicKey stateKey,
                                                            final PublicKey userKey) {
     return List.of(
       createRead(stateKey),
@@ -4427,23 +4310,24 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction settleFundingPayment(final AccountMeta invokedDriftProgramMeta, final PublicKey stateKey, final PublicKey userKey) {     final var keys = settleFundingPaymentKeys(
-      invokedDriftProgramMeta,
+  public static Instruction settleFundingPayment(final AccountMeta invokedDriftProgramMeta,
+                                                 final PublicKey stateKey,
+                                                 final PublicKey userKey) {
+    final var keys = settleFundingPaymentKeys(
       stateKey,
       userKey
     );
     return settleFundingPayment(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction settleFundingPayment(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction settleFundingPayment(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, SETTLE_FUNDING_PAYMENT_DISCRIMINATOR);
   }
 
   public static final Discriminator SETTLE_EXPIRED_MARKET_DISCRIMINATOR = toDiscriminator(120, 89, 11, 25, 122, 77, 72, 193);
 
-  public static List<AccountMeta> settleExpiredMarketKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey adminKey,
+  public static List<AccountMeta> settleExpiredMarketKeys(final PublicKey adminKey,
                                                           final PublicKey stateKey,
                                                           final PublicKey perpMarketKey) {
     return List.of(
@@ -4459,7 +4343,6 @@ public final class DriftProgram {
                                                 final PublicKey perpMarketKey,
                                                 final int marketIndex) {
     final var keys = settleExpiredMarketKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -4467,7 +4350,7 @@ public final class DriftProgram {
     return settleExpiredMarket(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction settleExpiredMarket(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction settleExpiredMarket(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -4511,8 +4394,7 @@ public final class DriftProgram {
 
   public static final Discriminator LIQUIDATE_PERP_DISCRIMINATOR = toDiscriminator(75, 35, 119, 247, 191, 18, 139, 2);
 
-  public static List<AccountMeta> liquidatePerpKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey stateKey,
+  public static List<AccountMeta> liquidatePerpKeys(final PublicKey stateKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey liquidatorKey,
                                                     final PublicKey liquidatorStatsKey,
@@ -4539,7 +4421,6 @@ public final class DriftProgram {
                                           final long liquidatorMaxBaseAssetAmount,
                                           final OptionalLong limitPrice) {
     final var keys = liquidatePerpKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -4556,7 +4437,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction liquidatePerp(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction liquidatePerp(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int marketIndex,
                                           final long liquidatorMaxBaseAssetAmount,
@@ -4623,8 +4504,7 @@ public final class DriftProgram {
 
   public static final Discriminator LIQUIDATE_PERP_WITH_FILL_DISCRIMINATOR = toDiscriminator(95, 111, 124, 105, 86, 169, 187, 34);
 
-  public static List<AccountMeta> liquidatePerpWithFillKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> liquidatePerpWithFillKeys(final PublicKey stateKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey liquidatorKey,
                                                             final PublicKey liquidatorStatsKey,
@@ -4649,7 +4529,6 @@ public final class DriftProgram {
                                                   final PublicKey userStatsKey,
                                                   final int marketIndex) {
     final var keys = liquidatePerpWithFillKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -4660,7 +4539,7 @@ public final class DriftProgram {
     return liquidatePerpWithFill(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction liquidatePerpWithFill(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction liquidatePerpWithFill(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -4704,8 +4583,7 @@ public final class DriftProgram {
 
   public static final Discriminator LIQUIDATE_SPOT_DISCRIMINATOR = toDiscriminator(107, 0, 128, 41, 35, 229, 251, 18);
 
-  public static List<AccountMeta> liquidateSpotKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey stateKey,
+  public static List<AccountMeta> liquidateSpotKeys(final PublicKey stateKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey liquidatorKey,
                                                     final PublicKey liquidatorStatsKey,
@@ -4733,7 +4611,6 @@ public final class DriftProgram {
                                           final BigInteger liquidatorMaxLiabilityTransfer,
                                           final OptionalLong limitPrice) {
     final var keys = liquidateSpotKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -4751,7 +4628,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction liquidateSpot(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction liquidateSpot(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int assetMarketIndex,
                                           final int liabilityMarketIndex,
@@ -4831,8 +4708,7 @@ public final class DriftProgram {
   public static final Discriminator LIQUIDATE_SPOT_WITH_SWAP_BEGIN_DISCRIMINATOR = toDiscriminator(12, 43, 176, 83, 156, 251, 117, 13);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> liquidateSpotWithSwapBeginKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey stateKey,
+  public static List<AccountMeta> liquidateSpotWithSwapBeginKeys(final PublicKey stateKey,
                                                                  final PublicKey authorityKey,
                                                                  final PublicKey liquidatorKey,
                                                                  final PublicKey liquidatorStatsKey,
@@ -4881,7 +4757,6 @@ public final class DriftProgram {
                                                        final int liabilityMarketIndex,
                                                        final long swapAmount) {
     final var keys = liquidateSpotWithSwapBeginKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -4905,7 +4780,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction liquidateSpotWithSwapBegin(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction liquidateSpotWithSwapBegin(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int assetMarketIndex,
                                                        final int liabilityMarketIndex,
@@ -4967,8 +4842,7 @@ public final class DriftProgram {
   public static final Discriminator LIQUIDATE_SPOT_WITH_SWAP_END_DISCRIMINATOR = toDiscriminator(142, 88, 163, 160, 223, 75, 55, 225);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> liquidateSpotWithSwapEndKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey stateKey,
+  public static List<AccountMeta> liquidateSpotWithSwapEndKeys(final PublicKey stateKey,
                                                                final PublicKey authorityKey,
                                                                final PublicKey liquidatorKey,
                                                                final PublicKey liquidatorStatsKey,
@@ -5016,7 +4890,6 @@ public final class DriftProgram {
                                                      final int assetMarketIndex,
                                                      final int liabilityMarketIndex) {
     final var keys = liquidateSpotWithSwapEndKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -5034,7 +4907,7 @@ public final class DriftProgram {
     return liquidateSpotWithSwapEnd(invokedDriftProgramMeta, keys, assetMarketIndex, liabilityMarketIndex);
   }
 
-  public static Instruction liquidateSpotWithSwapEnd(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction liquidateSpotWithSwapEnd(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int assetMarketIndex,
                                                      final int liabilityMarketIndex) {
@@ -5085,8 +4958,7 @@ public final class DriftProgram {
 
   public static final Discriminator LIQUIDATE_BORROW_FOR_PERP_PNL_DISCRIMINATOR = toDiscriminator(169, 17, 32, 90, 207, 148, 209, 27);
 
-  public static List<AccountMeta> liquidateBorrowForPerpPnlKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey stateKey,
+  public static List<AccountMeta> liquidateBorrowForPerpPnlKeys(final PublicKey stateKey,
                                                                 final PublicKey authorityKey,
                                                                 final PublicKey liquidatorKey,
                                                                 final PublicKey liquidatorStatsKey,
@@ -5114,7 +4986,6 @@ public final class DriftProgram {
                                                       final BigInteger liquidatorMaxLiabilityTransfer,
                                                       final OptionalLong limitPrice) {
     final var keys = liquidateBorrowForPerpPnlKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -5132,7 +5003,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction liquidateBorrowForPerpPnl(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction liquidateBorrowForPerpPnl(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int perpMarketIndex,
                                                       final int spotMarketIndex,
@@ -5211,8 +5082,7 @@ public final class DriftProgram {
 
   public static final Discriminator LIQUIDATE_PERP_PNL_FOR_DEPOSIT_DISCRIMINATOR = toDiscriminator(237, 75, 198, 235, 233, 186, 75, 35);
 
-  public static List<AccountMeta> liquidatePerpPnlForDepositKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey stateKey,
+  public static List<AccountMeta> liquidatePerpPnlForDepositKeys(final PublicKey stateKey,
                                                                  final PublicKey authorityKey,
                                                                  final PublicKey liquidatorKey,
                                                                  final PublicKey liquidatorStatsKey,
@@ -5240,7 +5110,6 @@ public final class DriftProgram {
                                                        final BigInteger liquidatorMaxPnlTransfer,
                                                        final OptionalLong limitPrice) {
     final var keys = liquidatePerpPnlForDepositKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -5258,7 +5127,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction liquidatePerpPnlForDeposit(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction liquidatePerpPnlForDeposit(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int perpMarketIndex,
                                                        final int spotMarketIndex,
@@ -5337,8 +5206,7 @@ public final class DriftProgram {
 
   public static final Discriminator SET_USER_STATUS_TO_BEING_LIQUIDATED_DISCRIMINATOR = toDiscriminator(106, 133, 160, 206, 193, 171, 192, 194);
 
-  public static List<AccountMeta> setUserStatusToBeingLiquidatedKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey stateKey,
+  public static List<AccountMeta> setUserStatusToBeingLiquidatedKeys(final PublicKey stateKey,
                                                                      final PublicKey userKey,
                                                                      final PublicKey authorityKey) {
     return List.of(
@@ -5353,7 +5221,6 @@ public final class DriftProgram {
                                                            final PublicKey userKey,
                                                            final PublicKey authorityKey) {
     final var keys = setUserStatusToBeingLiquidatedKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       authorityKey
@@ -5361,15 +5228,14 @@ public final class DriftProgram {
     return setUserStatusToBeingLiquidated(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction setUserStatusToBeingLiquidated(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction setUserStatusToBeingLiquidated(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, SET_USER_STATUS_TO_BEING_LIQUIDATED_DISCRIMINATOR);
   }
 
   public static final Discriminator RESOLVE_PERP_PNL_DEFICIT_DISCRIMINATOR = toDiscriminator(168, 204, 68, 150, 159, 126, 95, 148);
 
-  public static List<AccountMeta> resolvePerpPnlDeficitKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> resolvePerpPnlDeficitKeys(final PublicKey stateKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey spotMarketVaultKey,
                                                             final PublicKey insuranceFundVaultKey,
@@ -5395,7 +5261,6 @@ public final class DriftProgram {
                                                   final int spotMarketIndex,
                                                   final int perpMarketIndex) {
     final var keys = resolvePerpPnlDeficitKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       spotMarketVaultKey,
@@ -5406,7 +5271,7 @@ public final class DriftProgram {
     return resolvePerpPnlDeficit(invokedDriftProgramMeta, keys, spotMarketIndex, perpMarketIndex);
   }
 
-  public static Instruction resolvePerpPnlDeficit(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction resolvePerpPnlDeficit(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int spotMarketIndex,
                                                   final int perpMarketIndex) {
@@ -5457,8 +5322,7 @@ public final class DriftProgram {
 
   public static final Discriminator RESOLVE_PERP_BANKRUPTCY_DISCRIMINATOR = toDiscriminator(224, 16, 176, 214, 162, 213, 183, 222);
 
-  public static List<AccountMeta> resolvePerpBankruptcyKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> resolvePerpBankruptcyKeys(final PublicKey stateKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey liquidatorKey,
                                                             final PublicKey liquidatorStatsKey,
@@ -5496,7 +5360,6 @@ public final class DriftProgram {
                                                   final int quoteSpotMarketIndex,
                                                   final int marketIndex) {
     final var keys = resolvePerpBankruptcyKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -5511,7 +5374,7 @@ public final class DriftProgram {
     return resolvePerpBankruptcy(invokedDriftProgramMeta, keys, quoteSpotMarketIndex, marketIndex);
   }
 
-  public static Instruction resolvePerpBankruptcy(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction resolvePerpBankruptcy(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int quoteSpotMarketIndex,
                                                   final int marketIndex) {
@@ -5562,8 +5425,7 @@ public final class DriftProgram {
 
   public static final Discriminator RESOLVE_SPOT_BANKRUPTCY_DISCRIMINATOR = toDiscriminator(124, 194, 240, 254, 198, 213, 52, 122);
 
-  public static List<AccountMeta> resolveSpotBankruptcyKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> resolveSpotBankruptcyKeys(final PublicKey stateKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey liquidatorKey,
                                                             final PublicKey liquidatorStatsKey,
@@ -5600,7 +5462,6 @@ public final class DriftProgram {
                                                   final PublicKey tokenProgramKey,
                                                   final int marketIndex) {
     final var keys = resolveSpotBankruptcyKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       liquidatorKey,
@@ -5615,7 +5476,7 @@ public final class DriftProgram {
     return resolveSpotBankruptcy(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction resolveSpotBankruptcy(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction resolveSpotBankruptcy(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -5659,8 +5520,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_REVENUE_TO_INSURANCE_FUND_DISCRIMINATOR = toDiscriminator(200, 120, 93, 136, 69, 38, 199, 159);
 
-  public static List<AccountMeta> settleRevenueToInsuranceFundKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey stateKey,
+  public static List<AccountMeta> settleRevenueToInsuranceFundKeys(final PublicKey stateKey,
                                                                    final PublicKey spotMarketKey,
                                                                    final PublicKey spotMarketVaultKey,
                                                                    final PublicKey driftSignerKey,
@@ -5685,7 +5545,6 @@ public final class DriftProgram {
                                                          final PublicKey tokenProgramKey,
                                                          final int spotMarketIndex) {
     final var keys = settleRevenueToInsuranceFundKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       spotMarketVaultKey,
@@ -5696,7 +5555,7 @@ public final class DriftProgram {
     return settleRevenueToInsuranceFund(invokedDriftProgramMeta, keys, spotMarketIndex);
   }
 
-  public static Instruction settleRevenueToInsuranceFund(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction settleRevenueToInsuranceFund(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int spotMarketIndex) {
     final byte[] _data = new byte[10];
@@ -5740,8 +5599,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FUNDING_RATE_DISCRIMINATOR = toDiscriminator(201, 178, 116, 212, 166, 144, 72, 238);
 
-  public static List<AccountMeta> updateFundingRateKeys(final AccountMeta invokedDriftProgramMeta                                                        ,
-                                                        final PublicKey stateKey,
+  public static List<AccountMeta> updateFundingRateKeys(final PublicKey stateKey,
                                                         final PublicKey perpMarketKey,
                                                         final PublicKey oracleKey) {
     return List.of(
@@ -5757,7 +5615,6 @@ public final class DriftProgram {
                                               final PublicKey oracleKey,
                                               final int marketIndex) {
     final var keys = updateFundingRateKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey
@@ -5765,7 +5622,7 @@ public final class DriftProgram {
     return updateFundingRate(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction updateFundingRate(final AccountMeta invokedDriftProgramMeta                                              ,
+  public static Instruction updateFundingRate(final AccountMeta invokedDriftProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -5809,8 +5666,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PRELAUNCH_ORACLE_DISCRIMINATOR = toDiscriminator(220, 132, 27, 27, 233, 220, 61, 219);
 
-  public static List<AccountMeta> updatePrelaunchOracleKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> updatePrelaunchOracleKeys(final PublicKey stateKey,
                                                             final PublicKey perpMarketKey,
                                                             final PublicKey oracleKey) {
     return List.of(
@@ -5825,7 +5681,6 @@ public final class DriftProgram {
                                                   final PublicKey perpMarketKey,
                                                   final PublicKey oracleKey) {
     final var keys = updatePrelaunchOracleKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey
@@ -5833,15 +5688,14 @@ public final class DriftProgram {
     return updatePrelaunchOracle(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updatePrelaunchOracle(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction updatePrelaunchOracle(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_PRELAUNCH_ORACLE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_PERP_BID_ASK_TWAP_DISCRIMINATOR = toDiscriminator(247, 23, 255, 65, 212, 90, 221, 194);
 
-  public static List<AccountMeta> updatePerpBidAskTwapKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey stateKey,
+  public static List<AccountMeta> updatePerpBidAskTwapKeys(final PublicKey stateKey,
                                                            final PublicKey perpMarketKey,
                                                            final PublicKey oracleKey,
                                                            final PublicKey keeperStatsKey,
@@ -5862,7 +5716,6 @@ public final class DriftProgram {
                                                  final PublicKey keeperStatsKey,
                                                  final PublicKey authorityKey) {
     final var keys = updatePerpBidAskTwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey,
@@ -5872,15 +5725,14 @@ public final class DriftProgram {
     return updatePerpBidAskTwap(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updatePerpBidAskTwap(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updatePerpBidAskTwap(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_PERP_BID_ASK_TWAP_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_SPOT_MARKET_CUMULATIVE_INTEREST_DISCRIMINATOR = toDiscriminator(39, 166, 139, 243, 158, 165, 155, 225);
 
-  public static List<AccountMeta> updateSpotMarketCumulativeInterestKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey stateKey,
+  public static List<AccountMeta> updateSpotMarketCumulativeInterestKeys(final PublicKey stateKey,
                                                                          final PublicKey spotMarketKey,
                                                                          final PublicKey oracleKey,
                                                                          final PublicKey spotMarketVaultKey) {
@@ -5898,7 +5750,6 @@ public final class DriftProgram {
                                                                final PublicKey oracleKey,
                                                                final PublicKey spotMarketVaultKey) {
     final var keys = updateSpotMarketCumulativeInterestKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       oracleKey,
@@ -5907,15 +5758,14 @@ public final class DriftProgram {
     return updateSpotMarketCumulativeInterest(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateSpotMarketCumulativeInterest(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateSpotMarketCumulativeInterest(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_SPOT_MARKET_CUMULATIVE_INTEREST_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_AMMS_DISCRIMINATOR = toDiscriminator(201, 106, 217, 253, 4, 175, 228, 97);
 
-  public static List<AccountMeta> updateAmmsKeys(final AccountMeta invokedDriftProgramMeta                                                 ,
-                                                 final PublicKey stateKey,
+  public static List<AccountMeta> updateAmmsKeys(final PublicKey stateKey,
                                                  final PublicKey authorityKey) {
     return List.of(
       createRead(stateKey),
@@ -5928,14 +5778,13 @@ public final class DriftProgram {
                                        final PublicKey authorityKey,
                                        final short[] marketIndexes) {
     final var keys = updateAmmsKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey
     );
     return updateAmms(invokedDriftProgramMeta, keys, marketIndexes);
   }
 
-  public static Instruction updateAmms(final AccountMeta invokedDriftProgramMeta                                       ,
+  public static Instruction updateAmms(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys,
                                        final short[] marketIndexes) {
     final byte[] _data = new byte[8 + Borsh.lenVector(marketIndexes)];
@@ -5976,8 +5825,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_EXPIRY_DISCRIMINATOR = toDiscriminator(208, 11, 211, 159, 226, 24, 11, 247);
 
-  public static List<AccountMeta> updateSpotMarketExpiryKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketExpiryKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey spotMarketKey) {
     return List.of(
@@ -5993,7 +5841,6 @@ public final class DriftProgram {
                                                    final PublicKey spotMarketKey,
                                                    final long expiryTs) {
     final var keys = updateSpotMarketExpiryKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -6001,7 +5848,7 @@ public final class DriftProgram {
     return updateSpotMarketExpiry(invokedDriftProgramMeta, keys, expiryTs);
   }
 
-  public static Instruction updateSpotMarketExpiry(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateSpotMarketExpiry(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long expiryTs) {
     final byte[] _data = new byte[16];
@@ -6045,8 +5892,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_USER_QUOTE_ASSET_INSURANCE_STAKE_DISCRIMINATOR = toDiscriminator(251, 101, 156, 7, 2, 63, 30, 23);
 
-  public static List<AccountMeta> updateUserQuoteAssetInsuranceStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey stateKey,
+  public static List<AccountMeta> updateUserQuoteAssetInsuranceStakeKeys(final PublicKey stateKey,
                                                                          final PublicKey spotMarketKey,
                                                                          final PublicKey insuranceFundStakeKey,
                                                                          final PublicKey userStatsKey,
@@ -6070,7 +5916,6 @@ public final class DriftProgram {
                                                                final PublicKey signerKey,
                                                                final PublicKey insuranceFundVaultKey) {
     final var keys = updateUserQuoteAssetInsuranceStakeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       insuranceFundStakeKey,
@@ -6081,15 +5926,14 @@ public final class DriftProgram {
     return updateUserQuoteAssetInsuranceStake(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateUserQuoteAssetInsuranceStake(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateUserQuoteAssetInsuranceStake(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_USER_QUOTE_ASSET_INSURANCE_STAKE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_USER_GOV_TOKEN_INSURANCE_STAKE_DISCRIMINATOR = toDiscriminator(143, 99, 235, 187, 20, 159, 184, 84);
 
-  public static List<AccountMeta> updateUserGovTokenInsuranceStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey stateKey,
+  public static List<AccountMeta> updateUserGovTokenInsuranceStakeKeys(final PublicKey stateKey,
                                                                        final PublicKey spotMarketKey,
                                                                        final PublicKey insuranceFundStakeKey,
                                                                        final PublicKey userStatsKey,
@@ -6113,7 +5957,6 @@ public final class DriftProgram {
                                                              final PublicKey signerKey,
                                                              final PublicKey insuranceFundVaultKey) {
     final var keys = updateUserGovTokenInsuranceStakeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       insuranceFundStakeKey,
@@ -6124,15 +5967,14 @@ public final class DriftProgram {
     return updateUserGovTokenInsuranceStake(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateUserGovTokenInsuranceStake(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updateUserGovTokenInsuranceStake(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_USER_GOV_TOKEN_INSURANCE_STAKE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_DELEGATE_USER_GOV_TOKEN_INSURANCE_STAKE_DISCRIMINATOR = toDiscriminator(241, 29, 215, 228, 142, 116, 22, 160);
 
-  public static List<AccountMeta> updateDelegateUserGovTokenInsuranceStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                               ,
-                                                                               final PublicKey spotMarketKey,
+  public static List<AccountMeta> updateDelegateUserGovTokenInsuranceStakeKeys(final PublicKey spotMarketKey,
                                                                                final PublicKey insuranceFundStakeKey,
                                                                                final PublicKey userStatsKey,
                                                                                final PublicKey adminKey,
@@ -6156,7 +5998,6 @@ public final class DriftProgram {
                                                                      final PublicKey insuranceFundVaultKey,
                                                                      final PublicKey stateKey) {
     final var keys = updateDelegateUserGovTokenInsuranceStakeKeys(
-      invokedDriftProgramMeta,
       spotMarketKey,
       insuranceFundStakeKey,
       userStatsKey,
@@ -6167,15 +6008,14 @@ public final class DriftProgram {
     return updateDelegateUserGovTokenInsuranceStake(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateDelegateUserGovTokenInsuranceStake(final AccountMeta invokedDriftProgramMeta                                                                     ,
+  public static Instruction updateDelegateUserGovTokenInsuranceStake(final AccountMeta invokedDriftProgramMeta,
                                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_DELEGATE_USER_GOV_TOKEN_INSURANCE_STAKE_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(187, 179, 243, 70, 248, 90, 92, 147);
 
-  public static List<AccountMeta> initializeInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey spotMarketKey,
+  public static List<AccountMeta> initializeInsuranceFundStakeKeys(final PublicKey spotMarketKey,
                                                                    final PublicKey insuranceFundStakeKey,
                                                                    final PublicKey userStatsKey,
                                                                    final PublicKey stateKey,
@@ -6206,7 +6046,6 @@ public final class DriftProgram {
                                                          final PublicKey systemProgramKey,
                                                          final int marketIndex) {
     final var keys = initializeInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       spotMarketKey,
       insuranceFundStakeKey,
       userStatsKey,
@@ -6219,7 +6058,7 @@ public final class DriftProgram {
     return initializeInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction initializeInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction initializeInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -6263,8 +6102,7 @@ public final class DriftProgram {
 
   public static final Discriminator ADD_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(251, 144, 115, 11, 222, 47, 62, 236);
 
-  public static List<AccountMeta> addInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> addInsuranceFundStakeKeys(final PublicKey stateKey,
                                                             final PublicKey spotMarketKey,
                                                             final PublicKey insuranceFundStakeKey,
                                                             final PublicKey userStatsKey,
@@ -6302,7 +6140,6 @@ public final class DriftProgram {
                                                   final int marketIndex,
                                                   final long amount) {
     final var keys = addInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       insuranceFundStakeKey,
@@ -6317,7 +6154,7 @@ public final class DriftProgram {
     return addInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction addInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction addInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int marketIndex,
                                                   final long amount) {
@@ -6368,8 +6205,7 @@ public final class DriftProgram {
 
   public static final Discriminator REQUEST_REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(142, 70, 204, 92, 73, 106, 180, 52);
 
-  public static List<AccountMeta> requestRemoveInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey spotMarketKey,
+  public static List<AccountMeta> requestRemoveInsuranceFundStakeKeys(final PublicKey spotMarketKey,
                                                                       final PublicKey insuranceFundStakeKey,
                                                                       final PublicKey userStatsKey,
                                                                       final PublicKey authorityKey,
@@ -6392,7 +6228,6 @@ public final class DriftProgram {
                                                             final int marketIndex,
                                                             final long amount) {
     final var keys = requestRemoveInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       spotMarketKey,
       insuranceFundStakeKey,
       userStatsKey,
@@ -6402,7 +6237,7 @@ public final class DriftProgram {
     return requestRemoveInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction requestRemoveInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction requestRemoveInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int marketIndex,
                                                             final long amount) {
@@ -6453,8 +6288,7 @@ public final class DriftProgram {
 
   public static final Discriminator CANCEL_REQUEST_REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(97, 235, 78, 62, 212, 42, 241, 127);
 
-  public static List<AccountMeta> cancelRequestRemoveInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey spotMarketKey,
+  public static List<AccountMeta> cancelRequestRemoveInsuranceFundStakeKeys(final PublicKey spotMarketKey,
                                                                             final PublicKey insuranceFundStakeKey,
                                                                             final PublicKey userStatsKey,
                                                                             final PublicKey authorityKey,
@@ -6476,7 +6310,6 @@ public final class DriftProgram {
                                                                   final PublicKey insuranceFundVaultKey,
                                                                   final int marketIndex) {
     final var keys = cancelRequestRemoveInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       spotMarketKey,
       insuranceFundStakeKey,
       userStatsKey,
@@ -6486,7 +6319,7 @@ public final class DriftProgram {
     return cancelRequestRemoveInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction cancelRequestRemoveInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction cancelRequestRemoveInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -6530,8 +6363,7 @@ public final class DriftProgram {
 
   public static final Discriminator REMOVE_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(128, 166, 142, 9, 254, 187, 143, 174);
 
-  public static List<AccountMeta> removeInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey stateKey,
+  public static List<AccountMeta> removeInsuranceFundStakeKeys(final PublicKey stateKey,
                                                                final PublicKey spotMarketKey,
                                                                final PublicKey insuranceFundStakeKey,
                                                                final PublicKey userStatsKey,
@@ -6565,7 +6397,6 @@ public final class DriftProgram {
                                                      final PublicKey tokenProgramKey,
                                                      final int marketIndex) {
     final var keys = removeInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       insuranceFundStakeKey,
@@ -6579,7 +6410,7 @@ public final class DriftProgram {
     return removeInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction removeInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction removeInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -6624,8 +6455,7 @@ public final class DriftProgram {
   public static final Discriminator BEGIN_INSURANCE_FUND_SWAP_DISCRIMINATOR = toDiscriminator(176, 69, 143, 205, 32, 132, 163, 0);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> beginInsuranceFundSwapKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey stateKey,
+  public static List<AccountMeta> beginInsuranceFundSwapKeys(final PublicKey stateKey,
                                                              final PublicKey authorityKey,
                                                              final PublicKey outInsuranceFundVaultKey,
                                                              final PublicKey inInsuranceFundVaultKey,
@@ -6665,7 +6495,6 @@ public final class DriftProgram {
                                                    final int outMarketIndex,
                                                    final long amountIn) {
     final var keys = beginInsuranceFundSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       outInsuranceFundVaultKey,
@@ -6686,7 +6515,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction beginInsuranceFundSwap(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction beginInsuranceFundSwap(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int inMarketIndex,
                                                    final int outMarketIndex,
@@ -6748,8 +6577,7 @@ public final class DriftProgram {
   public static final Discriminator END_INSURANCE_FUND_SWAP_DISCRIMINATOR = toDiscriminator(206, 230, 98, 8, 249, 158, 169, 167);
 
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> endInsuranceFundSwapKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey stateKey,
+  public static List<AccountMeta> endInsuranceFundSwapKeys(final PublicKey stateKey,
                                                            final PublicKey authorityKey,
                                                            final PublicKey outInsuranceFundVaultKey,
                                                            final PublicKey inInsuranceFundVaultKey,
@@ -6788,7 +6616,6 @@ public final class DriftProgram {
                                                  final int inMarketIndex,
                                                  final int outMarketIndex) {
     final var keys = endInsuranceFundSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       outInsuranceFundVaultKey,
@@ -6803,7 +6630,7 @@ public final class DriftProgram {
     return endInsuranceFundSwap(invokedDriftProgramMeta, keys, inMarketIndex, outMarketIndex);
   }
 
-  public static Instruction endInsuranceFundSwap(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction endInsuranceFundSwap(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int inMarketIndex,
                                                  final int outMarketIndex) {
@@ -6854,8 +6681,7 @@ public final class DriftProgram {
 
   public static final Discriminator TRANSFER_PROTOCOL_IF_SHARES_TO_REVENUE_POOL_DISCRIMINATOR = toDiscriminator(236, 136, 147, 153, 146, 205, 104, 29);
 
-  public static List<AccountMeta> transferProtocolIfSharesToRevenuePoolKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey stateKey,
+  public static List<AccountMeta> transferProtocolIfSharesToRevenuePoolKeys(final PublicKey stateKey,
                                                                             final PublicKey authorityKey,
                                                                             final PublicKey insuranceFundVaultKey,
                                                                             final PublicKey spotMarketVaultKey,
@@ -6884,7 +6710,6 @@ public final class DriftProgram {
                                                                   final int marketIndex,
                                                                   final long amount) {
     final var keys = transferProtocolIfSharesToRevenuePoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       authorityKey,
       insuranceFundVaultKey,
@@ -6896,7 +6721,7 @@ public final class DriftProgram {
     return transferProtocolIfSharesToRevenuePool(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction transferProtocolIfSharesToRevenuePool(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction transferProtocolIfSharesToRevenuePool(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final int marketIndex,
                                                                   final long amount) {
@@ -6947,8 +6772,7 @@ public final class DriftProgram {
 
   public static final Discriminator DEPOSIT_INTO_INSURANCE_FUND_STAKE_DISCRIMINATOR = toDiscriminator(4, 22, 226, 201, 124, 44, 82, 230);
 
-  public static List<AccountMeta> depositIntoInsuranceFundStakeKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey signerKey,
+  public static List<AccountMeta> depositIntoInsuranceFundStakeKeys(final PublicKey signerKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey spotMarketKey,
                                                                     final PublicKey insuranceFundStakeKey,
@@ -6986,7 +6810,6 @@ public final class DriftProgram {
                                                           final int marketIndex,
                                                           final long amount) {
     final var keys = depositIntoInsuranceFundStakeKeys(
-      invokedDriftProgramMeta,
       signerKey,
       stateKey,
       spotMarketKey,
@@ -7001,7 +6824,7 @@ public final class DriftProgram {
     return depositIntoInsuranceFundStake(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction depositIntoInsuranceFundStake(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction depositIntoInsuranceFundStake(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int marketIndex,
                                                           final long amount) {
@@ -7052,8 +6875,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PYTH_PULL_ORACLE_DISCRIMINATOR = toDiscriminator(230, 191, 189, 94, 108, 59, 74, 197);
 
-  public static List<AccountMeta> updatePythPullOracleKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey keeperKey,
+  public static List<AccountMeta> updatePythPullOracleKeys(final PublicKey keeperKey,
                                                            final PublicKey pythSolanaReceiverKey,
                                                            final PublicKey encodedVaaKey,
                                                            final PublicKey priceFeedKey) {
@@ -7073,7 +6895,6 @@ public final class DriftProgram {
                                                  final byte[] feedId,
                                                  final byte[] params) {
     final var keys = updatePythPullOracleKeys(
-      invokedDriftProgramMeta,
       keeperKey,
       pythSolanaReceiverKey,
       encodedVaaKey,
@@ -7082,7 +6903,7 @@ public final class DriftProgram {
     return updatePythPullOracle(invokedDriftProgramMeta, keys, feedId, params);
   }
 
-  public static Instruction updatePythPullOracle(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updatePythPullOracle(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final byte[] feedId,
                                                  final byte[] params) {
@@ -7129,8 +6950,7 @@ public final class DriftProgram {
 
   public static final Discriminator POST_PYTH_PULL_ORACLE_UPDATE_ATOMIC_DISCRIMINATOR = toDiscriminator(116, 122, 137, 158, 224, 195, 173, 119);
 
-  public static List<AccountMeta> postPythPullOracleUpdateAtomicKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey keeperKey,
+  public static List<AccountMeta> postPythPullOracleUpdateAtomicKeys(final PublicKey keeperKey,
                                                                      final PublicKey pythSolanaReceiverKey,
                                                                      final PublicKey guardianSetKey,
                                                                      final PublicKey priceFeedKey) {
@@ -7150,7 +6970,6 @@ public final class DriftProgram {
                                                            final byte[] feedId,
                                                            final byte[] params) {
     final var keys = postPythPullOracleUpdateAtomicKeys(
-      invokedDriftProgramMeta,
       keeperKey,
       pythSolanaReceiverKey,
       guardianSetKey,
@@ -7159,7 +6978,7 @@ public final class DriftProgram {
     return postPythPullOracleUpdateAtomic(invokedDriftProgramMeta, keys, feedId, params);
   }
 
-  public static Instruction postPythPullOracleUpdateAtomic(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction postPythPullOracleUpdateAtomic(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final byte[] feedId,
                                                            final byte[] params) {
@@ -7206,8 +7025,7 @@ public final class DriftProgram {
 
   public static final Discriminator POST_MULTI_PYTH_PULL_ORACLE_UPDATES_ATOMIC_DISCRIMINATOR = toDiscriminator(243, 79, 204, 228, 227, 208, 100, 244);
 
-  public static List<AccountMeta> postMultiPythPullOracleUpdatesAtomicKeys(final AccountMeta invokedDriftProgramMeta                                                                           ,
-                                                                           final PublicKey keeperKey,
+  public static List<AccountMeta> postMultiPythPullOracleUpdatesAtomicKeys(final PublicKey keeperKey,
                                                                            final PublicKey pythSolanaReceiverKey,
                                                                            final PublicKey guardianSetKey) {
     return List.of(
@@ -7223,7 +7041,6 @@ public final class DriftProgram {
                                                                  final PublicKey guardianSetKey,
                                                                  final byte[] params) {
     final var keys = postMultiPythPullOracleUpdatesAtomicKeys(
-      invokedDriftProgramMeta,
       keeperKey,
       pythSolanaReceiverKey,
       guardianSetKey
@@ -7231,7 +7048,7 @@ public final class DriftProgram {
     return postMultiPythPullOracleUpdatesAtomic(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction postMultiPythPullOracleUpdatesAtomic(final AccountMeta invokedDriftProgramMeta                                                                 ,
+  public static Instruction postMultiPythPullOracleUpdatesAtomic(final AccountMeta invokedDriftProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final byte[] params) {
     final byte[] _data = new byte[8 + Borsh.lenVector(params)];
@@ -7272,8 +7089,7 @@ public final class DriftProgram {
 
   public static final Discriminator PAUSE_SPOT_MARKET_DEPOSIT_WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 119, 59, 170, 137, 35, 242, 86);
 
-  public static List<AccountMeta> pauseSpotMarketDepositWithdrawKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey stateKey,
+  public static List<AccountMeta> pauseSpotMarketDepositWithdrawKeys(final PublicKey stateKey,
                                                                      final PublicKey keeperKey,
                                                                      final PublicKey spotMarketKey,
                                                                      final PublicKey spotMarketVaultKey) {
@@ -7291,7 +7107,6 @@ public final class DriftProgram {
                                                            final PublicKey spotMarketKey,
                                                            final PublicKey spotMarketVaultKey) {
     final var keys = pauseSpotMarketDepositWithdrawKeys(
-      invokedDriftProgramMeta,
       stateKey,
       keeperKey,
       spotMarketKey,
@@ -7300,15 +7115,14 @@ public final class DriftProgram {
     return pauseSpotMarketDepositWithdraw(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction pauseSpotMarketDepositWithdraw(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction pauseSpotMarketDepositWithdraw(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, PAUSE_SPOT_MARKET_DEPOSIT_WITHDRAW_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(175, 175, 109, 31, 13, 152, 155, 237);
 
-  public static List<AccountMeta> initializeKeys(final AccountMeta invokedDriftProgramMeta                                                 ,
-                                                 final PublicKey adminKey,
+  public static List<AccountMeta> initializeKeys(final PublicKey adminKey,
                                                  final PublicKey stateKey,
                                                  final PublicKey quoteAssetMintKey,
                                                  final PublicKey driftSignerKey,
@@ -7335,7 +7149,6 @@ public final class DriftProgram {
                                        final PublicKey systemProgramKey,
                                        final PublicKey tokenProgramKey) {
     final var keys = initializeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       quoteAssetMintKey,
@@ -7347,15 +7160,14 @@ public final class DriftProgram {
     return initialize(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initialize(final AccountMeta invokedDriftProgramMeta                                       ,
+  public static Instruction initialize(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_SPOT_MARKET_DISCRIMINATOR = toDiscriminator(234, 196, 128, 44, 94, 15, 48, 201);
 
-  public static List<AccountMeta> initializeSpotMarketKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey spotMarketKey,
+  public static List<AccountMeta> initializeSpotMarketKeys(final PublicKey spotMarketKey,
                                                            final PublicKey spotMarketMintKey,
                                                            final PublicKey spotMarketVaultKey,
                                                            final PublicKey insuranceFundVaultKey,
@@ -7413,7 +7225,6 @@ public final class DriftProgram {
                                                  final int ifTotalFactor,
                                                  final byte[] name) {
     final var keys = initializeSpotMarketKeys(
-      invokedDriftProgramMeta,
       spotMarketKey,
       spotMarketMintKey,
       spotMarketVaultKey,
@@ -7451,7 +7262,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction initializeSpotMarket(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction initializeSpotMarket(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int optimalUtilization,
                                                  final int optimalBorrowRate,
@@ -7656,8 +7467,7 @@ public final class DriftProgram {
 
   public static final Discriminator DELETE_INITIALIZED_SPOT_MARKET_DISCRIMINATOR = toDiscriminator(31, 140, 67, 191, 189, 20, 101, 221);
 
-  public static List<AccountMeta> deleteInitializedSpotMarketKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> deleteInitializedSpotMarketKeys(final PublicKey adminKey,
                                                                   final PublicKey stateKey,
                                                                   final PublicKey spotMarketKey,
                                                                   final PublicKey spotMarketVaultKey,
@@ -7685,7 +7495,6 @@ public final class DriftProgram {
                                                         final PublicKey tokenProgramKey,
                                                         final int marketIndex) {
     final var keys = deleteInitializedSpotMarketKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey,
@@ -7697,7 +7506,7 @@ public final class DriftProgram {
     return deleteInitializedSpotMarket(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction deleteInitializedSpotMarket(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction deleteInitializedSpotMarket(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -7741,8 +7550,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_SERUM_FULFILLMENT_CONFIG_DISCRIMINATOR = toDiscriminator(193, 211, 132, 172, 70, 171, 7, 94);
 
-  public static List<AccountMeta> initializeSerumFulfillmentConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey baseSpotMarketKey,
+  public static List<AccountMeta> initializeSerumFulfillmentConfigKeys(final PublicKey baseSpotMarketKey,
                                                                        final PublicKey quoteSpotMarketKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey serumProgramKey,
@@ -7782,7 +7590,6 @@ public final class DriftProgram {
                                                              final PublicKey systemProgramKey,
                                                              final int marketIndex) {
     final var keys = initializeSerumFulfillmentConfigKeys(
-      invokedDriftProgramMeta,
       baseSpotMarketKey,
       quoteSpotMarketKey,
       stateKey,
@@ -7798,7 +7605,7 @@ public final class DriftProgram {
     return initializeSerumFulfillmentConfig(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction initializeSerumFulfillmentConfig(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction initializeSerumFulfillmentConfig(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -7842,8 +7649,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SERUM_FULFILLMENT_CONFIG_STATUS_DISCRIMINATOR = toDiscriminator(171, 109, 240, 251, 95, 1, 149, 89);
 
-  public static List<AccountMeta> updateSerumFulfillmentConfigStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey stateKey,
+  public static List<AccountMeta> updateSerumFulfillmentConfigStatusKeys(final PublicKey stateKey,
                                                                          final PublicKey serumFulfillmentConfigKey,
                                                                          final PublicKey adminKey) {
     return List.of(
@@ -7859,7 +7665,6 @@ public final class DriftProgram {
                                                                final PublicKey adminKey,
                                                                final SpotFulfillmentConfigStatus status) {
     final var keys = updateSerumFulfillmentConfigStatusKeys(
-      invokedDriftProgramMeta,
       stateKey,
       serumFulfillmentConfigKey,
       adminKey
@@ -7867,7 +7672,7 @@ public final class DriftProgram {
     return updateSerumFulfillmentConfigStatus(invokedDriftProgramMeta, keys, status);
   }
 
-  public static Instruction updateSerumFulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateSerumFulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final SpotFulfillmentConfigStatus status) {
     final byte[] _data = new byte[8 + Borsh.len(status)];
@@ -7910,8 +7715,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_OPENBOOK_V_2_FULFILLMENT_CONFIG_DISCRIMINATOR = toDiscriminator(7, 221, 103, 153, 107, 57, 27, 197);
 
-  public static List<AccountMeta> initializeOpenbookV2FulfillmentConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey baseSpotMarketKey,
+  public static List<AccountMeta> initializeOpenbookV2FulfillmentConfigKeys(final PublicKey baseSpotMarketKey,
                                                                             final PublicKey quoteSpotMarketKey,
                                                                             final PublicKey stateKey,
                                                                             final PublicKey openbookV2ProgramKey,
@@ -7948,7 +7752,6 @@ public final class DriftProgram {
                                                                   final PublicKey systemProgramKey,
                                                                   final int marketIndex) {
     final var keys = initializeOpenbookV2FulfillmentConfigKeys(
-      invokedDriftProgramMeta,
       baseSpotMarketKey,
       quoteSpotMarketKey,
       stateKey,
@@ -7963,7 +7766,7 @@ public final class DriftProgram {
     return initializeOpenbookV2FulfillmentConfig(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction initializeOpenbookV2FulfillmentConfig(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction initializeOpenbookV2FulfillmentConfig(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -8007,8 +7810,7 @@ public final class DriftProgram {
 
   public static final Discriminator OPENBOOK_V_2_FULFILLMENT_CONFIG_STATUS_DISCRIMINATOR = toDiscriminator(25, 173, 19, 189, 4, 211, 64, 238);
 
-  public static List<AccountMeta> openbookV2FulfillmentConfigStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey stateKey,
+  public static List<AccountMeta> openbookV2FulfillmentConfigStatusKeys(final PublicKey stateKey,
                                                                         final PublicKey openbookV2FulfillmentConfigKey,
                                                                         final PublicKey adminKey) {
     return List.of(
@@ -8024,7 +7826,6 @@ public final class DriftProgram {
                                                               final PublicKey adminKey,
                                                               final SpotFulfillmentConfigStatus status) {
     final var keys = openbookV2FulfillmentConfigStatusKeys(
-      invokedDriftProgramMeta,
       stateKey,
       openbookV2FulfillmentConfigKey,
       adminKey
@@ -8032,7 +7833,7 @@ public final class DriftProgram {
     return openbookV2FulfillmentConfigStatus(invokedDriftProgramMeta, keys, status);
   }
 
-  public static Instruction openbookV2FulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction openbookV2FulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final SpotFulfillmentConfigStatus status) {
     final byte[] _data = new byte[8 + Borsh.len(status)];
@@ -8075,8 +7876,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PHOENIX_FULFILLMENT_CONFIG_DISCRIMINATOR = toDiscriminator(135, 132, 110, 107, 185, 160, 169, 154);
 
-  public static List<AccountMeta> initializePhoenixFulfillmentConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey baseSpotMarketKey,
+  public static List<AccountMeta> initializePhoenixFulfillmentConfigKeys(final PublicKey baseSpotMarketKey,
                                                                          final PublicKey quoteSpotMarketKey,
                                                                          final PublicKey stateKey,
                                                                          final PublicKey phoenixProgramKey,
@@ -8113,7 +7913,6 @@ public final class DriftProgram {
                                                                final PublicKey systemProgramKey,
                                                                final int marketIndex) {
     final var keys = initializePhoenixFulfillmentConfigKeys(
-      invokedDriftProgramMeta,
       baseSpotMarketKey,
       quoteSpotMarketKey,
       stateKey,
@@ -8128,7 +7927,7 @@ public final class DriftProgram {
     return initializePhoenixFulfillmentConfig(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction initializePhoenixFulfillmentConfig(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction initializePhoenixFulfillmentConfig(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -8172,8 +7971,7 @@ public final class DriftProgram {
 
   public static final Discriminator PHOENIX_FULFILLMENT_CONFIG_STATUS_DISCRIMINATOR = toDiscriminator(96, 31, 113, 32, 12, 203, 7, 154);
 
-  public static List<AccountMeta> phoenixFulfillmentConfigStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey stateKey,
+  public static List<AccountMeta> phoenixFulfillmentConfigStatusKeys(final PublicKey stateKey,
                                                                      final PublicKey phoenixFulfillmentConfigKey,
                                                                      final PublicKey adminKey) {
     return List.of(
@@ -8189,7 +7987,6 @@ public final class DriftProgram {
                                                            final PublicKey adminKey,
                                                            final SpotFulfillmentConfigStatus status) {
     final var keys = phoenixFulfillmentConfigStatusKeys(
-      invokedDriftProgramMeta,
       stateKey,
       phoenixFulfillmentConfigKey,
       adminKey
@@ -8197,7 +7994,7 @@ public final class DriftProgram {
     return phoenixFulfillmentConfigStatus(invokedDriftProgramMeta, keys, status);
   }
 
-  public static Instruction phoenixFulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction phoenixFulfillmentConfigStatus(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final SpotFulfillmentConfigStatus status) {
     final byte[] _data = new byte[8 + Borsh.len(status)];
@@ -8240,8 +8037,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PERP_MARKET_DISCRIMINATOR = toDiscriminator(132, 9, 229, 118, 117, 118, 117, 62);
 
-  public static List<AccountMeta> initializePerpMarketKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> initializePerpMarketKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey,
                                                            final PublicKey perpMarketKey,
                                                            final PublicKey oracleKey,
@@ -8291,7 +8087,6 @@ public final class DriftProgram {
                                                  final byte[] name,
                                                  final int lpPoolId) {
     final var keys = initializePerpMarketKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -8331,7 +8126,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction initializePerpMarket(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction initializePerpMarket(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int marketIndex,
                                                  final BigInteger ammBaseAssetReserve,
@@ -8597,8 +8392,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_AMM_CACHE_DISCRIMINATOR = toDiscriminator(38, 60, 171, 158, 203, 58, 137, 8);
 
-  public static List<AccountMeta> initializeAmmCacheKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey adminKey,
+  public static List<AccountMeta> initializeAmmCacheKeys(final PublicKey adminKey,
                                                          final PublicKey stateKey,
                                                          final PublicKey ammCacheKey,
                                                          final PublicKey rentKey,
@@ -8619,7 +8413,6 @@ public final class DriftProgram {
                                                final PublicKey rentKey,
                                                final PublicKey systemProgramKey) {
     final var keys = initializeAmmCacheKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       ammCacheKey,
@@ -8629,15 +8422,14 @@ public final class DriftProgram {
     return initializeAmmCache(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initializeAmmCache(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction initializeAmmCache(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_AMM_CACHE_DISCRIMINATOR);
   }
 
   public static final Discriminator ADD_MARKET_TO_AMM_CACHE_DISCRIMINATOR = toDiscriminator(112, 149, 195, 222, 124, 7, 87, 237);
 
-  public static List<AccountMeta> addMarketToAmmCacheKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey adminKey,
+  public static List<AccountMeta> addMarketToAmmCacheKeys(final PublicKey adminKey,
                                                           final PublicKey stateKey,
                                                           final PublicKey ammCacheKey,
                                                           final PublicKey perpMarketKey,
@@ -8661,7 +8453,6 @@ public final class DriftProgram {
                                                 final PublicKey rentKey,
                                                 final PublicKey systemProgramKey) {
     final var keys = addMarketToAmmCacheKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       ammCacheKey,
@@ -8672,15 +8463,14 @@ public final class DriftProgram {
     return addMarketToAmmCache(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction addMarketToAmmCache(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction addMarketToAmmCache(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, ADD_MARKET_TO_AMM_CACHE_DISCRIMINATOR);
   }
 
   public static final Discriminator DELETE_AMM_CACHE_DISCRIMINATOR = toDiscriminator(216, 130, 215, 206, 233, 232, 191, 88);
 
-  public static List<AccountMeta> deleteAmmCacheKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey adminKey,
+  public static List<AccountMeta> deleteAmmCacheKeys(final PublicKey adminKey,
                                                      final PublicKey stateKey,
                                                      final PublicKey ammCacheKey) {
     return List.of(
@@ -8695,7 +8485,6 @@ public final class DriftProgram {
                                            final PublicKey stateKey,
                                            final PublicKey ammCacheKey) {
     final var keys = deleteAmmCacheKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       ammCacheKey
@@ -8703,15 +8492,14 @@ public final class DriftProgram {
     return deleteAmmCache(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction deleteAmmCache(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction deleteAmmCache(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, DELETE_AMM_CACHE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_INITIAL_AMM_CACHE_INFO_DISCRIMINATOR = toDiscriminator(157, 210, 109, 67, 212, 170, 12, 107);
 
-  public static List<AccountMeta> updateInitialAmmCacheInfoKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey stateKey,
+  public static List<AccountMeta> updateInitialAmmCacheInfoKeys(final PublicKey stateKey,
                                                                 final PublicKey adminKey,
                                                                 final PublicKey ammCacheKey) {
     return List.of(
@@ -8726,7 +8514,6 @@ public final class DriftProgram {
                                                       final PublicKey adminKey,
                                                       final PublicKey ammCacheKey) {
     final var keys = updateInitialAmmCacheInfoKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       ammCacheKey
@@ -8734,15 +8521,14 @@ public final class DriftProgram {
     return updateInitialAmmCacheInfo(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateInitialAmmCacheInfo(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updateInitialAmmCacheInfo(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_INITIAL_AMM_CACHE_INFO_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_PREDICTION_MARKET_DISCRIMINATOR = toDiscriminator(248, 70, 198, 224, 224, 105, 125, 195);
 
-  public static List<AccountMeta> initializePredictionMarketKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey adminKey,
+  public static List<AccountMeta> initializePredictionMarketKeys(final PublicKey adminKey,
                                                                  final PublicKey stateKey,
                                                                  final PublicKey perpMarketKey) {
     return List.of(
@@ -8757,7 +8543,6 @@ public final class DriftProgram {
                                                        final PublicKey stateKey,
                                                        final PublicKey perpMarketKey) {
     final var keys = initializePredictionMarketKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -8765,15 +8550,14 @@ public final class DriftProgram {
     return initializePredictionMarket(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initializePredictionMarket(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction initializePredictionMarket(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_PREDICTION_MARKET_DISCRIMINATOR);
   }
 
   public static final Discriminator DELETE_INITIALIZED_PERP_MARKET_DISCRIMINATOR = toDiscriminator(91, 154, 24, 87, 106, 59, 190, 66);
 
-  public static List<AccountMeta> deleteInitializedPerpMarketKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> deleteInitializedPerpMarketKeys(final PublicKey adminKey,
                                                                   final PublicKey stateKey,
                                                                   final PublicKey perpMarketKey) {
     return List.of(
@@ -8789,7 +8573,6 @@ public final class DriftProgram {
                                                         final PublicKey perpMarketKey,
                                                         final int marketIndex) {
     final var keys = deleteInitializedPerpMarketKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -8797,7 +8580,7 @@ public final class DriftProgram {
     return deleteInitializedPerpMarket(invokedDriftProgramMeta, keys, marketIndex);
   }
 
-  public static Instruction deleteInitializedPerpMarket(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction deleteInitializedPerpMarket(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int marketIndex) {
     final byte[] _data = new byte[10];
@@ -8841,8 +8624,7 @@ public final class DriftProgram {
 
   public static final Discriminator MOVE_AMM_PRICE_DISCRIMINATOR = toDiscriminator(235, 109, 2, 82, 219, 118, 6, 159);
 
-  public static List<AccountMeta> moveAmmPriceKeys(final AccountMeta invokedDriftProgramMeta                                                   ,
-                                                   final PublicKey adminKey,
+  public static List<AccountMeta> moveAmmPriceKeys(final PublicKey adminKey,
                                                    final PublicKey stateKey,
                                                    final PublicKey perpMarketKey) {
     return List.of(
@@ -8860,7 +8642,6 @@ public final class DriftProgram {
                                          final BigInteger quoteAssetReserve,
                                          final BigInteger sqrtK) {
     final var keys = moveAmmPriceKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -8874,7 +8655,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction moveAmmPrice(final AccountMeta invokedDriftProgramMeta                                         ,
+  public static Instruction moveAmmPrice(final AccountMeta invokedDriftProgramMeta,
                                          final List<AccountMeta> keys,
                                          final BigInteger baseAssetReserve,
                                          final BigInteger quoteAssetReserve,
@@ -8935,8 +8716,7 @@ public final class DriftProgram {
 
   public static final Discriminator RECENTER_PERP_MARKET_AMM_DISCRIMINATOR = toDiscriminator(24, 87, 10, 115, 165, 190, 80, 139);
 
-  public static List<AccountMeta> recenterPerpMarketAmmKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey adminKey,
+  public static List<AccountMeta> recenterPerpMarketAmmKeys(final PublicKey adminKey,
                                                             final PublicKey stateKey,
                                                             final PublicKey perpMarketKey) {
     return List.of(
@@ -8953,7 +8733,6 @@ public final class DriftProgram {
                                                   final BigInteger pegMultiplier,
                                                   final BigInteger sqrtK) {
     final var keys = recenterPerpMarketAmmKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -8961,7 +8740,7 @@ public final class DriftProgram {
     return recenterPerpMarketAmm(invokedDriftProgramMeta, keys, pegMultiplier, sqrtK);
   }
 
-  public static Instruction recenterPerpMarketAmm(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction recenterPerpMarketAmm(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final BigInteger pegMultiplier,
                                                   final BigInteger sqrtK) {
@@ -9012,8 +8791,7 @@ public final class DriftProgram {
 
   public static final Discriminator RECENTER_PERP_MARKET_AMM_CRANK_DISCRIMINATOR = toDiscriminator(166, 19, 64, 10, 14, 51, 101, 122);
 
-  public static List<AccountMeta> recenterPerpMarketAmmCrankKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey adminKey,
+  public static List<AccountMeta> recenterPerpMarketAmmCrankKeys(final PublicKey adminKey,
                                                                  final PublicKey stateKey,
                                                                  final PublicKey perpMarketKey,
                                                                  final PublicKey spotMarketKey,
@@ -9035,7 +8813,6 @@ public final class DriftProgram {
                                                        final PublicKey oracleKey,
                                                        final BigInteger depth) {
     final var keys = recenterPerpMarketAmmCrankKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -9045,7 +8822,7 @@ public final class DriftProgram {
     return recenterPerpMarketAmmCrank(invokedDriftProgramMeta, keys, depth);
   }
 
-  public static Instruction recenterPerpMarketAmmCrank(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction recenterPerpMarketAmmCrank(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final BigInteger depth) {
     final byte[] _data = new byte[
@@ -9095,8 +8872,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_AMM_SUMMARY_STATS_DISCRIMINATOR = toDiscriminator(122, 101, 249, 238, 209, 9, 241, 245);
 
-  public static List<AccountMeta> updatePerpMarketAmmSummaryStatsKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketAmmSummaryStatsKeys(final PublicKey adminKey,
                                                                       final PublicKey stateKey,
                                                                       final PublicKey perpMarketKey,
                                                                       final PublicKey spotMarketKey,
@@ -9118,7 +8894,6 @@ public final class DriftProgram {
                                                             final PublicKey oracleKey,
                                                             final UpdatePerpMarketSummaryStatsParams params) {
     final var keys = updatePerpMarketAmmSummaryStatsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -9128,7 +8903,7 @@ public final class DriftProgram {
     return updatePerpMarketAmmSummaryStats(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction updatePerpMarketAmmSummaryStats(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updatePerpMarketAmmSummaryStats(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final UpdatePerpMarketSummaryStatsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -9169,8 +8944,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_EXPIRY_DISCRIMINATOR = toDiscriminator(44, 221, 227, 151, 131, 140, 22, 110);
 
-  public static List<AccountMeta> updatePerpMarketExpiryKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketExpiryKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey perpMarketKey) {
     return List.of(
@@ -9186,7 +8960,6 @@ public final class DriftProgram {
                                                    final PublicKey perpMarketKey,
                                                    final long expiryTs) {
     final var keys = updatePerpMarketExpiryKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -9194,7 +8967,7 @@ public final class DriftProgram {
     return updatePerpMarketExpiry(invokedDriftProgramMeta, keys, expiryTs);
   }
 
-  public static Instruction updatePerpMarketExpiry(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updatePerpMarketExpiry(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long expiryTs) {
     final byte[] _data = new byte[16];
@@ -9238,8 +9011,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_LP_POOL_PAUSED_OPERATIONS_DISCRIMINATOR = toDiscriminator(181, 94, 93, 146, 51, 89, 32, 135);
 
-  public static List<AccountMeta> updatePerpMarketLpPoolPausedOperationsKeys(final AccountMeta invokedDriftProgramMeta                                                                             ,
-                                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketLpPoolPausedOperationsKeys(final PublicKey adminKey,
                                                                              final PublicKey stateKey,
                                                                              final PublicKey perpMarketKey) {
     return List.of(
@@ -9255,7 +9027,6 @@ public final class DriftProgram {
                                                                    final PublicKey perpMarketKey,
                                                                    final int lpPausedOperations) {
     final var keys = updatePerpMarketLpPoolPausedOperationsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -9263,7 +9034,7 @@ public final class DriftProgram {
     return updatePerpMarketLpPoolPausedOperations(invokedDriftProgramMeta, keys, lpPausedOperations);
   }
 
-  public static Instruction updatePerpMarketLpPoolPausedOperations(final AccountMeta invokedDriftProgramMeta                                                                   ,
+  public static Instruction updatePerpMarketLpPoolPausedOperations(final AccountMeta invokedDriftProgramMeta,
                                                                    final List<AccountMeta> keys,
                                                                    final int lpPausedOperations) {
     final byte[] _data = new byte[9];
@@ -9307,8 +9078,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_LP_POOL_STATUS_DISCRIMINATOR = toDiscriminator(67, 6, 252, 61, 54, 88, 89, 233);
 
-  public static List<AccountMeta> updatePerpMarketLpPoolStatusKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketLpPoolStatusKeys(final PublicKey adminKey,
                                                                    final PublicKey stateKey,
                                                                    final PublicKey perpMarketKey,
                                                                    final PublicKey ammCacheKey) {
@@ -9327,7 +9097,6 @@ public final class DriftProgram {
                                                          final PublicKey ammCacheKey,
                                                          final int lpStatus) {
     final var keys = updatePerpMarketLpPoolStatusKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -9336,7 +9105,7 @@ public final class DriftProgram {
     return updatePerpMarketLpPoolStatus(invokedDriftProgramMeta, keys, lpStatus);
   }
 
-  public static Instruction updatePerpMarketLpPoolStatus(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updatePerpMarketLpPoolStatus(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int lpStatus) {
     final byte[] _data = new byte[9];
@@ -9380,8 +9149,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_LP_POOL_FEE_TRANSFER_SCALAR_DISCRIMINATOR = toDiscriminator(94, 228, 237, 109, 100, 185, 4, 81);
 
-  public static List<AccountMeta> updatePerpMarketLpPoolFeeTransferScalarKeys(final AccountMeta invokedDriftProgramMeta                                                                              ,
-                                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketLpPoolFeeTransferScalarKeys(final PublicKey adminKey,
                                                                               final PublicKey stateKey,
                                                                               final PublicKey perpMarketKey) {
     return List.of(
@@ -9398,7 +9166,6 @@ public final class DriftProgram {
                                                                     final OptionalInt optionalLpFeeTransferScalar,
                                                                     final OptionalInt optionalLpNetPnlTransferScalar) {
     final var keys = updatePerpMarketLpPoolFeeTransferScalarKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -9406,7 +9173,7 @@ public final class DriftProgram {
     return updatePerpMarketLpPoolFeeTransferScalar(invokedDriftProgramMeta, keys, optionalLpFeeTransferScalar, optionalLpNetPnlTransferScalar);
   }
 
-  public static Instruction updatePerpMarketLpPoolFeeTransferScalar(final AccountMeta invokedDriftProgramMeta                                                                    ,
+  public static Instruction updatePerpMarketLpPoolFeeTransferScalar(final AccountMeta invokedDriftProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final OptionalInt optionalLpFeeTransferScalar,
                                                                     final OptionalInt optionalLpNetPnlTransferScalar) {
@@ -9469,8 +9236,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_EXPIRED_MARKET_POOLS_TO_REVENUE_POOL_DISCRIMINATOR = toDiscriminator(55, 19, 238, 169, 227, 90, 200, 184);
 
-  public static List<AccountMeta> settleExpiredMarketPoolsToRevenuePoolKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey stateKey,
+  public static List<AccountMeta> settleExpiredMarketPoolsToRevenuePoolKeys(final PublicKey stateKey,
                                                                             final PublicKey adminKey,
                                                                             final PublicKey spotMarketKey,
                                                                             final PublicKey perpMarketKey) {
@@ -9488,7 +9254,6 @@ public final class DriftProgram {
                                                                   final PublicKey spotMarketKey,
                                                                   final PublicKey perpMarketKey) {
     final var keys = settleExpiredMarketPoolsToRevenuePoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       spotMarketKey,
@@ -9497,15 +9262,14 @@ public final class DriftProgram {
     return settleExpiredMarketPoolsToRevenuePool(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction settleExpiredMarketPoolsToRevenuePool(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction settleExpiredMarketPoolsToRevenuePool(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, SETTLE_EXPIRED_MARKET_POOLS_TO_REVENUE_POOL_DISCRIMINATOR);
   }
 
   public static final Discriminator DEPOSIT_INTO_PERP_MARKET_FEE_POOL_DISCRIMINATOR = toDiscriminator(34, 58, 57, 68, 97, 80, 244, 6);
 
-  public static List<AccountMeta> depositIntoPerpMarketFeePoolKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey stateKey,
+  public static List<AccountMeta> depositIntoPerpMarketFeePoolKeys(final PublicKey stateKey,
                                                                    final PublicKey perpMarketKey,
                                                                    final PublicKey adminKey,
                                                                    final PublicKey sourceVaultKey,
@@ -9536,7 +9300,6 @@ public final class DriftProgram {
                                                          final PublicKey tokenProgramKey,
                                                          final long amount) {
     final var keys = depositIntoPerpMarketFeePoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       adminKey,
@@ -9549,7 +9312,7 @@ public final class DriftProgram {
     return depositIntoPerpMarketFeePool(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction depositIntoPerpMarketFeePool(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction depositIntoPerpMarketFeePool(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long amount) {
     final byte[] _data = new byte[16];
@@ -9593,8 +9356,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_PNL_POOL_DISCRIMINATOR = toDiscriminator(50, 202, 249, 224, 166, 184, 13, 143);
 
-  public static List<AccountMeta> updatePerpMarketPnlPoolKeys(final AccountMeta invokedDriftProgramMeta                                                              ,
-                                                              final PublicKey stateKey,
+  public static List<AccountMeta> updatePerpMarketPnlPoolKeys(final PublicKey stateKey,
                                                               final PublicKey adminKey,
                                                               final PublicKey spotMarketKey,
                                                               final PublicKey spotMarketVaultKey,
@@ -9616,7 +9378,6 @@ public final class DriftProgram {
                                                     final PublicKey perpMarketKey,
                                                     final long amount) {
     final var keys = updatePerpMarketPnlPoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       spotMarketKey,
@@ -9626,7 +9387,7 @@ public final class DriftProgram {
     return updatePerpMarketPnlPool(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction updatePerpMarketPnlPool(final AccountMeta invokedDriftProgramMeta                                                    ,
+  public static Instruction updatePerpMarketPnlPool(final AccountMeta invokedDriftProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long amount) {
     final byte[] _data = new byte[16];
@@ -9670,8 +9431,7 @@ public final class DriftProgram {
 
   public static final Discriminator DEPOSIT_INTO_SPOT_MARKET_VAULT_DISCRIMINATOR = toDiscriminator(48, 252, 119, 73, 255, 205, 174, 247);
 
-  public static List<AccountMeta> depositIntoSpotMarketVaultKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey stateKey,
+  public static List<AccountMeta> depositIntoSpotMarketVaultKeys(final PublicKey stateKey,
                                                                  final PublicKey spotMarketKey,
                                                                  final PublicKey adminKey,
                                                                  final PublicKey sourceVaultKey,
@@ -9696,7 +9456,6 @@ public final class DriftProgram {
                                                        final PublicKey tokenProgramKey,
                                                        final long amount) {
     final var keys = depositIntoSpotMarketVaultKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       adminKey,
@@ -9707,7 +9466,7 @@ public final class DriftProgram {
     return depositIntoSpotMarketVault(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction depositIntoSpotMarketVault(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction depositIntoSpotMarketVault(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long amount) {
     final byte[] _data = new byte[16];
@@ -9751,8 +9510,7 @@ public final class DriftProgram {
 
   public static final Discriminator DEPOSIT_INTO_SPOT_MARKET_REVENUE_POOL_DISCRIMINATOR = toDiscriminator(92, 40, 151, 42, 122, 254, 139, 246);
 
-  public static List<AccountMeta> depositIntoSpotMarketRevenuePoolKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey stateKey,
+  public static List<AccountMeta> depositIntoSpotMarketRevenuePoolKeys(final PublicKey stateKey,
                                                                        final PublicKey spotMarketKey,
                                                                        final PublicKey authorityKey,
                                                                        final PublicKey spotMarketVaultKey,
@@ -9777,7 +9535,6 @@ public final class DriftProgram {
                                                              final PublicKey tokenProgramKey,
                                                              final long amount) {
     final var keys = depositIntoSpotMarketRevenuePoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       spotMarketKey,
       authorityKey,
@@ -9788,7 +9545,7 @@ public final class DriftProgram {
     return depositIntoSpotMarketRevenuePool(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction depositIntoSpotMarketRevenuePool(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction depositIntoSpotMarketRevenuePool(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final long amount) {
     final byte[] _data = new byte[16];
@@ -9832,8 +9589,7 @@ public final class DriftProgram {
 
   public static final Discriminator REPEG_AMM_CURVE_DISCRIMINATOR = toDiscriminator(3, 36, 102, 89, 180, 128, 120, 213);
 
-  public static List<AccountMeta> repegAmmCurveKeys(final AccountMeta invokedDriftProgramMeta                                                    ,
-                                                    final PublicKey stateKey,
+  public static List<AccountMeta> repegAmmCurveKeys(final PublicKey stateKey,
                                                     final PublicKey perpMarketKey,
                                                     final PublicKey oracleKey,
                                                     final PublicKey adminKey) {
@@ -9852,7 +9608,6 @@ public final class DriftProgram {
                                           final PublicKey adminKey,
                                           final BigInteger newPegCandidate) {
     final var keys = repegAmmCurveKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey,
@@ -9861,7 +9616,7 @@ public final class DriftProgram {
     return repegAmmCurve(invokedDriftProgramMeta, keys, newPegCandidate);
   }
 
-  public static Instruction repegAmmCurve(final AccountMeta invokedDriftProgramMeta                                          ,
+  public static Instruction repegAmmCurve(final AccountMeta invokedDriftProgramMeta,
                                           final List<AccountMeta> keys,
                                           final BigInteger newPegCandidate) {
     final byte[] _data = new byte[24];
@@ -9905,8 +9660,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_AMM_ORACLE_TWAP_DISCRIMINATOR = toDiscriminator(241, 74, 114, 123, 206, 153, 24, 202);
 
-  public static List<AccountMeta> updatePerpMarketAmmOracleTwapKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey stateKey,
+  public static List<AccountMeta> updatePerpMarketAmmOracleTwapKeys(final PublicKey stateKey,
                                                                     final PublicKey perpMarketKey,
                                                                     final PublicKey oracleKey,
                                                                     final PublicKey adminKey) {
@@ -9924,7 +9678,6 @@ public final class DriftProgram {
                                                           final PublicKey oracleKey,
                                                           final PublicKey adminKey) {
     final var keys = updatePerpMarketAmmOracleTwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey,
@@ -9933,15 +9686,14 @@ public final class DriftProgram {
     return updatePerpMarketAmmOracleTwap(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updatePerpMarketAmmOracleTwap(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updatePerpMarketAmmOracleTwap(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_PERP_MARKET_AMM_ORACLE_TWAP_DISCRIMINATOR);
   }
 
   public static final Discriminator RESET_PERP_MARKET_AMM_ORACLE_TWAP_DISCRIMINATOR = toDiscriminator(127, 10, 55, 164, 123, 226, 47, 24);
 
-  public static List<AccountMeta> resetPerpMarketAmmOracleTwapKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey stateKey,
+  public static List<AccountMeta> resetPerpMarketAmmOracleTwapKeys(final PublicKey stateKey,
                                                                    final PublicKey perpMarketKey,
                                                                    final PublicKey oracleKey,
                                                                    final PublicKey adminKey) {
@@ -9959,7 +9711,6 @@ public final class DriftProgram {
                                                          final PublicKey oracleKey,
                                                          final PublicKey adminKey) {
     final var keys = resetPerpMarketAmmOracleTwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       perpMarketKey,
       oracleKey,
@@ -9968,15 +9719,14 @@ public final class DriftProgram {
     return resetPerpMarketAmmOracleTwap(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction resetPerpMarketAmmOracleTwap(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction resetPerpMarketAmmOracleTwap(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, RESET_PERP_MARKET_AMM_ORACLE_TWAP_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_K_DISCRIMINATOR = toDiscriminator(72, 98, 9, 139, 129, 229, 172, 56);
 
-  public static List<AccountMeta> updateKKeys(final AccountMeta invokedDriftProgramMeta                                              ,
-                                              final PublicKey adminKey,
+  public static List<AccountMeta> updateKKeys(final PublicKey adminKey,
                                               final PublicKey stateKey,
                                               final PublicKey perpMarketKey,
                                               final PublicKey oracleKey) {
@@ -9995,7 +9745,6 @@ public final class DriftProgram {
                                     final PublicKey oracleKey,
                                     final BigInteger sqrtK) {
     final var keys = updateKKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -10004,7 +9753,7 @@ public final class DriftProgram {
     return updateK(invokedDriftProgramMeta, keys, sqrtK);
   }
 
-  public static Instruction updateK(final AccountMeta invokedDriftProgramMeta                                    ,
+  public static Instruction updateK(final AccountMeta invokedDriftProgramMeta,
                                     final List<AccountMeta> keys,
                                     final BigInteger sqrtK) {
     final byte[] _data = new byte[24];
@@ -10048,8 +9797,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MARGIN_RATIO_DISCRIMINATOR = toDiscriminator(130, 173, 107, 45, 119, 105, 26, 113);
 
-  public static List<AccountMeta> updatePerpMarketMarginRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMarginRatioKeys(final PublicKey adminKey,
                                                                   final PublicKey stateKey,
                                                                   final PublicKey perpMarketKey) {
     return List.of(
@@ -10066,7 +9814,6 @@ public final class DriftProgram {
                                                         final int marginRatioInitial,
                                                         final int marginRatioMaintenance) {
     final var keys = updatePerpMarketMarginRatioKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10074,7 +9821,7 @@ public final class DriftProgram {
     return updatePerpMarketMarginRatio(invokedDriftProgramMeta, keys, marginRatioInitial, marginRatioMaintenance);
   }
 
-  public static Instruction updatePerpMarketMarginRatio(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction updatePerpMarketMarginRatio(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int marginRatioInitial,
                                                         final int marginRatioMaintenance) {
@@ -10125,8 +9872,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_HIGH_LEVERAGE_MARGIN_RATIO_DISCRIMINATOR = toDiscriminator(88, 112, 86, 49, 24, 116, 74, 157);
 
-  public static List<AccountMeta> updatePerpMarketHighLeverageMarginRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                              ,
-                                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketHighLeverageMarginRatioKeys(final PublicKey adminKey,
                                                                               final PublicKey stateKey,
                                                                               final PublicKey perpMarketKey) {
     return List.of(
@@ -10143,7 +9889,6 @@ public final class DriftProgram {
                                                                     final int marginRatioInitial,
                                                                     final int marginRatioMaintenance) {
     final var keys = updatePerpMarketHighLeverageMarginRatioKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10151,7 +9896,7 @@ public final class DriftProgram {
     return updatePerpMarketHighLeverageMarginRatio(invokedDriftProgramMeta, keys, marginRatioInitial, marginRatioMaintenance);
   }
 
-  public static Instruction updatePerpMarketHighLeverageMarginRatio(final AccountMeta invokedDriftProgramMeta                                                                    ,
+  public static Instruction updatePerpMarketHighLeverageMarginRatio(final AccountMeta invokedDriftProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final int marginRatioInitial,
                                                                     final int marginRatioMaintenance) {
@@ -10202,8 +9947,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_FUNDING_PERIOD_DISCRIMINATOR = toDiscriminator(171, 161, 69, 91, 129, 139, 161, 28);
 
-  public static List<AccountMeta> updatePerpMarketFundingPeriodKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketFundingPeriodKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey perpMarketKey) {
     return List.of(
@@ -10219,7 +9963,6 @@ public final class DriftProgram {
                                                           final PublicKey perpMarketKey,
                                                           final long fundingPeriod) {
     final var keys = updatePerpMarketFundingPeriodKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10227,7 +9970,7 @@ public final class DriftProgram {
     return updatePerpMarketFundingPeriod(invokedDriftProgramMeta, keys, fundingPeriod);
   }
 
-  public static Instruction updatePerpMarketFundingPeriod(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updatePerpMarketFundingPeriod(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final long fundingPeriod) {
     final byte[] _data = new byte[16];
@@ -10271,8 +10014,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MAX_IMBALANCES_DISCRIMINATOR = toDiscriminator(15, 206, 73, 133, 60, 8, 86, 89);
 
-  public static List<AccountMeta> updatePerpMarketMaxImbalancesKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMaxImbalancesKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey perpMarketKey) {
     return List.of(
@@ -10290,7 +10032,6 @@ public final class DriftProgram {
                                                           final long maxRevenueWithdrawPerPeriod,
                                                           final long quoteMaxInsurance) {
     final var keys = updatePerpMarketMaxImbalancesKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10304,7 +10045,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updatePerpMarketMaxImbalances(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updatePerpMarketMaxImbalances(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final long unrealizedMaxImbalance,
                                                           final long maxRevenueWithdrawPerPeriod,
@@ -10365,8 +10106,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_LIQUIDATION_FEE_DISCRIMINATOR = toDiscriminator(90, 137, 9, 145, 41, 8, 148, 117);
 
-  public static List<AccountMeta> updatePerpMarketLiquidationFeeKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketLiquidationFeeKeys(final PublicKey adminKey,
                                                                      final PublicKey stateKey,
                                                                      final PublicKey perpMarketKey) {
     return List.of(
@@ -10383,7 +10123,6 @@ public final class DriftProgram {
                                                            final int liquidatorFee,
                                                            final int ifLiquidationFee) {
     final var keys = updatePerpMarketLiquidationFeeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10391,7 +10130,7 @@ public final class DriftProgram {
     return updatePerpMarketLiquidationFee(invokedDriftProgramMeta, keys, liquidatorFee, ifLiquidationFee);
   }
 
-  public static Instruction updatePerpMarketLiquidationFee(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction updatePerpMarketLiquidationFee(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int liquidatorFee,
                                                            final int ifLiquidationFee) {
@@ -10442,8 +10181,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_LP_POOL_ID_DISCRIMINATOR = toDiscriminator(119, 208, 154, 88, 165, 92, 21, 188);
 
-  public static List<AccountMeta> updatePerpMarketLpPoolIdKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketLpPoolIdKeys(final PublicKey adminKey,
                                                                final PublicKey stateKey,
                                                                final PublicKey perpMarketKey) {
     return List.of(
@@ -10459,7 +10197,6 @@ public final class DriftProgram {
                                                      final PublicKey perpMarketKey,
                                                      final int lpPoolId) {
     final var keys = updatePerpMarketLpPoolIdKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -10467,7 +10204,7 @@ public final class DriftProgram {
     return updatePerpMarketLpPoolId(invokedDriftProgramMeta, keys, lpPoolId);
   }
 
-  public static Instruction updatePerpMarketLpPoolId(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction updatePerpMarketLpPoolId(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int lpPoolId) {
     final byte[] _data = new byte[9];
@@ -10511,8 +10248,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_INSURANCE_FUND_UNSTAKING_PERIOD_DISCRIMINATOR = toDiscriminator(44, 69, 43, 226, 204, 223, 202, 52);
 
-  public static List<AccountMeta> updateInsuranceFundUnstakingPeriodKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey adminKey,
+  public static List<AccountMeta> updateInsuranceFundUnstakingPeriodKeys(final PublicKey adminKey,
                                                                          final PublicKey stateKey,
                                                                          final PublicKey spotMarketKey) {
     return List.of(
@@ -10528,7 +10264,6 @@ public final class DriftProgram {
                                                                final PublicKey spotMarketKey,
                                                                final long insuranceFundUnstakingPeriod) {
     final var keys = updateInsuranceFundUnstakingPeriodKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10536,7 +10271,7 @@ public final class DriftProgram {
     return updateInsuranceFundUnstakingPeriod(invokedDriftProgramMeta, keys, insuranceFundUnstakingPeriod);
   }
 
-  public static Instruction updateInsuranceFundUnstakingPeriod(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateInsuranceFundUnstakingPeriod(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final long insuranceFundUnstakingPeriod) {
     final byte[] _data = new byte[16];
@@ -10580,8 +10315,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_POOL_ID_DISCRIMINATOR = toDiscriminator(22, 213, 197, 160, 139, 193, 81, 149);
 
-  public static List<AccountMeta> updateSpotMarketPoolIdKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketPoolIdKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey spotMarketKey) {
     return List.of(
@@ -10597,7 +10331,6 @@ public final class DriftProgram {
                                                    final PublicKey spotMarketKey,
                                                    final int poolId) {
     final var keys = updateSpotMarketPoolIdKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10605,7 +10338,7 @@ public final class DriftProgram {
     return updateSpotMarketPoolId(invokedDriftProgramMeta, keys, poolId);
   }
 
-  public static Instruction updateSpotMarketPoolId(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateSpotMarketPoolId(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int poolId) {
     final byte[] _data = new byte[9];
@@ -10649,8 +10382,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_LIQUIDATION_FEE_DISCRIMINATOR = toDiscriminator(11, 13, 255, 53, 56, 136, 104, 177);
 
-  public static List<AccountMeta> updateSpotMarketLiquidationFeeKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketLiquidationFeeKeys(final PublicKey adminKey,
                                                                      final PublicKey stateKey,
                                                                      final PublicKey spotMarketKey) {
     return List.of(
@@ -10667,7 +10399,6 @@ public final class DriftProgram {
                                                            final int liquidatorFee,
                                                            final int ifLiquidationFee) {
     final var keys = updateSpotMarketLiquidationFeeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10675,7 +10406,7 @@ public final class DriftProgram {
     return updateSpotMarketLiquidationFee(invokedDriftProgramMeta, keys, liquidatorFee, ifLiquidationFee);
   }
 
-  public static Instruction updateSpotMarketLiquidationFee(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction updateSpotMarketLiquidationFee(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int liquidatorFee,
                                                            final int ifLiquidationFee) {
@@ -10726,8 +10457,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_WITHDRAW_GUARD_THRESHOLD_DISCRIMINATOR = toDiscriminator(56, 18, 39, 61, 155, 211, 44, 133);
 
-  public static List<AccountMeta> updateWithdrawGuardThresholdKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updateWithdrawGuardThresholdKeys(final PublicKey adminKey,
                                                                    final PublicKey stateKey,
                                                                    final PublicKey spotMarketKey) {
     return List.of(
@@ -10743,7 +10473,6 @@ public final class DriftProgram {
                                                          final PublicKey spotMarketKey,
                                                          final long withdrawGuardThreshold) {
     final var keys = updateWithdrawGuardThresholdKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10751,7 +10480,7 @@ public final class DriftProgram {
     return updateWithdrawGuardThreshold(invokedDriftProgramMeta, keys, withdrawGuardThreshold);
   }
 
-  public static Instruction updateWithdrawGuardThreshold(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updateWithdrawGuardThreshold(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long withdrawGuardThreshold) {
     final byte[] _data = new byte[16];
@@ -10795,8 +10524,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_IF_FACTOR_DISCRIMINATOR = toDiscriminator(147, 30, 224, 34, 18, 230, 105, 4);
 
-  public static List<AccountMeta> updateSpotMarketIfFactorKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketIfFactorKeys(final PublicKey adminKey,
                                                                final PublicKey stateKey,
                                                                final PublicKey spotMarketKey) {
     return List.of(
@@ -10814,7 +10542,6 @@ public final class DriftProgram {
                                                      final int userIfFactor,
                                                      final int totalIfFactor) {
     final var keys = updateSpotMarketIfFactorKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10828,7 +10555,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateSpotMarketIfFactor(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction updateSpotMarketIfFactor(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int spotMarketIndex,
                                                      final int userIfFactor,
@@ -10889,8 +10616,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_REVENUE_SETTLE_PERIOD_DISCRIMINATOR = toDiscriminator(81, 92, 126, 41, 250, 225, 156, 219);
 
-  public static List<AccountMeta> updateSpotMarketRevenueSettlePeriodKeys(final AccountMeta invokedDriftProgramMeta                                                                          ,
-                                                                          final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketRevenueSettlePeriodKeys(final PublicKey adminKey,
                                                                           final PublicKey stateKey,
                                                                           final PublicKey spotMarketKey) {
     return List.of(
@@ -10906,7 +10632,6 @@ public final class DriftProgram {
                                                                 final PublicKey spotMarketKey,
                                                                 final long revenueSettlePeriod) {
     final var keys = updateSpotMarketRevenueSettlePeriodKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10914,7 +10639,7 @@ public final class DriftProgram {
     return updateSpotMarketRevenueSettlePeriod(invokedDriftProgramMeta, keys, revenueSettlePeriod);
   }
 
-  public static Instruction updateSpotMarketRevenueSettlePeriod(final AccountMeta invokedDriftProgramMeta                                                                ,
+  public static Instruction updateSpotMarketRevenueSettlePeriod(final AccountMeta invokedDriftProgramMeta,
                                                                 final List<AccountMeta> keys,
                                                                 final long revenueSettlePeriod) {
     final byte[] _data = new byte[16];
@@ -10958,8 +10683,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_STATUS_DISCRIMINATOR = toDiscriminator(78, 94, 16, 188, 193, 110, 231, 31);
 
-  public static List<AccountMeta> updateSpotMarketStatusKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketStatusKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey spotMarketKey) {
     return List.of(
@@ -10975,7 +10699,6 @@ public final class DriftProgram {
                                                    final PublicKey spotMarketKey,
                                                    final MarketStatus status) {
     final var keys = updateSpotMarketStatusKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -10983,7 +10706,7 @@ public final class DriftProgram {
     return updateSpotMarketStatus(invokedDriftProgramMeta, keys, status);
   }
 
-  public static Instruction updateSpotMarketStatus(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateSpotMarketStatus(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final MarketStatus status) {
     final byte[] _data = new byte[8 + Borsh.len(status)];
@@ -11026,8 +10749,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_PAUSED_OPERATIONS_DISCRIMINATOR = toDiscriminator(100, 61, 153, 81, 180, 12, 6, 248);
 
-  public static List<AccountMeta> updateSpotMarketPausedOperationsKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketPausedOperationsKeys(final PublicKey adminKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey spotMarketKey) {
     return List.of(
@@ -11043,7 +10765,6 @@ public final class DriftProgram {
                                                              final PublicKey spotMarketKey,
                                                              final int pausedOperations) {
     final var keys = updateSpotMarketPausedOperationsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11051,7 +10772,7 @@ public final class DriftProgram {
     return updateSpotMarketPausedOperations(invokedDriftProgramMeta, keys, pausedOperations);
   }
 
-  public static Instruction updateSpotMarketPausedOperations(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updateSpotMarketPausedOperations(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int pausedOperations) {
     final byte[] _data = new byte[9];
@@ -11095,8 +10816,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_ASSET_TIER_DISCRIMINATOR = toDiscriminator(253, 209, 231, 14, 242, 208, 243, 130);
 
-  public static List<AccountMeta> updateSpotMarketAssetTierKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketAssetTierKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey spotMarketKey) {
     return List.of(
@@ -11112,7 +10832,6 @@ public final class DriftProgram {
                                                       final PublicKey spotMarketKey,
                                                       final AssetTier assetTier) {
     final var keys = updateSpotMarketAssetTierKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11120,7 +10839,7 @@ public final class DriftProgram {
     return updateSpotMarketAssetTier(invokedDriftProgramMeta, keys, assetTier);
   }
 
-  public static Instruction updateSpotMarketAssetTier(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updateSpotMarketAssetTier(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final AssetTier assetTier) {
     final byte[] _data = new byte[8 + Borsh.len(assetTier)];
@@ -11163,8 +10882,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_MARGIN_WEIGHTS_DISCRIMINATOR = toDiscriminator(109, 33, 87, 195, 255, 36, 6, 81);
 
-  public static List<AccountMeta> updateSpotMarketMarginWeightsKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketMarginWeightsKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey spotMarketKey) {
     return List.of(
@@ -11184,7 +10902,6 @@ public final class DriftProgram {
                                                           final int maintenanceLiabilityWeight,
                                                           final int imfFactor) {
     final var keys = updateSpotMarketMarginWeightsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11200,7 +10917,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateSpotMarketMarginWeights(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateSpotMarketMarginWeights(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int initialAssetWeight,
                                                           final int maintenanceAssetWeight,
@@ -11282,8 +10999,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_BORROW_RATE_DISCRIMINATOR = toDiscriminator(71, 239, 236, 153, 210, 62, 254, 76);
 
-  public static List<AccountMeta> updateSpotMarketBorrowRateKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketBorrowRateKeys(final PublicKey adminKey,
                                                                  final PublicKey stateKey,
                                                                  final PublicKey spotMarketKey) {
     return List.of(
@@ -11302,7 +11018,6 @@ public final class DriftProgram {
                                                        final int maxBorrowRate,
                                                        final OptionalInt minBorrowRate) {
     final var keys = updateSpotMarketBorrowRateKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11317,7 +11032,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateSpotMarketBorrowRate(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction updateSpotMarketBorrowRate(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int optimalUtilization,
                                                        final int optimalBorrowRate,
@@ -11396,8 +11111,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_MAX_TOKEN_DEPOSITS_DISCRIMINATOR = toDiscriminator(56, 191, 79, 18, 26, 121, 80, 208);
 
-  public static List<AccountMeta> updateSpotMarketMaxTokenDepositsKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketMaxTokenDepositsKeys(final PublicKey adminKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey spotMarketKey) {
     return List.of(
@@ -11413,7 +11127,6 @@ public final class DriftProgram {
                                                              final PublicKey spotMarketKey,
                                                              final long maxTokenDeposits) {
     final var keys = updateSpotMarketMaxTokenDepositsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11421,7 +11134,7 @@ public final class DriftProgram {
     return updateSpotMarketMaxTokenDeposits(invokedDriftProgramMeta, keys, maxTokenDeposits);
   }
 
-  public static Instruction updateSpotMarketMaxTokenDeposits(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updateSpotMarketMaxTokenDeposits(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final long maxTokenDeposits) {
     final byte[] _data = new byte[16];
@@ -11465,8 +11178,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_MAX_TOKEN_BORROWS_DISCRIMINATOR = toDiscriminator(57, 102, 204, 212, 253, 95, 13, 199);
 
-  public static List<AccountMeta> updateSpotMarketMaxTokenBorrowsKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketMaxTokenBorrowsKeys(final PublicKey adminKey,
                                                                       final PublicKey stateKey,
                                                                       final PublicKey spotMarketKey) {
     return List.of(
@@ -11482,7 +11194,6 @@ public final class DriftProgram {
                                                             final PublicKey spotMarketKey,
                                                             final int maxTokenBorrowsFraction) {
     final var keys = updateSpotMarketMaxTokenBorrowsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11490,7 +11201,7 @@ public final class DriftProgram {
     return updateSpotMarketMaxTokenBorrows(invokedDriftProgramMeta, keys, maxTokenBorrowsFraction);
   }
 
-  public static Instruction updateSpotMarketMaxTokenBorrows(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updateSpotMarketMaxTokenBorrows(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int maxTokenBorrowsFraction) {
     final byte[] _data = new byte[10];
@@ -11534,8 +11245,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_SCALE_INITIAL_ASSET_WEIGHT_START_DISCRIMINATOR = toDiscriminator(217, 204, 204, 118, 204, 130, 225, 147);
 
-  public static List<AccountMeta> updateSpotMarketScaleInitialAssetWeightStartKeys(final AccountMeta invokedDriftProgramMeta                                                                                   ,
-                                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketScaleInitialAssetWeightStartKeys(final PublicKey adminKey,
                                                                                    final PublicKey stateKey,
                                                                                    final PublicKey spotMarketKey) {
     return List.of(
@@ -11551,7 +11261,6 @@ public final class DriftProgram {
                                                                          final PublicKey spotMarketKey,
                                                                          final long scaleInitialAssetWeightStart) {
     final var keys = updateSpotMarketScaleInitialAssetWeightStartKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11559,7 +11268,7 @@ public final class DriftProgram {
     return updateSpotMarketScaleInitialAssetWeightStart(invokedDriftProgramMeta, keys, scaleInitialAssetWeightStart);
   }
 
-  public static Instruction updateSpotMarketScaleInitialAssetWeightStart(final AccountMeta invokedDriftProgramMeta                                                                         ,
+  public static Instruction updateSpotMarketScaleInitialAssetWeightStart(final AccountMeta invokedDriftProgramMeta,
                                                                          final List<AccountMeta> keys,
                                                                          final long scaleInitialAssetWeightStart) {
     final byte[] _data = new byte[16];
@@ -11603,8 +11312,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_ORACLE_DISCRIMINATOR = toDiscriminator(114, 184, 102, 37, 246, 186, 180, 99);
 
-  public static List<AccountMeta> updateSpotMarketOracleKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketOracleKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey spotMarketKey,
                                                              final PublicKey oracleKey,
@@ -11628,7 +11336,6 @@ public final class DriftProgram {
                                                    final OracleSource oracleSource,
                                                    final boolean skipInvariantCheck) {
     final var keys = updateSpotMarketOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey,
@@ -11644,7 +11351,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateSpotMarketOracle(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateSpotMarketOracle(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final PublicKey oracle,
                                                    final OracleSource oracleSource,
@@ -11703,8 +11410,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_STEP_SIZE_AND_TICK_SIZE_DISCRIMINATOR = toDiscriminator(238, 153, 137, 80, 206, 59, 250, 61);
 
-  public static List<AccountMeta> updateSpotMarketStepSizeAndTickSizeKeys(final AccountMeta invokedDriftProgramMeta                                                                          ,
-                                                                          final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketStepSizeAndTickSizeKeys(final PublicKey adminKey,
                                                                           final PublicKey stateKey,
                                                                           final PublicKey spotMarketKey) {
     return List.of(
@@ -11721,7 +11427,6 @@ public final class DriftProgram {
                                                                 final long stepSize,
                                                                 final long tickSize) {
     final var keys = updateSpotMarketStepSizeAndTickSizeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11729,7 +11434,7 @@ public final class DriftProgram {
     return updateSpotMarketStepSizeAndTickSize(invokedDriftProgramMeta, keys, stepSize, tickSize);
   }
 
-  public static Instruction updateSpotMarketStepSizeAndTickSize(final AccountMeta invokedDriftProgramMeta                                                                ,
+  public static Instruction updateSpotMarketStepSizeAndTickSize(final AccountMeta invokedDriftProgramMeta,
                                                                 final List<AccountMeta> keys,
                                                                 final long stepSize,
                                                                 final long tickSize) {
@@ -11780,8 +11485,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_MIN_ORDER_SIZE_DISCRIMINATOR = toDiscriminator(93, 128, 11, 119, 26, 20, 181, 50);
 
-  public static List<AccountMeta> updateSpotMarketMinOrderSizeKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketMinOrderSizeKeys(final PublicKey adminKey,
                                                                    final PublicKey stateKey,
                                                                    final PublicKey spotMarketKey) {
     return List.of(
@@ -11797,7 +11501,6 @@ public final class DriftProgram {
                                                          final PublicKey spotMarketKey,
                                                          final long orderSize) {
     final var keys = updateSpotMarketMinOrderSizeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11805,7 +11508,7 @@ public final class DriftProgram {
     return updateSpotMarketMinOrderSize(invokedDriftProgramMeta, keys, orderSize);
   }
 
-  public static Instruction updateSpotMarketMinOrderSize(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updateSpotMarketMinOrderSize(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long orderSize) {
     final byte[] _data = new byte[16];
@@ -11849,8 +11552,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_ORDERS_ENABLED_DISCRIMINATOR = toDiscriminator(190, 79, 206, 15, 26, 229, 229, 43);
 
-  public static List<AccountMeta> updateSpotMarketOrdersEnabledKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketOrdersEnabledKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey spotMarketKey) {
     return List.of(
@@ -11866,7 +11568,6 @@ public final class DriftProgram {
                                                           final PublicKey spotMarketKey,
                                                           final boolean ordersEnabled) {
     final var keys = updateSpotMarketOrdersEnabledKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11874,7 +11575,7 @@ public final class DriftProgram {
     return updateSpotMarketOrdersEnabled(invokedDriftProgramMeta, keys, ordersEnabled);
   }
 
-  public static Instruction updateSpotMarketOrdersEnabled(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateSpotMarketOrdersEnabled(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final boolean ordersEnabled) {
     final byte[] _data = new byte[9];
@@ -11918,8 +11619,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_IF_PAUSED_OPERATIONS_DISCRIMINATOR = toDiscriminator(101, 215, 79, 74, 59, 41, 79, 12);
 
-  public static List<AccountMeta> updateSpotMarketIfPausedOperationsKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketIfPausedOperationsKeys(final PublicKey adminKey,
                                                                          final PublicKey stateKey,
                                                                          final PublicKey spotMarketKey) {
     return List.of(
@@ -11935,7 +11635,6 @@ public final class DriftProgram {
                                                                final PublicKey spotMarketKey,
                                                                final int pausedOperations) {
     final var keys = updateSpotMarketIfPausedOperationsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -11943,7 +11642,7 @@ public final class DriftProgram {
     return updateSpotMarketIfPausedOperations(invokedDriftProgramMeta, keys, pausedOperations);
   }
 
-  public static Instruction updateSpotMarketIfPausedOperations(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateSpotMarketIfPausedOperations(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int pausedOperations) {
     final byte[] _data = new byte[9];
@@ -11987,8 +11686,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_NAME_DISCRIMINATOR = toDiscriminator(17, 208, 1, 1, 162, 211, 188, 224);
 
-  public static List<AccountMeta> updateSpotMarketNameKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketNameKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey,
                                                            final PublicKey spotMarketKey) {
     return List.of(
@@ -12004,7 +11702,6 @@ public final class DriftProgram {
                                                  final PublicKey spotMarketKey,
                                                  final byte[] name) {
     final var keys = updateSpotMarketNameKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -12012,7 +11709,7 @@ public final class DriftProgram {
     return updateSpotMarketName(invokedDriftProgramMeta, keys, name);
   }
 
-  public static Instruction updateSpotMarketName(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updateSpotMarketName(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final byte[] name) {
     final byte[] _data = new byte[8 + Borsh.lenArray(name)];
@@ -12057,8 +11754,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_STATUS_DISCRIMINATOR = toDiscriminator(71, 201, 175, 122, 255, 207, 196, 207);
 
-  public static List<AccountMeta> updatePerpMarketStatusKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketStatusKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey perpMarketKey) {
     return List.of(
@@ -12074,7 +11770,6 @@ public final class DriftProgram {
                                                    final PublicKey perpMarketKey,
                                                    final MarketStatus status) {
     final var keys = updatePerpMarketStatusKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12082,7 +11777,7 @@ public final class DriftProgram {
     return updatePerpMarketStatus(invokedDriftProgramMeta, keys, status);
   }
 
-  public static Instruction updatePerpMarketStatus(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updatePerpMarketStatus(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final MarketStatus status) {
     final byte[] _data = new byte[8 + Borsh.len(status)];
@@ -12125,8 +11820,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_PAUSED_OPERATIONS_DISCRIMINATOR = toDiscriminator(53, 16, 136, 132, 30, 220, 121, 85);
 
-  public static List<AccountMeta> updatePerpMarketPausedOperationsKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketPausedOperationsKeys(final PublicKey adminKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey perpMarketKey) {
     return List.of(
@@ -12142,7 +11836,6 @@ public final class DriftProgram {
                                                              final PublicKey perpMarketKey,
                                                              final int pausedOperations) {
     final var keys = updatePerpMarketPausedOperationsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12150,7 +11843,7 @@ public final class DriftProgram {
     return updatePerpMarketPausedOperations(invokedDriftProgramMeta, keys, pausedOperations);
   }
 
-  public static Instruction updatePerpMarketPausedOperations(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updatePerpMarketPausedOperations(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int pausedOperations) {
     final byte[] _data = new byte[9];
@@ -12194,8 +11887,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_CONTRACT_TIER_DISCRIMINATOR = toDiscriminator(236, 128, 15, 95, 203, 214, 68, 117);
 
-  public static List<AccountMeta> updatePerpMarketContractTierKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketContractTierKeys(final PublicKey adminKey,
                                                                    final PublicKey stateKey,
                                                                    final PublicKey perpMarketKey) {
     return List.of(
@@ -12211,7 +11903,6 @@ public final class DriftProgram {
                                                          final PublicKey perpMarketKey,
                                                          final ContractTier contractTier) {
     final var keys = updatePerpMarketContractTierKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12219,7 +11910,7 @@ public final class DriftProgram {
     return updatePerpMarketContractTier(invokedDriftProgramMeta, keys, contractTier);
   }
 
-  public static Instruction updatePerpMarketContractTier(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updatePerpMarketContractTier(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final ContractTier contractTier) {
     final byte[] _data = new byte[8 + Borsh.len(contractTier)];
@@ -12262,8 +11953,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_IMF_FACTOR_DISCRIMINATOR = toDiscriminator(207, 194, 56, 132, 35, 67, 71, 244);
 
-  public static List<AccountMeta> updatePerpMarketImfFactorKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketImfFactorKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey perpMarketKey) {
     return List.of(
@@ -12280,7 +11970,6 @@ public final class DriftProgram {
                                                       final int imfFactor,
                                                       final int unrealizedPnlImfFactor) {
     final var keys = updatePerpMarketImfFactorKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12288,7 +11977,7 @@ public final class DriftProgram {
     return updatePerpMarketImfFactor(invokedDriftProgramMeta, keys, imfFactor, unrealizedPnlImfFactor);
   }
 
-  public static Instruction updatePerpMarketImfFactor(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updatePerpMarketImfFactor(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int imfFactor,
                                                       final int unrealizedPnlImfFactor) {
@@ -12339,8 +12028,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_UNREALIZED_ASSET_WEIGHT_DISCRIMINATOR = toDiscriminator(135, 132, 205, 165, 109, 150, 166, 106);
 
-  public static List<AccountMeta> updatePerpMarketUnrealizedAssetWeightKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketUnrealizedAssetWeightKeys(final PublicKey adminKey,
                                                                             final PublicKey stateKey,
                                                                             final PublicKey perpMarketKey) {
     return List.of(
@@ -12357,7 +12045,6 @@ public final class DriftProgram {
                                                                   final int unrealizedInitialAssetWeight,
                                                                   final int unrealizedMaintenanceAssetWeight) {
     final var keys = updatePerpMarketUnrealizedAssetWeightKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12365,7 +12052,7 @@ public final class DriftProgram {
     return updatePerpMarketUnrealizedAssetWeight(invokedDriftProgramMeta, keys, unrealizedInitialAssetWeight, unrealizedMaintenanceAssetWeight);
   }
 
-  public static Instruction updatePerpMarketUnrealizedAssetWeight(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction updatePerpMarketUnrealizedAssetWeight(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final int unrealizedInitialAssetWeight,
                                                                   final int unrealizedMaintenanceAssetWeight) {
@@ -12416,8 +12103,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_CONCENTRATION_COEF_DISCRIMINATOR = toDiscriminator(24, 78, 232, 126, 169, 176, 230, 16);
 
-  public static List<AccountMeta> updatePerpMarketConcentrationCoefKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketConcentrationCoefKeys(final PublicKey adminKey,
                                                                         final PublicKey stateKey,
                                                                         final PublicKey perpMarketKey) {
     return List.of(
@@ -12433,7 +12119,6 @@ public final class DriftProgram {
                                                               final PublicKey perpMarketKey,
                                                               final BigInteger concentrationScale) {
     final var keys = updatePerpMarketConcentrationCoefKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12441,7 +12126,7 @@ public final class DriftProgram {
     return updatePerpMarketConcentrationCoef(invokedDriftProgramMeta, keys, concentrationScale);
   }
 
-  public static Instruction updatePerpMarketConcentrationCoef(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction updatePerpMarketConcentrationCoef(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final BigInteger concentrationScale) {
     final byte[] _data = new byte[24];
@@ -12485,8 +12170,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_CURVE_UPDATE_INTENSITY_DISCRIMINATOR = toDiscriminator(50, 131, 6, 156, 226, 231, 189, 72);
 
-  public static List<AccountMeta> updatePerpMarketCurveUpdateIntensityKeys(final AccountMeta invokedDriftProgramMeta                                                                           ,
-                                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketCurveUpdateIntensityKeys(final PublicKey adminKey,
                                                                            final PublicKey stateKey,
                                                                            final PublicKey perpMarketKey) {
     return List.of(
@@ -12502,7 +12186,6 @@ public final class DriftProgram {
                                                                  final PublicKey perpMarketKey,
                                                                  final int curveUpdateIntensity) {
     final var keys = updatePerpMarketCurveUpdateIntensityKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12510,7 +12193,7 @@ public final class DriftProgram {
     return updatePerpMarketCurveUpdateIntensity(invokedDriftProgramMeta, keys, curveUpdateIntensity);
   }
 
-  public static Instruction updatePerpMarketCurveUpdateIntensity(final AccountMeta invokedDriftProgramMeta                                                                 ,
+  public static Instruction updatePerpMarketCurveUpdateIntensity(final AccountMeta invokedDriftProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final int curveUpdateIntensity) {
     final byte[] _data = new byte[9];
@@ -12554,8 +12237,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_REFERENCE_PRICE_OFFSET_DEADBAND_PCT_DISCRIMINATOR = toDiscriminator(214, 73, 166, 11, 218, 76, 110, 163);
 
-  public static List<AccountMeta> updatePerpMarketReferencePriceOffsetDeadbandPctKeys(final AccountMeta invokedDriftProgramMeta                                                                                      ,
-                                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketReferencePriceOffsetDeadbandPctKeys(final PublicKey adminKey,
                                                                                       final PublicKey stateKey,
                                                                                       final PublicKey perpMarketKey) {
     return List.of(
@@ -12571,7 +12253,6 @@ public final class DriftProgram {
                                                                             final PublicKey perpMarketKey,
                                                                             final int referencePriceOffsetDeadbandPct) {
     final var keys = updatePerpMarketReferencePriceOffsetDeadbandPctKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -12579,7 +12260,7 @@ public final class DriftProgram {
     return updatePerpMarketReferencePriceOffsetDeadbandPct(invokedDriftProgramMeta, keys, referencePriceOffsetDeadbandPct);
   }
 
-  public static Instruction updatePerpMarketReferencePriceOffsetDeadbandPct(final AccountMeta invokedDriftProgramMeta                                                                            ,
+  public static Instruction updatePerpMarketReferencePriceOffsetDeadbandPct(final AccountMeta invokedDriftProgramMeta,
                                                                             final List<AccountMeta> keys,
                                                                             final int referencePriceOffsetDeadbandPct) {
     final byte[] _data = new byte[9];
@@ -12623,8 +12304,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_LP_COOLDOWN_TIME_DISCRIMINATOR = toDiscriminator(198, 133, 88, 41, 241, 119, 61, 14);
 
-  public static List<AccountMeta> updateLpCooldownTimeKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updateLpCooldownTimeKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12637,14 +12317,13 @@ public final class DriftProgram {
                                                  final PublicKey stateKey,
                                                  final long lpCooldownTime) {
     final var keys = updateLpCooldownTimeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateLpCooldownTime(invokedDriftProgramMeta, keys, lpCooldownTime);
   }
 
-  public static Instruction updateLpCooldownTime(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updateLpCooldownTime(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long lpCooldownTime) {
     final byte[] _data = new byte[16];
@@ -12688,8 +12367,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_FEE_STRUCTURE_DISCRIMINATOR = toDiscriminator(23, 178, 111, 203, 73, 22, 140, 75);
 
-  public static List<AccountMeta> updatePerpFeeStructureKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpFeeStructureKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12702,14 +12380,13 @@ public final class DriftProgram {
                                                    final PublicKey stateKey,
                                                    final FeeStructure feeStructure) {
     final var keys = updatePerpFeeStructureKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updatePerpFeeStructure(invokedDriftProgramMeta, keys, feeStructure);
   }
 
-  public static Instruction updatePerpFeeStructure(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updatePerpFeeStructure(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final FeeStructure feeStructure) {
     final byte[] _data = new byte[8 + Borsh.len(feeStructure)];
@@ -12752,8 +12429,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_FEE_STRUCTURE_DISCRIMINATOR = toDiscriminator(97, 216, 105, 131, 113, 246, 142, 141);
 
-  public static List<AccountMeta> updateSpotFeeStructureKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotFeeStructureKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12766,14 +12442,13 @@ public final class DriftProgram {
                                                    final PublicKey stateKey,
                                                    final FeeStructure feeStructure) {
     final var keys = updateSpotFeeStructureKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateSpotFeeStructure(invokedDriftProgramMeta, keys, feeStructure);
   }
 
-  public static Instruction updateSpotFeeStructure(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateSpotFeeStructure(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final FeeStructure feeStructure) {
     final byte[] _data = new byte[8 + Borsh.len(feeStructure)];
@@ -12816,8 +12491,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_INITIAL_PCT_TO_LIQUIDATE_DISCRIMINATOR = toDiscriminator(210, 133, 225, 128, 194, 50, 13, 109);
 
-  public static List<AccountMeta> updateInitialPctToLiquidateKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> updateInitialPctToLiquidateKeys(final PublicKey adminKey,
                                                                   final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12830,14 +12504,13 @@ public final class DriftProgram {
                                                         final PublicKey stateKey,
                                                         final int initialPctToLiquidate) {
     final var keys = updateInitialPctToLiquidateKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateInitialPctToLiquidate(invokedDriftProgramMeta, keys, initialPctToLiquidate);
   }
 
-  public static Instruction updateInitialPctToLiquidate(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction updateInitialPctToLiquidate(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int initialPctToLiquidate) {
     final byte[] _data = new byte[10];
@@ -12881,8 +12554,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_LIQUIDATION_DURATION_DISCRIMINATOR = toDiscriminator(28, 154, 20, 249, 102, 192, 73, 71);
 
-  public static List<AccountMeta> updateLiquidationDurationKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updateLiquidationDurationKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12895,14 +12567,13 @@ public final class DriftProgram {
                                                       final PublicKey stateKey,
                                                       final int liquidationDuration) {
     final var keys = updateLiquidationDurationKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateLiquidationDuration(invokedDriftProgramMeta, keys, liquidationDuration);
   }
 
-  public static Instruction updateLiquidationDuration(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updateLiquidationDuration(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int liquidationDuration) {
     final byte[] _data = new byte[9];
@@ -12946,8 +12617,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_LIQUIDATION_MARGIN_BUFFER_RATIO_DISCRIMINATOR = toDiscriminator(132, 224, 243, 160, 154, 82, 97, 215);
 
-  public static List<AccountMeta> updateLiquidationMarginBufferRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey adminKey,
+  public static List<AccountMeta> updateLiquidationMarginBufferRatioKeys(final PublicKey adminKey,
                                                                          final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -12960,14 +12630,13 @@ public final class DriftProgram {
                                                                final PublicKey stateKey,
                                                                final int liquidationMarginBufferRatio) {
     final var keys = updateLiquidationMarginBufferRatioKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateLiquidationMarginBufferRatio(invokedDriftProgramMeta, keys, liquidationMarginBufferRatio);
   }
 
-  public static Instruction updateLiquidationMarginBufferRatio(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction updateLiquidationMarginBufferRatio(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int liquidationMarginBufferRatio) {
     final byte[] _data = new byte[12];
@@ -13011,8 +12680,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_ORACLE_GUARD_RAILS_DISCRIMINATOR = toDiscriminator(131, 112, 10, 59, 32, 54, 40, 164);
 
-  public static List<AccountMeta> updateOracleGuardRailsKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updateOracleGuardRailsKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -13025,14 +12693,13 @@ public final class DriftProgram {
                                                    final PublicKey stateKey,
                                                    final OracleGuardRails oracleGuardRails) {
     final var keys = updateOracleGuardRailsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateOracleGuardRails(invokedDriftProgramMeta, keys, oracleGuardRails);
   }
 
-  public static Instruction updateOracleGuardRails(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updateOracleGuardRails(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final OracleGuardRails oracleGuardRails) {
     final byte[] _data = new byte[8 + Borsh.len(oracleGuardRails)];
@@ -13075,8 +12742,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_STATE_SETTLEMENT_DURATION_DISCRIMINATOR = toDiscriminator(97, 68, 199, 235, 131, 80, 61, 173);
 
-  public static List<AccountMeta> updateStateSettlementDurationKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updateStateSettlementDurationKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -13089,14 +12755,13 @@ public final class DriftProgram {
                                                           final PublicKey stateKey,
                                                           final int settlementDuration) {
     final var keys = updateStateSettlementDurationKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateStateSettlementDuration(invokedDriftProgramMeta, keys, settlementDuration);
   }
 
-  public static Instruction updateStateSettlementDuration(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateStateSettlementDuration(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int settlementDuration) {
     final byte[] _data = new byte[10];
@@ -13140,8 +12805,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_STATE_MAX_NUMBER_OF_SUB_ACCOUNTS_DISCRIMINATOR = toDiscriminator(155, 123, 214, 2, 221, 166, 204, 85);
 
-  public static List<AccountMeta> updateStateMaxNumberOfSubAccountsKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey adminKey,
+  public static List<AccountMeta> updateStateMaxNumberOfSubAccountsKeys(final PublicKey adminKey,
                                                                         final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -13154,14 +12818,13 @@ public final class DriftProgram {
                                                               final PublicKey stateKey,
                                                               final int maxNumberOfSubAccounts) {
     final var keys = updateStateMaxNumberOfSubAccountsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateStateMaxNumberOfSubAccounts(invokedDriftProgramMeta, keys, maxNumberOfSubAccounts);
   }
 
-  public static Instruction updateStateMaxNumberOfSubAccounts(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction updateStateMaxNumberOfSubAccounts(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final int maxNumberOfSubAccounts) {
     final byte[] _data = new byte[10];
@@ -13205,8 +12868,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_STATE_MAX_INITIALIZE_USER_FEE_DISCRIMINATOR = toDiscriminator(237, 225, 25, 237, 193, 45, 77, 97);
 
-  public static List<AccountMeta> updateStateMaxInitializeUserFeeKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updateStateMaxInitializeUserFeeKeys(final PublicKey adminKey,
                                                                       final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -13219,14 +12881,13 @@ public final class DriftProgram {
                                                             final PublicKey stateKey,
                                                             final int maxInitializeUserFee) {
     final var keys = updateStateMaxInitializeUserFeeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateStateMaxInitializeUserFee(invokedDriftProgramMeta, keys, maxInitializeUserFee);
   }
 
-  public static Instruction updateStateMaxInitializeUserFee(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updateStateMaxInitializeUserFee(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int maxInitializeUserFee) {
     final byte[] _data = new byte[10];
@@ -13270,8 +12931,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_ORACLE_DISCRIMINATOR = toDiscriminator(182, 113, 111, 160, 67, 174, 89, 191);
 
-  public static List<AccountMeta> updatePerpMarketOracleKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketOracleKeys(final PublicKey adminKey,
                                                              final PublicKey stateKey,
                                                              final PublicKey perpMarketKey,
                                                              final PublicKey oracleKey,
@@ -13298,7 +12958,6 @@ public final class DriftProgram {
                                                    final OracleSource oracleSource,
                                                    final boolean skipInvariantCheck) {
     final var keys = updatePerpMarketOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey,
@@ -13315,7 +12974,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updatePerpMarketOracle(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction updatePerpMarketOracle(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final PublicKey oracle,
                                                    final OracleSource oracleSource,
@@ -13374,8 +13033,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_BASE_SPREAD_DISCRIMINATOR = toDiscriminator(71, 95, 84, 168, 9, 157, 198, 65);
 
-  public static List<AccountMeta> updatePerpMarketBaseSpreadKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketBaseSpreadKeys(final PublicKey adminKey,
                                                                  final PublicKey stateKey,
                                                                  final PublicKey perpMarketKey) {
     return List.of(
@@ -13391,7 +13049,6 @@ public final class DriftProgram {
                                                        final PublicKey perpMarketKey,
                                                        final int baseSpread) {
     final var keys = updatePerpMarketBaseSpreadKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13399,7 +13056,7 @@ public final class DriftProgram {
     return updatePerpMarketBaseSpread(invokedDriftProgramMeta, keys, baseSpread);
   }
 
-  public static Instruction updatePerpMarketBaseSpread(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction updatePerpMarketBaseSpread(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int baseSpread) {
     final byte[] _data = new byte[12];
@@ -13443,8 +13100,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_AMM_JIT_INTENSITY_DISCRIMINATOR = toDiscriminator(181, 191, 53, 109, 166, 249, 55, 142);
 
-  public static List<AccountMeta> updateAmmJitIntensityKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey adminKey,
+  public static List<AccountMeta> updateAmmJitIntensityKeys(final PublicKey adminKey,
                                                             final PublicKey stateKey,
                                                             final PublicKey perpMarketKey) {
     return List.of(
@@ -13460,7 +13116,6 @@ public final class DriftProgram {
                                                   final PublicKey perpMarketKey,
                                                   final int ammJitIntensity) {
     final var keys = updateAmmJitIntensityKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13468,7 +13123,7 @@ public final class DriftProgram {
     return updateAmmJitIntensity(invokedDriftProgramMeta, keys, ammJitIntensity);
   }
 
-  public static Instruction updateAmmJitIntensity(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction updateAmmJitIntensity(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int ammJitIntensity) {
     final byte[] _data = new byte[9];
@@ -13512,8 +13167,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MAX_SPREAD_DISCRIMINATOR = toDiscriminator(80, 252, 122, 62, 40, 218, 91, 100);
 
-  public static List<AccountMeta> updatePerpMarketMaxSpreadKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMaxSpreadKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey perpMarketKey) {
     return List.of(
@@ -13529,7 +13183,6 @@ public final class DriftProgram {
                                                       final PublicKey perpMarketKey,
                                                       final int maxSpread) {
     final var keys = updatePerpMarketMaxSpreadKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13537,7 +13190,7 @@ public final class DriftProgram {
     return updatePerpMarketMaxSpread(invokedDriftProgramMeta, keys, maxSpread);
   }
 
-  public static Instruction updatePerpMarketMaxSpread(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updatePerpMarketMaxSpread(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int maxSpread) {
     final byte[] _data = new byte[12];
@@ -13581,8 +13234,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_STEP_SIZE_AND_TICK_SIZE_DISCRIMINATOR = toDiscriminator(231, 255, 97, 25, 146, 139, 174, 4);
 
-  public static List<AccountMeta> updatePerpMarketStepSizeAndTickSizeKeys(final AccountMeta invokedDriftProgramMeta                                                                          ,
-                                                                          final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketStepSizeAndTickSizeKeys(final PublicKey adminKey,
                                                                           final PublicKey stateKey,
                                                                           final PublicKey perpMarketKey) {
     return List.of(
@@ -13599,7 +13251,6 @@ public final class DriftProgram {
                                                                 final long stepSize,
                                                                 final long tickSize) {
     final var keys = updatePerpMarketStepSizeAndTickSizeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13607,7 +13258,7 @@ public final class DriftProgram {
     return updatePerpMarketStepSizeAndTickSize(invokedDriftProgramMeta, keys, stepSize, tickSize);
   }
 
-  public static Instruction updatePerpMarketStepSizeAndTickSize(final AccountMeta invokedDriftProgramMeta                                                                ,
+  public static Instruction updatePerpMarketStepSizeAndTickSize(final AccountMeta invokedDriftProgramMeta,
                                                                 final List<AccountMeta> keys,
                                                                 final long stepSize,
                                                                 final long tickSize) {
@@ -13658,8 +13309,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_NAME_DISCRIMINATOR = toDiscriminator(211, 31, 21, 210, 64, 108, 66, 201);
 
-  public static List<AccountMeta> updatePerpMarketNameKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketNameKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey,
                                                            final PublicKey perpMarketKey) {
     return List.of(
@@ -13675,7 +13325,6 @@ public final class DriftProgram {
                                                  final PublicKey perpMarketKey,
                                                  final byte[] name) {
     final var keys = updatePerpMarketNameKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13683,7 +13332,7 @@ public final class DriftProgram {
     return updatePerpMarketName(invokedDriftProgramMeta, keys, name);
   }
 
-  public static Instruction updatePerpMarketName(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updatePerpMarketName(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final byte[] name) {
     final byte[] _data = new byte[8 + Borsh.lenArray(name)];
@@ -13728,8 +13377,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MIN_ORDER_SIZE_DISCRIMINATOR = toDiscriminator(226, 74, 5, 89, 108, 223, 46, 141);
 
-  public static List<AccountMeta> updatePerpMarketMinOrderSizeKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMinOrderSizeKeys(final PublicKey adminKey,
                                                                    final PublicKey stateKey,
                                                                    final PublicKey perpMarketKey) {
     return List.of(
@@ -13745,7 +13393,6 @@ public final class DriftProgram {
                                                          final PublicKey perpMarketKey,
                                                          final long orderSize) {
     final var keys = updatePerpMarketMinOrderSizeKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13753,7 +13400,7 @@ public final class DriftProgram {
     return updatePerpMarketMinOrderSize(invokedDriftProgramMeta, keys, orderSize);
   }
 
-  public static Instruction updatePerpMarketMinOrderSize(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updatePerpMarketMinOrderSize(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long orderSize) {
     final byte[] _data = new byte[16];
@@ -13797,8 +13444,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MAX_SLIPPAGE_RATIO_DISCRIMINATOR = toDiscriminator(235, 37, 40, 196, 70, 146, 54, 201);
 
-  public static List<AccountMeta> updatePerpMarketMaxSlippageRatioKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMaxSlippageRatioKeys(final PublicKey adminKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey perpMarketKey) {
     return List.of(
@@ -13814,7 +13460,6 @@ public final class DriftProgram {
                                                              final PublicKey perpMarketKey,
                                                              final int maxSlippageRatio) {
     final var keys = updatePerpMarketMaxSlippageRatioKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13822,7 +13467,7 @@ public final class DriftProgram {
     return updatePerpMarketMaxSlippageRatio(invokedDriftProgramMeta, keys, maxSlippageRatio);
   }
 
-  public static Instruction updatePerpMarketMaxSlippageRatio(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updatePerpMarketMaxSlippageRatio(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int maxSlippageRatio) {
     final byte[] _data = new byte[10];
@@ -13866,8 +13511,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MAX_FILL_RESERVE_FRACTION_DISCRIMINATOR = toDiscriminator(19, 172, 114, 154, 42, 135, 161, 133);
 
-  public static List<AccountMeta> updatePerpMarketMaxFillReserveFractionKeys(final AccountMeta invokedDriftProgramMeta                                                                             ,
-                                                                             final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMaxFillReserveFractionKeys(final PublicKey adminKey,
                                                                              final PublicKey stateKey,
                                                                              final PublicKey perpMarketKey) {
     return List.of(
@@ -13883,7 +13527,6 @@ public final class DriftProgram {
                                                                    final PublicKey perpMarketKey,
                                                                    final int maxFillReserveFraction) {
     final var keys = updatePerpMarketMaxFillReserveFractionKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13891,7 +13534,7 @@ public final class DriftProgram {
     return updatePerpMarketMaxFillReserveFraction(invokedDriftProgramMeta, keys, maxFillReserveFraction);
   }
 
-  public static Instruction updatePerpMarketMaxFillReserveFraction(final AccountMeta invokedDriftProgramMeta                                                                   ,
+  public static Instruction updatePerpMarketMaxFillReserveFraction(final AccountMeta invokedDriftProgramMeta,
                                                                    final List<AccountMeta> keys,
                                                                    final int maxFillReserveFraction) {
     final byte[] _data = new byte[10];
@@ -13935,8 +13578,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_MAX_OPEN_INTEREST_DISCRIMINATOR = toDiscriminator(194, 79, 149, 224, 246, 102, 186, 140);
 
-  public static List<AccountMeta> updatePerpMarketMaxOpenInterestKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketMaxOpenInterestKeys(final PublicKey adminKey,
                                                                       final PublicKey stateKey,
                                                                       final PublicKey perpMarketKey) {
     return List.of(
@@ -13952,7 +13594,6 @@ public final class DriftProgram {
                                                             final PublicKey perpMarketKey,
                                                             final BigInteger maxOpenInterest) {
     final var keys = updatePerpMarketMaxOpenInterestKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -13960,7 +13601,7 @@ public final class DriftProgram {
     return updatePerpMarketMaxOpenInterest(invokedDriftProgramMeta, keys, maxOpenInterest);
   }
 
-  public static Instruction updatePerpMarketMaxOpenInterest(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updatePerpMarketMaxOpenInterest(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final BigInteger maxOpenInterest) {
     final byte[] _data = new byte[24];
@@ -14004,8 +13645,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_NUMBER_OF_USERS_DISCRIMINATOR = toDiscriminator(35, 62, 144, 177, 180, 62, 215, 196);
 
-  public static List<AccountMeta> updatePerpMarketNumberOfUsersKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketNumberOfUsersKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey perpMarketKey) {
     return List.of(
@@ -14022,7 +13662,6 @@ public final class DriftProgram {
                                                           final OptionalInt numberOfUsers,
                                                           final OptionalInt numberOfUsersWithBase) {
     final var keys = updatePerpMarketNumberOfUsersKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14030,7 +13669,7 @@ public final class DriftProgram {
     return updatePerpMarketNumberOfUsers(invokedDriftProgramMeta, keys, numberOfUsers, numberOfUsersWithBase);
   }
 
-  public static Instruction updatePerpMarketNumberOfUsers(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updatePerpMarketNumberOfUsers(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final OptionalInt numberOfUsers,
                                                           final OptionalInt numberOfUsersWithBase) {
@@ -14093,8 +13732,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_FEE_ADJUSTMENT_DISCRIMINATOR = toDiscriminator(194, 174, 87, 102, 43, 148, 32, 112);
 
-  public static List<AccountMeta> updatePerpMarketFeeAdjustmentKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketFeeAdjustmentKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey perpMarketKey) {
     return List.of(
@@ -14110,7 +13748,6 @@ public final class DriftProgram {
                                                           final PublicKey perpMarketKey,
                                                           final int feeAdjustment) {
     final var keys = updatePerpMarketFeeAdjustmentKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14118,7 +13755,7 @@ public final class DriftProgram {
     return updatePerpMarketFeeAdjustment(invokedDriftProgramMeta, keys, feeAdjustment);
   }
 
-  public static Instruction updatePerpMarketFeeAdjustment(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updatePerpMarketFeeAdjustment(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int feeAdjustment) {
     final byte[] _data = new byte[10];
@@ -14162,8 +13799,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_FEE_ADJUSTMENT_DISCRIMINATOR = toDiscriminator(148, 182, 3, 126, 157, 114, 220, 99);
 
-  public static List<AccountMeta> updateSpotMarketFeeAdjustmentKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketFeeAdjustmentKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey,
                                                                     final PublicKey spotMarketKey) {
     return List.of(
@@ -14179,7 +13815,6 @@ public final class DriftProgram {
                                                           final PublicKey spotMarketKey,
                                                           final int feeAdjustment) {
     final var keys = updateSpotMarketFeeAdjustmentKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -14187,7 +13822,7 @@ public final class DriftProgram {
     return updateSpotMarketFeeAdjustment(invokedDriftProgramMeta, keys, feeAdjustment);
   }
 
-  public static Instruction updateSpotMarketFeeAdjustment(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateSpotMarketFeeAdjustment(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int feeAdjustment) {
     final byte[] _data = new byte[10];
@@ -14231,8 +13866,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_FUEL_DISCRIMINATOR = toDiscriminator(252, 141, 110, 101, 27, 99, 182, 21);
 
-  public static List<AccountMeta> updatePerpMarketFuelKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketFuelKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey,
                                                            final PublicKey perpMarketKey) {
     return List.of(
@@ -14250,7 +13884,6 @@ public final class DriftProgram {
                                                  final OptionalInt fuelBoostMaker,
                                                  final OptionalInt fuelBoostPosition) {
     final var keys = updatePerpMarketFuelKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14264,7 +13897,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updatePerpMarketFuel(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updatePerpMarketFuel(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final OptionalInt fuelBoostTaker,
                                                  final OptionalInt fuelBoostMaker,
@@ -14343,8 +13976,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_PROTECTED_MAKER_PARAMS_DISCRIMINATOR = toDiscriminator(249, 213, 115, 34, 253, 239, 75, 173);
 
-  public static List<AccountMeta> updatePerpMarketProtectedMakerParamsKeys(final AccountMeta invokedDriftProgramMeta                                                                           ,
-                                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketProtectedMakerParamsKeys(final PublicKey adminKey,
                                                                            final PublicKey stateKey,
                                                                            final PublicKey perpMarketKey) {
     return List.of(
@@ -14361,7 +13993,6 @@ public final class DriftProgram {
                                                                  final OptionalInt protectedMakerLimitPriceDivisor,
                                                                  final OptionalInt protectedMakerDynamicDivisor) {
     final var keys = updatePerpMarketProtectedMakerParamsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14369,7 +14000,7 @@ public final class DriftProgram {
     return updatePerpMarketProtectedMakerParams(invokedDriftProgramMeta, keys, protectedMakerLimitPriceDivisor, protectedMakerDynamicDivisor);
   }
 
-  public static Instruction updatePerpMarketProtectedMakerParams(final AccountMeta invokedDriftProgramMeta                                                                 ,
+  public static Instruction updatePerpMarketProtectedMakerParams(final AccountMeta invokedDriftProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final OptionalInt protectedMakerLimitPriceDivisor,
                                                                  final OptionalInt protectedMakerDynamicDivisor) {
@@ -14432,8 +14063,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_ORACLE_LOW_RISK_SLOT_DELAY_OVERRIDE_DISCRIMINATOR = toDiscriminator(124, 108, 147, 229, 109, 117, 123, 3);
 
-  public static List<AccountMeta> updatePerpMarketOracleLowRiskSlotDelayOverrideKeys(final AccountMeta invokedDriftProgramMeta                                                                                     ,
-                                                                                     final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketOracleLowRiskSlotDelayOverrideKeys(final PublicKey adminKey,
                                                                                      final PublicKey stateKey,
                                                                                      final PublicKey perpMarketKey) {
     return List.of(
@@ -14449,7 +14079,6 @@ public final class DriftProgram {
                                                                            final PublicKey perpMarketKey,
                                                                            final int oracleLowRiskSlotDelayOverride) {
     final var keys = updatePerpMarketOracleLowRiskSlotDelayOverrideKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14457,7 +14086,7 @@ public final class DriftProgram {
     return updatePerpMarketOracleLowRiskSlotDelayOverride(invokedDriftProgramMeta, keys, oracleLowRiskSlotDelayOverride);
   }
 
-  public static Instruction updatePerpMarketOracleLowRiskSlotDelayOverride(final AccountMeta invokedDriftProgramMeta                                                                           ,
+  public static Instruction updatePerpMarketOracleLowRiskSlotDelayOverride(final AccountMeta invokedDriftProgramMeta,
                                                                            final List<AccountMeta> keys,
                                                                            final int oracleLowRiskSlotDelayOverride) {
     final byte[] _data = new byte[9];
@@ -14501,8 +14130,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_AMM_SPREAD_ADJUSTMENT_DISCRIMINATOR = toDiscriminator(155, 195, 149, 43, 220, 82, 173, 205);
 
-  public static List<AccountMeta> updatePerpMarketAmmSpreadAdjustmentKeys(final AccountMeta invokedDriftProgramMeta                                                                          ,
-                                                                          final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketAmmSpreadAdjustmentKeys(final PublicKey adminKey,
                                                                           final PublicKey stateKey,
                                                                           final PublicKey perpMarketKey) {
     return List.of(
@@ -14520,7 +14148,6 @@ public final class DriftProgram {
                                                                 final int ammInventorySpreadAdjustment,
                                                                 final int referencePriceOffset) {
     final var keys = updatePerpMarketAmmSpreadAdjustmentKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14534,7 +14161,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updatePerpMarketAmmSpreadAdjustment(final AccountMeta invokedDriftProgramMeta                                                                ,
+  public static Instruction updatePerpMarketAmmSpreadAdjustment(final AccountMeta invokedDriftProgramMeta,
                                                                 final List<AccountMeta> keys,
                                                                 final int ammSpreadAdjustment,
                                                                 final int ammInventorySpreadAdjustment,
@@ -14595,8 +14222,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_MARKET_ORACLE_SLOT_DELAY_OVERRIDE_DISCRIMINATOR = toDiscriminator(165, 91, 239, 227, 63, 172, 227, 8);
 
-  public static List<AccountMeta> updatePerpMarketOracleSlotDelayOverrideKeys(final AccountMeta invokedDriftProgramMeta                                                                              ,
-                                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpMarketOracleSlotDelayOverrideKeys(final PublicKey adminKey,
                                                                               final PublicKey stateKey,
                                                                               final PublicKey perpMarketKey) {
     return List.of(
@@ -14612,7 +14238,6 @@ public final class DriftProgram {
                                                                     final PublicKey perpMarketKey,
                                                                     final int oracleSlotDelayOverride) {
     final var keys = updatePerpMarketOracleSlotDelayOverrideKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -14620,7 +14245,7 @@ public final class DriftProgram {
     return updatePerpMarketOracleSlotDelayOverride(invokedDriftProgramMeta, keys, oracleSlotDelayOverride);
   }
 
-  public static Instruction updatePerpMarketOracleSlotDelayOverride(final AccountMeta invokedDriftProgramMeta                                                                    ,
+  public static Instruction updatePerpMarketOracleSlotDelayOverride(final AccountMeta invokedDriftProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final int oracleSlotDelayOverride) {
     final byte[] _data = new byte[9];
@@ -14664,8 +14289,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_MARKET_FUEL_DISCRIMINATOR = toDiscriminator(226, 253, 76, 71, 17, 2, 171, 169);
 
-  public static List<AccountMeta> updateSpotMarketFuelKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotMarketFuelKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey,
                                                            final PublicKey spotMarketKey) {
     return List.of(
@@ -14685,7 +14309,6 @@ public final class DriftProgram {
                                                  final OptionalInt fuelBoostMaker,
                                                  final OptionalInt fuelBoostInsurance) {
     final var keys = updateSpotMarketFuelKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       spotMarketKey
@@ -14701,7 +14324,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateSpotMarketFuel(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updateSpotMarketFuel(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final OptionalInt fuelBoostDeposits,
                                                  final OptionalInt fuelBoostBorrows,
@@ -14817,8 +14440,7 @@ public final class DriftProgram {
 
   public static final Discriminator INIT_USER_FUEL_DISCRIMINATOR = toDiscriminator(132, 191, 228, 141, 201, 138, 60, 48);
 
-  public static List<AccountMeta> initUserFuelKeys(final AccountMeta invokedDriftProgramMeta                                                   ,
-                                                   final PublicKey adminKey,
+  public static List<AccountMeta> initUserFuelKeys(final PublicKey adminKey,
                                                    final PublicKey stateKey,
                                                    final PublicKey userKey,
                                                    final PublicKey userStatsKey) {
@@ -14841,7 +14463,6 @@ public final class DriftProgram {
                                          final OptionalInt fuelBoostMaker,
                                          final OptionalInt fuelBoostInsurance) {
     final var keys = initUserFuelKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       userKey,
@@ -14858,7 +14479,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction initUserFuel(final AccountMeta invokedDriftProgramMeta                                         ,
+  public static Instruction initUserFuel(final AccountMeta invokedDriftProgramMeta,
                                          final List<AccountMeta> keys,
                                          final OptionalInt fuelBoostDeposits,
                                          final OptionalInt fuelBoostBorrows,
@@ -14974,8 +14595,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_ADMIN_DISCRIMINATOR = toDiscriminator(161, 176, 40, 213, 60, 184, 179, 228);
 
-  public static List<AccountMeta> updateAdminKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey adminKey,
+  public static List<AccountMeta> updateAdminKeys(final PublicKey adminKey,
                                                   final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -14988,14 +14608,13 @@ public final class DriftProgram {
                                         final PublicKey stateKey,
                                         final PublicKey admin) {
     final var keys = updateAdminKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateAdmin(invokedDriftProgramMeta, keys, admin);
   }
 
-  public static Instruction updateAdmin(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction updateAdmin(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final PublicKey admin) {
     final byte[] _data = new byte[40];
@@ -15039,8 +14658,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_WHITELIST_MINT_DISCRIMINATOR = toDiscriminator(161, 15, 162, 19, 148, 120, 144, 151);
 
-  public static List<AccountMeta> updateWhitelistMintKeys(final AccountMeta invokedDriftProgramMeta                                                          ,
-                                                          final PublicKey adminKey,
+  public static List<AccountMeta> updateWhitelistMintKeys(final PublicKey adminKey,
                                                           final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -15053,14 +14671,13 @@ public final class DriftProgram {
                                                 final PublicKey stateKey,
                                                 final PublicKey whitelistMint) {
     final var keys = updateWhitelistMintKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateWhitelistMint(invokedDriftProgramMeta, keys, whitelistMint);
   }
 
-  public static Instruction updateWhitelistMint(final AccountMeta invokedDriftProgramMeta                                                ,
+  public static Instruction updateWhitelistMint(final AccountMeta invokedDriftProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final PublicKey whitelistMint) {
     final byte[] _data = new byte[40];
@@ -15104,8 +14721,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_DISCOUNT_MINT_DISCRIMINATOR = toDiscriminator(32, 252, 122, 211, 66, 31, 47, 241);
 
-  public static List<AccountMeta> updateDiscountMintKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey adminKey,
+  public static List<AccountMeta> updateDiscountMintKeys(final PublicKey adminKey,
                                                          final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -15118,14 +14734,13 @@ public final class DriftProgram {
                                                final PublicKey stateKey,
                                                final PublicKey discountMint) {
     final var keys = updateDiscountMintKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateDiscountMint(invokedDriftProgramMeta, keys, discountMint);
   }
 
-  public static Instruction updateDiscountMint(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction updateDiscountMint(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey discountMint) {
     final byte[] _data = new byte[40];
@@ -15169,8 +14784,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_EXCHANGE_STATUS_DISCRIMINATOR = toDiscriminator(83, 160, 252, 250, 129, 116, 49, 223);
 
-  public static List<AccountMeta> updateExchangeStatusKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey adminKey,
+  public static List<AccountMeta> updateExchangeStatusKeys(final PublicKey adminKey,
                                                            final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -15183,14 +14797,13 @@ public final class DriftProgram {
                                                  final PublicKey stateKey,
                                                  final int exchangeStatus) {
     final var keys = updateExchangeStatusKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateExchangeStatus(invokedDriftProgramMeta, keys, exchangeStatus);
   }
 
-  public static Instruction updateExchangeStatus(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction updateExchangeStatus(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int exchangeStatus) {
     final byte[] _data = new byte[9];
@@ -15234,8 +14847,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PERP_AUCTION_DURATION_DISCRIMINATOR = toDiscriminator(126, 110, 52, 174, 30, 206, 215, 90);
 
-  public static List<AccountMeta> updatePerpAuctionDurationKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updatePerpAuctionDurationKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -15248,14 +14860,13 @@ public final class DriftProgram {
                                                       final PublicKey stateKey,
                                                       final int minPerpAuctionDuration) {
     final var keys = updatePerpAuctionDurationKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updatePerpAuctionDuration(invokedDriftProgramMeta, keys, minPerpAuctionDuration);
   }
 
-  public static Instruction updatePerpAuctionDuration(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updatePerpAuctionDuration(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int minPerpAuctionDuration) {
     final byte[] _data = new byte[9];
@@ -15299,8 +14910,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_SPOT_AUCTION_DURATION_DISCRIMINATOR = toDiscriminator(182, 178, 203, 72, 187, 143, 157, 107);
 
-  public static List<AccountMeta> updateSpotAuctionDurationKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> updateSpotAuctionDurationKeys(final PublicKey adminKey,
                                                                 final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -15313,14 +14923,13 @@ public final class DriftProgram {
                                                       final PublicKey stateKey,
                                                       final int defaultSpotAuctionDuration) {
     final var keys = updateSpotAuctionDurationKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateSpotAuctionDuration(invokedDriftProgramMeta, keys, defaultSpotAuctionDuration);
   }
 
-  public static Instruction updateSpotAuctionDuration(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction updateSpotAuctionDuration(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int defaultSpotAuctionDuration) {
     final byte[] _data = new byte[9];
@@ -15364,8 +14973,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PRELAUNCH_ORACLE_DISCRIMINATOR = toDiscriminator(169, 178, 84, 25, 175, 62, 29, 247);
 
-  public static List<AccountMeta> initializePrelaunchOracleKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> initializePrelaunchOracleKeys(final PublicKey adminKey,
                                                                 final PublicKey prelaunchOracleKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey rentKey,
@@ -15387,7 +14995,6 @@ public final class DriftProgram {
                                                       final PublicKey systemProgramKey,
                                                       final PrelaunchOracleParams params) {
     final var keys = initializePrelaunchOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       prelaunchOracleKey,
       stateKey,
@@ -15397,7 +15004,7 @@ public final class DriftProgram {
     return initializePrelaunchOracle(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction initializePrelaunchOracle(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction initializePrelaunchOracle(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final PrelaunchOracleParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -15438,8 +15045,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PRELAUNCH_ORACLE_PARAMS_DISCRIMINATOR = toDiscriminator(98, 205, 147, 243, 18, 75, 83, 207);
 
-  public static List<AccountMeta> updatePrelaunchOracleParamsKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> updatePrelaunchOracleParamsKeys(final PublicKey adminKey,
                                                                   final PublicKey prelaunchOracleKey,
                                                                   final PublicKey perpMarketKey,
                                                                   final PublicKey stateKey) {
@@ -15458,7 +15064,6 @@ public final class DriftProgram {
                                                         final PublicKey stateKey,
                                                         final PrelaunchOracleParams params) {
     final var keys = updatePrelaunchOracleParamsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       prelaunchOracleKey,
       perpMarketKey,
@@ -15467,7 +15072,7 @@ public final class DriftProgram {
     return updatePrelaunchOracleParams(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction updatePrelaunchOracleParams(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction updatePrelaunchOracleParams(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final PrelaunchOracleParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -15508,8 +15113,7 @@ public final class DriftProgram {
 
   public static final Discriminator DELETE_PRELAUNCH_ORACLE_DISCRIMINATOR = toDiscriminator(59, 169, 100, 49, 69, 17, 173, 253);
 
-  public static List<AccountMeta> deletePrelaunchOracleKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey adminKey,
+  public static List<AccountMeta> deletePrelaunchOracleKeys(final PublicKey adminKey,
                                                             final PublicKey prelaunchOracleKey,
                                                             final PublicKey perpMarketKey,
                                                             final PublicKey stateKey) {
@@ -15528,7 +15132,6 @@ public final class DriftProgram {
                                                   final PublicKey stateKey,
                                                   final int perpMarketIndex) {
     final var keys = deletePrelaunchOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       prelaunchOracleKey,
       perpMarketKey,
@@ -15537,7 +15140,7 @@ public final class DriftProgram {
     return deletePrelaunchOracle(invokedDriftProgramMeta, keys, perpMarketIndex);
   }
 
-  public static Instruction deletePrelaunchOracle(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction deletePrelaunchOracle(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int perpMarketIndex) {
     final byte[] _data = new byte[10];
@@ -15581,8 +15184,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PYTH_PULL_ORACLE_DISCRIMINATOR = toDiscriminator(249, 140, 253, 243, 248, 74, 240, 238);
 
-  public static List<AccountMeta> initializePythPullOracleKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey adminKey,
+  public static List<AccountMeta> initializePythPullOracleKeys(final PublicKey adminKey,
                                                                final PublicKey pythSolanaReceiverKey,
                                                                final PublicKey priceFeedKey,
                                                                final PublicKey systemProgramKey,
@@ -15604,7 +15206,6 @@ public final class DriftProgram {
                                                      final PublicKey stateKey,
                                                      final byte[] feedId) {
     final var keys = initializePythPullOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       pythSolanaReceiverKey,
       priceFeedKey,
@@ -15614,7 +15215,7 @@ public final class DriftProgram {
     return initializePythPullOracle(invokedDriftProgramMeta, keys, feedId);
   }
 
-  public static Instruction initializePythPullOracle(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction initializePythPullOracle(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final byte[] feedId) {
     final byte[] _data = new byte[8 + Borsh.lenArray(feedId)];
@@ -15659,8 +15260,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PYTH_LAZER_ORACLE_DISCRIMINATOR = toDiscriminator(140, 107, 33, 214, 235, 219, 103, 20);
 
-  public static List<AccountMeta> initializePythLazerOracleKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey adminKey,
+  public static List<AccountMeta> initializePythLazerOracleKeys(final PublicKey adminKey,
                                                                 final PublicKey lazerOracleKey,
                                                                 final PublicKey stateKey,
                                                                 final PublicKey rentKey,
@@ -15682,7 +15282,6 @@ public final class DriftProgram {
                                                       final PublicKey systemProgramKey,
                                                       final int feedId) {
     final var keys = initializePythLazerOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lazerOracleKey,
       stateKey,
@@ -15692,7 +15291,7 @@ public final class DriftProgram {
     return initializePythLazerOracle(invokedDriftProgramMeta, keys, feedId);
   }
 
-  public static Instruction initializePythLazerOracle(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction initializePythLazerOracle(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int feedId) {
     final byte[] _data = new byte[12];
@@ -15736,8 +15335,7 @@ public final class DriftProgram {
 
   public static final Discriminator POST_PYTH_LAZER_ORACLE_UPDATE_DISCRIMINATOR = toDiscriminator(218, 237, 170, 245, 39, 143, 166, 33);
 
-  public static List<AccountMeta> postPythLazerOracleUpdateKeys(final AccountMeta invokedDriftProgramMeta                                                                ,
-                                                                final PublicKey keeperKey,
+  public static List<AccountMeta> postPythLazerOracleUpdateKeys(final PublicKey keeperKey,
                                                                 final PublicKey pythLazerStorageKey,
                                                                 final PublicKey ixSysvarKey) {
     return List.of(
@@ -15753,7 +15351,6 @@ public final class DriftProgram {
                                                       final PublicKey ixSysvarKey,
                                                       final byte[] pythMessage) {
     final var keys = postPythLazerOracleUpdateKeys(
-      invokedDriftProgramMeta,
       keeperKey,
       pythLazerStorageKey,
       ixSysvarKey
@@ -15761,7 +15358,7 @@ public final class DriftProgram {
     return postPythLazerOracleUpdate(invokedDriftProgramMeta, keys, pythMessage);
   }
 
-  public static Instruction postPythLazerOracleUpdate(final AccountMeta invokedDriftProgramMeta                                                      ,
+  public static Instruction postPythLazerOracleUpdate(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final byte[] pythMessage) {
     final byte[] _data = new byte[8 + Borsh.lenVector(pythMessage)];
@@ -15802,8 +15399,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_HIGH_LEVERAGE_MODE_CONFIG_DISCRIMINATOR = toDiscriminator(213, 167, 93, 246, 208, 130, 90, 248);
 
-  public static List<AccountMeta> initializeHighLeverageModeConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> initializeHighLeverageModeConfigKeys(final PublicKey adminKey,
                                                                        final PublicKey highLeverageModeConfigKey,
                                                                        final PublicKey stateKey,
                                                                        final PublicKey rentKey,
@@ -15825,7 +15421,6 @@ public final class DriftProgram {
                                                              final PublicKey systemProgramKey,
                                                              final int maxUsers) {
     final var keys = initializeHighLeverageModeConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       highLeverageModeConfigKey,
       stateKey,
@@ -15835,7 +15430,7 @@ public final class DriftProgram {
     return initializeHighLeverageModeConfig(invokedDriftProgramMeta, keys, maxUsers);
   }
 
-  public static Instruction initializeHighLeverageModeConfig(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction initializeHighLeverageModeConfig(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int maxUsers) {
     final byte[] _data = new byte[12];
@@ -15879,8 +15474,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_HIGH_LEVERAGE_MODE_CONFIG_DISCRIMINATOR = toDiscriminator(64, 122, 212, 93, 141, 217, 202, 55);
 
-  public static List<AccountMeta> updateHighLeverageModeConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> updateHighLeverageModeConfigKeys(final PublicKey adminKey,
                                                                    final PublicKey highLeverageModeConfigKey,
                                                                    final PublicKey stateKey) {
     return List.of(
@@ -15898,7 +15492,6 @@ public final class DriftProgram {
                                                          final boolean reduceOnly,
                                                          final OptionalInt currentUsers) {
     final var keys = updateHighLeverageModeConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       highLeverageModeConfigKey,
       stateKey
@@ -15912,7 +15505,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateHighLeverageModeConfig(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction updateHighLeverageModeConfig(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int maxUsers,
                                                          final boolean reduceOnly,
@@ -15979,8 +15572,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_PROTECTED_MAKER_MODE_CONFIG_DISCRIMINATOR = toDiscriminator(67, 103, 220, 67, 88, 32, 252, 8);
 
-  public static List<AccountMeta> initializeProtectedMakerModeConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                         ,
-                                                                         final PublicKey adminKey,
+  public static List<AccountMeta> initializeProtectedMakerModeConfigKeys(final PublicKey adminKey,
                                                                          final PublicKey protectedMakerModeConfigKey,
                                                                          final PublicKey stateKey,
                                                                          final PublicKey rentKey,
@@ -16002,7 +15594,6 @@ public final class DriftProgram {
                                                                final PublicKey systemProgramKey,
                                                                final int maxUsers) {
     final var keys = initializeProtectedMakerModeConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       protectedMakerModeConfigKey,
       stateKey,
@@ -16012,7 +15603,7 @@ public final class DriftProgram {
     return initializeProtectedMakerModeConfig(invokedDriftProgramMeta, keys, maxUsers);
   }
 
-  public static Instruction initializeProtectedMakerModeConfig(final AccountMeta invokedDriftProgramMeta                                                               ,
+  public static Instruction initializeProtectedMakerModeConfig(final AccountMeta invokedDriftProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int maxUsers) {
     final byte[] _data = new byte[12];
@@ -16056,8 +15647,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_PROTECTED_MAKER_MODE_CONFIG_DISCRIMINATOR = toDiscriminator(86, 166, 235, 253, 67, 202, 223, 17);
 
-  public static List<AccountMeta> updateProtectedMakerModeConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey adminKey,
+  public static List<AccountMeta> updateProtectedMakerModeConfigKeys(final PublicKey adminKey,
                                                                      final PublicKey protectedMakerModeConfigKey,
                                                                      final PublicKey stateKey) {
     return List.of(
@@ -16075,7 +15665,6 @@ public final class DriftProgram {
                                                            final boolean reduceOnly,
                                                            final OptionalInt currentUsers) {
     final var keys = updateProtectedMakerModeConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       protectedMakerModeConfigKey,
       stateKey
@@ -16089,7 +15678,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateProtectedMakerModeConfig(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction updateProtectedMakerModeConfig(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int maxUsers,
                                                            final boolean reduceOnly,
@@ -16156,8 +15745,7 @@ public final class DriftProgram {
 
   public static final Discriminator ADMIN_DEPOSIT_DISCRIMINATOR = toDiscriminator(210, 66, 65, 182, 102, 214, 176, 30);
 
-  public static List<AccountMeta> adminDepositKeys(final AccountMeta invokedDriftProgramMeta                                                   ,
-                                                   final PublicKey stateKey,
+  public static List<AccountMeta> adminDepositKeys(final PublicKey stateKey,
                                                    final PublicKey userKey,
                                                    final PublicKey adminKey,
                                                    final PublicKey spotMarketVaultKey,
@@ -16183,7 +15771,6 @@ public final class DriftProgram {
                                          final int marketIndex,
                                          final long amount) {
     final var keys = adminDepositKeys(
-      invokedDriftProgramMeta,
       stateKey,
       userKey,
       adminKey,
@@ -16194,7 +15781,7 @@ public final class DriftProgram {
     return adminDeposit(invokedDriftProgramMeta, keys, marketIndex, amount);
   }
 
-  public static Instruction adminDeposit(final AccountMeta invokedDriftProgramMeta                                         ,
+  public static Instruction adminDeposit(final AccountMeta invokedDriftProgramMeta,
                                          final List<AccountMeta> keys,
                                          final int marketIndex,
                                          final long amount) {
@@ -16245,8 +15832,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_IF_REBALANCE_CONFIG_DISCRIMINATOR = toDiscriminator(8, 85, 184, 167, 176, 61, 173, 226);
 
-  public static List<AccountMeta> initializeIfRebalanceConfigKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey adminKey,
+  public static List<AccountMeta> initializeIfRebalanceConfigKeys(final PublicKey adminKey,
                                                                   final PublicKey ifRebalanceConfigKey,
                                                                   final PublicKey stateKey,
                                                                   final PublicKey rentKey,
@@ -16268,7 +15854,6 @@ public final class DriftProgram {
                                                         final PublicKey systemProgramKey,
                                                         final IfRebalanceConfigParams params) {
     final var keys = initializeIfRebalanceConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       ifRebalanceConfigKey,
       stateKey,
@@ -16278,7 +15863,7 @@ public final class DriftProgram {
     return initializeIfRebalanceConfig(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction initializeIfRebalanceConfig(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction initializeIfRebalanceConfig(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final IfRebalanceConfigParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -16321,8 +15906,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_IF_REBALANCE_CONFIG_DISCRIMINATOR = toDiscriminator(142, 245, 249, 66, 249, 181, 22, 83);
 
-  public static List<AccountMeta> updateIfRebalanceConfigKeys(final AccountMeta invokedDriftProgramMeta                                                              ,
-                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updateIfRebalanceConfigKeys(final PublicKey adminKey,
                                                               final PublicKey ifRebalanceConfigKey,
                                                               final PublicKey stateKey) {
     return List.of(
@@ -16338,7 +15922,6 @@ public final class DriftProgram {
                                                     final PublicKey stateKey,
                                                     final IfRebalanceConfigParams params) {
     final var keys = updateIfRebalanceConfigKeys(
-      invokedDriftProgramMeta,
       adminKey,
       ifRebalanceConfigKey,
       stateKey
@@ -16346,7 +15929,7 @@ public final class DriftProgram {
     return updateIfRebalanceConfig(invokedDriftProgramMeta, keys, params);
   }
 
-  public static Instruction updateIfRebalanceConfig(final AccountMeta invokedDriftProgramMeta                                                    ,
+  public static Instruction updateIfRebalanceConfig(final AccountMeta invokedDriftProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final IfRebalanceConfigParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -16389,8 +15972,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_MM_ORACLE_DISCRIMINATOR = toDiscriminator(218, 134, 33, 186, 231, 59, 130, 149);
 
-  public static List<AccountMeta> updateFeatureBitFlagsMmOracleKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsMmOracleKeys(final PublicKey adminKey,
                                                                     final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -16403,14 +15985,13 @@ public final class DriftProgram {
                                                           final PublicKey stateKey,
                                                           final boolean enable) {
     final var keys = updateFeatureBitFlagsMmOracleKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsMmOracle(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsMmOracle(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateFeatureBitFlagsMmOracle(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final boolean enable) {
     final byte[] _data = new byte[9];
@@ -16454,8 +16035,7 @@ public final class DriftProgram {
 
   public static final Discriminator ZERO_MM_ORACLE_FIELDS_DISCRIMINATOR = toDiscriminator(192, 226, 39, 204, 207, 120, 148, 250);
 
-  public static List<AccountMeta> zeroMmOracleFieldsKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey adminKey,
+  public static List<AccountMeta> zeroMmOracleFieldsKeys(final PublicKey adminKey,
                                                          final PublicKey stateKey,
                                                          final PublicKey perpMarketKey) {
     return List.of(
@@ -16470,7 +16050,6 @@ public final class DriftProgram {
                                                final PublicKey stateKey,
                                                final PublicKey perpMarketKey) {
     final var keys = zeroMmOracleFieldsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       perpMarketKey
@@ -16478,15 +16057,14 @@ public final class DriftProgram {
     return zeroMmOracleFields(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction zeroMmOracleFields(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction zeroMmOracleFields(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, ZERO_MM_ORACLE_FIELDS_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_MEDIAN_TRIGGER_PRICE_DISCRIMINATOR = toDiscriminator(64, 185, 221, 45, 87, 147, 12, 19);
 
-  public static List<AccountMeta> updateFeatureBitFlagsMedianTriggerPriceKeys(final AccountMeta invokedDriftProgramMeta                                                                              ,
-                                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsMedianTriggerPriceKeys(final PublicKey adminKey,
                                                                               final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -16499,14 +16077,13 @@ public final class DriftProgram {
                                                                     final PublicKey stateKey,
                                                                     final boolean enable) {
     final var keys = updateFeatureBitFlagsMedianTriggerPriceKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsMedianTriggerPrice(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsMedianTriggerPrice(final AccountMeta invokedDriftProgramMeta                                                                    ,
+  public static Instruction updateFeatureBitFlagsMedianTriggerPrice(final AccountMeta invokedDriftProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final boolean enable) {
     final byte[] _data = new byte[9];
@@ -16550,8 +16127,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_BUILDER_CODES_DISCRIMINATOR = toDiscriminator(1, 128, 177, 51, 173, 45, 11, 102);
 
-  public static List<AccountMeta> updateFeatureBitFlagsBuilderCodesKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsBuilderCodesKeys(final PublicKey adminKey,
                                                                         final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -16564,14 +16140,13 @@ public final class DriftProgram {
                                                               final PublicKey stateKey,
                                                               final boolean enable) {
     final var keys = updateFeatureBitFlagsBuilderCodesKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsBuilderCodes(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsBuilderCodes(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction updateFeatureBitFlagsBuilderCodes(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final boolean enable) {
     final byte[] _data = new byte[9];
@@ -16615,8 +16190,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_REVENUE_SHARE_DISCRIMINATOR = toDiscriminator(57, 9, 123, 131, 82, 52, 50, 13);
 
-  public static List<AccountMeta> initializeRevenueShareKeys(final AccountMeta invokedDriftProgramMeta                                                             ,
-                                                             final PublicKey revenueShareKey,
+  public static List<AccountMeta> initializeRevenueShareKeys(final PublicKey revenueShareKey,
                                                              final PublicKey authorityKey,
                                                              final PublicKey payerKey,
                                                              final PublicKey rentKey,
@@ -16637,7 +16211,6 @@ public final class DriftProgram {
                                                    final PublicKey rentKey,
                                                    final PublicKey systemProgramKey) {
     final var keys = initializeRevenueShareKeys(
-      invokedDriftProgramMeta,
       revenueShareKey,
       authorityKey,
       payerKey,
@@ -16647,15 +16220,14 @@ public final class DriftProgram {
     return initializeRevenueShare(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction initializeRevenueShare(final AccountMeta invokedDriftProgramMeta                                                   ,
+  public static Instruction initializeRevenueShare(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, INITIALIZE_REVENUE_SHARE_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_REVENUE_SHARE_ESCROW_DISCRIMINATOR = toDiscriminator(187, 18, 123, 88, 238, 104, 84, 154);
 
-  public static List<AccountMeta> initializeRevenueShareEscrowKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey escrowKey,
+  public static List<AccountMeta> initializeRevenueShareEscrowKeys(final PublicKey escrowKey,
                                                                    final PublicKey authorityKey,
                                                                    final PublicKey userStatsKey,
                                                                    final PublicKey stateKey,
@@ -16683,7 +16255,6 @@ public final class DriftProgram {
                                                          final PublicKey systemProgramKey,
                                                          final int numOrders) {
     final var keys = initializeRevenueShareEscrowKeys(
-      invokedDriftProgramMeta,
       escrowKey,
       authorityKey,
       userStatsKey,
@@ -16695,7 +16266,7 @@ public final class DriftProgram {
     return initializeRevenueShareEscrow(invokedDriftProgramMeta, keys, numOrders);
   }
 
-  public static Instruction initializeRevenueShareEscrow(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction initializeRevenueShareEscrow(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int numOrders) {
     final byte[] _data = new byte[10];
@@ -16739,8 +16310,7 @@ public final class DriftProgram {
 
   public static final Discriminator RESIZE_REVENUE_SHARE_ESCROW_ORDERS_DISCRIMINATOR = toDiscriminator(32, 124, 247, 225, 151, 213, 225, 38);
 
-  public static List<AccountMeta> resizeRevenueShareEscrowOrdersKeys(final AccountMeta invokedDriftProgramMeta                                                                     ,
-                                                                     final PublicKey escrowKey,
+  public static List<AccountMeta> resizeRevenueShareEscrowOrdersKeys(final PublicKey escrowKey,
                                                                      final PublicKey authorityKey,
                                                                      final PublicKey payerKey,
                                                                      final PublicKey systemProgramKey) {
@@ -16759,7 +16329,6 @@ public final class DriftProgram {
                                                            final PublicKey systemProgramKey,
                                                            final int numOrders) {
     final var keys = resizeRevenueShareEscrowOrdersKeys(
-      invokedDriftProgramMeta,
       escrowKey,
       authorityKey,
       payerKey,
@@ -16768,7 +16337,7 @@ public final class DriftProgram {
     return resizeRevenueShareEscrowOrders(invokedDriftProgramMeta, keys, numOrders);
   }
 
-  public static Instruction resizeRevenueShareEscrowOrders(final AccountMeta invokedDriftProgramMeta                                                           ,
+  public static Instruction resizeRevenueShareEscrowOrders(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int numOrders) {
     final byte[] _data = new byte[10];
@@ -16812,8 +16381,7 @@ public final class DriftProgram {
 
   public static final Discriminator CHANGE_APPROVED_BUILDER_DISCRIMINATOR = toDiscriminator(179, 134, 211, 45, 195, 5, 189, 173);
 
-  public static List<AccountMeta> changeApprovedBuilderKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey escrowKey,
+  public static List<AccountMeta> changeApprovedBuilderKeys(final PublicKey escrowKey,
                                                             final PublicKey authorityKey,
                                                             final PublicKey payerKey,
                                                             final PublicKey systemProgramKey) {
@@ -16834,7 +16402,6 @@ public final class DriftProgram {
                                                   final int maxFeeBps,
                                                   final boolean add) {
     final var keys = changeApprovedBuilderKeys(
-      invokedDriftProgramMeta,
       escrowKey,
       authorityKey,
       payerKey,
@@ -16849,7 +16416,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction changeApprovedBuilder(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction changeApprovedBuilder(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final PublicKey builder,
                                                   final int maxFeeBps,
@@ -16910,8 +16477,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_LP_POOL_DISCRIMINATOR = toDiscriminator(242, 64, 1, 222, 142, 46, 204, 227);
 
-  public static List<AccountMeta> initializeLpPoolKeys(final AccountMeta invokedDriftProgramMeta                                                       ,
-                                                       final PublicKey adminKey,
+  public static List<AccountMeta> initializeLpPoolKeys(final PublicKey adminKey,
                                                        final PublicKey lpPoolKey,
                                                        final PublicKey mintKey,
                                                        final PublicKey lpPoolTokenVaultKey,
@@ -16955,7 +16521,6 @@ public final class DriftProgram {
                                              final long maxSettleQuoteAmountPerMarket,
                                              final PublicKey whitelistMint) {
     final var keys = initializeLpPoolKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lpPoolKey,
       mintKey,
@@ -16979,7 +16544,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction initializeLpPool(final AccountMeta invokedDriftProgramMeta                                             ,
+  public static Instruction initializeLpPool(final AccountMeta invokedDriftProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int lpPoolId,
                                              final long minMintFee,
@@ -17061,8 +16626,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_SETTLE_LP_POOL_DISCRIMINATOR = toDiscriminator(186, 28, 78, 230, 155, 83, 242, 26);
 
-  public static List<AccountMeta> updateFeatureBitFlagsSettleLpPoolKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsSettleLpPoolKeys(final PublicKey adminKey,
                                                                         final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -17075,14 +16639,13 @@ public final class DriftProgram {
                                                               final PublicKey stateKey,
                                                               final boolean enable) {
     final var keys = updateFeatureBitFlagsSettleLpPoolKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsSettleLpPool(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsSettleLpPool(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction updateFeatureBitFlagsSettleLpPool(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final boolean enable) {
     final byte[] _data = new byte[9];
@@ -17126,8 +16689,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_SWAP_LP_POOL_DISCRIMINATOR = toDiscriminator(83, 16, 150, 12, 102, 3, 22, 58);
 
-  public static List<AccountMeta> updateFeatureBitFlagsSwapLpPoolKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsSwapLpPoolKeys(final PublicKey adminKey,
                                                                       final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -17140,14 +16702,13 @@ public final class DriftProgram {
                                                             final PublicKey stateKey,
                                                             final boolean enable) {
     final var keys = updateFeatureBitFlagsSwapLpPoolKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsSwapLpPool(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsSwapLpPool(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updateFeatureBitFlagsSwapLpPool(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final boolean enable) {
     final byte[] _data = new byte[9];
@@ -17191,8 +16752,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_FEATURE_BIT_FLAGS_MINT_REDEEM_LP_POOL_DISCRIMINATOR = toDiscriminator(26, 11, 142, 122, 206, 159, 9, 45);
 
-  public static List<AccountMeta> updateFeatureBitFlagsMintRedeemLpPoolKeys(final AccountMeta invokedDriftProgramMeta                                                                            ,
-                                                                            final PublicKey adminKey,
+  public static List<AccountMeta> updateFeatureBitFlagsMintRedeemLpPoolKeys(final PublicKey adminKey,
                                                                             final PublicKey stateKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -17205,14 +16765,13 @@ public final class DriftProgram {
                                                                   final PublicKey stateKey,
                                                                   final boolean enable) {
     final var keys = updateFeatureBitFlagsMintRedeemLpPoolKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey
     );
     return updateFeatureBitFlagsMintRedeemLpPool(invokedDriftProgramMeta, keys, enable);
   }
 
-  public static Instruction updateFeatureBitFlagsMintRedeemLpPool(final AccountMeta invokedDriftProgramMeta                                                                  ,
+  public static Instruction updateFeatureBitFlagsMintRedeemLpPool(final AccountMeta invokedDriftProgramMeta,
                                                                   final List<AccountMeta> keys,
                                                                   final boolean enable) {
     final byte[] _data = new byte[9];
@@ -17256,8 +16815,7 @@ public final class DriftProgram {
 
   public static final Discriminator INITIALIZE_CONSTITUENT_DISCRIMINATOR = toDiscriminator(12, 196, 45, 218, 93, 89, 0, 33);
 
-  public static List<AccountMeta> initializeConstituentKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> initializeConstituentKeys(final PublicKey stateKey,
                                                             final PublicKey adminKey,
                                                             final PublicKey lpPoolKey,
                                                             final PublicKey constituentTargetBaseKey,
@@ -17315,7 +16873,6 @@ public final class DriftProgram {
                                                   final int xi,
                                                   final long[] newConstituentCorrelations) {
     final var keys = initializeConstituentKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       lpPoolKey,
@@ -17351,7 +16908,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction initializeConstituent(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction initializeConstituent(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int spotMarketIndex,
                                                   final int decimals,
@@ -17552,8 +17109,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_CONSTITUENT_STATUS_DISCRIMINATOR = toDiscriminator(76, 159, 211, 239, 182, 214, 6, 15);
 
-  public static List<AccountMeta> updateConstituentStatusKeys(final AccountMeta invokedDriftProgramMeta                                                              ,
-                                                              final PublicKey adminKey,
+  public static List<AccountMeta> updateConstituentStatusKeys(final PublicKey adminKey,
                                                               final PublicKey stateKey,
                                                               final PublicKey constituentKey) {
     return List.of(
@@ -17569,7 +17125,6 @@ public final class DriftProgram {
                                                     final PublicKey constituentKey,
                                                     final int newStatus) {
     final var keys = updateConstituentStatusKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       constituentKey
@@ -17577,7 +17132,7 @@ public final class DriftProgram {
     return updateConstituentStatus(invokedDriftProgramMeta, keys, newStatus);
   }
 
-  public static Instruction updateConstituentStatus(final AccountMeta invokedDriftProgramMeta                                                    ,
+  public static Instruction updateConstituentStatus(final AccountMeta invokedDriftProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final int newStatus) {
     final byte[] _data = new byte[9];
@@ -17621,8 +17176,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_CONSTITUENT_PAUSED_OPERATIONS_DISCRIMINATOR = toDiscriminator(185, 122, 153, 191, 131, 177, 132, 208);
 
-  public static List<AccountMeta> updateConstituentPausedOperationsKeys(final AccountMeta invokedDriftProgramMeta                                                                        ,
-                                                                        final PublicKey adminKey,
+  public static List<AccountMeta> updateConstituentPausedOperationsKeys(final PublicKey adminKey,
                                                                         final PublicKey stateKey,
                                                                         final PublicKey constituentKey) {
     return List.of(
@@ -17638,7 +17192,6 @@ public final class DriftProgram {
                                                               final PublicKey constituentKey,
                                                               final int pausedOperations) {
     final var keys = updateConstituentPausedOperationsKeys(
-      invokedDriftProgramMeta,
       adminKey,
       stateKey,
       constituentKey
@@ -17646,7 +17199,7 @@ public final class DriftProgram {
     return updateConstituentPausedOperations(invokedDriftProgramMeta, keys, pausedOperations);
   }
 
-  public static Instruction updateConstituentPausedOperations(final AccountMeta invokedDriftProgramMeta                                                              ,
+  public static Instruction updateConstituentPausedOperations(final AccountMeta invokedDriftProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final int pausedOperations) {
     final byte[] _data = new byte[9];
@@ -17690,8 +17243,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_CONSTITUENT_PARAMS_DISCRIMINATOR = toDiscriminator(238, 130, 122, 31, 12, 104, 192, 122);
 
-  public static List<AccountMeta> updateConstituentParamsKeys(final AccountMeta invokedDriftProgramMeta                                                              ,
-                                                              final PublicKey lpPoolKey,
+  public static List<AccountMeta> updateConstituentParamsKeys(final PublicKey lpPoolKey,
                                                               final PublicKey constituentTargetBaseKey,
                                                               final PublicKey adminKey,
                                                               final PublicKey stateKey,
@@ -17713,7 +17265,6 @@ public final class DriftProgram {
                                                     final PublicKey constituentKey,
                                                     final ConstituentParams constituentParams) {
     final var keys = updateConstituentParamsKeys(
-      invokedDriftProgramMeta,
       lpPoolKey,
       constituentTargetBaseKey,
       adminKey,
@@ -17723,7 +17274,7 @@ public final class DriftProgram {
     return updateConstituentParams(invokedDriftProgramMeta, keys, constituentParams);
   }
 
-  public static Instruction updateConstituentParams(final AccountMeta invokedDriftProgramMeta                                                    ,
+  public static Instruction updateConstituentParams(final AccountMeta invokedDriftProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final ConstituentParams constituentParams) {
     final byte[] _data = new byte[8 + Borsh.len(constituentParams)];
@@ -17764,8 +17315,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_LP_POOL_PARAMS_DISCRIMINATOR = toDiscriminator(217, 92, 2, 255, 27, 167, 178, 81);
 
-  public static List<AccountMeta> updateLpPoolParamsKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey lpPoolKey,
+  public static List<AccountMeta> updateLpPoolParamsKeys(final PublicKey lpPoolKey,
                                                          final PublicKey adminKey,
                                                          final PublicKey stateKey) {
     return List.of(
@@ -17781,7 +17331,6 @@ public final class DriftProgram {
                                                final PublicKey stateKey,
                                                final LpPoolParams lpPoolParams) {
     final var keys = updateLpPoolParamsKeys(
-      invokedDriftProgramMeta,
       lpPoolKey,
       adminKey,
       stateKey
@@ -17789,7 +17338,7 @@ public final class DriftProgram {
     return updateLpPoolParams(invokedDriftProgramMeta, keys, lpPoolParams);
   }
 
-  public static Instruction updateLpPoolParams(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction updateLpPoolParams(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final LpPoolParams lpPoolParams) {
     final byte[] _data = new byte[8 + Borsh.len(lpPoolParams)];
@@ -17830,8 +17379,7 @@ public final class DriftProgram {
 
   public static final Discriminator ADD_AMM_CONSTITUENT_MAPPING_DATA_DISCRIMINATOR = toDiscriminator(164, 236, 130, 40, 118, 179, 46, 235);
 
-  public static List<AccountMeta> addAmmConstituentMappingDataKeys(final AccountMeta invokedDriftProgramMeta                                                                   ,
-                                                                   final PublicKey adminKey,
+  public static List<AccountMeta> addAmmConstituentMappingDataKeys(final PublicKey adminKey,
                                                                    final PublicKey lpPoolKey,
                                                                    final PublicKey ammConstituentMappingKey,
                                                                    final PublicKey constituentTargetBaseKey,
@@ -17856,7 +17404,6 @@ public final class DriftProgram {
                                                          final PublicKey systemProgramKey,
                                                          final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
     final var keys = addAmmConstituentMappingDataKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lpPoolKey,
       ammConstituentMappingKey,
@@ -17867,7 +17414,7 @@ public final class DriftProgram {
     return addAmmConstituentMappingData(invokedDriftProgramMeta, keys, ammConstituentMappingData);
   }
 
-  public static Instruction addAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta                                                         ,
+  public static Instruction addAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
     final byte[] _data = new byte[8 + Borsh.lenVector(ammConstituentMappingData)];
@@ -17908,8 +17455,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_AMM_CONSTITUENT_MAPPING_DATA_DISCRIMINATOR = toDiscriminator(84, 70, 33, 167, 133, 107, 59, 24);
 
-  public static List<AccountMeta> updateAmmConstituentMappingDataKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> updateAmmConstituentMappingDataKeys(final PublicKey adminKey,
                                                                       final PublicKey lpPoolKey,
                                                                       final PublicKey ammConstituentMappingKey,
                                                                       final PublicKey systemProgramKey,
@@ -17931,7 +17477,6 @@ public final class DriftProgram {
                                                             final PublicKey stateKey,
                                                             final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
     final var keys = updateAmmConstituentMappingDataKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lpPoolKey,
       ammConstituentMappingKey,
@@ -17941,7 +17486,7 @@ public final class DriftProgram {
     return updateAmmConstituentMappingData(invokedDriftProgramMeta, keys, ammConstituentMappingData);
   }
 
-  public static Instruction updateAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction updateAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
     final byte[] _data = new byte[8 + Borsh.lenVector(ammConstituentMappingData)];
@@ -17982,8 +17527,7 @@ public final class DriftProgram {
 
   public static final Discriminator REMOVE_AMM_CONSTITUENT_MAPPING_DATA_DISCRIMINATOR = toDiscriminator(20, 183, 211, 162, 16, 52, 229, 115);
 
-  public static List<AccountMeta> removeAmmConstituentMappingDataKeys(final AccountMeta invokedDriftProgramMeta                                                                      ,
-                                                                      final PublicKey adminKey,
+  public static List<AccountMeta> removeAmmConstituentMappingDataKeys(final PublicKey adminKey,
                                                                       final PublicKey lpPoolKey,
                                                                       final PublicKey ammConstituentMappingKey,
                                                                       final PublicKey systemProgramKey,
@@ -18006,7 +17550,6 @@ public final class DriftProgram {
                                                             final int perpMarketIndex,
                                                             final int constituentIndex) {
     final var keys = removeAmmConstituentMappingDataKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lpPoolKey,
       ammConstituentMappingKey,
@@ -18016,7 +17559,7 @@ public final class DriftProgram {
     return removeAmmConstituentMappingData(invokedDriftProgramMeta, keys, perpMarketIndex, constituentIndex);
   }
 
-  public static Instruction removeAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta                                                            ,
+  public static Instruction removeAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final int perpMarketIndex,
                                                             final int constituentIndex) {
@@ -18067,8 +17610,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_CONSTITUENT_CORRELATION_DATA_DISCRIMINATOR = toDiscriminator(79, 14, 19, 73, 221, 106, 62, 109);
 
-  public static List<AccountMeta> updateConstituentCorrelationDataKeys(final AccountMeta invokedDriftProgramMeta                                                                       ,
-                                                                       final PublicKey adminKey,
+  public static List<AccountMeta> updateConstituentCorrelationDataKeys(final PublicKey adminKey,
                                                                        final PublicKey lpPoolKey,
                                                                        final PublicKey constituentCorrelationsKey,
                                                                        final PublicKey stateKey) {
@@ -18089,7 +17631,6 @@ public final class DriftProgram {
                                                              final int index2,
                                                              final long correlation) {
     final var keys = updateConstituentCorrelationDataKeys(
-      invokedDriftProgramMeta,
       adminKey,
       lpPoolKey,
       constituentCorrelationsKey,
@@ -18104,7 +17645,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction updateConstituentCorrelationData(final AccountMeta invokedDriftProgramMeta                                                             ,
+  public static Instruction updateConstituentCorrelationData(final AccountMeta invokedDriftProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int index1,
                                                              final int index2,
@@ -18165,8 +17706,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_LP_CONSTITUENT_TARGET_BASE_DISCRIMINATOR = toDiscriminator(157, 65, 50, 207, 59, 236, 161, 110);
 
-  public static List<AccountMeta> updateLpConstituentTargetBaseKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey stateKey,
+  public static List<AccountMeta> updateLpConstituentTargetBaseKeys(final PublicKey stateKey,
                                                                     final PublicKey keeperKey,
                                                                     final PublicKey ammConstituentMappingKey,
                                                                     final PublicKey constituentTargetBaseKey,
@@ -18190,7 +17730,6 @@ public final class DriftProgram {
                                                           final PublicKey ammCacheKey,
                                                           final PublicKey lpPoolKey) {
     final var keys = updateLpConstituentTargetBaseKeys(
-      invokedDriftProgramMeta,
       stateKey,
       keeperKey,
       ammConstituentMappingKey,
@@ -18201,15 +17740,14 @@ public final class DriftProgram {
     return updateLpConstituentTargetBase(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateLpConstituentTargetBase(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction updateLpConstituentTargetBase(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_LP_CONSTITUENT_TARGET_BASE_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_LP_POOL_AUM_DISCRIMINATOR = toDiscriminator(88, 113, 137, 206, 246, 247, 171, 142);
 
-  public static List<AccountMeta> updateLpPoolAumKeys(final AccountMeta invokedDriftProgramMeta                                                      ,
-                                                      final PublicKey stateKey,
+  public static List<AccountMeta> updateLpPoolAumKeys(final PublicKey stateKey,
                                                       final PublicKey keeperKey,
                                                       final PublicKey lpPoolKey,
                                                       final PublicKey constituentTargetBaseKey,
@@ -18230,7 +17768,6 @@ public final class DriftProgram {
                                             final PublicKey constituentTargetBaseKey,
                                             final PublicKey ammCacheKey) {
     final var keys = updateLpPoolAumKeys(
-      invokedDriftProgramMeta,
       stateKey,
       keeperKey,
       lpPoolKey,
@@ -18240,15 +17777,14 @@ public final class DriftProgram {
     return updateLpPoolAum(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateLpPoolAum(final AccountMeta invokedDriftProgramMeta                                            ,
+  public static Instruction updateLpPoolAum(final AccountMeta invokedDriftProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_LP_POOL_AUM_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_AMM_CACHE_DISCRIMINATOR = toDiscriminator(88, 4, 63, 94, 83, 224, 255, 130);
 
-  public static List<AccountMeta> updateAmmCacheKeys(final AccountMeta invokedDriftProgramMeta                                                     ,
-                                                     final PublicKey keeperKey,
+  public static List<AccountMeta> updateAmmCacheKeys(final PublicKey keeperKey,
                                                      final PublicKey stateKey,
                                                      final PublicKey ammCacheKey,
                                                      final PublicKey quoteMarketKey) {
@@ -18266,7 +17802,6 @@ public final class DriftProgram {
                                            final PublicKey ammCacheKey,
                                            final PublicKey quoteMarketKey) {
     final var keys = updateAmmCacheKeys(
-      invokedDriftProgramMeta,
       keeperKey,
       stateKey,
       ammCacheKey,
@@ -18275,15 +17810,14 @@ public final class DriftProgram {
     return updateAmmCache(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateAmmCache(final AccountMeta invokedDriftProgramMeta                                           ,
+  public static Instruction updateAmmCache(final AccountMeta invokedDriftProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_AMM_CACHE_DISCRIMINATOR);
   }
 
   public static final Discriminator OVERRIDE_AMM_CACHE_INFO_DISCRIMINATOR = toDiscriminator(189, 198, 128, 9, 49, 145, 201, 115);
 
-  public static List<AccountMeta> overrideAmmCacheInfoKeys(final AccountMeta invokedDriftProgramMeta                                                           ,
-                                                           final PublicKey stateKey,
+  public static List<AccountMeta> overrideAmmCacheInfoKeys(final PublicKey stateKey,
                                                            final PublicKey adminKey,
                                                            final PublicKey ammCacheKey) {
     return List.of(
@@ -18300,7 +17834,6 @@ public final class DriftProgram {
                                                  final int marketIndex,
                                                  final OverrideAmmCacheParams overrideParams) {
     final var keys = overrideAmmCacheInfoKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       ammCacheKey
@@ -18308,7 +17841,7 @@ public final class DriftProgram {
     return overrideAmmCacheInfo(invokedDriftProgramMeta, keys, marketIndex, overrideParams);
   }
 
-  public static Instruction overrideAmmCacheInfo(final AccountMeta invokedDriftProgramMeta                                                 ,
+  public static Instruction overrideAmmCacheInfo(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int marketIndex,
                                                  final OverrideAmmCacheParams overrideParams) {
@@ -18356,8 +17889,7 @@ public final class DriftProgram {
 
   public static final Discriminator LP_POOL_SWAP_DISCRIMINATOR = toDiscriminator(36, 161, 39, 49, 227, 1, 35, 226);
 
-  public static List<AccountMeta> lpPoolSwapKeys(final AccountMeta invokedDriftProgramMeta                                                 ,
-                                                 final PublicKey stateKey,
+  public static List<AccountMeta> lpPoolSwapKeys(final PublicKey stateKey,
                                                  final PublicKey lpPoolKey,
                                                  final PublicKey constituentTargetBaseKey,
                                                  final PublicKey constituentCorrelationsKey,
@@ -18409,7 +17941,6 @@ public final class DriftProgram {
                                        final long inAmount,
                                        final long minOutAmount) {
     final var keys = lpPoolSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       lpPoolKey,
       constituentTargetBaseKey,
@@ -18435,7 +17966,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction lpPoolSwap(final AccountMeta invokedDriftProgramMeta                                       ,
+  public static Instruction lpPoolSwap(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int inMarketIndex,
                                        final int outMarketIndex,
@@ -18508,8 +18039,7 @@ public final class DriftProgram {
 
   public static final Discriminator VIEW_LP_POOL_SWAP_FEES_DISCRIMINATOR = toDiscriminator(126, 189, 109, 189, 170, 156, 3, 46);
 
-  public static List<AccountMeta> viewLpPoolSwapFeesKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey driftSignerKey,
+  public static List<AccountMeta> viewLpPoolSwapFeesKeys(final PublicKey driftSignerKey,
                                                          final PublicKey stateKey,
                                                          final PublicKey lpPoolKey,
                                                          final PublicKey constituentTargetBaseKey,
@@ -18553,7 +18083,6 @@ public final class DriftProgram {
                                                final long inTargetWeight,
                                                final long outTargetWeight) {
     final var keys = viewLpPoolSwapFeesKeys(
-      invokedDriftProgramMeta,
       driftSignerKey,
       stateKey,
       lpPoolKey,
@@ -18577,7 +18106,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction viewLpPoolSwapFees(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction viewLpPoolSwapFees(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int inMarketIndex,
                                                final int outMarketIndex,
@@ -18659,8 +18188,7 @@ public final class DriftProgram {
 
   public static final Discriminator LP_POOL_ADD_LIQUIDITY_DISCRIMINATOR = toDiscriminator(49, 135, 246, 103, 93, 146, 220, 141);
 
-  public static List<AccountMeta> lpPoolAddLiquidityKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey stateKey,
+  public static List<AccountMeta> lpPoolAddLiquidityKeys(final PublicKey stateKey,
                                                          final PublicKey lpPoolKey,
                                                          final PublicKey authorityKey,
                                                          final PublicKey inMarketMintKey,
@@ -18705,7 +18233,6 @@ public final class DriftProgram {
                                                final BigInteger inAmount,
                                                final long minMintAmount) {
     final var keys = lpPoolAddLiquidityKeys(
-      invokedDriftProgramMeta,
       stateKey,
       lpPoolKey,
       authorityKey,
@@ -18728,7 +18255,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction lpPoolAddLiquidity(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction lpPoolAddLiquidity(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int inMarketIndex,
                                                final BigInteger inAmount,
@@ -18789,8 +18316,7 @@ public final class DriftProgram {
 
   public static final Discriminator LP_POOL_REMOVE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(164, 36, 193, 252, 196, 157, 138, 43);
 
-  public static List<AccountMeta> lpPoolRemoveLiquidityKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> lpPoolRemoveLiquidityKeys(final PublicKey stateKey,
                                                             final PublicKey driftSignerKey,
                                                             final PublicKey lpPoolKey,
                                                             final PublicKey authorityKey,
@@ -18844,7 +18370,6 @@ public final class DriftProgram {
                                                   final long inAmount,
                                                   final BigInteger minOutAmount) {
     final var keys = lpPoolRemoveLiquidityKeys(
-      invokedDriftProgramMeta,
       stateKey,
       driftSignerKey,
       lpPoolKey,
@@ -18870,7 +18395,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction lpPoolRemoveLiquidity(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction lpPoolRemoveLiquidity(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int inMarketIndex,
                                                   final long inAmount,
@@ -18931,8 +18456,7 @@ public final class DriftProgram {
 
   public static final Discriminator VIEW_LP_POOL_ADD_LIQUIDITY_FEES_DISCRIMINATOR = toDiscriminator(80, 66, 226, 161, 70, 142, 119, 84);
 
-  public static List<AccountMeta> viewLpPoolAddLiquidityFeesKeys(final AccountMeta invokedDriftProgramMeta                                                                 ,
-                                                                 final PublicKey stateKey,
+  public static List<AccountMeta> viewLpPoolAddLiquidityFeesKeys(final PublicKey stateKey,
                                                                  final PublicKey lpPoolKey,
                                                                  final PublicKey authorityKey,
                                                                  final PublicKey inMarketMintKey,
@@ -18961,7 +18485,6 @@ public final class DriftProgram {
                                                        final int inMarketIndex,
                                                        final BigInteger inAmount) {
     final var keys = viewLpPoolAddLiquidityFeesKeys(
-      invokedDriftProgramMeta,
       stateKey,
       lpPoolKey,
       authorityKey,
@@ -18973,7 +18496,7 @@ public final class DriftProgram {
     return viewLpPoolAddLiquidityFees(invokedDriftProgramMeta, keys, inMarketIndex, inAmount);
   }
 
-  public static Instruction viewLpPoolAddLiquidityFees(final AccountMeta invokedDriftProgramMeta                                                       ,
+  public static Instruction viewLpPoolAddLiquidityFees(final AccountMeta invokedDriftProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int inMarketIndex,
                                                        final BigInteger inAmount) {
@@ -19024,8 +18547,7 @@ public final class DriftProgram {
 
   public static final Discriminator VIEW_LP_POOL_REMOVE_LIQUIDITY_FEES_DISCRIMINATOR = toDiscriminator(47, 12, 9, 102, 12, 226, 197, 89);
 
-  public static List<AccountMeta> viewLpPoolRemoveLiquidityFeesKeys(final AccountMeta invokedDriftProgramMeta                                                                    ,
-                                                                    final PublicKey stateKey,
+  public static List<AccountMeta> viewLpPoolRemoveLiquidityFeesKeys(final PublicKey stateKey,
                                                                     final PublicKey lpPoolKey,
                                                                     final PublicKey authorityKey,
                                                                     final PublicKey outMarketMintKey,
@@ -19054,7 +18576,6 @@ public final class DriftProgram {
                                                           final int inMarketIndex,
                                                           final long inAmount) {
     final var keys = viewLpPoolRemoveLiquidityFeesKeys(
-      invokedDriftProgramMeta,
       stateKey,
       lpPoolKey,
       authorityKey,
@@ -19066,7 +18587,7 @@ public final class DriftProgram {
     return viewLpPoolRemoveLiquidityFees(invokedDriftProgramMeta, keys, inMarketIndex, inAmount);
   }
 
-  public static Instruction viewLpPoolRemoveLiquidityFees(final AccountMeta invokedDriftProgramMeta                                                          ,
+  public static Instruction viewLpPoolRemoveLiquidityFees(final AccountMeta invokedDriftProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int inMarketIndex,
                                                           final long inAmount) {
@@ -19121,8 +18642,7 @@ public final class DriftProgram {
   /// @param constituentOutTokenAccountKey Constituent token accounts
   /// @param outConstituentKey Constituents
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> beginLpSwapKeys(final AccountMeta invokedDriftProgramMeta                                                  ,
-                                                  final PublicKey stateKey,
+  public static List<AccountMeta> beginLpSwapKeys(final PublicKey stateKey,
                                                   final PublicKey adminKey,
                                                   final PublicKey signerOutTokenAccountKey,
                                                   final PublicKey signerInTokenAccountKey,
@@ -19168,7 +18688,6 @@ public final class DriftProgram {
                                         final int outMarketIndex,
                                         final long amountIn) {
     final var keys = beginLpSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       signerOutTokenAccountKey,
@@ -19190,7 +18709,7 @@ public final class DriftProgram {
     );
   }
 
-  public static Instruction beginLpSwap(final AccountMeta invokedDriftProgramMeta                                        ,
+  public static Instruction beginLpSwap(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final int inMarketIndex,
                                         final int outMarketIndex,
@@ -19255,8 +18774,7 @@ public final class DriftProgram {
   /// @param constituentOutTokenAccountKey Constituent token accounts
   /// @param outConstituentKey Constituents
   /// @param instructionsKey Instructions Sysvar for instruction introspection
-  public static List<AccountMeta> endLpSwapKeys(final AccountMeta invokedDriftProgramMeta                                                ,
-                                                final PublicKey stateKey,
+  public static List<AccountMeta> endLpSwapKeys(final PublicKey stateKey,
                                                 final PublicKey adminKey,
                                                 final PublicKey signerOutTokenAccountKey,
                                                 final PublicKey signerInTokenAccountKey,
@@ -19301,7 +18819,6 @@ public final class DriftProgram {
                                       final int inMarketIndex,
                                       final int outMarketIndex) {
     final var keys = endLpSwapKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       signerOutTokenAccountKey,
@@ -19317,7 +18834,7 @@ public final class DriftProgram {
     return endLpSwap(invokedDriftProgramMeta, keys, inMarketIndex, outMarketIndex);
   }
 
-  public static Instruction endLpSwap(final AccountMeta invokedDriftProgramMeta                                      ,
+  public static Instruction endLpSwap(final AccountMeta invokedDriftProgramMeta,
                                       final List<AccountMeta> keys,
                                       final int inMarketIndex,
                                       final int outMarketIndex) {
@@ -19368,8 +18885,7 @@ public final class DriftProgram {
 
   public static final Discriminator UPDATE_CONSTITUENT_ORACLE_INFO_DISCRIMINATOR = toDiscriminator(198, 117, 231, 250, 147, 33, 127, 161);
 
-  public static List<AccountMeta> updateConstituentOracleInfoKeys(final AccountMeta invokedDriftProgramMeta                                                                  ,
-                                                                  final PublicKey stateKey,
+  public static List<AccountMeta> updateConstituentOracleInfoKeys(final PublicKey stateKey,
                                                                   final PublicKey keeperKey,
                                                                   final PublicKey constituentKey,
                                                                   final PublicKey spotMarketKey,
@@ -19390,7 +18906,6 @@ public final class DriftProgram {
                                                         final PublicKey spotMarketKey,
                                                         final PublicKey oracleKey) {
     final var keys = updateConstituentOracleInfoKeys(
-      invokedDriftProgramMeta,
       stateKey,
       keeperKey,
       constituentKey,
@@ -19400,15 +18915,14 @@ public final class DriftProgram {
     return updateConstituentOracleInfo(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction updateConstituentOracleInfo(final AccountMeta invokedDriftProgramMeta                                                        ,
+  public static Instruction updateConstituentOracleInfo(final AccountMeta invokedDriftProgramMeta,
                                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, UPDATE_CONSTITUENT_ORACLE_INFO_DISCRIMINATOR);
   }
 
   public static final Discriminator DEPOSIT_TO_PROGRAM_VAULT_DISCRIMINATOR = toDiscriminator(235, 171, 121, 80, 57, 239, 147, 220);
 
-  public static List<AccountMeta> depositToProgramVaultKeys(final AccountMeta invokedDriftProgramMeta                                                            ,
-                                                            final PublicKey stateKey,
+  public static List<AccountMeta> depositToProgramVaultKeys(final PublicKey stateKey,
                                                             final PublicKey adminKey,
                                                             final PublicKey constituentKey,
                                                             final PublicKey constituentTokenAccountKey,
@@ -19442,7 +18956,6 @@ public final class DriftProgram {
                                                   final PublicKey oracleKey,
                                                   final long amount) {
     final var keys = depositToProgramVaultKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       constituentKey,
@@ -19456,7 +18969,7 @@ public final class DriftProgram {
     return depositToProgramVault(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction depositToProgramVault(final AccountMeta invokedDriftProgramMeta                                                  ,
+  public static Instruction depositToProgramVault(final AccountMeta invokedDriftProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long amount) {
     final byte[] _data = new byte[16];
@@ -19500,8 +19013,7 @@ public final class DriftProgram {
 
   public static final Discriminator WITHDRAW_FROM_PROGRAM_VAULT_DISCRIMINATOR = toDiscriminator(120, 40, 183, 149, 232, 18, 224, 151);
 
-  public static List<AccountMeta> withdrawFromProgramVaultKeys(final AccountMeta invokedDriftProgramMeta                                                               ,
-                                                               final PublicKey stateKey,
+  public static List<AccountMeta> withdrawFromProgramVaultKeys(final PublicKey stateKey,
                                                                final PublicKey adminKey,
                                                                final PublicKey driftSignerKey,
                                                                final PublicKey constituentKey,
@@ -19538,7 +19050,6 @@ public final class DriftProgram {
                                                      final PublicKey oracleKey,
                                                      final long amount) {
     final var keys = withdrawFromProgramVaultKeys(
-      invokedDriftProgramMeta,
       stateKey,
       adminKey,
       driftSignerKey,
@@ -19553,7 +19064,7 @@ public final class DriftProgram {
     return withdrawFromProgramVault(invokedDriftProgramMeta, keys, amount);
   }
 
-  public static Instruction withdrawFromProgramVault(final AccountMeta invokedDriftProgramMeta                                                     ,
+  public static Instruction withdrawFromProgramVault(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final long amount) {
     final byte[] _data = new byte[16];
@@ -19597,8 +19108,7 @@ public final class DriftProgram {
 
   public static final Discriminator SETTLE_PERP_TO_LP_POOL_DISCRIMINATOR = toDiscriminator(5, 98, 46, 188, 10, 59, 2, 249);
 
-  public static List<AccountMeta> settlePerpToLpPoolKeys(final AccountMeta invokedDriftProgramMeta                                                         ,
-                                                         final PublicKey stateKey,
+  public static List<AccountMeta> settlePerpToLpPoolKeys(final PublicKey stateKey,
                                                          final PublicKey lpPoolKey,
                                                          final PublicKey keeperKey,
                                                          final PublicKey ammCacheKey,
@@ -19634,7 +19144,6 @@ public final class DriftProgram {
                                                final PublicKey tokenProgramKey,
                                                final PublicKey driftSignerKey) {
     final var keys = settlePerpToLpPoolKeys(
-      invokedDriftProgramMeta,
       stateKey,
       lpPoolKey,
       keeperKey,
@@ -19649,7 +19158,7 @@ public final class DriftProgram {
     return settlePerpToLpPool(invokedDriftProgramMeta, keys);
   }
 
-  public static Instruction settlePerpToLpPool(final AccountMeta invokedDriftProgramMeta                                               ,
+  public static Instruction settlePerpToLpPool(final AccountMeta invokedDriftProgramMeta,
                                                final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, SETTLE_PERP_TO_LP_POOL_DISCRIMINATOR);
   }

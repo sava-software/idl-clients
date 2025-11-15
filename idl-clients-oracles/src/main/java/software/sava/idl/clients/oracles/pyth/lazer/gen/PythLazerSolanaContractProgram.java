@@ -25,8 +25,7 @@ public final class PythLazerSolanaContractProgram {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(175, 175, 109, 31, 13, 152, 155, 237);
 
-  public static List<AccountMeta> initializeKeys(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                                 ,
-                                                 final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initializeKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey payerKey,
                                                  final PublicKey storageKey) {
     return List.of(
@@ -43,7 +42,6 @@ public final class PythLazerSolanaContractProgram {
                                        final PublicKey topAuthority,
                                        final PublicKey treasury) {
     final var keys = initializeKeys(
-      invokedPythLazerSolanaContractProgramMeta,
       solanaAccounts,
       payerKey,
       storageKey
@@ -51,7 +49,7 @@ public final class PythLazerSolanaContractProgram {
     return initialize(invokedPythLazerSolanaContractProgramMeta, keys, topAuthority, treasury);
   }
 
-  public static Instruction initialize(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                       ,
+  public static Instruction initialize(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
                                        final List<AccountMeta> keys,
                                        final PublicKey topAuthority,
                                        final PublicKey treasury) {
@@ -102,8 +100,7 @@ public final class PythLazerSolanaContractProgram {
 
   public static final Discriminator UPDATE_DISCRIMINATOR = toDiscriminator(219, 200, 88, 176, 158, 63, 253, 127);
 
-  public static List<AccountMeta> updateKeys(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                             ,
-                                             final PublicKey topAuthorityKey,
+  public static List<AccountMeta> updateKeys(final PublicKey topAuthorityKey,
                                              final PublicKey storageKey) {
     return List.of(
       createReadOnlySigner(topAuthorityKey),
@@ -117,14 +114,13 @@ public final class PythLazerSolanaContractProgram {
                                    final PublicKey trustedSigner,
                                    final long expiresAt) {
     final var keys = updateKeys(
-      invokedPythLazerSolanaContractProgramMeta,
       topAuthorityKey,
       storageKey
     );
     return update(invokedPythLazerSolanaContractProgramMeta, keys, trustedSigner, expiresAt);
   }
 
-  public static Instruction update(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                   ,
+  public static Instruction update(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
                                    final List<AccountMeta> keys,
                                    final PublicKey trustedSigner,
                                    final long expiresAt) {
@@ -187,8 +183,7 @@ public final class PythLazerSolanaContractProgram {
   ///
   /// @param instructionsSysvarKey (e.g. in `sysvar::instructions::load_instruction_at_checked`).
   ///                              This account is not usable with anchor's `Program` account type because it's not executable.
-  public static List<AccountMeta> verifyMessageKeys(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                                    ,
-                                                    final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> verifyMessageKeys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey payerKey,
                                                     final PublicKey storageKey,
                                                     final PublicKey treasuryKey,
@@ -224,7 +219,6 @@ public final class PythLazerSolanaContractProgram {
                                           final int ed25519InstructionIndex,
                                           final int signatureIndex) {
     final var keys = verifyMessageKeys(
-      invokedPythLazerSolanaContractProgramMeta,
       solanaAccounts,
       payerKey,
       storageKey,
@@ -250,7 +244,7 @@ public final class PythLazerSolanaContractProgram {
   /// - `message_offset` is the offset of the signed message within the
   /// input data for the current instruction.
   ///
-  public static Instruction verifyMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta                                          ,
+  public static Instruction verifyMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
                                           final List<AccountMeta> keys,
                                           final byte[] messageData,
                                           final int ed25519InstructionIndex,

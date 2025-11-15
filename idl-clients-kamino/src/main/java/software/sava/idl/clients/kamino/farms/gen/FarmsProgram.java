@@ -34,8 +34,7 @@ public final class FarmsProgram {
 
   public static final Discriminator INITIALIZE_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(113, 216, 122, 131, 225, 209, 22, 55);
 
-  public static List<AccountMeta> initializeGlobalConfigKeys(final AccountMeta invokedFarmsProgramMeta                                                             ,
-                                                             final PublicKey globalAdminKey,
+  public static List<AccountMeta> initializeGlobalConfigKeys(final PublicKey globalAdminKey,
                                                              final PublicKey globalConfigKey,
                                                              final PublicKey treasuryVaultsAuthorityKey,
                                                              final PublicKey systemProgramKey) {
@@ -53,7 +52,6 @@ public final class FarmsProgram {
                                                    final PublicKey treasuryVaultsAuthorityKey,
                                                    final PublicKey systemProgramKey) {
     final var keys = initializeGlobalConfigKeys(
-      invokedFarmsProgramMeta,
       globalAdminKey,
       globalConfigKey,
       treasuryVaultsAuthorityKey,
@@ -62,15 +60,14 @@ public final class FarmsProgram {
     return initializeGlobalConfig(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction initializeGlobalConfig(final AccountMeta invokedFarmsProgramMeta                                                   ,
+  public static Instruction initializeGlobalConfig(final AccountMeta invokedFarmsProgramMeta,
                                                    final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, INITIALIZE_GLOBAL_CONFIG_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(164, 84, 130, 189, 111, 58, 250, 200);
 
-  public static List<AccountMeta> updateGlobalConfigKeys(final AccountMeta invokedFarmsProgramMeta                                                         ,
-                                                         final PublicKey globalAdminKey,
+  public static List<AccountMeta> updateGlobalConfigKeys(final PublicKey globalAdminKey,
                                                          final PublicKey globalConfigKey) {
     return List.of(
       createReadOnlySigner(globalAdminKey),
@@ -84,14 +81,13 @@ public final class FarmsProgram {
                                                final int mode,
                                                final byte[] value) {
     final var keys = updateGlobalConfigKeys(
-      invokedFarmsProgramMeta,
       globalAdminKey,
       globalConfigKey
     );
     return updateGlobalConfig(invokedFarmsProgramMeta, keys, mode, value);
   }
 
-  public static Instruction updateGlobalConfig(final AccountMeta invokedFarmsProgramMeta                                               ,
+  public static Instruction updateGlobalConfig(final AccountMeta invokedFarmsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int mode,
                                                final byte[] value) {
@@ -143,8 +139,7 @@ public final class FarmsProgram {
 
   public static final Discriminator INITIALIZE_FARM_DISCRIMINATOR = toDiscriminator(252, 28, 185, 172, 244, 74, 117, 165);
 
-  public static List<AccountMeta> initializeFarmKeys(final AccountMeta invokedFarmsProgramMeta                                                     ,
-                                                     final PublicKey farmAdminKey,
+  public static List<AccountMeta> initializeFarmKeys(final PublicKey farmAdminKey,
                                                      final PublicKey farmStateKey,
                                                      final PublicKey globalConfigKey,
                                                      final PublicKey farmVaultKey,
@@ -177,7 +172,6 @@ public final class FarmsProgram {
                                            final PublicKey systemProgramKey,
                                            final PublicKey rentKey) {
     final var keys = initializeFarmKeys(
-      invokedFarmsProgramMeta,
       farmAdminKey,
       farmStateKey,
       globalConfigKey,
@@ -191,15 +185,14 @@ public final class FarmsProgram {
     return initializeFarm(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction initializeFarm(final AccountMeta invokedFarmsProgramMeta                                           ,
+  public static Instruction initializeFarm(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, INITIALIZE_FARM_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_FARM_DELEGATED_DISCRIMINATOR = toDiscriminator(250, 84, 101, 25, 51, 77, 204, 91);
 
-  public static List<AccountMeta> initializeFarmDelegatedKeys(final AccountMeta invokedFarmsProgramMeta                                                              ,
-                                                              final PublicKey farmAdminKey,
+  public static List<AccountMeta> initializeFarmDelegatedKeys(final PublicKey farmAdminKey,
                                                               final PublicKey farmDelegateKey,
                                                               final PublicKey farmStateKey,
                                                               final PublicKey globalConfigKey,
@@ -226,7 +219,6 @@ public final class FarmsProgram {
                                                     final PublicKey systemProgramKey,
                                                     final PublicKey rentKey) {
     final var keys = initializeFarmDelegatedKeys(
-      invokedFarmsProgramMeta,
       farmAdminKey,
       farmDelegateKey,
       farmStateKey,
@@ -238,15 +230,14 @@ public final class FarmsProgram {
     return initializeFarmDelegated(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction initializeFarmDelegated(final AccountMeta invokedFarmsProgramMeta                                                    ,
+  public static Instruction initializeFarmDelegated(final AccountMeta invokedFarmsProgramMeta,
                                                     final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, INITIALIZE_FARM_DELEGATED_DISCRIMINATOR);
   }
 
   public static final Discriminator INITIALIZE_REWARD_DISCRIMINATOR = toDiscriminator(95, 135, 192, 196, 242, 129, 230, 68);
 
-  public static List<AccountMeta> initializeRewardKeys(final AccountMeta invokedFarmsProgramMeta                                                       ,
-                                                       final PublicKey farmAdminKey,
+  public static List<AccountMeta> initializeRewardKeys(final PublicKey farmAdminKey,
                                                        final PublicKey farmStateKey,
                                                        final PublicKey globalConfigKey,
                                                        final PublicKey rewardMintKey,
@@ -285,7 +276,6 @@ public final class FarmsProgram {
                                              final PublicKey systemProgramKey,
                                              final PublicKey rentKey) {
     final var keys = initializeRewardKeys(
-      invokedFarmsProgramMeta,
       farmAdminKey,
       farmStateKey,
       globalConfigKey,
@@ -301,14 +291,14 @@ public final class FarmsProgram {
     return initializeReward(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction initializeReward(final AccountMeta invokedFarmsProgramMeta                                             ,
+  public static Instruction initializeReward(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, INITIALIZE_REWARD_DISCRIMINATOR);
   }
 
   public static final Discriminator ADD_REWARDS_DISCRIMINATOR = toDiscriminator(88, 186, 25, 227, 38, 137, 81, 23);
 
-  public static List<AccountMeta> addRewardsKeys(final AccountMeta invokedFarmsProgramMeta                                                 ,
+  public static List<AccountMeta> addRewardsKeys(final AccountMeta invokedFarmsProgramMeta,
                                                  final PublicKey payerKey,
                                                  final PublicKey farmStateKey,
                                                  final PublicKey rewardMintKey,
@@ -354,7 +344,7 @@ public final class FarmsProgram {
     return addRewards(invokedFarmsProgramMeta, keys, amount, rewardIndex);
   }
 
-  public static Instruction addRewards(final AccountMeta invokedFarmsProgramMeta                                       ,
+  public static Instruction addRewards(final AccountMeta invokedFarmsProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long amount,
                                        final long rewardIndex) {
@@ -405,7 +395,7 @@ public final class FarmsProgram {
 
   public static final Discriminator UPDATE_FARM_CONFIG_DISCRIMINATOR = toDiscriminator(214, 176, 188, 244, 203, 59, 230, 207);
 
-  public static List<AccountMeta> updateFarmConfigKeys(final AccountMeta invokedFarmsProgramMeta                                                       ,
+  public static List<AccountMeta> updateFarmConfigKeys(final AccountMeta invokedFarmsProgramMeta,
                                                        final PublicKey signerKey,
                                                        final PublicKey farmStateKey,
                                                        final PublicKey scopePricesKey) {
@@ -431,7 +421,7 @@ public final class FarmsProgram {
     return updateFarmConfig(invokedFarmsProgramMeta, keys, mode, data);
   }
 
-  public static Instruction updateFarmConfig(final AccountMeta invokedFarmsProgramMeta                                             ,
+  public static Instruction updateFarmConfig(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int mode,
                                              final byte[] data) {
@@ -479,8 +469,7 @@ public final class FarmsProgram {
 
   public static final Discriminator INITIALIZE_USER_DISCRIMINATOR = toDiscriminator(111, 17, 185, 250, 60, 122, 38, 254);
 
-  public static List<AccountMeta> initializeUserKeys(final AccountMeta invokedFarmsProgramMeta                                                     ,
-                                                     final PublicKey authorityKey,
+  public static List<AccountMeta> initializeUserKeys(final PublicKey authorityKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey ownerKey,
                                                      final PublicKey delegateeKey,
@@ -510,7 +499,6 @@ public final class FarmsProgram {
                                            final PublicKey systemProgramKey,
                                            final PublicKey rentKey) {
     final var keys = initializeUserKeys(
-      invokedFarmsProgramMeta,
       authorityKey,
       payerKey,
       ownerKey,
@@ -523,14 +511,14 @@ public final class FarmsProgram {
     return initializeUser(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction initializeUser(final AccountMeta invokedFarmsProgramMeta                                           ,
+  public static Instruction initializeUser(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, INITIALIZE_USER_DISCRIMINATOR);
   }
 
   public static final Discriminator TRANSFER_OWNERSHIP_DISCRIMINATOR = toDiscriminator(65, 177, 215, 73, 53, 45, 99, 47);
 
-  public static List<AccountMeta> transferOwnershipKeys(final AccountMeta invokedFarmsProgramMeta                                                        ,
+  public static List<AccountMeta> transferOwnershipKeys(final AccountMeta invokedFarmsProgramMeta,
                                                         final PublicKey oldOwnerKey,
                                                         final PublicKey payerKey,
                                                         final PublicKey newOwnerKey,
@@ -578,15 +566,14 @@ public final class FarmsProgram {
     return transferOwnership(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction transferOwnership(final AccountMeta invokedFarmsProgramMeta                                              ,
+  public static Instruction transferOwnership(final AccountMeta invokedFarmsProgramMeta,
                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, TRANSFER_OWNERSHIP_DISCRIMINATOR);
   }
 
   public static final Discriminator REWARD_USER_ONCE_DISCRIMINATOR = toDiscriminator(219, 137, 57, 22, 94, 186, 96, 114);
 
-  public static List<AccountMeta> rewardUserOnceKeys(final AccountMeta invokedFarmsProgramMeta                                                     ,
-                                                     final PublicKey delegateAuthorityKey,
+  public static List<AccountMeta> rewardUserOnceKeys(final PublicKey delegateAuthorityKey,
                                                      final PublicKey farmStateKey,
                                                      final PublicKey userStateKey) {
     return List.of(
@@ -601,36 +588,48 @@ public final class FarmsProgram {
                                            final PublicKey farmStateKey,
                                            final PublicKey userStateKey,
                                            final long rewardIndex,
-                                           final long amount) {
+                                           final long amount,
+                                           final long expectedRewardIssuedUnclaimed) {
     final var keys = rewardUserOnceKeys(
-      invokedFarmsProgramMeta,
       delegateAuthorityKey,
       farmStateKey,
       userStateKey
     );
-    return rewardUserOnce(invokedFarmsProgramMeta, keys, rewardIndex, amount);
+    return rewardUserOnce(
+      invokedFarmsProgramMeta,
+      keys,
+      rewardIndex,
+      amount,
+      expectedRewardIssuedUnclaimed
+    );
   }
 
-  public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta                                           ,
+  public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long rewardIndex,
-                                           final long amount) {
-    final byte[] _data = new byte[24];
+                                           final long amount,
+                                           final long expectedRewardIssuedUnclaimed) {
+    final byte[] _data = new byte[32];
     int i = REWARD_USER_ONCE_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, rewardIndex);
     i += 8;
     putInt64LE(_data, i, amount);
+    i += 8;
+    putInt64LE(_data, i, expectedRewardIssuedUnclaimed);
 
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record RewardUserOnceIxData(Discriminator discriminator, long rewardIndex, long amount) implements Borsh {  
+  public record RewardUserOnceIxData(Discriminator discriminator,
+                                     long rewardIndex,
+                                     long amount,
+                                     long expectedRewardIssuedUnclaimed) implements Borsh {  
 
     public static RewardUserOnceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 24;
+    public static final int BYTES = 32;
 
     public static RewardUserOnceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -641,7 +640,9 @@ public final class FarmsProgram {
       final var rewardIndex = getInt64LE(_data, i);
       i += 8;
       final var amount = getInt64LE(_data, i);
-      return new RewardUserOnceIxData(discriminator, rewardIndex, amount);
+      i += 8;
+      final var expectedRewardIssuedUnclaimed = getInt64LE(_data, i);
+      return new RewardUserOnceIxData(discriminator, rewardIndex, amount, expectedRewardIssuedUnclaimed);
     }
 
     @Override
@@ -650,6 +651,8 @@ public final class FarmsProgram {
       putInt64LE(_data, i, rewardIndex);
       i += 8;
       putInt64LE(_data, i, amount);
+      i += 8;
+      putInt64LE(_data, i, expectedRewardIssuedUnclaimed);
       i += 8;
       return i - _offset;
     }
@@ -662,7 +665,7 @@ public final class FarmsProgram {
 
   public static final Discriminator REFRESH_FARM_DISCRIMINATOR = toDiscriminator(214, 131, 138, 183, 144, 194, 172, 42);
 
-  public static List<AccountMeta> refreshFarmKeys(final AccountMeta invokedFarmsProgramMeta                                                  ,
+  public static List<AccountMeta> refreshFarmKeys(final AccountMeta invokedFarmsProgramMeta,
                                                   final PublicKey farmStateKey,
                                                   final PublicKey scopePricesKey) {
     return List.of(
@@ -671,7 +674,10 @@ public final class FarmsProgram {
     );
   }
 
-  public static Instruction refreshFarm(final AccountMeta invokedFarmsProgramMeta, final PublicKey farmStateKey, final PublicKey scopePricesKey) {     final var keys = refreshFarmKeys(
+  public static Instruction refreshFarm(final AccountMeta invokedFarmsProgramMeta,
+                                        final PublicKey farmStateKey,
+                                        final PublicKey scopePricesKey) {
+    final var keys = refreshFarmKeys(
       invokedFarmsProgramMeta,
       farmStateKey,
       scopePricesKey
@@ -679,14 +685,14 @@ public final class FarmsProgram {
     return refreshFarm(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction refreshFarm(final AccountMeta invokedFarmsProgramMeta                                        ,
+  public static Instruction refreshFarm(final AccountMeta invokedFarmsProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, REFRESH_FARM_DISCRIMINATOR);
   }
 
   public static final Discriminator STAKE_DISCRIMINATOR = toDiscriminator(206, 176, 202, 18, 200, 209, 179, 108);
 
-  public static List<AccountMeta> stakeKeys(final AccountMeta invokedFarmsProgramMeta                                            ,
+  public static List<AccountMeta> stakeKeys(final AccountMeta invokedFarmsProgramMeta,
                                             final PublicKey ownerKey,
                                             final PublicKey userStateKey,
                                             final PublicKey farmStateKey,
@@ -731,7 +737,7 @@ public final class FarmsProgram {
     return stake(invokedFarmsProgramMeta, keys, amount);
   }
 
-  public static Instruction stake(final AccountMeta invokedFarmsProgramMeta                                  ,
+  public static Instruction stake(final AccountMeta invokedFarmsProgramMeta,
                                   final List<AccountMeta> keys,
                                   final long amount) {
     final byte[] _data = new byte[16];
@@ -775,8 +781,7 @@ public final class FarmsProgram {
 
   public static final Discriminator SET_STAKE_DELEGATED_DISCRIMINATOR = toDiscriminator(73, 171, 184, 75, 30, 56, 198, 223);
 
-  public static List<AccountMeta> setStakeDelegatedKeys(final AccountMeta invokedFarmsProgramMeta                                                        ,
-                                                        final PublicKey delegateAuthorityKey,
+  public static List<AccountMeta> setStakeDelegatedKeys(final PublicKey delegateAuthorityKey,
                                                         final PublicKey userStateKey,
                                                         final PublicKey farmStateKey) {
     return List.of(
@@ -792,7 +797,6 @@ public final class FarmsProgram {
                                               final PublicKey farmStateKey,
                                               final long newAmount) {
     final var keys = setStakeDelegatedKeys(
-      invokedFarmsProgramMeta,
       delegateAuthorityKey,
       userStateKey,
       farmStateKey
@@ -800,7 +804,7 @@ public final class FarmsProgram {
     return setStakeDelegated(invokedFarmsProgramMeta, keys, newAmount);
   }
 
-  public static Instruction setStakeDelegated(final AccountMeta invokedFarmsProgramMeta                                              ,
+  public static Instruction setStakeDelegated(final AccountMeta invokedFarmsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long newAmount) {
     final byte[] _data = new byte[16];
@@ -844,7 +848,7 @@ public final class FarmsProgram {
 
   public static final Discriminator HARVEST_REWARD_DISCRIMINATOR = toDiscriminator(68, 200, 228, 233, 184, 32, 226, 188);
 
-  public static List<AccountMeta> harvestRewardKeys(final AccountMeta invokedFarmsProgramMeta                                                    ,
+  public static List<AccountMeta> harvestRewardKeys(final AccountMeta invokedFarmsProgramMeta,
                                                     final PublicKey payerKey,
                                                     final PublicKey userStateKey,
                                                     final PublicKey farmStateKey,
@@ -901,7 +905,7 @@ public final class FarmsProgram {
     return harvestReward(invokedFarmsProgramMeta, keys, rewardIndex);
   }
 
-  public static Instruction harvestReward(final AccountMeta invokedFarmsProgramMeta                                          ,
+  public static Instruction harvestReward(final AccountMeta invokedFarmsProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long rewardIndex) {
     final byte[] _data = new byte[16];
@@ -945,7 +949,7 @@ public final class FarmsProgram {
 
   public static final Discriminator UNSTAKE_DISCRIMINATOR = toDiscriminator(90, 95, 107, 42, 205, 124, 50, 225);
 
-  public static List<AccountMeta> unstakeKeys(final AccountMeta invokedFarmsProgramMeta                                              ,
+  public static List<AccountMeta> unstakeKeys(final AccountMeta invokedFarmsProgramMeta,
                                               final PublicKey ownerKey,
                                               final PublicKey userStateKey,
                                               final PublicKey farmStateKey,
@@ -974,7 +978,7 @@ public final class FarmsProgram {
     return unstake(invokedFarmsProgramMeta, keys, stakeSharesScaled);
   }
 
-  public static Instruction unstake(final AccountMeta invokedFarmsProgramMeta                                    ,
+  public static Instruction unstake(final AccountMeta invokedFarmsProgramMeta,
                                     final List<AccountMeta> keys,
                                     final BigInteger stakeSharesScaled) {
     final byte[] _data = new byte[24];
@@ -1018,7 +1022,7 @@ public final class FarmsProgram {
 
   public static final Discriminator REFRESH_USER_STATE_DISCRIMINATOR = toDiscriminator(1, 135, 12, 62, 243, 140, 77, 108);
 
-  public static List<AccountMeta> refreshUserStateKeys(final AccountMeta invokedFarmsProgramMeta                                                       ,
+  public static List<AccountMeta> refreshUserStateKeys(final AccountMeta invokedFarmsProgramMeta,
                                                        final PublicKey userStateKey,
                                                        final PublicKey farmStateKey,
                                                        final PublicKey scopePricesKey) {
@@ -1042,15 +1046,14 @@ public final class FarmsProgram {
     return refreshUserState(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction refreshUserState(final AccountMeta invokedFarmsProgramMeta                                             ,
+  public static Instruction refreshUserState(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, REFRESH_USER_STATE_DISCRIMINATOR);
   }
 
   public static final Discriminator WITHDRAW_UNSTAKED_DEPOSITS_DISCRIMINATOR = toDiscriminator(36, 102, 187, 49, 220, 36, 132, 67);
 
-  public static List<AccountMeta> withdrawUnstakedDepositsKeys(final AccountMeta invokedFarmsProgramMeta                                                               ,
-                                                               final PublicKey ownerKey,
+  public static List<AccountMeta> withdrawUnstakedDepositsKeys(final PublicKey ownerKey,
                                                                final PublicKey userStateKey,
                                                                final PublicKey farmStateKey,
                                                                final PublicKey userAtaKey,
@@ -1077,7 +1080,6 @@ public final class FarmsProgram {
                                                      final PublicKey farmVaultsAuthorityKey,
                                                      final PublicKey tokenProgramKey) {
     final var keys = withdrawUnstakedDepositsKeys(
-      invokedFarmsProgramMeta,
       ownerKey,
       userStateKey,
       farmStateKey,
@@ -1089,15 +1091,14 @@ public final class FarmsProgram {
     return withdrawUnstakedDeposits(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction withdrawUnstakedDeposits(final AccountMeta invokedFarmsProgramMeta                                                     ,
+  public static Instruction withdrawUnstakedDeposits(final AccountMeta invokedFarmsProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, WITHDRAW_UNSTAKED_DEPOSITS_DISCRIMINATOR);
   }
 
   public static final Discriminator WITHDRAW_TREASURY_DISCRIMINATOR = toDiscriminator(40, 63, 122, 158, 144, 216, 83, 96);
 
-  public static List<AccountMeta> withdrawTreasuryKeys(final AccountMeta invokedFarmsProgramMeta                                                       ,
-                                                       final PublicKey globalAdminKey,
+  public static List<AccountMeta> withdrawTreasuryKeys(final PublicKey globalAdminKey,
                                                        final PublicKey globalConfigKey,
                                                        final PublicKey rewardMintKey,
                                                        final PublicKey rewardTreasuryVaultKey,
@@ -1125,7 +1126,6 @@ public final class FarmsProgram {
                                              final PublicKey tokenProgramKey,
                                              final long amount) {
     final var keys = withdrawTreasuryKeys(
-      invokedFarmsProgramMeta,
       globalAdminKey,
       globalConfigKey,
       rewardMintKey,
@@ -1137,7 +1137,7 @@ public final class FarmsProgram {
     return withdrawTreasury(invokedFarmsProgramMeta, keys, amount);
   }
 
-  public static Instruction withdrawTreasury(final AccountMeta invokedFarmsProgramMeta                                             ,
+  public static Instruction withdrawTreasury(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
     final byte[] _data = new byte[16];
@@ -1181,8 +1181,7 @@ public final class FarmsProgram {
 
   public static final Discriminator DEPOSIT_TO_FARM_VAULT_DISCRIMINATOR = toDiscriminator(131, 166, 64, 94, 108, 213, 114, 183);
 
-  public static List<AccountMeta> depositToFarmVaultKeys(final AccountMeta invokedFarmsProgramMeta                                                         ,
-                                                         final PublicKey depositorKey,
+  public static List<AccountMeta> depositToFarmVaultKeys(final PublicKey depositorKey,
                                                          final PublicKey farmStateKey,
                                                          final PublicKey farmVaultKey,
                                                          final PublicKey depositorAtaKey,
@@ -1204,7 +1203,6 @@ public final class FarmsProgram {
                                                final PublicKey tokenProgramKey,
                                                final long amount) {
     final var keys = depositToFarmVaultKeys(
-      invokedFarmsProgramMeta,
       depositorKey,
       farmStateKey,
       farmVaultKey,
@@ -1214,7 +1212,7 @@ public final class FarmsProgram {
     return depositToFarmVault(invokedFarmsProgramMeta, keys, amount);
   }
 
-  public static Instruction depositToFarmVault(final AccountMeta invokedFarmsProgramMeta                                               ,
+  public static Instruction depositToFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long amount) {
     final byte[] _data = new byte[16];
@@ -1258,8 +1256,7 @@ public final class FarmsProgram {
 
   public static final Discriminator WITHDRAW_FROM_FARM_VAULT_DISCRIMINATOR = toDiscriminator(22, 82, 128, 250, 86, 79, 124, 78);
 
-  public static List<AccountMeta> withdrawFromFarmVaultKeys(final AccountMeta invokedFarmsProgramMeta                                                            ,
-                                                            final PublicKey withdrawAuthorityKey,
+  public static List<AccountMeta> withdrawFromFarmVaultKeys(final PublicKey withdrawAuthorityKey,
                                                             final PublicKey farmStateKey,
                                                             final PublicKey withdrawerTokenAccountKey,
                                                             final PublicKey farmVaultKey,
@@ -1284,7 +1281,6 @@ public final class FarmsProgram {
                                                   final PublicKey tokenProgramKey,
                                                   final long amount) {
     final var keys = withdrawFromFarmVaultKeys(
-      invokedFarmsProgramMeta,
       withdrawAuthorityKey,
       farmStateKey,
       withdrawerTokenAccountKey,
@@ -1295,7 +1291,7 @@ public final class FarmsProgram {
     return withdrawFromFarmVault(invokedFarmsProgramMeta, keys, amount);
   }
 
-  public static Instruction withdrawFromFarmVault(final AccountMeta invokedFarmsProgramMeta                                                  ,
+  public static Instruction withdrawFromFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long amount) {
     final byte[] _data = new byte[16];
@@ -1339,8 +1335,7 @@ public final class FarmsProgram {
 
   public static final Discriminator WITHDRAW_SLASHED_AMOUNT_DISCRIMINATOR = toDiscriminator(202, 217, 67, 74, 172, 22, 140, 216);
 
-  public static List<AccountMeta> withdrawSlashedAmountKeys(final AccountMeta invokedFarmsProgramMeta                                                            ,
-                                                            final PublicKey crankKey,
+  public static List<AccountMeta> withdrawSlashedAmountKeys(final PublicKey crankKey,
                                                             final PublicKey farmStateKey,
                                                             final PublicKey slashedAmountSpillAddressKey,
                                                             final PublicKey farmVaultKey,
@@ -1364,7 +1359,6 @@ public final class FarmsProgram {
                                                   final PublicKey farmVaultsAuthorityKey,
                                                   final PublicKey tokenProgramKey) {
     final var keys = withdrawSlashedAmountKeys(
-      invokedFarmsProgramMeta,
       crankKey,
       farmStateKey,
       slashedAmountSpillAddressKey,
@@ -1375,15 +1369,14 @@ public final class FarmsProgram {
     return withdrawSlashedAmount(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction withdrawSlashedAmount(final AccountMeta invokedFarmsProgramMeta                                                  ,
+  public static Instruction withdrawSlashedAmount(final AccountMeta invokedFarmsProgramMeta,
                                                   final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, WITHDRAW_SLASHED_AMOUNT_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_FARM_ADMIN_DISCRIMINATOR = toDiscriminator(20, 37, 136, 19, 122, 239, 36, 130);
 
-  public static List<AccountMeta> updateFarmAdminKeys(final AccountMeta invokedFarmsProgramMeta                                                      ,
-                                                      final PublicKey pendingFarmAdminKey,
+  public static List<AccountMeta> updateFarmAdminKeys(final PublicKey pendingFarmAdminKey,
                                                       final PublicKey farmStateKey) {
     return List.of(
       createWritableSigner(pendingFarmAdminKey),
@@ -1391,23 +1384,24 @@ public final class FarmsProgram {
     );
   }
 
-  public static Instruction updateFarmAdmin(final AccountMeta invokedFarmsProgramMeta, final PublicKey pendingFarmAdminKey, final PublicKey farmStateKey) {     final var keys = updateFarmAdminKeys(
-      invokedFarmsProgramMeta,
+  public static Instruction updateFarmAdmin(final AccountMeta invokedFarmsProgramMeta,
+                                            final PublicKey pendingFarmAdminKey,
+                                            final PublicKey farmStateKey) {
+    final var keys = updateFarmAdminKeys(
       pendingFarmAdminKey,
       farmStateKey
     );
     return updateFarmAdmin(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction updateFarmAdmin(final AccountMeta invokedFarmsProgramMeta                                            ,
+  public static Instruction updateFarmAdmin(final AccountMeta invokedFarmsProgramMeta,
                                             final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, UPDATE_FARM_ADMIN_DISCRIMINATOR);
   }
 
   public static final Discriminator UPDATE_GLOBAL_CONFIG_ADMIN_DISCRIMINATOR = toDiscriminator(184, 87, 23, 193, 156, 238, 175, 119);
 
-  public static List<AccountMeta> updateGlobalConfigAdminKeys(final AccountMeta invokedFarmsProgramMeta                                                              ,
-                                                              final PublicKey pendingGlobalAdminKey,
+  public static List<AccountMeta> updateGlobalConfigAdminKeys(final PublicKey pendingGlobalAdminKey,
                                                               final PublicKey globalConfigKey) {
     return List.of(
       createReadOnlySigner(pendingGlobalAdminKey),
@@ -1415,22 +1409,24 @@ public final class FarmsProgram {
     );
   }
 
-  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedFarmsProgramMeta, final PublicKey pendingGlobalAdminKey, final PublicKey globalConfigKey) {     final var keys = updateGlobalConfigAdminKeys(
-      invokedFarmsProgramMeta,
+  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedFarmsProgramMeta,
+                                                    final PublicKey pendingGlobalAdminKey,
+                                                    final PublicKey globalConfigKey) {
+    final var keys = updateGlobalConfigAdminKeys(
       pendingGlobalAdminKey,
       globalConfigKey
     );
     return updateGlobalConfigAdmin(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedFarmsProgramMeta                                                    ,
+  public static Instruction updateGlobalConfigAdmin(final AccountMeta invokedFarmsProgramMeta,
                                                     final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, UPDATE_GLOBAL_CONFIG_ADMIN_DISCRIMINATOR);
   }
 
   public static final Discriminator WITHDRAW_REWARD_DISCRIMINATOR = toDiscriminator(191, 187, 176, 137, 9, 25, 187, 244);
 
-  public static List<AccountMeta> withdrawRewardKeys(final AccountMeta invokedFarmsProgramMeta                                                     ,
+  public static List<AccountMeta> withdrawRewardKeys(final AccountMeta invokedFarmsProgramMeta,
                                                      final PublicKey farmAdminKey,
                                                      final PublicKey farmStateKey,
                                                      final PublicKey rewardMintKey,
@@ -1476,7 +1472,7 @@ public final class FarmsProgram {
     return withdrawReward(invokedFarmsProgramMeta, keys, amount, rewardIndex);
   }
 
-  public static Instruction withdrawReward(final AccountMeta invokedFarmsProgramMeta                                           ,
+  public static Instruction withdrawReward(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
                                            final long rewardIndex) {
@@ -1527,8 +1523,7 @@ public final class FarmsProgram {
 
   public static final Discriminator UPDATE_SECOND_DELEGATED_AUTHORITY_DISCRIMINATOR = toDiscriminator(127, 26, 6, 181, 203, 248, 117, 64);
 
-  public static List<AccountMeta> updateSecondDelegatedAuthorityKeys(final AccountMeta invokedFarmsProgramMeta                                                                     ,
-                                                                     final PublicKey globalAdminKey,
+  public static List<AccountMeta> updateSecondDelegatedAuthorityKeys(final PublicKey globalAdminKey,
                                                                      final PublicKey farmStateKey,
                                                                      final PublicKey globalConfigKey,
                                                                      final PublicKey newSecondDelegatedAuthorityKey) {
@@ -1546,7 +1541,6 @@ public final class FarmsProgram {
                                                            final PublicKey globalConfigKey,
                                                            final PublicKey newSecondDelegatedAuthorityKey) {
     final var keys = updateSecondDelegatedAuthorityKeys(
-      invokedFarmsProgramMeta,
       globalAdminKey,
       farmStateKey,
       globalConfigKey,
@@ -1555,15 +1549,14 @@ public final class FarmsProgram {
     return updateSecondDelegatedAuthority(invokedFarmsProgramMeta, keys);
   }
 
-  public static Instruction updateSecondDelegatedAuthority(final AccountMeta invokedFarmsProgramMeta                                                           ,
+  public static Instruction updateSecondDelegatedAuthority(final AccountMeta invokedFarmsProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, UPDATE_SECOND_DELEGATED_AUTHORITY_DISCRIMINATOR);
   }
 
   public static final Discriminator IDL_MISSING_TYPES_DISCRIMINATOR = toDiscriminator(130, 80, 38, 153, 80, 212, 182, 253);
 
-  public static List<AccountMeta> idlMissingTypesKeys(final AccountMeta invokedFarmsProgramMeta                                                      ,
-                                                      final PublicKey globalAdminKey,
+  public static List<AccountMeta> idlMissingTypesKeys(final PublicKey globalAdminKey,
                                                       final PublicKey globalConfigKey) {
     return List.of(
       createReadOnlySigner(globalAdminKey),
@@ -1580,7 +1573,6 @@ public final class FarmsProgram {
                                             final LockingMode lockingMode,
                                             final RewardType rewardType) {
     final var keys = idlMissingTypesKeys(
-      invokedFarmsProgramMeta,
       globalAdminKey,
       globalConfigKey
     );
@@ -1595,7 +1587,7 @@ public final class FarmsProgram {
     );
   }
 
-  public static Instruction idlMissingTypes(final AccountMeta invokedFarmsProgramMeta                                            ,
+  public static Instruction idlMissingTypes(final AccountMeta invokedFarmsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final GlobalConfigOption globalConfigOptionKind,
                                             final FarmConfigOption farmConfigOptionKind,

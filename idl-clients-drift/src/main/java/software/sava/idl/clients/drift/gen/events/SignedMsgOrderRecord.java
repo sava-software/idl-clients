@@ -2,6 +2,8 @@ package software.sava.idl.clients.drift.gen.events;
 
 import java.lang.String;
 
+import java.util.Arrays;
+
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
@@ -55,8 +57,11 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var user = readPubKey(_data, i);
     i += 32;
-    final var hash = Borsh.string(_data, i);
-    i += (Integer.BYTES + getInt32LE(_data, i));
+    final int _hashLength = getInt32LE(_data, i);
+    i += 4;
+    final byte[] _hash = Arrays.copyOfRange(_data, i, i + _hashLength);
+    final var hash = new String(_hash, UTF_8);
+    i += _hash.length;
     final var matchingOrderParams = OrderParams.read(_data, i);
     i += Borsh.len(matchingOrderParams);
     final var userOrderId = getInt32LE(_data, i);
@@ -68,7 +73,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     final var ts = getInt64LE(_data, i);
     return new SignedMsgOrderRecord(discriminator,
                                     user,
-                                    hash, hash.getBytes(UTF_8),
+                                    hash, _hash,
                                     matchingOrderParams,
                                     userOrderId,
                                     signedMsgOrderMaxSlot,
@@ -96,7 +101,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
   @Override
   public int l() {
     return discriminator.length() + 32
-         + Borsh.lenVector(_hash)
+         + _hash.length
          + Borsh.len(matchingOrderParams)
          + 4
          + 8

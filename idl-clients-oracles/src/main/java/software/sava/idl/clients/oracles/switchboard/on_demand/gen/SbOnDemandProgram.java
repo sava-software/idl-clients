@@ -58,8 +58,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator GUARDIAN_QUOTE_VERIFY_DISCRIMINATOR = toDiscriminator(168, 36, 93, 156, 157, 150, 148, 45);
 
-  public static List<AccountMeta> guardianQuoteVerifyKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                          ,
-                                                          final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> guardianQuoteVerifyKeys(final SolanaAccounts solanaAccounts,
                                                           final PublicKey guardianKey,
                                                           final PublicKey oracleKey,
                                                           final PublicKey authorityKey,
@@ -84,7 +83,6 @@ public final class SbOnDemandProgram {
                                                 final PublicKey stateKey,
                                                 final GuardianQuoteVerifyParams params) {
     final var keys = guardianQuoteVerifyKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       guardianKey,
       oracleKey,
@@ -95,7 +93,7 @@ public final class SbOnDemandProgram {
     return guardianQuoteVerify(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction guardianQuoteVerify(final AccountMeta invokedSbOnDemandProgramMeta                                                ,
+  public static Instruction guardianQuoteVerify(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final GuardianQuoteVerifyParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -136,8 +134,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator GUARDIAN_REGISTER_DISCRIMINATOR = toDiscriminator(159, 76, 53, 117, 219, 29, 116, 135);
 
-  public static List<AccountMeta> guardianRegisterKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
-                                                       final PublicKey oracleKey,
+  public static List<AccountMeta> guardianRegisterKeys(final PublicKey oracleKey,
                                                        final PublicKey stateKey,
                                                        final PublicKey guardianQueueKey,
                                                        final PublicKey authorityKey) {
@@ -156,7 +153,6 @@ public final class SbOnDemandProgram {
                                              final PublicKey authorityKey,
                                              final GuardianRegisterParams params) {
     final var keys = guardianRegisterKeys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       stateKey,
       guardianQueueKey,
@@ -165,7 +161,7 @@ public final class SbOnDemandProgram {
     return guardianRegister(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction guardianRegister(final AccountMeta invokedSbOnDemandProgramMeta                                             ,
+  public static Instruction guardianRegister(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final GuardianRegisterParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -208,8 +204,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator GUARDIAN_UNREGISTER_DISCRIMINATOR = toDiscriminator(215, 19, 61, 120, 155, 224, 120, 60);
 
-  public static List<AccountMeta> guardianUnregisterKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                         ,
-                                                         final PublicKey oracleKey,
+  public static List<AccountMeta> guardianUnregisterKeys(final PublicKey oracleKey,
                                                          final PublicKey stateKey,
                                                          final PublicKey guardianQueueKey,
                                                          final PublicKey authorityKey) {
@@ -228,7 +223,6 @@ public final class SbOnDemandProgram {
                                                final PublicKey authorityKey,
                                                final GuardianUnregisterParams params) {
     final var keys = guardianUnregisterKeys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       stateKey,
       guardianQueueKey,
@@ -237,7 +231,7 @@ public final class SbOnDemandProgram {
     return guardianUnregister(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction guardianUnregister(final AccountMeta invokedSbOnDemandProgramMeta                                               ,
+  public static Instruction guardianUnregister(final AccountMeta invokedSbOnDemandProgramMeta,
                                                final List<AccountMeta> keys,
                                                final GuardianUnregisterParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -280,8 +274,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_HEARTBEAT_DISCRIMINATOR = toDiscriminator(10, 175, 217, 130, 111, 35, 117, 54);
 
-  public static List<AccountMeta> oracleHeartbeatKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
-                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> oracleHeartbeatKeys(final SolanaAccounts solanaAccounts,
                                                       final PublicKey oracleKey,
                                                       final PublicKey oracleStatsKey,
                                                       final PublicKey oracleSignerKey,
@@ -328,7 +321,6 @@ public final class SbOnDemandProgram {
                                             final PublicKey delegationGroupKey,
                                             final OracleHeartbeatParams params) {
     final var keys = oracleHeartbeatKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       oracleKey,
       oracleStatsKey,
@@ -346,7 +338,7 @@ public final class SbOnDemandProgram {
     return oracleHeartbeat(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleHeartbeat(final AccountMeta invokedSbOnDemandProgramMeta                                            ,
+  public static Instruction oracleHeartbeat(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final OracleHeartbeatParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -387,8 +379,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_HEARTBEAT_V_2_DISCRIMINATOR = toDiscriminator(122, 231, 66, 32, 226, 62, 144, 103);
 
-  public static List<AccountMeta> oracleHeartbeatV2Keys(final AccountMeta invokedSbOnDemandProgramMeta                                                        ,
-                                                        final PublicKey oracleKey,
+  public static List<AccountMeta> oracleHeartbeatV2Keys(final PublicKey oracleKey,
                                                         final PublicKey oracleStatsKey,
                                                         final PublicKey oracleSignerKey,
                                                         final PublicKey queueKey,
@@ -413,7 +404,6 @@ public final class SbOnDemandProgram {
                                               final PublicKey programStateKey,
                                               final OracleHeartbeatV2Params params) {
     final var keys = oracleHeartbeatV2Keys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       oracleStatsKey,
       oracleSignerKey,
@@ -424,7 +414,7 @@ public final class SbOnDemandProgram {
     return oracleHeartbeatV2(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleHeartbeatV2(final AccountMeta invokedSbOnDemandProgramMeta                                              ,
+  public static Instruction oracleHeartbeatV2(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final OracleHeartbeatV2Params params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -465,8 +455,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_INIT_DISCRIMINATOR = toDiscriminator(21, 158, 66, 65, 60, 221, 148, 61);
 
-  public static List<AccountMeta> oracleInitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                 ,
-                                                 final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> oracleInitKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey oracleKey,
                                                  final PublicKey oracleStatsKey,
                                                  final PublicKey programStateKey,
@@ -498,7 +487,6 @@ public final class SbOnDemandProgram {
                                        final PublicKey lutKey,
                                        final OracleInitParams params) {
     final var keys = oracleInitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       oracleKey,
       oracleStatsKey,
@@ -511,7 +499,7 @@ public final class SbOnDemandProgram {
     return oracleInit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleInit(final AccountMeta invokedSbOnDemandProgramMeta                                       ,
+  public static Instruction oracleInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                        final List<AccountMeta> keys,
                                        final OracleInitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -552,8 +540,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_INIT_SVM_DISCRIMINATOR = toDiscriminator(106, 20, 36, 117, 166, 175, 131, 83);
 
-  public static List<AccountMeta> oracleInitSvmKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                    ,
-                                                    final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> oracleInitSvmKeys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey oracleKey,
                                                     final PublicKey oracleStatsKey,
                                                     final PublicKey programStateKey,
@@ -591,7 +578,6 @@ public final class SbOnDemandProgram {
                                           final PublicKey stakePoolKey,
                                           final OracleInitSVMParams params) {
     final var keys = oracleInitSvmKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       oracleKey,
       oracleStatsKey,
@@ -606,7 +592,7 @@ public final class SbOnDemandProgram {
     return oracleInitSvm(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleInitSvm(final AccountMeta invokedSbOnDemandProgramMeta                                          ,
+  public static Instruction oracleInitSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OracleInitSVMParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -647,8 +633,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_RESET_LUT_DISCRIMINATOR = toDiscriminator(147, 244, 108, 198, 152, 219, 0, 22);
 
-  public static List<AccountMeta> oracleResetLutKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                     ,
-                                                     final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> oracleResetLutKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey oracleKey,
                                                      final PublicKey authorityKey,
                                                      final PublicKey payerKey,
@@ -677,7 +662,6 @@ public final class SbOnDemandProgram {
                                            final PublicKey lutKey,
                                            final OracleResetLutParams params) {
     final var keys = oracleResetLutKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       oracleKey,
       authorityKey,
@@ -689,7 +673,7 @@ public final class SbOnDemandProgram {
     return oracleResetLut(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleResetLut(final AccountMeta invokedSbOnDemandProgramMeta                                           ,
+  public static Instruction oracleResetLut(final AccountMeta invokedSbOnDemandProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OracleResetLutParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -732,8 +716,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_SET_CONFIGS_DISCRIMINATOR = toDiscriminator(129, 111, 223, 4, 191, 188, 70, 180);
 
-  public static List<AccountMeta> oracleSetConfigsKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
-                                                       final PublicKey oracleKey,
+  public static List<AccountMeta> oracleSetConfigsKeys(final PublicKey oracleKey,
                                                        final PublicKey authorityKey) {
     return List.of(
       createRead(oracleKey),
@@ -746,14 +729,13 @@ public final class SbOnDemandProgram {
                                              final PublicKey authorityKey,
                                              final OracleSetConfigsParams params) {
     final var keys = oracleSetConfigsKeys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       authorityKey
     );
     return oracleSetConfigs(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta                                             ,
+  public static Instruction oracleSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final OracleSetConfigsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -794,8 +776,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_SET_OPERATOR_DISCRIMINATOR = toDiscriminator(210, 232, 155, 124, 69, 176, 242, 133);
 
-  public static List<AccountMeta> oracleSetOperatorKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                        ,
-                                                        final PublicKey oracleKey,
+  public static List<AccountMeta> oracleSetOperatorKeys(final PublicKey oracleKey,
                                                         final PublicKey authorityKey,
                                                         final PublicKey operatorKey) {
     return List.of(
@@ -811,7 +792,6 @@ public final class SbOnDemandProgram {
                                               final PublicKey operatorKey,
                                               final OracleSetOperatorParams params) {
     final var keys = oracleSetOperatorKeys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       authorityKey,
       operatorKey
@@ -819,7 +799,7 @@ public final class SbOnDemandProgram {
     return oracleSetOperator(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleSetOperator(final AccountMeta invokedSbOnDemandProgramMeta                                              ,
+  public static Instruction oracleSetOperator(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final OracleSetOperatorParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -862,8 +842,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator ORACLE_SYNC_LUT_DISCRIMINATOR = toDiscriminator(138, 99, 12, 59, 18, 170, 171, 45);
 
-  public static List<AccountMeta> oracleSyncLutKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                    ,
-                                                    final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> oracleSyncLutKeys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey oracleKey,
                                                     final PublicKey queueKey,
                                                     final PublicKey ncnKey,
@@ -913,7 +892,6 @@ public final class SbOnDemandProgram {
                                           final PublicKey payerKey,
                                           final OracleSyncLutParams params) {
     final var keys = oracleSyncLutKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       oracleKey,
       queueKey,
@@ -932,7 +910,7 @@ public final class SbOnDemandProgram {
     return oracleSyncLut(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction oracleSyncLut(final AccountMeta invokedSbOnDemandProgramMeta                                          ,
+  public static Instruction oracleSyncLut(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OracleSyncLutParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -975,8 +953,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PERMISSION_SET_DISCRIMINATOR = toDiscriminator(211, 122, 185, 120, 129, 182, 55, 103);
 
-  public static List<AccountMeta> permissionSetKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                    ,
-                                                    final PublicKey authorityKey,
+  public static List<AccountMeta> permissionSetKeys(final PublicKey authorityKey,
                                                     final PublicKey granterKey) {
     return List.of(
       createReadOnlySigner(authorityKey),
@@ -989,14 +966,13 @@ public final class SbOnDemandProgram {
                                           final PublicKey granterKey,
                                           final PermissionSetParams params) {
     final var keys = permissionSetKeys(
-      invokedSbOnDemandProgramMeta,
       authorityKey,
       granterKey
     );
     return permissionSet(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction permissionSet(final AccountMeta invokedSbOnDemandProgramMeta                                          ,
+  public static Instruction permissionSet(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PermissionSetParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1039,8 +1015,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_CLOSE_DISCRIMINATOR = toDiscriminator(19, 134, 50, 142, 177, 215, 196, 83);
 
-  public static List<AccountMeta> pullFeedCloseKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                    ,
-                                                    final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedCloseKeys(final SolanaAccounts solanaAccounts,
                                                     final PublicKey pullFeedKey,
                                                     final PublicKey rewardEscrowKey,
                                                     final PublicKey lutKey,
@@ -1076,7 +1051,6 @@ public final class SbOnDemandProgram {
                                           final PublicKey tokenProgramKey,
                                           final PullFeedCloseParams params) {
     final var keys = pullFeedCloseKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       pullFeedKey,
       rewardEscrowKey,
@@ -1090,7 +1064,7 @@ public final class SbOnDemandProgram {
     return pullFeedClose(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedClose(final AccountMeta invokedSbOnDemandProgramMeta                                          ,
+  public static Instruction pullFeedClose(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PullFeedCloseParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1133,8 +1107,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_INIT_DISCRIMINATOR = toDiscriminator(198, 130, 53, 198, 235, 61, 143, 40);
 
-  public static List<AccountMeta> pullFeedInitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                   ,
-                                                   final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedInitKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey pullFeedKey,
                                                    final PublicKey queueKey,
                                                    final PublicKey authorityKey,
@@ -1174,7 +1147,6 @@ public final class SbOnDemandProgram {
                                          final PublicKey lutKey,
                                          final PullFeedInitParams params) {
     final var keys = pullFeedInitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       pullFeedKey,
       queueKey,
@@ -1189,7 +1161,7 @@ public final class SbOnDemandProgram {
     return pullFeedInit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedInit(final AccountMeta invokedSbOnDemandProgramMeta                                         ,
+  public static Instruction pullFeedInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                          final List<AccountMeta> keys,
                                          final PullFeedInitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1230,8 +1202,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SET_CONFIGS_DISCRIMINATOR = toDiscriminator(217, 45, 11, 246, 64, 26, 82, 168);
 
-  public static List<AccountMeta> pullFeedSetConfigsKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                         ,
-                                                         final PublicKey pullFeedKey,
+  public static List<AccountMeta> pullFeedSetConfigsKeys(final PublicKey pullFeedKey,
                                                          final PublicKey authorityKey) {
     return List.of(
       createWrite(pullFeedKey),
@@ -1244,14 +1215,13 @@ public final class SbOnDemandProgram {
                                                final PublicKey authorityKey,
                                                final PullFeedSetConfigsParams params) {
     final var keys = pullFeedSetConfigsKeys(
-      invokedSbOnDemandProgramMeta,
       pullFeedKey,
       authorityKey
     );
     return pullFeedSetConfigs(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta                                               ,
+  public static Instruction pullFeedSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PullFeedSetConfigsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1292,8 +1262,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SUBMIT_RESPONSE_DISCRIMINATOR = toDiscriminator(150, 22, 215, 166, 143, 93, 48, 137);
 
-  public static List<AccountMeta> pullFeedSubmitResponseKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                             ,
-                                                             final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedSubmitResponseKeys(final SolanaAccounts solanaAccounts,
                                                              final PublicKey feedKey,
                                                              final PublicKey queueKey,
                                                              final PublicKey programStateKey,
@@ -1323,7 +1292,6 @@ public final class SbOnDemandProgram {
                                                    final PublicKey tokenProgramKey,
                                                    final PullFeedSubmitResponseParams params) {
     final var keys = pullFeedSubmitResponseKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       feedKey,
       queueKey,
@@ -1335,7 +1303,7 @@ public final class SbOnDemandProgram {
     return pullFeedSubmitResponse(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSubmitResponse(final AccountMeta invokedSbOnDemandProgramMeta                                                   ,
+  public static Instruction pullFeedSubmitResponse(final AccountMeta invokedSbOnDemandProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final PullFeedSubmitResponseParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1376,8 +1344,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SUBMIT_RESPONSE_CONSENSUS_DISCRIMINATOR = toDiscriminator(239, 124, 39, 184, 147, 222, 16, 248);
 
-  public static List<AccountMeta> pullFeedSubmitResponseConsensusKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                                      ,
-                                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedSubmitResponseConsensusKeys(final SolanaAccounts solanaAccounts,
                                                                       final PublicKey queueKey,
                                                                       final PublicKey programStateKey,
                                                                       final PublicKey payerKey,
@@ -1405,7 +1372,6 @@ public final class SbOnDemandProgram {
                                                             final PublicKey tokenProgramKey,
                                                             final PullFeedSubmitResponseConsensusParams params) {
     final var keys = pullFeedSubmitResponseConsensusKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       programStateKey,
@@ -1416,7 +1382,7 @@ public final class SbOnDemandProgram {
     return pullFeedSubmitResponseConsensus(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSubmitResponseConsensus(final AccountMeta invokedSbOnDemandProgramMeta                                                            ,
+  public static Instruction pullFeedSubmitResponseConsensus(final AccountMeta invokedSbOnDemandProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final PullFeedSubmitResponseConsensusParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1457,8 +1423,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SUBMIT_RESPONSE_CONSENSUS_LIGHT_DISCRIMINATOR = toDiscriminator(178, 179, 88, 144, 175, 130, 157, 87);
 
-  public static List<AccountMeta> pullFeedSubmitResponseConsensusLightKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                                           ,
-                                                                           final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedSubmitResponseConsensusLightKeys(final SolanaAccounts solanaAccounts,
                                                                            final PublicKey queueKey,
                                                                            final PublicKey programStateKey) {
     return List.of(
@@ -1475,7 +1440,6 @@ public final class SbOnDemandProgram {
                                                                  final PublicKey programStateKey,
                                                                  final PullFeedSubmitResponseConsensusLightParams params) {
     final var keys = pullFeedSubmitResponseConsensusLightKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       programStateKey
@@ -1483,7 +1447,7 @@ public final class SbOnDemandProgram {
     return pullFeedSubmitResponseConsensusLight(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSubmitResponseConsensusLight(final AccountMeta invokedSbOnDemandProgramMeta                                                                 ,
+  public static Instruction pullFeedSubmitResponseConsensusLight(final AccountMeta invokedSbOnDemandProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final PullFeedSubmitResponseConsensusLightParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1524,8 +1488,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SUBMIT_RESPONSE_MANY_DISCRIMINATOR = toDiscriminator(47, 156, 45, 25, 200, 71, 37, 215);
 
-  public static List<AccountMeta> pullFeedSubmitResponseManyKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                                 ,
-                                                                 final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedSubmitResponseManyKeys(final SolanaAccounts solanaAccounts,
                                                                  final PublicKey queueKey,
                                                                  final PublicKey programStateKey,
                                                                  final PublicKey payerKey,
@@ -1552,7 +1515,6 @@ public final class SbOnDemandProgram {
                                                        final PublicKey tokenProgramKey,
                                                        final PullFeedSubmitResponseManyParams params) {
     final var keys = pullFeedSubmitResponseManyKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       programStateKey,
@@ -1563,7 +1525,7 @@ public final class SbOnDemandProgram {
     return pullFeedSubmitResponseMany(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSubmitResponseMany(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
+  public static Instruction pullFeedSubmitResponseMany(final AccountMeta invokedSbOnDemandProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final PullFeedSubmitResponseManyParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1604,8 +1566,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator PULL_FEED_SUBMIT_RESPONSE_SVM_DISCRIMINATOR = toDiscriminator(123, 7, 190, 12, 220, 230, 198, 148);
 
-  public static List<AccountMeta> pullFeedSubmitResponseSvmKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                                ,
-                                                                final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> pullFeedSubmitResponseSvmKeys(final SolanaAccounts solanaAccounts,
                                                                 final PublicKey feedKey,
                                                                 final PublicKey queueKey,
                                                                 final PublicKey programStateKey,
@@ -1635,7 +1596,6 @@ public final class SbOnDemandProgram {
                                                       final PublicKey tokenProgramKey,
                                                       final PullFeedSubmitResponseSVMParams params) {
     final var keys = pullFeedSubmitResponseSvmKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       feedKey,
       queueKey,
@@ -1647,7 +1607,7 @@ public final class SbOnDemandProgram {
     return pullFeedSubmitResponseSvm(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction pullFeedSubmitResponseSvm(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
+  public static Instruction pullFeedSubmitResponseSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final PullFeedSubmitResponseSVMParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1688,8 +1648,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_ADD_MR_ENCLAVE_DISCRIMINATOR = toDiscriminator(199, 255, 81, 50, 60, 133, 171, 138);
 
-  public static List<AccountMeta> queueAddMrEnclaveKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                        ,
-                                                        final PublicKey queueKey,
+  public static List<AccountMeta> queueAddMrEnclaveKeys(final PublicKey queueKey,
                                                         final PublicKey authorityKey,
                                                         final PublicKey programAuthorityKey,
                                                         final PublicKey stateKey) {
@@ -1708,7 +1667,6 @@ public final class SbOnDemandProgram {
                                               final PublicKey stateKey,
                                               final QueueAddMrEnclaveParams params) {
     final var keys = queueAddMrEnclaveKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       programAuthorityKey,
@@ -1717,7 +1675,7 @@ public final class SbOnDemandProgram {
     return queueAddMrEnclave(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueAddMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta                                              ,
+  public static Instruction queueAddMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final QueueAddMrEnclaveParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1760,8 +1718,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_ALLOW_SUBSIDIES_DISCRIMINATOR = toDiscriminator(94, 203, 82, 157, 188, 138, 202, 108);
 
-  public static List<AccountMeta> queueAllowSubsidiesKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                          ,
-                                                          final PublicKey queueKey,
+  public static List<AccountMeta> queueAllowSubsidiesKeys(final PublicKey queueKey,
                                                           final PublicKey authorityKey,
                                                           final PublicKey stateKey) {
     return List.of(
@@ -1777,7 +1734,6 @@ public final class SbOnDemandProgram {
                                                 final PublicKey stateKey,
                                                 final QueueAllowSubsidiesParams params) {
     final var keys = queueAllowSubsidiesKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       stateKey
@@ -1785,7 +1741,7 @@ public final class SbOnDemandProgram {
     return queueAllowSubsidies(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueAllowSubsidies(final AccountMeta invokedSbOnDemandProgramMeta                                                ,
+  public static Instruction queueAllowSubsidies(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final QueueAllowSubsidiesParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1828,8 +1784,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_GARBAGE_COLLECT_DISCRIMINATOR = toDiscriminator(187, 208, 104, 247, 16, 91, 96, 98);
 
-  public static List<AccountMeta> queueGarbageCollectKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                          ,
-                                                          final PublicKey queueKey,
+  public static List<AccountMeta> queueGarbageCollectKeys(final PublicKey queueKey,
                                                           final PublicKey oracleKey,
                                                           final PublicKey authorityKey,
                                                           final PublicKey stateKey) {
@@ -1848,7 +1803,6 @@ public final class SbOnDemandProgram {
                                                 final PublicKey stateKey,
                                                 final QueueGarbageCollectParams params) {
     final var keys = queueGarbageCollectKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       oracleKey,
       authorityKey,
@@ -1857,7 +1811,7 @@ public final class SbOnDemandProgram {
     return queueGarbageCollect(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueGarbageCollect(final AccountMeta invokedSbOnDemandProgramMeta                                                ,
+  public static Instruction queueGarbageCollect(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final QueueGarbageCollectParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1900,8 +1854,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_INIT_DISCRIMINATOR = toDiscriminator(144, 18, 99, 145, 133, 27, 207, 13);
 
-  public static List<AccountMeta> queueInitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                ,
-                                                final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> queueInitKeys(final SolanaAccounts solanaAccounts,
                                                 final PublicKey queueKey,
                                                 final PublicKey queueEscrowKey,
                                                 final PublicKey authorityKey,
@@ -1938,7 +1891,6 @@ public final class SbOnDemandProgram {
                                       final PublicKey lutKey,
                                       final QueueInitParams params) {
     final var keys = queueInitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       queueEscrowKey,
@@ -1952,7 +1904,7 @@ public final class SbOnDemandProgram {
     return queueInit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueInit(final AccountMeta invokedSbOnDemandProgramMeta                                      ,
+  public static Instruction queueInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                       final List<AccountMeta> keys,
                                       final QueueInitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -1995,8 +1947,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_INIT_SVM_DISCRIMINATOR = toDiscriminator(175, 94, 119, 151, 45, 144, 173, 235);
 
-  public static List<AccountMeta> queueInitSvmKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                   ,
-                                                   final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> queueInitSvmKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey queueKey,
                                                    final PublicKey queueEscrowKey,
                                                    final PublicKey authorityKey,
@@ -2033,7 +1984,6 @@ public final class SbOnDemandProgram {
                                          final PublicKey lutKey,
                                          final QueueInitSVMParams params) {
     final var keys = queueInitSvmKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       queueEscrowKey,
@@ -2047,7 +1997,7 @@ public final class SbOnDemandProgram {
     return queueInitSvm(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueInitSvm(final AccountMeta invokedSbOnDemandProgramMeta                                         ,
+  public static Instruction queueInitSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                          final List<AccountMeta> keys,
                                          final QueueInitSVMParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2090,8 +2040,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_OVERRIDE_SVM_DISCRIMINATOR = toDiscriminator(43, 103, 15, 35, 89, 14, 244, 165);
 
-  public static List<AccountMeta> queueOverrideSvmKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
-                                                       final PublicKey oracleKey,
+  public static List<AccountMeta> queueOverrideSvmKeys(final PublicKey oracleKey,
                                                        final PublicKey queueKey,
                                                        final PublicKey authorityKey,
                                                        final PublicKey stateKey) {
@@ -2110,7 +2059,6 @@ public final class SbOnDemandProgram {
                                              final PublicKey stateKey,
                                              final QueueOverrideSVMParams params) {
     final var keys = queueOverrideSvmKeys(
-      invokedSbOnDemandProgramMeta,
       oracleKey,
       queueKey,
       authorityKey,
@@ -2119,7 +2067,7 @@ public final class SbOnDemandProgram {
     return queueOverrideSvm(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueOverrideSvm(final AccountMeta invokedSbOnDemandProgramMeta                                             ,
+  public static Instruction queueOverrideSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final QueueOverrideSVMParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2162,8 +2110,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_PAY_SUBSIDY_DISCRIMINATOR = toDiscriminator(85, 84, 51, 251, 144, 57, 105, 200);
 
-  public static List<AccountMeta> queuePaySubsidyKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
-                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> queuePaySubsidyKeys(final SolanaAccounts solanaAccounts,
                                                       final PublicKey queueKey,
                                                       final PublicKey programStateKey,
                                                       final PublicKey vaultKey,
@@ -2202,7 +2149,6 @@ public final class SbOnDemandProgram {
                                             final PublicKey payerKey,
                                             final QueuePaySubsidyParams params) {
     final var keys = queuePaySubsidyKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       queueKey,
       programStateKey,
@@ -2217,7 +2163,7 @@ public final class SbOnDemandProgram {
     return queuePaySubsidy(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queuePaySubsidy(final AccountMeta invokedSbOnDemandProgramMeta                                            ,
+  public static Instruction queuePaySubsidy(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueuePaySubsidyParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2260,8 +2206,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_REMOVE_MR_ENCLAVE_DISCRIMINATOR = toDiscriminator(3, 64, 135, 33, 190, 133, 68, 252);
 
-  public static List<AccountMeta> queueRemoveMrEnclaveKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                           ,
-                                                           final PublicKey queueKey,
+  public static List<AccountMeta> queueRemoveMrEnclaveKeys(final PublicKey queueKey,
                                                            final PublicKey authorityKey,
                                                            final PublicKey programAuthorityKey,
                                                            final PublicKey stateKey) {
@@ -2280,7 +2225,6 @@ public final class SbOnDemandProgram {
                                                  final PublicKey stateKey,
                                                  final QueueRemoveMrEnclaveParams params) {
     final var keys = queueRemoveMrEnclaveKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       programAuthorityKey,
@@ -2289,7 +2233,7 @@ public final class SbOnDemandProgram {
     return queueRemoveMrEnclave(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueRemoveMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta                                                 ,
+  public static Instruction queueRemoveMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final QueueRemoveMrEnclaveParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2332,8 +2276,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_RESET_VAULT_DISCRIMINATOR = toDiscriminator(232, 255, 48, 111, 240, 168, 253, 40);
 
-  public static List<AccountMeta> queueResetVaultKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
-                                                      final PublicKey queueKey,
+  public static List<AccountMeta> queueResetVaultKeys(final PublicKey queueKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey stateKey,
                                                       final PublicKey ncnKey,
@@ -2355,7 +2298,6 @@ public final class SbOnDemandProgram {
                                             final PublicKey vaultKey,
                                             final QueueResetVaultParams params) {
     final var keys = queueResetVaultKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       stateKey,
@@ -2365,7 +2307,7 @@ public final class SbOnDemandProgram {
     return queueResetVault(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueResetVault(final AccountMeta invokedSbOnDemandProgramMeta                                            ,
+  public static Instruction queueResetVault(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueueResetVaultParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2408,8 +2350,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_SET_CONFIGS_DISCRIMINATOR = toDiscriminator(54, 183, 243, 199, 49, 103, 142, 48);
 
-  public static List<AccountMeta> queueSetConfigsKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
-                                                      final PublicKey queueKey,
+  public static List<AccountMeta> queueSetConfigsKeys(final PublicKey queueKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey stateKey) {
     return List.of(
@@ -2425,7 +2366,6 @@ public final class SbOnDemandProgram {
                                             final PublicKey stateKey,
                                             final QueueSetConfigsParams params) {
     final var keys = queueSetConfigsKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       stateKey
@@ -2433,7 +2373,7 @@ public final class SbOnDemandProgram {
     return queueSetConfigs(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta                                            ,
+  public static Instruction queueSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueueSetConfigsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2474,8 +2414,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_SET_NCN_DISCRIMINATOR = toDiscriminator(232, 223, 179, 12, 20, 136, 181, 219);
 
-  public static List<AccountMeta> queueSetNcnKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                  ,
-                                                  final PublicKey queueKey,
+  public static List<AccountMeta> queueSetNcnKeys(final PublicKey queueKey,
                                                   final PublicKey authorityKey,
                                                   final PublicKey stateKey,
                                                   final PublicKey ncnKey) {
@@ -2494,7 +2433,6 @@ public final class SbOnDemandProgram {
                                         final PublicKey ncnKey,
                                         final QueueSetNcnParams params) {
     final var keys = queueSetNcnKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       stateKey,
@@ -2503,7 +2441,7 @@ public final class SbOnDemandProgram {
     return queueSetNcn(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueSetNcn(final AccountMeta invokedSbOnDemandProgramMeta                                        ,
+  public static Instruction queueSetNcn(final AccountMeta invokedSbOnDemandProgramMeta,
                                         final List<AccountMeta> keys,
                                         final QueueSetNcnParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2546,8 +2484,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator QUEUE_SET_VAULT_DISCRIMINATOR = toDiscriminator(48, 47, 102, 99, 241, 249, 196, 246);
 
-  public static List<AccountMeta> queueSetVaultKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                    ,
-                                                    final PublicKey queueKey,
+  public static List<AccountMeta> queueSetVaultKeys(final PublicKey queueKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey stateKey,
                                                     final PublicKey ncnKey,
@@ -2569,7 +2506,6 @@ public final class SbOnDemandProgram {
                                           final PublicKey vaultKey,
                                           final QueueSetVaultParams params) {
     final var keys = queueSetVaultKeys(
-      invokedSbOnDemandProgramMeta,
       queueKey,
       authorityKey,
       stateKey,
@@ -2579,7 +2515,7 @@ public final class SbOnDemandProgram {
     return queueSetVault(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction queueSetVault(final AccountMeta invokedSbOnDemandProgramMeta                                          ,
+  public static Instruction queueSetVault(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final QueueSetVaultParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2622,8 +2558,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator RANDOMNESS_COMMIT_DISCRIMINATOR = toDiscriminator(52, 170, 152, 201, 179, 133, 242, 141);
 
-  public static List<AccountMeta> randomnessCommitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
-                                                       final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> randomnessCommitKeys(final SolanaAccounts solanaAccounts,
                                                        final PublicKey randomnessKey,
                                                        final PublicKey queueKey,
                                                        final PublicKey oracleKey,
@@ -2645,7 +2580,6 @@ public final class SbOnDemandProgram {
                                              final PublicKey authorityKey,
                                              final RandomnessCommitParams params) {
     final var keys = randomnessCommitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       randomnessKey,
       queueKey,
@@ -2655,7 +2589,7 @@ public final class SbOnDemandProgram {
     return randomnessCommit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction randomnessCommit(final AccountMeta invokedSbOnDemandProgramMeta                                             ,
+  public static Instruction randomnessCommit(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final RandomnessCommitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2698,8 +2632,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator RANDOMNESS_INIT_DISCRIMINATOR = toDiscriminator(9, 9, 204, 33, 50, 116, 113, 15);
 
-  public static List<AccountMeta> randomnessInitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                     ,
-                                                     final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> randomnessInitKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey randomnessKey,
                                                      final PublicKey rewardEscrowKey,
                                                      final PublicKey authorityKey,
@@ -2739,7 +2672,6 @@ public final class SbOnDemandProgram {
                                            final PublicKey lutKey,
                                            final RandomnessInitParams params) {
     final var keys = randomnessInitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       randomnessKey,
       rewardEscrowKey,
@@ -2754,7 +2686,7 @@ public final class SbOnDemandProgram {
     return randomnessInit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction randomnessInit(final AccountMeta invokedSbOnDemandProgramMeta                                           ,
+  public static Instruction randomnessInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                            final List<AccountMeta> keys,
                                            final RandomnessInitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2797,8 +2729,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator RANDOMNESS_REVEAL_DISCRIMINATOR = toDiscriminator(197, 181, 187, 10, 30, 58, 20, 73);
 
-  public static List<AccountMeta> randomnessRevealKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                       ,
-                                                       final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> randomnessRevealKeys(final SolanaAccounts solanaAccounts,
                                                        final PublicKey randomnessKey,
                                                        final PublicKey oracleKey,
                                                        final PublicKey queueKey,
@@ -2837,7 +2768,6 @@ public final class SbOnDemandProgram {
                                              final PublicKey programStateKey,
                                              final RandomnessRevealParams params) {
     final var keys = randomnessRevealKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       randomnessKey,
       oracleKey,
@@ -2852,7 +2782,7 @@ public final class SbOnDemandProgram {
     return randomnessReveal(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction randomnessReveal(final AccountMeta invokedSbOnDemandProgramMeta                                             ,
+  public static Instruction randomnessReveal(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final RandomnessRevealParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2895,8 +2825,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator STATE_INIT_DISCRIMINATOR = toDiscriminator(103, 241, 106, 190, 217, 153, 87, 105);
 
-  public static List<AccountMeta> stateInitKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                ,
-                                                final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> stateInitKeys(final SolanaAccounts solanaAccounts,
                                                 final PublicKey stateKey,
                                                 final PublicKey payerKey) {
     return List.of(
@@ -2912,7 +2841,6 @@ public final class SbOnDemandProgram {
                                       final PublicKey payerKey,
                                       final StateInitParams params) {
     final var keys = stateInitKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       stateKey,
       payerKey
@@ -2920,7 +2848,7 @@ public final class SbOnDemandProgram {
     return stateInit(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction stateInit(final AccountMeta invokedSbOnDemandProgramMeta                                      ,
+  public static Instruction stateInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                       final List<AccountMeta> keys,
                                       final StateInitParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -2963,8 +2891,7 @@ public final class SbOnDemandProgram {
 
   public static final Discriminator STATE_SET_CONFIGS_DISCRIMINATOR = toDiscriminator(40, 98, 76, 37, 206, 9, 47, 144);
 
-  public static List<AccountMeta> stateSetConfigsKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                      ,
-                                                      final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> stateSetConfigsKeys(final SolanaAccounts solanaAccounts,
                                                       final PublicKey stateKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey queueKey,
@@ -2986,7 +2913,6 @@ public final class SbOnDemandProgram {
                                             final PublicKey payerKey,
                                             final StateSetConfigsParams params) {
     final var keys = stateSetConfigsKeys(
-      invokedSbOnDemandProgramMeta,
       solanaAccounts,
       stateKey,
       authorityKey,
@@ -2996,7 +2922,7 @@ public final class SbOnDemandProgram {
     return stateSetConfigs(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction stateSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta                                            ,
+  public static Instruction stateSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final StateSetConfigsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -3040,22 +2966,23 @@ public final class SbOnDemandProgram {
   public static final Discriminator TEST_UPDATE_ORACLE_STATS_DISCRIMINATOR = toDiscriminator(175, 48, 162, 252, 154, 197, 149, 187);
 
   /// @param oracleStatsKey The OracleStats account to update.
-  public static List<AccountMeta> testUpdateOracleStatsKeys(final AccountMeta invokedSbOnDemandProgramMeta                                                            ,
-                                                            final PublicKey oracleStatsKey) {
+  public static List<AccountMeta> testUpdateOracleStatsKeys(final PublicKey oracleStatsKey) {
     return List.of(
       createWrite(oracleStatsKey)
     );
   }
 
   /// @param oracleStatsKey The OracleStats account to update.
-  public static Instruction testUpdateOracleStats(final AccountMeta invokedSbOnDemandProgramMeta, final PublicKey oracleStatsKey, final TestUpdateOracleStatsParams params) {     final var keys = testUpdateOracleStatsKeys(
-      invokedSbOnDemandProgramMeta,
+  public static Instruction testUpdateOracleStats(final AccountMeta invokedSbOnDemandProgramMeta,
+                                                  final PublicKey oracleStatsKey,
+                                                  final TestUpdateOracleStatsParams params) {
+    final var keys = testUpdateOracleStatsKeys(
       oracleStatsKey
     );
     return testUpdateOracleStats(invokedSbOnDemandProgramMeta, keys, params);
   }
 
-  public static Instruction testUpdateOracleStats(final AccountMeta invokedSbOnDemandProgramMeta                                                  ,
+  public static Instruction testUpdateOracleStats(final AccountMeta invokedSbOnDemandProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final TestUpdateOracleStatsParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];

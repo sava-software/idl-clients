@@ -2,6 +2,7 @@ package software.sava.idl.clients.kamino.scope.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -30,8 +31,7 @@ public final class ScopeProgram {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(175, 175, 109, 31, 13, 152, 155, 237);
 
-  public static List<AccountMeta> initializeKeys(final AccountMeta invokedScopeProgramMeta                                                 ,
-                                                 final PublicKey adminKey,
+  public static List<AccountMeta> initializeKeys(final PublicKey adminKey,
                                                  final PublicKey systemProgramKey,
                                                  final PublicKey configurationKey,
                                                  final PublicKey tokenMetadatasKey,
@@ -59,7 +59,6 @@ public final class ScopeProgram {
                                        final PublicKey oracleMappingsKey,
                                        final String feedName) {
     final var keys = initializeKeys(
-      invokedScopeProgramMeta,
       adminKey,
       systemProgramKey,
       configurationKey,
@@ -71,11 +70,11 @@ public final class ScopeProgram {
     return initialize(invokedScopeProgramMeta, keys, feedName);
   }
 
-  public static Instruction initialize(final AccountMeta invokedScopeProgramMeta                                       ,
+  public static Instruction initialize(final AccountMeta invokedScopeProgramMeta,
                                        final List<AccountMeta> keys,
                                        final String feedName) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_feedName)];
+    final byte[] _data = new byte[12 + _feedName.length];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
     Borsh.writeVector(_feedName, _data, i);
 
@@ -98,8 +97,11 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feedName = Borsh.string(_data, i);
-      return new InitializeIxData(discriminator, feedName, feedName.getBytes(UTF_8));
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new InitializeIxData(discriminator, feedName, _feedName);
     }
 
     @Override
@@ -111,14 +113,13 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_feedName);
+      return 8 + _feedName.length;
     }
   }
 
   public static final Discriminator REFRESH_PRICE_LIST_DISCRIMINATOR = toDiscriminator(83, 186, 207, 131, 203, 254, 198, 130);
 
-  public static List<AccountMeta> refreshPriceListKeys(final AccountMeta invokedScopeProgramMeta                                                       ,
-                                                       final PublicKey oraclePricesKey,
+  public static List<AccountMeta> refreshPriceListKeys(final PublicKey oraclePricesKey,
                                                        final PublicKey oracleMappingsKey,
                                                        final PublicKey oracleTwapsKey,
                                                        final PublicKey instructionSysvarAccountInfoKey) {
@@ -137,7 +138,6 @@ public final class ScopeProgram {
                                              final PublicKey instructionSysvarAccountInfoKey,
                                              final short[] tokens) {
     final var keys = refreshPriceListKeys(
-      invokedScopeProgramMeta,
       oraclePricesKey,
       oracleMappingsKey,
       oracleTwapsKey,
@@ -146,7 +146,7 @@ public final class ScopeProgram {
     return refreshPriceList(invokedScopeProgramMeta, keys, tokens);
   }
 
-  public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta                                             ,
+  public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final List<AccountMeta> keys,
                                              final short[] tokens) {
     final byte[] _data = new byte[8 + Borsh.lenVector(tokens)];
@@ -193,8 +193,7 @@ public final class ScopeProgram {
   /// @param accessControllerKey The Access Controller Account
   /// @param configAccountKey The Config Account is a PDA derived from a signed report
   /// @param verifierProgramIdKey The Verifier Program ID specifies the target Chainlink Data Streams Verifier Program.
-  public static List<AccountMeta> refreshChainlinkPriceKeys(final AccountMeta invokedScopeProgramMeta                                                            ,
-                                                            final PublicKey userKey,
+  public static List<AccountMeta> refreshChainlinkPriceKeys(final PublicKey userKey,
                                                             final PublicKey oraclePricesKey,
                                                             final PublicKey oracleMappingsKey,
                                                             final PublicKey oracleTwapsKey,
@@ -232,7 +231,6 @@ public final class ScopeProgram {
                                                   final int token,
                                                   final byte[] serializedChainlinkReport) {
     final var keys = refreshChainlinkPriceKeys(
-      invokedScopeProgramMeta,
       userKey,
       oraclePricesKey,
       oracleMappingsKey,
@@ -245,7 +243,7 @@ public final class ScopeProgram {
     return refreshChainlinkPrice(invokedScopeProgramMeta, keys, token, serializedChainlinkReport);
   }
 
-  public static Instruction refreshChainlinkPrice(final AccountMeta invokedScopeProgramMeta                                                  ,
+  public static Instruction refreshChainlinkPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int token,
                                                   final byte[] serializedChainlinkReport) {
@@ -297,8 +295,7 @@ public final class ScopeProgram {
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
   /// @param userKey The account that signs the transaction.
-  public static List<AccountMeta> refreshPythLazerPriceKeys(final AccountMeta invokedScopeProgramMeta                                                            ,
-                                                            final PublicKey userKey,
+  public static List<AccountMeta> refreshPythLazerPriceKeys(final PublicKey userKey,
                                                             final PublicKey oraclePricesKey,
                                                             final PublicKey oracleMappingsKey,
                                                             final PublicKey oracleTwapsKey,
@@ -338,7 +335,6 @@ public final class ScopeProgram {
                                                   final byte[] serializedPythMessage,
                                                   final int ed25519InstructionIndex) {
     final var keys = refreshPythLazerPriceKeys(
-      invokedScopeProgramMeta,
       userKey,
       oraclePricesKey,
       oracleMappingsKey,
@@ -361,7 +357,7 @@ public final class ScopeProgram {
   /// IMPORTANT: we assume the tokens passed in to this ix are in the same order in which
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
-  public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta                                                  ,
+  public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final short[] tokens,
                                                   final byte[] serializedPythMessage,
@@ -418,8 +414,7 @@ public final class ScopeProgram {
 
   /// @param oraclePricesKey Price entry will be reset if the corresponding mapping changes
   /// @param oracleTwapsKey Twap entry will be reset if the corresponding mapping changes
-  public static List<AccountMeta> updateMappingAndMetadataKeys(final AccountMeta invokedScopeProgramMeta                                                               ,
-                                                               final PublicKey adminKey,
+  public static List<AccountMeta> updateMappingAndMetadataKeys(final PublicKey adminKey,
                                                                final PublicKey configurationKey,
                                                                final PublicKey oracleMappingsKey,
                                                                final PublicKey tokensMetadataKey,
@@ -447,7 +442,6 @@ public final class ScopeProgram {
                                                      final String feedName,
                                                      final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
     final var keys = updateMappingAndMetadataKeys(
-      invokedScopeProgramMeta,
       adminKey,
       configurationKey,
       oracleMappingsKey,
@@ -458,12 +452,12 @@ public final class ScopeProgram {
     return updateMappingAndMetadata(invokedScopeProgramMeta, keys, feedName, updates);
   }
 
-  public static Instruction updateMappingAndMetadata(final AccountMeta invokedScopeProgramMeta                                                     ,
+  public static Instruction updateMappingAndMetadata(final AccountMeta invokedScopeProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final String feedName,
                                                      final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_feedName) + Borsh.lenVector(updates)];
+    final byte[] _data = new byte[12 + _feedName.length + Borsh.lenVector(updates)];
     int i = UPDATE_MAPPING_AND_METADATA_DISCRIMINATOR.write(_data, 0);
     i += Borsh.writeVector(_feedName, _data, i);
     Borsh.writeVector(updates, _data, i);
@@ -487,10 +481,13 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feedName = Borsh.string(_data, i);
-      i += (Integer.BYTES + getInt32LE(_data, i));
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      i += _feedName.length;
       final var updates = Borsh.readVector(UpdateOracleMappingAndMetadataEntriesWithId.class, UpdateOracleMappingAndMetadataEntriesWithId::read, _data, i);
-      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName.getBytes(UTF_8), updates);
+      return new UpdateMappingAndMetadataIxData(discriminator, feedName, _feedName, updates);
     }
 
     @Override
@@ -503,14 +500,13 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_feedName) + Borsh.lenVector(updates);
+      return 8 + _feedName.length + Borsh.lenVector(updates);
     }
   }
 
   public static final Discriminator RESET_TWAP_DISCRIMINATOR = toDiscriminator(101, 216, 28, 92, 154, 79, 49, 187);
 
-  public static List<AccountMeta> resetTwapKeys(final AccountMeta invokedScopeProgramMeta                                                ,
-                                                final PublicKey adminKey,
+  public static List<AccountMeta> resetTwapKeys(final PublicKey adminKey,
                                                 final PublicKey configurationKey,
                                                 final PublicKey oracleTwapsKey,
                                                 final PublicKey instructionSysvarAccountInfoKey) {
@@ -530,7 +526,6 @@ public final class ScopeProgram {
                                       final long token,
                                       final String feedName) {
     final var keys = resetTwapKeys(
-      invokedScopeProgramMeta,
       adminKey,
       configurationKey,
       oracleTwapsKey,
@@ -539,12 +534,12 @@ public final class ScopeProgram {
     return resetTwap(invokedScopeProgramMeta, keys, token, feedName);
   }
 
-  public static Instruction resetTwap(final AccountMeta invokedScopeProgramMeta                                      ,
+  public static Instruction resetTwap(final AccountMeta invokedScopeProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long token,
                                       final String feedName) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[20 + Borsh.lenVector(_feedName)];
+    final byte[] _data = new byte[20 + _feedName.length];
     int i = RESET_TWAP_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, token);
     i += 8;
@@ -571,8 +566,11 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var token = getInt64LE(_data, i);
       i += 8;
-      final var feedName = Borsh.string(_data, i);
-      return new ResetTwapIxData(discriminator, token, feedName, feedName.getBytes(UTF_8));
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new ResetTwapIxData(discriminator, token, feedName, _feedName);
     }
 
     @Override
@@ -586,14 +584,13 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 8 + Borsh.lenVector(_feedName);
+      return 8 + 8 + _feedName.length;
     }
   }
 
   public static final Discriminator SET_ADMIN_CACHED_DISCRIMINATOR = toDiscriminator(114, 14, 105, 205, 216, 148, 30, 75);
 
-  public static List<AccountMeta> setAdminCachedKeys(final AccountMeta invokedScopeProgramMeta                                                     ,
-                                                     final PublicKey adminKey,
+  public static List<AccountMeta> setAdminCachedKeys(final PublicKey adminKey,
                                                      final PublicKey configurationKey) {
     return List.of(
       createReadOnlySigner(adminKey),
@@ -607,19 +604,18 @@ public final class ScopeProgram {
                                            final PublicKey newAdmin,
                                            final String feedName) {
     final var keys = setAdminCachedKeys(
-      invokedScopeProgramMeta,
       adminKey,
       configurationKey
     );
     return setAdminCached(invokedScopeProgramMeta, keys, newAdmin, feedName);
   }
 
-  public static Instruction setAdminCached(final AccountMeta invokedScopeProgramMeta                                           ,
+  public static Instruction setAdminCached(final AccountMeta invokedScopeProgramMeta,
                                            final List<AccountMeta> keys,
                                            final PublicKey newAdmin,
                                            final String feedName) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[44 + Borsh.lenVector(_feedName)];
+    final byte[] _data = new byte[44 + _feedName.length];
     int i = SET_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
     newAdmin.write(_data, i);
     i += 32;
@@ -646,8 +642,11 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var newAdmin = readPubKey(_data, i);
       i += 32;
-      final var feedName = Borsh.string(_data, i);
-      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName.getBytes(UTF_8));
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, _feedName);
     }
 
     @Override
@@ -661,14 +660,13 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 32 + Borsh.lenVector(_feedName);
+      return 8 + 32 + _feedName.length;
     }
   }
 
   public static final Discriminator APPROVE_ADMIN_CACHED_DISCRIMINATOR = toDiscriminator(101, 149, 97, 58, 48, 79, 16, 105);
 
-  public static List<AccountMeta> approveAdminCachedKeys(final AccountMeta invokedScopeProgramMeta                                                         ,
-                                                         final PublicKey adminCachedKey,
+  public static List<AccountMeta> approveAdminCachedKeys(final PublicKey adminCachedKey,
                                                          final PublicKey configurationKey) {
     return List.of(
       createReadOnlySigner(adminCachedKey),
@@ -681,18 +679,17 @@ public final class ScopeProgram {
                                                final PublicKey configurationKey,
                                                final String feedName) {
     final var keys = approveAdminCachedKeys(
-      invokedScopeProgramMeta,
       adminCachedKey,
       configurationKey
     );
     return approveAdminCached(invokedScopeProgramMeta, keys, feedName);
   }
 
-  public static Instruction approveAdminCached(final AccountMeta invokedScopeProgramMeta                                               ,
+  public static Instruction approveAdminCached(final AccountMeta invokedScopeProgramMeta,
                                                final List<AccountMeta> keys,
                                                final String feedName) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + Borsh.lenVector(_feedName)];
+    final byte[] _data = new byte[12 + _feedName.length];
     int i = APPROVE_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
     Borsh.writeVector(_feedName, _data, i);
 
@@ -715,8 +712,11 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feedName = Borsh.string(_data, i);
-      return new ApproveAdminCachedIxData(discriminator, feedName, feedName.getBytes(UTF_8));
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new ApproveAdminCachedIxData(discriminator, feedName, _feedName);
     }
 
     @Override
@@ -728,14 +728,13 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(_feedName);
+      return 8 + _feedName.length;
     }
   }
 
   public static final Discriminator CREATE_MINT_MAP_DISCRIMINATOR = toDiscriminator(216, 218, 224, 60, 23, 31, 193, 243);
 
-  public static List<AccountMeta> createMintMapKeys(final AccountMeta invokedScopeProgramMeta                                                    ,
-                                                    final PublicKey adminKey,
+  public static List<AccountMeta> createMintMapKeys(final PublicKey adminKey,
                                                     final PublicKey configurationKey,
                                                     final PublicKey mappingsKey,
                                                     final PublicKey systemProgramKey) {
@@ -757,7 +756,6 @@ public final class ScopeProgram {
                                           final int bump,
                                           final short[][] scopeChains) {
     final var keys = createMintMapKeys(
-      invokedScopeProgramMeta,
       adminKey,
       configurationKey,
       mappingsKey,
@@ -773,7 +771,7 @@ public final class ScopeProgram {
     );
   }
 
-  public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta                                          ,
+  public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PublicKey seedPk,
                                           final long seedId,
@@ -843,8 +841,7 @@ public final class ScopeProgram {
 
   public static final Discriminator CLOSE_MINT_MAP_DISCRIMINATOR = toDiscriminator(146, 212, 203, 239, 191, 104, 38, 102);
 
-  public static List<AccountMeta> closeMintMapKeys(final AccountMeta invokedScopeProgramMeta                                                   ,
-                                                   final PublicKey adminKey,
+  public static List<AccountMeta> closeMintMapKeys(final PublicKey adminKey,
                                                    final PublicKey configurationKey,
                                                    final PublicKey mappingsKey,
                                                    final PublicKey systemProgramKey) {
@@ -862,7 +859,6 @@ public final class ScopeProgram {
                                          final PublicKey mappingsKey,
                                          final PublicKey systemProgramKey) {
     final var keys = closeMintMapKeys(
-      invokedScopeProgramMeta,
       adminKey,
       configurationKey,
       mappingsKey,
@@ -871,9 +867,97 @@ public final class ScopeProgram {
     return closeMintMap(invokedScopeProgramMeta, keys);
   }
 
-  public static Instruction closeMintMap(final AccountMeta invokedScopeProgramMeta                                         ,
+  public static Instruction closeMintMap(final AccountMeta invokedScopeProgramMeta,
                                          final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, CLOSE_MINT_MAP_DISCRIMINATOR);
+  }
+
+  public static final Discriminator RESUME_CHAINLINKX_PRICE_DISCRIMINATOR = toDiscriminator(136, 48, 103, 146, 227, 97, 87, 108);
+
+  public static List<AccountMeta> resumeChainlinkxPriceKeys(final PublicKey adminKey,
+                                                            final PublicKey configurationKey,
+                                                            final PublicKey oraclePricesKey,
+                                                            final PublicKey oracleMappingsKey,
+                                                            final PublicKey tokensMetadataKey) {
+    return List.of(
+      createReadOnlySigner(adminKey),
+      createRead(configurationKey),
+      createWrite(oraclePricesKey),
+      createRead(oracleMappingsKey),
+      createRead(tokensMetadataKey)
+    );
+  }
+
+  public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
+                                                  final PublicKey adminKey,
+                                                  final PublicKey configurationKey,
+                                                  final PublicKey oraclePricesKey,
+                                                  final PublicKey oracleMappingsKey,
+                                                  final PublicKey tokensMetadataKey,
+                                                  final int token,
+                                                  final String feedName) {
+    final var keys = resumeChainlinkxPriceKeys(
+      adminKey,
+      configurationKey,
+      oraclePricesKey,
+      oracleMappingsKey,
+      tokensMetadataKey
+    );
+    return resumeChainlinkxPrice(invokedScopeProgramMeta, keys, token, feedName);
+  }
+
+  public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final int token,
+                                                  final String feedName) {
+    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _data = new byte[14 + _feedName.length];
+    int i = RESUME_CHAINLINKX_PRICE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, token);
+    i += 2;
+    Borsh.writeVector(_feedName, _data, i);
+
+    return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
+  }
+
+  public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements Borsh {  
+
+    public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static ResumeChainlinkxPriceIxData createRecord(final Discriminator discriminator, final int token, final String feedName) {
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName.getBytes(UTF_8));
+    }
+
+    public static ResumeChainlinkxPriceIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var token = getInt16LE(_data, i);
+      i += 2;
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, _feedName);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, token);
+      i += 2;
+      i += Borsh.writeVector(_feedName, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 2 + _feedName.length;
+    }
   }
 
   private ScopeProgram() {

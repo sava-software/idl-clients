@@ -28,8 +28,7 @@ public final class JupiterProgram {
 
   public static final Discriminator CLAIM_DISCRIMINATOR = toDiscriminator(62, 198, 214, 193, 213, 159, 108, 210);
 
-  public static List<AccountMeta> claimKeys(final AccountMeta invokedJupiterProgramMeta                                            ,
-                                            final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> claimKeys(final SolanaAccounts solanaAccounts,
                                             final PublicKey walletKey,
                                             final PublicKey programAuthorityKey) {
     return List.of(
@@ -45,7 +44,6 @@ public final class JupiterProgram {
                                   final PublicKey programAuthorityKey,
                                   final int id) {
     final var keys = claimKeys(
-      invokedJupiterProgramMeta,
       solanaAccounts,
       walletKey,
       programAuthorityKey
@@ -53,7 +51,7 @@ public final class JupiterProgram {
     return claim(invokedJupiterProgramMeta, keys, id);
   }
 
-  public static Instruction claim(final AccountMeta invokedJupiterProgramMeta                                  ,
+  public static Instruction claim(final AccountMeta invokedJupiterProgramMeta,
                                   final List<AccountMeta> keys,
                                   final int id) {
     final byte[] _data = new byte[9];
@@ -97,8 +95,7 @@ public final class JupiterProgram {
 
   public static final Discriminator CLAIM_TOKEN_DISCRIMINATOR = toDiscriminator(116, 206, 27, 191, 166, 19, 0, 73);
 
-  public static List<AccountMeta> claimTokenKeys(final AccountMeta invokedJupiterProgramMeta                                                 ,
-                                                 final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> claimTokenKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey payerKey,
                                                  final PublicKey walletKey,
                                                  final PublicKey programAuthorityKey,
@@ -130,7 +127,6 @@ public final class JupiterProgram {
                                        final PublicKey tokenProgramKey,
                                        final int id) {
     final var keys = claimTokenKeys(
-      invokedJupiterProgramMeta,
       solanaAccounts,
       payerKey,
       walletKey,
@@ -143,7 +139,7 @@ public final class JupiterProgram {
     return claimToken(invokedJupiterProgramMeta, keys, id);
   }
 
-  public static Instruction claimToken(final AccountMeta invokedJupiterProgramMeta                                       ,
+  public static Instruction claimToken(final AccountMeta invokedJupiterProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int id) {
     final byte[] _data = new byte[9];
@@ -187,8 +183,7 @@ public final class JupiterProgram {
 
   public static final Discriminator CLOSE_TOKEN_DISCRIMINATOR = toDiscriminator(26, 74, 236, 151, 104, 64, 183, 249);
 
-  public static List<AccountMeta> closeTokenKeys(final AccountMeta invokedJupiterProgramMeta                                                 ,
-                                                 final PublicKey operatorKey,
+  public static List<AccountMeta> closeTokenKeys(final PublicKey operatorKey,
                                                  final PublicKey walletKey,
                                                  final PublicKey programAuthorityKey,
                                                  final PublicKey programTokenAccountKey,
@@ -214,7 +209,6 @@ public final class JupiterProgram {
                                        final int id,
                                        final boolean burnAll) {
     final var keys = closeTokenKeys(
-      invokedJupiterProgramMeta,
       operatorKey,
       walletKey,
       programAuthorityKey,
@@ -225,7 +219,7 @@ public final class JupiterProgram {
     return closeToken(invokedJupiterProgramMeta, keys, id, burnAll);
   }
 
-  public static Instruction closeToken(final AccountMeta invokedJupiterProgramMeta                                       ,
+  public static Instruction closeToken(final AccountMeta invokedJupiterProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int id,
                                        final boolean burnAll) {
@@ -276,8 +270,7 @@ public final class JupiterProgram {
 
   public static final Discriminator CREATE_TOKEN_LEDGER_DISCRIMINATOR = toDiscriminator(232, 242, 197, 253, 240, 143, 129, 52);
 
-  public static List<AccountMeta> createTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta                                                        ,
-                                                        final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> createTokenLedgerKeys(final SolanaAccounts solanaAccounts,
                                                         final PublicKey tokenLedgerKey,
                                                         final PublicKey payerKey) {
     return List.of(
@@ -292,7 +285,6 @@ public final class JupiterProgram {
                                               final PublicKey tokenLedgerKey,
                                               final PublicKey payerKey) {
     final var keys = createTokenLedgerKeys(
-      invokedJupiterProgramMeta,
       solanaAccounts,
       tokenLedgerKey,
       payerKey
@@ -300,15 +292,14 @@ public final class JupiterProgram {
     return createTokenLedger(invokedJupiterProgramMeta, keys);
   }
 
-  public static Instruction createTokenLedger(final AccountMeta invokedJupiterProgramMeta                                              ,
+  public static Instruction createTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                               final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, CREATE_TOKEN_LEDGER_DISCRIMINATOR);
   }
 
   public static final Discriminator CREATE_TOKEN_ACCOUNT_DISCRIMINATOR = toDiscriminator(147, 241, 123, 100, 244, 132, 174, 118);
 
-  public static List<AccountMeta> createTokenAccountKeys(final AccountMeta invokedJupiterProgramMeta                                                         ,
-                                                         final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> createTokenAccountKeys(final SolanaAccounts solanaAccounts,
                                                          final PublicKey tokenAccountKey,
                                                          final PublicKey userKey,
                                                          final PublicKey mintKey,
@@ -330,7 +321,6 @@ public final class JupiterProgram {
                                                final PublicKey tokenProgramKey,
                                                final int bump) {
     final var keys = createTokenAccountKeys(
-      invokedJupiterProgramMeta,
       solanaAccounts,
       tokenAccountKey,
       userKey,
@@ -340,7 +330,7 @@ public final class JupiterProgram {
     return createTokenAccount(invokedJupiterProgramMeta, keys, bump);
   }
 
-  public static Instruction createTokenAccount(final AccountMeta invokedJupiterProgramMeta                                               ,
+  public static Instruction createTokenAccount(final AccountMeta invokedJupiterProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int bump) {
     final byte[] _data = new byte[9];
@@ -384,7 +374,7 @@ public final class JupiterProgram {
 
   public static final Discriminator EXACT_OUT_ROUTE_DISCRIMINATOR = toDiscriminator(208, 51, 239, 151, 123, 43, 237, 92);
 
-  public static List<AccountMeta> exactOutRouteKeys(final AccountMeta invokedJupiterProgramMeta                                                    ,
+  public static List<AccountMeta> exactOutRouteKeys(final AccountMeta invokedJupiterProgramMeta,
                                                     final PublicKey tokenProgramKey,
                                                     final PublicKey userTransferAuthorityKey,
                                                     final PublicKey userSourceTokenAccountKey,
@@ -453,7 +443,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction exactOutRoute(final AccountMeta invokedJupiterProgramMeta                                          ,
+  public static Instruction exactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                           final List<AccountMeta> keys,
                                           final RoutePlanStep[] routePlan,
                                           final long outAmount,
@@ -535,7 +525,7 @@ public final class JupiterProgram {
 
   public static final Discriminator ROUTE_DISCRIMINATOR = toDiscriminator(229, 23, 203, 151, 122, 227, 173, 42);
 
-  public static List<AccountMeta> routeKeys(final AccountMeta invokedJupiterProgramMeta                                            ,
+  public static List<AccountMeta> routeKeys(final AccountMeta invokedJupiterProgramMeta,
                                             final PublicKey tokenProgramKey,
                                             final PublicKey userTransferAuthorityKey,
                                             final PublicKey userSourceTokenAccountKey,
@@ -596,7 +586,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction route(final AccountMeta invokedJupiterProgramMeta                                  ,
+  public static Instruction route(final AccountMeta invokedJupiterProgramMeta,
                                   final List<AccountMeta> keys,
                                   final RoutePlanStep[] routePlan,
                                   final long inAmount,
@@ -678,7 +668,7 @@ public final class JupiterProgram {
 
   public static final Discriminator ROUTE_WITH_TOKEN_LEDGER_DISCRIMINATOR = toDiscriminator(150, 86, 71, 116, 167, 93, 14, 104);
 
-  public static List<AccountMeta> routeWithTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta                                                           ,
+  public static List<AccountMeta> routeWithTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta,
                                                            final PublicKey tokenProgramKey,
                                                            final PublicKey userTransferAuthorityKey,
                                                            final PublicKey userSourceTokenAccountKey,
@@ -741,7 +731,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction routeWithTokenLedger(final AccountMeta invokedJupiterProgramMeta                                                 ,
+  public static Instruction routeWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final RoutePlanStep[] routePlan,
                                                  final long quotedOutAmount,
@@ -810,8 +800,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SET_TOKEN_LEDGER_DISCRIMINATOR = toDiscriminator(228, 85, 185, 112, 78, 79, 77, 2);
 
-  public static List<AccountMeta> setTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta                                                     ,
-                                                     final PublicKey tokenLedgerKey,
+  public static List<AccountMeta> setTokenLedgerKeys(final PublicKey tokenLedgerKey,
                                                      final PublicKey tokenAccountKey) {
     return List.of(
       createWrite(tokenLedgerKey),
@@ -819,22 +808,24 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction setTokenLedger(final AccountMeta invokedJupiterProgramMeta, final PublicKey tokenLedgerKey, final PublicKey tokenAccountKey) {     final var keys = setTokenLedgerKeys(
-      invokedJupiterProgramMeta,
+  public static Instruction setTokenLedger(final AccountMeta invokedJupiterProgramMeta,
+                                           final PublicKey tokenLedgerKey,
+                                           final PublicKey tokenAccountKey) {
+    final var keys = setTokenLedgerKeys(
       tokenLedgerKey,
       tokenAccountKey
     );
     return setTokenLedger(invokedJupiterProgramMeta, keys);
   }
 
-  public static Instruction setTokenLedger(final AccountMeta invokedJupiterProgramMeta                                           ,
+  public static Instruction setTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, SET_TOKEN_LEDGER_DISCRIMINATOR);
   }
 
   public static final Discriminator SHARED_ACCOUNTS_EXACT_OUT_ROUTE_DISCRIMINATOR = toDiscriminator(176, 209, 105, 168, 154, 125, 69, 62);
 
-  public static List<AccountMeta> sharedAccountsExactOutRouteKeys(final AccountMeta invokedJupiterProgramMeta                                                                  ,
+  public static List<AccountMeta> sharedAccountsExactOutRouteKeys(final AccountMeta invokedJupiterProgramMeta,
                                                                   final PublicKey tokenProgramKey,
                                                                   final PublicKey programAuthorityKey,
                                                                   final PublicKey userTransferAuthorityKey,
@@ -913,7 +904,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction sharedAccountsExactOutRoute(final AccountMeta invokedJupiterProgramMeta                                                        ,
+  public static Instruction sharedAccountsExactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int id,
                                                         final RoutePlanStep[] routePlan,
@@ -1005,7 +996,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_ROUTE_DISCRIMINATOR = toDiscriminator(193, 32, 155, 51, 65, 214, 156, 129);
 
-  public static List<AccountMeta> sharedAccountsRouteKeys(final AccountMeta invokedJupiterProgramMeta                                                          ,
+  public static List<AccountMeta> sharedAccountsRouteKeys(final AccountMeta invokedJupiterProgramMeta,
                                                           final PublicKey tokenProgramKey,
                                                           final PublicKey programAuthorityKey,
                                                           final PublicKey userTransferAuthorityKey,
@@ -1084,7 +1075,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction sharedAccountsRoute(final AccountMeta invokedJupiterProgramMeta                                                ,
+  public static Instruction sharedAccountsRoute(final AccountMeta invokedJupiterProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int id,
                                                 final RoutePlanStep[] routePlan,
@@ -1176,7 +1167,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_ROUTE_WITH_TOKEN_LEDGER_DISCRIMINATOR = toDiscriminator(230, 121, 143, 80, 119, 159, 106, 170);
 
-  public static List<AccountMeta> sharedAccountsRouteWithTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta                                                                         ,
+  public static List<AccountMeta> sharedAccountsRouteWithTokenLedgerKeys(final AccountMeta invokedJupiterProgramMeta,
                                                                          final PublicKey tokenProgramKey,
                                                                          final PublicKey programAuthorityKey,
                                                                          final PublicKey userTransferAuthorityKey,
@@ -1257,7 +1248,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction sharedAccountsRouteWithTokenLedger(final AccountMeta invokedJupiterProgramMeta                                                               ,
+  public static Instruction sharedAccountsRouteWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int id,
                                                                final RoutePlanStep[] routePlan,
@@ -1339,7 +1330,7 @@ public final class JupiterProgram {
 
   public static final Discriminator EXACT_OUT_ROUTE_V_2_DISCRIMINATOR = toDiscriminator(157, 138, 184, 82, 21, 244, 243, 36);
 
-  public static List<AccountMeta> exactOutRouteV2Keys(final AccountMeta invokedJupiterProgramMeta                                                      ,
+  public static List<AccountMeta> exactOutRouteV2Keys(final AccountMeta invokedJupiterProgramMeta,
                                                       final PublicKey userTransferAuthorityKey,
                                                       final PublicKey userSourceTokenAccountKey,
                                                       final PublicKey userDestinationTokenAccountKey,
@@ -1406,7 +1397,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction exactOutRouteV2(final AccountMeta invokedJupiterProgramMeta                                            ,
+  public static Instruction exactOutRouteV2(final AccountMeta invokedJupiterProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long outAmount,
                                             final long quotedInAmount,
@@ -1499,7 +1490,7 @@ public final class JupiterProgram {
 
   public static final Discriminator ROUTE_V_2_DISCRIMINATOR = toDiscriminator(187, 100, 250, 204, 49, 196, 175, 20);
 
-  public static List<AccountMeta> routeV2Keys(final AccountMeta invokedJupiterProgramMeta                                              ,
+  public static List<AccountMeta> routeV2Keys(final AccountMeta invokedJupiterProgramMeta,
                                               final PublicKey userTransferAuthorityKey,
                                               final PublicKey userSourceTokenAccountKey,
                                               final PublicKey userDestinationTokenAccountKey,
@@ -1566,7 +1557,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction routeV2(final AccountMeta invokedJupiterProgramMeta                                    ,
+  public static Instruction routeV2(final AccountMeta invokedJupiterProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long inAmount,
                                     final long quotedOutAmount,
@@ -1659,8 +1650,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_EXACT_OUT_ROUTE_V_2_DISCRIMINATOR = toDiscriminator(53, 96, 229, 202, 216, 187, 250, 24);
 
-  public static List<AccountMeta> sharedAccountsExactOutRouteV2Keys(final AccountMeta invokedJupiterProgramMeta                                                                    ,
-                                                                    final PublicKey programAuthorityKey,
+  public static List<AccountMeta> sharedAccountsExactOutRouteV2Keys(final PublicKey programAuthorityKey,
                                                                     final PublicKey userTransferAuthorityKey,
                                                                     final PublicKey sourceTokenAccountKey,
                                                                     final PublicKey programSourceTokenAccountKey,
@@ -1709,7 +1699,6 @@ public final class JupiterProgram {
                                                           final int positiveSlippageBps,
                                                           final RoutePlanStepV2[] routePlan) {
     final var keys = sharedAccountsExactOutRouteV2Keys(
-      invokedJupiterProgramMeta,
       programAuthorityKey,
       userTransferAuthorityKey,
       sourceTokenAccountKey,
@@ -1736,7 +1725,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction sharedAccountsExactOutRouteV2(final AccountMeta invokedJupiterProgramMeta                                                          ,
+  public static Instruction sharedAccountsExactOutRouteV2(final AccountMeta invokedJupiterProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int id,
                                                           final long outAmount,
@@ -1839,8 +1828,7 @@ public final class JupiterProgram {
 
   public static final Discriminator SHARED_ACCOUNTS_ROUTE_V_2_DISCRIMINATOR = toDiscriminator(209, 152, 83, 147, 124, 254, 216, 233);
 
-  public static List<AccountMeta> sharedAccountsRouteV2Keys(final AccountMeta invokedJupiterProgramMeta                                                            ,
-                                                            final PublicKey programAuthorityKey,
+  public static List<AccountMeta> sharedAccountsRouteV2Keys(final PublicKey programAuthorityKey,
                                                             final PublicKey userTransferAuthorityKey,
                                                             final PublicKey sourceTokenAccountKey,
                                                             final PublicKey programSourceTokenAccountKey,
@@ -1889,7 +1877,6 @@ public final class JupiterProgram {
                                                   final int positiveSlippageBps,
                                                   final RoutePlanStepV2[] routePlan) {
     final var keys = sharedAccountsRouteV2Keys(
-      invokedJupiterProgramMeta,
       programAuthorityKey,
       userTransferAuthorityKey,
       sourceTokenAccountKey,
@@ -1916,7 +1903,7 @@ public final class JupiterProgram {
     );
   }
 
-  public static Instruction sharedAccountsRouteV2(final AccountMeta invokedJupiterProgramMeta                                                  ,
+  public static Instruction sharedAccountsRouteV2(final AccountMeta invokedJupiterProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int id,
                                                   final long inAmount,

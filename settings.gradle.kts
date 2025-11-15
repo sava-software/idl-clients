@@ -9,6 +9,7 @@ pluginManagement {
       credentials(PasswordCredentials::class)
     }
   }
+  // includeBuild("../sava-build")
 }
 
 plugins {

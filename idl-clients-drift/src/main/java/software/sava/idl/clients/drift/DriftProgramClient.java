@@ -219,10 +219,10 @@ public interface DriftProgramClient {
                                    final PerpMarketConfig perpMarketConfig,
                                    final OptionalLong amount);
 
-  default Instruction transferPerpPosition(PublicKey fromUser,
-                                           PublicKey toUser,
-                                           PerpMarketConfig perpMarketConfig,
-                                           OptionalLong amount) {
+  default Instruction transferPerpPosition(final PublicKey fromUser,
+                                           final PublicKey toUser,
+                                           final PerpMarketConfig perpMarketConfig,
+                                           final OptionalLong amount) {
     return transferPerpPosition(authority(), fromUser, toUser, perpMarketConfig, amount);
   }
 

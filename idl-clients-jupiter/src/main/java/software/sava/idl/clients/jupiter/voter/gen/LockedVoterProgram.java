@@ -2,6 +2,7 @@ package software.sava.idl.clients.jupiter.voter.gen;
 
 import java.lang.String;
 
+import java.util.Arrays;
 import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
@@ -18,6 +19,7 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -35,8 +37,7 @@ public final class LockedVoterProgram {
   /// @param governorKey Governor associated with the Locker.
   /// @param payerKey Payer of the initialization.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> newLockerKeys(final AccountMeta invokedLockedVoterProgramMeta                                                ,
-                                                final PublicKey baseKey,
+  public static List<AccountMeta> newLockerKeys(final PublicKey baseKey,
                                                 final PublicKey lockerKey,
                                                 final PublicKey tokenMintKey,
                                                 final PublicKey governorKey,
@@ -69,7 +70,6 @@ public final class LockedVoterProgram {
                                       final PublicKey systemProgramKey,
                                       final LockerParams params) {
     final var keys = newLockerKeys(
-      invokedLockedVoterProgramMeta,
       baseKey,
       lockerKey,
       tokenMintKey,
@@ -82,7 +82,7 @@ public final class LockedVoterProgram {
 
   /// Creates a new Locker.
   ///
-  public static Instruction newLocker(final AccountMeta invokedLockedVoterProgramMeta                                      ,
+  public static Instruction newLocker(final AccountMeta invokedLockedVoterProgramMeta,
                                       final List<AccountMeta> keys,
                                       final LockerParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -135,8 +135,7 @@ public final class LockedVoterProgram {
   /// @param escrowKey Escrow.
   /// @param payerKey Payer of the initialization.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> newEscrowKeys(final AccountMeta invokedLockedVoterProgramMeta                                                ,
-                                                final PublicKey lockerKey,
+  public static List<AccountMeta> newEscrowKeys(final PublicKey lockerKey,
                                                 final PublicKey escrowKey,
                                                 final PublicKey escrowOwnerKey,
                                                 final PublicKey payerKey,
@@ -167,7 +166,6 @@ public final class LockedVoterProgram {
                                       final PublicKey payerKey,
                                       final PublicKey systemProgramKey) {
     final var keys = newEscrowKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       escrowOwnerKey,
@@ -183,7 +181,7 @@ public final class LockedVoterProgram {
   /// lock up tokens for a specific period of time, in exchange for voting rights
   /// linearly proportional to the amount of votes given.
   ///
-  public static Instruction newEscrow(final AccountMeta invokedLockedVoterProgramMeta                                      ,
+  public static Instruction newEscrow(final AccountMeta invokedLockedVoterProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, NEW_ESCROW_DISCRIMINATOR);
   }
@@ -198,8 +196,7 @@ public final class LockedVoterProgram {
   /// @param payerKey Authority Self::source_tokens, Anyone can increase amount for user
   /// @param sourceTokensKey The source of deposited tokens.
   /// @param tokenProgramKey Token program.
-  public static List<AccountMeta> increaseLockedAmountKeys(final AccountMeta invokedLockedVoterProgramMeta                                                           ,
-                                                           final PublicKey lockerKey,
+  public static List<AccountMeta> increaseLockedAmountKeys(final PublicKey lockerKey,
                                                            final PublicKey escrowKey,
                                                            final PublicKey escrowTokensKey,
                                                            final PublicKey payerKey,
@@ -232,7 +229,6 @@ public final class LockedVoterProgram {
                                                  final PublicKey tokenProgramKey,
                                                  final long amount) {
     final var keys = increaseLockedAmountKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       escrowTokensKey,
@@ -245,7 +241,7 @@ public final class LockedVoterProgram {
 
   /// increase locked amount Escrow.
   ///
-  public static Instruction increaseLockedAmount(final AccountMeta invokedLockedVoterProgramMeta                                                 ,
+  public static Instruction increaseLockedAmount(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long amount) {
     final byte[] _data = new byte[16];
@@ -294,8 +290,7 @@ public final class LockedVoterProgram {
   /// @param lockerKey Locker.
   /// @param escrowKey Escrow.
   /// @param escrowOwnerKey Authority of the Escrow and
-  public static List<AccountMeta> extendLockDurationKeys(final AccountMeta invokedLockedVoterProgramMeta                                                         ,
-                                                         final PublicKey lockerKey,
+  public static List<AccountMeta> extendLockDurationKeys(final PublicKey lockerKey,
                                                          final PublicKey escrowKey,
                                                          final PublicKey escrowOwnerKey) {
     return List.of(
@@ -316,7 +311,6 @@ public final class LockedVoterProgram {
                                                final PublicKey escrowOwnerKey,
                                                final long duration) {
     final var keys = extendLockDurationKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       escrowOwnerKey
@@ -326,7 +320,7 @@ public final class LockedVoterProgram {
 
   /// extend locked duration Escrow.
   ///
-  public static Instruction extendLockDuration(final AccountMeta invokedLockedVoterProgramMeta                                               ,
+  public static Instruction extendLockDuration(final AccountMeta invokedLockedVoterProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long duration) {
     final byte[] _data = new byte[16];
@@ -375,8 +369,7 @@ public final class LockedVoterProgram {
   /// @param lockerKey Locker.
   /// @param escrowKey Escrow.
   /// @param escrowOwnerKey Authority of the Escrow and
-  public static List<AccountMeta> toggleMaxLockKeys(final AccountMeta invokedLockedVoterProgramMeta                                                    ,
-                                                    final PublicKey lockerKey,
+  public static List<AccountMeta> toggleMaxLockKeys(final PublicKey lockerKey,
                                                     final PublicKey escrowKey,
                                                     final PublicKey escrowOwnerKey) {
     return List.of(
@@ -397,7 +390,6 @@ public final class LockedVoterProgram {
                                           final PublicKey escrowOwnerKey,
                                           final boolean isMaxLock) {
     final var keys = toggleMaxLockKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       escrowOwnerKey
@@ -407,7 +399,7 @@ public final class LockedVoterProgram {
 
   /// toogle max lock Escrow.
   ///
-  public static Instruction toggleMaxLock(final AccountMeta invokedLockedVoterProgramMeta                                          ,
+  public static Instruction toggleMaxLock(final AccountMeta invokedLockedVoterProgramMeta,
                                           final List<AccountMeta> keys,
                                           final boolean isMaxLock) {
     final byte[] _data = new byte[9];
@@ -460,8 +452,7 @@ public final class LockedVoterProgram {
   /// @param destinationTokensKey Destination for the tokens to unlock.
   /// @param payerKey The payer to receive the rent refund.
   /// @param tokenProgramKey Token program.
-  public static List<AccountMeta> withdrawKeys(final AccountMeta invokedLockedVoterProgramMeta                                               ,
-                                               final PublicKey lockerKey,
+  public static List<AccountMeta> withdrawKeys(final PublicKey lockerKey,
                                                final PublicKey escrowKey,
                                                final PublicKey escrowOwnerKey,
                                                final PublicKey escrowTokensKey,
@@ -497,7 +488,6 @@ public final class LockedVoterProgram {
                                      final PublicKey payerKey,
                                      final PublicKey tokenProgramKey) {
     final var keys = withdrawKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       escrowOwnerKey,
@@ -511,7 +501,7 @@ public final class LockedVoterProgram {
 
   /// Exits the DAO; i.e., withdraws all staked tokens in an Escrow if the Escrow is unlocked.
   ///
-  public static Instruction withdraw(final AccountMeta invokedLockedVoterProgramMeta                                     ,
+  public static Instruction withdraw(final AccountMeta invokedLockedVoterProgramMeta,
                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, WITHDRAW_DISCRIMINATOR);
   }
@@ -525,8 +515,7 @@ public final class LockedVoterProgram {
   /// @param proposalKey The Proposal.
   /// @param governProgramKey The govern program.
   /// @param smartWalletKey The smart wallet on the Governor.
-  public static List<AccountMeta> activateProposalKeys(final AccountMeta invokedLockedVoterProgramMeta                                                       ,
-                                                       final PublicKey lockerKey,
+  public static List<AccountMeta> activateProposalKeys(final PublicKey lockerKey,
                                                        final PublicKey governorKey,
                                                        final PublicKey proposalKey,
                                                        final PublicKey governProgramKey,
@@ -554,7 +543,6 @@ public final class LockedVoterProgram {
                                              final PublicKey governProgramKey,
                                              final PublicKey smartWalletKey) {
     final var keys = activateProposalKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       governorKey,
       proposalKey,
@@ -566,7 +554,7 @@ public final class LockedVoterProgram {
 
   /// Activates a proposal in token launch phase
   ///
-  public static Instruction activateProposal(final AccountMeta invokedLockedVoterProgramMeta                                             ,
+  public static Instruction activateProposal(final AccountMeta invokedLockedVoterProgramMeta,
                                              final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, ACTIVATE_PROPOSAL_DISCRIMINATOR);
   }
@@ -582,8 +570,7 @@ public final class LockedVoterProgram {
   /// @param voteKey The Vote.
   /// @param governorKey The Governor.
   /// @param governProgramKey The govern program.
-  public static List<AccountMeta> castVoteKeys(final AccountMeta invokedLockedVoterProgramMeta                                               ,
-                                               final PublicKey lockerKey,
+  public static List<AccountMeta> castVoteKeys(final PublicKey lockerKey,
                                                final PublicKey escrowKey,
                                                final PublicKey voteDelegateKey,
                                                final PublicKey proposalKey,
@@ -620,7 +607,6 @@ public final class LockedVoterProgram {
                                      final PublicKey governProgramKey,
                                      final int side) {
     final var keys = castVoteKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       voteDelegateKey,
@@ -634,7 +620,7 @@ public final class LockedVoterProgram {
 
   /// Casts a vote.
   ///
-  public static Instruction castVote(final AccountMeta invokedLockedVoterProgramMeta                                     ,
+  public static Instruction castVote(final AccountMeta invokedLockedVoterProgramMeta,
                                      final List<AccountMeta> keys,
                                      final int side) {
     final byte[] _data = new byte[9];
@@ -682,8 +668,7 @@ public final class LockedVoterProgram {
   ///
   /// @param escrowKey The Escrow.
   /// @param escrowOwnerKey The owner of the Escrow.
-  public static List<AccountMeta> setVoteDelegateKeys(final AccountMeta invokedLockedVoterProgramMeta                                                      ,
-                                                      final PublicKey escrowKey,
+  public static List<AccountMeta> setVoteDelegateKeys(final PublicKey escrowKey,
                                                       final PublicKey escrowOwnerKey) {
     return List.of(
       createWrite(escrowKey),
@@ -700,7 +685,6 @@ public final class LockedVoterProgram {
                                             final PublicKey escrowOwnerKey,
                                             final PublicKey newDelegate) {
     final var keys = setVoteDelegateKeys(
-      invokedLockedVoterProgramMeta,
       escrowKey,
       escrowOwnerKey
     );
@@ -709,7 +693,7 @@ public final class LockedVoterProgram {
 
   /// Delegate escrow vote.
   ///
-  public static Instruction setVoteDelegate(final AccountMeta invokedLockedVoterProgramMeta                                            ,
+  public static Instruction setVoteDelegate(final AccountMeta invokedLockedVoterProgramMeta,
                                             final List<AccountMeta> keys,
                                             final PublicKey newDelegate) {
     final byte[] _data = new byte[40];
@@ -758,8 +742,7 @@ public final class LockedVoterProgram {
   /// @param lockerKey The Locker.
   /// @param governorKey The Governor.
   /// @param smartWalletKey The smart wallet on the Governor.
-  public static List<AccountMeta> setLockerParamsKeys(final AccountMeta invokedLockedVoterProgramMeta                                                      ,
-                                                      final PublicKey lockerKey,
+  public static List<AccountMeta> setLockerParamsKeys(final PublicKey lockerKey,
                                                       final PublicKey governorKey,
                                                       final PublicKey smartWalletKey) {
     return List.of(
@@ -780,7 +763,6 @@ public final class LockedVoterProgram {
                                             final PublicKey smartWalletKey,
                                             final LockerParams params) {
     final var keys = setLockerParamsKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       governorKey,
       smartWalletKey
@@ -790,7 +772,7 @@ public final class LockedVoterProgram {
 
   /// Set locker params.
   ///
-  public static Instruction setLockerParams(final AccountMeta invokedLockedVoterProgramMeta                                            ,
+  public static Instruction setLockerParams(final AccountMeta invokedLockedVoterProgramMeta,
                                             final List<AccountMeta> keys,
                                             final LockerParams params) {
     final byte[] _data = new byte[8 + Borsh.len(params)];
@@ -839,8 +821,7 @@ public final class LockedVoterProgram {
   /// @param escrowKey Escrow.
   /// @param partialUnstakeKey Escrow.
   /// @param systemProgramKey System program.
-  public static List<AccountMeta> openPartialUnstakingKeys(final AccountMeta invokedLockedVoterProgramMeta                                                           ,
-                                                           final PublicKey lockerKey,
+  public static List<AccountMeta> openPartialUnstakingKeys(final PublicKey lockerKey,
                                                            final PublicKey escrowKey,
                                                            final PublicKey partialUnstakeKey,
                                                            final PublicKey ownerKey,
@@ -869,7 +850,6 @@ public final class LockedVoterProgram {
                                                  final long amount,
                                                  final String memo) {
     final var keys = openPartialUnstakingKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       partialUnstakeKey,
@@ -881,12 +861,12 @@ public final class LockedVoterProgram {
 
   /// Open partial unstaking
   ///
-  public static Instruction openPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta                                                 ,
+  public static Instruction openPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long amount,
                                                  final String memo) {
     final byte[] _memo = memo.getBytes(UTF_8);
-    final byte[] _data = new byte[20 + Borsh.lenVector(_memo)];
+    final byte[] _data = new byte[20 + _memo.length];
     int i = OPEN_PARTIAL_UNSTAKING_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
     i += 8;
@@ -913,8 +893,11 @@ public final class LockedVoterProgram {
       int i = _offset + discriminator.length();
       final var amount = getInt64LE(_data, i);
       i += 8;
-      final var memo = Borsh.string(_data, i);
-      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo.getBytes(UTF_8));
+      final int _memoLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
+      final var memo = new String(_memo, UTF_8);
+      return new OpenPartialUnstakingIxData(discriminator, amount, memo, _memo);
     }
 
     @Override
@@ -928,7 +911,7 @@ public final class LockedVoterProgram {
 
     @Override
     public int l() {
-      return 8 + 8 + Borsh.lenVector(_memo);
+      return 8 + 8 + _memo.length;
     }
   }
 
@@ -939,8 +922,7 @@ public final class LockedVoterProgram {
   /// @param lockerKey Locker.
   /// @param escrowKey Escrow.
   /// @param partialUnstakeKey The PartialUnstaking that is being merged.
-  public static List<AccountMeta> mergePartialUnstakingKeys(final AccountMeta invokedLockedVoterProgramMeta                                                            ,
-                                                            final PublicKey lockerKey,
+  public static List<AccountMeta> mergePartialUnstakingKeys(final PublicKey lockerKey,
                                                             final PublicKey escrowKey,
                                                             final PublicKey partialUnstakeKey,
                                                             final PublicKey ownerKey) {
@@ -963,7 +945,6 @@ public final class LockedVoterProgram {
                                                   final PublicKey partialUnstakeKey,
                                                   final PublicKey ownerKey) {
     final var keys = mergePartialUnstakingKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       partialUnstakeKey,
@@ -974,7 +955,7 @@ public final class LockedVoterProgram {
 
   /// Merge partial unstaking
   ///
-  public static Instruction mergePartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta                                                  ,
+  public static Instruction mergePartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta,
                                                   final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, MERGE_PARTIAL_UNSTAKING_DISCRIMINATOR);
   }
@@ -991,8 +972,7 @@ public final class LockedVoterProgram {
   /// @param destinationTokensKey Destination for the tokens to unlock.
   /// @param payerKey The payer to receive the rent refund.
   /// @param tokenProgramKey Token program.
-  public static List<AccountMeta> withdrawPartialUnstakingKeys(final AccountMeta invokedLockedVoterProgramMeta                                                               ,
-                                                               final PublicKey lockerKey,
+  public static List<AccountMeta> withdrawPartialUnstakingKeys(final PublicKey lockerKey,
                                                                final PublicKey escrowKey,
                                                                final PublicKey partialUnstakeKey,
                                                                final PublicKey ownerKey,
@@ -1032,7 +1012,6 @@ public final class LockedVoterProgram {
                                                      final PublicKey payerKey,
                                                      final PublicKey tokenProgramKey) {
     final var keys = withdrawPartialUnstakingKeys(
-      invokedLockedVoterProgramMeta,
       lockerKey,
       escrowKey,
       partialUnstakeKey,
@@ -1047,7 +1026,7 @@ public final class LockedVoterProgram {
 
   /// Withdraw partial unstaking
   ///
-  public static Instruction withdrawPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta                                                     ,
+  public static Instruction withdrawPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta,
                                                      final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, WITHDRAW_PARTIAL_UNSTAKING_DISCRIMINATOR);
   }
