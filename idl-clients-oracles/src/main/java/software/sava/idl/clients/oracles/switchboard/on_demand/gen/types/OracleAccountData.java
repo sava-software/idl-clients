@@ -136,7 +136,7 @@ public record OracleAccountData(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var enclave = Quote.read(_data, i);
-    i += Borsh.len(enclave);
+    i += enclave.l();
     final var authority = readPubKey(_data, i);
     i += 32;
     final var queue = readPubKey(_data, i);
@@ -190,7 +190,7 @@ public record OracleAccountData(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.write(enclave, _data, i);
+    i += enclave.write(_data, i);
     authority.write(_data, i);
     i += 32;
     queue.write(_data, i);

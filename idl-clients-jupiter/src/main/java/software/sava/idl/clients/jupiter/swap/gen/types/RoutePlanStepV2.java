@@ -16,7 +16,7 @@ public record RoutePlanStepV2(Swap swap,
     }
     int i = _offset;
     final var swap = Swap.read(_data, i);
-    i += Borsh.len(swap);
+    i += swap.l();
     final var bps = getInt16LE(_data, i);
     i += 2;
     final var inputIndex = _data[i] & 0xFF;
@@ -31,7 +31,7 @@ public record RoutePlanStepV2(Swap swap,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(swap, _data, i);
+    i += swap.write(_data, i);
     putInt16LE(_data, i, bps);
     i += 2;
     _data[i] = (byte) inputIndex;
@@ -43,6 +43,6 @@ public record RoutePlanStepV2(Swap swap,
 
   @Override
   public int l() {
-    return Borsh.len(swap) + 2 + 1 + 1;
+    return swap.l() + 2 + 1 + 1;
   }
 }

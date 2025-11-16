@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.core.serial.Serializable;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ public record Nonce(PublicKey _address,
                     NonceState state,
                     PublicKey authority,
                     PublicKey blockhash,
-                    long lamportsPerSignature) implements Borsh {
+                    long lamportsPerSignature) implements Serializable {
 
   public static final int BYTES = 80;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -69,9 +70,9 @@ public record Nonce(PublicKey _address,
     }
     int i = _offset;
     final var version = NonceVersion.read(_data, i);
-    i += Borsh.len(version);
+    i += version.l();
     final var state = NonceState.read(_data, i);
-    i += Borsh.len(state);
+    i += state.l();
     final var authority = readPubKey(_data, i);
     i += 32;
     final var blockhash = readPubKey(_data, i);
@@ -88,8 +89,8 @@ public record Nonce(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(version, _data, i);
-    i += Borsh.write(state, _data, i);
+    i += version.write(_data, i);
+    i += state.write(_data, i);
     authority.write(_data, i);
     i += 32;
     blockhash.write(_data, i);

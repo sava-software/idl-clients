@@ -146,7 +146,7 @@ public record Proposal(PublicKey _address,
     final var queuedTransaction = readPubKey(_data, i);
     i += 32;
     final var votingReward = VotingReward.read(_data, i);
-    i += Borsh.len(votingReward);
+    i += votingReward.l();
     final var totalClaimedReward = getInt64LE(_data, i);
     i += 8;
     final var proposalType = _data[i] & 0xFF;
@@ -204,7 +204,7 @@ public record Proposal(PublicKey _address,
     i += 8;
     queuedTransaction.write(_data, i);
     i += 32;
-    i += Borsh.write(votingReward, _data, i);
+    i += votingReward.write(_data, i);
     putInt64LE(_data, i, totalClaimedReward);
     i += 8;
     _data[i] = (byte) proposalType;
@@ -229,7 +229,7 @@ public record Proposal(PublicKey _address,
          + 8
          + 8
          + 32
-         + Borsh.len(votingReward)
+         + votingReward.l()
          + 8
          + 1
          + Borsh.len128Array(buffers)

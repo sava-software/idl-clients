@@ -30,7 +30,7 @@ public record StakeSystem(List stakeList,
     }
     int i = _offset;
     final var stakeList = List.read(_data, i);
-    i += Borsh.len(stakeList);
+    i += stakeList.l();
     final var delayedUnstakeCoolingDown = getInt64LE(_data, i);
     i += 8;
     final var stakeDepositBumpSeed = _data[i] & 0xFF;
@@ -57,7 +57,7 @@ public record StakeSystem(List stakeList,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(stakeList, _data, i);
+    i += stakeList.write(_data, i);
     putInt64LE(_data, i, delayedUnstakeCoolingDown);
     i += 8;
     _data[i] = (byte) stakeDepositBumpSeed;

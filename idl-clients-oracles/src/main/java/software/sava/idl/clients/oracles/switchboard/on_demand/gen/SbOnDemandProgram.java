@@ -96,9 +96,9 @@ public final class SbOnDemandProgram {
   public static Instruction guardianQuoteVerify(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final GuardianQuoteVerifyParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = GUARDIAN_QUOTE_VERIFY_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -122,13 +122,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -164,9 +164,9 @@ public final class SbOnDemandProgram {
   public static Instruction guardianRegister(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final GuardianRegisterParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = GUARDIAN_REGISTER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -192,7 +192,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -234,9 +234,9 @@ public final class SbOnDemandProgram {
   public static Instruction guardianUnregister(final AccountMeta invokedSbOnDemandProgramMeta,
                                                final List<AccountMeta> keys,
                                                final GuardianUnregisterParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = GUARDIAN_UNREGISTER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -262,7 +262,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -341,9 +341,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleHeartbeat(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final OracleHeartbeatParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_HEARTBEAT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -367,13 +367,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -417,9 +417,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleHeartbeatV2(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final OracleHeartbeatV2Params params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_HEARTBEAT_V_2_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -443,13 +443,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -502,9 +502,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                        final List<AccountMeta> keys,
                                        final OracleInitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_INIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -528,13 +528,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -595,9 +595,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleInitSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OracleInitSVMParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_INIT_SVM_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -621,13 +621,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -676,9 +676,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleResetLut(final AccountMeta invokedSbOnDemandProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OracleResetLutParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_RESET_LUT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -704,7 +704,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -738,9 +738,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final OracleSetConfigsParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_SET_CONFIGS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -764,13 +764,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -802,9 +802,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleSetOperator(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final OracleSetOperatorParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_SET_OPERATOR_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -830,7 +830,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -913,9 +913,9 @@ public final class SbOnDemandProgram {
   public static Instruction oracleSyncLut(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final OracleSyncLutParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ORACLE_SYNC_LUT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -941,7 +941,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -975,9 +975,9 @@ public final class SbOnDemandProgram {
   public static Instruction permissionSet(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PermissionSetParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PERMISSION_SET_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1003,7 +1003,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1067,9 +1067,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedClose(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PullFeedCloseParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_CLOSE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1095,7 +1095,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1164,9 +1164,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                          final List<AccountMeta> keys,
                                          final PullFeedInitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_INIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1190,13 +1190,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1224,9 +1224,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PullFeedSetConfigsParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SET_CONFIGS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1250,13 +1250,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1306,9 +1306,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSubmitResponse(final AccountMeta invokedSbOnDemandProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final PullFeedSubmitResponseParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SUBMIT_RESPONSE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1332,13 +1332,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1385,9 +1385,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSubmitResponseConsensus(final AccountMeta invokedSbOnDemandProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final PullFeedSubmitResponseConsensusParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SUBMIT_RESPONSE_CONSENSUS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1411,13 +1411,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1450,9 +1450,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSubmitResponseConsensusLight(final AccountMeta invokedSbOnDemandProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final PullFeedSubmitResponseConsensusLightParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SUBMIT_RESPONSE_CONSENSUS_LIGHT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1476,13 +1476,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1528,9 +1528,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSubmitResponseMany(final AccountMeta invokedSbOnDemandProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final PullFeedSubmitResponseManyParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SUBMIT_RESPONSE_MANY_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1554,13 +1554,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1610,9 +1610,9 @@ public final class SbOnDemandProgram {
   public static Instruction pullFeedSubmitResponseSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final PullFeedSubmitResponseSVMParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PULL_FEED_SUBMIT_RESPONSE_SVM_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1636,13 +1636,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -1678,9 +1678,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueAddMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta,
                                               final List<AccountMeta> keys,
                                               final QueueAddMrEnclaveParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_ADD_MR_ENCLAVE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1706,7 +1706,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1744,9 +1744,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueAllowSubsidies(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final QueueAllowSubsidiesParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_ALLOW_SUBSIDIES_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1772,7 +1772,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1814,9 +1814,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueGarbageCollect(final AccountMeta invokedSbOnDemandProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final QueueGarbageCollectParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_GARBAGE_COLLECT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1842,7 +1842,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1907,9 +1907,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                       final List<AccountMeta> keys,
                                       final QueueInitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_INIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -1935,7 +1935,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2000,9 +2000,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueInitSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                          final List<AccountMeta> keys,
                                          final QueueInitSVMParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_INIT_SVM_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2028,7 +2028,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2070,9 +2070,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueOverrideSvm(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final QueueOverrideSVMParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_OVERRIDE_SVM_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2098,7 +2098,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2166,9 +2166,9 @@ public final class SbOnDemandProgram {
   public static Instruction queuePaySubsidy(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueuePaySubsidyParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_PAY_SUBSIDY_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2194,7 +2194,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2236,9 +2236,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueRemoveMrEnclave(final AccountMeta invokedSbOnDemandProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final QueueRemoveMrEnclaveParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_REMOVE_MR_ENCLAVE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2264,7 +2264,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2310,9 +2310,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueResetVault(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueueResetVaultParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_RESET_VAULT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2338,7 +2338,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2376,9 +2376,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final QueueSetConfigsParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_SET_CONFIGS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2402,13 +2402,13 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -2444,9 +2444,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueSetNcn(final AccountMeta invokedSbOnDemandProgramMeta,
                                         final List<AccountMeta> keys,
                                         final QueueSetNcnParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_SET_NCN_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2472,7 +2472,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2518,9 +2518,9 @@ public final class SbOnDemandProgram {
   public static Instruction queueSetVault(final AccountMeta invokedSbOnDemandProgramMeta,
                                           final List<AccountMeta> keys,
                                           final QueueSetVaultParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = QUEUE_SET_VAULT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2546,7 +2546,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2592,9 +2592,9 @@ public final class SbOnDemandProgram {
   public static Instruction randomnessCommit(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final RandomnessCommitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = RANDOMNESS_COMMIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2620,7 +2620,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2689,9 +2689,9 @@ public final class SbOnDemandProgram {
   public static Instruction randomnessInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                            final List<AccountMeta> keys,
                                            final RandomnessInitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = RANDOMNESS_INIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2717,7 +2717,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2785,9 +2785,9 @@ public final class SbOnDemandProgram {
   public static Instruction randomnessReveal(final AccountMeta invokedSbOnDemandProgramMeta,
                                              final List<AccountMeta> keys,
                                              final RandomnessRevealParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = RANDOMNESS_REVEAL_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2813,7 +2813,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2851,9 +2851,9 @@ public final class SbOnDemandProgram {
   public static Instruction stateInit(final AccountMeta invokedSbOnDemandProgramMeta,
                                       final List<AccountMeta> keys,
                                       final StateInitParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = STATE_INIT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2879,7 +2879,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2925,9 +2925,9 @@ public final class SbOnDemandProgram {
   public static Instruction stateSetConfigs(final AccountMeta invokedSbOnDemandProgramMeta,
                                             final List<AccountMeta> keys,
                                             final StateSetConfigsParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = STATE_SET_CONFIGS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -2953,7 +2953,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -2985,9 +2985,9 @@ public final class SbOnDemandProgram {
   public static Instruction testUpdateOracleStats(final AccountMeta invokedSbOnDemandProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final TestUpdateOracleStatsParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = TEST_UPDATE_ORACLE_STATS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
@@ -3013,7 +3013,7 @@ public final class SbOnDemandProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 

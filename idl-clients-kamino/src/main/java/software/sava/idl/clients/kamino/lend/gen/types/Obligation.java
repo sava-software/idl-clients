@@ -239,7 +239,7 @@ public record Obligation(PublicKey _address,
     final var tag = getInt64LE(_data, i);
     i += 8;
     final var lastUpdate = LastUpdate.read(_data, i);
-    i += Borsh.len(lastUpdate);
+    i += lastUpdate.l();
     final var lendingMarket = readPubKey(_data, i);
     i += 32;
     final var owner = readPubKey(_data, i);
@@ -326,7 +326,7 @@ public record Obligation(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     putInt64LE(_data, i, tag);
     i += 8;
-    i += Borsh.write(lastUpdate, _data, i);
+    i += lastUpdate.write(_data, i);
     lendingMarket.write(_data, i);
     i += 32;
     owner.write(_data, i);

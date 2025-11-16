@@ -1,7 +1,6 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.drift.gen.types.DepositDirection;
 
@@ -43,7 +42,7 @@ public record LPBorrowLendDepositRecord(Discriminator discriminator,
     final var constituentIndex = getInt16LE(_data, i);
     i += 2;
     final var direction = DepositDirection.read(_data, i);
-    i += Borsh.len(direction);
+    i += direction.l();
     final var tokenBalance = getInt64LE(_data, i);
     i += 8;
     final var lastTokenBalance = getInt64LE(_data, i);
@@ -77,7 +76,7 @@ public record LPBorrowLendDepositRecord(Discriminator discriminator,
     i += 2;
     putInt16LE(_data, i, constituentIndex);
     i += 2;
-    i += Borsh.write(direction, _data, i);
+    i += direction.write(_data, i);
     putInt64LE(_data, i, tokenBalance);
     i += 8;
     putInt64LE(_data, i, lastTokenBalance);

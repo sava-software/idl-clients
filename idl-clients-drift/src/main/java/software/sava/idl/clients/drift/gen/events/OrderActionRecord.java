@@ -69,13 +69,13 @@ public record OrderActionRecord(Discriminator discriminator,
     final var ts = getInt64LE(_data, i);
     i += 8;
     final var action = OrderAction.read(_data, i);
-    i += Borsh.len(action);
+    i += action.l();
     final var actionExplanation = OrderActionExplanation.read(_data, i);
-    i += Borsh.len(actionExplanation);
+    i += actionExplanation.l();
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var marketType = MarketType.read(_data, i);
-    i += Borsh.len(marketType);
+    i += marketType.l();
     final PublicKey filler;
     if (_data[i] == 0) {
       filler = null;
@@ -191,7 +191,7 @@ public record OrderActionRecord(Discriminator discriminator,
     } else {
       ++i;
       takerOrderDirection = PositionDirection.read(_data, i);
-      i += Borsh.len(takerOrderDirection);
+      i += takerOrderDirection.l();
     }
     final OptionalLong takerOrderBaseAssetAmount;
     if (_data[i] == 0) {
@@ -245,7 +245,7 @@ public record OrderActionRecord(Discriminator discriminator,
     } else {
       ++i;
       makerOrderDirection = PositionDirection.read(_data, i);
-      i += Borsh.len(makerOrderDirection);
+      i += makerOrderDirection.l();
     }
     final OptionalLong makerOrderBaseAssetAmount;
     if (_data[i] == 0) {
@@ -383,11 +383,11 @@ public record OrderActionRecord(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     putInt64LE(_data, i, ts);
     i += 8;
-    i += Borsh.write(action, _data, i);
-    i += Borsh.write(actionExplanation, _data, i);
+    i += action.write(_data, i);
+    i += actionExplanation.write(_data, i);
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.write(marketType, _data, i);
+    i += marketType.write(_data, i);
     i += Borsh.writeOptional(filler, _data, i);
     i += Borsh.writeOptional(fillerReward, _data, i);
     i += Borsh.writeOptional(fillRecordId, _data, i);
@@ -427,10 +427,10 @@ public record OrderActionRecord(Discriminator discriminator,
   @Override
   public int l() {
     return discriminator.length() + 8
-         + Borsh.len(action)
-         + Borsh.len(actionExplanation)
+         + action.l()
+         + actionExplanation.l()
          + 2
-         + Borsh.len(marketType)
+         + marketType.l()
          + (filler == null ? 1 : (1 + 32))
          + (fillerReward == null || fillerReward.isEmpty() ? 1 : (1 + 8))
          + (fillRecordId == null || fillRecordId.isEmpty() ? 1 : (1 + 8))
@@ -443,13 +443,13 @@ public record OrderActionRecord(Discriminator discriminator,
          + (spotFulfillmentMethodFee == null || spotFulfillmentMethodFee.isEmpty() ? 1 : (1 + 8))
          + (taker == null ? 1 : (1 + 32))
          + (takerOrderId == null || takerOrderId.isEmpty() ? 1 : (1 + 4))
-         + (takerOrderDirection == null ? 1 : (1 + Borsh.len(takerOrderDirection)))
+         + (takerOrderDirection == null ? 1 : (1 + takerOrderDirection.l()))
          + (takerOrderBaseAssetAmount == null || takerOrderBaseAssetAmount.isEmpty() ? 1 : (1 + 8))
          + (takerOrderCumulativeBaseAssetAmountFilled == null || takerOrderCumulativeBaseAssetAmountFilled.isEmpty() ? 1 : (1 + 8))
          + (takerOrderCumulativeQuoteAssetAmountFilled == null || takerOrderCumulativeQuoteAssetAmountFilled.isEmpty() ? 1 : (1 + 8))
          + (maker == null ? 1 : (1 + 32))
          + (makerOrderId == null || makerOrderId.isEmpty() ? 1 : (1 + 4))
-         + (makerOrderDirection == null ? 1 : (1 + Borsh.len(makerOrderDirection)))
+         + (makerOrderDirection == null ? 1 : (1 + makerOrderDirection.l()))
          + (makerOrderBaseAssetAmount == null || makerOrderBaseAssetAmount.isEmpty() ? 1 : (1 + 8))
          + (makerOrderCumulativeBaseAssetAmountFilled == null || makerOrderCumulativeBaseAssetAmountFilled.isEmpty() ? 1 : (1 + 8))
          + (makerOrderCumulativeQuoteAssetAmountFilled == null || makerOrderCumulativeQuoteAssetAmountFilled.isEmpty() ? 1 : (1 + 8))

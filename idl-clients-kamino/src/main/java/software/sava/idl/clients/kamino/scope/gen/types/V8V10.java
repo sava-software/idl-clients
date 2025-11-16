@@ -17,7 +17,7 @@ public record V8V10(MarketStatusBehavior marketStatusBehavior) implements Borsh 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(marketStatusBehavior, _data, i);
+    i += marketStatusBehavior.write(_data, i);
     return i - _offset;
   }
 

@@ -142,9 +142,9 @@ public record OpenbookV2FulfillmentConfig(PublicKey _address,
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var fulfillmentType = SpotFulfillmentType.read(_data, i);
-    i += Borsh.len(fulfillmentType);
+    i += fulfillmentType.l();
     final var status = SpotFulfillmentConfigStatus.read(_data, i);
-    i += Borsh.len(status);
+    i += status.l();
     final var padding = new byte[4];
     Borsh.readArray(padding, _data, i);
     return new OpenbookV2FulfillmentConfig(_address,
@@ -187,8 +187,8 @@ public record OpenbookV2FulfillmentConfig(PublicKey _address,
     i += 32;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.write(fulfillmentType, _data, i);
-    i += Borsh.write(status, _data, i);
+    i += fulfillmentType.write(_data, i);
+    i += status.write(_data, i);
     i += Borsh.writeArrayChecked(padding, 4, _data, i);
     return i - _offset;
   }

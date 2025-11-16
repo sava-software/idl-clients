@@ -1,7 +1,6 @@
 package software.sava.idl.clients.jupiter.governance.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.jupiter.governance.gen.types.GovernanceParameters;
 
@@ -47,7 +46,7 @@ public record GovernorCreateEvent(Discriminator discriminator,
     i += 32;
     smartWallet.write(_data, i);
     i += 32;
-    i += Borsh.write(parameters, _data, i);
+    i += parameters.write(_data, i);
     return i - _offset;
   }
 

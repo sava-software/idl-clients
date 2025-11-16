@@ -15,7 +15,7 @@ public record PostUpdateAtomicParams(byte[] vaa,
     final var vaa = Borsh.readbyteVector(_data, i);
     i += Borsh.lenVector(vaa);
     final var merklePriceUpdate = MerklePriceUpdate.read(_data, i);
-    i += Borsh.len(merklePriceUpdate);
+    i += merklePriceUpdate.l();
     final var treasuryId = _data[i] & 0xFF;
     return new PostUpdateAtomicParams(vaa, merklePriceUpdate, treasuryId);
   }
@@ -24,7 +24,7 @@ public record PostUpdateAtomicParams(byte[] vaa,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += Borsh.writeVector(vaa, _data, i);
-    i += Borsh.write(merklePriceUpdate, _data, i);
+    i += merklePriceUpdate.write(_data, i);
     _data[i] = (byte) treasuryId;
     ++i;
     return i - _offset;
@@ -32,6 +32,6 @@ public record PostUpdateAtomicParams(byte[] vaa,
 
   @Override
   public int l() {
-    return Borsh.lenVector(vaa) + Borsh.len(merklePriceUpdate) + 1;
+    return Borsh.lenVector(vaa) + merklePriceUpdate.l() + 1;
   }
 }

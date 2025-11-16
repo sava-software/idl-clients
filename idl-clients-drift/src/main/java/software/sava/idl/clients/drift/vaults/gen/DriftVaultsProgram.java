@@ -98,9 +98,9 @@ public final class DriftVaultsProgram {
   public static Instruction initializeVault(final AccountMeta invokedDriftVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final VaultParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = INITIALIZE_VAULT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -126,7 +126,7 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -208,9 +208,9 @@ public final class DriftVaultsProgram {
   public static Instruction initializeVaultWithProtocol(final AccountMeta invokedDriftVaultsProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final VaultWithProtocolParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = INITIALIZE_VAULT_WITH_PROTOCOL_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -236,7 +236,7 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -487,9 +487,9 @@ public final class DriftVaultsProgram {
   public static Instruction updateVaultProtocol(final AccountMeta invokedDriftVaultsProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final UpdateVaultProtocolParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = UPDATE_VAULT_PROTOCOL_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -513,13 +513,13 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -547,9 +547,9 @@ public final class DriftVaultsProgram {
   public static Instruction updateVault(final AccountMeta invokedDriftVaultsProgramMeta,
                                         final List<AccountMeta> keys,
                                         final UpdateVaultParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = UPDATE_VAULT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -573,13 +573,13 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -772,9 +772,9 @@ public final class DriftVaultsProgram {
   public static Instruction initializeTokenizedVaultDepositor(final AccountMeta invokedDriftVaultsProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final InitializeTokenizedVaultDepositorParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = INITIALIZE_TOKENIZED_VAULT_DEPOSITOR_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -798,13 +798,13 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -858,11 +858,11 @@ public final class DriftVaultsProgram {
                                            final List<AccountMeta> keys,
                                            final long amount,
                                            final WithdrawUnit unit) {
-    final byte[] _data = new byte[16 + Borsh.len(unit)];
+    final byte[] _data = new byte[16 + unit.l()];
     int i = TOKENIZE_SHARES_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
     i += 8;
-    Borsh.write(unit, _data, i);
+    unit.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -892,7 +892,7 @@ public final class DriftVaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.write(unit, _data, i);
+      i += unit.write(_data, i);
       return i - _offset;
     }
 
@@ -1130,11 +1130,11 @@ public final class DriftVaultsProgram {
                                             final List<AccountMeta> keys,
                                             final long withdrawAmount,
                                             final WithdrawUnit withdrawUnit) {
-    final byte[] _data = new byte[16 + Borsh.len(withdrawUnit)];
+    final byte[] _data = new byte[16 + withdrawUnit.l()];
     int i = REQUEST_WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, withdrawAmount);
     i += 8;
-    Borsh.write(withdrawUnit, _data, i);
+    withdrawUnit.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -1164,7 +1164,7 @@ public final class DriftVaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, withdrawAmount);
       i += 8;
-      i += Borsh.write(withdrawUnit, _data, i);
+      i += withdrawUnit.write(_data, i);
       return i - _offset;
     }
 
@@ -1853,11 +1853,11 @@ public final class DriftVaultsProgram {
                                                    final List<AccountMeta> keys,
                                                    final long withdrawAmount,
                                                    final WithdrawUnit withdrawUnit) {
-    final byte[] _data = new byte[16 + Borsh.len(withdrawUnit)];
+    final byte[] _data = new byte[16 + withdrawUnit.l()];
     int i = MANAGER_REQUEST_WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, withdrawAmount);
     i += 8;
-    Borsh.write(withdrawUnit, _data, i);
+    withdrawUnit.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -1887,7 +1887,7 @@ public final class DriftVaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, withdrawAmount);
       i += 8;
-      i += Borsh.write(withdrawUnit, _data, i);
+      i += withdrawUnit.write(_data, i);
       return i - _offset;
     }
 
@@ -2211,9 +2211,9 @@ public final class DriftVaultsProgram {
   public static Instruction managerUpdateFees(final AccountMeta invokedDriftVaultsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final ManagerUpdateFeesParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = MANAGER_UPDATE_FEES_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -2237,13 +2237,13 @@ public final class DriftVaultsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -2985,11 +2985,11 @@ public final class DriftVaultsProgram {
                                                     final List<AccountMeta> keys,
                                                     final long withdrawAmount,
                                                     final WithdrawUnit withdrawUnit) {
-    final byte[] _data = new byte[16 + Borsh.len(withdrawUnit)];
+    final byte[] _data = new byte[16 + withdrawUnit.l()];
     int i = PROTOCOL_REQUEST_WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, withdrawAmount);
     i += 8;
-    Borsh.write(withdrawUnit, _data, i);
+    withdrawUnit.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftVaultsProgramMeta, keys, _data);
   }
@@ -3019,7 +3019,7 @@ public final class DriftVaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, withdrawAmount);
       i += 8;
-      i += Borsh.write(withdrawUnit, _data, i);
+      i += withdrawUnit.write(_data, i);
       return i - _offset;
     }
 

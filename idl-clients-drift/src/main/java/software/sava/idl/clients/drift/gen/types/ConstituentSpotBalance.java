@@ -39,7 +39,7 @@ public record ConstituentSpotBalance(BigInteger scaledBalance,
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var balanceType = SpotBalanceType.read(_data, i);
-    i += Borsh.len(balanceType);
+    i += balanceType.l();
     final var padding = new byte[5];
     Borsh.readArray(padding, _data, i);
     return new ConstituentSpotBalance(scaledBalance,
@@ -58,7 +58,7 @@ public record ConstituentSpotBalance(BigInteger scaledBalance,
     i += 8;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.write(balanceType, _data, i);
+    i += balanceType.write(_data, i);
     i += Borsh.writeArrayChecked(padding, 5, _data, i);
     return i - _offset;
   }

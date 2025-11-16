@@ -277,7 +277,7 @@ public record MerkleDistributor(PublicKey _address,
     final var padding0 = new byte[3];
     i += Borsh.readArray(padding0, _data, i);
     final var airdropBonus = AirdropBonus.read(_data, i);
-    i += Borsh.len(airdropBonus);
+    i += airdropBonus.l();
     final var padding2 = new BigInteger[5];
     Borsh.read128Array(padding2, _data, i);
     return new MerkleDistributor(_address,
@@ -356,7 +356,7 @@ public record MerkleDistributor(PublicKey _address,
     _data[i] = (byte) closable;
     ++i;
     i += Borsh.writeArrayChecked(padding0, 3, _data, i);
-    i += Borsh.write(airdropBonus, _data, i);
+    i += airdropBonus.write(_data, i);
     i += Borsh.write128ArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }

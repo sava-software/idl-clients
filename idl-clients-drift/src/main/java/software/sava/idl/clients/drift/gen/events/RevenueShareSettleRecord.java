@@ -57,7 +57,7 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var marketType = MarketType.read(_data, i);
-    i += Borsh.len(marketType);
+    i += marketType.l();
     final var builderSubAccountId = getInt16LE(_data, i);
     i += 2;
     final var builderTotalReferrerRewards = getInt64LE(_data, i);
@@ -86,7 +86,7 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     i += 8;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.write(marketType, _data, i);
+    i += marketType.write(_data, i);
     putInt16LE(_data, i, builderSubAccountId);
     i += 2;
     putInt64LE(_data, i, builderTotalReferrerRewards);
@@ -103,7 +103,7 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
          + (referrer == null ? 1 : (1 + 32))
          + 8
          + 2
-         + Borsh.len(marketType)
+         + marketType.l()
          + 2
          + 8
          + 8;

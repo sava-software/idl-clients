@@ -187,7 +187,7 @@ public record VaultDepositor(PublicKey _address,
     final var vaultShares = getInt128LE(_data, i);
     i += 16;
     final var lastWithdrawRequest = WithdrawRequest.read(_data, i);
-    i += Borsh.len(lastWithdrawRequest);
+    i += lastWithdrawRequest.l();
     final var lastValidTs = getInt64LE(_data, i);
     i += 8;
     final var netDeposits = getInt64LE(_data, i);
@@ -241,7 +241,7 @@ public record VaultDepositor(PublicKey _address,
     i += 32;
     putInt128LE(_data, i, vaultShares);
     i += 16;
-    i += Borsh.write(lastWithdrawRequest, _data, i);
+    i += lastWithdrawRequest.write(_data, i);
     putInt64LE(_data, i, lastValidTs);
     i += 8;
     putInt64LE(_data, i, netDeposits);

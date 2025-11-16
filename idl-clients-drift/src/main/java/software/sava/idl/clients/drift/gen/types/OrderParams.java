@@ -35,11 +35,11 @@ public record OrderParams(OrderType orderType,
     }
     int i = _offset;
     final var orderType = OrderType.read(_data, i);
-    i += Borsh.len(orderType);
+    i += orderType.l();
     final var marketType = MarketType.read(_data, i);
-    i += Borsh.len(marketType);
+    i += marketType.l();
     final var direction = PositionDirection.read(_data, i);
-    i += Borsh.len(direction);
+    i += direction.l();
     final var userOrderId = _data[i] & 0xFF;
     ++i;
     final var baseAssetAmount = getInt64LE(_data, i);
@@ -51,7 +51,7 @@ public record OrderParams(OrderType orderType,
     final var reduceOnly = _data[i] == 1;
     ++i;
     final var postOnly = PostOnlyParam.read(_data, i);
-    i += Borsh.len(postOnly);
+    i += postOnly.l();
     final var bitFlags = _data[i] & 0xFF;
     ++i;
     final OptionalLong maxTs;
@@ -73,7 +73,7 @@ public record OrderParams(OrderType orderType,
       i += 8;
     }
     final var triggerCondition = OrderTriggerCondition.read(_data, i);
-    i += Borsh.len(triggerCondition);
+    i += triggerCondition.l();
     final OptionalInt oraclePriceOffset;
     if (_data[i] == 0) {
       oraclePriceOffset = OptionalInt.empty();
@@ -130,9 +130,9 @@ public record OrderParams(OrderType orderType,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(orderType, _data, i);
-    i += Borsh.write(marketType, _data, i);
-    i += Borsh.write(direction, _data, i);
+    i += orderType.write(_data, i);
+    i += marketType.write(_data, i);
+    i += direction.write(_data, i);
     _data[i] = (byte) userOrderId;
     ++i;
     putInt64LE(_data, i, baseAssetAmount);
@@ -143,12 +143,12 @@ public record OrderParams(OrderType orderType,
     i += 2;
     _data[i] = (byte) (reduceOnly ? 1 : 0);
     ++i;
-    i += Borsh.write(postOnly, _data, i);
+    i += postOnly.write(_data, i);
     _data[i] = (byte) bitFlags;
     ++i;
     i += Borsh.writeOptional(maxTs, _data, i);
     i += Borsh.writeOptional(triggerPrice, _data, i);
-    i += Borsh.write(triggerCondition, _data, i);
+    i += triggerCondition.write(_data, i);
     i += Borsh.writeOptional(oraclePriceOffset, _data, i);
     i += Borsh.writeOptionalbyte(auctionDuration, _data, i);
     i += Borsh.writeOptional(auctionStartPrice, _data, i);
@@ -158,19 +158,19 @@ public record OrderParams(OrderType orderType,
 
   @Override
   public int l() {
-    return Borsh.len(orderType)
-         + Borsh.len(marketType)
-         + Borsh.len(direction)
+    return orderType.l()
+         + marketType.l()
+         + direction.l()
          + 1
          + 8
          + 8
          + 2
          + 1
-         + Borsh.len(postOnly)
+         + postOnly.l()
          + 1
          + (maxTs == null || maxTs.isEmpty() ? 1 : (1 + 8))
          + (triggerPrice == null || triggerPrice.isEmpty() ? 1 : (1 + 8))
-         + Borsh.len(triggerCondition)
+         + triggerCondition.l()
          + (oraclePriceOffset == null || oraclePriceOffset.isEmpty() ? 1 : (1 + 4))
          + (auctionDuration == null || auctionDuration.isEmpty() ? 1 : (1 + 1))
          + (auctionStartPrice == null || auctionStartPrice.isEmpty() ? 1 : (1 + 8))

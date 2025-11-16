@@ -1594,13 +1594,13 @@ public final class FarmsProgram {
                                             final TimeUnit timeUnit,
                                             final LockingMode lockingMode,
                                             final RewardType rewardType) {
-    final byte[] _data = new byte[8 + Borsh.len(globalConfigOptionKind) + Borsh.len(farmConfigOptionKind) + Borsh.len(timeUnit) + Borsh.len(lockingMode) + Borsh.len(rewardType)];
+    final byte[] _data = new byte[8 + globalConfigOptionKind.l() + farmConfigOptionKind.l() + timeUnit.l() + lockingMode.l() + rewardType.l()];
     int i = IDL_MISSING_TYPES_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(globalConfigOptionKind, _data, i);
-    i += Borsh.write(farmConfigOptionKind, _data, i);
-    i += Borsh.write(timeUnit, _data, i);
-    i += Borsh.write(lockingMode, _data, i);
-    Borsh.write(rewardType, _data, i);
+    i += globalConfigOptionKind.write(_data, i);
+    i += farmConfigOptionKind.write(_data, i);
+    i += timeUnit.write(_data, i);
+    i += lockingMode.write(_data, i);
+    rewardType.write(_data, i);
 
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
@@ -1625,13 +1625,13 @@ public final class FarmsProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var globalConfigOptionKind = GlobalConfigOption.read(_data, i);
-      i += Borsh.len(globalConfigOptionKind);
+      i += globalConfigOptionKind.l();
       final var farmConfigOptionKind = FarmConfigOption.read(_data, i);
-      i += Borsh.len(farmConfigOptionKind);
+      i += farmConfigOptionKind.l();
       final var timeUnit = TimeUnit.read(_data, i);
-      i += Borsh.len(timeUnit);
+      i += timeUnit.l();
       final var lockingMode = LockingMode.read(_data, i);
-      i += Borsh.len(lockingMode);
+      i += lockingMode.l();
       final var rewardType = RewardType.read(_data, i);
       return new IdlMissingTypesIxData(discriminator,
                                        globalConfigOptionKind,
@@ -1644,11 +1644,11 @@ public final class FarmsProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(globalConfigOptionKind, _data, i);
-      i += Borsh.write(farmConfigOptionKind, _data, i);
-      i += Borsh.write(timeUnit, _data, i);
-      i += Borsh.write(lockingMode, _data, i);
-      i += Borsh.write(rewardType, _data, i);
+      i += globalConfigOptionKind.write(_data, i);
+      i += farmConfigOptionKind.write(_data, i);
+      i += timeUnit.write(_data, i);
+      i += lockingMode.write(_data, i);
+      i += rewardType.write(_data, i);
       return i - _offset;
     }
 

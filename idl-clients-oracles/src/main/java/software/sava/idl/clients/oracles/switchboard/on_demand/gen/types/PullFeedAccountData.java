@@ -211,7 +211,7 @@ public record PullFeedAccountData(PublicKey _address,
     final var reserved1 = new byte[32];
     i += Borsh.readArray(reserved1, _data, i);
     final var result = CurrentResult.read(_data, i);
-    i += Borsh.len(result);
+    i += result.l();
     final var maxStaleness = getInt32LE(_data, i);
     i += 4;
     final var padding2 = new byte[12];
@@ -281,7 +281,7 @@ public record PullFeedAccountData(PublicKey _address,
     putInt64LE(_data, i, lutSlot);
     i += 8;
     i += Borsh.writeArrayChecked(reserved1, 32, _data, i);
-    i += Borsh.write(result, _data, i);
+    i += result.write(_data, i);
     putInt32LE(_data, i, maxStaleness);
     i += 4;
     i += Borsh.writeArrayChecked(padding2, 12, _data, i);

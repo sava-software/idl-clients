@@ -25,7 +25,7 @@ public record ValidatorSystem(List validatorList,
     }
     int i = _offset;
     final var validatorList = List.read(_data, i);
-    i += Borsh.len(validatorList);
+    i += validatorList.l();
     final var managerAuthority = readPubKey(_data, i);
     i += 32;
     final var totalValidatorScore = getInt32LE(_data, i);
@@ -43,7 +43,7 @@ public record ValidatorSystem(List validatorList,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(validatorList, _data, i);
+    i += validatorList.write(_data, i);
     managerAuthority.write(_data, i);
     i += 32;
     putInt32LE(_data, i, totalValidatorScore);

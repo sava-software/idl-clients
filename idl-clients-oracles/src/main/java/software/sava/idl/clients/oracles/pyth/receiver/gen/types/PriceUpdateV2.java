@@ -58,9 +58,9 @@ public record PriceUpdateV2(PublicKey _address,
     final var writeAuthority = readPubKey(_data, i);
     i += 32;
     final var verificationLevel = VerificationLevel.read(_data, i);
-    i += Borsh.len(verificationLevel);
+    i += verificationLevel.l();
     final var priceMessage = PriceFeedMessage.read(_data, i);
-    i += Borsh.len(priceMessage);
+    i += priceMessage.l();
     final var postedSlot = getInt64LE(_data, i);
     return new PriceUpdateV2(_address,
                              discriminator,
@@ -75,8 +75,8 @@ public record PriceUpdateV2(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     writeAuthority.write(_data, i);
     i += 32;
-    i += Borsh.write(verificationLevel, _data, i);
-    i += Borsh.write(priceMessage, _data, i);
+    i += verificationLevel.write(_data, i);
+    i += priceMessage.write(_data, i);
     putInt64LE(_data, i, postedSlot);
     i += 8;
     return i - _offset;
@@ -84,6 +84,6 @@ public record PriceUpdateV2(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32 + Borsh.len(verificationLevel) + Borsh.len(priceMessage) + 8;
+    return 8 + 32 + verificationLevel.l() + priceMessage.l() + 8;
   }
 }

@@ -80,7 +80,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     final var borrowLimitCrossedTimestamp = getInt64LE(_data, i);
     i += 8;
     final var cumulativeBorrowRateBsf = BigFractionBytes.read(_data, i);
-    i += Borsh.len(cumulativeBorrowRateBsf);
+    i += cumulativeBorrowRateBsf.l();
     final var accumulatedProtocolFeesSf = getInt128LE(_data, i);
     i += 16;
     final var accumulatedReferrerFeesSf = getInt128LE(_data, i);
@@ -138,7 +138,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 8;
     putInt64LE(_data, i, borrowLimitCrossedTimestamp);
     i += 8;
-    i += Borsh.write(cumulativeBorrowRateBsf, _data, i);
+    i += cumulativeBorrowRateBsf.write(_data, i);
     putInt128LE(_data, i, accumulatedProtocolFeesSf);
     i += 16;
     putInt128LE(_data, i, accumulatedReferrerFeesSf);

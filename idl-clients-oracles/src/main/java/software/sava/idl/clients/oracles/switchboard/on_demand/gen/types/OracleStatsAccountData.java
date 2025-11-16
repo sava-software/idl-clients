@@ -104,11 +104,11 @@ public record OracleStatsAccountData(PublicKey _address,
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var finalizedEpoch = OracleEpochInfo.read(_data, i);
-    i += Borsh.len(finalizedEpoch);
+    i += finalizedEpoch.l();
     final var currentEpoch = OracleEpochInfo.read(_data, i);
-    i += Borsh.len(currentEpoch);
+    i += currentEpoch.l();
     final var megaSlotInfo = MegaSlotInfo.read(_data, i);
-    i += Borsh.len(megaSlotInfo);
+    i += megaSlotInfo.l();
     final var lastTransferSlot = getInt64LE(_data, i);
     i += 8;
     final var bump = _data[i] & 0xFF;
@@ -137,9 +137,9 @@ public record OracleStatsAccountData(PublicKey _address,
     i += 32;
     oracle.write(_data, i);
     i += 32;
-    i += Borsh.write(finalizedEpoch, _data, i);
-    i += Borsh.write(currentEpoch, _data, i);
-    i += Borsh.write(megaSlotInfo, _data, i);
+    i += finalizedEpoch.write(_data, i);
+    i += currentEpoch.write(_data, i);
+    i += megaSlotInfo.write(_data, i);
     putInt64LE(_data, i, lastTransferSlot);
     i += 8;
     _data[i] = (byte) bump;

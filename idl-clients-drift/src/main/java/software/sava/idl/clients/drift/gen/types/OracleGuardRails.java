@@ -12,7 +12,7 @@ public record OracleGuardRails(PriceDivergenceGuardRails priceDivergence, Validi
     }
     int i = _offset;
     final var priceDivergence = PriceDivergenceGuardRails.read(_data, i);
-    i += Borsh.len(priceDivergence);
+    i += priceDivergence.l();
     final var validity = ValidityGuardRails.read(_data, i);
     return new OracleGuardRails(priceDivergence, validity);
   }
@@ -20,8 +20,8 @@ public record OracleGuardRails(PriceDivergenceGuardRails priceDivergence, Validi
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(priceDivergence, _data, i);
-    i += Borsh.write(validity, _data, i);
+    i += priceDivergence.write(_data, i);
+    i += validity.write(_data, i);
     return i - _offset;
   }
 

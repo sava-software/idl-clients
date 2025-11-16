@@ -345,7 +345,7 @@ public record FarmState(PublicKey _address,
     final var globalConfig = readPubKey(_data, i);
     i += 32;
     final var token = TokenInfo.read(_data, i);
-    i += Borsh.len(token);
+    i += token.l();
     final var rewardInfos = new RewardInfo[10];
     i += Borsh.readArray(rewardInfos, RewardInfo::read, _data, i);
     final var numRewardTokens = getInt64LE(_data, i);
@@ -471,7 +471,7 @@ public record FarmState(PublicKey _address,
     i += 32;
     globalConfig.write(_data, i);
     i += 32;
-    i += Borsh.write(token, _data, i);
+    i += token.write(_data, i);
     i += Borsh.writeArrayChecked(rewardInfos, 10, _data, i);
     putInt64LE(_data, i, numRewardTokens);
     i += 8;

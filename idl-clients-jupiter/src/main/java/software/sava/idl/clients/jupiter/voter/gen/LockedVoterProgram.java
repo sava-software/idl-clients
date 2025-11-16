@@ -85,9 +85,9 @@ public final class LockedVoterProgram {
   public static Instruction newLocker(final AccountMeta invokedLockedVoterProgramMeta,
                                       final List<AccountMeta> keys,
                                       final LockerParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = NEW_LOCKER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
@@ -113,7 +113,7 @@ public final class LockedVoterProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -775,9 +775,9 @@ public final class LockedVoterProgram {
   public static Instruction setLockerParams(final AccountMeta invokedLockedVoterProgramMeta,
                                             final List<AccountMeta> keys,
                                             final LockerParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = SET_LOCKER_PARAMS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
@@ -803,7 +803,7 @@ public final class LockedVoterProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 

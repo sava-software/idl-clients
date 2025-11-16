@@ -38,8 +38,18 @@ final class SPLAccountClientImpl implements SPLAccountClient {
   }
 
   @Override
+  public AccountMeta feePayer() {
+    return feePayer;
+  }
+
+  @Override
   public ProgramDerivedAddress wrappedSolPDA() {
     return wrappedSolPDA;
+  }
+
+  @Override
+  public Instruction syncNative() {
+    return splClient.syncNative(wrappedSolPDA.publicKey());
   }
 
   @Override

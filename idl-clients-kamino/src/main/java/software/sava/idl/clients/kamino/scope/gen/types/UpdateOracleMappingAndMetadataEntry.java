@@ -59,7 +59,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       }
       int i = _offset;
       final var priceType = OracleType.read(_data, i);
-      i += Borsh.len(priceType);
+      i += priceType.l();
       final var genericData = new byte[20];
       Borsh.readArray(genericData, _data, i);
       return new MappingConfig(priceType, genericData);
@@ -68,7 +68,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.write(priceType, _data, i);
+      i += priceType.write(_data, i);
       i += Borsh.writeArrayChecked(genericData, 20, _data, i);
       return i - _offset;
     }

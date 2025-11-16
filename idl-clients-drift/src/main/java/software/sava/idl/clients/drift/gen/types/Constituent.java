@@ -313,7 +313,7 @@ public record Constituent(PublicKey _address,
     final var totalSwapFees = getInt128LE(_data, i);
     i += 16;
     final var spotBalance = ConstituentSpotBalance.read(_data, i);
-    i += Borsh.len(spotBalance);
+    i += spotBalance.l();
     final var lastSpotBalanceTokenAmount = getInt64LE(_data, i);
     i += 8;
     final var cumulativeSpotInterestAccruedTokenAmount = getInt64LE(_data, i);
@@ -418,7 +418,7 @@ public record Constituent(PublicKey _address,
     i += 32;
     putInt128LE(_data, i, totalSwapFees);
     i += 16;
-    i += Borsh.write(spotBalance, _data, i);
+    i += spotBalance.write(_data, i);
     putInt64LE(_data, i, lastSpotBalanceTokenAmount);
     i += 8;
     putInt64LE(_data, i, cumulativeSpotInterestAccruedTokenAmount);

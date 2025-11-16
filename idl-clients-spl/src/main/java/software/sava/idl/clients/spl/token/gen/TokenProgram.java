@@ -10,6 +10,7 @@ import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.core.serial.Serializable;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.token.gen.types.AuthorityType;
 
@@ -121,7 +122,7 @@ public final class TokenProgram {
   public record InitializeMintIxData(int discriminator,
                                      int decimals,
                                      PublicKey mintAuthority,
-                                     PublicKey freezeAuthority) implements Borsh {  
+                                     PublicKey freezeAuthority) implements Serializable {  
 
     public static InitializeMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -257,7 +258,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  public record InitializeAccountIxData(int discriminator) implements Borsh {  
+  public record InitializeAccountIxData(int discriminator) implements Serializable {  
 
     public static InitializeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -371,7 +372,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param m The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisigIxData(int discriminator, int m) implements Borsh {  
+  public record InitializeMultisigIxData(int discriminator, int m) implements Serializable {  
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -467,7 +468,7 @@ public final class TokenProgram {
   /// of SOL and Tokens will be transferred to the destination account.
   ///
   /// @param amount The amount of tokens to transfer.
-  public record TransferIxData(int discriminator, long amount) implements Borsh {  
+  public record TransferIxData(int discriminator, long amount) implements Serializable {  
 
     public static TransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -559,7 +560,7 @@ public final class TokenProgram {
   /// behalf of the source account's owner.
   ///
   /// @param amount The amount of tokens the delegate is approved for.
-  public record ApproveIxData(int discriminator, long amount) implements Borsh {  
+  public record ApproveIxData(int discriminator, long amount) implements Serializable {  
 
     public static ApproveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -635,7 +636,7 @@ public final class TokenProgram {
 
   /// Revokes the delegate's authority.
   ///
-  public record RevokeIxData(int discriminator) implements Borsh {  
+  public record RevokeIxData(int discriminator) implements Serializable {  
 
     public static RevokeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -711,11 +712,11 @@ public final class TokenProgram {
                                          final AuthorityType authorityType,
                                          final PublicKey newAuthority) {
     final byte[] _data = new byte[
-    1 + Borsh.len(authorityType)
+    1 + authorityType.l()
     + (newAuthority == null ? 1 : 33)
     ];
     int i = SET_AUTHORITY_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(authorityType, _data, i);
+    i += authorityType.write(_data, i);
     Borsh.writeOptional(newAuthority, _data, i);
 
     return Instruction.createInstruction(invokedTokenProgramMeta, keys, _data);
@@ -727,7 +728,7 @@ public final class TokenProgram {
   /// @param newAuthority The new authority
   public record SetAuthorityIxData(int discriminator,
                                    AuthorityType authorityType,
-                                   PublicKey newAuthority) implements Borsh {  
+                                   PublicKey newAuthority) implements Serializable {  
 
     public static SetAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -742,7 +743,7 @@ public final class TokenProgram {
       final var discriminator = _data[i] & 0xFF;
       ++i;
       final var authorityType = AuthorityType.read(_data, i);
-      i += Borsh.len(authorityType);
+      i += authorityType.l();
       final PublicKey newAuthority;
       if (_data[i] == 0) {
         newAuthority = null;
@@ -758,14 +759,14 @@ public final class TokenProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      i += Borsh.write(authorityType, _data, i);
+      i += authorityType.write(_data, i);
       i += Borsh.writeOptional(newAuthority, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 1 + Borsh.len(authorityType) + (newAuthority == null ? 1 : (1 + 32));
+      return 1 + authorityType.l() + (newAuthority == null ? 1 : (1 + 32));
     }
   }
 
@@ -821,7 +822,7 @@ public final class TokenProgram {
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
   /// @param amount The amount of new tokens to mint.
-  public record MintToIxData(int discriminator, long amount) implements Borsh {  
+  public record MintToIxData(int discriminator, long amount) implements Serializable {  
 
     public static MintToIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -911,7 +912,7 @@ public final class TokenProgram {
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
   /// @param discriminator The amount of tokens to burn.
-  public record BurnIxData(int discriminator, long amount) implements Borsh {  
+  public record BurnIxData(int discriminator, long amount) implements Serializable {  
 
     public static BurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -997,7 +998,7 @@ public final class TokenProgram {
   /// Close an account by transferring all its SOL to the destination account.
   /// Non-native accounts may only be closed if its token amount is zero.
   ///
-  public record CloseAccountIxData(int discriminator) implements Borsh {  
+  public record CloseAccountIxData(int discriminator) implements Serializable {  
 
     public static CloseAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1073,7 +1074,7 @@ public final class TokenProgram {
 
   /// Freeze an Initialized account using the Mint's freeze_authority (if set).
   ///
-  public record FreezeAccountIxData(int discriminator) implements Borsh {  
+  public record FreezeAccountIxData(int discriminator) implements Serializable {  
 
     public static FreezeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1149,7 +1150,7 @@ public final class TokenProgram {
 
   /// Thaw a Frozen account using the Mint's freeze_authority (if set).
   ///
-  public record ThawAccountIxData(int discriminator) implements Borsh {  
+  public record ThawAccountIxData(int discriminator) implements Serializable {  
 
     public static ThawAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1275,7 +1276,7 @@ public final class TokenProgram {
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
-                                      int decimals) implements Borsh {  
+                                      int decimals) implements Serializable {  
 
     public static TransferCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1407,7 +1408,7 @@ public final class TokenProgram {
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
-                                     int decimals) implements Borsh {  
+                                     int decimals) implements Serializable {  
 
     public static ApproveCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1529,7 +1530,7 @@ public final class TokenProgram {
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
-                                    int decimals) implements Borsh {  
+                                    int decimals) implements Serializable {  
 
     public static MintToCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1655,7 +1656,7 @@ public final class TokenProgram {
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
-                                  int decimals) implements Borsh {  
+                                  int decimals) implements Serializable {  
 
     public static BurnCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1757,7 +1758,7 @@ public final class TokenProgram {
   /// not need the owner's `AccountInfo` otherwise.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements Borsh {  
+  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements Serializable {  
 
     public static InitializeAccount2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1843,7 +1844,7 @@ public final class TokenProgram {
   /// `system_instruction::transfer` to move lamports to a wrapped token
   /// account, and needs to have its token `amount` field updated.
   ///
-  public record SyncNativeIxData(int discriminator) implements Borsh {  
+  public record SyncNativeIxData(int discriminator) implements Serializable {  
 
     public static SyncNativeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1919,7 +1920,7 @@ public final class TokenProgram {
   /// Like InitializeAccount2, but does not require the Rent sysvar to be provided.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements Borsh {  
+  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements Serializable {  
 
     public static InitializeAccount3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1995,7 +1996,7 @@ public final class TokenProgram {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param m The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisig2IxData(int discriminator, int m) implements Borsh {  
+  public record InitializeMultisig2IxData(int discriminator, int m) implements Serializable {  
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2097,7 +2098,7 @@ public final class TokenProgram {
   public record InitializeMint2IxData(int discriminator,
                                       int decimals,
                                       PublicKey mintAuthority,
-                                      PublicKey freezeAuthority) implements Borsh {  
+                                      PublicKey freezeAuthority) implements Serializable {  
 
     public static InitializeMint2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2197,7 +2198,7 @@ public final class TokenProgram {
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
-  public record GetAccountDataSizeIxData(int discriminator) implements Borsh {  
+  public record GetAccountDataSizeIxData(int discriminator) implements Serializable {  
 
     public static GetAccountDataSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2285,7 +2286,7 @@ public final class TokenProgram {
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
-  public record InitializeImmutableOwnerIxData(int discriminator) implements Borsh {  
+  public record InitializeImmutableOwnerIxData(int discriminator) implements Serializable {  
 
     public static InitializeImmutableOwnerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2383,7 +2384,7 @@ public final class TokenProgram {
   /// with `String::from_utf8`.
   ///
   /// @param amount The amount of tokens to reformat.
-  public record AmountToUiAmountIxData(int discriminator, long amount) implements Borsh {  
+  public record AmountToUiAmountIxData(int discriminator, long amount) implements Serializable {  
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2482,7 +2483,7 @@ public final class TokenProgram {
   /// the return data as a little-endian `u64`.
   ///
   /// @param uiAmount The ui_amount of tokens to reformat.
-  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements Borsh {  
+  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements Serializable {  
 
     public static UiAmountToAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

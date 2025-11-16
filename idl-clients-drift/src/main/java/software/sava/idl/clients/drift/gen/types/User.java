@@ -332,7 +332,7 @@ public record User(PublicKey _address,
     final var hasOpenAuction = _data[i] == 1;
     ++i;
     final var marginMode = MarginMode.read(_data, i);
-    i += Borsh.len(marginMode);
+    i += marginMode.l();
     final var poolId = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[3];
@@ -427,7 +427,7 @@ public record User(PublicKey _address,
     ++i;
     _data[i] = (byte) (hasOpenAuction ? 1 : 0);
     ++i;
-    i += Borsh.write(marginMode, _data, i);
+    i += marginMode.write(_data, i);
     _data[i] = (byte) poolId;
     ++i;
     i += Borsh.writeArrayChecked(padding1, 3, _data, i);

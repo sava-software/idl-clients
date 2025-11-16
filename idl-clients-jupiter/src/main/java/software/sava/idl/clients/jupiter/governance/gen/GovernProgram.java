@@ -82,11 +82,11 @@ public final class GovernProgram {
                                            final List<AccountMeta> keys,
                                            final PublicKey locker,
                                            final GovernanceParameters params) {
-    final byte[] _data = new byte[40 + Borsh.len(params)];
+    final byte[] _data = new byte[40 + params.l()];
     int i = CREATE_GOVERNOR_DISCRIMINATOR.write(_data, 0);
     locker.write(_data, i);
     i += 32;
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
@@ -116,7 +116,7 @@ public final class GovernProgram {
       int i = _offset + discriminator.write(_data, _offset);
       locker.write(_data, i);
       i += 32;
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -653,9 +653,9 @@ public final class GovernProgram {
   public static Instruction setGovernanceParams(final AccountMeta invokedGovernProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final GovernanceParameters params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = SET_GOVERNANCE_PARAMS_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
@@ -681,7 +681,7 @@ public final class GovernProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 

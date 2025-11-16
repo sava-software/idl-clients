@@ -557,9 +557,9 @@ public final class KaminoVaultProgram {
                                               final List<AccountMeta> keys,
                                               final VaultConfigField entry,
                                               final byte[] data) {
-    final byte[] _data = new byte[8 + Borsh.len(entry) + Borsh.lenVector(data)];
+    final byte[] _data = new byte[8 + entry.l() + Borsh.lenVector(data)];
     int i = UPDATE_VAULT_CONFIG_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(entry, _data, i);
+    i += entry.write(_data, i);
     Borsh.writeVector(data, _data, i);
 
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
@@ -578,7 +578,7 @@ public final class KaminoVaultProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var entry = VaultConfigField.read(_data, i);
-      i += Borsh.len(entry);
+      i += entry.l();
       final var data = Borsh.readbyteVector(_data, i);
       return new UpdateVaultConfigIxData(discriminator, entry, data);
     }
@@ -586,14 +586,14 @@ public final class KaminoVaultProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(entry, _data, i);
+      i += entry.write(_data, i);
       i += Borsh.writeVector(data, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(entry) + Borsh.lenVector(data);
+      return 8 + entry.l() + Borsh.lenVector(data);
     }
   }
 

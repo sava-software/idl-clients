@@ -1,7 +1,6 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.drift.gen.types.Order;
 
@@ -40,7 +39,7 @@ public record OrderRecord(Discriminator discriminator,
     i += 8;
     user.write(_data, i);
     i += 32;
-    i += Borsh.write(order, _data, i);
+    i += order.write(_data, i);
     return i - _offset;
   }
 

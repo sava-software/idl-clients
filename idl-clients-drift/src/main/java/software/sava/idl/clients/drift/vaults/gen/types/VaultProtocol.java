@@ -148,7 +148,7 @@ public record VaultProtocol(PublicKey _address,
     final var protocolTotalProfitShare = getInt64LE(_data, i);
     i += 8;
     final var lastProtocolWithdrawRequest = WithdrawRequest.read(_data, i);
-    i += Borsh.len(lastProtocolWithdrawRequest);
+    i += lastProtocolWithdrawRequest.l();
     final var protocolProfitShare = getInt32LE(_data, i);
     i += 4;
     final var bump = _data[i] & 0xFF;
@@ -187,7 +187,7 @@ public record VaultProtocol(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, protocolTotalProfitShare);
     i += 8;
-    i += Borsh.write(lastProtocolWithdrawRequest, _data, i);
+    i += lastProtocolWithdrawRequest.write(_data, i);
     putInt32LE(_data, i, protocolProfitShare);
     i += 4;
     _data[i] = (byte) bump;

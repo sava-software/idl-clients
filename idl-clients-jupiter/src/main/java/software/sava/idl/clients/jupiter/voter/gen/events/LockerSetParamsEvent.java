@@ -1,7 +1,6 @@
 package software.sava.idl.clients.jupiter.voter.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
 
@@ -26,7 +25,7 @@ public record LockerSetParamsEvent(Discriminator discriminator,
     final var locker = readPubKey(_data, i);
     i += 32;
     final var prevParams = LockerParams.read(_data, i);
-    i += Borsh.len(prevParams);
+    i += prevParams.l();
     final var params = LockerParams.read(_data, i);
     return new LockerSetParamsEvent(discriminator, locker, prevParams, params);
   }
@@ -36,8 +35,8 @@ public record LockerSetParamsEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     locker.write(_data, i);
     i += 32;
-    i += Borsh.write(prevParams, _data, i);
-    i += Borsh.write(params, _data, i);
+    i += prevParams.write(_data, i);
+    i += params.write(_data, i);
     return i - _offset;
   }
 

@@ -118,7 +118,7 @@ public record Locker(PublicKey _address,
     final var governor = readPubKey(_data, i);
     i += 32;
     final var params = LockerParams.read(_data, i);
-    i += Borsh.len(params);
+    i += params.l();
     final var buffers = new BigInteger[32];
     Borsh.read128Array(buffers, _data, i);
     return new Locker(_address,
@@ -148,7 +148,7 @@ public record Locker(PublicKey _address,
     i += 8;
     governor.write(_data, i);
     i += 32;
-    i += Borsh.write(params, _data, i);
+    i += params.write(_data, i);
     i += Borsh.write128ArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }

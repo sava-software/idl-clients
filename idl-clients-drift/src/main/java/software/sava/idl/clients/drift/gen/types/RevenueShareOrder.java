@@ -61,7 +61,7 @@ public record RevenueShareOrder(long feesAccrued,
     final var userOrderIndex = _data[i] & 0xFF;
     ++i;
     final var marketType = MarketType.read(_data, i);
-    i += Borsh.len(marketType);
+    i += marketType.l();
     final var padding = new byte[10];
     Borsh.readArray(padding, _data, i);
     return new RevenueShareOrder(feesAccrued,
@@ -95,7 +95,7 @@ public record RevenueShareOrder(long feesAccrued,
     ++i;
     _data[i] = (byte) userOrderIndex;
     ++i;
-    i += Borsh.write(marketType, _data, i);
+    i += marketType.write(_data, i);
     i += Borsh.writeArrayChecked(padding, 10, _data, i);
     return i - _offset;
   }

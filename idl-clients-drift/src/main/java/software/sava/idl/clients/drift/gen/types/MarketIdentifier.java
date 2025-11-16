@@ -15,7 +15,7 @@ public record MarketIdentifier(MarketType marketType, int marketIndex) implement
     }
     int i = _offset;
     final var marketType = MarketType.read(_data, i);
-    i += Borsh.len(marketType);
+    i += marketType.l();
     final var marketIndex = getInt16LE(_data, i);
     return new MarketIdentifier(marketType, marketIndex);
   }
@@ -23,7 +23,7 @@ public record MarketIdentifier(MarketType marketType, int marketIndex) implement
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(marketType, _data, i);
+    i += marketType.write(_data, i);
     putInt16LE(_data, i, marketIndex);
     i += 2;
     return i - _offset;

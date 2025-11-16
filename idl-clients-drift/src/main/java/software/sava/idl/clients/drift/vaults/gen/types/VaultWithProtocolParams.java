@@ -79,7 +79,7 @@ public record VaultWithProtocolParams(byte[] name,
     i += 2;
     _data[i] = (byte) (permissioned ? 1 : 0);
     ++i;
-    i += Borsh.write(vaultProtocol, _data, i);
+    i += vaultProtocol.write(_data, i);
     return i - _offset;
   }
 

@@ -269,7 +269,7 @@ public record UserStats(PublicKey _address,
     final var referrer = readPubKey(_data, i);
     i += 32;
     final var fees = UserFees.read(_data, i);
-    i += Borsh.len(fees);
+    i += fees.l();
     final var nextEpochTs = getInt64LE(_data, i);
     i += 8;
     final var makerVolume30d = getInt64LE(_data, i);
@@ -353,7 +353,7 @@ public record UserStats(PublicKey _address,
     i += 32;
     referrer.write(_data, i);
     i += 32;
-    i += Borsh.write(fees, _data, i);
+    i += fees.write(_data, i);
     putInt64LE(_data, i, nextEpochTs);
     i += 8;
     putInt64LE(_data, i, makerVolume30d);

@@ -62,7 +62,7 @@ public record TwapUpdate(PublicKey _address, Discriminator discriminator, Public
     int i = _offset + discriminator.write(_data, _offset);
     writeAuthority.write(_data, i);
     i += 32;
-    i += Borsh.write(twap, _data, i);
+    i += twap.write(_data, i);
     return i - _offset;
   }
 

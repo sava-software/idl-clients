@@ -53,9 +53,9 @@ public final class PythSolanaReceiverProgram {
   public static Instruction initialize(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                        final List<AccountMeta> keys,
                                        final Config initialConfig) {
-    final byte[] _data = new byte[8 + Borsh.len(initialConfig)];
+    final byte[] _data = new byte[8 + initialConfig.l()];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(initialConfig, _data, i);
+    initialConfig.write(_data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
@@ -79,13 +79,13 @@ public final class PythSolanaReceiverProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(initialConfig, _data, i);
+      i += initialConfig.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(initialConfig);
+      return 8 + initialConfig.l();
     }
   }
 
@@ -534,9 +534,9 @@ public final class PythSolanaReceiverProgram {
   public static Instruction postUpdateAtomic(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                              final List<AccountMeta> keys,
                                              final PostUpdateAtomicParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = POST_UPDATE_ATOMIC_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
@@ -560,13 +560,13 @@ public final class PythSolanaReceiverProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -630,9 +630,9 @@ public final class PythSolanaReceiverProgram {
   public static Instruction postUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                        final List<AccountMeta> keys,
                                        final PostUpdateParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = POST_UPDATE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
@@ -656,13 +656,13 @@ public final class PythSolanaReceiverProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -730,9 +730,9 @@ public final class PythSolanaReceiverProgram {
   public static Instruction postTwapUpdate(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                            final List<AccountMeta> keys,
                                            final PostTwapUpdateParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = POST_TWAP_UPDATE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
@@ -756,13 +756,13 @@ public final class PythSolanaReceiverProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 

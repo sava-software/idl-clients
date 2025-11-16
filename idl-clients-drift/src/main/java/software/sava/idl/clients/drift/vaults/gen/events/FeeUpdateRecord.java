@@ -1,7 +1,6 @@
 package software.sava.idl.clients.drift.vaults.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.drift.vaults.gen.types.FeeUpdateAction;
 
@@ -37,7 +36,7 @@ public record FeeUpdateRecord(Discriminator discriminator,
     final var ts = getInt64LE(_data, i);
     i += 8;
     final var action = FeeUpdateAction.read(_data, i);
-    i += Borsh.len(action);
+    i += action.l();
     final var timelockEndTs = getInt64LE(_data, i);
     i += 8;
     final var vault = readPubKey(_data, i);
@@ -71,7 +70,7 @@ public record FeeUpdateRecord(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     putInt64LE(_data, i, ts);
     i += 8;
-    i += Borsh.write(action, _data, i);
+    i += action.write(_data, i);
     putInt64LE(_data, i, timelockEndTs);
     i += 8;
     vault.write(_data, i);

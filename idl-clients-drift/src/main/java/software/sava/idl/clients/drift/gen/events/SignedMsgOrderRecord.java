@@ -63,7 +63,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     final var hash = new String(_hash, UTF_8);
     i += _hash.length;
     final var matchingOrderParams = OrderParams.read(_data, i);
-    i += Borsh.len(matchingOrderParams);
+    i += matchingOrderParams.l();
     final var userOrderId = getInt32LE(_data, i);
     i += 4;
     final var signedMsgOrderMaxSlot = getInt64LE(_data, i);
@@ -87,7 +87,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     user.write(_data, i);
     i += 32;
     i += Borsh.writeVector(_hash, _data, i);
-    i += Borsh.write(matchingOrderParams, _data, i);
+    i += matchingOrderParams.write(_data, i);
     putInt32LE(_data, i, userOrderId);
     i += 4;
     putInt64LE(_data, i, signedMsgOrderMaxSlot);
@@ -102,7 +102,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
   public int l() {
     return discriminator.length() + 32
          + _hash.length
-         + Borsh.len(matchingOrderParams)
+         + matchingOrderParams.l()
          + 4
          + 8
          + Borsh.lenArray(signedMsgOrderUuid)

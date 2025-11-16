@@ -245,13 +245,13 @@ public record AMM(PublicKey oracle,
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var historicalOracleData = HistoricalOracleData.read(_data, i);
-    i += Borsh.len(historicalOracleData);
+    i += historicalOracleData.l();
     final var baseAssetAmountPerLp = getInt128LE(_data, i);
     i += 16;
     final var quoteAssetAmountPerLp = getInt128LE(_data, i);
     i += 16;
     final var feePool = PoolBalance.read(_data, i);
-    i += Borsh.len(feePool);
+    i += feePool.l();
     final var baseAssetReserve = getInt128LE(_data, i);
     i += 16;
     final var quoteAssetReserve = getInt128LE(_data, i);
@@ -387,7 +387,7 @@ public record AMM(PublicKey oracle,
     final var ammJitIntensity = _data[i] & 0xFF;
     ++i;
     final var oracleSource = OracleSource.read(_data, i);
-    i += Borsh.len(oracleSource);
+    i += oracleSource.l();
     final var lastOracleValid = _data[i] == 1;
     ++i;
     final var targetBaseAssetAmountPerLp = getInt32LE(_data, i);
@@ -509,12 +509,12 @@ public record AMM(PublicKey oracle,
     int i = _offset;
     oracle.write(_data, i);
     i += 32;
-    i += Borsh.write(historicalOracleData, _data, i);
+    i += historicalOracleData.write(_data, i);
     putInt128LE(_data, i, baseAssetAmountPerLp);
     i += 16;
     putInt128LE(_data, i, quoteAssetAmountPerLp);
     i += 16;
-    i += Borsh.write(feePool, _data, i);
+    i += feePool.write(_data, i);
     putInt128LE(_data, i, baseAssetReserve);
     i += 16;
     putInt128LE(_data, i, quoteAssetReserve);
@@ -649,7 +649,7 @@ public record AMM(PublicKey oracle,
     ++i;
     _data[i] = (byte) ammJitIntensity;
     ++i;
-    i += Borsh.write(oracleSource, _data, i);
+    i += oracleSource.write(_data, i);
     _data[i] = (byte) (lastOracleValid ? 1 : 0);
     ++i;
     putInt32LE(_data, i, targetBaseAssetAmountPerLp);

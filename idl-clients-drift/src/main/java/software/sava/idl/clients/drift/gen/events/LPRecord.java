@@ -1,7 +1,6 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.drift.gen.types.LPAction;
 
@@ -37,7 +36,7 @@ public record LPRecord(Discriminator discriminator,
     final var user = readPubKey(_data, i);
     i += 32;
     final var action = LPAction.read(_data, i);
-    i += Borsh.len(action);
+    i += action.l();
     final var nShares = getInt64LE(_data, i);
     i += 8;
     final var marketIndex = getInt16LE(_data, i);
@@ -65,7 +64,7 @@ public record LPRecord(Discriminator discriminator,
     i += 8;
     user.write(_data, i);
     i += 32;
-    i += Borsh.write(action, _data, i);
+    i += action.write(_data, i);
     putInt64LE(_data, i, nShares);
     i += 8;
     putInt16LE(_data, i, marketIndex);

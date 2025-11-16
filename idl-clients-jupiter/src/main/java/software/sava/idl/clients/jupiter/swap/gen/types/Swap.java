@@ -941,7 +941,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + Borsh.len(remainingAccountsInfo)));
+      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
     }
 
     @Override
@@ -1645,7 +1645,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + Borsh.len(remainingAccountsInfo)));
+      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
     }
 
     @Override

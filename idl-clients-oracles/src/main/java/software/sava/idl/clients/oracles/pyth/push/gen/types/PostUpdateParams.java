@@ -10,7 +10,7 @@ public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasury
     }
     int i = _offset;
     final var merklePriceUpdate = MerklePriceUpdate.read(_data, i);
-    i += Borsh.len(merklePriceUpdate);
+    i += merklePriceUpdate.l();
     final var treasuryId = _data[i] & 0xFF;
     return new PostUpdateParams(merklePriceUpdate, treasuryId);
   }
@@ -18,7 +18,7 @@ public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasury
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(merklePriceUpdate, _data, i);
+    i += merklePriceUpdate.write(_data, i);
     _data[i] = (byte) treasuryId;
     ++i;
     return i - _offset;
@@ -26,6 +26,6 @@ public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasury
 
   @Override
   public int l() {
-    return Borsh.len(merklePriceUpdate) + 1;
+    return merklePriceUpdate.l() + 1;
   }
 }

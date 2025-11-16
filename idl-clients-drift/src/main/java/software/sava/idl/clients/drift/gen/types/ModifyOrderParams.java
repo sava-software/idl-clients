@@ -37,7 +37,7 @@ public record ModifyOrderParams(PositionDirection direction,
     } else {
       ++i;
       direction = PositionDirection.read(_data, i);
-      i += Borsh.len(direction);
+      i += direction.l();
     }
     final OptionalLong baseAssetAmount;
     if (_data[i] == 0) {
@@ -73,7 +73,7 @@ public record ModifyOrderParams(PositionDirection direction,
     } else {
       ++i;
       postOnly = PostOnlyParam.read(_data, i);
-      i += Borsh.len(postOnly);
+      i += postOnly.l();
     }
     final OptionalInt bitFlags;
     if (_data[i] == 0) {
@@ -109,7 +109,7 @@ public record ModifyOrderParams(PositionDirection direction,
     } else {
       ++i;
       triggerCondition = OrderTriggerCondition.read(_data, i);
-      i += Borsh.len(triggerCondition);
+      i += triggerCondition.l();
     }
     final OptionalInt oraclePriceOffset;
     if (_data[i] == 0) {
@@ -192,15 +192,15 @@ public record ModifyOrderParams(PositionDirection direction,
 
   @Override
   public int l() {
-    return (direction == null ? 1 : (1 + Borsh.len(direction)))
+    return (direction == null ? 1 : (1 + direction.l()))
          + (baseAssetAmount == null || baseAssetAmount.isEmpty() ? 1 : (1 + 8))
          + (price == null || price.isEmpty() ? 1 : (1 + 8))
          + (reduceOnly == null ? 1 : (1 + 1))
-         + (postOnly == null ? 1 : (1 + Borsh.len(postOnly)))
+         + (postOnly == null ? 1 : (1 + postOnly.l()))
          + (bitFlags == null || bitFlags.isEmpty() ? 1 : (1 + 1))
          + (maxTs == null || maxTs.isEmpty() ? 1 : (1 + 8))
          + (triggerPrice == null || triggerPrice.isEmpty() ? 1 : (1 + 8))
-         + (triggerCondition == null ? 1 : (1 + Borsh.len(triggerCondition)))
+         + (triggerCondition == null ? 1 : (1 + triggerCondition.l()))
          + (oraclePriceOffset == null || oraclePriceOffset.isEmpty() ? 1 : (1 + 4))
          + (auctionDuration == null || auctionDuration.isEmpty() ? 1 : (1 + 1))
          + (auctionStartPrice == null || auctionStartPrice.isEmpty() ? 1 : (1 + 8))

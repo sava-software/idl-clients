@@ -13,7 +13,7 @@ public record RoutePlanStep(Swap swap,
     }
     int i = _offset;
     final var swap = Swap.read(_data, i);
-    i += Borsh.len(swap);
+    i += swap.l();
     final var percent = _data[i] & 0xFF;
     ++i;
     final var inputIndex = _data[i] & 0xFF;
@@ -28,7 +28,7 @@ public record RoutePlanStep(Swap swap,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(swap, _data, i);
+    i += swap.write(_data, i);
     _data[i] = (byte) percent;
     ++i;
     _data[i] = (byte) inputIndex;
@@ -40,6 +40,6 @@ public record RoutePlanStep(Swap swap,
 
   @Override
   public int l() {
-    return Borsh.len(swap) + 1 + 1 + 1;
+    return swap.l() + 1 + 1 + 1;
   }
 }

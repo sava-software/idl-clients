@@ -73,9 +73,9 @@ public final class PythPushOracleProgram {
                                             final PostUpdateParams params,
                                             final int shardId,
                                             final byte[] feedId) {
-    final byte[] _data = new byte[10 + Borsh.len(params) + Borsh.lenArray(feedId)];
+    final byte[] _data = new byte[10 + params.l() + Borsh.lenArray(feedId)];
     int i = UPDATE_PRICE_FEED_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(params, _data, i);
+    i += params.write(_data, i);
     putInt16LE(_data, i, shardId);
     i += 2;
     Borsh.writeArrayChecked(feedId, 32, _data, i);
@@ -100,7 +100,7 @@ public final class PythPushOracleProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var params = PostUpdateParams.read(_data, i);
-      i += Borsh.len(params);
+      i += params.l();
       final var shardId = getInt16LE(_data, i);
       i += 2;
       final var feedId = new byte[32];
@@ -111,7 +111,7 @@ public final class PythPushOracleProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       putInt16LE(_data, i, shardId);
       i += 2;
       i += Borsh.writeArrayChecked(feedId, 32, _data, i);
@@ -120,7 +120,7 @@ public final class PythPushOracleProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params) + 2 + Borsh.lenArray(feedId);
+      return 8 + params.l() + 2 + Borsh.lenArray(feedId);
     }
   }
 

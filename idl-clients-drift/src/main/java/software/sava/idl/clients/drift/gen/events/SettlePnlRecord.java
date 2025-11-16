@@ -3,7 +3,6 @@ package software.sava.idl.clients.drift.gen.events;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.drift.gen.types.SettlePnlExplanation;
 
@@ -85,7 +84,7 @@ public record SettlePnlRecord(Discriminator discriminator,
     i += 8;
     putInt64LE(_data, i, settlePrice);
     i += 8;
-    i += Borsh.write(explanation, _data, i);
+    i += explanation.write(_data, i);
     return i - _offset;
   }
 

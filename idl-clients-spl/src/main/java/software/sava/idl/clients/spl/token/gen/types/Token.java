@@ -7,6 +7,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.core.rpc.Filter;
+import software.sava.core.serial.Serializable;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -35,7 +36,7 @@ public record Token(PublicKey _address,
                     AccountState state,
                     OptionalLong isNative,
                     long delegatedAmount,
-                    PublicKey closeAuthority) implements Borsh {
+                    PublicKey closeAuthority) implements Serializable {
 
   public static final int BYTES = 165;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -123,7 +124,7 @@ public record Token(PublicKey _address,
       i += 32;
     }
     final var state = AccountState.read(_data, i);
-    i += Borsh.len(state);
+    i += state.l();
     final OptionalLong isNative;
     if (getInt32LE(_data, i) == 0) {
       isNative = OptionalLong.empty();
@@ -170,7 +171,7 @@ public record Token(PublicKey _address,
       i += 4;
     }
     i += 32;
-    i += Borsh.write(state, _data, i);
+    i += state.write(_data, i);
     if (isNative.isPresent()) {
       putInt32LE(_data, i, 1);
       i += 4;

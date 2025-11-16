@@ -47,7 +47,7 @@ public record SpotPosition(long scaledBalance,
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var balanceType = SpotBalanceType.read(_data, i);
-    i += Borsh.len(balanceType);
+    i += balanceType.l();
     final var openOrders = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[4];
@@ -75,7 +75,7 @@ public record SpotPosition(long scaledBalance,
     i += 8;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.write(balanceType, _data, i);
+    i += balanceType.write(_data, i);
     _data[i] = (byte) openOrders;
     ++i;
     i += Borsh.writeArrayChecked(padding, 4, _data, i);

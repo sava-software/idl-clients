@@ -29,7 +29,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     }
     int i = _offset;
     final var signedMsgOrderParams = OrderParams.read(_data, i);
-    i += Borsh.len(signedMsgOrderParams);
+    i += signedMsgOrderParams.l();
     final var takerPubkey = readPubKey(_data, i);
     i += 32;
     final var slot = getInt64LE(_data, i);
@@ -43,7 +43,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     } else {
       ++i;
       takeProfitOrderParams = SignedMsgTriggerOrderParams.read(_data, i);
-      i += Borsh.len(takeProfitOrderParams);
+      i += takeProfitOrderParams.l();
     }
     final SignedMsgTriggerOrderParams stopLossOrderParams;
     if (_data[i] == 0) {
@@ -52,7 +52,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     } else {
       ++i;
       stopLossOrderParams = SignedMsgTriggerOrderParams.read(_data, i);
-      i += Borsh.len(stopLossOrderParams);
+      i += stopLossOrderParams.l();
     }
     final OptionalInt maxMarginRatio;
     if (_data[i] == 0) {
@@ -103,7 +103,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(signedMsgOrderParams, _data, i);
+    i += signedMsgOrderParams.write(_data, i);
     takerPubkey.write(_data, i);
     i += 32;
     putInt64LE(_data, i, slot);
@@ -120,12 +120,12 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
 
   @Override
   public int l() {
-    return Borsh.len(signedMsgOrderParams)
+    return signedMsgOrderParams.l()
          + 32
          + 8
          + Borsh.lenArray(uuid)
-         + (takeProfitOrderParams == null ? 1 : (1 + Borsh.len(takeProfitOrderParams)))
-         + (stopLossOrderParams == null ? 1 : (1 + Borsh.len(stopLossOrderParams)))
+         + (takeProfitOrderParams == null ? 1 : (1 + takeProfitOrderParams.l()))
+         + (stopLossOrderParams == null ? 1 : (1 + stopLossOrderParams.l()))
          + (maxMarginRatio == null || maxMarginRatio.isEmpty() ? 1 : (1 + 2))
          + (builderIdx == null || builderIdx.isEmpty() ? 1 : (1 + 1))
          + (builderFeeTenthBps == null || builderFeeTenthBps.isEmpty() ? 1 : (1 + 2))

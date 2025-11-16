@@ -451,7 +451,7 @@ public record Vault(PublicKey _address,
     final var minDepositAmount = getInt64LE(_data, i);
     i += 8;
     final var lastManagerWithdrawRequest = WithdrawRequest.read(_data, i);
-    i += Borsh.len(lastManagerWithdrawRequest);
+    i += lastManagerWithdrawRequest.l();
     final var sharesBase = getInt32LE(_data, i);
     i += 4;
     final var profitShare = getInt32LE(_data, i);
@@ -582,7 +582,7 @@ public record Vault(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, minDepositAmount);
     i += 8;
-    i += Borsh.write(lastManagerWithdrawRequest, _data, i);
+    i += lastManagerWithdrawRequest.write(_data, i);
     putInt32LE(_data, i, sharesBase);
     i += 4;
     putInt32LE(_data, i, profitShare);

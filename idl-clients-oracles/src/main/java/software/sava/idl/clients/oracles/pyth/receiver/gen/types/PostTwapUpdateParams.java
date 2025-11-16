@@ -13,9 +13,9 @@ public record PostTwapUpdateParams(MerklePriceUpdate startMerklePriceUpdate,
     }
     int i = _offset;
     final var startMerklePriceUpdate = MerklePriceUpdate.read(_data, i);
-    i += Borsh.len(startMerklePriceUpdate);
+    i += startMerklePriceUpdate.l();
     final var endMerklePriceUpdate = MerklePriceUpdate.read(_data, i);
-    i += Borsh.len(endMerklePriceUpdate);
+    i += endMerklePriceUpdate.l();
     final var treasuryId = _data[i] & 0xFF;
     return new PostTwapUpdateParams(startMerklePriceUpdate, endMerklePriceUpdate, treasuryId);
   }
@@ -23,8 +23,8 @@ public record PostTwapUpdateParams(MerklePriceUpdate startMerklePriceUpdate,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(startMerklePriceUpdate, _data, i);
-    i += Borsh.write(endMerklePriceUpdate, _data, i);
+    i += startMerklePriceUpdate.write(_data, i);
+    i += endMerklePriceUpdate.write(_data, i);
     _data[i] = (byte) treasuryId;
     ++i;
     return i - _offset;
@@ -32,6 +32,6 @@ public record PostTwapUpdateParams(MerklePriceUpdate startMerklePriceUpdate,
 
   @Override
   public int l() {
-    return Borsh.len(startMerklePriceUpdate) + Borsh.len(endMerklePriceUpdate) + 1;
+    return startMerklePriceUpdate.l() + endMerklePriceUpdate.l() + 1;
   }
 }

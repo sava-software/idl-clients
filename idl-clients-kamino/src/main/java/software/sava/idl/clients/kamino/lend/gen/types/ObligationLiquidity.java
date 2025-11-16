@@ -39,7 +39,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     final var borrowReserve = readPubKey(_data, i);
     i += 32;
     final var cumulativeBorrowRateBsf = BigFractionBytes.read(_data, i);
-    i += Borsh.len(cumulativeBorrowRateBsf);
+    i += cumulativeBorrowRateBsf.l();
     final var padding = getInt64LE(_data, i);
     i += 8;
     final var borrowedAmountSf = getInt128LE(_data, i);
@@ -67,7 +67,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     int i = _offset;
     borrowReserve.write(_data, i);
     i += 32;
-    i += Borsh.write(cumulativeBorrowRateBsf, _data, i);
+    i += cumulativeBorrowRateBsf.write(_data, i);
     putInt64LE(_data, i, padding);
     i += 8;
     putInt128LE(_data, i, borrowedAmountSf);

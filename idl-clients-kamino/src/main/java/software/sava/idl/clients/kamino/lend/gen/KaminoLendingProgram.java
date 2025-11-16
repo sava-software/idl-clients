@@ -421,9 +421,9 @@ public final class KaminoLendingProgram {
                                                 final UpdateConfigMode mode,
                                                 final byte[] value,
                                                 final boolean skipConfigIntegrityValidation) {
-    final byte[] _data = new byte[9 + Borsh.len(mode) + Borsh.lenVector(value)];
+    final byte[] _data = new byte[9 + mode.l() + Borsh.lenVector(value)];
     int i = UPDATE_RESERVE_CONFIG_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(mode, _data, i);
+    i += mode.write(_data, i);
     i += Borsh.writeVector(value, _data, i);
     _data[i] = (byte) (skipConfigIntegrityValidation ? 1 : 0);
 
@@ -446,7 +446,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var mode = UpdateConfigMode.read(_data, i);
-      i += Borsh.len(mode);
+      i += mode.l();
       final var value = Borsh.readbyteVector(_data, i);
       i += Borsh.lenVector(value);
       final var skipConfigIntegrityValidation = _data[i] == 1;
@@ -456,7 +456,7 @@ public final class KaminoLendingProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(mode, _data, i);
+      i += mode.write(_data, i);
       i += Borsh.writeVector(value, _data, i);
       _data[i] = (byte) (skipConfigIntegrityValidation ? 1 : 0);
       ++i;
@@ -465,7 +465,7 @@ public final class KaminoLendingProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.len(mode) + Borsh.lenVector(value) + 1;
+      return 8 + mode.l() + Borsh.lenVector(value) + 1;
     }
   }
 
@@ -1225,9 +1225,9 @@ public final class KaminoLendingProgram {
   public static Instruction initObligation(final AccountMeta invokedKaminoLendingProgramMeta,
                                            final List<AccountMeta> keys,
                                            final InitObligationArgs args) {
-    final byte[] _data = new byte[8 + Borsh.len(args)];
+    final byte[] _data = new byte[8 + args.l()];
     int i = INIT_OBLIGATION_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(args, _data, i);
+    args.write(_data, i);
 
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
@@ -1253,7 +1253,7 @@ public final class KaminoLendingProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(args, _data, i);
+      i += args.write(_data, i);
       return i - _offset;
     }
 
@@ -4099,11 +4099,11 @@ public final class KaminoLendingProgram {
                                                final List<AccountMeta> keys,
                                                final int index,
                                                final ObligationOrder order) {
-    final byte[] _data = new byte[9 + Borsh.len(order)];
+    final byte[] _data = new byte[9 + order.l()];
     int i = SET_OBLIGATION_ORDER_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) index;
     ++i;
-    Borsh.write(order, _data, i);
+    order.write(_data, i);
 
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
@@ -4133,7 +4133,7 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) index;
       ++i;
-      i += Borsh.write(order, _data, i);
+      i += order.write(_data, i);
       return i - _offset;
     }
 
@@ -4206,9 +4206,9 @@ public final class KaminoLendingProgram {
                                                final List<AccountMeta> keys,
                                                final UpdateGlobalConfigMode mode,
                                                final byte[] value) {
-    final byte[] _data = new byte[8 + Borsh.len(mode) + Borsh.lenVector(value)];
+    final byte[] _data = new byte[8 + mode.l() + Borsh.lenVector(value)];
     int i = UPDATE_GLOBAL_CONFIG_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(mode, _data, i);
+    i += mode.write(_data, i);
     Borsh.writeVector(value, _data, i);
 
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
@@ -4227,7 +4227,7 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var mode = UpdateGlobalConfigMode.read(_data, i);
-      i += Borsh.len(mode);
+      i += mode.l();
       final var value = Borsh.readbyteVector(_data, i);
       return new UpdateGlobalConfigIxData(discriminator, mode, value);
     }
@@ -4235,14 +4235,14 @@ public final class KaminoLendingProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(mode, _data, i);
+      i += mode.write(_data, i);
       i += Borsh.writeVector(value, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(mode) + Borsh.lenVector(value);
+      return 8 + mode.l() + Borsh.lenVector(value);
     }
   }
 
@@ -4325,15 +4325,15 @@ public final class KaminoLendingProgram {
                                             final UpdateConfigMode updateConfigMode,
                                             final UpdateLendingMarketConfigValue updateLendingMarketConfigValue,
                                             final UpdateLendingMarketMode updateLendingMarketConfigMode) {
-    final byte[] _data = new byte[8 + Borsh.len(reserveFarmKind) + Borsh.len(assetTier) + Borsh.len(feeCalculation) + Borsh.len(reserveStatus) + Borsh.len(updateConfigMode) + Borsh.len(updateLendingMarketConfigValue) + Borsh.len(updateLendingMarketConfigMode)];
+    final byte[] _data = new byte[8 + reserveFarmKind.l() + assetTier.l() + feeCalculation.l() + reserveStatus.l() + updateConfigMode.l() + updateLendingMarketConfigValue.l() + updateLendingMarketConfigMode.l()];
     int i = IDL_MISSING_TYPES_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.write(reserveFarmKind, _data, i);
-    i += Borsh.write(assetTier, _data, i);
-    i += Borsh.write(feeCalculation, _data, i);
-    i += Borsh.write(reserveStatus, _data, i);
-    i += Borsh.write(updateConfigMode, _data, i);
-    i += Borsh.write(updateLendingMarketConfigValue, _data, i);
-    Borsh.write(updateLendingMarketConfigMode, _data, i);
+    i += reserveFarmKind.write(_data, i);
+    i += assetTier.write(_data, i);
+    i += feeCalculation.write(_data, i);
+    i += reserveStatus.write(_data, i);
+    i += updateConfigMode.write(_data, i);
+    i += updateLendingMarketConfigValue.write(_data, i);
+    updateLendingMarketConfigMode.write(_data, i);
 
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
@@ -4358,17 +4358,17 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var reserveFarmKind = ReserveFarmKind.read(_data, i);
-      i += Borsh.len(reserveFarmKind);
+      i += reserveFarmKind.l();
       final var assetTier = AssetTier.read(_data, i);
-      i += Borsh.len(assetTier);
+      i += assetTier.l();
       final var feeCalculation = FeeCalculation.read(_data, i);
-      i += Borsh.len(feeCalculation);
+      i += feeCalculation.l();
       final var reserveStatus = ReserveStatus.read(_data, i);
-      i += Borsh.len(reserveStatus);
+      i += reserveStatus.l();
       final var updateConfigMode = UpdateConfigMode.read(_data, i);
-      i += Borsh.len(updateConfigMode);
+      i += updateConfigMode.l();
       final var updateLendingMarketConfigValue = UpdateLendingMarketConfigValue.read(_data, i);
-      i += Borsh.len(updateLendingMarketConfigValue);
+      i += updateLendingMarketConfigValue.l();
       final var updateLendingMarketConfigMode = UpdateLendingMarketMode.read(_data, i);
       return new IdlMissingTypesIxData(discriminator,
                                        reserveFarmKind,
@@ -4383,25 +4383,25 @@ public final class KaminoLendingProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(reserveFarmKind, _data, i);
-      i += Borsh.write(assetTier, _data, i);
-      i += Borsh.write(feeCalculation, _data, i);
-      i += Borsh.write(reserveStatus, _data, i);
-      i += Borsh.write(updateConfigMode, _data, i);
-      i += Borsh.write(updateLendingMarketConfigValue, _data, i);
-      i += Borsh.write(updateLendingMarketConfigMode, _data, i);
+      i += reserveFarmKind.write(_data, i);
+      i += assetTier.write(_data, i);
+      i += feeCalculation.write(_data, i);
+      i += reserveStatus.write(_data, i);
+      i += updateConfigMode.write(_data, i);
+      i += updateLendingMarketConfigValue.write(_data, i);
+      i += updateLendingMarketConfigMode.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(reserveFarmKind)
-           + Borsh.len(assetTier)
-           + Borsh.len(feeCalculation)
-           + Borsh.len(reserveStatus)
-           + Borsh.len(updateConfigMode)
-           + Borsh.len(updateLendingMarketConfigValue)
-           + Borsh.len(updateLendingMarketConfigMode);
+      return 8 + reserveFarmKind.l()
+           + assetTier.l()
+           + feeCalculation.l()
+           + reserveStatus.l()
+           + updateConfigMode.l()
+           + updateLendingMarketConfigValue.l()
+           + updateLendingMarketConfigMode.l();
     }
   }
 

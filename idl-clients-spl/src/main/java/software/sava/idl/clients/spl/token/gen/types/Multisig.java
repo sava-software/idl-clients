@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.core.serial.Serializable;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 /// @param m Number of signers required.
@@ -15,7 +16,7 @@ public record Multisig(PublicKey _address,
                        int m,
                        int n,
                        boolean isInitialized,
-                       PublicKey[] signers) implements Borsh {
+                       PublicKey[] signers) implements Serializable {
 
   public static final int BYTES = 355;
   public static final int SIGNERS_LEN = 11;

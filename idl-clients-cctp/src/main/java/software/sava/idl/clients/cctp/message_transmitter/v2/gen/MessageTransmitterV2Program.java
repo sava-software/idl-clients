@@ -64,9 +64,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction acceptOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                             final List<AccountMeta> keys,
                                             final AcceptOwnershipParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ACCEPT_OWNERSHIP_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -92,7 +92,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -142,9 +142,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction disableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                             final List<AccountMeta> keys,
                                             final DisableAttesterParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = DISABLE_ATTESTER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -170,7 +170,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -220,9 +220,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction enableAttester(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final EnableAttesterParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = ENABLE_ATTESTER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -248,7 +248,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -306,9 +306,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction initialize(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                        final List<AccountMeta> keys,
                                        final InitializeParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -334,7 +334,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -399,9 +399,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction pause(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                   final List<AccountMeta> keys,
                                   final PauseParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = PAUSE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -427,7 +427,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -491,9 +491,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction receiveMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final ReceiveMessageParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = RECEIVE_MESSAGE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -517,13 +517,13 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -557,9 +557,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction reclaimEventAccount(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final ReclaimEventAccountParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = RECLAIM_EVENT_ACCOUNT_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -583,13 +583,13 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -633,9 +633,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction sendMessage(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                         final List<AccountMeta> keys,
                                         final SendMessageParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = SEND_MESSAGE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -659,13 +659,13 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.len(params);
+      return 8 + params.l();
     }
   }
 
@@ -701,9 +701,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction setMaxMessageBodySize(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final SetMaxMessageBodySizeParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = SET_MAX_MESSAGE_BODY_SIZE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -729,7 +729,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -771,9 +771,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction setSignatureThreshold(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final SetSignatureThresholdParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = SET_SIGNATURE_THRESHOLD_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -799,7 +799,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -841,9 +841,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction transferOwnership(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                               final List<AccountMeta> keys,
                                               final TransferOwnershipParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = TRANSFER_OWNERSHIP_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -869,7 +869,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -911,9 +911,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction unpause(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                     final List<AccountMeta> keys,
                                     final UnpauseParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = UNPAUSE_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -939,7 +939,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -981,9 +981,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction updateAttesterManager(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final UpdateAttesterManagerParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = UPDATE_ATTESTER_MANAGER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -1009,7 +1009,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 
@@ -1051,9 +1051,9 @@ public final class MessageTransmitterV2Program {
   public static Instruction updatePauser(final AccountMeta invokedMessageTransmitterV2ProgramMeta,
                                          final List<AccountMeta> keys,
                                          final UpdatePauserParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = UPDATE_PAUSER_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
@@ -1079,7 +1079,7 @@ public final class MessageTransmitterV2Program {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 

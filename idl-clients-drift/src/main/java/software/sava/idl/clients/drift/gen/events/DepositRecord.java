@@ -51,7 +51,7 @@ public record DepositRecord(Discriminator discriminator,
     final var user = readPubKey(_data, i);
     i += 32;
     final var direction = DepositDirection.read(_data, i);
-    i += Borsh.len(direction);
+    i += direction.l();
     final var depositRecordId = getInt64LE(_data, i);
     i += 8;
     final var amount = getInt64LE(_data, i);
@@ -73,7 +73,7 @@ public record DepositRecord(Discriminator discriminator,
     final var totalWithdrawsAfter = getInt64LE(_data, i);
     i += 8;
     final var explanation = DepositExplanation.read(_data, i);
-    i += Borsh.len(explanation);
+    i += explanation.l();
     final PublicKey transferUser;
     if (_data[i] == 0) {
       transferUser = null;
@@ -109,7 +109,7 @@ public record DepositRecord(Discriminator discriminator,
     i += 32;
     user.write(_data, i);
     i += 32;
-    i += Borsh.write(direction, _data, i);
+    i += direction.write(_data, i);
     putInt64LE(_data, i, depositRecordId);
     i += 8;
     putInt64LE(_data, i, amount);
@@ -130,7 +130,7 @@ public record DepositRecord(Discriminator discriminator,
     i += 8;
     putInt64LE(_data, i, totalWithdrawsAfter);
     i += 8;
-    i += Borsh.write(explanation, _data, i);
+    i += explanation.write(_data, i);
     i += Borsh.writeOptional(transferUser, _data, i);
     return i - _offset;
   }
@@ -140,7 +140,7 @@ public record DepositRecord(Discriminator discriminator,
     return discriminator.length() + 8
          + 32
          + 32
-         + Borsh.len(direction)
+         + direction.l()
          + 8
          + 8
          + 2
@@ -151,7 +151,7 @@ public record DepositRecord(Discriminator discriminator,
          + 16
          + 8
          + 8
-         + Borsh.len(explanation)
+         + explanation.l()
          + (transferUser == null ? 1 : (1 + 32));
   }
 }

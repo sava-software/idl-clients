@@ -19,7 +19,7 @@ public record DatedPrice(Price price,
     }
     int i = _offset;
     final var price = Price.read(_data, i);
-    i += Borsh.len(price);
+    i += price.l();
     final var lastUpdatedSlot = getInt64LE(_data, i);
     i += 8;
     final var unixTimestamp = getInt64LE(_data, i);
@@ -35,7 +35,7 @@ public record DatedPrice(Price price,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(price, _data, i);
+    i += price.write(_data, i);
     putInt64LE(_data, i, lastUpdatedSlot);
     i += 8;
     putInt64LE(_data, i, unixTimestamp);

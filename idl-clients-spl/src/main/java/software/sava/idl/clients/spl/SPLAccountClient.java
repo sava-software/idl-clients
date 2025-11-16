@@ -21,7 +21,11 @@ public interface SPLAccountClient {
 
   SPLClient splClient();
 
+  AccountMeta feePayer();
+
   ProgramDerivedAddress wrappedSolPDA();
+
+  Instruction syncNative();
 
   List<Instruction> wrapSOL(final long lamports);
 

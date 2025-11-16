@@ -119,9 +119,9 @@ public record Governor(PublicKey _address,
     final var smartWallet = readPubKey(_data, i);
     i += 32;
     final var params = GovernanceParameters.read(_data, i);
-    i += Borsh.len(params);
+    i += params.l();
     final var votingReward = VotingReward.read(_data, i);
-    i += Borsh.len(votingReward);
+    i += votingReward.l();
     final var buffers = new BigInteger[32];
     Borsh.read128Array(buffers, _data, i);
     return new Governor(_address,
@@ -149,8 +149,8 @@ public record Governor(PublicKey _address,
     i += 32;
     smartWallet.write(_data, i);
     i += 32;
-    i += Borsh.write(params, _data, i);
-    i += Borsh.write(votingReward, _data, i);
+    i += params.write(_data, i);
+    i += votingReward.write(_data, i);
     i += Borsh.write128ArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }

@@ -95,9 +95,9 @@ public final class MerkleDistributorProgram {
   public static Instruction newDistributor(final AccountMeta invokedMerkleDistributorProgramMeta,
                                            final List<AccountMeta> keys,
                                            final NewDistributorParams params) {
-    final byte[] _data = new byte[8 + Borsh.len(params)];
+    final byte[] _data = new byte[8 + params.l()];
     int i = NEW_DISTRIBUTOR_DISCRIMINATOR.write(_data, 0);
-    Borsh.write(params, _data, i);
+    params.write(_data, i);
 
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
@@ -123,7 +123,7 @@ public final class MerkleDistributorProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write(params, _data, i);
+      i += params.write(_data, i);
       return i - _offset;
     }
 

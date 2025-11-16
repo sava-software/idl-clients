@@ -52,7 +52,7 @@ public record LiquidationRecord(Discriminator discriminator,
     final var ts = getInt64LE(_data, i);
     i += 8;
     final var liquidationType = LiquidationType.read(_data, i);
-    i += Borsh.len(liquidationType);
+    i += liquidationType.l();
     final var user = readPubKey(_data, i);
     i += 32;
     final var liquidator = readPubKey(_data, i);
@@ -70,15 +70,15 @@ public record LiquidationRecord(Discriminator discriminator,
     final var canceledOrderIds = Borsh.readintVector(_data, i);
     i += Borsh.lenVector(canceledOrderIds);
     final var liquidatePerp = LiquidatePerpRecord.read(_data, i);
-    i += Borsh.len(liquidatePerp);
+    i += liquidatePerp.l();
     final var liquidateSpot = LiquidateSpotRecord.read(_data, i);
-    i += Borsh.len(liquidateSpot);
+    i += liquidateSpot.l();
     final var liquidateBorrowForPerpPnl = LiquidateBorrowForPerpPnlRecord.read(_data, i);
-    i += Borsh.len(liquidateBorrowForPerpPnl);
+    i += liquidateBorrowForPerpPnl.l();
     final var liquidatePerpPnlForDeposit = LiquidatePerpPnlForDepositRecord.read(_data, i);
-    i += Borsh.len(liquidatePerpPnlForDeposit);
+    i += liquidatePerpPnlForDeposit.l();
     final var perpBankruptcy = PerpBankruptcyRecord.read(_data, i);
-    i += Borsh.len(perpBankruptcy);
+    i += perpBankruptcy.l();
     final var spotBankruptcy = SpotBankruptcyRecord.read(_data, i);
     return new LiquidationRecord(discriminator,
                                  ts,
@@ -104,7 +104,7 @@ public record LiquidationRecord(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     putInt64LE(_data, i, ts);
     i += 8;
-    i += Borsh.write(liquidationType, _data, i);
+    i += liquidationType.write(_data, i);
     user.write(_data, i);
     i += 32;
     liquidator.write(_data, i);
@@ -120,19 +120,19 @@ public record LiquidationRecord(Discriminator discriminator,
     _data[i] = (byte) (bankrupt ? 1 : 0);
     ++i;
     i += Borsh.writeVector(canceledOrderIds, _data, i);
-    i += Borsh.write(liquidatePerp, _data, i);
-    i += Borsh.write(liquidateSpot, _data, i);
-    i += Borsh.write(liquidateBorrowForPerpPnl, _data, i);
-    i += Borsh.write(liquidatePerpPnlForDeposit, _data, i);
-    i += Borsh.write(perpBankruptcy, _data, i);
-    i += Borsh.write(spotBankruptcy, _data, i);
+    i += liquidatePerp.write(_data, i);
+    i += liquidateSpot.write(_data, i);
+    i += liquidateBorrowForPerpPnl.write(_data, i);
+    i += liquidatePerpPnlForDeposit.write(_data, i);
+    i += perpBankruptcy.write(_data, i);
+    i += spotBankruptcy.write(_data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
     return discriminator.length() + 8
-         + Borsh.len(liquidationType)
+         + liquidationType.l()
          + 32
          + 32
          + 16
@@ -141,11 +141,11 @@ public record LiquidationRecord(Discriminator discriminator,
          + 2
          + 1
          + Borsh.lenVector(canceledOrderIds)
-         + Borsh.len(liquidatePerp)
-         + Borsh.len(liquidateSpot)
-         + Borsh.len(liquidateBorrowForPerpPnl)
-         + Borsh.len(liquidatePerpPnlForDeposit)
-         + Borsh.len(perpBankruptcy)
-         + Borsh.len(spotBankruptcy);
+         + liquidatePerp.l()
+         + liquidateSpot.l()
+         + liquidateBorrowForPerpPnl.l()
+         + liquidatePerpPnlForDeposit.l()
+         + perpBankruptcy.l()
+         + spotBankruptcy.l();
   }
 }

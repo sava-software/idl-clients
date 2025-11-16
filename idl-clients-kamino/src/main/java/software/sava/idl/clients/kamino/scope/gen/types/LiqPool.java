@@ -44,11 +44,11 @@ public record LiqPool(PublicKey lpMint,
     final var lpLiquidityTarget = getInt64LE(_data, i);
     i += 8;
     final var lpMaxFee = Fee.read(_data, i);
-    i += Borsh.len(lpMaxFee);
+    i += lpMaxFee.l();
     final var lpMinFee = Fee.read(_data, i);
-    i += Borsh.len(lpMinFee);
+    i += lpMinFee.l();
     final var treasuryCut = Fee.read(_data, i);
-    i += Borsh.len(treasuryCut);
+    i += treasuryCut.l();
     final var lpSupply = getInt64LE(_data, i);
     i += 8;
     final var lentFromSolLeg = getInt64LE(_data, i);
@@ -83,9 +83,9 @@ public record LiqPool(PublicKey lpMint,
     i += 32;
     putInt64LE(_data, i, lpLiquidityTarget);
     i += 8;
-    i += Borsh.write(lpMaxFee, _data, i);
-    i += Borsh.write(lpMinFee, _data, i);
-    i += Borsh.write(treasuryCut, _data, i);
+    i += lpMaxFee.write(_data, i);
+    i += lpMinFee.write(_data, i);
+    i += treasuryCut.write(_data, i);
     putInt64LE(_data, i, lpSupply);
     i += 8;
     putInt64LE(_data, i, lentFromSolLeg);

@@ -36,13 +36,13 @@ public record RewardInfo(TokenInfo token,
     }
     int i = _offset;
     final var token = TokenInfo.read(_data, i);
-    i += Borsh.len(token);
+    i += token.l();
     final var rewardsVault = readPubKey(_data, i);
     i += 32;
     final var rewardsAvailable = getInt64LE(_data, i);
     i += 8;
     final var rewardScheduleCurve = RewardScheduleCurve.read(_data, i);
-    i += Borsh.len(rewardScheduleCurve);
+    i += rewardScheduleCurve.l();
     final var minClaimDurationSeconds = getInt64LE(_data, i);
     i += 8;
     final var lastIssuanceTs = getInt64LE(_data, i);
@@ -82,12 +82,12 @@ public record RewardInfo(TokenInfo token,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.write(token, _data, i);
+    i += token.write(_data, i);
     rewardsVault.write(_data, i);
     i += 32;
     putInt64LE(_data, i, rewardsAvailable);
     i += 8;
-    i += Borsh.write(rewardScheduleCurve, _data, i);
+    i += rewardScheduleCurve.write(_data, i);
     putInt64LE(_data, i, minClaimDurationSeconds);
     i += 8;
     putInt64LE(_data, i, lastIssuanceTs);

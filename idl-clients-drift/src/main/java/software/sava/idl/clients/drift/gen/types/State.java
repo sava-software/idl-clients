@@ -230,11 +230,11 @@ public record State(PublicKey _address,
     final var srmVault = readPubKey(_data, i);
     i += 32;
     final var perpFeeStructure = FeeStructure.read(_data, i);
-    i += Borsh.len(perpFeeStructure);
+    i += perpFeeStructure.l();
     final var spotFeeStructure = FeeStructure.read(_data, i);
-    i += Borsh.len(spotFeeStructure);
+    i += spotFeeStructure.l();
     final var oracleGuardRails = OracleGuardRails.read(_data, i);
-    i += Borsh.len(oracleGuardRails);
+    i += oracleGuardRails.l();
     final var numberOfAuthorities = getInt64LE(_data, i);
     i += 8;
     final var numberOfSubAccounts = getInt64LE(_data, i);
@@ -317,9 +317,9 @@ public record State(PublicKey _address,
     i += 32;
     srmVault.write(_data, i);
     i += 32;
-    i += Borsh.write(perpFeeStructure, _data, i);
-    i += Borsh.write(spotFeeStructure, _data, i);
-    i += Borsh.write(oracleGuardRails, _data, i);
+    i += perpFeeStructure.write(_data, i);
+    i += spotFeeStructure.write(_data, i);
+    i += oracleGuardRails.write(_data, i);
     putInt64LE(_data, i, numberOfAuthorities);
     i += 8;
     putInt64LE(_data, i, numberOfSubAccounts);
