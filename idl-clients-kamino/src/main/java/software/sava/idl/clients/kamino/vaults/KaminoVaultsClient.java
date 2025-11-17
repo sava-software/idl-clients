@@ -6,20 +6,20 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultState;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 public interface KaminoVaultsClient {
 
-  static KaminoVaultsClientImpl createClient(final NativeProgramAccountClient nativeProgramAccountClient,
+  static KaminoVaultsClientImpl createClient(final SPLAccountClient splAccountClient,
                                              final KaminoAccounts kaminoAccounts) {
-    return new KaminoVaultsClientImpl(nativeProgramAccountClient, kaminoAccounts);
+    return new KaminoVaultsClientImpl(splAccountClient, kaminoAccounts);
   }
 
-  static KaminoVaultsClientImpl createClient(final NativeProgramAccountClient nativeProgramAccountClient) {
-    return createClient(nativeProgramAccountClient, KaminoAccounts.MAIN_NET);
+  static KaminoVaultsClientImpl createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
   }
 
-  NativeProgramAccountClient nativeProgramAccountClient();
+  SPLAccountClient splAccountClient();
 
   SolanaAccounts solanaAccounts();
 
@@ -65,7 +65,7 @@ public interface KaminoVaultsClient {
                               final long maxAmount) {
     final var tokenMint = vaultState.tokenMint();
     final var tokenProgram = vaultState.tokenProgram();
-    final var nativeClient = nativeProgramAccountClient();
+    final var nativeClient = splAccountClient();
     final var userTokenAtaKey = nativeClient.findATA(tokenProgram, tokenMint).publicKey();
     final var sharesMint = vaultState.sharesMint();
     final var userSharesAtaKey = nativeClient.findATA(sharesTokenProgramKey, sharesMint).publicKey();
@@ -174,10 +174,10 @@ public interface KaminoVaultsClient {
                                final long maxAmount) {
     final var tokenMint = vaultState.tokenMint();
     final var tokenProgram = vaultState.tokenProgram();
-    final var nativeClient = nativeProgramAccountClient();
-    final var userTokenAtaKey = nativeClient.findATA(tokenProgram, tokenMint).publicKey();
+    final var splAccountClient = splAccountClient();
+    final var userTokenAtaKey = splAccountClient.findATA(tokenProgram, tokenMint).publicKey();
     final var sharesMint = vaultState.sharesMint();
-    final var userSharesAtaKey = nativeClient.findATA(withdrawFromAvailableSharesTokenProgramKey, sharesMint).publicKey();
+    final var userSharesAtaKey = splAccountClient.findATA(withdrawFromAvailableSharesTokenProgramKey, sharesMint).publicKey();
     return withdraw(
         vaultState,
         userTokenAtaKey,

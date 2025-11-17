@@ -5,10 +5,9 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
-import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenProgram;
+import software.sava.idl.clients.spl.system.gen.SystemProgram;
 import software.sava.idl.clients.spl.token.gen.TokenProgram;
-import software.sava.solana.programs.system.SystemProgram;
 
 import java.util.List;
 
@@ -38,6 +37,11 @@ final class SPLAccountClientImpl implements SPLAccountClient {
   }
 
   @Override
+  public PublicKey owner() {
+    return owner;
+  }
+
+  @Override
   public AccountMeta feePayer() {
     return feePayer;
   }
@@ -53,18 +57,8 @@ final class SPLAccountClientImpl implements SPLAccountClient {
   }
 
   @Override
-  public ProgramDerivedAddress findATA(final PublicKey tokenProgram, final PublicKey mint) {
-    return AssociatedTokenPDAs.associatedTokenPDA(
-        solanaAccounts().associatedTokenAccountProgram(),
-        owner,
-        tokenProgram,
-        mint
-    );
-  }
-
-  @Override
   public Instruction transferSolLamports(final PublicKey toPublicKey, final long lamports) {
-    return SystemProgram.transfer(
+    return SystemProgram.transferSol(
         solanaAccounts().invokedSystemProgram(),
         owner,
         toPublicKey,

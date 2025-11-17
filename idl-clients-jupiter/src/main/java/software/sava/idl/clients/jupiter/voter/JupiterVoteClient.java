@@ -9,9 +9,9 @@ import software.sava.idl.clients.jupiter.governance.gen.types.Proposal;
 import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
 import software.sava.idl.clients.jupiter.voter.gen.types.Escrow;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
+import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
-import software.sava.solana.programs.token.AssociatedTokenProgram;
 import software.sava.solana.web2.jupiter.client.http.response.ClaimProof;
 
 import java.util.List;
@@ -19,22 +19,16 @@ import java.util.concurrent.CompletableFuture;
 
 public interface JupiterVoteClient {
 
-  static JupiterVoteClient createClient(final SolanaAccounts solanaAccounts,
-                                        final JupiterAccounts jupiterAccounts,
-                                        final PublicKey escrowOwnerKey,
-                                        final PublicKey feePayer) {
-    return new JupiterVoteClientImpl(solanaAccounts, jupiterAccounts, escrowOwnerKey, feePayer);
+  static JupiterVoteClient createClient(final SPLAccountClient splAccountClient,
+                                        final JupiterAccounts jupiterAccounts) {
+    return new JupiterVoteClientImpl(splAccountClient, jupiterAccounts);
   }
 
-  static JupiterVoteClient createClient(final SolanaAccounts solanaAccounts,
-                                        final JupiterAccounts jupiterAccounts,
-                                        final PublicKey escrowOwnerKey) {
-    return createClient(solanaAccounts, jupiterAccounts, escrowOwnerKey, escrowOwnerKey);
+  static JupiterVoteClient createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, JupiterAccounts.MAIN_NET);
   }
 
-  static JupiterVoteClient createClient(final PublicKey escrowOwnerKey) {
-    return createClient(SolanaAccounts.MAIN_NET, JupiterAccounts.MAIN_NET, escrowOwnerKey);
-  }
+  SPLAccountClient splAccountClient();
 
   SolanaAccounts solanaAccounts();
 
@@ -279,15 +273,13 @@ public interface JupiterVoteClient {
     final var distributor = claimProof.merkleTree();
     final var claimStatusKey = jupiterAccounts().deriveClaimStatus(escrowOwnerKey(), distributor).publicKey();
     final var mint = claimProof.mint();
-    final var solanaAccounts = solanaAccounts();
-    final var distributorTokensKey = AssociatedTokenProgram.findATA(
-        solanaAccounts,
+    final var splClient = splAccountClient().splClient();
+    final var distributorTokensKey = splClient.findATA(
         distributor,
         tokenProgram,
         mint
     ).publicKey();
-    final var escrowTokensKey = AssociatedTokenProgram.findATA(
-        solanaAccounts,
+    final var escrowTokensKey = splClient.findATA(
         escrowKey(),
         tokenProgram,
         mint

@@ -5,28 +5,27 @@ import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.vaults.gen.KaminoVaultProgram;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 public class KaminoVaultsClientImpl implements KaminoVaultsClient {
 
-  private final NativeProgramAccountClient nativeProgramAccountClient;
+  private final SPLAccountClient splAccountClient;
   private final SolanaAccounts solanaAccounts;
   private final KaminoAccounts kaminoAccounts;
   private final PublicKey owner;
   private final PublicKey feePayer;
 
-  KaminoVaultsClientImpl(final NativeProgramAccountClient nativeProgramAccountClient,
-                         final KaminoAccounts kaminoAccounts) {
-    this.nativeProgramAccountClient = nativeProgramAccountClient;
-    this.solanaAccounts = nativeProgramAccountClient.solanaAccounts();
+  KaminoVaultsClientImpl(final SPLAccountClient SPLAccountClient, final KaminoAccounts kaminoAccounts) {
+    this.splAccountClient = SPLAccountClient;
+    this.solanaAccounts = SPLAccountClient.solanaAccounts();
     this.kaminoAccounts = kaminoAccounts;
-    this.owner = nativeProgramAccountClient.ownerPublicKey();
-    this.feePayer = nativeProgramAccountClient.feePayer().publicKey();
+    this.owner = SPLAccountClient.owner();
+    this.feePayer = SPLAccountClient.feePayer().publicKey();
   }
 
   @Override
-  public NativeProgramAccountClient nativeProgramAccountClient() {
-    return nativeProgramAccountClient;
+  public SPLAccountClient splAccountClient() {
+    return splAccountClient;
   }
 
   @Override

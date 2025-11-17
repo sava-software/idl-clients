@@ -7,25 +7,22 @@ import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.KaminoLendingProgram;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 final class KaminoLendClientImpl implements KaminoLendClient {
 
-  private final NativeProgramAccountClient nativeProgramAccountClient;
   private final SolanaAccounts solanaAccounts;
   private final KaminoAccounts kaminoAccounts;
   private final PublicKey owner;
   private final PublicKey ownerMetadata;
   private final PublicKey feePayer;
 
-  KaminoLendClientImpl(final NativeProgramAccountClient nativeProgramAccountClient,
-                       final KaminoAccounts kaminoAccounts) {
-    this.nativeProgramAccountClient = nativeProgramAccountClient;
-    this.solanaAccounts = nativeProgramAccountClient.solanaAccounts();
+  KaminoLendClientImpl(final SPLAccountClient splAccountClient, final KaminoAccounts kaminoAccounts) {
+    this.solanaAccounts = splAccountClient.solanaAccounts();
     this.kaminoAccounts = kaminoAccounts;
-    this.owner = nativeProgramAccountClient.ownerPublicKey();
+    this.owner = splAccountClient.owner();
     this.ownerMetadata = KaminoAccounts.userMetadataPda(owner, kaminoAccounts.kLendProgram()).publicKey();
-    this.feePayer = nativeProgramAccountClient.feePayer().publicKey();
+    this.feePayer = splAccountClient.feePayer().publicKey();
   }
 
   @Override

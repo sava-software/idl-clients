@@ -21,6 +21,8 @@ public interface SPLAccountClient {
 
   SPLClient splClient();
 
+  PublicKey owner();
+
   AccountMeta feePayer();
 
   ProgramDerivedAddress wrappedSolPDA();
@@ -31,10 +33,19 @@ public interface SPLAccountClient {
 
   Instruction unwrapSOL();
 
-  ProgramDerivedAddress findATA(final PublicKey tokenProgram, final PublicKey mint);
+  default ProgramDerivedAddress findATA(final PublicKey tokenProgram, final PublicKey mint) {
+    return splClient().findATA(owner(), tokenProgram, mint);
+  }
+
+  default ProgramDerivedAddress findATA(final PublicKey mint) {
+    return splClient().findATA(owner(), mint);
+  }
+
+  default ProgramDerivedAddress find2022ATA(final PublicKey mint) {
+    return splClient().find2022ATA(owner(), mint);
+  }
 
   Instruction transferSolLamports(final PublicKey toPublicKey, final long lamports);
-
 
   Instruction transferTokenChecked(final AccountMeta invokedTokenProgram,
                                    final PublicKey fromTokenAccount,

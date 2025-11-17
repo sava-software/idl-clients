@@ -6,22 +6,22 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.drift.DriftAccounts;
 import software.sava.idl.clients.drift.vaults.gen.types.Vault;
 import software.sava.idl.clients.drift.vaults.gen.types.WithdrawUnit;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 public interface DriftVaultsProgramClient {
 
-  static DriftVaultsProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient,
+  static DriftVaultsProgramClient createClient(final SPLAccountClient splAccountClient,
                                                final DriftAccounts driftAccounts) {
     return new DriftVaultsProgramClientImpl(
-        nativeProgramAccountClient.solanaAccounts(),
+        splAccountClient.solanaAccounts(),
         driftAccounts,
-        nativeProgramAccountClient.ownerPublicKey(),
-        nativeProgramAccountClient.feePayer().publicKey()
+        splAccountClient.owner(),
+        splAccountClient.feePayer().publicKey()
     );
   }
 
-  static DriftVaultsProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient) {
-    return createClient(nativeProgramAccountClient, DriftAccounts.MAIN_NET);
+  static DriftVaultsProgramClient createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, DriftAccounts.MAIN_NET);
   }
 
   SolanaAccounts solanaAccounts();

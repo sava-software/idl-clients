@@ -11,11 +11,11 @@ import software.sava.idl.clients.jupiter.merkle_distributor.gen.MerkleDistributo
 import software.sava.idl.clients.jupiter.voter.gen.LockedVoterProgram;
 import software.sava.idl.clients.jupiter.voter.gen.types.Escrow;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
-
-import static software.sava.solana.programs.token.AssociatedTokenProgram.findATA;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 final class JupiterVoteClientImpl implements JupiterVoteClient {
 
+  private final SPLAccountClient splAccountClient;
   private final SolanaAccounts solanaAccounts;
   private final JupiterAccounts jupiterAccounts;
   private final PublicKey escrowOwnerKey;
@@ -24,18 +24,61 @@ final class JupiterVoteClientImpl implements JupiterVoteClient {
   private final PublicKey escrowJupATA;
   private final PublicKey feePayer;
 
-  JupiterVoteClientImpl(final SolanaAccounts solanaAccounts,
-                        final JupiterAccounts jupiterAccounts,
-                        final PublicKey escrowOwnerKey,
-                        final PublicKey feePayer) {
-    this.solanaAccounts = solanaAccounts;
+  JupiterVoteClientImpl(final SPLAccountClient splAccountClient, final JupiterAccounts jupiterAccounts) {
+    this.splAccountClient = splAccountClient;
+    this.solanaAccounts = splAccountClient.solanaAccounts();
     this.jupiterAccounts = jupiterAccounts;
-    this.escrowOwnerKey = escrowOwnerKey;
+    this.escrowOwnerKey = splAccountClient.owner();
     final var jupTokenMint = jupiterAccounts.jupTokenMint();
-    this.ownerJupATA = findATA(solanaAccounts, escrowOwnerKey, jupTokenMint).publicKey();
+    this.ownerJupATA = splAccountClient.findATA(jupTokenMint).publicKey();
     this.escrowKey = jupiterAccounts.deriveEscrow(escrowOwnerKey).publicKey();
-    this.escrowJupATA = findATA(solanaAccounts, escrowKey, jupTokenMint).publicKey();
-    this.feePayer = feePayer;
+    this.escrowJupATA = splAccountClient.splClient().findATA(escrowKey, jupTokenMint).publicKey();
+    this.feePayer = splAccountClient.feePayer().publicKey();
+  }
+
+  @Override
+  public SPLAccountClient splAccountClient() {
+    return splAccountClient;
+  }
+
+  @Override
+  public SolanaAccounts solanaAccounts() {
+    return solanaAccounts;
+  }
+
+  @Override
+  public JupiterAccounts jupiterAccounts() {
+    return jupiterAccounts;
+  }
+
+  @Override
+  public PublicKey feePayer() {
+    return feePayer;
+  }
+
+  @Override
+  public PublicKey escrowOwnerKey() {
+    return escrowOwnerKey;
+  }
+
+  @Override
+  public PublicKey escrowOwnerKeyATA() {
+    return ownerJupATA;
+  }
+
+  @Override
+  public PublicKey escrowKey() {
+    return escrowKey;
+  }
+
+  @Override
+  public PublicKey escrowATA() {
+    return escrowJupATA;
+  }
+
+  @Override
+  public PublicKey deriveVoteKey(final PublicKey proposal) {
+    return jupiterAccounts.deriveVote(proposal, escrowOwnerKey).publicKey();
   }
 
   @Override
@@ -332,46 +375,6 @@ final class JupiterVoteClientImpl implements JupiterVoteClient {
         amountLocked,
         proof
     );
-  }
-
-  @Override
-  public SolanaAccounts solanaAccounts() {
-    return solanaAccounts;
-  }
-
-  @Override
-  public JupiterAccounts jupiterAccounts() {
-    return jupiterAccounts;
-  }
-
-  @Override
-  public PublicKey feePayer() {
-    return feePayer;
-  }
-
-  @Override
-  public PublicKey escrowOwnerKey() {
-    return escrowOwnerKey;
-  }
-
-  @Override
-  public PublicKey escrowOwnerKeyATA() {
-    return ownerJupATA;
-  }
-
-  @Override
-  public PublicKey escrowKey() {
-    return escrowKey;
-  }
-
-  @Override
-  public PublicKey escrowATA() {
-    return escrowJupATA;
-  }
-
-  @Override
-  public PublicKey deriveVoteKey(final PublicKey proposal) {
-    return jupiterAccounts.deriveVote(proposal, escrowOwnerKey).publicKey();
   }
 
   @Override

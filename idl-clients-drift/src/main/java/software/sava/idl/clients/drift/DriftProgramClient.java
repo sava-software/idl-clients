@@ -9,9 +9,9 @@ import software.sava.core.encoding.ByteUtil;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.drift.gen.DriftProgram;
 import software.sava.idl.clients.drift.gen.types.*;
+import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -25,13 +25,12 @@ public interface DriftProgramClient {
   BigInteger FUNDING_RATE_BUFFER = BigInteger.valueOf(10).pow(3);
   BigDecimal FUNDING_RATE_BUFFER_BD = new BigDecimal(FUNDING_RATE_BUFFER);
 
-  static DriftProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient,
-                                         final DriftAccounts accounts) {
-    return new DriftProgramClientImpl(nativeProgramAccountClient, accounts);
+  static DriftProgramClient createClient(final SPLAccountClient splAccountClient, final DriftAccounts accounts) {
+    return new DriftProgramClientImpl(splAccountClient, accounts);
   }
 
-  static DriftProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient) {
-    return createClient(nativeProgramAccountClient, DriftAccounts.MAIN_NET);
+  static DriftProgramClient createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, DriftAccounts.MAIN_NET);
   }
 
   SolanaAccounts solanaAccounts();
@@ -461,7 +460,7 @@ public interface DriftProgramClient {
   Instruction updateUserProtectedMakerOrders(final PublicKey protectedMakerModeConfigKey,
                                              final int subAccountId,
                                              final boolean protectedMakerOrders);
-  
+
   Instruction initializeSignedMsgUserOrders(final PublicKey signedMsgUserOrdersKey,
                                             final PublicKey authorityKey,
                                             final PublicKey payerKey,

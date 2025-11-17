@@ -8,7 +8,7 @@ import software.sava.idl.clients.drift.gen.types.ModifyOrderParams;
 import software.sava.idl.clients.drift.gen.types.OrderParams;
 import software.sava.idl.clients.drift.gen.types.PositionDirection;
 import software.sava.idl.clients.drift.gen.types.SettlePnlMode;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 import java.util.OptionalInt;
 import java.util.OptionalLong;
@@ -28,12 +28,11 @@ final class DriftProgramClientImpl implements DriftProgramClient {
   private final PublicKey user;
   private final PublicKey quoteSpotMarketVaultAccountKey;
 
-  DriftProgramClientImpl(final NativeProgramAccountClient nativeProgramAccountClient,
-                         final DriftAccounts accounts) {
-    this.solanaAccounts = nativeProgramAccountClient.solanaAccounts();
+  DriftProgramClientImpl(final SPLAccountClient splAccountClient, final DriftAccounts accounts) {
+    this.solanaAccounts = splAccountClient.solanaAccounts();
     this.accounts = accounts;
-    this.feePayer = nativeProgramAccountClient.feePayer().publicKey();
-    this.authority = nativeProgramAccountClient.ownerPublicKey();
+    this.feePayer = splAccountClient.feePayer().publicKey();
+    this.authority = splAccountClient.owner();
     this.user = DriftPDAs.deriveMainUserAccount(accounts, authority).publicKey();
     this.quoteSpotMarketVaultAccountKey = deriveSpotMarketVaultAccount(accounts, 0).publicKey();
   }

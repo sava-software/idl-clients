@@ -6,25 +6,22 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.scope.gen.ScopeProgram;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 final class ScopeProgramClientImpl implements ScopeProgramClient {
 
-  private final NativeProgramAccountClient nativeProgramAccountClient;
   private final SolanaAccounts solanaAccounts;
   private final KaminoAccounts kaminoAccounts;
   private final AccountMeta invokedScopeProgram;
   private final PublicKey authority;
   private final PublicKey feePayer;
 
-  ScopeProgramClientImpl(final NativeProgramAccountClient nativeProgramAccountClient,
-                         final KaminoAccounts kaminoAccounts) {
-    this.nativeProgramAccountClient = nativeProgramAccountClient;
-    this.solanaAccounts = nativeProgramAccountClient.solanaAccounts();
+  ScopeProgramClientImpl(final SPLAccountClient splAccountClient, final KaminoAccounts kaminoAccounts) {
+    this.solanaAccounts = splAccountClient.solanaAccounts();
     this.kaminoAccounts = kaminoAccounts;
     this.invokedScopeProgram = kaminoAccounts.invokedScopePricesProgram();
-    this.authority = nativeProgramAccountClient.ownerPublicKey();
-    this.feePayer = nativeProgramAccountClient.feePayer().publicKey();
+    this.authority = splAccountClient.owner();
+    this.feePayer = splAccountClient.feePayer().publicKey();
   }
 
   @Override

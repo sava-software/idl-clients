@@ -1,9 +1,11 @@
 package software.sava.idl.clients.spl;
 
+import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 import software.sava.idl.clients.spl.token.gen.TokenProgram;
 
 record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
@@ -18,5 +20,15 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
   @Override
   public Instruction syncNative(final PublicKey tokenAccount) {
     return TokenProgram.syncNative(solanaAccounts.invokedTokenProgram(), tokenAccount);
+  }
+
+  @Override
+  public ProgramDerivedAddress findATA(final PublicKey owner, final PublicKey tokenProgram, final PublicKey mint) {
+    return AssociatedTokenPDAs.associatedTokenPDA(
+        solanaAccounts.associatedTokenAccountProgram(),
+        owner,
+        tokenProgram,
+        mint
+    );
   }
 }

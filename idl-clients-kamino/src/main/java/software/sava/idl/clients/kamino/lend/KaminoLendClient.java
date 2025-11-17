@@ -6,22 +6,21 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.farms.gen.types.FarmState;
 import software.sava.idl.clients.kamino.lend.gen.types.*;
+import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface KaminoLendClient {
 
-  static KaminoLendClient createClient(final NativeProgramAccountClient nativeProgramAccountClient,
-                                       final KaminoAccounts kaminoAccounts) {
-    return new KaminoLendClientImpl(nativeProgramAccountClient, kaminoAccounts);
+  static KaminoLendClient createClient(final SPLAccountClient splAccountClient, final KaminoAccounts kaminoAccounts) {
+    return new KaminoLendClientImpl(splAccountClient, kaminoAccounts);
   }
 
-  static KaminoLendClient createClient(final NativeProgramAccountClient nativeProgramAccountClient) {
-    return createClient(nativeProgramAccountClient, KaminoAccounts.MAIN_NET);
+  static KaminoLendClient createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
   }
 
   static CompletableFuture<List<AccountInfo<FarmState>>> fetchFarmStateAccounts(final SolanaRpcClient rpcClient,

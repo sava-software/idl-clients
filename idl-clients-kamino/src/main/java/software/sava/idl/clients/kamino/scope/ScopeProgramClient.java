@@ -8,20 +8,19 @@ import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.scope.gen.types.Configuration;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
-import software.sava.solana.programs.clients.NativeProgramAccountClient;
+import software.sava.idl.clients.spl.SPLAccountClient;
 
 import java.util.Arrays;
 import java.util.List;
 
 public interface ScopeProgramClient {
 
-  static ScopeProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient,
-                                         final KaminoAccounts kaminoAccounts) {
-    return new ScopeProgramClientImpl(nativeProgramAccountClient, kaminoAccounts);
+  static ScopeProgramClient createClient(final SPLAccountClient splAccountClient, final KaminoAccounts kaminoAccounts) {
+    return new ScopeProgramClientImpl(splAccountClient, kaminoAccounts);
   }
 
-  static ScopeProgramClient createClient(final NativeProgramAccountClient nativeProgramAccountClient) {
-    return createClient(nativeProgramAccountClient, KaminoAccounts.MAIN_NET);
+  static ScopeProgramClient createClient(final SPLAccountClient splAccountClient) {
+    return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
   }
 
   SolanaAccounts solanaAccounts();
