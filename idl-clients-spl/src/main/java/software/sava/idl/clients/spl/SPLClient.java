@@ -8,6 +8,8 @@ import software.sava.core.tx.Instruction;
 
 import java.util.SequencedCollection;
 
+import static software.sava.solana.programs.compute_budget.ComputeBudgetProgram.*;
+
 public interface SPLClient {
 
   static SPLClient createClient(final SolanaAccounts solanaAccounts) {
@@ -67,4 +69,12 @@ public interface SPLClient {
   }
 
   Instruction freezeLookupTable(final PublicKey tableAccount, final PublicKey authority);
+
+  default Instruction computeBudgetLimit(final int computeUnitLimit) {
+    return setComputeUnitLimit(solanaAccounts().invokedComputeBudgetProgram(), computeUnitLimit + COMPUTE_UNITS_CONSUMED);
+  }
+
+  default Instruction computeBudgetPrice(final long microLamportComputeUnitPrice) {
+    return setComputeUnitPrice(solanaAccounts().invokedComputeBudgetProgram(), microLamportComputeUnitPrice);
+  }
 }
