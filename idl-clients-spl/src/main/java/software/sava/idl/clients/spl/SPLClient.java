@@ -6,6 +6,8 @@ import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 
+import java.util.SequencedCollection;
+
 public interface SPLClient {
 
   static SPLClient createClient(final SolanaAccounts solanaAccounts) {
@@ -29,4 +31,40 @@ public interface SPLClient {
   default ProgramDerivedAddress find2022ATA(final PublicKey owner, final PublicKey mint) {
     return findATA(owner, solanaAccounts().token2022Program(), mint);
   }
+
+  ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot);
+
+  Instruction createLookupTable(final ProgramDerivedAddress uninitializedTableAccount,
+                                final PublicKey authority,
+                                final PublicKey feePayer,
+                                final long recentSlot);
+
+  default Instruction createLookupTable(final ProgramDerivedAddress uninitializedTableAccount,
+                                        final PublicKey authority,
+                                        final long recentSlot) {
+    return createLookupTable(uninitializedTableAccount, authority, authority, recentSlot);
+  }
+
+  Instruction extendLookupTable(final PublicKey tableAccount,
+                                final PublicKey authority,
+                                final PublicKey feePayer,
+                                final SequencedCollection<PublicKey> newAddresses);
+
+  default Instruction extendLookupTable(final PublicKey tableAccount,
+                                        final PublicKey authority,
+                                        final SequencedCollection<PublicKey> newAddresses) {
+    return extendLookupTable(tableAccount, authority, authority, newAddresses);
+  }
+
+  Instruction deactivateLookupTable(final PublicKey tableAccount, final PublicKey authority);
+
+  Instruction closeLookupTable(final PublicKey tableAccount,
+                               final PublicKey authority,
+                               final PublicKey lamportRecipient);
+
+  default Instruction closeLookupTable(final PublicKey tableAccount, final PublicKey authority) {
+    return closeLookupTable(tableAccount, authority, authority);
+  }
+
+  Instruction freezeLookupTable(final PublicKey tableAccount, final PublicKey authority);
 }

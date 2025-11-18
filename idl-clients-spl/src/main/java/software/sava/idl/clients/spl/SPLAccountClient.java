@@ -7,6 +7,7 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 
 import java.util.List;
+import java.util.SequencedCollection;
 
 public interface SPLAccountClient {
 
@@ -24,6 +25,10 @@ public interface SPLAccountClient {
   PublicKey owner();
 
   AccountMeta feePayer();
+
+  default PublicKey feePayerKey() {
+    return feePayer().publicKey();
+  }
 
   ProgramDerivedAddress wrappedSolPDA();
 
@@ -60,4 +65,31 @@ public interface SPLAccountClient {
                                                 final PublicKey ata,
                                                 final PublicKey mint,
                                                 final PublicKey tokenProgram);
+
+  default ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot) {
+    return splClient().findLookupTableAddress(feePayerKey(), recentSlot);
+  }
+
+  default Instruction createLookupTable(final ProgramDerivedAddress uninitializedTableAccount, final long recentSlot) {
+    final var feePayer = feePayerKey();
+    return splClient().createLookupTable(uninitializedTableAccount, feePayer, recentSlot);
+  }
+
+  default Instruction extendLookupTable(final PublicKey tableAccount,
+                                        final SequencedCollection<PublicKey> newAddresses) {
+    final var feePayer = feePayerKey();
+    return splClient().extendLookupTable(tableAccount, feePayer, feePayer, newAddresses);
+  }
+
+  default Instruction deactivateLookupTable(final PublicKey tableAccount) {
+    return splClient().deactivateLookupTable(tableAccount, feePayerKey());
+  }
+
+  default Instruction closeLookupTable(final PublicKey tableAccount, final PublicKey lamportRecipient) {
+    return splClient().closeLookupTable(tableAccount, feePayerKey(), lamportRecipient);
+  }
+
+  default Instruction freezeLookupTable(final PublicKey tableAccount) {
+    return splClient().freezeLookupTable(tableAccount, feePayerKey());
+  }
 }
