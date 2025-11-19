@@ -1,6 +1,5 @@
 package software.sava.idl.clients.spl.system;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
@@ -53,7 +52,6 @@ final class SystemProgramTest {
     );
   }
 
-  @Disabled // TODO: Fix shank enums.
   @Test
   public void parseNonceAccount() {
     final var base64Data = "AQAAAAEAAAAM9WXp4HSq1hKViJ/hvS0dbhl8yvNJy13z3Lc8uGCyBirl7d+e05ILHtmpCyrZqMRG/x5AzISLYbViohfeG07tiBMAAAAAAAA=";
