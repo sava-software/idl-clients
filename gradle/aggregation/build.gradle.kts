@@ -10,6 +10,12 @@ val selectedModule: String? = providers
 dependencies {
   nmcpAggregation(project(":idl-clients-core"))
   if (selectedModule != null) {
+    if (selectedModule.endsWith("drift")
+      || selectedModule.endsWith("jupiter")
+      || selectedModule.endsWith("kamino")
+    ) {
+      nmcpAggregation(project(":idl-clients-spl"))
+    }
     nmcpAggregation(project(selectedModule.takeIf { it.startsWith(":") } ?: ":idl-clients-$selectedModule"))
   } else {
     nmcpAggregation(project(":idl-clients-cctp"))

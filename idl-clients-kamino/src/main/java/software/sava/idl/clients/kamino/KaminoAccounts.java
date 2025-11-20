@@ -4,22 +4,24 @@ import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.encoding.ByteUtil;
-import software.sava.idl.clients.kamino.lend.MarketPDAs;
-import software.sava.idl.clients.kamino.lend.ReservePDAs;
+import software.sava.idl.clients.kamino.lend.KaminoMarketPDAs;
+import software.sava.idl.clients.kamino.lend.KaminoReservePDAs;
 import software.sava.idl.clients.kamino.scope.ScopeFeedAccounts;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public interface KaminoAccounts {
 
-  // https://github.com/Kamino-Finance/klend-sdk/blob/d097dcb24478de3be2bce20723aa0b17c101b4cd/examples/utils/constants.ts#L3
+  // https://github.com/Kamino-Finance/klend-sdk/blob/master/examples/utils/constants.ts
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/src/utils/seeds.ts
   // https://github.com/Kamino-Finance/klend/blob/master/programs/klend/src/utils/seeds.rs
 
   KaminoAccounts MAIN_NET = createAccounts(
       "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "284iwGtA9X9aLy3KsyV8uT2pXLARhYbiSi5SiM2g47M2",
       "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
       "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
       // https://github.com/Kamino-Finance/klend-sdk/blob/d097dcb24478de3be2bce20723aa0b17c101b4cd/src/classes/farm_utils.ts#L26
@@ -27,33 +29,45 @@ public interface KaminoAccounts {
       "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
   );
 
-  static KaminoAccounts createAccounts(final PublicKey kLendProgram,
-                                       final PublicKey scopePricesProgram,
-                                       final PublicKey farmProgram,
-                                       final PublicKey farmsGlobalConfig,
-                                       final PublicKey kVaultsProgram) {
+  private static KaminoAccounts createAccounts(final PublicKey kLendProgram,
+                                               final PublicKey mainMarketLUT,
+                                               final PublicKey scopePricesProgram,
+                                               final PublicKey farmProgram,
+                                               final PublicKey farmsGlobalConfig,
+                                               final PublicKey kVaultsProgram) {
     final var kVaultsEventAuthority = PublicKey.findProgramAddress(
         List.of("__event_authority".getBytes(US_ASCII)),
         kVaultsProgram
     ).publicKey();
+
+    final var hubbleScopeFeedAccounts = ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED;
+    final var kaminoScopeFeedAccounts = ScopeFeedAccounts.SCOPE_MAINNET_KLEND_FEED;
+    final var scopeFeeds = Map.of(
+        hubbleScopeFeedAccounts.oraclePrices(), hubbleScopeFeedAccounts,
+        kaminoScopeFeedAccounts.oraclePrices(), kaminoScopeFeedAccounts
+    );
+
     return new KaminoAccountsRecord(
         AccountMeta.createInvoked(kLendProgram),
+        mainMarketLUT,
         scopePricesProgram,
-        ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED,
-        ScopeFeedAccounts.SCOPE_MAINNET_KLEND_FEED,
+        hubbleScopeFeedAccounts, kaminoScopeFeedAccounts,
+        scopeFeeds,
         farmProgram, farmsGlobalConfig,
         AccountMeta.createInvoked(kVaultsProgram),
         kVaultsEventAuthority
     );
   }
 
-  static KaminoAccounts createAccounts(final String kLendProgram,
-                                       final String scopePricesProgram,
-                                       final String farmProgram,
-                                       final String farmsGlobalConfig,
-                                       final String kVaultsProgram) {
+  private static KaminoAccounts createAccounts(final String kLendProgram,
+                                               final String mainMarketLUT,
+                                               final String scopePricesProgram,
+                                               final String farmProgram,
+                                               final String farmsGlobalConfig,
+                                               final String kVaultsProgram) {
     return createAccounts(
         PublicKey.fromBase58Encoded(kLendProgram),
+        PublicKey.fromBase58Encoded(mainMarketLUT),
         PublicKey.fromBase58Encoded(scopePricesProgram),
         PublicKey.fromBase58Encoded(farmProgram),
         PublicKey.fromBase58Encoded(farmsGlobalConfig),
@@ -217,10 +231,10 @@ public interface KaminoAccounts {
     return shortUrlPda(shortUrl, kLendProgram());
   }
 
-  default ReservePDAs createReservePDAs(final MarketPDAs marketPDAs,
-                                        final PublicKey mint,
-                                        final PublicKey tokenProgram) {
-    return ReservePDAs.createPDAs(
+  default KaminoReservePDAs createReservePDAs(final KaminoMarketPDAs marketPDAs,
+                                              final PublicKey mint,
+                                              final PublicKey tokenProgram) {
+    return KaminoReservePDAs.createPDAs(
         kLendProgram(),
         marketPDAs,
         mint,
@@ -247,6 +261,8 @@ public interface KaminoAccounts {
   default PublicKey kLendProgram() {
     return invokedKLendProgram().publicKey();
   }
+
+  PublicKey mainMarketLUT();
 
   PublicKey farmProgram();
 
@@ -317,4 +333,6 @@ public interface KaminoAccounts {
   default ProgramDerivedAddress scopeFeedConfiguration(final String feedName) {
     return scopeFeedConfiguration(feedName, scopePricesProgram());
   }
+
+  ScopeFeedAccounts scopeFeed(final PublicKey priceFeed);
 }

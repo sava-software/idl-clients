@@ -3,14 +3,15 @@ package software.sava.idl.clients.kamino.lend;
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 
-public interface ReservePDAs {
+// https://github.com/Kamino-Finance/klend-sdk/blob/master/src/utils/seeds.ts
+public interface KaminoReservePDAs {
 
-  static ReservePDAs createPDAs(final PublicKey programId,
-                                final MarketPDAs marketPDAs,
-                                final PublicKey mint,
-                                final PublicKey tokenProgram) {
+  static KaminoReservePDAs createPDAs(final PublicKey programId,
+                                      final KaminoMarketPDAs marketPDAs,
+                                      final PublicKey mint,
+                                      final PublicKey tokenProgram) {
     final var market = marketPDAs.market();
-    return new ReservePDAsRecord(
+    return new KaminoReservePDAsRecord(
         marketPDAs,
         mint,
         tokenProgram,
@@ -21,7 +22,7 @@ public interface ReservePDAs {
     );
   }
 
-  MarketPDAs marketPDAs();
+  KaminoMarketPDAs marketPDAs();
 
   default PublicKey market() {
     return marketPDAs().market();

@@ -59,7 +59,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
 
   @Override
   public Instruction withdrawReferrerFees(final PublicKey reserveKey,
-                                          final ReservePDAs reservePDAs,
+                                          final KaminoReservePDAs reservePDAs,
                                           final PublicKey referrerKey,
                                           final PublicKey referrerTokenStateKey,
                                           final PublicKey referrerTokenAccountKey) {
@@ -144,7 +144,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
 
   @Override
   public Instruction initObligationFarmsForReserve(final Reserve reserve,
-                                                   final ReservePDAs reservePDAs,
+                                                   final KaminoReservePDAs reservePDAs,
                                                    final PublicKey obligationKey,
                                                    final PublicKey obligationFarmKey,
                                                    final int mode) {
@@ -160,7 +160,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
 
   public Instruction initObligationFarmsForReserve(final PublicKey reserveKey,
                                                    final PublicKey reserveFarmStateKey,
-                                                   final ReservePDAs reservePDAs,
+                                                   final KaminoReservePDAs reservePDAs,
                                                    final PublicKey obligationKey,
                                                    final PublicKey obligationFarmKey,
                                                    final int mode) {
@@ -218,7 +218,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
   @Override
   public Instruction depositReserveLiquidityAndObligationCollateral(final PublicKey obligationKey,
                                                                     final PublicKey reserveKey,
-                                                                    final ReservePDAs reservePDAs,
+                                                                    final KaminoReservePDAs reservePDAs,
                                                                     final PublicKey sourceTokenAccount,
                                                                     final long liquidityAmount) {
     return KaminoLendingProgram.depositReserveLiquidityAndObligationCollateral(
@@ -244,7 +244,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
   @Override
   public Instruction depositReserveLiquidityAndObligationCollateralV2(final PublicKey obligationKey,
                                                                       final PublicKey reserveKey,
-                                                                      final ReservePDAs reservePDAs,
+                                                                      final KaminoReservePDAs reservePDAs,
                                                                       final PublicKey sourceTokenAccount,
                                                                       final PublicKey farmsAccountsObligationFarmUserStateKey,
                                                                       final PublicKey farmsAccountsReserveFarmStateKey,
@@ -276,7 +276,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
   public Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final PublicKey obligationKey,
                                                                               final PublicKey reserveKey,
                                                                               final PublicKey withdrawAccountsReserveSourceCollateralKey,
-                                                                              final ReservePDAs reservePDAs,
+                                                                              final KaminoReservePDAs reservePDAs,
                                                                               final PublicKey destinationTokenAccount,
                                                                               final PublicKey farmsAccountsObligationFarmUserStateKey,
                                                                               final PublicKey farmsAccountsReserveFarmStateKey,

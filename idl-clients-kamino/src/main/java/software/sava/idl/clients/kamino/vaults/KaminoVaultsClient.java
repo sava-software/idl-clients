@@ -7,6 +7,11 @@ import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultState;
 import software.sava.idl.clients.spl.SPLAccountClient;
+import software.sava.rpc.json.http.client.SolanaRpcClient;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface KaminoVaultsClient {
 
@@ -17,6 +22,11 @@ public interface KaminoVaultsClient {
 
   static KaminoVaultsClientImpl createClient(final SPLAccountClient splAccountClient) {
     return createClient(splAccountClient, KaminoAccounts.MAIN_NET);
+  }
+
+  default CompletableFuture<List<AccountInfo<byte[]>>> fetchVaults(final SolanaRpcClient rpcClient) {
+    final var filters = List.of(VaultState.SIZE_FILTER, VaultState.DISCRIMINATOR_FILTER);
+    return rpcClient.getProgramAccounts(kaminoAccounts().kVaultsProgram(), filters);
   }
 
   SPLAccountClient splAccountClient();

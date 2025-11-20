@@ -90,7 +90,7 @@ public interface KaminoLendClient {
                                      final PublicKey referrerTokenStateKey);
 
   Instruction withdrawReferrerFees(final PublicKey reserveKey,
-                                   final ReservePDAs reservePDAs,
+                                   final KaminoReservePDAs reservePDAs,
                                    final PublicKey referrerKey,
                                    final PublicKey referrerTokenStateKey,
                                    final PublicKey referrerTokenAccountKey);
@@ -112,7 +112,7 @@ public interface KaminoLendClient {
                              final InitObligationArgs initObligationArgs);
 
   Instruction initObligationFarmsForReserve(final Reserve reserve,
-                                            final ReservePDAs reservePDAs,
+                                            final KaminoReservePDAs reservePDAs,
                                             final PublicKey obligationKey,
                                             final PublicKey obligationFarmKey,
                                             final int mode);
@@ -130,13 +130,13 @@ public interface KaminoLendClient {
 
   Instruction depositReserveLiquidityAndObligationCollateral(final PublicKey obligationKey,
                                                              final PublicKey reserveKey,
-                                                             final ReservePDAs reservePDAs,
+                                                             final KaminoReservePDAs reservePDAs,
                                                              final PublicKey sourceTokenAccount,
                                                              final long liquidityAmount);
 
   Instruction depositReserveLiquidityAndObligationCollateralV2(final PublicKey obligationKey,
                                                                final PublicKey reserveKey,
-                                                               final ReservePDAs reservePDAs,
+                                                               final KaminoReservePDAs reservePDAs,
                                                                final PublicKey sourceTokenAccount,
                                                                final PublicKey farmsAccountsObligationFarmUserStateKey,
                                                                final PublicKey farmsAccountsReserveFarmStateKey,
@@ -145,7 +145,7 @@ public interface KaminoLendClient {
   Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final PublicKey obligationKey,
                                                                        final PublicKey reserveKey,
                                                                        final PublicKey withdrawAccountsReserveSourceCollateralKey,
-                                                                       final ReservePDAs reservePDAs,
+                                                                       final KaminoReservePDAs reservePDAs,
                                                                        final PublicKey destinationTokenAccount,
                                                                        final PublicKey farmsAccountsObligationFarmUserStateKey,
                                                                        final PublicKey farmsAccountsReserveFarmStateKey,
