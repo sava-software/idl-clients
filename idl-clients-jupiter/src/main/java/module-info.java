@@ -1,6 +1,8 @@
 module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.governance.gen.types;
   exports software.sava.idl.clients.jupiter.governance.gen;
+  exports software.sava.idl.clients.jupiter.lend_borrow.gen.types;
+  exports software.sava.idl.clients.jupiter.lend_borrow.gen;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen;
   exports software.sava.idl.clients.jupiter.swap.gen.types;

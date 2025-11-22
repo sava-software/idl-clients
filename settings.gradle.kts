@@ -13,7 +13,7 @@ pluginManagement {
 }
 
 plugins {
-  id("software.sava.build") version "0.2.4"
+  id("software.sava.build") version "0.2.5"
 }
 
 apply(plugin = "software.sava.build.feature-jdk-provisioning")

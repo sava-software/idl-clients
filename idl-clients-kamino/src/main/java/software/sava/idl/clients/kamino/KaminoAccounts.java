@@ -7,9 +7,13 @@ import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.kamino.lend.KaminoMarketPDAs;
 import software.sava.idl.clients.kamino.lend.KaminoReservePDAs;
 import software.sava.idl.clients.kamino.scope.ScopeFeedAccounts;
+import software.sava.idl.clients.kamino.vaults.gen.types.VaultState;
+import software.sava.rpc.json.http.client.SolanaRpcClient;
+import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
@@ -29,12 +33,12 @@ public interface KaminoAccounts {
       "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
   );
 
-  private static KaminoAccounts createAccounts(final PublicKey kLendProgram,
-                                               final PublicKey mainMarketLUT,
-                                               final PublicKey scopePricesProgram,
-                                               final PublicKey farmProgram,
-                                               final PublicKey farmsGlobalConfig,
-                                               final PublicKey kVaultsProgram) {
+  static KaminoAccounts createAccounts(final PublicKey kLendProgram,
+                                       final PublicKey mainMarketLUT,
+                                       final PublicKey scopePricesProgram,
+                                       final PublicKey farmProgram,
+                                       final PublicKey farmsGlobalConfig,
+                                       final PublicKey kVaultsProgram) {
     final var kVaultsEventAuthority = PublicKey.findProgramAddress(
         List.of("__event_authority".getBytes(US_ASCII)),
         kVaultsProgram
@@ -59,12 +63,12 @@ public interface KaminoAccounts {
     );
   }
 
-  private static KaminoAccounts createAccounts(final String kLendProgram,
-                                               final String mainMarketLUT,
-                                               final String scopePricesProgram,
-                                               final String farmProgram,
-                                               final String farmsGlobalConfig,
-                                               final String kVaultsProgram) {
+  static KaminoAccounts createAccounts(final String kLendProgram,
+                                       final String mainMarketLUT,
+                                       final String scopePricesProgram,
+                                       final String farmProgram,
+                                       final String farmsGlobalConfig,
+                                       final String kVaultsProgram) {
     return createAccounts(
         PublicKey.fromBase58Encoded(kLendProgram),
         PublicKey.fromBase58Encoded(mainMarketLUT),
@@ -260,6 +264,11 @@ public interface KaminoAccounts {
 
   default PublicKey kLendProgram() {
     return invokedKLendProgram().publicKey();
+  }
+
+  default CompletableFuture<List<AccountInfo<byte[]>>> fetchVaults(final SolanaRpcClient rpcClient) {
+    final var filters = List.of(VaultState.SIZE_FILTER, VaultState.DISCRIMINATOR_FILTER);
+    return rpcClient.getProgramAccounts(kVaultsProgram(), filters);
   }
 
   PublicKey mainMarketLUT();

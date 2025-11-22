@@ -69,6 +69,14 @@
       "program": "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R"
     },
     {
+      "name": "Jupiter Lend Borrow",
+      "source": "idl-clients-jupiter",
+      "module": "jupiter",
+      "package": "jupiter.lend_borrow",
+      "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
+      "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json"
+    },
+    {
       "name": "Jupiter Swap",
       "source": "idl-clients-jupiter",
       "module": "jupiter",
