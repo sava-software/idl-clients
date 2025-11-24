@@ -5,6 +5,7 @@ module software.sava.idl.clients.kamino {
   exports software.sava.idl.clients.kamino.lend.gen.types;
   exports software.sava.idl.clients.kamino.lend.gen;
   exports software.sava.idl.clients.kamino.lend;
+  exports software.sava.idl.clients.kamino.scope.entries;
   exports software.sava.idl.clients.kamino.scope.gen.types;
   exports software.sava.idl.clients.kamino.scope.gen;
   exports software.sava.idl.clients.kamino.scope;

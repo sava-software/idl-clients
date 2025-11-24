@@ -21,8 +21,6 @@ replay_pid*.log
 
 # Gradle
 .gradle/
-# Local Gradle properties (may contain credentials/paths)
-gradle.properties
 
 # Keep Gradle wrapper scripts and JAR in VCS
 !gradlew
@@ -76,3 +74,4 @@ node_modules/
 **/.cache/
 /protocol-v2/
 /drift-protocol-v2-docs/
+/scope
