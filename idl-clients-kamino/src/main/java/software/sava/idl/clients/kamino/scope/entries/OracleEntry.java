@@ -1,8 +1,34 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record OracleEntry(OracleType oracleType, PublicKey oracle) implements ScopeEntry {
+public sealed interface OracleEntry extends ScopeEntry permits AdrenaLp,
+    Chainlink,
+    ChainlinkExchangeRate,
+    ChainlinkNAV,
+    ChainlinkRWA,
+    ChainlinkX,
+    FlashtradeLp,
+    JitoRestaking,
+    JupiterLpFetch,
+    KToken,
+    MeteoraDlmmAtoB,
+    MeteoraDlmmBtoA,
+    MsolStake,
+    OrcaWhirlpoolAtoB,
+    OrcaWhirlpoolBtoA,
+    PythLazer,
+    PythPull,
+    PythPullEMA,
+    RaydiumAmmV3AtoB,
+    RaydiumAmmV3BtoA,
+    RedStone,
+    ReferencesEntry,
+    Securitize,
+    SplStake,
+    SwitchboardOnDemand {
 
+  PublicKey oracle();
+
+  boolean twapEnabled();
 }

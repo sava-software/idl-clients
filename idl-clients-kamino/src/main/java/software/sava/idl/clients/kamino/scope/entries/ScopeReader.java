@@ -16,7 +16,7 @@ public interface ScopeReader {
         priceAccounts,
         oracleMappings.priceTypes(),
         oracleMappings.twapSource(),
-        oracleMappings.twapEnabledd(),
+        oracleMappings.twapEnabled(),
         oracleMappings.refPrice(),
         oracleMappings.generic(),
         OracleType.values()

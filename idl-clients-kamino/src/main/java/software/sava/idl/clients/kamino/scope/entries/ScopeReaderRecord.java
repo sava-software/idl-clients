@@ -9,7 +9,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
                          PublicKey[] priceInfoAccounts,
                          byte[] priceTypes,
                          short[] twapSource,
-                         byte[] twapEnabledd,
+                         byte[] twapEnabled,
                          short[] refPrice,
                          byte[][] generic,
                          OracleType[] oracleTypes) implements ScopeReader {
@@ -43,7 +43,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     }
     final var priceAccount = priceInfoAccounts[i];
     final var oracleType = oracleTypes[Byte.toUnsignedInt(priceTypes[i])];
-    final boolean twapEnabled = twapEnabledd[i] != 0;
+    final boolean twapEnabled = this.twapEnabled[i] != 0;
     final var refPrice = entry(this.refPrice[i]);
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(priceAccount, twapEnabled);
