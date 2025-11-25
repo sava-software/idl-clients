@@ -88,7 +88,18 @@
       "source": "idl-clients-kamino",
       "module": "kamino",
       "package": "kamino.farms",
-      "program": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr"
+      "program": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
+      "typeRefs": [
+        {
+          "refProgram": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+          "srcMismatch": "ERROR",
+          "matchOnTypeName": true,
+          "excludeTypes": [
+            "DatedPrice"
+          ],
+          "explicitRules": []
+        }
+      ]
     },
     {
       "name": "Kamino Lend",

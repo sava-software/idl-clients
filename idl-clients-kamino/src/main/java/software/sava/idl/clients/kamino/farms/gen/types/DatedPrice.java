@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.farms.gen.types;
 
 import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.kamino.scope.gen.types.Price;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;

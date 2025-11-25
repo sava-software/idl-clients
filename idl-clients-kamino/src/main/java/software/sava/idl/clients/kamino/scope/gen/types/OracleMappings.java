@@ -17,7 +17,7 @@ public record OracleMappings(PublicKey _address,
                              PublicKey[] priceInfoAccounts,
                              byte[] priceTypes,
                              short[] twapSource,
-                             byte[] twapEnabled,
+                             byte[] twapEnabledd,
                              short[] refPrice,
                              byte[][] generic) implements Borsh {
 
@@ -66,8 +66,8 @@ public record OracleMappings(PublicKey _address,
     i += Borsh.readArray(priceTypes, _data, i);
     final var twapSource = new short[512];
     i += Borsh.readArray(twapSource, _data, i);
-    final var twapEnabled = new byte[512];
-    i += Borsh.readArray(twapEnabled, _data, i);
+    final var twapEnabledd = new byte[512];
+    i += Borsh.readArray(twapEnabledd, _data, i);
     final var refPrice = new short[512];
     i += Borsh.readArray(refPrice, _data, i);
     final var generic = new byte[512][20];
@@ -77,7 +77,7 @@ public record OracleMappings(PublicKey _address,
                               priceInfoAccounts,
                               priceTypes,
                               twapSource,
-                              twapEnabled,
+                              twapEnabledd,
                               refPrice,
                               generic);
   }
@@ -88,7 +88,7 @@ public record OracleMappings(PublicKey _address,
     i += Borsh.writeArrayChecked(priceInfoAccounts, 512, _data, i);
     i += Borsh.writeArrayChecked(priceTypes, 512, _data, i);
     i += Borsh.writeArrayChecked(twapSource, 512, _data, i);
-    i += Borsh.writeArrayChecked(twapEnabled, 512, _data, i);
+    i += Borsh.writeArrayChecked(twapEnabledd, 512, _data, i);
     i += Borsh.writeArrayChecked(refPrice, 512, _data, i);
     i += Borsh.writeArrayChecked(generic, 512, _data, i);
     return i - _offset;

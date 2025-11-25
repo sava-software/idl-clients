@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Reserve configuration values
 ///
 /// @param status Status of the reserve Active/Obsolete/Hidden
-/// @param assetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
+/// @param paddingDeprecatedAssetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
 /// @param hostFixedInterestRateBps Flat rate that goes to the host
 /// @param minDeleveragingBonusBps Starting bonus for deleveraging-related liquidations, in bps.
 /// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
@@ -60,7 +60,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param deleveragingBonusIncreaseBpsPerDay The rate at which the deleveraging-related liquidation bonus increases, in bps per day.
 ///                                           Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
 public record ReserveConfig(int status,
-                            int assetTier,
+                            int paddingDeprecatedAssetTier,
                             int hostFixedInterestRateBps,
                             int minDeleveragingBonusBps,
                             int blockCtokenUsage,
@@ -104,7 +104,7 @@ public record ReserveConfig(int status,
     int i = _offset;
     final var status = _data[i] & 0xFF;
     ++i;
-    final var assetTier = _data[i] & 0xFF;
+    final var paddingDeprecatedAssetTier = _data[i] & 0xFF;
     ++i;
     final var hostFixedInterestRateBps = getInt16LE(_data, i);
     i += 2;
@@ -166,7 +166,7 @@ public record ReserveConfig(int status,
     i += Borsh.readArray(borrowLimitAgainstThisCollateralInElevationGroup, _data, i);
     final var deleveragingBonusIncreaseBpsPerDay = getInt64LE(_data, i);
     return new ReserveConfig(status,
-                             assetTier,
+                             paddingDeprecatedAssetTier,
                              hostFixedInterestRateBps,
                              minDeleveragingBonusBps,
                              blockCtokenUsage,
@@ -204,7 +204,7 @@ public record ReserveConfig(int status,
     int i = _offset;
     _data[i] = (byte) status;
     ++i;
-    _data[i] = (byte) assetTier;
+    _data[i] = (byte) paddingDeprecatedAssetTier;
     ++i;
     putInt16LE(_data, i, hostFixedInterestRateBps);
     i += 2;

@@ -14,7 +14,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
   UpdateOracleMappingAndMetadataEntry.RemoveEntry,
   UpdateOracleMappingAndMetadataEntry.MappingConfig,
   UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
-  UpdateOracleMappingAndMetadataEntry.MappingTwapEnabled,
+  UpdateOracleMappingAndMetadataEntry.MappingtwapEnabledd,
   UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
   UpdateOracleMappingAndMetadataEntry.MetadataName,
   UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
@@ -27,7 +27,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       case 0 -> RemoveEntry.INSTANCE;
       case 1 -> MappingConfig.read(_data, i);
       case 2 -> MappingTwapEntry.read(_data, i);
-      case 3 -> MappingTwapEnabled.read(_data, i);
+      case 3 -> MappingtwapEnabledd.read(_data, i);
       case 4 -> MappingRefPrice.read(_data, i);
       case 5 -> MetadataName.read(_data, i);
       case 6 -> MetadataMaxPriceAgeSlots.read(_data, i);
@@ -96,13 +96,13 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
-  record MappingTwapEnabled(boolean val) implements EnumBool, UpdateOracleMappingAndMetadataEntry {
+  record MappingtwapEnabledd(boolean val) implements EnumBool, UpdateOracleMappingAndMetadataEntry {
 
-    public static final MappingTwapEnabled TRUE = new MappingTwapEnabled(true);
-    public static final MappingTwapEnabled FALSE = new MappingTwapEnabled(false);
+    public static final MappingtwapEnabledd TRUE = new MappingtwapEnabledd(true);
+    public static final MappingtwapEnabledd FALSE = new MappingtwapEnabledd(false);
 
-    public static MappingTwapEnabled read(final byte[] _data, int i) {
-      return _data[i] == 1 ? MappingTwapEnabled.TRUE : MappingTwapEnabled.FALSE;
+    public static MappingtwapEnabledd read(final byte[] _data, int i) {
+      return _data[i] == 1 ? MappingtwapEnabledd.TRUE : MappingtwapEnabledd.FALSE;
     }
 
     @Override

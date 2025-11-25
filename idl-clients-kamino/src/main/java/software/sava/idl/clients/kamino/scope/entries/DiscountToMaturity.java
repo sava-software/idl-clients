@@ -2,7 +2,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record DiscountToMaturity(ScopeEntry referenceEntry,
+public record DiscountToMaturity(ScopeEntry refPRice,
                                  int discountPerYearBps,
                                  long maturityTimestamp) implements ScopeEntry {
 

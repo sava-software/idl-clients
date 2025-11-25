@@ -10,7 +10,6 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
-import software.sava.idl.clients.kamino.lend.gen.types.AssetTier;
 import software.sava.idl.clients.kamino.lend.gen.types.FeeCalculation;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
@@ -4291,7 +4290,6 @@ public final class KaminoLendingProgram {
                                             final PublicKey lendingMarketKey,
                                             final PublicKey reserveKey,
                                             final ReserveFarmKind reserveFarmKind,
-                                            final AssetTier assetTier,
                                             final FeeCalculation feeCalculation,
                                             final ReserveStatus reserveStatus,
                                             final UpdateConfigMode updateConfigMode,
@@ -4307,7 +4305,6 @@ public final class KaminoLendingProgram {
       invokedKaminoLendingProgramMeta,
       keys,
       reserveFarmKind,
-      assetTier,
       feeCalculation,
       reserveStatus,
       updateConfigMode,
@@ -4319,16 +4316,14 @@ public final class KaminoLendingProgram {
   public static Instruction idlMissingTypes(final AccountMeta invokedKaminoLendingProgramMeta,
                                             final List<AccountMeta> keys,
                                             final ReserveFarmKind reserveFarmKind,
-                                            final AssetTier assetTier,
                                             final FeeCalculation feeCalculation,
                                             final ReserveStatus reserveStatus,
                                             final UpdateConfigMode updateConfigMode,
                                             final UpdateLendingMarketConfigValue updateLendingMarketConfigValue,
                                             final UpdateLendingMarketMode updateLendingMarketConfigMode) {
-    final byte[] _data = new byte[8 + reserveFarmKind.l() + assetTier.l() + feeCalculation.l() + reserveStatus.l() + updateConfigMode.l() + updateLendingMarketConfigValue.l() + updateLendingMarketConfigMode.l()];
+    final byte[] _data = new byte[8 + reserveFarmKind.l() + feeCalculation.l() + reserveStatus.l() + updateConfigMode.l() + updateLendingMarketConfigValue.l() + updateLendingMarketConfigMode.l()];
     int i = IDL_MISSING_TYPES_DISCRIMINATOR.write(_data, 0);
     i += reserveFarmKind.write(_data, i);
-    i += assetTier.write(_data, i);
     i += feeCalculation.write(_data, i);
     i += reserveStatus.write(_data, i);
     i += updateConfigMode.write(_data, i);
@@ -4340,7 +4335,6 @@ public final class KaminoLendingProgram {
 
   public record IdlMissingTypesIxData(Discriminator discriminator,
                                       ReserveFarmKind reserveFarmKind,
-                                      AssetTier assetTier,
                                       FeeCalculation feeCalculation,
                                       ReserveStatus reserveStatus,
                                       UpdateConfigMode updateConfigMode,
@@ -4359,8 +4353,6 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.length();
       final var reserveFarmKind = ReserveFarmKind.read(_data, i);
       i += reserveFarmKind.l();
-      final var assetTier = AssetTier.read(_data, i);
-      i += assetTier.l();
       final var feeCalculation = FeeCalculation.read(_data, i);
       i += feeCalculation.l();
       final var reserveStatus = ReserveStatus.read(_data, i);
@@ -4372,7 +4364,6 @@ public final class KaminoLendingProgram {
       final var updateLendingMarketConfigMode = UpdateLendingMarketMode.read(_data, i);
       return new IdlMissingTypesIxData(discriminator,
                                        reserveFarmKind,
-                                       assetTier,
                                        feeCalculation,
                                        reserveStatus,
                                        updateConfigMode,
@@ -4384,7 +4375,6 @@ public final class KaminoLendingProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += reserveFarmKind.write(_data, i);
-      i += assetTier.write(_data, i);
       i += feeCalculation.write(_data, i);
       i += reserveStatus.write(_data, i);
       i += updateConfigMode.write(_data, i);
@@ -4396,7 +4386,6 @@ public final class KaminoLendingProgram {
     @Override
     public int l() {
       return 8 + reserveFarmKind.l()
-           + assetTier.l()
            + feeCalculation.l()
            + reserveStatus.l()
            + updateConfigMode.l()

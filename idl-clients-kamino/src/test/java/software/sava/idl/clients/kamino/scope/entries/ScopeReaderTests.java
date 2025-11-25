@@ -58,9 +58,8 @@ final class ScopeReaderTests {
       assertEquals(OracleMappings.BYTES, data.length);
 
       final var mappings = OracleMappings.read(data, 0);
-      final var reader = ScopeReader.createReader(mappings);
-      final var entries = reader.readEntries();
-      assertEquals(OracleMappings.PRICE_INFO_ACCOUNTS_LEN, entries.length);
+      final var entries = ScopeReader.parseEntries(mappings);
+      assertEquals(OracleMappings.PRICE_INFO_ACCOUNTS_LEN, entries.numEntries());
     }
   }
 }

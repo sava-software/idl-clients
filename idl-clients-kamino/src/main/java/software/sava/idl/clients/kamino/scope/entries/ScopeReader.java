@@ -1,26 +1,27 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
-import software.sava.core.accounts.PublicKey;
-import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 public interface ScopeReader {
 
-  static ScopeReader createReader(final OracleMappings oracleMappings) {
-    return new ScopeReaderRecord(
-        oracleMappings.priceInfoAccounts(),
+  static ScopeEntries parseEntries(final OracleMappings oracleMappings) {
+    final var priceAccounts = oracleMappings.priceInfoAccounts();
+    final var entries = new ScopeEntry[priceAccounts.length];
+    final var reader = new ScopeReaderRecord(
+        entries,
+        priceAccounts,
         oracleMappings.priceTypes(),
         oracleMappings.twapSource(),
-        oracleMappings.twapEnabled(),
+        oracleMappings.twapEnabledd(),
         oracleMappings.refPrice(),
         oracleMappings.generic(),
         OracleType.values()
     );
+    return reader.readEntries();
   }
 
   static BigDecimal scaleScopePrice(final DatedPrice datedPrice) {
@@ -31,8 +32,4 @@ public interface ScopeReader {
         : new BigDecimal(val);
     return price.movePointRight(Math.toIntExact(scaledPrice.exp()));
   }
-
-  ScopeEntry[] readEntries();
-
-  PriceChains readPriceChains(final Map<PublicKey, ScopeEntry[]> oracleMappings, final Reserve reserve);
 }
