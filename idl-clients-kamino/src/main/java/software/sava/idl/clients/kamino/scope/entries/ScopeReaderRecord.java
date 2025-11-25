@@ -68,12 +68,12 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         final var cfg = V8V10.read(generic[i], 0);
         yield new ChainlinkX(priceAccount, cfg.marketStatusBehavior(), twapEnabled);
       }
-      case ChainlinkNAV -> new ChainlinkNAV(priceAccount, twapEnabled);
       case Chainlink -> {
         final var cfg = V3.read(generic[i], 0);
         yield new Chainlink(priceAccount, cfg.confidenceFactor(), twapEnabled, refPrice);
       }
       case ChainlinkExchangeRate -> new ChainlinkExchangeRate(priceAccount, twapEnabled);
+      case ChainlinkNAV -> new ChainlinkNAV(priceAccount, twapEnabled);
       case DiscountToMaturity -> {
         final var dtm = DiscountToMaturityData.read(generic[i], 0);
         yield new DiscountToMaturity(refPrice, dtm.discountPerYearBps(), dtm.maturityTimestamp());
@@ -82,10 +82,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         final var price = Price.read(generic[i], 0);
         yield new FixedPrice(price.value(), price.exp());
       }
+      case FlashtradeLp -> new FlashtradeLp(priceAccount, twapEnabled);
       case JitoRestaking -> new JitoRestaking(priceAccount, twapEnabled);
       case JupiterLpFetch -> new JupiterLpFetch(priceAccount, twapEnabled);
       case KToken -> new KToken(priceAccount, twapEnabled);
-      case FlashtradeLp -> new FlashtradeLp(priceAccount, twapEnabled);
       case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(priceAccount, twapEnabled);
       case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(priceAccount, twapEnabled);
       case MostRecentOf -> {
@@ -117,7 +117,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case SplStake -> new SplStake(priceAccount, twapEnabled);
       case SwitchboardOnDemand -> new SwitchboardOnDemand(priceAccount, twapEnabled);
       case Unused -> Unused.INSTANCE;
-      default -> new NotYetSupported(priceAccount, oracleType, entry(i), twapEnabled, refPrice, generic[i]);
+      default -> {
+        if (oracleType.name().startsWith("Deprecated")) {
+          yield Deprecated.INSTANCE;
+        } else {
+          yield new NotYetSupported(priceAccount, oracleType, entry(i), twapEnabled, refPrice, generic[i]);
+        }
+      }
     };
   }
 }
