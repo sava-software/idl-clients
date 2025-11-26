@@ -10,7 +10,7 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
-import software.sava.idl.clients.kamino.lend.gen.types.UpdateGlobalConfigMode;
+import software.sava.idl.clients.kamino.vaults.gen.types.UpdateGlobalConfigMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.UpdateReserveWhitelistMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultConfigField;
 

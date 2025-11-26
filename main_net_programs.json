@@ -124,7 +124,7 @@
       "typeRefs": [
         {
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
-          "srcMismatch": "WARN_KEEP_REF",
+          "srcMismatch": "KEEP_LOCAL",
           "matchOnTypeName": true,
           "explicitRules": []
         },
@@ -140,6 +140,7 @@
           "srcMismatch": "WARN_KEEP_REF",
           "matchOnTypeName": true,
           "excludeTypes": [
+            "GlobalConfig",
             "TimeUnit"
           ],
           "explicitRules": []
