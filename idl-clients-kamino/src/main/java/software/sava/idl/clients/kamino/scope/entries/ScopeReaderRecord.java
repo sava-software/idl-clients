@@ -76,7 +76,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case ChainlinkNAV -> new ChainlinkNAV(priceAccount, twapEnabled);
       case DiscountToMaturity -> {
         final var dtm = DiscountToMaturityData.read(generic[i], 0);
-        yield new DiscountToMaturity(refPrice, dtm.discountPerYearBps(), dtm.maturityTimestamp());
+        yield new DiscountToMaturity(dtm.discountPerYearBps(), dtm.maturityTimestamp());
       }
       case FixedPrice -> {
         final var price = Price.read(generic[i], 0);

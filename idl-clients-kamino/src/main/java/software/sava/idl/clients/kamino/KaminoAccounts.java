@@ -22,6 +22,7 @@ public interface KaminoAccounts {
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/examples/utils/constants.ts
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/src/utils/seeds.ts
   // https://github.com/Kamino-Finance/klend/blob/master/programs/klend/src/utils/seeds.rs
+  // https://github.com/Kamino-Finance/kvault/blob/master/programs/kvault/src/utils/consts.rs
 
   KaminoAccounts MAIN_NET = createAccounts(
       "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
@@ -287,6 +288,16 @@ public interface KaminoAccounts {
 
   default ProgramDerivedAddress cTokenVault(final PublicKey vaultKey, final PublicKey reserveKey) {
     return cTokenVault(vaultKey, reserveKey, kVaultsProgram());
+  }
+
+
+  static ProgramDerivedAddress kVaultGlobalConfig(final PublicKey programId) {
+
+    return PublicKey.findProgramAddress(List.of("global_config".getBytes(US_ASCII)), programId);
+  }
+
+  default ProgramDerivedAddress kVaultGlobalConfig() {
+    return kVaultGlobalConfig(kVaultsProgram());
   }
 
   PublicKey scopePricesProgram();

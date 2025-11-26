@@ -14,7 +14,7 @@ record ScopeEntriesRecord(ScopeEntry[] scopeEntries) implements ScopeEntries {
     final var scopeConfiguration = reserve.config().tokenInfo().scopeConfiguration();
     final var priceChain = parseChain(scopeConfiguration.priceChain(), scopeEntries);
     final var twapChain = parseChain(scopeConfiguration.twapChain(), scopeEntries);
-    return new PriceChains(priceChain, twapChain);
+    return new PriceChainsRecord(priceChain, twapChain);
   }
 
   @Override
@@ -31,11 +31,11 @@ record ScopeEntriesRecord(ScopeEntry[] scopeEntries) implements ScopeEntries {
     final var entries = new ScopeEntry[priceChain.length];
     int i = 0;
     for (; i < priceChain.length; ++i) {
-      final var priceChainEntry = priceChain[i];
-      if (priceChainEntry < 0) {
+      final var entry = priceChain[i];
+      if (entry < 0) {
         break;
       }
-      entries[i] = scopeEntries[priceChainEntry];
+      entries[i] = scopeEntries[entry];
     }
     if (i < entries.length) {
       final var trimmed = new ScopeEntry[i];
