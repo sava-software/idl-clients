@@ -1,0 +1,194 @@
+package software.sava.idl.clients.kamino.vaults.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.borsh.Borsh;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.kamino.lend.gen.types.LastUpdate;
+import software.sava.idl.clients.kamino.lend.gen.types.ReserveCollateral;
+import software.sava.idl.clients.kamino.lend.gen.types.ReserveLiquidity;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// @param version Version of the reserve
+/// @param lastUpdate Last slot when supply and rates updated
+/// @param lendingMarket Lending market address
+/// @param liquidity Reserve liquidity
+/// @param collateral Reserve collateral
+/// @param config Reserve configuration values
+/// @param borrowedAmountsAgainstThisReserveInElevationGroups Amount of token borrowed in lamport of debt asset in the given
+///                                                           elevation group when this reserve is part of the collaterals.
+public record Reserve(PublicKey _address,
+                      Discriminator discriminator,
+                      long version,
+                      LastUpdate lastUpdate,
+                      PublicKey lendingMarket,
+                      PublicKey farmCollateral,
+                      PublicKey farmDebt,
+                      ReserveLiquidity liquidity,
+                      long[] reserveLiquidityPadding,
+                      ReserveCollateral collateral,
+                      long[] reserveCollateralPadding,
+                      ReserveConfig config,
+                      long[] configPadding,
+                      long borrowedAmountOutsideElevationGroup,
+                      long[] borrowedAmountsAgainstThisReserveInElevationGroups,
+                      long[] padding) implements Borsh {
+
+  public static final int BYTES = 8624;
+  public static final int RESERVE_LIQUIDITY_PADDING_LEN = 150;
+  public static final int RESERVE_COLLATERAL_PADDING_LEN = 150;
+  public static final int CONFIG_PADDING_LEN = 116;
+  public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_LEN = 32;
+  public static final int PADDING_LEN = 207;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(43, 242, 204, 202, 26, 247, 59, 127);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VERSION_OFFSET = 8;
+  public static final int LAST_UPDATE_OFFSET = 16;
+  public static final int LENDING_MARKET_OFFSET = 32;
+  public static final int FARM_COLLATERAL_OFFSET = 64;
+  public static final int FARM_DEBT_OFFSET = 96;
+  public static final int LIQUIDITY_OFFSET = 128;
+  public static final int RESERVE_LIQUIDITY_PADDING_OFFSET = 1360;
+  public static final int COLLATERAL_OFFSET = 2560;
+  public static final int RESERVE_COLLATERAL_PADDING_OFFSET = 3656;
+  public static final int CONFIG_OFFSET = 4856;
+  public static final int CONFIG_PADDING_OFFSET = 5776;
+  public static final int BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUP_OFFSET = 6704;
+  public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_OFFSET = 6712;
+  public static final int PADDING_OFFSET = 6968;
+
+  public static Filter createVersionFilter(final long version) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, version);
+    return Filter.createMemCompFilter(VERSION_OFFSET, _data);
+  }
+
+  public static Filter createLastUpdateFilter(final LastUpdate lastUpdate) {
+    return Filter.createMemCompFilter(LAST_UPDATE_OFFSET, lastUpdate.write());
+  }
+
+  public static Filter createLendingMarketFilter(final PublicKey lendingMarket) {
+    return Filter.createMemCompFilter(LENDING_MARKET_OFFSET, lendingMarket);
+  }
+
+  public static Filter createFarmCollateralFilter(final PublicKey farmCollateral) {
+    return Filter.createMemCompFilter(FARM_COLLATERAL_OFFSET, farmCollateral);
+  }
+
+  public static Filter createFarmDebtFilter(final PublicKey farmDebt) {
+    return Filter.createMemCompFilter(FARM_DEBT_OFFSET, farmDebt);
+  }
+
+  public static Filter createBorrowedAmountOutsideElevationGroupFilter(final long borrowedAmountOutsideElevationGroup) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, borrowedAmountOutsideElevationGroup);
+    return Filter.createMemCompFilter(BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUP_OFFSET, _data);
+  }
+
+  public static Reserve read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Reserve read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Reserve read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Reserve> FACTORY = Reserve::read;
+
+  public static Reserve read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var version = getInt64LE(_data, i);
+    i += 8;
+    final var lastUpdate = LastUpdate.read(_data, i);
+    i += lastUpdate.l();
+    final var lendingMarket = readPubKey(_data, i);
+    i += 32;
+    final var farmCollateral = readPubKey(_data, i);
+    i += 32;
+    final var farmDebt = readPubKey(_data, i);
+    i += 32;
+    final var liquidity = ReserveLiquidity.read(_data, i);
+    i += liquidity.l();
+    final var reserveLiquidityPadding = new long[150];
+    i += Borsh.readArray(reserveLiquidityPadding, _data, i);
+    final var collateral = ReserveCollateral.read(_data, i);
+    i += collateral.l();
+    final var reserveCollateralPadding = new long[150];
+    i += Borsh.readArray(reserveCollateralPadding, _data, i);
+    final var config = ReserveConfig.read(_data, i);
+    i += config.l();
+    final var configPadding = new long[116];
+    i += Borsh.readArray(configPadding, _data, i);
+    final var borrowedAmountOutsideElevationGroup = getInt64LE(_data, i);
+    i += 8;
+    final var borrowedAmountsAgainstThisReserveInElevationGroups = new long[32];
+    i += Borsh.readArray(borrowedAmountsAgainstThisReserveInElevationGroups, _data, i);
+    final var padding = new long[207];
+    Borsh.readArray(padding, _data, i);
+    return new Reserve(_address,
+                       discriminator,
+                       version,
+                       lastUpdate,
+                       lendingMarket,
+                       farmCollateral,
+                       farmDebt,
+                       liquidity,
+                       reserveLiquidityPadding,
+                       collateral,
+                       reserveCollateralPadding,
+                       config,
+                       configPadding,
+                       borrowedAmountOutsideElevationGroup,
+                       borrowedAmountsAgainstThisReserveInElevationGroups,
+                       padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, version);
+    i += 8;
+    i += lastUpdate.write(_data, i);
+    lendingMarket.write(_data, i);
+    i += 32;
+    farmCollateral.write(_data, i);
+    i += 32;
+    farmDebt.write(_data, i);
+    i += 32;
+    i += liquidity.write(_data, i);
+    i += Borsh.writeArrayChecked(reserveLiquidityPadding, 150, _data, i);
+    i += collateral.write(_data, i);
+    i += Borsh.writeArrayChecked(reserveCollateralPadding, 150, _data, i);
+    i += config.write(_data, i);
+    i += Borsh.writeArrayChecked(configPadding, 116, _data, i);
+    putInt64LE(_data, i, borrowedAmountOutsideElevationGroup);
+    i += 8;
+    i += Borsh.writeArrayChecked(borrowedAmountsAgainstThisReserveInElevationGroups, 32, _data, i);
+    i += Borsh.writeArrayChecked(padding, 207, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}
