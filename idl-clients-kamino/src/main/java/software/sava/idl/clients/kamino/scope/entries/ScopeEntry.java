@@ -2,13 +2,15 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public sealed interface ScopeEntry permits AdrenaLp,
+public sealed interface ScopeEntry permits
+    AdrenaLp,
     CappedFloored,
     CappedMostRecentOf,
     Chainlink,
     ChainlinkExchangeRate,
     ChainlinkNAV,
     ChainlinkRWA,
+    ChainlinkStatusEntry,
     ChainlinkX,
     Deprecated,
     DiscountToMaturity,

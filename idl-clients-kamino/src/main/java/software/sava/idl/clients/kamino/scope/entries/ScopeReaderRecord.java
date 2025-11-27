@@ -80,7 +80,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case FixedPrice -> {
         final var price = Price.read(generic[i], 0);
-        yield new FixedPrice(price.value(), price.exp());
+        yield new FixedPrice(price.value(), Math.toIntExact(price.exp()));
       }
       case FlashtradeLp -> new FlashtradeLp(priceAccount, twapEnabled);
       case JitoRestaking -> new JitoRestaking(priceAccount, twapEnabled);

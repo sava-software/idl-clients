@@ -29,17 +29,21 @@ record ScopeEntriesRecord(ScopeEntry[] scopeEntries) implements ScopeEntries {
 
   private ScopeEntry[] parseChain(final short[] priceChain, final ScopeEntry[] scopeEntries) {
     final var entries = new ScopeEntry[priceChain.length];
-    int i = 0;
-    for (; i < priceChain.length; ++i) {
-      final var entry = priceChain[i];
-      if (entry < 0) {
+    int j = 0;
+    for (int i = 0, entryIndex; i < priceChain.length; ++i) {
+      entryIndex = priceChain[i];
+      if (entryIndex < 0) {
         break;
       }
-      entries[i] = scopeEntries[entry];
+      final var entry = scopeEntries[entryIndex];
+      if (entry == null) {
+        throw new IllegalStateException("Entry not found at index: " + entryIndex);
+      }
+      entries[j++] = entry;
     }
-    if (i < entries.length) {
-      final var trimmed = new ScopeEntry[i];
-      System.arraycopy(entries, 0, trimmed, 0, i);
+    if (j < entries.length) {
+      final var trimmed = new ScopeEntry[j];
+      System.arraycopy(entries, 0, trimmed, 0, j);
       return trimmed;
     } else {
       return entries;
