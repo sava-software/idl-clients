@@ -9,10 +9,10 @@ import software.sava.idl.clients.jupiter.governance.gen.types.Proposal;
 import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
 import software.sava.idl.clients.jupiter.voter.gen.types.Escrow;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
+import software.sava.idl.clients.jupiter.voter.rest.response.ClaimProof;
 import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
-import software.sava.solana.web2.jupiter.client.http.response.ClaimProof;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

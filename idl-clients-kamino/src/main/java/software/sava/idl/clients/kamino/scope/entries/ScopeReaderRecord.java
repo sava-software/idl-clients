@@ -91,7 +91,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case MostRecentOf -> {
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(mostRecentOf.sourceEntries());
-        yield new MostRecentOf(sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
+        yield new MostRecentOfRecord(sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
       }
       case MsolStake -> new MsolStake(priceAccount, twapEnabled);
       case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(priceAccount, twapEnabled);

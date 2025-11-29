@@ -84,6 +84,13 @@
       "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
     },
     {
+      "name": "Jupiter Order Engine",
+      "source": "idl-clients-jupiter",
+      "module": "jupiter",
+      "package": "jupiter.order_engine",
+      "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
+    },
+    {
       "name": "Kamino Farms",
       "source": "idl-clients-kamino",
       "module": "kamino",
