@@ -6,7 +6,7 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 public record ChainlinkRWA(PublicKey oracle,
                            MarketStatusBehavior marketStatusBehavior,
-                           boolean twapEnabled) implements ChainlinkStatusEntry, OracleEntry, ScopeEntry {
+                           boolean twapEnabled) implements ChainlinkStatusEntry {
 
   @Override
   public OracleType oracleType() {

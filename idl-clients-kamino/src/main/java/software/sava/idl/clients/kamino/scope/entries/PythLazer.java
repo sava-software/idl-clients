@@ -8,7 +8,7 @@ public record PythLazer(PublicKey oracle,
                         int exponent,
                         int confidenceFactor,
                         boolean twapEnabled,
-                        ScopeEntry refPrice) implements ReferencesEntry, OracleEntry, ScopeEntry {
+                        ScopeEntry refPrice) implements ReferencesEntry {
 
   @Override
   public OracleType oracleType() {

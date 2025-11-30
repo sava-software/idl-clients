@@ -3,7 +3,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record RaydiumAmmV3BtoA(PublicKey oracle, boolean twapEnabled) implements OracleEntry, ScopeEntry {
+public record RaydiumAmmV3BtoA(PublicKey oracle, boolean twapEnabled) implements OracleEntry {
 
   @Override
   public OracleType oracleType() {
