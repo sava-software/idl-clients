@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Base64;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 final class ScopeReaderTests {
 
@@ -19,7 +19,7 @@ final class ScopeReaderTests {
       assertEquals(OracleMappings.BYTES, data.length);
 
       final var mappings = OracleMappings.read(data, 0);
-      final var entries = ScopeReader.parseEntries(mappings);
+      final var entries = ScopeReader.parseEntries(-1, mappings);
       assertEquals(OracleMappings.PRICE_INFO_ACCOUNTS_LEN, entries.numEntries());
     }
   }

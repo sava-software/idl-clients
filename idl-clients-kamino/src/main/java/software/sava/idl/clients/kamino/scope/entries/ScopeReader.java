@@ -3,12 +3,19 @@ package software.sava.idl.clients.kamino.scope.entries;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
+import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.math.BigDecimal;
 
 public interface ScopeReader {
 
-  static ScopeEntries parseEntries(final OracleMappings oracleMappings) {
+  static ScopeEntries parseEntries(final AccountInfo<byte[]> accountInfo) {
+    final long slot = accountInfo.context().slot();
+    final var mappings = OracleMappings.read(accountInfo);
+    return parseEntries(slot, mappings);
+  }
+
+  static ScopeEntries parseEntries(final long slot, final OracleMappings oracleMappings) {
     final var priceAccounts = oracleMappings.priceInfoAccounts();
     final var entries = new ScopeEntry[priceAccounts.length];
     final var reader = new ScopeReaderRecord(
@@ -21,7 +28,7 @@ public interface ScopeReader {
         oracleMappings.generic(),
         OracleType.values()
     );
-    return reader.readEntries();
+    return reader.readEntries(oracleMappings._address(), slot);
   }
 
   static BigDecimal scaleScopePrice(final DatedPrice datedPrice) {

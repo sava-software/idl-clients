@@ -3,7 +3,9 @@ package software.sava.idl.clients.kamino.scope.entries;
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 
-record ScopeEntriesRecord(ScopeEntry[] scopeEntries) implements ScopeEntries {
+import java.util.Arrays;
+
+record ScopeEntriesRecord(PublicKey pubKey, long slot, ScopeEntry[] scopeEntries) implements ScopeEntries {
 
   @Override
   public PriceChains readPriceChains(final Reserve reserve) {
@@ -48,5 +50,28 @@ record ScopeEntriesRecord(ScopeEntry[] scopeEntries) implements ScopeEntries {
     } else {
       return entries;
     }
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (!(o instanceof ScopeEntriesRecord(PublicKey key, long oSlot, ScopeEntry[] entries))) return false;
+    return slot == oSlot && pubKey.equals(key) && Arrays.equals(scopeEntries, entries);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = pubKey.hashCode();
+    result = 31 * result + Long.hashCode(slot);
+    result = 31 * result + Arrays.hashCode(scopeEntries);
+    return result;
+  }
+
+  @Override
+  public String toString() {
+    return "ScopeEntriesRecord{" +
+        "pubKey=" + pubKey +
+        ", slot=" + slot +
+        ", scopeEntries=" + Arrays.toString(scopeEntries) +
+        '}';
   }
 }

@@ -14,11 +14,11 @@ record ScopeReaderRecord(ScopeEntry[] entries,
                          byte[][] generic,
                          OracleType[] oracleTypes) implements ScopeReader {
 
-  ScopeEntries readEntries() {
+  ScopeEntries readEntries(final PublicKey pubKey, final long slot) {
     for (int i = 0; i < priceInfoAccounts.length; ++i) {
       entries[i] = entry(i);
     }
-    return new ScopeEntriesRecord(entries);
+    return new ScopeEntriesRecord(pubKey, slot, entries);
   }
 
   private ScopeEntry entry(final OptionalInt i) {
@@ -80,7 +80,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case FixedPrice -> {
         final var price = Price.read(generic[i], 0);
-        yield new FixedPrice(price.value(), Math.toIntExact(price.exp()));
+        yield FixedPrice.createEntry(price.value(), Math.toIntExact(price.exp()));
       }
       case FlashtradeLp -> new FlashtradeLp(priceAccount, twapEnabled);
       case JitoRestaking -> new JitoRestaking(priceAccount, twapEnabled);
@@ -91,7 +91,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case MostRecentOf -> {
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(mostRecentOf.sourceEntries());
-        yield new MostRecentOfRecord(sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
+        yield new MostRecentOfEntry(sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
       }
       case MsolStake -> new MsolStake(priceAccount, twapEnabled);
       case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(priceAccount, twapEnabled);
