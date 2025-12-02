@@ -10,7 +10,7 @@ public record FixedPrice(long value, int exp, BigDecimal decimal) implements Sco
     final var decimal = value < 0
         ? new BigDecimal(Long.toUnsignedString(value))
         : BigDecimal.valueOf(value);
-    return new FixedPrice(value, exp, decimal.movePointLeft(exp).stripTrailingZeros());
+    return new FixedPrice(value, exp, decimal.movePointLeft(Math.toIntExact(exp)).stripTrailingZeros());
   }
 
   @Override

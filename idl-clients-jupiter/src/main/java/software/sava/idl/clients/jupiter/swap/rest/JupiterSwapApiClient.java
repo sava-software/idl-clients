@@ -111,7 +111,7 @@ public interface JupiterSwapApiClient {
 
   CompletableFuture<JupiterExecuteOrder> executeOrder(final String base64SignedTx, final String requestId);
 
-  class Builder extends HttpClientBuilder<JupiterSwapApiClient> {
+  class Builder extends JupiterClientBuilder<JupiterSwapApiClient> {
 
     protected String quotePathFormat;
     protected String quotePath;
@@ -132,7 +132,7 @@ public interface JupiterSwapApiClient {
 
     protected void setRemoteURLs() {
       if (endpoint == null) {
-        endpoint = URI.create("https://lite-api.jup.ag");
+        endpoint = URI.create("https://api.jup.ag");
       }
       this.quotePathFormat = "/swap/v1/quote?amount=%s&%s";
       this.quotePath = "/swap/v1/quote?";
@@ -146,7 +146,7 @@ public interface JupiterSwapApiClient {
           endpoint,
           httpClient,
           requestTimeout,
-          extendRequest,
+          extendRequest(),
           testResponse,
           quotePathFormat, quotePath,
           swapURI,

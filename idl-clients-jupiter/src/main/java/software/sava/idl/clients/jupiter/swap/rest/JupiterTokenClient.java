@@ -28,14 +28,14 @@ public interface JupiterTokenClient {
 
   CompletableFuture<Map<PublicKey, JupiterTokenV2>> recentTokens();
 
-  class Builder extends HttpClientBuilder<JupiterTokenClient> {
+  class Builder extends JupiterClientBuilder<JupiterTokenClient> {
 
     protected URI v2TokenPath;
     protected URI v2RecentTokenPath;
 
     protected void setURLs() {
       if (endpoint == null) {
-        endpoint = URI.create("https://lite-api.jup.ag");
+        endpoint = URI.create("https://api.jup.ag");
       }
       this.v2TokenPath = endpoint.resolve("/tokens/v2/");
       this.v2RecentTokenPath = endpoint.resolve("/tokens/v2/recent");
@@ -49,7 +49,7 @@ public interface JupiterTokenClient {
           endpoint,
           httpClient,
           requestTimeout,
-          extendRequest,
+          extendRequest(),
           testResponse,
           v2TokenPath,
           v2RecentTokenPath
