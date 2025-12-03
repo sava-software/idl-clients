@@ -6,8 +6,11 @@ public record PriceChainsRecord(ScopeEntry[] priceChain, ScopeEntry[] twapChain)
 
   @Override
   public boolean equals(final Object o) {
-    if (!(o instanceof PriceChainsRecord(ScopeEntry[] price, ScopeEntry[] twap))) return false;
-    return Arrays.equals(this.priceChain, price) && Arrays.equals(this.twapChain, twap);
+    if (o instanceof PriceChainsRecord(final ScopeEntry[] price, final ScopeEntry[] twap)) {
+      return Arrays.equals(this.priceChain, price) && Arrays.equals(this.twapChain, twap);
+    } else {
+      return false;
+    }
   }
 
   @Override

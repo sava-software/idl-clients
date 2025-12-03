@@ -17,7 +17,7 @@ public final class ResourceUtil {
 
   public static List<String> readFiles(final String resourcePath,
                                        final String suffix) throws URISyntaxException, IOException {
-    final var resource = ScopeReaderTests.class.getResource(resourcePath);
+    final var resource = ResourceUtil.class.getResource(resourcePath);
     assertNotNull(resource);
     final var dir = Paths.get(resource.toURI());
     try (final var stream = Files.list(dir)) {

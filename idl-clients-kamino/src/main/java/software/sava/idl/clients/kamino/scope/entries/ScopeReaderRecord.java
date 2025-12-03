@@ -25,12 +25,23 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     return i.isPresent() ? entry(i.getAsInt()) : null;
   }
 
-  private ScopeEntry[] parseEntries(final short[] entryIndicies) {
-    final var entries = new ScopeEntry[entryIndicies.length];
-    for (int j = 0; j < entryIndicies.length; ++j) {
-      entries[j] = entry(entryIndicies[j]);
+  private ScopeEntry[] parseEntries(final short[] entryIndices) {
+    final var entries = new ScopeEntry[entryIndices.length];
+    int j = 0;
+    for (; j < entryIndices.length; ++j) {
+      final var entry = entry(entryIndices[j]);
+      if (entry == null) {
+        break;
+      }
+      entries[j] = entry;
     }
-    return entries;
+    if (j < entries.length) {
+      final var trimmed = new ScopeEntry[j];
+      System.arraycopy(entries, 0, trimmed, 0, j);
+      return trimmed;
+    } else {
+      return entries;
+    }
   }
 
   private ScopeEntry entry(final int i) {
