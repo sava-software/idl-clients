@@ -65,7 +65,7 @@ public record UserStats(PublicKey _address,
                         int numberOfSubAccountsCreated,
                         int referrerStatus,
                         boolean disableUpdatePerpBidAskTwap,
-                        byte[] padding1,
+                        int pausedOperations,
                         int fuelOverflowStatus,
                         int fuelInsurance,
                         int fuelDeposits,
@@ -78,7 +78,6 @@ public record UserStats(PublicKey _address,
                         byte[] padding) implements Borsh {
 
   public static final int BYTES = 240;
-  public static final int PADDING_1_LEN = 1;
   public static final int PADDING_LEN = 12;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -100,7 +99,7 @@ public record UserStats(PublicKey _address,
   public static final int NUMBER_OF_SUB_ACCOUNTS_CREATED_OFFSET = 186;
   public static final int REFERRER_STATUS_OFFSET = 188;
   public static final int DISABLE_UPDATE_PERP_BID_ASK_TWAP_OFFSET = 189;
-  public static final int PADDING_1_OFFSET = 190;
+  public static final int PAUSED_OPERATIONS_OFFSET = 190;
   public static final int FUEL_OVERFLOW_STATUS_OFFSET = 191;
   public static final int FUEL_INSURANCE_OFFSET = 192;
   public static final int FUEL_DEPOSITS_OFFSET = 196;
@@ -190,6 +189,10 @@ public record UserStats(PublicKey _address,
 
   public static Filter createDisableUpdatePerpBidAskTwapFilter(final boolean disableUpdatePerpBidAskTwap) {
     return Filter.createMemCompFilter(DISABLE_UPDATE_PERP_BID_ASK_TWAP_OFFSET, new byte[]{(byte) (disableUpdatePerpBidAskTwap ? 1 : 0)});
+  }
+
+  public static Filter createPausedOperationsFilter(final int pausedOperations) {
+    return Filter.createMemCompFilter(PAUSED_OPERATIONS_OFFSET, new byte[]{(byte) pausedOperations});
   }
 
   public static Filter createFuelOverflowStatusFilter(final int fuelOverflowStatus) {
@@ -294,8 +297,8 @@ public record UserStats(PublicKey _address,
     ++i;
     final var disableUpdatePerpBidAskTwap = _data[i] == 1;
     ++i;
-    final var padding1 = new byte[1];
-    i += Borsh.readArray(padding1, _data, i);
+    final var pausedOperations = _data[i] & 0xFF;
+    ++i;
     final var fuelOverflowStatus = _data[i] & 0xFF;
     ++i;
     final var fuelInsurance = getInt32LE(_data, i);
@@ -333,7 +336,7 @@ public record UserStats(PublicKey _address,
                          numberOfSubAccountsCreated,
                          referrerStatus,
                          disableUpdatePerpBidAskTwap,
-                         padding1,
+                         pausedOperations,
                          fuelOverflowStatus,
                          fuelInsurance,
                          fuelDeposits,
@@ -378,7 +381,8 @@ public record UserStats(PublicKey _address,
     ++i;
     _data[i] = (byte) (disableUpdatePerpBidAskTwap ? 1 : 0);
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 1, _data, i);
+    _data[i] = (byte) pausedOperations;
+    ++i;
     _data[i] = (byte) fuelOverflowStatus;
     ++i;
     putInt32LE(_data, i, fuelInsurance);

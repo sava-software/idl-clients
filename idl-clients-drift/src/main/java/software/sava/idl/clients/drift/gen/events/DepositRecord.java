@@ -34,7 +34,9 @@ public record DepositRecord(Discriminator discriminator,
                             long totalDepositsAfter,
                             long totalWithdrawsAfter,
                             DepositExplanation explanation,
-                            PublicKey transferUser) implements DriftEvent {
+                            PublicKey transferUser,
+                            PublicKey signer,
+                            BigInteger userTokenAmountAfter) implements DriftEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
@@ -77,10 +79,22 @@ public record DepositRecord(Discriminator discriminator,
     final PublicKey transferUser;
     if (_data[i] == 0) {
       transferUser = null;
+      ++i;
     } else {
       ++i;
       transferUser = readPubKey(_data, i);
+      i += 32;
     }
+    final PublicKey signer;
+    if (_data[i] == 0) {
+      signer = null;
+      ++i;
+    } else {
+      ++i;
+      signer = readPubKey(_data, i);
+      i += 32;
+    }
+    final var userTokenAmountAfter = getInt128LE(_data, i);
     return new DepositRecord(discriminator,
                              ts,
                              userAuthority,
@@ -97,7 +111,9 @@ public record DepositRecord(Discriminator discriminator,
                              totalDepositsAfter,
                              totalWithdrawsAfter,
                              explanation,
-                             transferUser);
+                             transferUser,
+                             signer,
+                             userTokenAmountAfter);
   }
 
   @Override
@@ -132,6 +148,9 @@ public record DepositRecord(Discriminator discriminator,
     i += 8;
     i += explanation.write(_data, i);
     i += Borsh.writeOptional(transferUser, _data, i);
+    i += Borsh.writeOptional(signer, _data, i);
+    putInt128LE(_data, i, userTokenAmountAfter);
+    i += 16;
     return i - _offset;
   }
 
@@ -152,6 +171,8 @@ public record DepositRecord(Discriminator discriminator,
          + 8
          + 8
          + explanation.l()
-         + (transferUser == null ? 1 : (1 + 32));
+         + (transferUser == null ? 1 : (1 + 32))
+         + (signer == null ? 1 : (1 + 32))
+         + 16;
   }
 }
