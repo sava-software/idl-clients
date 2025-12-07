@@ -5,5 +5,4 @@ module software.sava.idl.clients.cctp {
   requires transitive software.sava.core;
   requires transitive software.sava.idl.clients.core;
   requires transitive software.sava.rpc;
-  requires transitive systems.comodal.json_iterator;
 }

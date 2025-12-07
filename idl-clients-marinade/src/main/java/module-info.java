@@ -7,5 +7,5 @@ module software.sava.idl.clients.marinade {
   requires transitive software.sava.idl.clients.core;
   requires transitive software.sava.idl.clients.spl;
   requires transitive software.sava.rpc;
-  requires transitive systems.comodal.json_iterator;
+  requires transitive software.sava.solana_programs;
 }
