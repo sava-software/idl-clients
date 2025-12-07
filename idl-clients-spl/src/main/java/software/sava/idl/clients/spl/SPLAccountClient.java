@@ -1,5 +1,6 @@
 package software.sava.idl.clients.spl;
 
+import software.sava.core.accounts.AccountWithSeed;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
@@ -65,6 +66,16 @@ public interface SPLAccountClient {
                                                 final PublicKey ata,
                                                 final PublicKey mint,
                                                 final PublicKey tokenProgram);
+
+  Instruction createAccount(final PublicKey newAccountPublicKey,
+                            final long lamports,
+                            final long space,
+                            final PublicKey programOwner);
+
+  Instruction createAccountWithSeed(final AccountWithSeed accountWithSeed,
+                                    final long lamports,
+                                    final long space,
+                                    final PublicKey programOwner);
 
   default ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot) {
     return splClient().findLookupTableAddress(feePayerKey(), recentSlot);

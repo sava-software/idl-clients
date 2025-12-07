@@ -17,6 +17,7 @@ module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.voter;
   exports software.sava.idl.clients.jupiter;
   requires java.net.http;
+  requires transitive software.sava.solana_web2;
   requires transitive software.sava.core;
   requires transitive software.sava.idl.clients.core;
   requires transitive software.sava.idl.clients.spl;

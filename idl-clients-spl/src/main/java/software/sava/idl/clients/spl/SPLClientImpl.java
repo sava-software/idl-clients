@@ -1,15 +1,19 @@
 package software.sava.idl.clients.spl;
 
+import software.sava.core.accounts.AccountWithSeed;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
+import software.sava.idl.clients.spl.system.gen.SystemProgram;
 import software.sava.idl.clients.spl.token.gen.TokenProgram;
 import software.sava.solana.programs.address_lookup_table.AddressLookupTableProgram;
 
 import java.util.SequencedCollection;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
 
@@ -32,6 +36,41 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
         owner,
         tokenProgram,
         mint
+    );
+  }
+
+  @Override
+  public Instruction createAccount(final PublicKey payerKey,
+                                   final PublicKey newAccountPublicKey,
+                                   final long lamports,
+                                   final long space,
+                                   final PublicKey programOwner) {
+    return SystemProgram.createAccount(
+        solanaAccounts.invokedSystemProgram(),
+        payerKey,
+        newAccountPublicKey,
+        lamports,
+        space,
+        programOwner
+    );
+  }
+
+  @Override
+  public Instruction createAccountWithSeed(final PublicKey payerKey,
+                                           final AccountWithSeed accountWithSeed,
+                                           final long lamports,
+                                           final long space,
+                                           final PublicKey programOwner) {
+    return SystemProgram.createAccountWithSeed(
+        solanaAccounts.invokedSystemProgram(),
+        payerKey,
+        accountWithSeed.publicKey(),
+        accountWithSeed.baseKey(),
+        accountWithSeed.baseKey(),
+        new String(accountWithSeed.asciiSeed(), US_ASCII),
+        lamports,
+        space,
+        programOwner
     );
   }
 

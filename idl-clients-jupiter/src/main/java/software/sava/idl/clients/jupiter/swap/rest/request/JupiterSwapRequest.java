@@ -31,9 +31,7 @@ public record JupiterSwapRequest(PublicKey userPublicKey,
     if (!wrapAndUnwrapSol) {
       builder.append(",\"wrapAndUnwrapSol\":false");
     }
-    if (!useSharedAccounts) {
-      builder.append(",\"useSharedAccounts\":false");
-    }
+    builder.append(",\"useSharedAccounts\":").append(useSharedAccounts);
     if (feeAccount != null) {
       builder.append(",\"feeAccount\":\"").append(feeAccount).append('"');
     }

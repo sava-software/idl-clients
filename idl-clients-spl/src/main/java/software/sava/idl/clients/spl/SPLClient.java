@@ -1,5 +1,6 @@
 package software.sava.idl.clients.spl;
 
+import software.sava.core.accounts.AccountWithSeed;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
@@ -33,6 +34,18 @@ public interface SPLClient {
   default ProgramDerivedAddress find2022ATA(final PublicKey owner, final PublicKey mint) {
     return findATA(owner, solanaAccounts().token2022Program(), mint);
   }
+
+  Instruction createAccount(final PublicKey payerKey,
+                            final PublicKey newAccountPublicKey,
+                            final long lamports,
+                            final long space,
+                            final PublicKey programOwner);
+
+  Instruction createAccountWithSeed(final PublicKey payerKey,
+                                    final AccountWithSeed accountWithSeed,
+                                    final long lamports,
+                                    final long space,
+                                    final PublicKey programOwner);
 
   ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot);
 

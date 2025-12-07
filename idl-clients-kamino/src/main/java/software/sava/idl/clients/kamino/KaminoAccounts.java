@@ -290,7 +290,6 @@ public interface KaminoAccounts {
     return cTokenVault(vaultKey, reserveKey, kVaultsProgram());
   }
 
-
   static ProgramDerivedAddress kVaultGlobalConfig(final PublicKey programId) {
 
     return PublicKey.findProgramAddress(List.of("global_config".getBytes(US_ASCII)), programId);

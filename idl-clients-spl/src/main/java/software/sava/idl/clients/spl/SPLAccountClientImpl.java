@@ -1,5 +1,6 @@
 package software.sava.idl.clients.spl;
 
+import software.sava.core.accounts.AccountWithSeed;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
@@ -134,5 +135,33 @@ final class SPLAccountClientImpl implements SPLAccountClient {
           tokenProgram
       );
     }
+  }
+
+  @Override
+  public Instruction createAccount(final PublicKey newAccountPublicKey,
+                                   final long lamports,
+                                   final long space,
+                                   final PublicKey programOwner) {
+    return splClient.createAccount(
+        feePayer.publicKey(),
+        newAccountPublicKey,
+        lamports,
+        space,
+        programOwner
+    );
+  }
+
+  @Override
+  public Instruction createAccountWithSeed(final AccountWithSeed accountWithSeed,
+                                           final long lamports,
+                                           final long space,
+                                           final PublicKey programOwner) {
+    return splClient.createAccountWithSeed(
+        feePayer.publicKey(),
+        accountWithSeed,
+        lamports,
+        space,
+        programOwner
+    );
   }
 }

@@ -155,6 +155,29 @@
       ]
     },
     {
+      "name": "Marinade Stake Pool",
+      "source": "idl-clients-marinade",
+      "module": "marinade",
+      "package": "marinade.stake_pool",
+      "program": "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD"
+    },
+    {
+      "name": "Metaplex Token Metadata",
+      "source": "idl-clients-metaplex",
+      "module": "metaplex",
+      "package": "metaplex.token.metadata",
+      "program": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
+      "idlFile": "idls/shank/metaplex/token_metadata.json",
+      "accountsHaveDiscriminators": false
+    },
+    {
+      "name": "Meteora DLMM",
+      "source": "idl-clients-meteora",
+      "module": "meteora",
+      "package": "meteora.dlmm",
+      "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+    },
+    {
       "name": "Pyth Lazer",
       "source": "idl-clients-oracles",
       "module": "oracles",
