@@ -9,11 +9,11 @@ pluginManagement {
       credentials(PasswordCredentials::class)
     }
   }
-  // includeBuild("../sava-build")
+//  includeBuild("../sava-build")
 }
 
 plugins {
-  id("software.sava.build") version "0.2.5"
+  id("software.sava.build") version "0.3.0"
 }
 
 apply(plugin = "software.sava.build.feature-jdk-provisioning")
