@@ -77,7 +77,7 @@ public interface SPLAccountClient {
                                     final long space,
                                     final PublicKey programOwner);
 
-  default ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot) {
+  default ProgramDerivedAddress findLookupTableAddress(final long recentSlot) {
     return splClient().findLookupTableAddress(feePayerKey(), recentSlot);
   }
 

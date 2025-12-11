@@ -18,9 +18,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
 
   @Override
-  public SPLAccountClient createAccountClient(final SolanaAccounts accounts,
-                                              final PublicKey owner,
-                                              final AccountMeta feePayer) {
+  public SPLAccountClient createAccountClient(final PublicKey owner, final AccountMeta feePayer) {
     return new SPLAccountClientImpl(this, owner, feePayer);
   }
 

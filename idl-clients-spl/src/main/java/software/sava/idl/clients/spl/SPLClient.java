@@ -19,9 +19,7 @@ public interface SPLClient {
 
   SolanaAccounts solanaAccounts();
 
-  SPLAccountClient createAccountClient(final SolanaAccounts accounts,
-                                       final PublicKey owner,
-                                       final AccountMeta feePayer);
+  SPLAccountClient createAccountClient(final PublicKey owner, final AccountMeta feePayer);
 
   Instruction syncNative(final PublicKey tokenAccount);
 
