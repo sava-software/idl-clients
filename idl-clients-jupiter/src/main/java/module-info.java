@@ -11,6 +11,7 @@ module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.swap.rest.request;
   exports software.sava.idl.clients.jupiter.swap.rest.response;
   exports software.sava.idl.clients.jupiter.swap.rest;
+  exports software.sava.idl.clients.jupiter.swap;
   exports software.sava.idl.clients.jupiter.voter.gen.types;
   exports software.sava.idl.clients.jupiter.voter.gen;
   exports software.sava.idl.clients.jupiter.voter.rest.response;

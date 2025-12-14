@@ -4,14 +4,21 @@ pluginManagement {
   repositories {
     gradlePluginPortal()
     mavenCentral()
-    if (
-      providers.gradleProperty("savaGithubPackagesUsername").isPresent &&
-      providers.gradleProperty("savaGithubPackagesPassword").isPresent
-    ) {
+    val gprUser = providers.gradleProperty("savaGithubPackagesUsername")
+      .orElse(providers.environmentVariable("ORG_GRADLE_PROJECT_savaGithubPackagesUsername"))
+      .orElse(providers.environmentVariable("GITHUB_ACTOR"))
+      .orNull
+    val gprToken = providers.gradleProperty("savaGithubPackagesPassword")
+      .orElse(providers.environmentVariable("ORG_GRADLE_PROJECT_savaGithubPackagesPassword"))
+      .orElse(providers.environmentVariable("GITHUB_TOKEN"))
+      .orNull
+    if (gprUser != null && gprToken != null) {
       maven {
-        name = "savaGithubPackages"
         url = uri("https://maven.pkg.github.com/sava-software/sava-build")
-        credentials(PasswordCredentials::class)
+        credentials {
+          username = gprUser
+          password = gprToken
+        }
       }
     }
 //  includeBuild("../sava-build")

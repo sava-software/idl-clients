@@ -6,15 +6,12 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.accounts.meta.LookupTableAccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.core.tx.Transaction;
-import systems.comodal.jsoniter.ContextFieldBufferPredicate;
+import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 import systems.comodal.jsoniter.ValueType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static software.sava.core.tx.Transaction.sortLegacyAccounts;
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
@@ -26,6 +23,32 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
                                       Instruction cleanupInstruction,
                                       List<Instruction> otherInstructions,
                                       List<PublicKey> addressLookupTableAddresses) {
+
+  public static Instruction parseSwapInstruction(final JsonIterator jsonResponseBody) {
+    if (jsonResponseBody.skipUntil("swapInstruction") == null) {
+      if (jsonResponseBody.reset(0).skipUntil("swapInstruction") == null) {
+        return null;
+      }
+    }
+    return JupiterSwapInstructions.parseInstruction(jsonResponseBody);
+  }
+
+  static List<PublicKey> parseKeys(final JsonIterator ji) {
+    final var keys = new ArrayList<PublicKey>();
+    while (ji.readArray()) {
+      keys.add(PublicKeyEncoding.parseBase58Encoded(ji));
+    }
+    return keys;
+  }
+
+  public static Collection<PublicKey> parseLookupTables(final JsonIterator ji) {
+    if (ji.skipUntil("addressLookupTableAddresses") == null) {
+      if (ji.reset(0).skipUntil("addressLookupTableAddresses") == null) {
+        return List.of();
+      }
+    }
+    return parseKeys(ji);
+  }
 
   public Map<PublicKey, AccountMeta> createAccountsMap() {
     final var feePayer = setupInstructions.getFirst().accounts().getFirst().publicKey();
@@ -114,69 +137,56 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
   }
 
   public static Instruction parseInstruction(final JsonIterator ji) {
-    return ji.testObject(new InstructionBuilder(), INSTRUCTION_PARSER).create();
+    final var parser = new InstructionParser();
+    ji.testObject(parser);
+    return parser.create();
   }
 
-  public static AccountMeta parseAccount(final JsonIterator ji) {
-    return parseAccount(ji, new AccountBuilder());
+  private static AccountMeta parseAccount(final JsonIterator ji) {
+    final var parser = new AccountParser();
+    ji.testObject(parser);
+    return parser.create();
   }
 
-  private static AccountMeta parseAccount(final JsonIterator ji, final AccountBuilder builder) {
-    return ji.testObject(builder, ACCOUNT_PARSER).create();
-  }
-
-  private static final ContextFieldBufferPredicate<InstructionBuilder> INSTRUCTION_PARSER = (builder, buf, offset, len, ji) -> {
-    if (fieldEquals("programId", buf, offset, len)) {
-      builder.programId = parseBase58Encoded(ji);
-    } else if (fieldEquals("accounts", buf, offset, len)) {
-      final var accounts = new ArrayList<AccountMeta>();
-      final var accountBuilder = new AccountBuilder();
-      while (ji.readArray()) {
-        accounts.add(parseAccount(ji, accountBuilder));
-      }
-      builder.accounts = accounts;
-    } else if (fieldEquals("data", buf, offset, len)) {
-      builder.data = ji.decodeBase64String();
-    } else {
-      ji.skip();
-    }
-    return true;
-  };
-
-  private static final ContextFieldBufferPredicate<AccountBuilder> ACCOUNT_PARSER = (builder, buf, offset, len, ji) -> {
-    if (fieldEquals("pubkey", buf, offset, len)) {
-      builder.pubKey = parseBase58Encoded(ji);
-    } else if (fieldEquals("isSigner", buf, offset, len)) {
-      builder.signer = ji.readBoolean();
-    } else if (fieldEquals("isWritable", buf, offset, len)) {
-      builder.writable = ji.readBoolean();
-    } else {
-      ji.skip();
-    }
-    return true;
-  };
-
-  private static final class InstructionBuilder {
+  private static final class InstructionParser implements FieldBufferPredicate {
 
     private PublicKey programId;
     private List<AccountMeta> accounts;
     private byte[] data;
 
-    private InstructionBuilder() {
+    private InstructionParser() {
     }
 
     private Instruction create() {
       return Instruction.createInstruction(programId, accounts, data);
     }
+
+    @Override
+    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
+      if (fieldEquals("programId", buf, offset, len)) {
+        programId = parseBase58Encoded(ji);
+      } else if (fieldEquals("accounts", buf, offset, len)) {
+        final var accounts = new ArrayList<AccountMeta>();
+        while (ji.readArray()) {
+          accounts.add(parseAccount(ji));
+        }
+        this.accounts = accounts;
+      } else if (fieldEquals("data", buf, offset, len)) {
+        data = ji.decodeBase64String();
+      } else {
+        ji.skip();
+      }
+      return true;
+    }
   }
 
-  private static final class AccountBuilder {
+  private static final class AccountParser implements FieldBufferPredicate {
 
     private PublicKey pubKey;
     private boolean signer;
     private boolean writable;
 
-    private AccountBuilder() {
+    private AccountParser() {
     }
 
     private AccountMeta create() {
@@ -190,9 +200,23 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
         return AccountMeta.createRead(pubKey);
       }
     }
+
+    @Override
+    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
+      if (fieldEquals("pubkey", buf, offset, len)) {
+        pubKey = parseBase58Encoded(ji);
+      } else if (fieldEquals("isSigner", buf, offset, len)) {
+        signer = ji.readBoolean();
+      } else if (fieldEquals("isWritable", buf, offset, len)) {
+        writable = ji.readBoolean();
+      } else {
+        ji.skip();
+      }
+      return true;
+    }
   }
 
-  static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate {
 
     private List<Instruction> computeBudgetInstructions;
     private List<Instruction> setupInstructions;
@@ -232,10 +256,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
       } else if (fieldEquals("otherInstructions", buf, offset, len)) {
         otherInstructions = parseInstructionsList(ji);
       } else if (fieldEquals("addressLookupTableAddresses", buf, offset, len)) {
-        addressLookupTableAddresses = new ArrayList<>();
-        while (ji.readArray()) {
-          addressLookupTableAddresses.add(parseBase58Encoded(ji));
-        }
+        addressLookupTableAddresses = parseKeys(ji);
       } else {
         ji.skip();
       }
