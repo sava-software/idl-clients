@@ -1,10 +1,13 @@
 package software.sava.idl.clients.jupiter.swap.rest.response;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.jupiter.swap.JupiterSwapUtil;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,38 @@ public record JupiterQuote(PublicKey inputMint,
                            long contextSlot,
                            double timeTaken,
                            byte[] quoteResponseJson) {
+
+  public BigDecimal quotePrice(final int inDecimals, final int outDecimals, final RoundingMode roundingMode) {
+    return JupiterSwapUtil.quotePrice(
+        inAmount, inDecimals,
+        outAmount, outDecimals,
+        roundingMode
+    );
+  }
+
+  public BigDecimal quotePrice(final int inDecimals, final int outDecimals, final MathContext mathContext) {
+    return JupiterSwapUtil.quotePrice(
+        inAmount, inDecimals,
+        outAmount, outDecimals,
+        mathContext
+    );
+  }
+
+  public BigDecimal inverseQuotePrice(final int inDecimals, final int outDecimals, final RoundingMode roundingMode) {
+    return JupiterSwapUtil.inverseQuotePrice(
+        inAmount, inDecimals,
+        outAmount, outDecimals,
+        roundingMode
+    );
+  }
+
+  public BigDecimal inverseQuotePrice(final int inDecimals, final int outDecimals, final MathContext mathContext) {
+    return JupiterSwapUtil.inverseQuotePrice(
+        inAmount, inDecimals,
+        outAmount, outDecimals,
+        mathContext
+    );
+  }
 
   public static JupiterQuote parse(final byte[] quoteResponseJson, final JsonIterator ji) {
     final var parser = new Parser(quoteResponseJson);
