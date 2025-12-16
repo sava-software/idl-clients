@@ -32,9 +32,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       case 5 -> MetadataName.read(_data, i);
       case 6 -> MetadataMaxPriceAgeSlots.read(_data, i);
       case 7 -> MetadataGroupIdsBitset.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [UpdateOracleMappingAndMetadataEntry]", ordinal
-      ));
+      default -> null;
     };
   }
 

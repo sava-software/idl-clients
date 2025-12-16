@@ -15,9 +15,7 @@ public sealed interface VerificationLevel extends RustEnum permits
     return switch (ordinal) {
       case 0 -> Partial.read(_data, i);
       case 1 -> Full.INSTANCE;
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [VerificationLevel]", ordinal
-      ));
+      default -> null;
     };
   }
 

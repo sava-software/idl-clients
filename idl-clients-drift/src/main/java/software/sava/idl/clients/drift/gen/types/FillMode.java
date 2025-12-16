@@ -16,9 +16,7 @@ public sealed interface FillMode extends RustEnum permits
       case 1 -> PlaceAndMake.INSTANCE;
       case 2 -> PlaceAndTake.read(_data, i);
       case 3 -> Liquidation.INSTANCE;
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [FillMode]", ordinal
-      ));
+      default -> null;
     };
   }
 

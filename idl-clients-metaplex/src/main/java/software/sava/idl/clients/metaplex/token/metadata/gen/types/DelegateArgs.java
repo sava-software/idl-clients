@@ -42,9 +42,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       case 11 -> CollectionItemV1.read(_data, i);
       case 12 -> ProgrammableConfigItemV1.read(_data, i);
       case 13 -> PrintDelegateV1.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [DelegateArgs]", ordinal
-      ));
+      default -> null;
     };
   }
 

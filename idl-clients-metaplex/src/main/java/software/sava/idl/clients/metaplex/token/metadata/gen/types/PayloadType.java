@@ -20,9 +20,7 @@ public sealed interface PayloadType extends RustEnum permits
       case 1 -> Seeds.read(_data, i);
       case 2 -> MerkleProof.read(_data, i);
       case 3 -> Number.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [PayloadType]", ordinal
-      ));
+      default -> null;
     };
   }
 

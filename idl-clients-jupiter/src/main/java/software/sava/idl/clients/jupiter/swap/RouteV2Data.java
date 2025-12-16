@@ -2,6 +2,7 @@ package software.sava.idl.clients.jupiter.swap;
 
 import software.sava.idl.clients.jupiter.swap.gen.JupiterProgram;
 import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStepV2;
+import software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -17,6 +18,12 @@ public record RouteV2Data(long inAmount,
                           int platformFeeBps,
                           int positiveSlippageBps,
                           RoutePlanStepV2[] routePlan) {
+
+  public boolean amountsMatch(final long expectedIn, final JupiterQuote quote) {
+    return expectedIn == inAmount
+        && expectedIn == quote.inAmount()
+        && quotedOutAmount == quote.outAmount();
+  }
 
   public BigDecimal quotePrice(final int inDecimals, final int outDecimals, final RoundingMode roundingMode) {
     return JupiterSwapUtil.quotePrice(

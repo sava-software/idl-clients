@@ -22,9 +22,7 @@ public sealed interface OracleValidity extends RustEnum permits
       case 4 -> InsufficientDataPoints.INSTANCE;
       case 5 -> StaleForAMM.read(_data, i);
       case 6 -> Valid.INSTANCE;
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [OracleValidity]", ordinal
-      ));
+      default -> null;
     };
   }
 

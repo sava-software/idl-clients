@@ -12,9 +12,7 @@ public sealed interface BurnArgs extends RustEnum permits
     final int i = _offset + 1;
     return switch (ordinal) {
       case 0 -> V1.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [BurnArgs]", ordinal
-      ));
+      default -> null;
     };
   }
 

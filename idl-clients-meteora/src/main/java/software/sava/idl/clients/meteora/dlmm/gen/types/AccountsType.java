@@ -16,9 +16,7 @@ public sealed interface AccountsType extends RustEnum permits
       case 1 -> TransferHookY.INSTANCE;
       case 2 -> TransferHookReward.INSTANCE;
       case 3 -> TransferHookMultiReward.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [AccountsType]", ordinal
-      ));
+      default -> null;
     };
   }
 

@@ -126,7 +126,8 @@ public sealed interface Swap extends RustEnum permits
   Swap.CarrotIssue,
   Swap.CarrotRedeem,
   Swap.Manifest,
-  Swap.BisonFi {
+  Swap.BisonFi,
+  Swap.HumidiFiV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -250,9 +251,8 @@ public sealed interface Swap extends RustEnum permits
       case 115 -> CarrotRedeem.INSTANCE;
       case 116 -> Manifest.read(_data, i);
       case 117 -> BisonFi.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [Swap]", ordinal
-      ));
+      case 118 -> HumidiFiV2.read(_data, i);
+      default -> null;
     };
   }
 
@@ -1838,6 +1838,42 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 117;
+    }
+  }
+
+  record HumidiFiV2(long swapId, boolean isBaseToQuote) implements Swap {
+
+    public static final int BYTES = 9;
+
+    public static HumidiFiV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var swapId = getInt64LE(_data, i);
+      i += 8;
+      final var isBaseToQuote = _data[i] == 1;
+      return new HumidiFiV2(swapId, isBaseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, swapId);
+      i += 8;
+      _data[i] = (byte) (isBaseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 118;
     }
   }
 }

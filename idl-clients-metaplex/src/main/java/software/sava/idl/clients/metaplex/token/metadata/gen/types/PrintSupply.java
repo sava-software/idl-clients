@@ -16,9 +16,7 @@ public sealed interface PrintSupply extends RustEnum permits
       case 0 -> Zero.INSTANCE;
       case 1 -> Limited.read(_data, i);
       case 2 -> Unlimited.INSTANCE;
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [PrintSupply]", ordinal
-      ));
+      default -> null;
     };
   }
 

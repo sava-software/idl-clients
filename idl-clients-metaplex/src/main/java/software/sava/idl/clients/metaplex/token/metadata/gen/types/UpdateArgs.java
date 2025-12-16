@@ -32,9 +32,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       case 6 -> AsDataItemDelegateV2.read(_data, i);
       case 7 -> AsCollectionItemDelegateV2.read(_data, i);
       case 8 -> AsProgrammableConfigItemDelegateV2.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [UpdateArgs]", ordinal
-      ));
+      default -> null;
     };
   }
 

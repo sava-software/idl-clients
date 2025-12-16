@@ -12,9 +12,7 @@ public sealed interface MarginCalculationMode extends RustEnum permits
     return switch (ordinal) {
       case 0 -> Standard.read(_data, i);
       case 1 -> Liquidation.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [MarginCalculationMode]", ordinal
-      ));
+      default -> null;
     };
   }
 

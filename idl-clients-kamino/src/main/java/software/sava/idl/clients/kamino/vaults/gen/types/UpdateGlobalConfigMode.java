@@ -18,9 +18,7 @@ public sealed interface UpdateGlobalConfigMode extends RustEnum permits
       case 0 -> PendingAdmin.read(_data, i);
       case 1 -> MinWithdrawalPenaltyLamports.read(_data, i);
       case 2 -> MinWithdrawalPenaltyBPS.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [UpdateGlobalConfigMode]", ordinal
-      ));
+      default -> null;
     };
   }
 

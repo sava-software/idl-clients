@@ -14,9 +14,7 @@ public sealed interface PrintArgs extends RustEnum permits
     return switch (ordinal) {
       case 0 -> V1.read(_data, i);
       case 1 -> V2.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [PrintArgs]", ordinal
-      ));
+      default -> null;
     };
   }
 

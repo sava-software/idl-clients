@@ -15,9 +15,7 @@ public sealed interface EscrowAuthority extends RustEnum permits
     return switch (ordinal) {
       case 0 -> TokenOwner.INSTANCE;
       case 1 -> Creator.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [EscrowAuthority]", ordinal
-      ));
+      default -> null;
     };
   }
 

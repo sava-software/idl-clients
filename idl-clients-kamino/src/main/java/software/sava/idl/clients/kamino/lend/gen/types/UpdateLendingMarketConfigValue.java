@@ -35,9 +35,7 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
       case 6 -> Pubkey.read(_data, i);
       case 7 -> ElevationGroup.read(_data, i);
       case 8 -> Name.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [UpdateLendingMarketConfigValue]", ordinal
-      ));
+      default -> null;
     };
   }
 

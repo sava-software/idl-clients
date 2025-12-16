@@ -17,9 +17,7 @@ public sealed interface RuleSetToggle extends RustEnum permits
       case 0 -> None.INSTANCE;
       case 1 -> Clear.INSTANCE;
       case 2 -> Set.read(_data, i);
-      default -> throw new IllegalStateException(java.lang.String.format(
-          "Unexpected ordinal [%d] for enum [RuleSetToggle]", ordinal
-      ));
+      default -> null;
     };
   }
 
