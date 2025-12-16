@@ -1,4 +1,5 @@
 module software.sava.idl.clients.marinade {
+  exports software.sava.idl.clients.marinade.stake_pool.gen.events;
   exports software.sava.idl.clients.marinade.stake_pool.gen.types;
   exports software.sava.idl.clients.marinade.stake_pool.gen;
   exports software.sava.idl.clients.marinade.stake_pool;

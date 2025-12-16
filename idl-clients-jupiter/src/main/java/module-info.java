@@ -1,17 +1,22 @@
 module software.sava.idl.clients.jupiter {
+  exports software.sava.idl.clients.jupiter.governance.gen.events;
   exports software.sava.idl.clients.jupiter.governance.gen.types;
   exports software.sava.idl.clients.jupiter.governance.gen;
+  exports software.sava.idl.clients.jupiter.lend_borrow.gen.events;
   exports software.sava.idl.clients.jupiter.lend_borrow.gen.types;
   exports software.sava.idl.clients.jupiter.lend_borrow.gen;
+  exports software.sava.idl.clients.jupiter.merkle_distributor.gen.events;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen;
   exports software.sava.idl.clients.jupiter.order_engine.gen;
+  exports software.sava.idl.clients.jupiter.swap.gen.events;
   exports software.sava.idl.clients.jupiter.swap.gen.types;
   exports software.sava.idl.clients.jupiter.swap.gen;
   exports software.sava.idl.clients.jupiter.swap.rest.request;
   exports software.sava.idl.clients.jupiter.swap.rest.response;
   exports software.sava.idl.clients.jupiter.swap.rest;
   exports software.sava.idl.clients.jupiter.swap;
+  exports software.sava.idl.clients.jupiter.voter.gen.events;
   exports software.sava.idl.clients.jupiter.voter.gen.types;
   exports software.sava.idl.clients.jupiter.voter.gen;
   exports software.sava.idl.clients.jupiter.voter.rest.response;

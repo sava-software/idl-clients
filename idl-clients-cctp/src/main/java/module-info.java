@@ -1,4 +1,5 @@
 module software.sava.idl.clients.cctp {
+  exports software.sava.idl.clients.cctp.message_transmitter.v2.gen.events;
   exports software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
   exports software.sava.idl.clients.cctp.message_transmitter.v2.gen;
   requires java.net.http;

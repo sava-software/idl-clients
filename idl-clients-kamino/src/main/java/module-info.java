@@ -9,6 +9,7 @@ module software.sava.idl.clients.kamino {
   exports software.sava.idl.clients.kamino.scope.gen.types;
   exports software.sava.idl.clients.kamino.scope.gen;
   exports software.sava.idl.clients.kamino.scope;
+  exports software.sava.idl.clients.kamino.vaults.gen.events;
   exports software.sava.idl.clients.kamino.vaults.gen.types;
   exports software.sava.idl.clients.kamino.vaults.gen;
   exports software.sava.idl.clients.kamino.vaults;
