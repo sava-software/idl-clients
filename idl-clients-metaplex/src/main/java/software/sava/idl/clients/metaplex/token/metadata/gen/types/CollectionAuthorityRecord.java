@@ -58,7 +58,7 @@ public record CollectionAuthorityRecord(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final PublicKey updateAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       updateAuthority = null;
     } else {
       ++i;

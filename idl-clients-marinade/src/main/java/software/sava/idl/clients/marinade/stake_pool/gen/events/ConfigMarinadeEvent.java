@@ -37,7 +37,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
     final var state = readPubKey(_data, i);
     i += 32;
     final FeeValueChange rewardsFeeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       rewardsFeeChange = null;
       ++i;
     } else {
@@ -46,7 +46,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += rewardsFeeChange.l();
     }
     final U64ValueChange slotsForStakeDeltaChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       slotsForStakeDeltaChange = null;
       ++i;
     } else {
@@ -55,7 +55,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += slotsForStakeDeltaChange.l();
     }
     final U64ValueChange minStakeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minStakeChange = null;
       ++i;
     } else {
@@ -64,7 +64,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += minStakeChange.l();
     }
     final U64ValueChange minDepositChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minDepositChange = null;
       ++i;
     } else {
@@ -73,7 +73,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += minDepositChange.l();
     }
     final U64ValueChange minWithdrawChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minWithdrawChange = null;
       ++i;
     } else {
@@ -82,7 +82,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += minWithdrawChange.l();
     }
     final U64ValueChange stakingSolCapChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       stakingSolCapChange = null;
       ++i;
     } else {
@@ -91,7 +91,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += stakingSolCapChange.l();
     }
     final U64ValueChange liquiditySolCapChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       liquiditySolCapChange = null;
       ++i;
     } else {
@@ -100,7 +100,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += liquiditySolCapChange.l();
     }
     final BoolValueChange withdrawStakeAccountEnabledChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       withdrawStakeAccountEnabledChange = null;
       ++i;
     } else {
@@ -109,7 +109,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += withdrawStakeAccountEnabledChange.l();
     }
     final FeeCentsValueChange delayedUnstakeFeeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       delayedUnstakeFeeChange = null;
       ++i;
     } else {
@@ -118,7 +118,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += delayedUnstakeFeeChange.l();
     }
     final FeeCentsValueChange withdrawStakeAccountFeeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       withdrawStakeAccountFeeChange = null;
       ++i;
     } else {
@@ -127,7 +127,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
       i += withdrawStakeAccountFeeChange.l();
     }
     final FeeValueChange maxStakeMovedPerEpochChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxStakeMovedPerEpochChange = null;
     } else {
       ++i;

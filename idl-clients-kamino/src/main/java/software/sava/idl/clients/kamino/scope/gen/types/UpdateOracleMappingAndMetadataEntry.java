@@ -113,7 +113,9 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
   record MappingRefPrice(OptionalInt val) implements OptionalEnumInt16, UpdateOracleMappingAndMetadataEntry {
 
     public static MappingRefPrice read(final byte[] _data, int i) {
-      return new MappingRefPrice(_data[i++] == 0 ? OptionalInt.empty() : OptionalInt.of(getInt16LE(_data, i)));
+      final boolean absent = SerDeUtil.isAbsent(1, _data, i);
+      i += 1;
+      return new MappingRefPrice(absent ? OptionalInt.empty() : OptionalInt.of(getInt16LE(_data, i)));
     }
 
     @Override

@@ -14,7 +14,7 @@ public record CreateMasterEditionArgs(OptionalLong maxSupply) implements SerDe {
       return null;
     }
     final OptionalLong maxSupply;
-    if (_data[_offset] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, _offset)) {
       maxSupply = OptionalLong.empty();
     } else {
       maxSupply = OptionalLong.of(getInt64LE(_data, _offset + 1));

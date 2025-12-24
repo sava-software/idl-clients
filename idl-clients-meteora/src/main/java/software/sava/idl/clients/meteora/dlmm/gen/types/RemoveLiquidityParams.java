@@ -21,7 +21,7 @@ public record RemoveLiquidityParams(OptionalInt minBinId,
     }
     int i = _offset;
     final OptionalInt minBinId;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minBinId = OptionalInt.empty();
       ++i;
     } else {
@@ -30,7 +30,7 @@ public record RemoveLiquidityParams(OptionalInt minBinId,
       i += 4;
     }
     final OptionalInt maxBinId;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxBinId = OptionalInt.empty();
       ++i;
     } else {

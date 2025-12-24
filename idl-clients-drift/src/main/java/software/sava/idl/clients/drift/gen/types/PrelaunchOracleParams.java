@@ -21,7 +21,7 @@ public record PrelaunchOracleParams(int perpMarketIndex,
     final var perpMarketIndex = getInt16LE(_data, i);
     i += 2;
     final OptionalLong price;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       price = OptionalLong.empty();
       ++i;
     } else {
@@ -30,7 +30,7 @@ public record PrelaunchOracleParams(int perpMarketIndex,
       i += 8;
     }
     final OptionalLong maxPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxPrice = OptionalLong.empty();
     } else {
       ++i;

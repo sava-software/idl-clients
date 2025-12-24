@@ -72,7 +72,7 @@ public record TokenRecord(PublicKey _address,
     final var state = TokenState.read(_data, i);
     i += state.l();
     final OptionalLong ruleSetRevision;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       ruleSetRevision = OptionalLong.empty();
       ++i;
     } else {
@@ -81,7 +81,7 @@ public record TokenRecord(PublicKey _address,
       i += 8;
     }
     final PublicKey delegate;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       delegate = null;
       ++i;
     } else {
@@ -90,7 +90,7 @@ public record TokenRecord(PublicKey _address,
       i += 32;
     }
     final TokenDelegateRole delegateRole;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       delegateRole = null;
       ++i;
     } else {
@@ -99,7 +99,7 @@ public record TokenRecord(PublicKey _address,
       i += delegateRole.l();
     }
     final PublicKey lockedTransfer;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       lockedTransfer = null;
     } else {
       ++i;

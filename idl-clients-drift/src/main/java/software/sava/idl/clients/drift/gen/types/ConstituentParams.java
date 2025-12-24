@@ -29,7 +29,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
     }
     int i = _offset;
     final OptionalLong maxWeightDeviation;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxWeightDeviation = OptionalLong.empty();
       ++i;
     } else {
@@ -38,7 +38,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalLong swapFeeMin;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       swapFeeMin = OptionalLong.empty();
       ++i;
     } else {
@@ -47,7 +47,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalLong swapFeeMax;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       swapFeeMax = OptionalLong.empty();
       ++i;
     } else {
@@ -56,7 +56,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalLong maxBorrowTokenAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxBorrowTokenAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -65,7 +65,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalLong oracleStalenessThreshold;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       oracleStalenessThreshold = OptionalLong.empty();
       ++i;
     } else {
@@ -74,7 +74,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalInt costToTradeBps;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       costToTradeBps = OptionalInt.empty();
       ++i;
     } else {
@@ -83,7 +83,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 4;
     }
     final OptionalInt constituentDerivativeIndex;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       constituentDerivativeIndex = OptionalInt.empty();
       ++i;
     } else {
@@ -92,7 +92,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 2;
     }
     final OptionalLong derivativeWeight;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       derivativeWeight = OptionalLong.empty();
       ++i;
     } else {
@@ -101,7 +101,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalLong volatility;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       volatility = OptionalLong.empty();
       ++i;
     } else {
@@ -110,7 +110,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       i += 8;
     }
     final OptionalInt gammaExecution;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       gammaExecution = OptionalInt.empty();
       ++i;
     } else {
@@ -119,7 +119,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       ++i;
     }
     final OptionalInt gammaInventory;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       gammaInventory = OptionalInt.empty();
       ++i;
     } else {
@@ -128,7 +128,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
       ++i;
     }
     final OptionalInt xi;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       xi = OptionalInt.empty();
     } else {
       ++i;

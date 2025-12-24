@@ -19,7 +19,7 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
     }
     int i = _offset;
     final DataV2 data;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       data = null;
       ++i;
     } else {
@@ -28,7 +28,7 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
       i += data.l();
     }
     final PublicKey updateAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       updateAuthority = null;
       ++i;
     } else {
@@ -37,7 +37,7 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
       i += 32;
     }
     final Boolean primarySaleHappened;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       primarySaleHappened = null;
       ++i;
     } else {
@@ -46,7 +46,7 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
       ++i;
     }
     final Boolean isMutable;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       isMutable = null;
     } else {
       ++i;

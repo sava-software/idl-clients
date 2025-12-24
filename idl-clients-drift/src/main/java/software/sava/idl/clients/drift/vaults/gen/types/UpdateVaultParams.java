@@ -25,7 +25,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
     }
     int i = _offset;
     final OptionalLong redeemPeriod;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       redeemPeriod = OptionalLong.empty();
       ++i;
     } else {
@@ -34,7 +34,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 8;
     }
     final OptionalLong maxTokens;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxTokens = OptionalLong.empty();
       ++i;
     } else {
@@ -43,7 +43,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 8;
     }
     final OptionalLong managementFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       managementFee = OptionalLong.empty();
       ++i;
     } else {
@@ -52,7 +52,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 8;
     }
     final OptionalLong minDepositAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minDepositAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -61,7 +61,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 8;
     }
     final OptionalInt profitShare;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       profitShare = OptionalInt.empty();
       ++i;
     } else {
@@ -70,7 +70,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 4;
     }
     final OptionalInt hurdleRate;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       hurdleRate = OptionalInt.empty();
       ++i;
     } else {
@@ -79,7 +79,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
       i += 4;
     }
     final Boolean permissioned;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       permissioned = null;
     } else {
       ++i;

@@ -32,7 +32,7 @@ public record ModifyOrderParams(PositionDirection direction,
     }
     int i = _offset;
     final PositionDirection direction;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       direction = null;
       ++i;
     } else {
@@ -41,7 +41,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += direction.l();
     }
     final OptionalLong baseAssetAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       baseAssetAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -50,7 +50,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final OptionalLong price;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       price = OptionalLong.empty();
       ++i;
     } else {
@@ -59,7 +59,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final Boolean reduceOnly;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       reduceOnly = null;
       ++i;
     } else {
@@ -68,7 +68,7 @@ public record ModifyOrderParams(PositionDirection direction,
       ++i;
     }
     final PostOnlyParam postOnly;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       postOnly = null;
       ++i;
     } else {
@@ -77,7 +77,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += postOnly.l();
     }
     final OptionalInt bitFlags;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       bitFlags = OptionalInt.empty();
       ++i;
     } else {
@@ -86,7 +86,7 @@ public record ModifyOrderParams(PositionDirection direction,
       ++i;
     }
     final OptionalLong maxTs;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxTs = OptionalLong.empty();
       ++i;
     } else {
@@ -95,7 +95,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final OptionalLong triggerPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       triggerPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -104,7 +104,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final OrderTriggerCondition triggerCondition;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       triggerCondition = null;
       ++i;
     } else {
@@ -113,7 +113,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += triggerCondition.l();
     }
     final OptionalInt oraclePriceOffset;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       oraclePriceOffset = OptionalInt.empty();
       ++i;
     } else {
@@ -122,7 +122,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 4;
     }
     final OptionalInt auctionDuration;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionDuration = OptionalInt.empty();
       ++i;
     } else {
@@ -131,7 +131,7 @@ public record ModifyOrderParams(PositionDirection direction,
       ++i;
     }
     final OptionalLong auctionStartPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionStartPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -140,7 +140,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final OptionalLong auctionEndPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionEndPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -149,7 +149,7 @@ public record ModifyOrderParams(PositionDirection direction,
       i += 8;
     }
     final OptionalInt policy;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       policy = OptionalInt.empty();
     } else {
       ++i;

@@ -29,7 +29,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     }
     int i = _offset;
     final byte[] feedHash;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       feedHash = null;
       ++i;
     } else {
@@ -38,7 +38,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += SerDeUtil.readArray(feedHash, _data, i);
     }
     final PublicKey authority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       authority = null;
       ++i;
     } else {
@@ -47,7 +47,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += 32;
     }
     final OptionalLong maxVariance;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxVariance = OptionalLong.empty();
       ++i;
     } else {
@@ -56,7 +56,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += 8;
     }
     final OptionalInt minResponses;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minResponses = OptionalInt.empty();
       ++i;
     } else {
@@ -65,7 +65,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += 4;
     }
     final byte[] name;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       name = null;
       ++i;
     } else {
@@ -74,7 +74,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += SerDeUtil.readArray(name, _data, i);
     }
     final byte[] ipfsHash;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       ipfsHash = null;
       ++i;
     } else {
@@ -83,7 +83,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += SerDeUtil.readArray(ipfsHash, _data, i);
     }
     final OptionalInt minSampleSize;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minSampleSize = OptionalInt.empty();
       ++i;
     } else {
@@ -92,7 +92,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       ++i;
     }
     final OptionalInt maxStaleness;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxStaleness = OptionalInt.empty();
       ++i;
     } else {
@@ -101,7 +101,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += 4;
     }
     final Boolean permitWriteByAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       permitWriteByAuthority = null;
     } else {
       ++i;

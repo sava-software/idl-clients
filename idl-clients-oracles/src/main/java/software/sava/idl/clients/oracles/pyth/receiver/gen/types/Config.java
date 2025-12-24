@@ -64,7 +64,7 @@ public record Config(PublicKey _address,
     final var governanceAuthority = readPubKey(_data, i);
     i += 32;
     final PublicKey targetGovernanceAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       targetGovernanceAuthority = null;
       ++i;
     } else {

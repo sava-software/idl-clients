@@ -10,7 +10,7 @@ public record OracleHeartbeatParams(byte[] gatewayUri) implements SerDe {
       return null;
     }
     final byte[] gatewayUri;
-    if (_data[_offset] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, _offset)) {
       gatewayUri = null;
     } else {
       gatewayUri = new byte[64];

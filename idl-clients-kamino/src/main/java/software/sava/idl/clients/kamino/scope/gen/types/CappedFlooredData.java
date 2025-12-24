@@ -20,7 +20,7 @@ public record CappedFlooredData(int sourceEntry,
     final var sourceEntry = getInt16LE(_data, i);
     i += 2;
     final OptionalInt capEntry;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       capEntry = OptionalInt.empty();
       ++i;
     } else {
@@ -29,7 +29,7 @@ public record CappedFlooredData(int sourceEntry,
       i += 2;
     }
     final OptionalInt floorEntry;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       floorEntry = OptionalInt.empty();
     } else {
       ++i;

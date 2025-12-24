@@ -24,7 +24,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
     }
     int i = _offset;
     final OptionalLong quoteOwedFromLpPool;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       quoteOwedFromLpPool = OptionalLong.empty();
       ++i;
     } else {
@@ -33,7 +33,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       i += 8;
     }
     final OptionalLong lastSettleSlot;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       lastSettleSlot = OptionalLong.empty();
       ++i;
     } else {
@@ -42,7 +42,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       i += 8;
     }
     final BigInteger lastFeePoolTokenAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       lastFeePoolTokenAmount = null;
       ++i;
     } else {
@@ -51,7 +51,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       i += 16;
     }
     final BigInteger lastNetPnlPoolTokenAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       lastNetPnlPoolTokenAmount = null;
       ++i;
     } else {
@@ -60,7 +60,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       i += 16;
     }
     final OptionalInt ammPositionScalar;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       ammPositionScalar = OptionalInt.empty();
       ++i;
     } else {
@@ -69,7 +69,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
       ++i;
     }
     final OptionalLong ammInventoryLimit;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       ammInventoryLimit = OptionalLong.empty();
     } else {
       ++i;

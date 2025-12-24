@@ -27,7 +27,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     }
     int i = _offset;
     final Fee rewardsFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       rewardsFee = null;
       ++i;
     } else {
@@ -36,7 +36,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += rewardsFee.l();
     }
     final OptionalLong slotsForStakeDelta;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       slotsForStakeDelta = OptionalLong.empty();
       ++i;
     } else {
@@ -45,7 +45,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final OptionalLong minStake;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minStake = OptionalLong.empty();
       ++i;
     } else {
@@ -54,7 +54,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final OptionalLong minDeposit;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minDeposit = OptionalLong.empty();
       ++i;
     } else {
@@ -63,7 +63,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final OptionalLong minWithdraw;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minWithdraw = OptionalLong.empty();
       ++i;
     } else {
@@ -72,7 +72,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final OptionalLong stakingSolCap;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       stakingSolCap = OptionalLong.empty();
       ++i;
     } else {
@@ -81,7 +81,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final OptionalLong liquiditySolCap;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       liquiditySolCap = OptionalLong.empty();
       ++i;
     } else {
@@ -90,7 +90,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += 8;
     }
     final Boolean withdrawStakeAccountEnabled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       withdrawStakeAccountEnabled = null;
       ++i;
     } else {
@@ -99,7 +99,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       ++i;
     }
     final FeeCents delayedUnstakeFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       delayedUnstakeFee = null;
       ++i;
     } else {
@@ -108,7 +108,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += delayedUnstakeFee.l();
     }
     final FeeCents withdrawStakeAccountFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       withdrawStakeAccountFee = null;
       ++i;
     } else {
@@ -117,7 +117,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
       i += withdrawStakeAccountFee.l();
     }
     final Fee maxStakeMovedPerEpoch;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxStakeMovedPerEpoch = null;
     } else {
       ++i;

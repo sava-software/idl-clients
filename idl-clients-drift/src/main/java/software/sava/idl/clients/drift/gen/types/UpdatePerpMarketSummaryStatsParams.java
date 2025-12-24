@@ -20,7 +20,7 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
     }
     int i = _offset;
     final OptionalLong quoteAssetAmountWithUnsettledLp;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       quoteAssetAmountWithUnsettledLp = OptionalLong.empty();
       ++i;
     } else {
@@ -29,7 +29,7 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
       i += 8;
     }
     final OptionalLong netUnsettledFundingPnl;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       netUnsettledFundingPnl = OptionalLong.empty();
       ++i;
     } else {
@@ -38,7 +38,7 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
       i += 8;
     }
     final Boolean updateAmmSummaryStats;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       updateAmmSummaryStats = null;
       ++i;
     } else {
@@ -47,7 +47,7 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
       ++i;
     }
     final Boolean excludeTotalLiqFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       excludeTotalLiqFee = null;
     } else {
       ++i;

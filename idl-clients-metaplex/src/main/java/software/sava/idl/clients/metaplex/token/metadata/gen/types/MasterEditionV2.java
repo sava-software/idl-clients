@@ -62,7 +62,7 @@ public record MasterEditionV2(PublicKey _address,
     final var supply = getInt64LE(_data, i);
     i += 8;
     final OptionalLong maxSupply;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxSupply = OptionalLong.empty();
     } else {
       ++i;

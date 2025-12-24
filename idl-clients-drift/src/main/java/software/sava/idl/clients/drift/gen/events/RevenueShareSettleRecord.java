@@ -35,7 +35,7 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     final var ts = getInt64LE(_data, i);
     i += 8;
     final PublicKey builder;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       builder = null;
       ++i;
     } else {
@@ -44,7 +44,7 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
       i += 32;
     }
     final PublicKey referrer;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       referrer = null;
       ++i;
     } else {

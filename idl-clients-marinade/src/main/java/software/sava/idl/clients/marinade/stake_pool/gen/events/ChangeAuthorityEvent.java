@@ -28,7 +28,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     final var state = readPubKey(_data, i);
     i += 32;
     final PubkeyValueChange adminChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       adminChange = null;
       ++i;
     } else {
@@ -37,7 +37,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
       i += adminChange.l();
     }
     final PubkeyValueChange validatorManagerChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       validatorManagerChange = null;
       ++i;
     } else {
@@ -46,7 +46,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
       i += validatorManagerChange.l();
     }
     final PubkeyValueChange operationalSolAccountChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       operationalSolAccountChange = null;
       ++i;
     } else {
@@ -55,7 +55,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
       i += operationalSolAccountChange.l();
     }
     final PubkeyValueChange treasuryMsolAccountChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       treasuryMsolAccountChange = null;
       ++i;
     } else {
@@ -64,7 +64,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
       i += treasuryMsolAccountChange.l();
     }
     final PubkeyValueChange pauseAuthorityChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       pauseAuthorityChange = null;
     } else {
       ++i;

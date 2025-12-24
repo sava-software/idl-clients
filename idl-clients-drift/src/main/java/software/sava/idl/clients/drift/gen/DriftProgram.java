@@ -1098,7 +1098,7 @@ public final class DriftProgram {
       final var borrowToMarketIndex = getInt16LE(_data, i);
       i += 2;
       final OptionalLong depositAmount;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         depositAmount = OptionalLong.empty();
         ++i;
       } else {
@@ -1107,7 +1107,7 @@ public final class DriftProgram {
         i += 8;
       }
       final OptionalLong borrowAmount;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         borrowAmount = OptionalLong.empty();
       } else {
         ++i;
@@ -1214,7 +1214,7 @@ public final class DriftProgram {
       final var marketIndex = getInt16LE(_data, i);
       i += 2;
       final OptionalLong amount;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         amount = OptionalLong.empty();
       } else {
         ++i;
@@ -1353,7 +1353,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt orderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         orderId = OptionalInt.empty();
       } else {
         ++i;
@@ -1510,7 +1510,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final MarketType marketType;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         marketType = null;
         ++i;
       } else {
@@ -1519,7 +1519,7 @@ public final class DriftProgram {
         i += marketType.l();
       }
       final OptionalInt marketIndex;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         marketIndex = OptionalInt.empty();
         ++i;
       } else {
@@ -1528,7 +1528,7 @@ public final class DriftProgram {
         i += 2;
       }
       final PositionDirection direction;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         direction = null;
       } else {
         ++i;
@@ -1670,7 +1670,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt orderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         orderId = OptionalInt.empty();
         ++i;
       } else {
@@ -1828,7 +1828,7 @@ public final class DriftProgram {
       final var params = OrderParams.read(_data, i);
       i += params.l();
       final OptionalInt successCondition;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         successCondition = OptionalInt.empty();
       } else {
         ++i;
@@ -2248,7 +2248,7 @@ public final class DriftProgram {
       final var params = OrderParams.read(_data, i);
       i += params.l();
       final SpotFulfillmentType fulfillmentType;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         fulfillmentType = null;
         ++i;
       } else {
@@ -2257,7 +2257,7 @@ public final class DriftProgram {
         i += fulfillmentType.l();
       }
       final OptionalInt makerOrderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
@@ -2364,7 +2364,7 @@ public final class DriftProgram {
       final var takerOrderId = getInt32LE(_data, i);
       i += 4;
       final SpotFulfillmentType fulfillmentType;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         fulfillmentType = null;
       } else {
         ++i;
@@ -2691,7 +2691,7 @@ public final class DriftProgram {
       final var outMarketIndex = getInt16LE(_data, i);
       i += 2;
       final OptionalLong limitPrice;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         limitPrice = OptionalLong.empty();
         ++i;
       } else {
@@ -2700,7 +2700,7 @@ public final class DriftProgram {
         i += 8;
       }
       final SwapReduceOnly reduceOnly;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         reduceOnly = null;
       } else {
         ++i;
@@ -3603,7 +3603,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt orderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         orderId = OptionalInt.empty();
         ++i;
       } else {
@@ -3612,7 +3612,7 @@ public final class DriftProgram {
         i += 4;
       }
       final OptionalInt makerOrderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
@@ -3748,7 +3748,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt orderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         orderId = OptionalInt.empty();
         ++i;
       } else {
@@ -3757,7 +3757,7 @@ public final class DriftProgram {
         i += 4;
       }
       final SpotFulfillmentType fulfillmentType;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         fulfillmentType = null;
         ++i;
       } else {
@@ -3766,7 +3766,7 @@ public final class DriftProgram {
         i += fulfillmentType.l();
       }
       final OptionalInt makerOrderId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         makerOrderId = OptionalInt.empty();
       } else {
         ++i;
@@ -4444,7 +4444,7 @@ public final class DriftProgram {
       final var liquidatorMaxBaseAssetAmount = getInt64LE(_data, i);
       i += 8;
       final OptionalLong limitPrice;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
@@ -4641,7 +4641,7 @@ public final class DriftProgram {
       final var liquidatorMaxLiabilityTransfer = getInt128LE(_data, i);
       i += 16;
       final OptionalLong limitPrice;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
@@ -5016,7 +5016,7 @@ public final class DriftProgram {
       final var liquidatorMaxLiabilityTransfer = getInt128LE(_data, i);
       i += 16;
       final OptionalLong limitPrice;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
@@ -5140,7 +5140,7 @@ public final class DriftProgram {
       final var liquidatorMaxPnlTransfer = getInt128LE(_data, i);
       i += 16;
       final OptionalLong limitPrice;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         limitPrice = OptionalLong.empty();
       } else {
         ++i;
@@ -8816,7 +8816,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final BigInteger depth;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         depth = null;
       } else {
         ++i;
@@ -9170,7 +9170,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt optionalLpFeeTransferScalar;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         optionalLpFeeTransferScalar = OptionalInt.empty();
         ++i;
       } else {
@@ -9179,7 +9179,7 @@ public final class DriftProgram {
         ++i;
       }
       final OptionalInt optionalLpNetPnlTransferScalar;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         optionalLpNetPnlTransferScalar = OptionalInt.empty();
       } else {
         ++i;
@@ -11045,7 +11045,7 @@ public final class DriftProgram {
       final var maxBorrowRate = getInt32LE(_data, i);
       i += 4;
       final OptionalInt minBorrowRate;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         minBorrowRate = OptionalInt.empty();
       } else {
         ++i;
@@ -13603,7 +13603,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt numberOfUsers;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         numberOfUsers = OptionalInt.empty();
         ++i;
       } else {
@@ -13612,7 +13612,7 @@ public final class DriftProgram {
         i += 4;
       }
       final OptionalInt numberOfUsersWithBase;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         numberOfUsersWithBase = OptionalInt.empty();
       } else {
         ++i;
@@ -13824,7 +13824,7 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final OptionalInt protectedMakerLimitPriceDivisor;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         protectedMakerLimitPriceDivisor = OptionalInt.empty();
         ++i;
       } else {
@@ -13833,7 +13833,7 @@ public final class DriftProgram {
         ++i;
       }
       final OptionalInt protectedMakerDynamicDivisor;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         protectedMakerDynamicDivisor = OptionalInt.empty();
       } else {
         ++i;
@@ -14970,7 +14970,7 @@ public final class DriftProgram {
       final var reduceOnly = _data[i] == 1;
       ++i;
       final OptionalInt currentUsers;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         currentUsers = OptionalInt.empty();
       } else {
         ++i;
@@ -15143,7 +15143,7 @@ public final class DriftProgram {
       final var reduceOnly = _data[i] == 1;
       ++i;
       final OptionalInt currentUsers;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         currentUsers = OptionalInt.empty();
       } else {
         ++i;
@@ -16436,7 +16436,7 @@ public final class DriftProgram {
       final var costToTrade = getInt32LE(_data, i);
       i += 4;
       final OptionalInt constituentDerivativeIndex;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         constituentDerivativeIndex = OptionalInt.empty();
         ++i;
       } else {

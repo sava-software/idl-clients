@@ -2,6 +2,7 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
@@ -20,7 +21,9 @@ public sealed interface ProgrammableConfig extends RustEnum permits
   record V1(PublicKey val) implements OptionalEnumPublicKey, ProgrammableConfig {
 
     public static V1 read(final byte[] _data, int i) {
-      return new V1(_data[i++] == 0 ? null : readPubKey(_data, i));
+      final boolean absent = SerDeUtil.isAbsent(1, _data, i);
+      i += 1;
+      return new V1(absent ? null : readPubKey(_data, i));
     }
 
     @Override

@@ -52,7 +52,7 @@ public record MultisigCreateArgsV2(PublicKey configAuthority,
     }
     int i = _offset;
     final PublicKey configAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       configAuthority = null;
       ++i;
     } else {
@@ -67,7 +67,7 @@ public record MultisigCreateArgsV2(PublicKey configAuthority,
     final var timeLock = getInt32LE(_data, i);
     i += 4;
     final PublicKey rentCollector;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       rentCollector = null;
       ++i;
     } else {

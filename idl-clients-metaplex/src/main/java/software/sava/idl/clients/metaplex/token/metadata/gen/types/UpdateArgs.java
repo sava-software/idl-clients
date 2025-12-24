@@ -52,7 +52,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       }
       int i = _offset;
       final PublicKey newUpdateAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         newUpdateAuthority = null;
         ++i;
       } else {
@@ -61,7 +61,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += 32;
       }
       final Data data;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         data = null;
         ++i;
       } else {
@@ -70,7 +70,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += data.l();
       }
       final Boolean primarySaleHappened;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         primarySaleHappened = null;
         ++i;
       } else {
@@ -79,7 +79,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         ++i;
       }
       final Boolean isMutable;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         isMutable = null;
         ++i;
       } else {
@@ -96,7 +96,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var ruleSet = RuleSetToggle.read(_data, i);
       i += ruleSet.l();
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -164,7 +164,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       }
       int i = _offset;
       final PublicKey newUpdateAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         newUpdateAuthority = null;
         ++i;
       } else {
@@ -173,7 +173,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += 32;
       }
       final Data data;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         data = null;
         ++i;
       } else {
@@ -182,7 +182,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += data.l();
       }
       final Boolean primarySaleHappened;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         primarySaleHappened = null;
         ++i;
       } else {
@@ -191,7 +191,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         ++i;
       }
       final Boolean isMutable;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         isMutable = null;
         ++i;
       } else {
@@ -208,7 +208,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var ruleSet = RuleSetToggle.read(_data, i);
       i += ruleSet.l();
       final TokenStandard tokenStandard;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         tokenStandard = null;
         ++i;
       } else {
@@ -217,7 +217,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += tokenStandard.l();
       }
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -283,7 +283,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       }
       int i = _offset;
       final PublicKey newUpdateAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         newUpdateAuthority = null;
         ++i;
       } else {
@@ -292,7 +292,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += 32;
       }
       final Boolean primarySaleHappened;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         primarySaleHappened = null;
         ++i;
       } else {
@@ -301,7 +301,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         ++i;
       }
       final Boolean isMutable;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         isMutable = null;
         ++i;
       } else {
@@ -310,7 +310,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         ++i;
       }
       final TokenStandard tokenStandard;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         tokenStandard = null;
         ++i;
       } else {
@@ -319,7 +319,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += tokenStandard.l();
       }
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -368,7 +368,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var collection = CollectionToggle.read(_data, i);
       i += collection.l();
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -404,7 +404,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       }
       int i = _offset;
       final Data data;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         data = null;
         ++i;
       } else {
@@ -413,7 +413,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += data.l();
       }
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -451,7 +451,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var ruleSet = RuleSetToggle.read(_data, i);
       i += ruleSet.l();
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -487,7 +487,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       }
       int i = _offset;
       final Data data;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         data = null;
         ++i;
       } else {
@@ -496,7 +496,7 @@ public sealed interface UpdateArgs extends RustEnum permits
         i += data.l();
       }
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -534,7 +534,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var collection = CollectionToggle.read(_data, i);
       i += collection.l();
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -572,7 +572,7 @@ public sealed interface UpdateArgs extends RustEnum permits
       final var ruleSet = RuleSetToggle.read(_data, i);
       i += ruleSet.l();
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;

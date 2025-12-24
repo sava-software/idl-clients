@@ -26,7 +26,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
     }
     int i = _offset;
     final OptionalLong maxSettleQuoteAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxSettleQuoteAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -35,7 +35,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       i += 8;
     }
     final OptionalLong volatility;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       volatility = OptionalLong.empty();
       ++i;
     } else {
@@ -44,7 +44,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       i += 8;
     }
     final OptionalInt gammaExecution;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       gammaExecution = OptionalInt.empty();
       ++i;
     } else {
@@ -53,7 +53,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       ++i;
     }
     final OptionalInt xi;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       xi = OptionalInt.empty();
       ++i;
     } else {
@@ -62,7 +62,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       ++i;
     }
     final BigInteger maxAum;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxAum = null;
       ++i;
     } else {
@@ -71,7 +71,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
       i += 16;
     }
     final PublicKey whitelistMint;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       whitelistMint = null;
     } else {
       ++i;

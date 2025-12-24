@@ -5553,7 +5553,7 @@ public final class LbClmmProgram {
       final var amountIn = getInt64LE(_data, i);
       i += 8;
       final OptionalInt activeId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         activeId = OptionalInt.empty();
         ++i;
       } else {
@@ -5711,7 +5711,7 @@ public final class LbClmmProgram {
       final var amountIn = getInt64LE(_data, i);
       i += 8;
       final OptionalInt activeId;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         activeId = OptionalInt.empty();
         ++i;
       } else {

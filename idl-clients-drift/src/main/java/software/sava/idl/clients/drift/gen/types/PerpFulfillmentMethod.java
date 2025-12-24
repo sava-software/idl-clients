@@ -4,6 +4,7 @@ import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -28,7 +29,9 @@ public sealed interface PerpFulfillmentMethod extends RustEnum permits
   record AMM(OptionalLong val) implements OptionalEnumInt64, PerpFulfillmentMethod {
 
     public static AMM read(final byte[] _data, int i) {
-      return new AMM(_data[i++] == 0 ? OptionalLong.empty() : OptionalLong.of(getInt64LE(_data, i)));
+      final boolean absent = SerDeUtil.isAbsent(1, _data, i);
+      i += 1;
+      return new AMM(absent ? OptionalLong.empty() : OptionalLong.of(getInt64LE(_data, i)));
     }
 
     @Override

@@ -17,7 +17,7 @@ public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt pr
     }
     int i = _offset;
     final OptionalLong protocolFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       protocolFee = OptionalLong.empty();
       ++i;
     } else {
@@ -26,7 +26,7 @@ public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt pr
       i += 8;
     }
     final OptionalInt protocolProfitShare;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       protocolProfitShare = OptionalInt.empty();
     } else {
       ++i;

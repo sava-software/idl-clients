@@ -57,7 +57,7 @@ public record UpdateActiveEvent(Discriminator discriminator,
     final var delegationChange = U64ValueChange.read(_data, i);
     i += delegationChange.l();
     final OptionalLong delegationGrowthMsolFees;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       delegationGrowthMsolFees = OptionalLong.empty();
       ++i;
     } else {
@@ -68,7 +68,7 @@ public record UpdateActiveEvent(Discriminator discriminator,
     final var extraLamports = getInt64LE(_data, i);
     i += 8;
     final OptionalLong extraMsolFees;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       extraMsolFees = OptionalLong.empty();
       ++i;
     } else {

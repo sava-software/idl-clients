@@ -49,7 +49,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
     final var lastUpdateStakeDelegation = getInt64LE(_data, i);
     i += 8;
     final SplitStakeAccountInfo splitStakeAccount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       splitStakeAccount = null;
       ++i;
     } else {

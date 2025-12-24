@@ -17,7 +17,7 @@ public record CreateMetadataAccountArgsV3(DataV2 data,
     final var isMutable = _data[i] == 1;
     ++i;
     final CollectionDetails collectionDetails;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collectionDetails = null;
     } else {
       ++i;

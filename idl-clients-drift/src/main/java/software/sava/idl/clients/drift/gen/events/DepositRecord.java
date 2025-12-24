@@ -77,7 +77,7 @@ public record DepositRecord(Discriminator discriminator,
     final var explanation = DepositExplanation.read(_data, i);
     i += explanation.l();
     final PublicKey transferUser;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       transferUser = null;
       ++i;
     } else {
@@ -86,7 +86,7 @@ public record DepositRecord(Discriminator discriminator,
       i += 32;
     }
     final PublicKey signer;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       signer = null;
       ++i;
     } else {

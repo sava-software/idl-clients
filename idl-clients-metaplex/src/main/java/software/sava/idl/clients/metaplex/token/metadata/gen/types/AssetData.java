@@ -77,7 +77,7 @@ public record AssetData(String name, byte[] _name,
     final var sellerFeeBasisPoints = getInt16LE(_data, i);
     i += 2;
     final Creator[] creators;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       creators = null;
       ++i;
     } else {
@@ -92,7 +92,7 @@ public record AssetData(String name, byte[] _name,
     final var tokenStandard = TokenStandard.read(_data, i);
     i += tokenStandard.l();
     final Collection collection;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collection = null;
       ++i;
     } else {
@@ -101,7 +101,7 @@ public record AssetData(String name, byte[] _name,
       i += collection.l();
     }
     final Uses uses;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       uses = null;
       ++i;
     } else {
@@ -110,7 +110,7 @@ public record AssetData(String name, byte[] _name,
       i += uses.l();
     }
     final CollectionDetails collectionDetails;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collectionDetails = null;
       ++i;
     } else {
@@ -119,7 +119,7 @@ public record AssetData(String name, byte[] _name,
       i += collectionDetails.l();
     }
     final PublicKey ruleSet;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       ruleSet = null;
     } else {
       ++i;

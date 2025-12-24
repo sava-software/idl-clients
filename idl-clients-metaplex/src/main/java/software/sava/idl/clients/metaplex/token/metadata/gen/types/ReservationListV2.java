@@ -64,7 +64,7 @@ public record ReservationListV2(PublicKey _address,
     final var masterEdition = readPubKey(_data, i);
     i += 32;
     final OptionalLong supplySnapshot;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       supplySnapshot = OptionalLong.empty();
       ++i;
     } else {

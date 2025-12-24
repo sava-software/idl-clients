@@ -51,7 +51,7 @@ public record UpdateDeactivatedEvent(Discriminator discriminator,
     final var lastUpdateDelegatedLamports = getInt64LE(_data, i);
     i += 8;
     final OptionalLong msolFees;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       msolFees = OptionalLong.empty();
       ++i;
     } else {

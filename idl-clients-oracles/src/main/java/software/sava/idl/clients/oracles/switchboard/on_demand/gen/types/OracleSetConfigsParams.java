@@ -14,7 +14,7 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
     }
     int i = _offset;
     final PublicKey newAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       newAuthority = null;
       ++i;
     } else {
@@ -23,7 +23,7 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
       i += 32;
     }
     final byte[] newSecpAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       newSecpAuthority = null;
     } else {
       ++i;

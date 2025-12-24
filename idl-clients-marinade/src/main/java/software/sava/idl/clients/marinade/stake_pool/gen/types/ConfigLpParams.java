@@ -18,7 +18,7 @@ public record ConfigLpParams(Fee minFee,
     }
     int i = _offset;
     final Fee minFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minFee = null;
       ++i;
     } else {
@@ -27,7 +27,7 @@ public record ConfigLpParams(Fee minFee,
       i += minFee.l();
     }
     final Fee maxFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxFee = null;
       ++i;
     } else {
@@ -36,7 +36,7 @@ public record ConfigLpParams(Fee minFee,
       i += maxFee.l();
     }
     final OptionalLong liquidityTarget;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       liquidityTarget = OptionalLong.empty();
       ++i;
     } else {
@@ -45,7 +45,7 @@ public record ConfigLpParams(Fee minFee,
       i += 8;
     }
     final Fee treasuryCut;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       treasuryCut = null;
     } else {
       ++i;

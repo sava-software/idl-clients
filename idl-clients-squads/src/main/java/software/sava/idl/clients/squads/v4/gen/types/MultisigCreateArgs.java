@@ -47,7 +47,7 @@ public record MultisigCreateArgs(PublicKey configAuthority,
     }
     int i = _offset;
     final PublicKey configAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       configAuthority = null;
       ++i;
     } else {

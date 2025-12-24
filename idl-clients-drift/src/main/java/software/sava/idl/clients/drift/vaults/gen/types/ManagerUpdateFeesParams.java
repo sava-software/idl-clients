@@ -23,7 +23,7 @@ public record ManagerUpdateFeesParams(long timelockDuration,
     final var timelockDuration = getInt64LE(_data, i);
     i += 8;
     final OptionalLong newManagementFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       newManagementFee = OptionalLong.empty();
       ++i;
     } else {
@@ -32,7 +32,7 @@ public record ManagerUpdateFeesParams(long timelockDuration,
       i += 8;
     }
     final OptionalInt newProfitShare;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       newProfitShare = OptionalInt.empty();
       ++i;
     } else {
@@ -41,7 +41,7 @@ public record ManagerUpdateFeesParams(long timelockDuration,
       i += 4;
     }
     final OptionalInt newHurdleRate;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       newHurdleRate = OptionalInt.empty();
     } else {
       ++i;

@@ -74,7 +74,7 @@ public record Metadata(PublicKey _address,
     final var isMutable = _data[i] == 1;
     ++i;
     final OptionalInt editionNonce;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       editionNonce = OptionalInt.empty();
       ++i;
     } else {
@@ -83,7 +83,7 @@ public record Metadata(PublicKey _address,
       ++i;
     }
     final TokenStandard tokenStandard;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       tokenStandard = null;
       ++i;
     } else {
@@ -92,7 +92,7 @@ public record Metadata(PublicKey _address,
       i += tokenStandard.l();
     }
     final Collection collection;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collection = null;
       ++i;
     } else {
@@ -101,7 +101,7 @@ public record Metadata(PublicKey _address,
       i += collection.l();
     }
     final Uses uses;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       uses = null;
       ++i;
     } else {
@@ -110,7 +110,7 @@ public record Metadata(PublicKey _address,
       i += uses.l();
     }
     final CollectionDetails collectionDetails;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collectionDetails = null;
       ++i;
     } else {
@@ -119,7 +119,7 @@ public record Metadata(PublicKey _address,
       i += collectionDetails.l();
     }
     final ProgrammableConfig programmableConfig;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       programmableConfig = null;
     } else {
       ++i;

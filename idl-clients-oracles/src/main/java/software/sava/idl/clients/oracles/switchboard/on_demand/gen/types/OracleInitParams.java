@@ -25,7 +25,7 @@ public record OracleInitParams(long recentSlot,
     final var queue = readPubKey(_data, i);
     i += 32;
     final byte[] secpAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       secpAuthority = null;
     } else {
       ++i;

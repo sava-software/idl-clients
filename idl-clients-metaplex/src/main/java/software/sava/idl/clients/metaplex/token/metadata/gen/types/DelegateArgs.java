@@ -68,7 +68,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       final var amount = getInt64LE(_data, i);
       i += 8;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -107,7 +107,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       final var amount = getInt64LE(_data, i);
       i += 8;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -158,7 +158,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       final var amount = getInt64LE(_data, i);
       i += 8;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -197,7 +197,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       final var amount = getInt64LE(_data, i);
       i += 8;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;
@@ -252,7 +252,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       final var lockedAddress = readPubKey(_data, i);
       i += 32;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;

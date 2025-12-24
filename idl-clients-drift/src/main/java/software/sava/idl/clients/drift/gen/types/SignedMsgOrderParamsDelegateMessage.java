@@ -38,7 +38,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
     final var uuid = new byte[8];
     i += SerDeUtil.readArray(uuid, _data, i);
     final SignedMsgTriggerOrderParams takeProfitOrderParams;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takeProfitOrderParams = null;
       ++i;
     } else {
@@ -47,7 +47,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       i += takeProfitOrderParams.l();
     }
     final SignedMsgTriggerOrderParams stopLossOrderParams;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       stopLossOrderParams = null;
       ++i;
     } else {
@@ -56,7 +56,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       i += stopLossOrderParams.l();
     }
     final OptionalInt maxMarginRatio;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxMarginRatio = OptionalInt.empty();
       ++i;
     } else {
@@ -65,7 +65,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       i += 2;
     }
     final OptionalInt builderIdx;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       builderIdx = OptionalInt.empty();
       ++i;
     } else {
@@ -74,7 +74,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       ++i;
     }
     final OptionalInt builderFeeTenthBps;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       builderFeeTenthBps = OptionalInt.empty();
       ++i;
     } else {
@@ -83,7 +83,7 @@ public record SignedMsgOrderParamsDelegateMessage(OrderParams signedMsgOrderPara
       i += 2;
     }
     final OptionalLong isolatedPositionDeposit;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       isolatedPositionDeposit = OptionalLong.empty();
     } else {
       ++i;

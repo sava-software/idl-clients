@@ -28,7 +28,7 @@ public record ConfigLpEvent(Discriminator discriminator,
     final var state = readPubKey(_data, i);
     i += 32;
     final FeeValueChange minFeeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       minFeeChange = null;
       ++i;
     } else {
@@ -37,7 +37,7 @@ public record ConfigLpEvent(Discriminator discriminator,
       i += minFeeChange.l();
     }
     final FeeValueChange maxFeeChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxFeeChange = null;
       ++i;
     } else {
@@ -46,7 +46,7 @@ public record ConfigLpEvent(Discriminator discriminator,
       i += maxFeeChange.l();
     }
     final U64ValueChange liquidityTargetChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       liquidityTargetChange = null;
       ++i;
     } else {
@@ -55,7 +55,7 @@ public record ConfigLpEvent(Discriminator discriminator,
       i += liquidityTargetChange.l();
     }
     final FeeValueChange treasuryCutChange;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       treasuryCutChange = null;
     } else {
       ++i;

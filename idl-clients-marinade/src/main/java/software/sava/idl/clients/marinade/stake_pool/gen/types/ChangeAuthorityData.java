@@ -18,7 +18,7 @@ public record ChangeAuthorityData(PublicKey admin,
     }
     int i = _offset;
     final PublicKey admin;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       admin = null;
       ++i;
     } else {
@@ -27,7 +27,7 @@ public record ChangeAuthorityData(PublicKey admin,
       i += 32;
     }
     final PublicKey validatorManager;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       validatorManager = null;
       ++i;
     } else {
@@ -36,7 +36,7 @@ public record ChangeAuthorityData(PublicKey admin,
       i += 32;
     }
     final PublicKey operationalSolAccount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       operationalSolAccount = null;
       ++i;
     } else {
@@ -45,7 +45,7 @@ public record ChangeAuthorityData(PublicKey admin,
       i += 32;
     }
     final PublicKey treasuryMsolAccount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       treasuryMsolAccount = null;
       ++i;
     } else {
@@ -54,7 +54,7 @@ public record ChangeAuthorityData(PublicKey admin,
       i += 32;
     }
     final PublicKey pauseAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       pauseAuthority = null;
     } else {
       ++i;

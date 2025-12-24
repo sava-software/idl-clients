@@ -133,7 +133,7 @@ public record Multisig(PublicKey _address,
     final var staleTransactionIndex = getInt64LE(_data, i);
     i += 8;
     final PublicKey rentCollector;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       rentCollector = null;
       ++i;
     } else {

@@ -27,7 +27,7 @@ public record MultisigSetRentCollectorArgs(PublicKey rentCollector, String memo,
     }
     int i = _offset;
     final PublicKey rentCollector;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       rentCollector = null;
       ++i;
     } else {

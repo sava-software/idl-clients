@@ -31,7 +31,7 @@ public record PerpBankruptcyRecord(int marketIndex,
     final var ifPayment = getInt128LE(_data, i);
     i += 16;
     final PublicKey clawbackUser;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       clawbackUser = null;
       ++i;
     } else {
@@ -40,7 +40,7 @@ public record PerpBankruptcyRecord(int marketIndex,
       i += 32;
     }
     final BigInteger clawbackUserPayment;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       clawbackUserPayment = null;
       ++i;
     } else {

@@ -36,7 +36,7 @@ public record DeleteUserRecord(Discriminator discriminator,
     final var subAccountId = getInt16LE(_data, i);
     i += 2;
     final PublicKey keeper;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       keeper = null;
     } else {
       ++i;

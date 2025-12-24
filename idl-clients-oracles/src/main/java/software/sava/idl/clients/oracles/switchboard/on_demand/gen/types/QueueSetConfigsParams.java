@@ -21,7 +21,7 @@ public record QueueSetConfigsParams(PublicKey authority,
     }
     int i = _offset;
     final PublicKey authority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       authority = null;
       ++i;
     } else {
@@ -30,7 +30,7 @@ public record QueueSetConfigsParams(PublicKey authority,
       i += 32;
     }
     final OptionalInt reward;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       reward = OptionalInt.empty();
       ++i;
     } else {
@@ -39,7 +39,7 @@ public record QueueSetConfigsParams(PublicKey authority,
       i += 4;
     }
     final OptionalLong nodeTimeout;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       nodeTimeout = OptionalLong.empty();
     } else {
       ++i;

@@ -77,7 +77,7 @@ public record OrderActionRecord(Discriminator discriminator,
     final var marketType = MarketType.read(_data, i);
     i += marketType.l();
     final PublicKey filler;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       filler = null;
       ++i;
     } else {
@@ -86,7 +86,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 32;
     }
     final OptionalLong fillerReward;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       fillerReward = OptionalLong.empty();
       ++i;
     } else {
@@ -95,7 +95,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong fillRecordId;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       fillRecordId = OptionalLong.empty();
       ++i;
     } else {
@@ -104,7 +104,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong baseAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       baseAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -113,7 +113,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong quoteAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       quoteAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -122,7 +122,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong takerFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerFee = OptionalLong.empty();
       ++i;
     } else {
@@ -131,7 +131,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong makerFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerFee = OptionalLong.empty();
       ++i;
     } else {
@@ -140,7 +140,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalInt referrerReward;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       referrerReward = OptionalInt.empty();
       ++i;
     } else {
@@ -149,7 +149,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 4;
     }
     final OptionalLong quoteAssetAmountSurplus;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       quoteAssetAmountSurplus = OptionalLong.empty();
       ++i;
     } else {
@@ -158,7 +158,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong spotFulfillmentMethodFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       spotFulfillmentMethodFee = OptionalLong.empty();
       ++i;
     } else {
@@ -167,7 +167,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final PublicKey taker;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       taker = null;
       ++i;
     } else {
@@ -176,7 +176,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 32;
     }
     final OptionalInt takerOrderId;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerOrderId = OptionalInt.empty();
       ++i;
     } else {
@@ -185,7 +185,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 4;
     }
     final PositionDirection takerOrderDirection;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerOrderDirection = null;
       ++i;
     } else {
@@ -194,7 +194,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += takerOrderDirection.l();
     }
     final OptionalLong takerOrderBaseAssetAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerOrderBaseAssetAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -203,7 +203,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong takerOrderCumulativeBaseAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerOrderCumulativeBaseAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -212,7 +212,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong takerOrderCumulativeQuoteAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -221,7 +221,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final PublicKey maker;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maker = null;
       ++i;
     } else {
@@ -230,7 +230,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 32;
     }
     final OptionalInt makerOrderId;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerOrderId = OptionalInt.empty();
       ++i;
     } else {
@@ -239,7 +239,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 4;
     }
     final PositionDirection makerOrderDirection;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerOrderDirection = null;
       ++i;
     } else {
@@ -248,7 +248,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += makerOrderDirection.l();
     }
     final OptionalLong makerOrderBaseAssetAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerOrderBaseAssetAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -257,7 +257,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong makerOrderCumulativeBaseAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerOrderCumulativeBaseAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -266,7 +266,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong makerOrderCumulativeQuoteAssetAmountFilled;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerOrderCumulativeQuoteAssetAmountFilled = OptionalLong.empty();
       ++i;
     } else {
@@ -279,7 +279,7 @@ public record OrderActionRecord(Discriminator discriminator,
     final var bitFlags = _data[i] & 0xFF;
     ++i;
     final OptionalLong takerExistingQuoteEntryAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerExistingQuoteEntryAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -288,7 +288,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong takerExistingBaseAssetAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       takerExistingBaseAssetAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -297,7 +297,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong makerExistingQuoteEntryAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerExistingQuoteEntryAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -306,7 +306,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong makerExistingBaseAssetAmount;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       makerExistingBaseAssetAmount = OptionalLong.empty();
       ++i;
     } else {
@@ -315,7 +315,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalLong triggerPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       triggerPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -324,7 +324,7 @@ public record OrderActionRecord(Discriminator discriminator,
       i += 8;
     }
     final OptionalInt builderIdx;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       builderIdx = OptionalInt.empty();
       ++i;
     } else {
@@ -333,7 +333,7 @@ public record OrderActionRecord(Discriminator discriminator,
       ++i;
     }
     final OptionalLong builderFee;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       builderFee = OptionalLong.empty();
     } else {
       ++i;

@@ -29,7 +29,7 @@ public sealed interface CreateArgs extends RustEnum permits
       final var assetData = AssetData.read(_data, i);
       i += assetData.l();
       final OptionalInt decimals;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         decimals = OptionalInt.empty();
         ++i;
       } else {
@@ -38,7 +38,7 @@ public sealed interface CreateArgs extends RustEnum permits
         ++i;
       }
       final PrintSupply printSupply;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         printSupply = null;
       } else {
         ++i;

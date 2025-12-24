@@ -179,7 +179,9 @@ public sealed interface ConfigAction extends RustEnum permits
   record SetRentCollector(PublicKey val) implements OptionalEnumPublicKey, ConfigAction {
 
     public static SetRentCollector read(final byte[] _data, int i) {
-      return new SetRentCollector(_data[i++] == 0 ? null : readPubKey(_data, i));
+      final boolean absent = SerDeUtil.isAbsent(1, _data, i);
+      i += 1;
+      return new SetRentCollector(absent ? null : readPubKey(_data, i));
     }
 
     @Override

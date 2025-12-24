@@ -60,7 +60,7 @@ public record DataV2(String name, byte[] _name,
     final var sellerFeeBasisPoints = getInt16LE(_data, i);
     i += 2;
     final Creator[] creators;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       creators = null;
       ++i;
     } else {
@@ -69,7 +69,7 @@ public record DataV2(String name, byte[] _name,
       i += SerDeUtil.lenVector(4, creators);
     }
     final Collection collection;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       collection = null;
       ++i;
     } else {
@@ -78,7 +78,7 @@ public record DataV2(String name, byte[] _name,
       i += collection.l();
     }
     final Uses uses;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       uses = null;
     } else {
       ++i;

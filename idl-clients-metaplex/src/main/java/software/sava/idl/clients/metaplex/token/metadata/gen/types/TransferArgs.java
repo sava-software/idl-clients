@@ -28,7 +28,7 @@ public sealed interface TransferArgs extends RustEnum permits
       final var amount = getInt64LE(_data, i);
       i += 8;
       final AuthorizationData authorizationData;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         authorizationData = null;
       } else {
         ++i;

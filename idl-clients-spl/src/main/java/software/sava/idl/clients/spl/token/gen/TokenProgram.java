@@ -141,7 +141,7 @@ public final class TokenProgram {
       final var mintAuthority = readPubKey(_data, i);
       i += 32;
       final PublicKey freezeAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         freezeAuthority = null;
       } else {
         ++i;
@@ -745,7 +745,7 @@ public final class TokenProgram {
       final var authorityType = AuthorityType.read(_data, i);
       i += authorityType.l();
       final PublicKey newAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         newAuthority = null;
       } else {
         ++i;
@@ -2117,7 +2117,7 @@ public final class TokenProgram {
       final var mintAuthority = readPubKey(_data, i);
       i += 32;
       final PublicKey freezeAuthority;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         freezeAuthority = null;
       } else {
         ++i;

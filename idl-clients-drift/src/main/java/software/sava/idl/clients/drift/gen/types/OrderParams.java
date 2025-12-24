@@ -56,7 +56,7 @@ public record OrderParams(OrderType orderType,
     final var bitFlags = _data[i] & 0xFF;
     ++i;
     final OptionalLong maxTs;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       maxTs = OptionalLong.empty();
       ++i;
     } else {
@@ -65,7 +65,7 @@ public record OrderParams(OrderType orderType,
       i += 8;
     }
     final OptionalLong triggerPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       triggerPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -76,7 +76,7 @@ public record OrderParams(OrderType orderType,
     final var triggerCondition = OrderTriggerCondition.read(_data, i);
     i += triggerCondition.l();
     final OptionalInt oraclePriceOffset;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       oraclePriceOffset = OptionalInt.empty();
       ++i;
     } else {
@@ -85,7 +85,7 @@ public record OrderParams(OrderType orderType,
       i += 4;
     }
     final OptionalInt auctionDuration;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionDuration = OptionalInt.empty();
       ++i;
     } else {
@@ -94,7 +94,7 @@ public record OrderParams(OrderType orderType,
       ++i;
     }
     final OptionalLong auctionStartPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionStartPrice = OptionalLong.empty();
       ++i;
     } else {
@@ -103,7 +103,7 @@ public record OrderParams(OrderType orderType,
       i += 8;
     }
     final OptionalLong auctionEndPrice;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       auctionEndPrice = OptionalLong.empty();
     } else {
       ++i;

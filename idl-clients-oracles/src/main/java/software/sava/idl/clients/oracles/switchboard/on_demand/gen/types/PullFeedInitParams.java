@@ -45,7 +45,7 @@ public record PullFeedInitParams(byte[] feedHash,
     final var maxStaleness = getInt32LE(_data, i);
     i += 4;
     final Boolean permitWriteByAuthority;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       permitWriteByAuthority = null;
     } else {
       ++i;

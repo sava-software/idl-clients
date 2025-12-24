@@ -54,7 +54,7 @@ public record Data(String name, byte[] _name,
     final var sellerFeeBasisPoints = getInt16LE(_data, i);
     i += 2;
     final Creator[] creators;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       creators = null;
     } else {
       ++i;

@@ -935,7 +935,7 @@ public sealed interface Swap extends RustEnum permits
       final var aToB = _data[i] == 1;
       ++i;
       final RemainingAccountsInfo remainingAccountsInfo;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         remainingAccountsInfo = null;
       } else {
         ++i;
@@ -1639,7 +1639,7 @@ public sealed interface Swap extends RustEnum permits
       final var aToB = _data[i] == 1;
       ++i;
       final RemainingAccountsInfo remainingAccountsInfo;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         remainingAccountsInfo = null;
       } else {
         ++i;

@@ -47,7 +47,7 @@ public record CustomizableParams(int activeId,
     final var hasAlphaVault = _data[i] == 1;
     ++i;
     final OptionalLong activationPoint;
-    if (_data[i] == 0) {
+    if (SerDeUtil.isAbsent(1, _data, i)) {
       activationPoint = OptionalLong.empty();
       ++i;
     } else {

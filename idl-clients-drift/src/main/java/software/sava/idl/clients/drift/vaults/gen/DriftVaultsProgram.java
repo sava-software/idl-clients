@@ -1628,7 +1628,7 @@ public final class DriftVaultsProgram {
       final var repayAmount = getInt64LE(_data, i);
       i += 8;
       final OptionalLong repayValue;
-      if (_data[i] == 0) {
+      if (SerDeUtil.isAbsent(1, _data, i)) {
         repayValue = OptionalLong.empty();
       } else {
         ++i;
