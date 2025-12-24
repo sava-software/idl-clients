@@ -116,6 +116,16 @@ public final class MeteoraPDAs {
     return LbClmmPDAs.binArrayPDA(programId, lbPair, binArrayIndexBytes);
   }
 
+  public static ProgramDerivedAddress reservePDA(final PublicKey lbPair,
+                                                 final PublicKey tokenMint,
+                                                 final PublicKey programId) {
+    return PublicKey.findProgramAddress(List.of(
+            lbPair.toByteArray(),
+            tokenMint.toByteArray()
+        ), programId
+    );
+  }
+
   public static ProgramDerivedAddress rewardVaultPDA(final PublicKey lbPair,
                                                      final long rewardIndex,
                                                      final PublicKey programId) {
