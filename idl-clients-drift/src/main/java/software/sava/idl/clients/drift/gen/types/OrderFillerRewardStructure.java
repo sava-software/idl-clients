@@ -2,7 +2,7 @@ package software.sava.idl.clients.drift.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 public record OrderFillerRewardStructure(int rewardNumerator,
                                          int rewardDenominator,
-                                         BigInteger timeBasedRewardLowerBound) implements Borsh {
+                                         BigInteger timeBasedRewardLowerBound) implements SerDe {
 
   public static final int BYTES = 24;
 

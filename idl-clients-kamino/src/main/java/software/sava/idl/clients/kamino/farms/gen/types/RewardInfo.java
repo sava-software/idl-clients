@@ -3,7 +3,8 @@ package software.sava.idl.clients.kamino.farms.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -24,7 +25,7 @@ public record RewardInfo(TokenInfo token,
                          int rewardType,
                          int rewardsPerSecondDecimals,
                          byte[] padding0,
-                         long[] padding1) implements Borsh {
+                         long[] padding1) implements SerDe {
 
   public static final int BYTES = 704;
   public static final int PADDING_0_LEN = 6;
@@ -60,9 +61,9 @@ public record RewardInfo(TokenInfo token,
     final var rewardsPerSecondDecimals = _data[i] & 0xFF;
     ++i;
     final var padding0 = new byte[6];
-    i += Borsh.readArray(padding0, _data, i);
+    i += SerDeUtil.readArray(padding0, _data, i);
     final var padding1 = new long[20];
-    Borsh.readArray(padding1, _data, i);
+    SerDeUtil.readArray(padding1, _data, i);
     return new RewardInfo(token,
                           rewardsVault,
                           rewardsAvailable,
@@ -104,8 +105,8 @@ public record RewardInfo(TokenInfo token,
     ++i;
     _data[i] = (byte) rewardsPerSecondDecimals;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 6, _data, i);
-    i += Borsh.writeArrayChecked(padding1, 20, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 20, _data, i);
     return i - _offset;
   }
 

@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface AccountsType extends RustEnum permits
   AccountsType.TransferHookX,

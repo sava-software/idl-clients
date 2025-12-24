@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// @param baseFeePowerFactor Base fee power factor
 public record BaseFeeParameter(int protocolShare,
                                int baseFactor,
-                               int baseFeePowerFactor) implements Borsh {
+                               int baseFeePowerFactor) implements SerDe {
 
   public static final int BYTES = 5;
 

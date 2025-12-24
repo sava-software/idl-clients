@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -13,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record LastUpdate(long slot,
                          int stale,
                          int priceStatus,
-                         byte[] placeholder) implements Borsh {
+                         byte[] placeholder) implements SerDe {
 
   public static final int BYTES = 16;
   public static final int PLACEHOLDER_LEN = 6;
@@ -30,7 +31,7 @@ public record LastUpdate(long slot,
     final var priceStatus = _data[i] & 0xFF;
     ++i;
     final var placeholder = new byte[6];
-    Borsh.readArray(placeholder, _data, i);
+    SerDeUtil.readArray(placeholder, _data, i);
     return new LastUpdate(slot,
                           stale,
                           priceStatus,
@@ -46,7 +47,7 @@ public record LastUpdate(long slot,
     ++i;
     _data[i] = (byte) priceStatus;
     ++i;
-    i += Borsh.writeArrayChecked(placeholder, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(placeholder, 6, _data, i);
     return i - _offset;
   }
 

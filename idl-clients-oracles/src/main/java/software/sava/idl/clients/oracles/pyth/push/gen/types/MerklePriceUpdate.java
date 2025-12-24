@@ -1,30 +1,31 @@
 package software.sava.idl.clients.oracles.pyth.push.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public record MerklePriceUpdate(byte[] message, byte[][] proof) implements Borsh {
+public record MerklePriceUpdate(byte[] message, byte[][] proof) implements SerDe {
 
   public static MerklePriceUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     int i = _offset;
-    final var message = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(message);
-    final var proof = Borsh.readMultiDimensionbyteVectorArray(20, _data, i);
+    final var message = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, message);
+    final var proof = SerDeUtil.readMultiDimensionbyteVectorArray(4, 20, _data, i);
     return new MerklePriceUpdate(message, proof);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVector(message, _data, i);
-    i += Borsh.writeVectorArrayChecked(proof, 20, _data, i);
+    i += SerDeUtil.writeVector(4, message, _data, i);
+    i += SerDeUtil.writeVectorArrayChecked(4, proof, 20, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return Borsh.lenVector(message) + Borsh.lenVectorArray(proof);
+    return SerDeUtil.lenVector(4, message) + SerDeUtil.lenVectorArray(4, proof);
   }
 }

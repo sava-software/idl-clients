@@ -2,7 +2,8 @@ package software.sava.idl.clients.drift.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -15,7 +16,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// @param marketIndex The spot market the pool is for
 public record PoolBalance(BigInteger scaledBalance,
                           int marketIndex,
-                          byte[] padding) implements Borsh {
+                          byte[] padding) implements SerDe {
 
   public static final int BYTES = 24;
   public static final int PADDING_LEN = 6;
@@ -30,7 +31,7 @@ public record PoolBalance(BigInteger scaledBalance,
     final var marketIndex = getInt16LE(_data, i);
     i += 2;
     final var padding = new byte[6];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new PoolBalance(scaledBalance, marketIndex, padding);
   }
 
@@ -41,7 +42,7 @@ public record PoolBalance(BigInteger scaledBalance,
     i += 16;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += Borsh.writeArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
     return i - _offset;
   }
 

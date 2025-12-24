@@ -1,11 +1,11 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record CompressedBinDepositAmount(int binId, int amount) implements Borsh {
+public record CompressedBinDepositAmount(int binId, int amount) implements SerDe {
 
   public static final int BYTES = 8;
 

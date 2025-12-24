@@ -8,9 +8,10 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.lend_borrow.gen.types.AddressBool;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -116,7 +117,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record DepositIxData(Discriminator discriminator, long assets) implements Borsh {  
+  public record DepositIxData(Discriminator discriminator, long assets) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -240,7 +241,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements Borsh {  
+  public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements SerDe {  
 
     public static DepositWithMinAmountOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -339,20 +340,20 @@ public final class LendingProgram {
     final byte[] _symbol = symbol.getBytes(UTF_8);
     final byte[] _data = new byte[44 + _symbol.length];
     int i = INIT_LENDING_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_symbol, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
     liquidityProgram.write(_data, i);
 
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record InitLendingIxData(Discriminator discriminator, String symbol, byte[] _symbol, PublicKey liquidityProgram) implements Borsh {  
+  public record InitLendingIxData(Discriminator discriminator, String symbol, byte[] _symbol, PublicKey liquidityProgram) implements SerDe {  
 
     public static InitLendingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static InitLendingIxData createRecord(final Discriminator discriminator, final String symbol, final PublicKey liquidityProgram) {
-      return new InitLendingIxData(discriminator, symbol, symbol.getBytes(UTF_8), liquidityProgram);
+      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : symbol.getBytes(UTF_8), liquidityProgram);
     }
 
     public static InitLendingIxData read(final byte[] _data, final int _offset) {
@@ -367,13 +368,13 @@ public final class LendingProgram {
       final var symbol = new String(_symbol, UTF_8);
       i += _symbol.length;
       final var liquidityProgram = readPubKey(_data, i);
-      return new InitLendingIxData(discriminator, symbol, _symbol, liquidityProgram);
+      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : symbol.getBytes(UTF_8), liquidityProgram);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_symbol, _data, i);
+      i += SerDeUtil.writeVector(4, _symbol, _data, i);
       liquidityProgram.write(_data, i);
       i += 32;
       return i - _offset;
@@ -437,7 +438,7 @@ public final class LendingProgram {
   public record InitLendingAdminIxData(Discriminator discriminator,
                                        PublicKey liquidityProgram,
                                        PublicKey rebalancer,
-                                       PublicKey authority) implements Borsh {  
+                                       PublicKey authority) implements SerDe {  
 
     public static InitLendingAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -565,7 +566,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record MintIxData(Discriminator discriminator, long shares) implements Borsh {  
+  public record MintIxData(Discriminator discriminator, long shares) implements SerDe {  
 
     public static MintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -689,7 +690,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements Borsh {  
+  public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements SerDe {  
 
     public static MintWithMaxAssetsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -895,7 +896,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record RedeemIxData(Discriminator discriminator, long shares) implements Borsh {  
+  public record RedeemIxData(Discriminator discriminator, long shares) implements SerDe {  
 
     public static RedeemIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1023,7 +1024,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements Borsh {  
+  public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements SerDe {  
 
     public static RedeemWithMinAmountOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1106,7 +1107,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record SetRewardsRateModelIxData(Discriminator discriminator, PublicKey mint) implements Borsh {  
+  public record SetRewardsRateModelIxData(Discriminator discriminator, PublicKey mint) implements SerDe {  
 
     public static SetRewardsRateModelIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1169,7 +1170,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements Borsh {  
+  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {  
 
     public static UpdateAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1225,14 +1226,14 @@ public final class LendingProgram {
   public static Instruction updateAuths(final AccountMeta invokedLendingProgramMeta,
                                         final List<AccountMeta> keys,
                                         final AddressBool[] authStatus) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(authStatus)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, authStatus)];
     int i = UPDATE_AUTHS_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(authStatus, _data, i);
+    SerDeUtil.writeVector(4, authStatus, _data, i);
 
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements Borsh {  
+  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {  
 
     public static UpdateAuthsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1244,20 +1245,20 @@ public final class LendingProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var authStatus = Borsh.readVector(AddressBool.class, AddressBool::read, _data, i);
+      final var authStatus = SerDeUtil.readVector(4, AddressBool.class, AddressBool::read, _data, i);
       return new UpdateAuthsIxData(discriminator, authStatus);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(authStatus, _data, i);
+      i += SerDeUtil.writeVector(4, authStatus, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(authStatus);
+      return 8 + SerDeUtil.lenVector(4, authStatus);
     }
   }
 
@@ -1329,7 +1330,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateRebalancerIxData(Discriminator discriminator, PublicKey newRebalancer) implements Borsh {  
+  public record UpdateRebalancerIxData(Discriminator discriminator, PublicKey newRebalancer) implements SerDe {  
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1453,7 +1454,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record WithdrawIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1581,7 +1582,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements Borsh {  
+  public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements SerDe {  
 
     public static WithdrawWithMaxSharesBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

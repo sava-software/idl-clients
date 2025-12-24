@@ -3,9 +3,9 @@ package software.sava.idl.clients.marinade.stake_pool.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -47,7 +47,7 @@ public record State(PublicKey _address,
                     boolean withdrawStakeAccountEnabled,
                     long lastStakeMoveEpoch,
                     long stakeMoved,
-                    Fee maxStakeMovedPerEpoch) implements Borsh {
+                    Fee maxStakeMovedPerEpoch) implements SerDe {
 
   public static final int BYTES = 638;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

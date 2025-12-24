@@ -1,6 +1,7 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -8,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record QueueOverrideSVMParams(byte[] secp256k1Signer,
                                      long maxQuoteVerificationAge,
                                      byte[] mrEnclave,
-                                     long slot) implements Borsh {
+                                     long slot) implements SerDe {
 
   public static final int BYTES = 112;
   public static final int SECP_222K_1_SIGNER_LEN = 64;
@@ -20,11 +21,11 @@ public record QueueOverrideSVMParams(byte[] secp256k1Signer,
     }
     int i = _offset;
     final var secp256k1Signer = new byte[64];
-    i += Borsh.readArray(secp256k1Signer, _data, i);
+    i += SerDeUtil.readArray(secp256k1Signer, _data, i);
     final var maxQuoteVerificationAge = getInt64LE(_data, i);
     i += 8;
     final var mrEnclave = new byte[32];
-    i += Borsh.readArray(mrEnclave, _data, i);
+    i += SerDeUtil.readArray(mrEnclave, _data, i);
     final var slot = getInt64LE(_data, i);
     return new QueueOverrideSVMParams(secp256k1Signer,
                                       maxQuoteVerificationAge,
@@ -35,10 +36,10 @@ public record QueueOverrideSVMParams(byte[] secp256k1Signer,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(secp256k1Signer, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(secp256k1Signer, 64, _data, i);
     putInt64LE(_data, i, maxQuoteVerificationAge);
     i += 8;
-    i += Borsh.writeArrayChecked(mrEnclave, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(mrEnclave, 32, _data, i);
     putInt64LE(_data, i, slot);
     i += 8;
     return i - _offset;

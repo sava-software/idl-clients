@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record StakeList() implements Borsh {
+public record StakeList() implements SerDe {
 
   private static final StakeList INSTANCE = new StakeList();
 

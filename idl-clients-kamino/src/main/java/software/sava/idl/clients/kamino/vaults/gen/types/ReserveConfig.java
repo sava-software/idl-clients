@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.vaults.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.lend.gen.types.BorrowRateCurve;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveFees;
 import software.sava.idl.clients.kamino.lend.gen.types.TokenInfo;
@@ -94,7 +95,7 @@ public record ReserveConfig(int status,
                             int proposerAuthorityLocked,
                             long borrowLimitOutsideElevationGroup,
                             long[] borrowLimitAgainstThisCollateralInElevationGroup,
-                            long deleveragingBonusIncreaseBpsPerDay) implements Borsh {
+                            long deleveragingBonusIncreaseBpsPerDay) implements SerDe {
 
   public static final int BYTES = 920;
   public static final int RESERVED_1_LEN = 6;
@@ -117,7 +118,7 @@ public record ReserveConfig(int status,
     final var blockCtokenUsage = _data[i] & 0xFF;
     ++i;
     final var reserved1 = new byte[6];
-    i += Borsh.readArray(reserved1, _data, i);
+    i += SerDeUtil.readArray(reserved1, _data, i);
     final var protocolOrderExecutionFeePct = _data[i] & 0xFF;
     ++i;
     final var protocolTakeRatePct = _data[i] & 0xFF;
@@ -155,7 +156,7 @@ public record ReserveConfig(int status,
     final var debtWithdrawalCap = WithdrawalCaps.read(_data, i);
     i += debtWithdrawalCap.l();
     final var elevationGroups = new byte[20];
-    i += Borsh.readArray(elevationGroups, _data, i);
+    i += SerDeUtil.readArray(elevationGroups, _data, i);
     final var disableUsageAsCollOutsideEmode = _data[i] & 0xFF;
     ++i;
     final var utilizationLimitBlockBorrowingAbovePct = _data[i] & 0xFF;
@@ -167,7 +168,7 @@ public record ReserveConfig(int status,
     final var borrowLimitOutsideElevationGroup = getInt64LE(_data, i);
     i += 8;
     final var borrowLimitAgainstThisCollateralInElevationGroup = new long[32];
-    i += Borsh.readArray(borrowLimitAgainstThisCollateralInElevationGroup, _data, i);
+    i += SerDeUtil.readArray(borrowLimitAgainstThisCollateralInElevationGroup, _data, i);
     final var deleveragingBonusIncreaseBpsPerDay = getInt64LE(_data, i);
     return new ReserveConfig(status,
                              assetTier,
@@ -216,7 +217,7 @@ public record ReserveConfig(int status,
     i += 2;
     _data[i] = (byte) blockCtokenUsage;
     ++i;
-    i += Borsh.writeArrayChecked(reserved1, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved1, 6, _data, i);
     _data[i] = (byte) protocolOrderExecutionFeePct;
     ++i;
     _data[i] = (byte) protocolTakeRatePct;
@@ -248,7 +249,7 @@ public record ReserveConfig(int status,
     i += tokenInfo.write(_data, i);
     i += depositWithdrawalCap.write(_data, i);
     i += debtWithdrawalCap.write(_data, i);
-    i += Borsh.writeArrayChecked(elevationGroups, 20, _data, i);
+    i += SerDeUtil.writeArrayChecked(elevationGroups, 20, _data, i);
     _data[i] = (byte) disableUsageAsCollOutsideEmode;
     ++i;
     _data[i] = (byte) utilizationLimitBlockBorrowingAbovePct;
@@ -259,7 +260,7 @@ public record ReserveConfig(int status,
     ++i;
     putInt64LE(_data, i, borrowLimitOutsideElevationGroup);
     i += 8;
-    i += Borsh.writeArrayChecked(borrowLimitAgainstThisCollateralInElevationGroup, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(borrowLimitAgainstThisCollateralInElevationGroup, 32, _data, i);
     putInt64LE(_data, i, deleveragingBonusIncreaseBpsPerDay);
     i += 8;
     return i - _offset;

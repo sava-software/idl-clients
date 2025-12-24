@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -19,7 +20,7 @@ public record OracleMappings(PublicKey _address,
                              short[] twapSource,
                              byte[] twapEnabled,
                              short[] refPrice,
-                             byte[][] generic) implements Borsh {
+                             byte[][] generic) implements SerDe {
 
   public static final int BYTES = 29704;
   public static final int PRICE_INFO_ACCOUNTS_LEN = 512;
@@ -61,17 +62,17 @@ public record OracleMappings(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var priceInfoAccounts = new PublicKey[512];
-    i += Borsh.readArray(priceInfoAccounts, _data, i);
+    i += SerDeUtil.readArray(priceInfoAccounts, _data, i);
     final var priceTypes = new byte[512];
-    i += Borsh.readArray(priceTypes, _data, i);
+    i += SerDeUtil.readArray(priceTypes, _data, i);
     final var twapSource = new short[512];
-    i += Borsh.readArray(twapSource, _data, i);
+    i += SerDeUtil.readArray(twapSource, _data, i);
     final var twapEnabled = new byte[512];
-    i += Borsh.readArray(twapEnabled, _data, i);
+    i += SerDeUtil.readArray(twapEnabled, _data, i);
     final var refPrice = new short[512];
-    i += Borsh.readArray(refPrice, _data, i);
+    i += SerDeUtil.readArray(refPrice, _data, i);
     final var generic = new byte[512][20];
-    Borsh.readArray(generic, _data, i);
+    SerDeUtil.readArray(generic, _data, i);
     return new OracleMappings(_address,
                               discriminator,
                               priceInfoAccounts,
@@ -85,12 +86,12 @@ public record OracleMappings(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(priceInfoAccounts, 512, _data, i);
-    i += Borsh.writeArrayChecked(priceTypes, 512, _data, i);
-    i += Borsh.writeArrayChecked(twapSource, 512, _data, i);
-    i += Borsh.writeArrayChecked(twapEnabled, 512, _data, i);
-    i += Borsh.writeArrayChecked(refPrice, 512, _data, i);
-    i += Borsh.writeArrayChecked(generic, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(priceInfoAccounts, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(priceTypes, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(twapSource, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(twapEnabled, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(refPrice, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(generic, 512, _data, i);
     return i - _offset;
   }
 

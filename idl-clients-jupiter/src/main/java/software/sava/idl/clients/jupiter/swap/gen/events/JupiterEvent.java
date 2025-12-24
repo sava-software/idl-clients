@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.swap.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface JupiterEvent extends Borsh permits
+public sealed interface JupiterEvent extends SerDe permits
     FeeEvent,
     SwapEvent,
     SwapsEvent,

@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -34,7 +35,7 @@ public record RevenueShareOrder(long feesAccrued,
                                 int bitFlags,
                                 int userOrderIndex,
                                 MarketType marketType,
-                                byte[] padding) implements Borsh {
+                                byte[] padding) implements SerDe {
 
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 10;
@@ -63,7 +64,7 @@ public record RevenueShareOrder(long feesAccrued,
     final var marketType = MarketType.read(_data, i);
     i += marketType.l();
     final var padding = new byte[10];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new RevenueShareOrder(feesAccrued,
                                  orderId,
                                  feeTenthBps,
@@ -96,7 +97,7 @@ public record RevenueShareOrder(long feesAccrued,
     _data[i] = (byte) userOrderIndex;
     ++i;
     i += marketType.write(_data, i);
-    i += Borsh.writeArrayChecked(padding, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 10, _data, i);
     return i - _offset;
   }
 

@@ -1,7 +1,7 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -11,7 +11,7 @@ public record List(PublicKey account,
                    int itemSize,
                    int count,
                    PublicKey newAccount,
-                   int copiedCount) implements Borsh {
+                   int copiedCount) implements SerDe {
 
   public static final int BYTES = 76;
 

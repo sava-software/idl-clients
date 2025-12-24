@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -22,7 +23,7 @@ public record PythLazerOracle(PublicKey _address,
                               long postedSlot,
                               int exponent,
                               byte[] padding,
-                              long conf) implements Borsh {
+                              long conf) implements SerDe {
 
   public static final int BYTES = 48;
   public static final int PADDING_LEN = 4;
@@ -97,7 +98,7 @@ public record PythLazerOracle(PublicKey _address,
     final var exponent = getInt32LE(_data, i);
     i += 4;
     final var padding = new byte[4];
-    i += Borsh.readArray(padding, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
     final var conf = getInt64LE(_data, i);
     return new PythLazerOracle(_address,
                                discriminator,
@@ -120,7 +121,7 @@ public record PythLazerOracle(PublicKey _address,
     i += 8;
     putInt32LE(_data, i, exponent);
     i += 4;
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     putInt64LE(_data, i, conf);
     i += 8;
     return i - _offset;

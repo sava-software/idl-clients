@@ -2,7 +2,8 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -15,7 +16,7 @@ public record EmaTwap(long lastUpdateSlot,
                       BigInteger currentEma1h,
                       long updatesTracker1h,
                       long padding0,
-                      BigInteger[] padding1) implements Borsh {
+                      BigInteger[] padding1) implements SerDe {
 
   public static final int BYTES = 672;
   public static final int PADDING_1_LEN = 39;
@@ -36,7 +37,7 @@ public record EmaTwap(long lastUpdateSlot,
     final var padding0 = getInt64LE(_data, i);
     i += 8;
     final var padding1 = new BigInteger[39];
-    Borsh.read128Array(padding1, _data, i);
+    SerDeUtil.read128Array(padding1, _data, i);
     return new EmaTwap(lastUpdateSlot,
                        lastUpdateUnixTimestamp,
                        currentEma1h,
@@ -58,7 +59,7 @@ public record EmaTwap(long lastUpdateSlot,
     i += 8;
     putInt64LE(_data, i, padding0);
     i += 8;
-    i += Borsh.write128ArrayChecked(padding1, 39, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding1, 39, _data, i);
     return i - _offset;
   }
 

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record QueueAllowSubsidiesParams(int allowSubsidies) implements Borsh {
+public record QueueAllowSubsidiesParams(int allowSubsidies) implements SerDe {
 
   public static final int BYTES = 1;
 

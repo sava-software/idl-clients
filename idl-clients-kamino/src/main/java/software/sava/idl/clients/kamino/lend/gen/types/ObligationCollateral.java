@@ -3,7 +3,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -24,7 +25,7 @@ public record ObligationCollateral(PublicKey depositReserve,
                                    long depositedAmount,
                                    BigInteger marketValueSf,
                                    long borrowedAmountAgainstThisCollateralInElevationGroup,
-                                   long[] padding) implements Borsh {
+                                   long[] padding) implements SerDe {
 
   public static final int BYTES = 136;
   public static final int PADDING_LEN = 9;
@@ -43,7 +44,7 @@ public record ObligationCollateral(PublicKey depositReserve,
     final var borrowedAmountAgainstThisCollateralInElevationGroup = getInt64LE(_data, i);
     i += 8;
     final var padding = new long[9];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new ObligationCollateral(depositReserve,
                                     depositedAmount,
                                     marketValueSf,
@@ -62,7 +63,7 @@ public record ObligationCollateral(PublicKey depositReserve,
     i += 16;
     putInt64LE(_data, i, borrowedAmountAgainstThisCollateralInElevationGroup);
     i += 8;
-    i += Borsh.writeArrayChecked(padding, 9, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 9, _data, i);
     return i - _offset;
   }
 

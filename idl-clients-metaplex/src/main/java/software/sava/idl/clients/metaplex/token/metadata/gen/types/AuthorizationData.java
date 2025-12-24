@@ -1,8 +1,8 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record AuthorizationData(Payload payload) implements Borsh {
+public record AuthorizationData(Payload payload) implements SerDe {
 
   public static AuthorizationData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

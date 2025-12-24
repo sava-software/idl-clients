@@ -1,6 +1,7 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record LiquidityOneSideParameter(long amount,
                                         int activeId,
                                         int maxActiveBinSlippage,
-                                        BinLiquidityDistributionByWeight[] binLiquidityDist) implements Borsh {
+                                        BinLiquidityDistributionByWeight[] binLiquidityDist) implements SerDe {
 
   public static LiquidityOneSideParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -27,7 +28,7 @@ public record LiquidityOneSideParameter(long amount,
     i += 4;
     final var maxActiveBinSlippage = getInt32LE(_data, i);
     i += 4;
-    final var binLiquidityDist = Borsh.readVector(BinLiquidityDistributionByWeight.class, BinLiquidityDistributionByWeight::read, _data, i);
+    final var binLiquidityDist = SerDeUtil.readVector(4, BinLiquidityDistributionByWeight.class, BinLiquidityDistributionByWeight::read, _data, i);
     return new LiquidityOneSideParameter(amount,
                                          activeId,
                                          maxActiveBinSlippage,
@@ -43,12 +44,12 @@ public record LiquidityOneSideParameter(long amount,
     i += 4;
     putInt32LE(_data, i, maxActiveBinSlippage);
     i += 4;
-    i += Borsh.writeVector(binLiquidityDist, _data, i);
+    i += SerDeUtil.writeVector(4, binLiquidityDist, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 4 + 4 + Borsh.lenVector(binLiquidityDist);
+    return 8 + 4 + 4 + SerDeUtil.lenVector(4, binLiquidityDist);
   }
 }

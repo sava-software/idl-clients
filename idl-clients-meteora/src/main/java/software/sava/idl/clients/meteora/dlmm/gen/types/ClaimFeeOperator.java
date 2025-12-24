@@ -3,9 +3,10 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param operator operator
 /// @param padding Reserve
-public record ClaimFeeOperator(PublicKey _address, Discriminator discriminator, PublicKey operator, byte[] padding) implements Borsh {
+public record ClaimFeeOperator(PublicKey _address, Discriminator discriminator, PublicKey operator, byte[] padding) implements SerDe {
 
   public static final int BYTES = 168;
   public static final int PADDING_LEN = 128;
@@ -55,7 +56,7 @@ public record ClaimFeeOperator(PublicKey _address, Discriminator discriminator, 
     final var operator = readPubKey(_data, i);
     i += 32;
     final var padding = new byte[128];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new ClaimFeeOperator(_address, discriminator, operator, padding);
   }
 
@@ -64,7 +65,7 @@ public record ClaimFeeOperator(PublicKey _address, Discriminator discriminator, 
     int i = _offset + discriminator.write(_data, _offset);
     operator.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 128, _data, i);
     return i - _offset;
   }
 

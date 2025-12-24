@@ -1,8 +1,8 @@
 package software.sava.idl.clients.spl.token.gen.types;
 
-import software.sava.core.serial.Serializable;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public enum AuthorityType implements Serializable {
+public enum AuthorityType implements SerDe {
 
   mintTokens,
   freezeAccount,

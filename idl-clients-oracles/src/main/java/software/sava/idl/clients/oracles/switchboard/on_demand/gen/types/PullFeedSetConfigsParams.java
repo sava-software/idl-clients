@@ -6,7 +6,8 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -20,7 +21,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
                                        byte[] ipfsHash,
                                        OptionalInt minSampleSize,
                                        OptionalInt maxStaleness,
-                                       Boolean permitWriteByAuthority) implements Borsh {
+                                       Boolean permitWriteByAuthority) implements SerDe {
 
   public static PullFeedSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -34,7 +35,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     } else {
       ++i;
       feedHash = new byte[32];
-      i += Borsh.readArray(feedHash, _data, i);
+      i += SerDeUtil.readArray(feedHash, _data, i);
     }
     final PublicKey authority;
     if (_data[i] == 0) {
@@ -70,7 +71,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     } else {
       ++i;
       name = new byte[32];
-      i += Borsh.readArray(name, _data, i);
+      i += SerDeUtil.readArray(name, _data, i);
     }
     final byte[] ipfsHash;
     if (_data[i] == 0) {
@@ -79,7 +80,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     } else {
       ++i;
       ipfsHash = new byte[32];
-      i += Borsh.readArray(ipfsHash, _data, i);
+      i += SerDeUtil.readArray(ipfsHash, _data, i);
     }
     final OptionalInt minSampleSize;
     if (_data[i] == 0) {
@@ -124,37 +125,37 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(feedHash, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(feedHash, 32, _data, i);
     }
-    i += Borsh.writeOptional(authority, _data, i);
-    i += Borsh.writeOptional(maxVariance, _data, i);
-    i += Borsh.writeOptional(minResponses, _data, i);
+    i += SerDeUtil.writeOptional(1, authority, _data, i);
+    i += SerDeUtil.writeOptional(1, maxVariance, _data, i);
+    i += SerDeUtil.writeOptional(1, minResponses, _data, i);
     if (name == null || name.length == 0) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     }
     if (ipfsHash == null || ipfsHash.length == 0) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(ipfsHash, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(ipfsHash, 32, _data, i);
     }
-    i += Borsh.writeOptionalbyte(minSampleSize, _data, i);
-    i += Borsh.writeOptional(maxStaleness, _data, i);
-    i += Borsh.writeOptional(permitWriteByAuthority, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, minSampleSize, _data, i);
+    i += SerDeUtil.writeOptional(1, maxStaleness, _data, i);
+    i += SerDeUtil.writeOptional(1, permitWriteByAuthority, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return (feedHash == null || feedHash.length == 0 ? 1 : (1 + Borsh.lenArray(feedHash)))
+    return (feedHash == null || feedHash.length == 0 ? 1 : (1 + SerDeUtil.lenArray(feedHash)))
          + (authority == null ? 1 : (1 + 32))
          + (maxVariance == null || maxVariance.isEmpty() ? 1 : (1 + 8))
          + (minResponses == null || minResponses.isEmpty() ? 1 : (1 + 4))
-         + (name == null || name.length == 0 ? 1 : (1 + Borsh.lenArray(name)))
-         + (ipfsHash == null || ipfsHash.length == 0 ? 1 : (1 + Borsh.lenArray(ipfsHash)))
+         + (name == null || name.length == 0 ? 1 : (1 + SerDeUtil.lenArray(name)))
+         + (ipfsHash == null || ipfsHash.length == 0 ? 1 : (1 + SerDeUtil.lenArray(ipfsHash)))
          + (minSampleSize == null || minSampleSize.isEmpty() ? 1 : (1 + 1))
          + (maxStaleness == null || maxStaleness.isEmpty() ? 1 : (1 + 4))
          + (permitWriteByAuthority == null ? 1 : (1 + 1));

@@ -1,13 +1,14 @@
 package software.sava.idl.clients.kamino.farms.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum RewardType implements Borsh.Enum {
+public enum RewardType implements RustEnum {
 
   Proportional,
   Constant;
 
   public static RewardType read(final byte[] _data, final int _offset) {
-    return Borsh.read(RewardType.values(), _data, _offset);
+    return SerDeUtil.read(1, RewardType.values(), _data, _offset);
   }
 }

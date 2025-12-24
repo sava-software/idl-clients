@@ -1,7 +1,8 @@
 package software.sava.idl.clients.drift.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -9,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 public record BuilderInfo(PublicKey authority,
                           int maxFeeTenthBps,
-                          byte[] padding) implements Borsh {
+                          byte[] padding) implements SerDe {
 
   public static final int BYTES = 40;
   public static final int PADDING_LEN = 6;
@@ -24,7 +25,7 @@ public record BuilderInfo(PublicKey authority,
     final var maxFeeTenthBps = getInt16LE(_data, i);
     i += 2;
     final var padding = new byte[6];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new BuilderInfo(authority, maxFeeTenthBps, padding);
   }
 
@@ -35,7 +36,7 @@ public record BuilderInfo(PublicKey authority,
     i += 32;
     putInt16LE(_data, i, maxFeeTenthBps);
     i += 2;
-    i += Borsh.writeArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
     return i - _offset;
   }
 

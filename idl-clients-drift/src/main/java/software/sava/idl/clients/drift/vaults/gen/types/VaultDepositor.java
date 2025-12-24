@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -50,7 +51,7 @@ public record VaultDepositor(PublicKey _address,
                              int lastFuelUpdateTs,
                              BigInteger cumulativeFuelPerShareAmount,
                              BigInteger fuelAmount,
-                             long[] padding) implements Borsh {
+                             long[] padding) implements SerDe {
 
   public static final int BYTES = 272;
   public static final int PADDING_LEN = 4;
@@ -209,7 +210,7 @@ public record VaultDepositor(PublicKey _address,
     final var fuelAmount = getInt128LE(_data, i);
     i += 16;
     final var padding = new long[4];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new VaultDepositor(_address,
                               discriminator,
                               vault,
@@ -262,7 +263,7 @@ public record VaultDepositor(PublicKey _address,
     i += 16;
     putInt128LE(_data, i, fuelAmount);
     i += 16;
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     return i - _offset;
   }
 

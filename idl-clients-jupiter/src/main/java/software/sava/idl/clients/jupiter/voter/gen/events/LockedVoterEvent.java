@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.voter.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface LockedVoterEvent extends Borsh permits
+public sealed interface LockedVoterEvent extends SerDe permits
     ExtendLockDurationEvent,
     IncreaseLockedAmountEvent,
     MergePartialUnstakingEvent,

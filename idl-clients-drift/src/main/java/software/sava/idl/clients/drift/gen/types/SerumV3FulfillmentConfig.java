@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -32,7 +33,7 @@ public record SerumV3FulfillmentConfig(PublicKey _address,
                                        int marketIndex,
                                        SpotFulfillmentType fulfillmentType,
                                        SpotFulfillmentConfigStatus status,
-                                       byte[] padding) implements Borsh {
+                                       byte[] padding) implements SerDe {
 
   public static final int BYTES = 344;
   public static final int PADDING_LEN = 4;
@@ -166,7 +167,7 @@ public record SerumV3FulfillmentConfig(PublicKey _address,
     final var status = SpotFulfillmentConfigStatus.read(_data, i);
     i += status.l();
     final var padding = new byte[4];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new SerumV3FulfillmentConfig(_address,
                                         discriminator,
                                         pubkey,
@@ -215,7 +216,7 @@ public record SerumV3FulfillmentConfig(PublicKey _address,
     i += 2;
     i += fulfillmentType.write(_data, i);
     i += status.write(_data, i);
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     return i - _offset;
   }
 

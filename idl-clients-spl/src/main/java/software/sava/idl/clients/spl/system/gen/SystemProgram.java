@@ -9,10 +9,9 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
-import software.sava.core.serial.Serializable;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -77,7 +76,7 @@ public final class SystemProgram {
   public record CreateAccountIxData(int discriminator,
                                     long lamports,
                                     long space,
-                                    PublicKey programAddress) implements Serializable {  
+                                    PublicKey programAddress) implements SerDe {  
 
     public static CreateAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -151,7 +150,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AssignIxData(int discriminator, PublicKey programAddress) implements Serializable {  
+  public record AssignIxData(int discriminator, PublicKey programAddress) implements SerDe {  
 
     public static AssignIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -218,7 +217,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record TransferSolIxData(int discriminator, long amount) implements Serializable {  
+  public record TransferSolIxData(int discriminator, long amount) implements SerDe {  
 
     public static TransferSolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -323,7 +322,7 @@ public final class SystemProgram {
                                             String seed, byte[] _seed,
                                             long amount,
                                             long space,
-                                            PublicKey programAddress) implements Serializable {  
+                                            PublicKey programAddress) implements SerDe {  
 
     public static CreateAccountWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -434,7 +433,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AdvanceNonceAccountIxData(int discriminator) implements Serializable {  
+  public record AdvanceNonceAccountIxData(int discriminator) implements SerDe {  
 
     public static AdvanceNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -504,7 +503,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record WithdrawNonceAccountIxData(int discriminator, long withdrawAmount) implements Serializable {  
+  public record WithdrawNonceAccountIxData(int discriminator, long withdrawAmount) implements SerDe {  
 
     public static WithdrawNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -572,7 +571,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record InitializeNonceAccountIxData(int discriminator, PublicKey nonceAuthority) implements Serializable {  
+  public record InitializeNonceAccountIxData(int discriminator, PublicKey nonceAuthority) implements SerDe {  
 
     public static InitializeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -639,7 +638,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AuthorizeNonceAccountIxData(int discriminator, PublicKey newNonceAuthority) implements Serializable {  
+  public record AuthorizeNonceAccountIxData(int discriminator, PublicKey newNonceAuthority) implements SerDe {  
 
     public static AuthorizeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -702,7 +701,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AllocateIxData(int discriminator, long space) implements Serializable {  
+  public record AllocateIxData(int discriminator, long space) implements SerDe {  
 
     public static AllocateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -795,7 +794,7 @@ public final class SystemProgram {
                                        PublicKey base,
                                        String seed, byte[] _seed,
                                        long space,
-                                       PublicKey programAddress) implements Serializable {  
+                                       PublicKey programAddress) implements SerDe {  
 
     public static AllocateWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -917,7 +916,7 @@ public final class SystemProgram {
   public record AssignWithSeedIxData(int discriminator,
                                      PublicKey base,
                                      String seed, byte[] _seed,
-                                     PublicKey programAddress) implements Serializable {  
+                                     PublicKey programAddress) implements SerDe {  
 
     public static AssignWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1032,7 +1031,7 @@ public final class SystemProgram {
   public record TransferSolWithSeedIxData(int discriminator,
                                           long amount,
                                           String fromSeed, byte[] _fromSeed,
-                                          PublicKey fromOwner) implements Serializable {  
+                                          PublicKey fromOwner) implements SerDe {  
 
     public static TransferSolWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1116,7 +1115,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record UpgradeNonceAccountIxData(int discriminator) implements Serializable {  
+  public record UpgradeNonceAccountIxData(int discriminator) implements SerDe {  
 
     public static UpgradeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

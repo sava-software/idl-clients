@@ -1,6 +1,6 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface OracleValidity extends RustEnum permits
   OracleValidity.NonPositive,

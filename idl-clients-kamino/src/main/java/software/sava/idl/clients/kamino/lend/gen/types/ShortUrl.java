@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -18,7 +19,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKey referrer, String shortUrl, byte[] _shortUrl) implements Borsh {
+public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKey referrer, String shortUrl, byte[] _shortUrl) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(28, 89, 174, 25, 226, 124, 126, 212);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -31,7 +32,7 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
   }
 
   public static ShortUrl createRecord(final PublicKey _address, final Discriminator discriminator, final PublicKey referrer, final String shortUrl) {
-    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl.getBytes(UTF_8));
+    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
   }
 
   public static ShortUrl read(final byte[] _data, final int _offset) {
@@ -60,7 +61,7 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
     i += 4;
     final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
     final var shortUrl = new String(_shortUrl, UTF_8);
-    return new ShortUrl(_address, discriminator, referrer, shortUrl, _shortUrl);
+    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
   }
 
   @Override
@@ -68,7 +69,7 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
     int i = _offset + discriminator.write(_data, _offset);
     referrer.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(_shortUrl, _data, i);
+    i += SerDeUtil.writeVector(4, _shortUrl, _data, i);
     return i - _offset;
   }
 

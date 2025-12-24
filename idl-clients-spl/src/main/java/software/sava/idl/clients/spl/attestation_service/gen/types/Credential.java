@@ -3,9 +3,10 @@ package software.sava.idl.clients.spl.attestation_service.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ public record Credential(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey authority,
                          byte[] name,
-                         PublicKey[] authorizedSigners) implements Borsh {
+                         PublicKey[] authorizedSigners) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(145, 44, 68, 220, 67, 46, 100, 135);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -50,9 +51,9 @@ public record Credential(PublicKey _address,
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;
-    final var name = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(name);
-    final var authorizedSigners = Borsh.readPublicKeyVector(_data, i);
+    final var name = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, name);
+    final var authorizedSigners = SerDeUtil.readPublicKeyVector(4, _data, i);
     return new Credential(_address, discriminator, authority, name, authorizedSigners);
   }
 
@@ -61,13 +62,13 @@ public record Credential(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     authority.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(name, _data, i);
-    i += Borsh.writeVector(authorizedSigners, _data, i);
+    i += SerDeUtil.writeVector(4, name, _data, i);
+    i += SerDeUtil.writeVector(4, authorizedSigners, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + Borsh.lenVector(name) + Borsh.lenVector(authorizedSigners);
+    return 8 + 32 + SerDeUtil.lenVector(4, name) + SerDeUtil.lenVector(4, authorizedSigners);
   }
 }

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -32,12 +32,12 @@ public record MessageReceived(Discriminator discriminator,
     final var sourceDomain = getInt32LE(_data, i);
     i += 4;
     final var nonce = new byte[32];
-    i += Borsh.readArray(nonce, _data, i);
+    i += SerDeUtil.readArray(nonce, _data, i);
     final var sender = readPubKey(_data, i);
     i += 32;
     final var finalityThresholdExecuted = getInt32LE(_data, i);
     i += 4;
-    final var messageBody = Borsh.readbyteVector(_data, i);
+    final var messageBody = SerDeUtil.readbyteVector(4, _data, i);
     return new MessageReceived(discriminator,
                                caller,
                                sourceDomain,
@@ -54,12 +54,12 @@ public record MessageReceived(Discriminator discriminator,
     i += 32;
     putInt32LE(_data, i, sourceDomain);
     i += 4;
-    i += Borsh.writeArrayChecked(nonce, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(nonce, 32, _data, i);
     sender.write(_data, i);
     i += 32;
     putInt32LE(_data, i, finalityThresholdExecuted);
     i += 4;
-    i += Borsh.writeVector(messageBody, _data, i);
+    i += SerDeUtil.writeVector(4, messageBody, _data, i);
     return i - _offset;
   }
 
@@ -67,9 +67,9 @@ public record MessageReceived(Discriminator discriminator,
   public int l() {
     return 8 + 32
          + 4
-         + Borsh.lenArray(nonce)
+         + SerDeUtil.lenArray(nonce)
          + 32
          + 4
-         + Borsh.lenVector(messageBody);
+         + SerDeUtil.lenVector(4, messageBody);
   }
 }

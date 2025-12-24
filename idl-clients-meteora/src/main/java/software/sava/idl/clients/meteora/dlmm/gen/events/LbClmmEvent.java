@@ -1,8 +1,8 @@
 package software.sava.idl.clients.meteora.dlmm.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface LbClmmEvent extends Borsh permits
+public sealed interface LbClmmEvent extends SerDe permits
     AddLiquidity,
     ClaimFee,
     ClaimFee2,

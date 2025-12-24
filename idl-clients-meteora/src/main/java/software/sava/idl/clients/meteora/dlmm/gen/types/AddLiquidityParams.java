@@ -1,6 +1,7 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -15,7 +16,7 @@ public record AddLiquidityParams(int minDeltaId,
                                  long deltaY,
                                  int bitFlag,
                                  boolean favorXInActiveId,
-                                 byte[] padding) implements Borsh {
+                                 byte[] padding) implements SerDe {
 
   public static final int BYTES = 58;
   public static final int PADDING_LEN = 16;
@@ -42,7 +43,7 @@ public record AddLiquidityParams(int minDeltaId,
     final var favorXInActiveId = _data[i] == 1;
     ++i;
     final var padding = new byte[16];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new AddLiquidityParams(minDeltaId,
                                   maxDeltaId,
                                   x0,
@@ -73,7 +74,7 @@ public record AddLiquidityParams(int minDeltaId,
     ++i;
     _data[i] = (byte) (favorXInActiveId ? 1 : 0);
     ++i;
-    i += Borsh.writeArrayChecked(padding, 16, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 16, _data, i);
     return i - _offset;
   }
 

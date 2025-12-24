@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -27,7 +28,7 @@ public record RevenueShareEscrow(PublicKey _address,
                                  int padding0,
                                  RevenueShareOrder[] orders,
                                  int padding1,
-                                 BuilderInfo[] approvedBuilders) implements Borsh {
+                                 BuilderInfo[] approvedBuilders) implements SerDe {
 
   public static final int RESERVED_FIXED_LEN = 17;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(98, 167, 3, 46, 74, 177, 173, 252);
@@ -108,14 +109,14 @@ public record RevenueShareEscrow(PublicKey _address,
     final var referrerBoostNumerator = _data[i];
     ++i;
     final var reservedFixed = new byte[17];
-    i += Borsh.readArray(reservedFixed, _data, i);
+    i += SerDeUtil.readArray(reservedFixed, _data, i);
     final var padding0 = getInt32LE(_data, i);
     i += 4;
-    final var orders = Borsh.readVector(RevenueShareOrder.class, RevenueShareOrder::read, _data, i);
-    i += Borsh.lenVector(orders);
+    final var orders = SerDeUtil.readVector(4, RevenueShareOrder.class, RevenueShareOrder::read, _data, i);
+    i += SerDeUtil.lenVector(4, orders);
     final var padding1 = getInt32LE(_data, i);
     i += 4;
-    final var approvedBuilders = Borsh.readVector(BuilderInfo.class, BuilderInfo::read, _data, i);
+    final var approvedBuilders = SerDeUtil.readVector(4, BuilderInfo.class, BuilderInfo::read, _data, i);
     return new RevenueShareEscrow(_address,
                                   discriminator,
                                   authority,
@@ -146,13 +147,13 @@ public record RevenueShareEscrow(PublicKey _address,
     ++i;
     _data[i] = (byte) referrerBoostNumerator;
     ++i;
-    i += Borsh.writeArrayChecked(reservedFixed, 17, _data, i);
+    i += SerDeUtil.writeArrayChecked(reservedFixed, 17, _data, i);
     putInt32LE(_data, i, padding0);
     i += 4;
-    i += Borsh.writeVector(orders, _data, i);
+    i += SerDeUtil.writeVector(4, orders, _data, i);
     putInt32LE(_data, i, padding1);
     i += 4;
-    i += Borsh.writeVector(approvedBuilders, _data, i);
+    i += SerDeUtil.writeVector(4, approvedBuilders, _data, i);
     return i - _offset;
   }
 
@@ -164,10 +165,10 @@ public record RevenueShareEscrow(PublicKey _address,
          + 1
          + 1
          + 1
-         + Borsh.lenArray(reservedFixed)
+         + SerDeUtil.lenArray(reservedFixed)
          + 4
-         + Borsh.lenVector(orders)
+         + SerDeUtil.lenVector(4, orders)
          + 4
-         + Borsh.lenVector(approvedBuilders);
+         + SerDeUtil.lenVector(4, approvedBuilders);
   }
 }

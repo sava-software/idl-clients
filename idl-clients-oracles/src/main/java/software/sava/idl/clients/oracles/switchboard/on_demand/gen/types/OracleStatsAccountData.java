@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -29,7 +30,7 @@ public record OracleStatsAccountData(PublicKey _address,
                                      long lastTransferSlot,
                                      int bump,
                                      byte[] padding1,
-                                     byte[] ebuf) implements Borsh {
+                                     byte[] ebuf) implements SerDe {
 
   public static final int BYTES = 1240;
   public static final int PADDING_1_LEN = 7;
@@ -114,9 +115,9 @@ public record OracleStatsAccountData(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[7];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var ebuf = new byte[1024];
-    Borsh.readArray(ebuf, _data, i);
+    SerDeUtil.readArray(ebuf, _data, i);
     return new OracleStatsAccountData(_address,
                                       discriminator,
                                       owner,
@@ -144,8 +145,8 @@ public record OracleStatsAccountData(PublicKey _address,
     i += 8;
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 7, _data, i);
-    i += Borsh.writeArrayChecked(ebuf, 1024, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf, 1024, _data, i);
     return i - _offset;
   }
 

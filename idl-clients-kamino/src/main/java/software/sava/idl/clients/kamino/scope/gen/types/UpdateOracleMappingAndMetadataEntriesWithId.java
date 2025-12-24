@@ -1,11 +1,12 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
-public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOracleMappingAndMetadataEntry[] updates) implements Borsh {
+public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOracleMappingAndMetadataEntry[] updates) implements SerDe {
 
   public static UpdateOracleMappingAndMetadataEntriesWithId read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -14,7 +15,7 @@ public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOra
     int i = _offset;
     final var entryId = getInt16LE(_data, i);
     i += 2;
-    final var updates = Borsh.readVector(UpdateOracleMappingAndMetadataEntry.class, UpdateOracleMappingAndMetadataEntry::read, _data, i);
+    final var updates = SerDeUtil.readVector(4, UpdateOracleMappingAndMetadataEntry.class, UpdateOracleMappingAndMetadataEntry::read, _data, i);
     return new UpdateOracleMappingAndMetadataEntriesWithId(entryId, updates);
   }
 
@@ -23,12 +24,12 @@ public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOra
     int i = _offset;
     putInt16LE(_data, i, entryId);
     i += 2;
-    i += Borsh.writeVector(updates, _data, i);
+    i += SerDeUtil.writeVector(4, updates, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 2 + Borsh.lenVector(updates);
+    return 2 + SerDeUtil.lenVector(4, updates);
   }
 }

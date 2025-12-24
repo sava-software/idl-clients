@@ -5,7 +5,6 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.cctp.message_transmitter.v2.gen.types.AcceptOwnershipParams;
@@ -22,6 +21,7 @@ import software.sava.idl.clients.cctp.message_transmitter.v2.gen.types.TransferO
 import software.sava.idl.clients.cctp.message_transmitter.v2.gen.types.UnpauseParams;
 import software.sava.idl.clients.cctp.message_transmitter.v2.gen.types.UpdateAttesterManagerParams;
 import software.sava.idl.clients.cctp.message_transmitter.v2.gen.types.UpdatePauserParams;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -71,7 +71,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record AcceptOwnershipIxData(Discriminator discriminator, AcceptOwnershipParams params) implements Borsh {  
+  public record AcceptOwnershipIxData(Discriminator discriminator, AcceptOwnershipParams params) implements SerDe {  
 
     public static AcceptOwnershipIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -149,7 +149,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record DisableAttesterIxData(Discriminator discriminator, DisableAttesterParams params) implements Borsh {  
+  public record DisableAttesterIxData(Discriminator discriminator, DisableAttesterParams params) implements SerDe {  
 
     public static DisableAttesterIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -227,7 +227,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record EnableAttesterIxData(Discriminator discriminator, EnableAttesterParams params) implements Borsh {  
+  public record EnableAttesterIxData(Discriminator discriminator, EnableAttesterParams params) implements SerDe {  
 
     public static EnableAttesterIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -313,7 +313,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, InitializeParams params) implements Borsh {  
+  public record InitializeIxData(Discriminator discriminator, InitializeParams params) implements SerDe {  
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -406,7 +406,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record PauseIxData(Discriminator discriminator, PauseParams params) implements Borsh {  
+  public record PauseIxData(Discriminator discriminator, PauseParams params) implements SerDe {  
 
     public static PauseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -498,7 +498,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record ReceiveMessageIxData(Discriminator discriminator, ReceiveMessageParams params) implements Borsh {  
+  public record ReceiveMessageIxData(Discriminator discriminator, ReceiveMessageParams params) implements SerDe {  
 
     public static ReceiveMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -564,7 +564,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record ReclaimEventAccountIxData(Discriminator discriminator, ReclaimEventAccountParams params) implements Borsh {  
+  public record ReclaimEventAccountIxData(Discriminator discriminator, ReclaimEventAccountParams params) implements SerDe {  
 
     public static ReclaimEventAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -640,7 +640,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record SendMessageIxData(Discriminator discriminator, SendMessageParams params) implements Borsh {  
+  public record SendMessageIxData(Discriminator discriminator, SendMessageParams params) implements SerDe {  
 
     public static SendMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -708,7 +708,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record SetMaxMessageBodySizeIxData(Discriminator discriminator, SetMaxMessageBodySizeParams params) implements Borsh {  
+  public record SetMaxMessageBodySizeIxData(Discriminator discriminator, SetMaxMessageBodySizeParams params) implements SerDe {  
 
     public static SetMaxMessageBodySizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -778,7 +778,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record SetSignatureThresholdIxData(Discriminator discriminator, SetSignatureThresholdParams params) implements Borsh {  
+  public record SetSignatureThresholdIxData(Discriminator discriminator, SetSignatureThresholdParams params) implements SerDe {  
 
     public static SetSignatureThresholdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -848,7 +848,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record TransferOwnershipIxData(Discriminator discriminator, TransferOwnershipParams params) implements Borsh {  
+  public record TransferOwnershipIxData(Discriminator discriminator, TransferOwnershipParams params) implements SerDe {  
 
     public static TransferOwnershipIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -918,7 +918,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record UnpauseIxData(Discriminator discriminator, UnpauseParams params) implements Borsh {  
+  public record UnpauseIxData(Discriminator discriminator, UnpauseParams params) implements SerDe {  
 
     public static UnpauseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -988,7 +988,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record UpdateAttesterManagerIxData(Discriminator discriminator, UpdateAttesterManagerParams params) implements Borsh {  
+  public record UpdateAttesterManagerIxData(Discriminator discriminator, UpdateAttesterManagerParams params) implements SerDe {  
 
     public static UpdateAttesterManagerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1058,7 +1058,7 @@ public final class MessageTransmitterV2Program {
     return Instruction.createInstruction(invokedMessageTransmitterV2ProgramMeta, keys, _data);
   }
 
-  public record UpdatePauserIxData(Discriminator discriminator, UpdatePauserParams params) implements Borsh {  
+  public record UpdatePauserIxData(Discriminator discriminator, UpdatePauserParams params) implements SerDe {  
 
     public static UpdatePauserIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

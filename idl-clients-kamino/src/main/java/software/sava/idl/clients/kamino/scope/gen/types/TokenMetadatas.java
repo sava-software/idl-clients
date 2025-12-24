@@ -3,15 +3,16 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record TokenMetadatas(PublicKey _address, Discriminator discriminator, TokenMetadata[] metadatasArray) implements Borsh {
+public record TokenMetadatas(PublicKey _address, Discriminator discriminator, TokenMetadata[] metadatasArray) implements SerDe {
 
   public static final int BYTES = 86024;
   public static final int METADATAS_ARRAY_LEN = 512;
@@ -43,14 +44,14 @@ public record TokenMetadatas(PublicKey _address, Discriminator discriminator, To
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var metadatasArray = new TokenMetadata[512];
-    Borsh.readArray(metadatasArray, TokenMetadata::read, _data, i);
+    SerDeUtil.readArray(metadatasArray, TokenMetadata::read, _data, i);
     return new TokenMetadatas(_address, discriminator, metadatasArray);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(metadatasArray, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(metadatasArray, 512, _data, i);
     return i - _offset;
   }
 

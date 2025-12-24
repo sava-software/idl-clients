@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.merkle.distributor.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface MerkleDistributorEvent extends Borsh permits
+public sealed interface MerkleDistributorEvent extends SerDe permits
     NewClaimEvent,
     ClaimedEvent {
 

@@ -3,8 +3,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -76,14 +76,14 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
         return null;
       }
       final var val = new byte[8];
-      Borsh.readArray(val, _data, _offset);
+      SerDeUtil.readArray(val, _data, _offset);
       return new U8Array(val);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeArrayChecked(val, 8, _data, i);
+      i += SerDeUtil.writeArrayChecked(val, 8, _data, i);
       return i - _offset;
     }
 
@@ -146,7 +146,7 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
     }
   }
 
-  record ElevationGroup(software.sava.idl.clients.kamino.lend.gen.types.ElevationGroup val) implements BorshEnum, UpdateLendingMarketConfigValue {
+  record ElevationGroup(software.sava.idl.clients.kamino.lend.gen.types.ElevationGroup val) implements SerDeEnum, UpdateLendingMarketConfigValue {
 
     public static ElevationGroup read(final byte[] _data, final int _offset) {
       return new ElevationGroup(software.sava.idl.clients.kamino.lend.gen.types.ElevationGroup.read(_data, _offset));
@@ -168,14 +168,14 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
         return null;
       }
       final var val = new byte[32];
-      Borsh.readArray(val, _data, _offset);
+      SerDeUtil.readArray(val, _data, _offset);
       return new Name(val);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeArrayChecked(val, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(val, 32, _data, i);
       return i - _offset;
     }
 

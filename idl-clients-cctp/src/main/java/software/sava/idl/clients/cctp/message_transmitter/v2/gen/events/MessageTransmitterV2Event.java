@@ -1,8 +1,8 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface MessageTransmitterV2Event extends Borsh permits
+public sealed interface MessageTransmitterV2Event extends SerDe permits
     AttesterDisabled,
     AttesterEnabled,
     AttesterManagerUpdated,

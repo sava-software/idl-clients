@@ -3,9 +3,10 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -18,7 +19,7 @@ public record BinArrayBitmapExtension(PublicKey _address,
                                       Discriminator discriminator,
                                       PublicKey lbPair,
                                       long[][] positiveBinArrayBitmap,
-                                      long[][] negativeBinArrayBitmap) implements Borsh {
+                                      long[][] negativeBinArrayBitmap) implements SerDe {
 
   public static final int BYTES = 1576;
   public static final int POSITIVE_BIN_ARRAY_BITMAP_LEN = 12;
@@ -59,9 +60,9 @@ public record BinArrayBitmapExtension(PublicKey _address,
     final var lbPair = readPubKey(_data, i);
     i += 32;
     final var positiveBinArrayBitmap = new long[12][8];
-    i += Borsh.readArray(positiveBinArrayBitmap, _data, i);
+    i += SerDeUtil.readArray(positiveBinArrayBitmap, _data, i);
     final var negativeBinArrayBitmap = new long[12][8];
-    Borsh.readArray(negativeBinArrayBitmap, _data, i);
+    SerDeUtil.readArray(negativeBinArrayBitmap, _data, i);
     return new BinArrayBitmapExtension(_address, discriminator, lbPair, positiveBinArrayBitmap, negativeBinArrayBitmap);
   }
 
@@ -70,8 +71,8 @@ public record BinArrayBitmapExtension(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     lbPair.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(positiveBinArrayBitmap, 12, _data, i);
-    i += Borsh.writeArrayChecked(negativeBinArrayBitmap, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(positiveBinArrayBitmap, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(negativeBinArrayBitmap, 12, _data, i);
     return i - _offset;
   }
 

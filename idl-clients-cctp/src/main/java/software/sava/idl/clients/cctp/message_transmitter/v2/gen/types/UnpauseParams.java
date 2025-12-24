@@ -1,8 +1,8 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record UnpauseParams() implements Borsh {
+public record UnpauseParams() implements SerDe {
 
   private static final UnpauseParams INSTANCE = new UnpauseParams();
 

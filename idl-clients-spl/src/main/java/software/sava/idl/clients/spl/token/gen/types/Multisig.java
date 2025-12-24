@@ -3,9 +3,9 @@ package software.sava.idl.clients.spl.token.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
-import software.sava.core.serial.Serializable;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 /// @param m Number of signers required.
@@ -16,7 +16,7 @@ public record Multisig(PublicKey _address,
                        int m,
                        int n,
                        boolean isInitialized,
-                       PublicKey[] signers) implements Serializable {
+                       PublicKey[] signers) implements SerDe {
 
   public static final int BYTES = 355;
   public static final int SIGNERS_LEN = 11;
@@ -66,7 +66,7 @@ public record Multisig(PublicKey _address,
     final var isInitialized = _data[i] == 1;
     ++i;
     final var signers = new PublicKey[11];
-    Borsh.readArray(signers, _data, i);
+    SerDeUtil.readArray(signers, _data, i);
     return new Multisig(_address,
                         m,
                         n,
@@ -83,7 +83,7 @@ public record Multisig(PublicKey _address,
     ++i;
     _data[i] = (byte) (isInitialized ? 1 : 0);
     ++i;
-    i += Borsh.writeArrayChecked(signers, 11, _data, i);
+    i += SerDeUtil.writeArrayChecked(signers, 11, _data, i);
     return i - _offset;
   }
 

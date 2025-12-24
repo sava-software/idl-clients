@@ -3,16 +3,17 @@ package software.sava.idl.clients.kamino.farms.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record OraclePrices(PublicKey _address, Discriminator discriminator, PublicKey oracleMappings, DatedPrice[] prices) implements Borsh {
+public record OraclePrices(PublicKey _address, Discriminator discriminator, PublicKey oracleMappings, DatedPrice[] prices) implements SerDe {
 
   public static final int BYTES = 28712;
   public static final int PRICES_LEN = 512;
@@ -51,7 +52,7 @@ public record OraclePrices(PublicKey _address, Discriminator discriminator, Publ
     final var oracleMappings = readPubKey(_data, i);
     i += 32;
     final var prices = new DatedPrice[512];
-    Borsh.readArray(prices, DatedPrice::read, _data, i);
+    SerDeUtil.readArray(prices, DatedPrice::read, _data, i);
     return new OraclePrices(_address, discriminator, oracleMappings, prices);
   }
 
@@ -60,7 +61,7 @@ public record OraclePrices(PublicKey _address, Discriminator discriminator, Publ
     int i = _offset + discriminator.write(_data, _offset);
     oracleMappings.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(prices, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(prices, 512, _data, i);
     return i - _offset;
   }
 

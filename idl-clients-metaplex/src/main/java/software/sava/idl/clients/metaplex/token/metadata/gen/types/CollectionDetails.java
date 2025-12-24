@@ -1,7 +1,7 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
@@ -41,14 +41,14 @@ public sealed interface CollectionDetails extends RustEnum permits
         return null;
       }
       final var val = new byte[8];
-      Borsh.readArray(val, _data, _offset);
+      SerDeUtil.readArray(val, _data, _offset);
       return new V2(val);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeArrayChecked(val, 8, _data, i);
+      i += SerDeUtil.writeArrayChecked(val, 8, _data, i);
       return i - _offset;
     }
 

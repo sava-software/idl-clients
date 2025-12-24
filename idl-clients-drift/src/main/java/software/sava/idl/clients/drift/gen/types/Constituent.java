@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -73,7 +74,7 @@ public record Constituent(PublicKey _address,
                           int xi,
                           int status,
                           int pausedOperations,
-                          byte[] padding) implements Borsh {
+                          byte[] padding) implements SerDe {
 
   public static final int BYTES = 480;
   public static final int PADDING_LEN = 162;
@@ -367,7 +368,7 @@ public record Constituent(PublicKey _address,
     final var pausedOperations = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[162];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new Constituent(_address,
                            discriminator,
                            pubkey,
@@ -471,7 +472,7 @@ public record Constituent(PublicKey _address,
     ++i;
     _data[i] = (byte) pausedOperations;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 162, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 162, _data, i);
     return i - _offset;
   }
 

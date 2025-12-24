@@ -4,8 +4,9 @@ import java.util.OptionalInt;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -22,7 +23,7 @@ public record Metadata(PublicKey _address,
                        Collection collection,
                        Uses uses,
                        CollectionDetails collectionDetails,
-                       ProgrammableConfig programmableConfig) implements Borsh {
+                       ProgrammableConfig programmableConfig) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int UPDATE_AUTHORITY_OFFSET = 1;
@@ -152,12 +153,12 @@ public record Metadata(PublicKey _address,
     ++i;
     _data[i] = (byte) (isMutable ? 1 : 0);
     ++i;
-    i += Borsh.writeOptionalbyte(editionNonce, _data, i);
-    i += Borsh.writeOptional(tokenStandard, _data, i);
-    i += Borsh.writeOptional(collection, _data, i);
-    i += Borsh.writeOptional(uses, _data, i);
-    i += Borsh.writeOptional(collectionDetails, _data, i);
-    i += Borsh.writeOptional(programmableConfig, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, editionNonce, _data, i);
+    i += SerDeUtil.writeOptional(1, tokenStandard, _data, i);
+    i += SerDeUtil.writeOptional(1, collection, _data, i);
+    i += SerDeUtil.writeOptional(1, uses, _data, i);
+    i += SerDeUtil.writeOptional(1, collectionDetails, _data, i);
+    i += SerDeUtil.writeOptional(1, programmableConfig, _data, i);
     return i - _offset;
   }
 

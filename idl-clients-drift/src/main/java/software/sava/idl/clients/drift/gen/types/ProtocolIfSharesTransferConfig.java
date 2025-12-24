@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -23,7 +24,7 @@ public record ProtocolIfSharesTransferConfig(PublicKey _address,
                                              BigInteger maxTransferPerEpoch,
                                              BigInteger currentEpochTransfer,
                                              long nextEpochTs,
-                                             BigInteger[] padding) implements Borsh {
+                                             BigInteger[] padding) implements SerDe {
 
   public static final int BYTES = 304;
   public static final int WHITELISTED_SIGNERS_LEN = 4;
@@ -78,7 +79,7 @@ public record ProtocolIfSharesTransferConfig(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var whitelistedSigners = new PublicKey[4];
-    i += Borsh.readArray(whitelistedSigners, _data, i);
+    i += SerDeUtil.readArray(whitelistedSigners, _data, i);
     final var maxTransferPerEpoch = getInt128LE(_data, i);
     i += 16;
     final var currentEpochTransfer = getInt128LE(_data, i);
@@ -86,7 +87,7 @@ public record ProtocolIfSharesTransferConfig(PublicKey _address,
     final var nextEpochTs = getInt64LE(_data, i);
     i += 8;
     final var padding = new BigInteger[8];
-    Borsh.read128Array(padding, _data, i);
+    SerDeUtil.read128Array(padding, _data, i);
     return new ProtocolIfSharesTransferConfig(_address,
                                               discriminator,
                                               whitelistedSigners,
@@ -99,14 +100,14 @@ public record ProtocolIfSharesTransferConfig(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(whitelistedSigners, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(whitelistedSigners, 4, _data, i);
     putInt128LE(_data, i, maxTransferPerEpoch);
     i += 16;
     putInt128LE(_data, i, currentEpochTransfer);
     i += 16;
     putInt64LE(_data, i, nextEpochTs);
     i += 8;
-    i += Borsh.write128ArrayChecked(padding, 8, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding, 8, _data, i);
     return i - _offset;
   }
 

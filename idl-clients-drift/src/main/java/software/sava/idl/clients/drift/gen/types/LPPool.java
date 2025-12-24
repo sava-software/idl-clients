@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -60,7 +61,7 @@ public record LPPool(PublicKey _address,
                      int targetOracleDelayFeeBpsPer10Slots,
                      int targetPositionDelayFeeBpsPer10Slots,
                      int lpPoolId,
-                     byte[] padding1) implements Borsh {
+                     byte[] padding1) implements SerDe {
 
   public static final int BYTES = 496;
   public static final int PADDING_1_LEN = 174;
@@ -304,7 +305,7 @@ public record LPPool(PublicKey _address,
     final var lpPoolId = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[174];
-    Borsh.readArray(padding1, _data, i);
+    SerDeUtil.readArray(padding1, _data, i);
     return new LPPool(_address,
                       discriminator,
                       pubkey,
@@ -391,7 +392,7 @@ public record LPPool(PublicKey _address,
     ++i;
     _data[i] = (byte) lpPoolId;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 174, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 174, _data, i);
     return i - _offset;
   }
 

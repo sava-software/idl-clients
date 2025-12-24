@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -71,7 +72,7 @@ public record Order(long slot,
                     int auctionDuration,
                     int postedSlotTail,
                     int bitFlags,
-                    byte[] padding) implements Borsh {
+                    byte[] padding) implements SerDe {
 
   public static final int BYTES = 96;
   public static final int PADDING_LEN = 1;
@@ -132,7 +133,7 @@ public record Order(long slot,
     final var bitFlags = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[1];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new Order(slot,
                      price,
                      baseAssetAmount,
@@ -208,7 +209,7 @@ public record Order(long slot,
     ++i;
     _data[i] = (byte) bitFlags;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 1, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 1, _data, i);
     return i - _offset;
   }
 

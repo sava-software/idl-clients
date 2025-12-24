@@ -1,6 +1,6 @@
 package software.sava.idl.clients.kamino.vaults.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface UpdateReserveWhitelistMode extends RustEnum permits
   UpdateReserveWhitelistMode.Invest,

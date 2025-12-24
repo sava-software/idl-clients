@@ -3,9 +3,10 @@ package software.sava.idl.clients.jupiter.governance.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -31,7 +32,7 @@ public record Vote(PublicKey _address,
                    int side,
                    long votingPower,
                    boolean claimed,
-                   byte[] buffers) implements Borsh {
+                   byte[] buffers) implements SerDe {
 
   public static final int BYTES = 115;
   public static final int BUFFERS_LEN = 32;
@@ -107,7 +108,7 @@ public record Vote(PublicKey _address,
     final var claimed = _data[i] == 1;
     ++i;
     final var buffers = new byte[32];
-    Borsh.readArray(buffers, _data, i);
+    SerDeUtil.readArray(buffers, _data, i);
     return new Vote(_address,
                     discriminator,
                     proposal,
@@ -134,7 +135,7 @@ public record Vote(PublicKey _address,
     i += 8;
     _data[i] = (byte) (claimed ? 1 : 0);
     ++i;
-    i += Borsh.writeArrayChecked(buffers, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }
 

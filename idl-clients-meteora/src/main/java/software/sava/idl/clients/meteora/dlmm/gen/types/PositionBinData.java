@@ -2,14 +2,14 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 public record PositionBinData(BigInteger liquidityShare,
                               UserRewardInfo rewardInfo,
-                              FeeInfo feeInfo) implements Borsh {
+                              FeeInfo feeInfo) implements SerDe {
 
   public static final int BYTES = 112;
 

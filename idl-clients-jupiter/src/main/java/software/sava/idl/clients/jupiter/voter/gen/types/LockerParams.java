@@ -1,6 +1,6 @@
 package software.sava.idl.clients.jupiter.voter.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -15,7 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record LockerParams(int maxStakeVoteMultiplier,
                            long minStakeDuration,
                            long maxStakeDuration,
-                           long proposalActivationMinVotes) implements Borsh {
+                           long proposalActivationMinVotes) implements SerDe {
 
   public static final int BYTES = 25;
 

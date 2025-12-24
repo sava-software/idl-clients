@@ -1,6 +1,6 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -57,7 +57,7 @@ public sealed interface CandidateSwap extends RustEnum permits
     }
   }
 
-  record TesseraV(Side val) implements BorshEnum, CandidateSwap {
+  record TesseraV(Side val) implements SerDeEnum, CandidateSwap {
 
     public static TesseraV read(final byte[] _data, final int _offset) {
       return new TesseraV(Side.read(_data, _offset));

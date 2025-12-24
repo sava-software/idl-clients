@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -42,7 +43,7 @@ public record VaultProtocol(PublicKey _address,
                             int protocolProfitShare,
                             int bump,
                             int version,
-                            byte[] padding) implements Borsh {
+                            byte[] padding) implements SerDe {
 
   public static final int BYTES = 128;
   public static final int PADDING_LEN = 2;
@@ -156,7 +157,7 @@ public record VaultProtocol(PublicKey _address,
     final var version = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[2];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new VaultProtocol(_address,
                              discriminator,
                              protocol,
@@ -194,7 +195,7 @@ public record VaultProtocol(PublicKey _address,
     ++i;
     _data[i] = (byte) version;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 2, _data, i);
     return i - _offset;
   }
 

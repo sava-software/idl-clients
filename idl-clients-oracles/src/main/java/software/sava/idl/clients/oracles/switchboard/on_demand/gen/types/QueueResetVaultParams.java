@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record QueueResetVaultParams() implements Borsh {
+public record QueueResetVaultParams() implements SerDe {
 
   private static final QueueResetVaultParams INSTANCE = new QueueResetVaultParams();
 

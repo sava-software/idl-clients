@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.governance.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -40,7 +40,7 @@ public record ProposalCreateEvent(Discriminator discriminator,
     ++i;
     final var index = getInt64LE(_data, i);
     i += 8;
-    final var instructions = Borsh.readVector(ProposalInstruction.class, ProposalInstruction::read, _data, i);
+    final var instructions = SerDeUtil.readVector(4, ProposalInstruction.class, ProposalInstruction::read, _data, i);
     return new ProposalCreateEvent(discriminator,
                                    governor,
                                    proposal,
@@ -66,7 +66,7 @@ public record ProposalCreateEvent(Discriminator discriminator,
     ++i;
     putInt64LE(_data, i, index);
     i += 8;
-    i += Borsh.writeVector(instructions, _data, i);
+    i += SerDeUtil.writeVector(4, instructions, _data, i);
     return i - _offset;
   }
 
@@ -78,6 +78,6 @@ public record ProposalCreateEvent(Discriminator discriminator,
          + 1
          + 1
          + 8
-         + Borsh.lenVector(instructions);
+         + SerDeUtil.lenVector(4, instructions);
   }
 }

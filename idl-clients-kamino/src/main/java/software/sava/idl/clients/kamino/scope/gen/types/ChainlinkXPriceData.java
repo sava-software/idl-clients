@@ -1,6 +1,6 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 public record ChainlinkXPriceData(long observationsTimestamp,
                                   boolean suspended,
-                                  long activationDateTime) implements Borsh {
+                                  long activationDateTime) implements SerDe {
 
   public static final int BYTES = 17;
 

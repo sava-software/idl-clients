@@ -1,6 +1,6 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -12,7 +12,7 @@ public record FeeTier(int feeNumerator,
                       int referrerRewardNumerator,
                       int referrerRewardDenominator,
                       int refereeFeeNumerator,
-                      int refereeFeeDenominator) implements Borsh {
+                      int refereeFeeDenominator) implements SerDe {
 
   public static final int BYTES = 32;
 

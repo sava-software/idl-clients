@@ -4,9 +4,9 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.ChangeAuthorityData;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.ConfigLpParams;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.ConfigMarinadeParams;
@@ -97,7 +97,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, InitializeData data) implements Borsh {  
+  public record InitializeIxData(Discriminator discriminator, InitializeData data) implements SerDe {  
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -159,7 +159,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ChangeAuthorityIxData(Discriminator discriminator, ChangeAuthorityData data) implements Borsh {  
+  public record ChangeAuthorityIxData(Discriminator discriminator, ChangeAuthorityData data) implements SerDe {  
 
     public static ChangeAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -249,7 +249,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record AddValidatorIxData(Discriminator discriminator, int score) implements Borsh {  
+  public record AddValidatorIxData(Discriminator discriminator, int score) implements SerDe {  
 
     public static AddValidatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -328,7 +328,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record RemoveValidatorIxData(Discriminator discriminator, int index, PublicKey validatorVote) implements Borsh {  
+  public record RemoveValidatorIxData(Discriminator discriminator, int index, PublicKey validatorVote) implements SerDe {  
 
     public static RemoveValidatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -416,7 +416,7 @@ public final class MarinadeFinanceProgram {
   public record SetValidatorScoreIxData(Discriminator discriminator,
                                         int index,
                                         PublicKey validatorVote,
-                                        int score) implements Borsh {  
+                                        int score) implements SerDe {  
 
     public static SetValidatorScoreIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -487,7 +487,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ConfigValidatorSystemIxData(Discriminator discriminator, int extraRuns) implements Borsh {  
+  public record ConfigValidatorSystemIxData(Discriminator discriminator, int extraRuns) implements SerDe {  
 
     public static ConfigValidatorSystemIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -588,7 +588,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record DepositIxData(Discriminator discriminator, long lamports) implements Borsh {  
+  public record DepositIxData(Discriminator discriminator, long lamports) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -705,7 +705,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record DepositStakeAccountIxData(Discriminator discriminator, int validatorIndex) implements Borsh {  
+  public record DepositStakeAccountIxData(Discriminator discriminator, int validatorIndex) implements SerDe {  
 
     public static DepositStakeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -800,7 +800,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record LiquidUnstakeIxData(Discriminator discriminator, long msolAmount) implements Borsh {  
+  public record LiquidUnstakeIxData(Discriminator discriminator, long msolAmount) implements SerDe {  
 
     public static LiquidUnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -891,7 +891,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityIxData(Discriminator discriminator, long lamports) implements Borsh {  
+  public record AddLiquidityIxData(Discriminator discriminator, long lamports) implements SerDe {  
 
     public static AddLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -990,7 +990,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record RemoveLiquidityIxData(Discriminator discriminator, long tokens) implements Borsh {  
+  public record RemoveLiquidityIxData(Discriminator discriminator, long tokens) implements SerDe {  
 
     public static RemoveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1053,7 +1053,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ConfigLpIxData(Discriminator discriminator, ConfigLpParams params) implements Borsh {  
+  public record ConfigLpIxData(Discriminator discriminator, ConfigLpParams params) implements SerDe {  
 
     public static ConfigLpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1113,7 +1113,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ConfigMarinadeIxData(Discriminator discriminator, ConfigMarinadeParams params) implements Borsh {  
+  public record ConfigMarinadeIxData(Discriminator discriminator, ConfigMarinadeParams params) implements SerDe {  
 
     public static ConfigMarinadeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1197,7 +1197,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record OrderUnstakeIxData(Discriminator discriminator, long msolAmount) implements Borsh {  
+  public record OrderUnstakeIxData(Discriminator discriminator, long msolAmount) implements SerDe {  
 
     public static OrderUnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1353,7 +1353,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record StakeReserveIxData(Discriminator discriminator, int validatorIndex) implements Borsh {  
+  public record StakeReserveIxData(Discriminator discriminator, int validatorIndex) implements SerDe {  
 
     public static StakeReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1464,7 +1464,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record UpdateActiveIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements Borsh {  
+  public record UpdateActiveIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements SerDe {  
 
     public static UpdateActiveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1579,7 +1579,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record UpdateDeactivatedIxData(Discriminator discriminator, int stakeIndex) implements Borsh {  
+  public record UpdateDeactivatedIxData(Discriminator discriminator, int stakeIndex) implements SerDe {  
 
     public static UpdateDeactivatedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1694,7 +1694,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record DeactivateStakeIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements Borsh {  
+  public record DeactivateStakeIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements SerDe {  
 
     public static DeactivateStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1789,7 +1789,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record EmergencyUnstakeIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements Borsh {  
+  public record EmergencyUnstakeIxData(Discriminator discriminator, int stakeIndex, int validatorIndex) implements SerDe {  
 
     public static EmergencyUnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1921,7 +1921,7 @@ public final class MarinadeFinanceProgram {
   public record PartialUnstakeIxData(Discriminator discriminator,
                                      int stakeIndex,
                                      int validatorIndex,
-                                     long desiredUnstakeAmount) implements Borsh {  
+                                     long desiredUnstakeAmount) implements SerDe {  
 
     public static PartialUnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2045,7 +2045,7 @@ public final class MarinadeFinanceProgram {
   public record MergeStakesIxData(Discriminator discriminator,
                                   int destinationStakeIndex,
                                   int sourceStakeIndex,
-                                  int validatorIndex) implements Borsh {  
+                                  int validatorIndex) implements SerDe {  
 
     public static MergeStakesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2185,7 +2185,7 @@ public final class MarinadeFinanceProgram {
   public record RedelegateIxData(Discriminator discriminator,
                                  int stakeIndex,
                                  int sourceValidatorIndex,
-                                 int destValidatorIndex) implements Borsh {  
+                                 int destValidatorIndex) implements SerDe {  
 
     public static RedelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2385,7 +2385,7 @@ public final class MarinadeFinanceProgram {
                                            int stakeIndex,
                                            int validatorIndex,
                                            long msolAmount,
-                                           PublicKey beneficiary) implements Borsh {  
+                                           PublicKey beneficiary) implements SerDe {  
 
     public static WithdrawStakeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2476,7 +2476,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ReallocValidatorListIxData(Discriminator discriminator, int capacity) implements Borsh {  
+  public record ReallocValidatorListIxData(Discriminator discriminator, int capacity) implements SerDe {  
 
     public static ReallocValidatorListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2551,7 +2551,7 @@ public final class MarinadeFinanceProgram {
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  public record ReallocStakeListIxData(Discriminator discriminator, int capacity) implements Borsh {  
+  public record ReallocStakeListIxData(Discriminator discriminator, int capacity) implements SerDe {  
 
     public static ReallocStakeListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

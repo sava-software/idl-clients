@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -84,7 +85,7 @@ public record FarmState(PublicKey _address,
                         PublicKey delegatedRpsAdmin,
                         PublicKey vaultId,
                         PublicKey secondDelegatedAuthority,
-                        long[] padding) implements Borsh {
+                        long[] padding) implements SerDe {
 
   public static final int BYTES = 8336;
   public static final int REWARD_INFOS_LEN = 10;
@@ -347,7 +348,7 @@ public record FarmState(PublicKey _address,
     final var token = TokenInfo.read(_data, i);
     i += token.l();
     final var rewardInfos = new RewardInfo[10];
-    i += Borsh.readArray(rewardInfos, RewardInfo::read, _data, i);
+    i += SerDeUtil.readArray(rewardInfos, RewardInfo::read, _data, i);
     final var numRewardTokens = getInt64LE(_data, i);
     i += 8;
     final var numUsers = getInt64LE(_data, i);
@@ -373,7 +374,7 @@ public record FarmState(PublicKey _address,
     final var isHarvestingPermissionless = _data[i] & 0xFF;
     ++i;
     final var padding0 = new byte[3];
-    i += Borsh.readArray(padding0, _data, i);
+    i += SerDeUtil.readArray(padding0, _data, i);
     final var withdrawAuthority = readPubKey(_data, i);
     i += 32;
     final var depositWarmupPeriod = getInt32LE(_data, i);
@@ -419,7 +420,7 @@ public record FarmState(PublicKey _address,
     final var secondDelegatedAuthority = readPubKey(_data, i);
     i += 32;
     final var padding = new long[74];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new FarmState(_address,
                          discriminator,
                          farmAdmin,
@@ -472,7 +473,7 @@ public record FarmState(PublicKey _address,
     globalConfig.write(_data, i);
     i += 32;
     i += token.write(_data, i);
-    i += Borsh.writeArrayChecked(rewardInfos, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewardInfos, 10, _data, i);
     putInt64LE(_data, i, numRewardTokens);
     i += 8;
     putInt64LE(_data, i, numUsers);
@@ -497,7 +498,7 @@ public record FarmState(PublicKey _address,
     ++i;
     _data[i] = (byte) isHarvestingPermissionless;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 3, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 3, _data, i);
     withdrawAuthority.write(_data, i);
     i += 32;
     putInt32LE(_data, i, depositWarmupPeriod);
@@ -542,7 +543,7 @@ public record FarmState(PublicKey _address,
     i += 32;
     secondDelegatedAuthority.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 74, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 74, _data, i);
     return i - _offset;
   }
 

@@ -3,8 +3,8 @@ package software.sava.idl.clients.marinade.stake_pool.gen.events;
 import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.Fee;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.U64ValueChange;
 
@@ -122,10 +122,10 @@ public record UpdateActiveEvent(Discriminator discriminator,
     validatorVote.write(_data, i);
     i += 32;
     i += delegationChange.write(_data, i);
-    i += Borsh.writeOptional(delegationGrowthMsolFees, _data, i);
+    i += SerDeUtil.writeOptional(1, delegationGrowthMsolFees, _data, i);
     putInt64LE(_data, i, extraLamports);
     i += 8;
-    i += Borsh.writeOptional(extraMsolFees, _data, i);
+    i += SerDeUtil.writeOptional(1, extraMsolFees, _data, i);
     putInt64LE(_data, i, validatorActiveBalance);
     i += 8;
     putInt64LE(_data, i, totalActiveBalance);

@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.lend_borrow.gen.events;
 
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.lend_borrow.gen.types.AddressBool;
 
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -17,19 +17,19 @@ public record LogUpdateAuths(Discriminator discriminator, AddressBool[] authStat
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var authStatus = Borsh.readVector(AddressBool.class, AddressBool::read, _data, i);
+    final var authStatus = SerDeUtil.readVector(4, AddressBool.class, AddressBool::read, _data, i);
     return new LogUpdateAuths(discriminator, authStatus);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeVector(authStatus, _data, i);
+    i += SerDeUtil.writeVector(4, authStatus, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + Borsh.lenVector(authStatus);
+    return 8 + SerDeUtil.lenVector(4, authStatus);
   }
 }

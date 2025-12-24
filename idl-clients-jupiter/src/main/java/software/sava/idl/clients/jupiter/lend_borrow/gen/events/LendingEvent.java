@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.lend_borrow.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface LendingEvent extends Borsh permits
+public sealed interface LendingEvent extends SerDe permits
     LogDeposit,
     LogRebalance,
     LogUpdateAuthority,

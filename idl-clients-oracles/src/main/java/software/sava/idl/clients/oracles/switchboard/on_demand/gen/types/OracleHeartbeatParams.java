@@ -1,8 +1,9 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public record OracleHeartbeatParams(byte[] gatewayUri) implements Borsh {
+public record OracleHeartbeatParams(byte[] gatewayUri) implements SerDe {
 
   public static OracleHeartbeatParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -13,7 +14,7 @@ public record OracleHeartbeatParams(byte[] gatewayUri) implements Borsh {
       gatewayUri = null;
     } else {
       gatewayUri = new byte[64];
-      Borsh.readArray(gatewayUri, _data, _offset + 1);
+      SerDeUtil.readArray(gatewayUri, _data, _offset + 1);
     }
     return new OracleHeartbeatParams(gatewayUri);
   }
@@ -25,13 +26,13 @@ public record OracleHeartbeatParams(byte[] gatewayUri) implements Borsh {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(gatewayUri, 64, _data, i);
+      i += SerDeUtil.writeArrayChecked(gatewayUri, 64, _data, i);
     }
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return (gatewayUri == null || gatewayUri.length == 0 ? 1 : (1 + Borsh.lenArray(gatewayUri)));
+    return (gatewayUri == null || gatewayUri.length == 0 ? 1 : (1 + SerDeUtil.lenArray(gatewayUri)));
   }
 }

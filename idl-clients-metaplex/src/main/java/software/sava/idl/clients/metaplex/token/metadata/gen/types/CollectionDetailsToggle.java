@@ -1,6 +1,6 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface CollectionDetailsToggle extends RustEnum permits
   CollectionDetailsToggle.None,
@@ -38,7 +38,7 @@ public sealed interface CollectionDetailsToggle extends RustEnum permits
     }
   }
 
-  record Set(CollectionDetails val) implements BorshEnum, CollectionDetailsToggle {
+  record Set(CollectionDetails val) implements SerDeEnum, CollectionDetailsToggle {
 
     public static Set read(final byte[] _data, final int _offset) {
       return new Set(CollectionDetails.read(_data, _offset));

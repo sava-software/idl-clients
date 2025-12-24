@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -20,7 +21,7 @@ public record RevenueShare(PublicKey _address,
                            PublicKey authority,
                            long totalReferrerRewards,
                            long totalBuilderRewards,
-                           byte[] padding) implements Borsh {
+                           byte[] padding) implements SerDe {
 
   public static final int BYTES = 74;
   public static final int PADDING_LEN = 18;
@@ -77,7 +78,7 @@ public record RevenueShare(PublicKey _address,
     final var totalBuilderRewards = getInt64LE(_data, i);
     i += 8;
     final var padding = new byte[18];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new RevenueShare(_address,
                             discriminator,
                             authority,
@@ -95,7 +96,7 @@ public record RevenueShare(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, totalBuilderRewards);
     i += 8;
-    i += Borsh.writeArrayChecked(padding, 18, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 18, _data, i);
     return i - _offset;
   }
 

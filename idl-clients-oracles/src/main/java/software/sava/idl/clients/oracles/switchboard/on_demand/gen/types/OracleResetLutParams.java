@@ -1,11 +1,11 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record OracleResetLutParams(long recentSlot) implements Borsh {
+public record OracleResetLutParams(long recentSlot) implements SerDe {
 
   public static final int BYTES = 8;
 

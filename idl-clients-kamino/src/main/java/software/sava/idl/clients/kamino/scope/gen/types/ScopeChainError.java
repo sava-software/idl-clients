@@ -1,9 +1,10 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// Errors that can be raised while creating or manipulating a scope chain
-public enum ScopeChainError implements Borsh.Enum {
+public enum ScopeChainError implements RustEnum {
 
   PriceChainTooLong,
   PriceChainConversionFailure,
@@ -13,6 +14,6 @@ public enum ScopeChainError implements Borsh.Enum {
   IntegerConversionOverflow;
 
   public static ScopeChainError read(final byte[] _data, final int _offset) {
-    return Borsh.read(ScopeChainError.values(), _data, _offset);
+    return SerDeUtil.read(1, ScopeChainError.values(), _data, _offset);
   }
 }

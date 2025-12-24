@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -23,7 +24,7 @@ public record GlobalConfig(PublicKey _address,
                            PublicKey treasuryVaultsAuthority,
                            long treasuryVaultsAuthorityBump,
                            PublicKey pendingGlobalAdmin,
-                           BigInteger[] padding1) implements Borsh {
+                           BigInteger[] padding1) implements SerDe {
 
   public static final int BYTES = 2136;
   public static final int PADDING_1_LEN = 126;
@@ -94,7 +95,7 @@ public record GlobalConfig(PublicKey _address,
     final var pendingGlobalAdmin = readPubKey(_data, i);
     i += 32;
     final var padding1 = new BigInteger[126];
-    Borsh.read128Array(padding1, _data, i);
+    SerDeUtil.read128Array(padding1, _data, i);
     return new GlobalConfig(_address,
                             discriminator,
                             globalAdmin,
@@ -118,7 +119,7 @@ public record GlobalConfig(PublicKey _address,
     i += 8;
     pendingGlobalAdmin.write(_data, i);
     i += 32;
-    i += Borsh.write128ArrayChecked(padding1, 126, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding1, 126, _data, i);
     return i - _offset;
   }
 

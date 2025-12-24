@@ -1,11 +1,11 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 public record RoutePlanStep(Swap swap,
                             int percent,
                             int inputIndex,
-                            int outputIndex) implements Borsh {
+                            int outputIndex) implements SerDe {
 
   public static RoutePlanStep read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

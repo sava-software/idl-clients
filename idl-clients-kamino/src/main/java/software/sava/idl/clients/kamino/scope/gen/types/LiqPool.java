@@ -1,7 +1,7 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -22,7 +22,7 @@ public record LiqPool(PublicKey lpMint,
                       Fee treasuryCut,
                       long lpSupply,
                       long lentFromSolLeg,
-                      long liquiditySolCap) implements Borsh {
+                      long liquiditySolCap) implements SerDe {
 
   public static final int BYTES = 111;
 

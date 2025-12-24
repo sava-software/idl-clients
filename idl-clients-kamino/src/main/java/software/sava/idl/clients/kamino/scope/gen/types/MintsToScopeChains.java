@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -22,7 +23,7 @@ public record MintsToScopeChains(PublicKey _address,
                                  PublicKey seedPk,
                                  long seedId,
                                  int bump,
-                                 MintToScopeChain[] mapping) implements Borsh {
+                                 MintToScopeChain[] mapping) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 236, 56, 20, 39, 141, 42, 183);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -79,7 +80,7 @@ public record MintsToScopeChains(PublicKey _address,
     i += 8;
     final var bump = _data[i] & 0xFF;
     ++i;
-    final var mapping = Borsh.readVector(MintToScopeChain.class, MintToScopeChain::read, _data, i);
+    final var mapping = SerDeUtil.readVector(4, MintToScopeChain.class, MintToScopeChain::read, _data, i);
     return new MintsToScopeChains(_address,
                                   discriminator,
                                   oraclePrices,
@@ -100,7 +101,7 @@ public record MintsToScopeChains(PublicKey _address,
     i += 8;
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeVector(mapping, _data, i);
+    i += SerDeUtil.writeVector(4, mapping, _data, i);
     return i - _offset;
   }
 
@@ -110,6 +111,6 @@ public record MintsToScopeChains(PublicKey _address,
          + 32
          + 8
          + 1
-         + Borsh.lenVector(mapping);
+         + SerDeUtil.lenVector(4, mapping);
   }
 }

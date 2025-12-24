@@ -2,7 +2,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -77,7 +78,7 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
                               int conditionType,
                               int opportunityType,
                               byte[] padding1,
-                              BigInteger[] padding2) implements Borsh {
+                              BigInteger[] padding2) implements SerDe {
 
   public static final int BYTES = 128;
   public static final int PADDING_1_LEN = 10;
@@ -101,9 +102,9 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
     final var opportunityType = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[10];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var padding2 = new BigInteger[5];
-    Borsh.read128Array(padding2, _data, i);
+    SerDeUtil.read128Array(padding2, _data, i);
     return new ObligationOrder(conditionThresholdSf,
                                opportunityParameterSf,
                                minExecutionBonusBps,
@@ -129,8 +130,8 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
     ++i;
     _data[i] = (byte) opportunityType;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 10, _data, i);
-    i += Borsh.write128ArrayChecked(padding2, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 10, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }
 

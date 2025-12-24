@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.pyth.push.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasuryId) implements Borsh {
+public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasuryId) implements SerDe {
 
   public static PostUpdateParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

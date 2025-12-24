@@ -1,6 +1,6 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 public record PythLazerData(int feedId,
                             int exponent,
-                            int confidenceFactor) implements Borsh {
+                            int confidenceFactor) implements SerDe {
 
   public static final int BYTES = 7;
 

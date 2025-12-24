@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -46,7 +47,7 @@ public record State(PublicKey _address,
                     int maxInitializeUserFee,
                     int featureBitFlags,
                     int lpPoolFeatureBitFlags,
-                    byte[] padding) implements Borsh {
+                    byte[] padding) implements SerDe {
 
   public static final int BYTES = 992;
   public static final int PADDING_LEN = 8;
@@ -272,7 +273,7 @@ public record State(PublicKey _address,
     final var lpPoolFeatureBitFlags = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[8];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new State(_address,
                      discriminator,
                      admin,
@@ -356,7 +357,7 @@ public record State(PublicKey _address,
     ++i;
     _data[i] = (byte) lpPoolFeatureBitFlags;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);
     return i - _offset;
   }
 

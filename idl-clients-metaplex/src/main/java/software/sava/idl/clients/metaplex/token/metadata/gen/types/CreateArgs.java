@@ -2,8 +2,8 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import java.util.OptionalInt;
 
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public sealed interface CreateArgs extends RustEnum permits
   CreateArgs.V1 {
@@ -51,8 +51,8 @@ public sealed interface CreateArgs extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += assetData.write(_data, i);
-      i += Borsh.writeOptionalbyte(decimals, _data, i);
-      i += Borsh.writeOptional(printSupply, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, decimals, _data, i);
+      i += SerDeUtil.writeOptional(1, printSupply, _data, i);
       return i - _offset;
     }
 

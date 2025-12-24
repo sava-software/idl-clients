@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -38,7 +39,7 @@ public record OracleAccountData(PublicKey _address,
                                 PublicKey operator,
                                 byte[] ebuf3,
                                 byte[] ebuf2,
-                                byte[] ebuf1) implements Borsh {
+                                byte[] ebuf1) implements SerDe {
 
   public static final int BYTES = 4816;
   public static final int SECP_AUTHORITY_LEN = 64;
@@ -146,15 +147,15 @@ public record OracleAccountData(PublicKey _address,
     final var lastHeartbeat = getInt64LE(_data, i);
     i += 8;
     final var secpAuthority = new byte[64];
-    i += Borsh.readArray(secpAuthority, _data, i);
+    i += SerDeUtil.readArray(secpAuthority, _data, i);
     final var gatewayUri = new byte[64];
-    i += Borsh.readArray(gatewayUri, _data, i);
+    i += SerDeUtil.readArray(gatewayUri, _data, i);
     final var permissions = getInt64LE(_data, i);
     i += 8;
     final var isOnQueue = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[7];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var lutSlot = getInt64LE(_data, i);
     i += 8;
     final var lastRewardEpoch = getInt64LE(_data, i);
@@ -162,11 +163,11 @@ public record OracleAccountData(PublicKey _address,
     final var operator = readPubKey(_data, i);
     i += 32;
     final var ebuf3 = new byte[16];
-    i += Borsh.readArray(ebuf3, _data, i);
+    i += SerDeUtil.readArray(ebuf3, _data, i);
     final var ebuf2 = new byte[64];
-    i += Borsh.readArray(ebuf2, _data, i);
+    i += SerDeUtil.readArray(ebuf2, _data, i);
     final var ebuf1 = new byte[1024];
-    Borsh.readArray(ebuf1, _data, i);
+    SerDeUtil.readArray(ebuf1, _data, i);
     return new OracleAccountData(_address,
                                  discriminator,
                                  enclave,
@@ -199,22 +200,22 @@ public record OracleAccountData(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, lastHeartbeat);
     i += 8;
-    i += Borsh.writeArrayChecked(secpAuthority, 64, _data, i);
-    i += Borsh.writeArrayChecked(gatewayUri, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(secpAuthority, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(gatewayUri, 64, _data, i);
     putInt64LE(_data, i, permissions);
     i += 8;
     _data[i] = (byte) isOnQueue;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 7, _data, i);
     putInt64LE(_data, i, lutSlot);
     i += 8;
     putInt64LE(_data, i, lastRewardEpoch);
     i += 8;
     operator.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(ebuf3, 16, _data, i);
-    i += Borsh.writeArrayChecked(ebuf2, 64, _data, i);
-    i += Borsh.writeArrayChecked(ebuf1, 1024, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf3, 16, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf2, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf1, 1024, _data, i);
     return i - _offset;
   }
 

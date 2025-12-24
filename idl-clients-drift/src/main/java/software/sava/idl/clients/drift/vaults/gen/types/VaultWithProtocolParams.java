@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.vaults.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -18,7 +19,7 @@ public record VaultWithProtocolParams(byte[] name,
                                       int hurdleRate,
                                       int spotMarketIndex,
                                       boolean permissioned,
-                                      VaultProtocolParams vaultProtocol) implements Borsh {
+                                      VaultProtocolParams vaultProtocol) implements SerDe {
 
   public static final int BYTES = 119;
   public static final int NAME_LEN = 32;
@@ -29,7 +30,7 @@ public record VaultWithProtocolParams(byte[] name,
     }
     int i = _offset;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var redeemPeriod = getInt64LE(_data, i);
     i += 8;
     final var maxTokens = getInt64LE(_data, i);
@@ -62,7 +63,7 @@ public record VaultWithProtocolParams(byte[] name,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     putInt64LE(_data, i, redeemPeriod);
     i += 8;
     putInt64LE(_data, i, maxTokens);

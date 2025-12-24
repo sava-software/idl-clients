@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -114,7 +115,7 @@ public record PerpMarket(PublicKey _address,
                          int lpExchangeFeeExcluscionScalar,
                          long lastFillPrice,
                          int lpPoolId,
-                         byte[] padding) implements Borsh {
+                         byte[] padding) implements SerDe {
 
   public static final int BYTES = 1216;
   public static final int NAME_LEN = 32;
@@ -399,7 +400,7 @@ public record PerpMarket(PublicKey _address,
     final var pnlPool = PoolBalance.read(_data, i);
     i += pnlPool.l();
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var insuranceClaim = InsuranceClaim.read(_data, i);
     i += insuranceClaim.l();
     final var unrealizedPnlMaxImbalance = getInt64LE(_data, i);
@@ -477,7 +478,7 @@ public record PerpMarket(PublicKey _address,
     final var lpPoolId = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[23];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new PerpMarket(_address,
                           discriminator,
                           pubkey,
@@ -532,7 +533,7 @@ public record PerpMarket(PublicKey _address,
     i += 32;
     i += amm.write(_data, i);
     i += pnlPool.write(_data, i);
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     i += insuranceClaim.write(_data, i);
     putInt64LE(_data, i, unrealizedPnlMaxImbalance);
     i += 8;
@@ -605,7 +606,7 @@ public record PerpMarket(PublicKey _address,
     i += 8;
     _data[i] = (byte) lpPoolId;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 23, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 23, _data, i);
     return i - _offset;
   }
 

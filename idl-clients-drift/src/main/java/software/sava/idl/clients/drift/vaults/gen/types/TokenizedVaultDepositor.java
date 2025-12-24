@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -51,7 +52,7 @@ public record TokenizedVaultDepositor(PublicKey _address,
                                       int vaultSharesBase,
                                       int bump,
                                       byte[] padding1,
-                                      long[] padding) implements Borsh {
+                                      long[] padding) implements SerDe {
 
   public static final int BYTES = 272;
   public static final int PADDING_1_LEN = 3;
@@ -194,9 +195,9 @@ public record TokenizedVaultDepositor(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[3];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var padding = new long[10];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new TokenizedVaultDepositor(_address,
                                        discriminator,
                                        vault,
@@ -245,8 +246,8 @@ public record TokenizedVaultDepositor(PublicKey _address,
     i += 4;
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 3, _data, i);
-    i += Borsh.writeArrayChecked(padding, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 3, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 10, _data, i);
     return i - _offset;
   }
 

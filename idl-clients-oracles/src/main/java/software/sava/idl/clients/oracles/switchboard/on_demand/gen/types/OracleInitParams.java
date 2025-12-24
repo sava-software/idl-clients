@@ -1,7 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record OracleInitParams(long recentSlot,
                                PublicKey authority,
                                PublicKey queue,
-                               byte[] secpAuthority) implements Borsh {
+                               byte[] secpAuthority) implements SerDe {
 
   public static OracleInitParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -29,7 +30,7 @@ public record OracleInitParams(long recentSlot,
     } else {
       ++i;
       secpAuthority = new byte[64];
-      Borsh.readArray(secpAuthority, _data, i);
+      SerDeUtil.readArray(secpAuthority, _data, i);
     }
     return new OracleInitParams(recentSlot,
                                 authority,
@@ -50,13 +51,13 @@ public record OracleInitParams(long recentSlot,
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(secpAuthority, 64, _data, i);
+      i += SerDeUtil.writeArrayChecked(secpAuthority, 64, _data, i);
     }
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + 32 + (secpAuthority == null || secpAuthority.length == 0 ? 1 : (1 + Borsh.lenArray(secpAuthority)));
+    return 8 + 32 + 32 + (secpAuthority == null || secpAuthority.length == 0 ? 1 : (1 + SerDeUtil.lenArray(secpAuthority)));
   }
 }

@@ -2,7 +2,8 @@ package software.sava.idl.clients.drift.gen.types;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 public record PrelaunchOracleParams(int perpMarketIndex,
                                     OptionalLong price,
-                                    OptionalLong maxPrice) implements Borsh {
+                                    OptionalLong maxPrice) implements SerDe {
 
   public static PrelaunchOracleParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -43,8 +44,8 @@ public record PrelaunchOracleParams(int perpMarketIndex,
     int i = _offset;
     putInt16LE(_data, i, perpMarketIndex);
     i += 2;
-    i += Borsh.writeOptional(price, _data, i);
-    i += Borsh.writeOptional(maxPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, price, _data, i);
+    i += SerDeUtil.writeOptional(1, maxPrice, _data, i);
     return i - _offset;
   }
 

@@ -1,0 +1,70 @@
+package software.sava.idl.clients.squads.v4.gen.types;
+
+import java.lang.String;
+
+import java.util.Arrays;
+
+import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// @param amount Amount of tokens to transfer.
+/// @param decimals Decimals of the token mint. Used for double-checking against incorrect order of magnitude of `amount`.
+/// @param memo Memo used for indexing.
+public record SpendingLimitUseArgs(long amount,
+                                   int decimals,
+                                   String memo, byte[] _memo) implements SerDe {
+
+  public static SpendingLimitUseArgs createRecord(final long amount,
+                                                  final int decimals,
+                                                  final String memo) {
+    return new SpendingLimitUseArgs(amount, decimals, memo, memo == null ? null : memo.getBytes(UTF_8));
+  }
+
+  public static SpendingLimitUseArgs read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var amount = getInt64LE(_data, i);
+    i += 8;
+    final var decimals = _data[i] & 0xFF;
+    ++i;
+    final byte[] _memo;
+    final String memo;
+    if (_data[i] == 0) {
+      _memo = null;
+      memo = null;
+    } else {
+      int _from = i + 1;
+      final int _memoLength = ByteUtil.getInt32LE(_data, _from);
+      _from += 4;
+      _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
+      memo = new String(_memo);
+    }
+
+    return new SpendingLimitUseArgs(amount, decimals, memo, _memo);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, amount);
+    i += 8;
+    _data[i] = (byte) decimals;
+    ++i;
+    i += SerDeUtil.writeOptionalVector(1, 4, _memo, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + 1 + (_memo == null || _memo.length == 0 ? 1 : (1 + _memo.length));
+  }
+}

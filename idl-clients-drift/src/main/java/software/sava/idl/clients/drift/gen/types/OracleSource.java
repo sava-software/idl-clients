@@ -1,8 +1,9 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum OracleSource implements Borsh.Enum {
+public enum OracleSource implements RustEnum {
 
   Pyth,
   Switchboard,
@@ -22,6 +23,6 @@ public enum OracleSource implements Borsh.Enum {
   PythLazerStableCoin;
 
   public static OracleSource read(final byte[] _data, final int _offset) {
-    return Borsh.read(OracleSource.values(), _data, _offset);
+    return SerDeUtil.read(1, OracleSource.values(), _data, _offset);
   }
 }

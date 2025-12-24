@@ -3,12 +3,13 @@ package software.sava.idl.clients.drift.vaults.gen.types;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
-public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt protocolProfitShare) implements Borsh {
+public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt protocolProfitShare) implements SerDe {
 
   public static UpdateVaultProtocolParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -37,8 +38,8 @@ public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt pr
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(protocolFee, _data, i);
-    i += Borsh.writeOptional(protocolProfitShare, _data, i);
+    i += SerDeUtil.writeOptional(1, protocolFee, _data, i);
+    i += SerDeUtil.writeOptional(1, protocolProfitShare, _data, i);
     return i - _offset;
   }
 

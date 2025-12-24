@@ -1,6 +1,6 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param exp Number of decimals of the previously defined values
 public record PriceHeuristic(long lower,
                              long upper,
-                             long exp) implements Borsh {
+                             long exp) implements SerDe {
 
   public static final int BYTES = 24;
 

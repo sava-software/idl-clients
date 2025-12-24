@@ -4,9 +4,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.oracles.pyth.push.gen.types.PostUpdateParams;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -73,12 +74,12 @@ public final class PythPushOracleProgram {
                                             final PostUpdateParams params,
                                             final int shardId,
                                             final byte[] feedId) {
-    final byte[] _data = new byte[10 + params.l() + Borsh.lenArray(feedId)];
+    final byte[] _data = new byte[10 + params.l() + SerDeUtil.lenArray(feedId)];
     int i = UPDATE_PRICE_FEED_DISCRIMINATOR.write(_data, 0);
     i += params.write(_data, i);
     putInt16LE(_data, i, shardId);
     i += 2;
-    Borsh.writeArrayChecked(feedId, 32, _data, i);
+    SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
 
     return Instruction.createInstruction(invokedPythPushOracleProgramMeta, keys, _data);
   }
@@ -86,7 +87,7 @@ public final class PythPushOracleProgram {
   public record UpdatePriceFeedIxData(Discriminator discriminator,
                                       PostUpdateParams params,
                                       int shardId,
-                                      byte[] feedId) implements Borsh {  
+                                      byte[] feedId) implements SerDe {  
 
     public static UpdatePriceFeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -104,7 +105,7 @@ public final class PythPushOracleProgram {
       final var shardId = getInt16LE(_data, i);
       i += 2;
       final var feedId = new byte[32];
-      Borsh.readArray(feedId, _data, i);
+      SerDeUtil.readArray(feedId, _data, i);
       return new UpdatePriceFeedIxData(discriminator, params, shardId, feedId);
     }
 
@@ -114,13 +115,13 @@ public final class PythPushOracleProgram {
       i += params.write(_data, i);
       putInt16LE(_data, i, shardId);
       i += 2;
-      i += Borsh.writeArrayChecked(feedId, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + params.l() + 2 + Borsh.lenArray(feedId);
+      return 8 + params.l() + 2 + SerDeUtil.lenArray(feedId);
     }
   }
 

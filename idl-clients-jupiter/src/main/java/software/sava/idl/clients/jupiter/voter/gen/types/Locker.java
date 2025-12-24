@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -35,7 +36,7 @@ public record Locker(PublicKey _address,
                      long totalEscrow,
                      PublicKey governor,
                      LockerParams params,
-                     BigInteger[] buffers) implements Borsh {
+                     BigInteger[] buffers) implements SerDe {
 
   public static final int BYTES = 658;
   public static final int BUFFERS_LEN = 32;
@@ -120,7 +121,7 @@ public record Locker(PublicKey _address,
     final var params = LockerParams.read(_data, i);
     i += params.l();
     final var buffers = new BigInteger[32];
-    Borsh.read128Array(buffers, _data, i);
+    SerDeUtil.read128Array(buffers, _data, i);
     return new Locker(_address,
                       discriminator,
                       base,
@@ -149,7 +150,7 @@ public record Locker(PublicKey _address,
     governor.write(_data, i);
     i += 32;
     i += params.write(_data, i);
-    i += Borsh.write128ArrayChecked(buffers, 32, _data, i);
+    i += SerDeUtil.write128ArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }
 

@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -8,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record DatedPrice(Price price,
                          long lastUpdatedSlot,
                          long unixTimestamp,
-                         byte[] genericData) implements Borsh {
+                         byte[] genericData) implements SerDe {
 
   public static final int BYTES = 56;
   public static final int GENERIC_DATA_LEN = 24;
@@ -25,7 +26,7 @@ public record DatedPrice(Price price,
     final var unixTimestamp = getInt64LE(_data, i);
     i += 8;
     final var genericData = new byte[24];
-    Borsh.readArray(genericData, _data, i);
+    SerDeUtil.readArray(genericData, _data, i);
     return new DatedPrice(price,
                           lastUpdatedSlot,
                           unixTimestamp,
@@ -40,7 +41,7 @@ public record DatedPrice(Price price,
     i += 8;
     putInt64LE(_data, i, unixTimestamp);
     i += 8;
-    i += Borsh.writeArrayChecked(genericData, 24, _data, i);
+    i += SerDeUtil.writeArrayChecked(genericData, 24, _data, i);
     return i - _offset;
   }
 

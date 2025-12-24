@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -33,7 +33,7 @@ public record RandomnessCommitEvent(Discriminator discriminator,
     final var slot = getInt64LE(_data, i);
     i += 8;
     final var slothash = new byte[32];
-    Borsh.readArray(slothash, _data, i);
+    SerDeUtil.readArray(slothash, _data, i);
     return new RandomnessCommitEvent(discriminator,
                                      randomnessAccount,
                                      oracle,
@@ -50,7 +50,7 @@ public record RandomnessCommitEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, slot);
     i += 8;
-    i += Borsh.writeArrayChecked(slothash, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(slothash, 32, _data, i);
     return i - _offset;
   }
 

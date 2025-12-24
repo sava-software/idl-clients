@@ -4,8 +4,9 @@ import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +18,7 @@ public record MasterEditionV1(PublicKey _address,
                               long supply,
                               OptionalLong maxSupply,
                               PublicKey printingMint,
-                              PublicKey oneTimePrintingAuthorizationMint) implements Borsh {
+                              PublicKey oneTimePrintingAuthorizationMint) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int SUPPLY_OFFSET = 1;
@@ -89,7 +90,7 @@ public record MasterEditionV1(PublicKey _address,
     i += key.write(_data, i);
     putInt64LE(_data, i, supply);
     i += 8;
-    i += Borsh.writeOptional(maxSupply, _data, i);
+    i += SerDeUtil.writeOptional(1, maxSupply, _data, i);
     printingMint.write(_data, i);
     i += 32;
     oneTimePrintingAuthorizationMint.write(_data, i);

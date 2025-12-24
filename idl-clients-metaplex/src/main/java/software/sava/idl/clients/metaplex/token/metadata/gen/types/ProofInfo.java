@@ -1,26 +1,27 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public record ProofInfo(byte[][] proof) implements Borsh {
+public record ProofInfo(byte[][] proof) implements SerDe {
 
   public static ProofInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var proof = Borsh.readMultiDimensionbyteVectorArray(32, _data, _offset);
+    final var proof = SerDeUtil.readMultiDimensionbyteVectorArray(4, 32, _data, _offset);
     return new ProofInfo(proof);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVectorArrayChecked(proof, 32, _data, i);
+    i += SerDeUtil.writeVectorArrayChecked(4, proof, 32, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return Borsh.lenVectorArray(proof);
+    return SerDeUtil.lenVectorArray(4, proof);
   }
 }

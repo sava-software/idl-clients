@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -37,7 +38,7 @@ public record Reserve(PublicKey _address,
                       long[] configPadding,
                       long borrowedAmountOutsideElevationGroup,
                       long[] borrowedAmountsAgainstThisReserveInElevationGroups,
-                      long[] padding) implements Borsh {
+                      long[] padding) implements SerDe {
 
   public static final int BYTES = 8624;
   public static final int RESERVE_LIQUIDITY_PADDING_LEN = 150;
@@ -126,21 +127,21 @@ public record Reserve(PublicKey _address,
     final var liquidity = ReserveLiquidity.read(_data, i);
     i += liquidity.l();
     final var reserveLiquidityPadding = new long[150];
-    i += Borsh.readArray(reserveLiquidityPadding, _data, i);
+    i += SerDeUtil.readArray(reserveLiquidityPadding, _data, i);
     final var collateral = ReserveCollateral.read(_data, i);
     i += collateral.l();
     final var reserveCollateralPadding = new long[150];
-    i += Borsh.readArray(reserveCollateralPadding, _data, i);
+    i += SerDeUtil.readArray(reserveCollateralPadding, _data, i);
     final var config = ReserveConfig.read(_data, i);
     i += config.l();
     final var configPadding = new long[116];
-    i += Borsh.readArray(configPadding, _data, i);
+    i += SerDeUtil.readArray(configPadding, _data, i);
     final var borrowedAmountOutsideElevationGroup = getInt64LE(_data, i);
     i += 8;
     final var borrowedAmountsAgainstThisReserveInElevationGroups = new long[32];
-    i += Borsh.readArray(borrowedAmountsAgainstThisReserveInElevationGroups, _data, i);
+    i += SerDeUtil.readArray(borrowedAmountsAgainstThisReserveInElevationGroups, _data, i);
     final var padding = new long[207];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new Reserve(_address,
                        discriminator,
                        version,
@@ -172,15 +173,15 @@ public record Reserve(PublicKey _address,
     farmDebt.write(_data, i);
     i += 32;
     i += liquidity.write(_data, i);
-    i += Borsh.writeArrayChecked(reserveLiquidityPadding, 150, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserveLiquidityPadding, 150, _data, i);
     i += collateral.write(_data, i);
-    i += Borsh.writeArrayChecked(reserveCollateralPadding, 150, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserveCollateralPadding, 150, _data, i);
     i += config.write(_data, i);
-    i += Borsh.writeArrayChecked(configPadding, 116, _data, i);
+    i += SerDeUtil.writeArrayChecked(configPadding, 116, _data, i);
     putInt64LE(_data, i, borrowedAmountOutsideElevationGroup);
     i += 8;
-    i += Borsh.writeArrayChecked(borrowedAmountsAgainstThisReserveInElevationGroups, 32, _data, i);
-    i += Borsh.writeArrayChecked(padding, 207, _data, i);
+    i += SerDeUtil.writeArrayChecked(borrowedAmountsAgainstThisReserveInElevationGroups, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 207, _data, i);
     return i - _offset;
   }
 

@@ -1,10 +1,11 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record CreateMetadataAccountArgsV3(DataV2 data,
                                           boolean isMutable,
-                                          CollectionDetails collectionDetails) implements Borsh {
+                                          CollectionDetails collectionDetails) implements SerDe {
 
   public static CreateMetadataAccountArgsV3 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -31,7 +32,7 @@ public record CreateMetadataAccountArgsV3(DataV2 data,
     i += data.write(_data, i);
     _data[i] = (byte) (isMutable ? 1 : 0);
     ++i;
-    i += Borsh.writeOptional(collectionDetails, _data, i);
+    i += SerDeUtil.writeOptional(1, collectionDetails, _data, i);
     return i - _offset;
   }
 

@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -22,7 +23,7 @@ public record SignedMsgUserOrders(PublicKey _address,
                                   Discriminator discriminator,
                                   PublicKey authorityPubkey,
                                   int padding,
-                                  SignedMsgOrderId[] signedMsgOrderData) implements Borsh {
+                                  SignedMsgOrderId[] signedMsgOrderData) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(70, 6, 50, 248, 222, 1, 143, 49);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -65,7 +66,7 @@ public record SignedMsgUserOrders(PublicKey _address,
     i += 32;
     final var padding = getInt32LE(_data, i);
     i += 4;
-    final var signedMsgOrderData = Borsh.readVector(SignedMsgOrderId.class, SignedMsgOrderId::read, _data, i);
+    final var signedMsgOrderData = SerDeUtil.readVector(4, SignedMsgOrderId.class, SignedMsgOrderId::read, _data, i);
     return new SignedMsgUserOrders(_address, discriminator, authorityPubkey, padding, signedMsgOrderData);
   }
 
@@ -76,12 +77,12 @@ public record SignedMsgUserOrders(PublicKey _address,
     i += 32;
     putInt32LE(_data, i, padding);
     i += 4;
-    i += Borsh.writeVector(signedMsgOrderData, _data, i);
+    i += SerDeUtil.writeVector(4, signedMsgOrderData, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + 4 + Borsh.lenVector(signedMsgOrderData);
+    return 8 + 32 + 4 + SerDeUtil.lenVector(4, signedMsgOrderData);
   }
 }

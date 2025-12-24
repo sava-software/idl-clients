@@ -1,8 +1,8 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record V8V10(MarketStatusBehavior marketStatusBehavior) implements Borsh {
+public record V8V10(MarketStatusBehavior marketStatusBehavior) implements SerDe {
 
   public static final int BYTES = 1;
 

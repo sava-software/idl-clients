@@ -1,11 +1,12 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
-public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAuthority) implements Borsh {
+public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAuthority) implements SerDe {
 
   public static OracleSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -27,7 +28,7 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
     } else {
       ++i;
       newSecpAuthority = new byte[64];
-      Borsh.readArray(newSecpAuthority, _data, i);
+      SerDeUtil.readArray(newSecpAuthority, _data, i);
     }
     return new OracleSetConfigsParams(newAuthority, newSecpAuthority);
   }
@@ -35,18 +36,18 @@ public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAutho
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(newAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newAuthority, _data, i);
     if (newSecpAuthority == null || newSecpAuthority.length == 0) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(newSecpAuthority, 64, _data, i);
+      i += SerDeUtil.writeArrayChecked(newSecpAuthority, 64, _data, i);
     }
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return (newAuthority == null ? 1 : (1 + 32)) + (newSecpAuthority == null || newSecpAuthority.length == 0 ? 1 : (1 + Borsh.lenArray(newSecpAuthority)));
+    return (newAuthority == null ? 1 : (1 + 32)) + (newSecpAuthority == null || newSecpAuthority.length == 0 ? 1 : (1 + SerDeUtil.lenArray(newSecpAuthority)));
   }
 }

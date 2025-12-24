@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -8,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record FeeStructure(FeeTier[] feeTiers,
                            OrderFillerRewardStructure fillerRewardStructure,
                            long referrerRewardEpochUpperBound,
-                           long flatFillerFee) implements Borsh {
+                           long flatFillerFee) implements SerDe {
 
   public static final int BYTES = 360;
   public static final int FEE_TIERS_LEN = 10;
@@ -19,7 +20,7 @@ public record FeeStructure(FeeTier[] feeTiers,
     }
     int i = _offset;
     final var feeTiers = new FeeTier[10];
-    i += Borsh.readArray(feeTiers, FeeTier::read, _data, i);
+    i += SerDeUtil.readArray(feeTiers, FeeTier::read, _data, i);
     final var fillerRewardStructure = OrderFillerRewardStructure.read(_data, i);
     i += fillerRewardStructure.l();
     final var referrerRewardEpochUpperBound = getInt64LE(_data, i);
@@ -34,7 +35,7 @@ public record FeeStructure(FeeTier[] feeTiers,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(feeTiers, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(feeTiers, 10, _data, i);
     i += fillerRewardStructure.write(_data, i);
     putInt64LE(_data, i, referrerRewardEpochUpperBound);
     i += 8;

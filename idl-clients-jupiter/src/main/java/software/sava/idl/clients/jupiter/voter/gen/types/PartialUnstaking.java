@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -35,7 +36,7 @@ public record PartialUnstaking(PublicKey _address,
                                long amount,
                                long expiration,
                                BigInteger[] buffers,
-                               String memo, byte[] _memo) implements Borsh {
+                               String memo, byte[] _memo) implements SerDe {
 
   public static final int BUFFERS_LEN = 6;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(172, 146, 58, 213, 40, 250, 107, 63);
@@ -76,7 +77,7 @@ public record PartialUnstaking(PublicKey _address,
                                 amount,
                                 expiration,
                                 buffers,
-                                memo, memo.getBytes(UTF_8));
+                                memo, memo == null ? null : memo.getBytes(UTF_8));
   }
 
   public static PartialUnstaking read(final byte[] _data, final int _offset) {
@@ -106,7 +107,7 @@ public record PartialUnstaking(PublicKey _address,
     final var expiration = getInt64LE(_data, i);
     i += 8;
     final var buffers = new BigInteger[6];
-    i += Borsh.read128Array(buffers, _data, i);
+    i += SerDeUtil.read128Array(buffers, _data, i);
     final int _memoLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
@@ -117,7 +118,7 @@ public record PartialUnstaking(PublicKey _address,
                                 amount,
                                 expiration,
                                 buffers,
-                                memo, _memo);
+                                memo, memo == null ? null : memo.getBytes(UTF_8));
   }
 
   @Override
@@ -129,8 +130,8 @@ public record PartialUnstaking(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, expiration);
     i += 8;
-    i += Borsh.write128ArrayChecked(buffers, 6, _data, i);
-    i += Borsh.writeVector(_memo, _data, i);
+    i += SerDeUtil.write128ArrayChecked(buffers, 6, _data, i);
+    i += SerDeUtil.writeVector(4, _memo, _data, i);
     return i - _offset;
   }
 
@@ -139,7 +140,7 @@ public record PartialUnstaking(PublicKey _address,
     return 8 + 32
          + 8
          + 8
-         + Borsh.len128Array(buffers)
+         + SerDeUtil.len128Array(buffers)
          + _memo.length;
   }
 }

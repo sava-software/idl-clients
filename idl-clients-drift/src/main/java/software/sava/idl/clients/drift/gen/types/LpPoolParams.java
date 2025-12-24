@@ -6,7 +6,8 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -17,7 +18,7 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
                            OptionalInt gammaExecution,
                            OptionalInt xi,
                            BigInteger maxAum,
-                           PublicKey whitelistMint) implements Borsh {
+                           PublicKey whitelistMint) implements SerDe {
 
   public static LpPoolParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -87,12 +88,12 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(maxSettleQuoteAmount, _data, i);
-    i += Borsh.writeOptional(volatility, _data, i);
-    i += Borsh.writeOptionalbyte(gammaExecution, _data, i);
-    i += Borsh.writeOptionalbyte(xi, _data, i);
-    i += Borsh.write128Optional(maxAum, _data, i);
-    i += Borsh.writeOptional(whitelistMint, _data, i);
+    i += SerDeUtil.writeOptional(1, maxSettleQuoteAmount, _data, i);
+    i += SerDeUtil.writeOptional(1, volatility, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, gammaExecution, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, xi, _data, i);
+    i += SerDeUtil.write128Optional(1, maxAum, _data, i);
+    i += SerDeUtil.writeOptional(1, whitelistMint, _data, i);
     return i - _offset;
   }
 

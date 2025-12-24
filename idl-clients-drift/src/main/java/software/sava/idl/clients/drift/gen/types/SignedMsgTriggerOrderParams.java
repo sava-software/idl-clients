@@ -1,11 +1,11 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record SignedMsgTriggerOrderParams(long triggerPrice, long baseAssetAmount) implements Borsh {
+public record SignedMsgTriggerOrderParams(long triggerPrice, long baseAssetAmount) implements SerDe {
 
   public static final int BYTES = 16;
 

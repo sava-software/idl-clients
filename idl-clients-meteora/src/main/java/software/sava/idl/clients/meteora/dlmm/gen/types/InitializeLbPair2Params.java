@@ -1,13 +1,14 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param activeId Pool price
 /// @param padding Padding, for future use
-public record InitializeLbPair2Params(int activeId, byte[] padding) implements Borsh {
+public record InitializeLbPair2Params(int activeId, byte[] padding) implements SerDe {
 
   public static final int BYTES = 100;
   public static final int PADDING_LEN = 96;
@@ -20,7 +21,7 @@ public record InitializeLbPair2Params(int activeId, byte[] padding) implements B
     final var activeId = getInt32LE(_data, i);
     i += 4;
     final var padding = new byte[96];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new InitializeLbPair2Params(activeId, padding);
   }
 
@@ -29,7 +30,7 @@ public record InitializeLbPair2Params(int activeId, byte[] padding) implements B
     int i = _offset;
     putInt32LE(_data, i, activeId);
     i += 4;
-    i += Borsh.writeArrayChecked(padding, 96, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 96, _data, i);
     return i - _offset;
   }
 

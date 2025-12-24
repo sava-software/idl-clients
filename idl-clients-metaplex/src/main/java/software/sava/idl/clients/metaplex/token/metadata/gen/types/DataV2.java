@@ -4,7 +4,8 @@ import java.lang.String;
 
 import java.util.Arrays;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -18,7 +19,7 @@ public record DataV2(String name, byte[] _name,
                      int sellerFeeBasisPoints,
                      Creator[] creators,
                      Collection collection,
-                     Uses uses) implements Borsh {
+                     Uses uses) implements SerDe {
 
   public static DataV2 createRecord(final String name,
                                     final String symbol,
@@ -27,9 +28,9 @@ public record DataV2(String name, byte[] _name,
                                     final Creator[] creators,
                                     final Collection collection,
                                     final Uses uses) {
-    return new DataV2(name, name.getBytes(UTF_8),
-                      symbol, symbol.getBytes(UTF_8),
-                      uri, uri.getBytes(UTF_8),
+    return new DataV2(name, name == null ? null : name.getBytes(UTF_8),
+                      symbol, symbol == null ? null : symbol.getBytes(UTF_8),
+                      uri, uri == null ? null : uri.getBytes(UTF_8),
                       sellerFeeBasisPoints,
                       creators,
                       collection,
@@ -64,8 +65,8 @@ public record DataV2(String name, byte[] _name,
       ++i;
     } else {
       ++i;
-      creators = Borsh.readVector(Creator.class, Creator::read, _data, i);
-      i += Borsh.lenVector(creators);
+      creators = SerDeUtil.readVector(4, Creator.class, Creator::read, _data, i);
+      i += SerDeUtil.lenVector(4, creators);
     }
     final Collection collection;
     if (_data[i] == 0) {
@@ -83,9 +84,9 @@ public record DataV2(String name, byte[] _name,
       ++i;
       uses = Uses.read(_data, i);
     }
-    return new DataV2(name, _name,
-                      symbol, _symbol,
-                      uri, _uri,
+    return new DataV2(name, name == null ? null : name.getBytes(UTF_8),
+                      symbol, symbol == null ? null : symbol.getBytes(UTF_8),
+                      uri, uri == null ? null : uri.getBytes(UTF_8),
                       sellerFeeBasisPoints,
                       creators,
                       collection,
@@ -95,19 +96,19 @@ public record DataV2(String name, byte[] _name,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVector(_name, _data, i);
-    i += Borsh.writeVector(_symbol, _data, i);
-    i += Borsh.writeVector(_uri, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
+    i += SerDeUtil.writeVector(4, _uri, _data, i);
     putInt16LE(_data, i, sellerFeeBasisPoints);
     i += 2;
     if (creators == null || creators.length == 0) {
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeVector(creators, _data, i);
+      i += SerDeUtil.writeVector(4, creators, _data, i);
     }
-    i += Borsh.writeOptional(collection, _data, i);
-    i += Borsh.writeOptional(uses, _data, i);
+    i += SerDeUtil.writeOptional(1, collection, _data, i);
+    i += SerDeUtil.writeOptional(1, uses, _data, i);
     return i - _offset;
   }
 
@@ -117,7 +118,7 @@ public record DataV2(String name, byte[] _name,
          + _symbol.length
          + _uri.length
          + 2
-         + (creators == null || creators.length == 0 ? 1 : (1 + Borsh.lenVector(creators)))
+         + (creators == null || creators.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, creators)))
          + (collection == null ? 1 : (1 + collection.l()))
          + (uses == null ? 1 : (1 + uses.l()));
   }

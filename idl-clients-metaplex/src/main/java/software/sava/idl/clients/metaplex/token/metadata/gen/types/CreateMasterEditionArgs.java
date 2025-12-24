@@ -2,11 +2,12 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
-public record CreateMasterEditionArgs(OptionalLong maxSupply) implements Borsh {
+public record CreateMasterEditionArgs(OptionalLong maxSupply) implements SerDe {
 
   public static CreateMasterEditionArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -24,7 +25,7 @@ public record CreateMasterEditionArgs(OptionalLong maxSupply) implements Borsh {
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(maxSupply, _data, i);
+    i += SerDeUtil.writeOptional(1, maxSupply, _data, i);
     return i - _offset;
   }
 

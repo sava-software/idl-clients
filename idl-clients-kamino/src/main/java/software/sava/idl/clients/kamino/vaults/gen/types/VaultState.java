@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -61,7 +62,7 @@ public record VaultState(PublicKey _address,
                          int allowAllocationsInWhitelistedReservesOnly,
                          int allowInvestInWhitelistedReservesOnly,
                          byte[] padding4,
-                         BigInteger[] padding3) implements Borsh {
+                         BigInteger[] padding3) implements SerDe {
 
   public static final int BYTES = 62552;
   public static final int VAULT_ALLOCATION_STRATEGY_LEN = 25;
@@ -370,9 +371,9 @@ public record VaultState(PublicKey _address,
     final var pendingFeesSf = getInt128LE(_data, i);
     i += 16;
     final var vaultAllocationStrategy = new VaultAllocation[25];
-    i += Borsh.readArray(vaultAllocationStrategy, VaultAllocation::read, _data, i);
+    i += SerDeUtil.readArray(vaultAllocationStrategy, VaultAllocation::read, _data, i);
     final var padding1 = new BigInteger[256];
-    i += Borsh.read128Array(padding1, _data, i);
+    i += SerDeUtil.read128Array(padding1, _data, i);
     final var minDepositAmount = getInt64LE(_data, i);
     i += 8;
     final var minWithdrawAmount = getInt64LE(_data, i);
@@ -392,7 +393,7 @@ public record VaultState(PublicKey _address,
     final var cumulativePerfFeesSf = getInt128LE(_data, i);
     i += 16;
     final var name = new byte[40];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var vaultLookupTable = readPubKey(_data, i);
     i += 32;
     final var vaultFarm = readPubKey(_data, i);
@@ -414,9 +415,9 @@ public record VaultState(PublicKey _address,
     final var allowInvestInWhitelistedReservesOnly = _data[i] & 0xFF;
     ++i;
     final var padding4 = new byte[14];
-    i += Borsh.readArray(padding4, _data, i);
+    i += SerDeUtil.readArray(padding4, _data, i);
     final var padding3 = new BigInteger[238];
-    Borsh.read128Array(padding3, _data, i);
+    SerDeUtil.read128Array(padding3, _data, i);
     return new VaultState(_address,
                           discriminator,
                           vaultAdminAuthority,
@@ -502,8 +503,8 @@ public record VaultState(PublicKey _address,
     i += 16;
     putInt128LE(_data, i, pendingFeesSf);
     i += 16;
-    i += Borsh.writeArrayChecked(vaultAllocationStrategy, 25, _data, i);
-    i += Borsh.write128ArrayChecked(padding1, 256, _data, i);
+    i += SerDeUtil.writeArrayChecked(vaultAllocationStrategy, 25, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding1, 256, _data, i);
     putInt64LE(_data, i, minDepositAmount);
     i += 8;
     putInt64LE(_data, i, minWithdrawAmount);
@@ -522,7 +523,7 @@ public record VaultState(PublicKey _address,
     i += 16;
     putInt128LE(_data, i, cumulativePerfFeesSf);
     i += 16;
-    i += Borsh.writeArrayChecked(name, 40, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 40, _data, i);
     vaultLookupTable.write(_data, i);
     i += 32;
     vaultFarm.write(_data, i);
@@ -543,8 +544,8 @@ public record VaultState(PublicKey _address,
     ++i;
     _data[i] = (byte) allowInvestInWhitelistedReservesOnly;
     ++i;
-    i += Borsh.writeArrayChecked(padding4, 14, _data, i);
-    i += Borsh.write128ArrayChecked(padding3, 238, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 14, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding3, 238, _data, i);
     return i - _offset;
   }
 

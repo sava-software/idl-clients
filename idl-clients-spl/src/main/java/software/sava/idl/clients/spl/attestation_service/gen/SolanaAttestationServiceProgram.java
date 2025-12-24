@@ -7,9 +7,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -63,22 +64,22 @@ public final class SolanaAttestationServiceProgram {
                                              final String name,
                                              final PublicKey[] signers) {
     final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + _name.length + Borsh.lenVector(signers)];
+    final byte[] _data = new byte[12 + _name.length + SerDeUtil.lenVector(4, signers)];
     int i = CREATE_CREDENTIAL_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_name, _data, i);
-    Borsh.writeVector(signers, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    SerDeUtil.writeVector(4, signers, _data, i);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record CreateCredentialIxData(Discriminator discriminator, String name, byte[] _name, PublicKey[] signers) implements Borsh {  
+  public record CreateCredentialIxData(Discriminator discriminator, String name, byte[] _name, PublicKey[] signers) implements SerDe {  
 
     public static CreateCredentialIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static CreateCredentialIxData createRecord(final Discriminator discriminator, final String name, final PublicKey[] signers) {
-      return new CreateCredentialIxData(discriminator, name, name.getBytes(UTF_8), signers);
+      return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
     }
 
     public static CreateCredentialIxData read(final byte[] _data, final int _offset) {
@@ -92,21 +93,21 @@ public final class SolanaAttestationServiceProgram {
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
       final var name = new String(_name, UTF_8);
       i += _name.length;
-      final var signers = Borsh.readPublicKeyVector(_data, i);
-      return new CreateCredentialIxData(discriminator, name, _name, signers);
+      final var signers = SerDeUtil.readPublicKeyVector(4, _data, i);
+      return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_name, _data, i);
-      i += Borsh.writeVector(signers, _data, i);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, signers, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + _name.length + Borsh.lenVector(signers);
+      return 8 + _name.length + SerDeUtil.lenVector(4, signers);
     }
   }
 
@@ -163,12 +164,12 @@ public final class SolanaAttestationServiceProgram {
                                          final String[] fieldNames) {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _description = description.getBytes(UTF_8);
-    final byte[] _data = new byte[16 + _name.length + _description.length + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames)];
+    final byte[] _data = new byte[16 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
     int i = CREATE_SCHEMA_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_name, _data, i);
-    i += Borsh.writeVector(_description, _data, i);
-    i += Borsh.writeVector(layout, _data, i);
-    Borsh.writeVector(fieldNames, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _description, _data, i);
+    i += SerDeUtil.writeVector(4, layout, _data, i);
+    SerDeUtil.writeVector(4, 4, fieldNames, _data, i);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
@@ -177,7 +178,7 @@ public final class SolanaAttestationServiceProgram {
                                    String name, byte[] _name,
                                    String description, byte[] _description,
                                    byte[] layout,
-                                   String[] fieldNames, byte[][] _fieldNames) implements Borsh {  
+                                   String[] fieldNames) implements SerDe {  
 
     public static CreateSchemaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -189,10 +190,10 @@ public final class SolanaAttestationServiceProgram {
                                                   final byte[] layout,
                                                   final String[] fieldNames) {
       return new CreateSchemaIxData(discriminator,
-                                    name, name.getBytes(UTF_8),
-                                    description, description.getBytes(UTF_8),
+                                    name, name == null ? null : name.getBytes(UTF_8),
+                                    description, description == null ? null : description.getBytes(UTF_8),
                                     layout,
-                                    fieldNames, Borsh.getBytes(fieldNames));
+                                    fieldNames);
     }
 
     public static CreateSchemaIxData read(final byte[] _data, final int _offset) {
@@ -211,29 +212,29 @@ public final class SolanaAttestationServiceProgram {
       final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
       final var description = new String(_description, UTF_8);
       i += _description.length;
-      final var layout = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(layout);
-      final var fieldNames = Borsh.readStringVector(_data, i);
+      final var layout = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, layout);
+      final var fieldNames = SerDeUtil.readStringVector(4, 4, _data, i);
       return new CreateSchemaIxData(discriminator,
-                                    name, _name,
-                                    description, _description,
+                                    name, name == null ? null : name.getBytes(UTF_8),
+                                    description, description == null ? null : description.getBytes(UTF_8),
                                     layout,
-                                    fieldNames, Borsh.getBytes(fieldNames));
+                                    fieldNames);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_name, _data, i);
-      i += Borsh.writeVector(_description, _data, i);
-      i += Borsh.writeVector(layout, _data, i);
-      i += Borsh.writeVector(fieldNames, _data, i);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, _description, _data, i);
+      i += SerDeUtil.writeVector(4, layout, _data, i);
+      i += SerDeUtil.writeVector(4, 4, fieldNames, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + _name.length + _description.length + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames);
+      return 8 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
     }
   }
 
@@ -276,7 +277,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaStatusIxData(Discriminator discriminator, boolean isPaused) implements Borsh {  
+  public record ChangeSchemaStatusIxData(Discriminator discriminator, boolean isPaused) implements SerDe {  
 
     public static ChangeSchemaStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -342,14 +343,14 @@ public final class SolanaAttestationServiceProgram {
   public static Instruction changeAuthorizedSigners(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final PublicKey[] signers) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(signers)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, signers)];
     int i = CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(signers, _data, i);
+    SerDeUtil.writeVector(4, signers, _data, i);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeAuthorizedSignersIxData(Discriminator discriminator, PublicKey[] signers) implements Borsh {  
+  public record ChangeAuthorizedSignersIxData(Discriminator discriminator, PublicKey[] signers) implements SerDe {  
 
     public static ChangeAuthorizedSignersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -361,20 +362,20 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var signers = Borsh.readPublicKeyVector(_data, i);
+      final var signers = SerDeUtil.readPublicKeyVector(4, _data, i);
       return new ChangeAuthorizedSignersIxData(discriminator, signers);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(signers, _data, i);
+      i += SerDeUtil.writeVector(4, signers, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(signers);
+      return 8 + SerDeUtil.lenVector(4, signers);
     }
   }
 
@@ -421,19 +422,19 @@ public final class SolanaAttestationServiceProgram {
     final byte[] _description = description.getBytes(UTF_8);
     final byte[] _data = new byte[12 + _description.length];
     int i = CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(_description, _data, i);
+    SerDeUtil.writeVector(4, _description, _data, i);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaDescriptionIxData(Discriminator discriminator, String description, byte[] _description) implements Borsh {  
+  public record ChangeSchemaDescriptionIxData(Discriminator discriminator, String description, byte[] _description) implements SerDe {  
 
     public static ChangeSchemaDescriptionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static ChangeSchemaDescriptionIxData createRecord(final Discriminator discriminator, final String description) {
-      return new ChangeSchemaDescriptionIxData(discriminator, description, description.getBytes(UTF_8));
+      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
     }
 
     public static ChangeSchemaDescriptionIxData read(final byte[] _data, final int _offset) {
@@ -446,13 +447,13 @@ public final class SolanaAttestationServiceProgram {
       i += 4;
       final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
       final var description = new String(_description, UTF_8);
-      return new ChangeSchemaDescriptionIxData(discriminator, description, _description);
+      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_description, _data, i);
+      i += SerDeUtil.writeVector(4, _description, _data, i);
       return i - _offset;
     }
 
@@ -506,15 +507,15 @@ public final class SolanaAttestationServiceProgram {
                                                 final List<AccountMeta> keys,
                                                 final byte[] layout,
                                                 final String[] fieldNames) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
     int i = CHANGE_SCHEMA_VERSION_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(layout, _data, i);
-    Borsh.writeVector(fieldNames, _data, i);
+    i += SerDeUtil.writeVector(4, layout, _data, i);
+    SerDeUtil.writeVector(4, 4, fieldNames, _data, i);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaVersionIxData(Discriminator discriminator, byte[] layout, String[] fieldNames, byte[][] _fieldNames) implements Borsh {  
+  public record ChangeSchemaVersionIxData(Discriminator discriminator, byte[] layout, String[] fieldNames) implements SerDe {  
 
     public static ChangeSchemaVersionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -526,23 +527,23 @@ public final class SolanaAttestationServiceProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var layout = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(layout);
-      final var fieldNames = Borsh.readStringVector(_data, i);
-      return new ChangeSchemaVersionIxData(discriminator, layout, fieldNames, Borsh.getBytes(fieldNames));
+      final var layout = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, layout);
+      final var fieldNames = SerDeUtil.readStringVector(4, 4, _data, i);
+      return new ChangeSchemaVersionIxData(discriminator, layout, fieldNames);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(layout, _data, i);
-      i += Borsh.writeVector(fieldNames, _data, i);
+      i += SerDeUtil.writeVector(4, layout, _data, i);
+      i += SerDeUtil.writeVector(4, 4, fieldNames, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(layout) + Borsh.lenVector(fieldNames);
+      return 8 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
     }
   }
 
@@ -602,11 +603,11 @@ public final class SolanaAttestationServiceProgram {
                                               final PublicKey nonce,
                                               final byte[] data,
                                               final long expiry) {
-    final byte[] _data = new byte[48 + Borsh.lenVector(data)];
+    final byte[] _data = new byte[48 + SerDeUtil.lenVector(4, data)];
     int i = CREATE_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(data, _data, i);
+    i += SerDeUtil.writeVector(4, data, _data, i);
     putInt64LE(_data, i, expiry);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
@@ -615,7 +616,7 @@ public final class SolanaAttestationServiceProgram {
   public record CreateAttestationIxData(Discriminator discriminator,
                                         PublicKey nonce,
                                         byte[] data,
-                                        long expiry) implements Borsh {  
+                                        long expiry) implements SerDe {  
 
     public static CreateAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -629,8 +630,8 @@ public final class SolanaAttestationServiceProgram {
       int i = _offset + discriminator.length();
       final var nonce = readPubKey(_data, i);
       i += 32;
-      final var data = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(data);
+      final var data = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, data);
       final var expiry = getInt64LE(_data, i);
       return new CreateAttestationIxData(discriminator, nonce, data, expiry);
     }
@@ -640,7 +641,7 @@ public final class SolanaAttestationServiceProgram {
       int i = _offset + discriminator.write(_data, _offset);
       nonce.write(_data, i);
       i += 32;
-      i += Borsh.writeVector(data, _data, i);
+      i += SerDeUtil.writeVector(4, data, _data, i);
       putInt64LE(_data, i, expiry);
       i += 8;
       return i - _offset;
@@ -648,7 +649,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 32 + Borsh.lenVector(data) + 8;
+      return 8 + 32 + SerDeUtil.lenVector(4, data) + 8;
     }
   }
 
@@ -760,7 +761,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements Borsh {  
+  public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements SerDe {  
 
     public static TokenizeSchemaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -901,16 +902,16 @@ public final class SolanaAttestationServiceProgram {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _data = new byte[62 + Borsh.lenVector(data) + _name.length + _uri.length + _symbol.length];
+    final byte[] _data = new byte[62 + SerDeUtil.lenVector(4, data) + _name.length + _uri.length + _symbol.length];
     int i = CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(data, _data, i);
+    i += SerDeUtil.writeVector(4, data, _data, i);
     putInt64LE(_data, i, expiry);
     i += 8;
-    i += Borsh.writeVector(_name, _data, i);
-    i += Borsh.writeVector(_uri, _data, i);
-    i += Borsh.writeVector(_symbol, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _uri, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
     putInt16LE(_data, i, mintAccountSpace);
 
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
@@ -923,7 +924,7 @@ public final class SolanaAttestationServiceProgram {
                                                  String name, byte[] _name,
                                                  String uri, byte[] _uri,
                                                  String symbol, byte[] _symbol,
-                                                 int mintAccountSpace) implements Borsh {  
+                                                 int mintAccountSpace) implements SerDe {  
 
     public static CreateTokenizedAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -941,9 +942,9 @@ public final class SolanaAttestationServiceProgram {
                                                   nonce,
                                                   data,
                                                   expiry,
-                                                  name, name.getBytes(UTF_8),
-                                                  uri, uri.getBytes(UTF_8),
-                                                  symbol, symbol.getBytes(UTF_8),
+                                                  name, name == null ? null : name.getBytes(UTF_8),
+                                                  uri, uri == null ? null : uri.getBytes(UTF_8),
+                                                  symbol, symbol == null ? null : symbol.getBytes(UTF_8),
                                                   mintAccountSpace);
     }
 
@@ -955,8 +956,8 @@ public final class SolanaAttestationServiceProgram {
       int i = _offset + discriminator.length();
       final var nonce = readPubKey(_data, i);
       i += 32;
-      final var data = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(data);
+      final var data = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, data);
       final var expiry = getInt64LE(_data, i);
       i += 8;
       final int _nameLength = getInt32LE(_data, i);
@@ -979,9 +980,9 @@ public final class SolanaAttestationServiceProgram {
                                                   nonce,
                                                   data,
                                                   expiry,
-                                                  name, _name,
-                                                  uri, _uri,
-                                                  symbol, _symbol,
+                                                  name, name == null ? null : name.getBytes(UTF_8),
+                                                  uri, uri == null ? null : uri.getBytes(UTF_8),
+                                                  symbol, symbol == null ? null : symbol.getBytes(UTF_8),
                                                   mintAccountSpace);
     }
 
@@ -990,12 +991,12 @@ public final class SolanaAttestationServiceProgram {
       int i = _offset + discriminator.write(_data, _offset);
       nonce.write(_data, i);
       i += 32;
-      i += Borsh.writeVector(data, _data, i);
+      i += SerDeUtil.writeVector(4, data, _data, i);
       putInt64LE(_data, i, expiry);
       i += 8;
-      i += Borsh.writeVector(_name, _data, i);
-      i += Borsh.writeVector(_uri, _data, i);
-      i += Borsh.writeVector(_symbol, _data, i);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, _uri, _data, i);
+      i += SerDeUtil.writeVector(4, _symbol, _data, i);
       putInt16LE(_data, i, mintAccountSpace);
       i += 2;
       return i - _offset;
@@ -1004,7 +1005,7 @@ public final class SolanaAttestationServiceProgram {
     @Override
     public int l() {
       return 8 + 32
-           + Borsh.lenVector(data)
+           + SerDeUtil.lenVector(4, data)
            + 8
            + _name.length
            + _uri.length

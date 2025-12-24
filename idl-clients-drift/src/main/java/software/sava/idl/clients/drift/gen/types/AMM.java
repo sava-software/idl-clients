@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -232,7 +233,7 @@ public record AMM(PublicKey oracle,
                   int ammInventorySpreadAdjustment,
                   int referencePriceOffsetDeadbandPct,
                   byte[] padding,
-                  long lastFundingOracleTwap) implements Borsh {
+                  long lastFundingOracleTwap) implements SerDe {
 
   public static final int BYTES = 936;
   public static final int PADDING_LEN = 2;
@@ -413,7 +414,7 @@ public record AMM(PublicKey oracle,
     final var referencePriceOffsetDeadbandPct = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[2];
-    i += Borsh.readArray(padding, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
     final var lastFundingOracleTwap = getInt64LE(_data, i);
     return new AMM(oracle,
                    historicalOracleData,
@@ -674,7 +675,7 @@ public record AMM(PublicKey oracle,
     ++i;
     _data[i] = (byte) referencePriceOffsetDeadbandPct;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 2, _data, i);
     putInt64LE(_data, i, lastFundingOracleTwap);
     i += 8;
     return i - _offset;

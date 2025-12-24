@@ -1,8 +1,9 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum TokenStandard implements Borsh.Enum {
+public enum TokenStandard implements RustEnum {
 
   NonFungible,
   FungibleAsset,
@@ -12,6 +13,6 @@ public enum TokenStandard implements Borsh.Enum {
   ProgrammableNonFungibleEdition;
 
   public static TokenStandard read(final byte[] _data, final int _offset) {
-    return Borsh.read(TokenStandard.values(), _data, _offset);
+    return SerDeUtil.read(1, TokenStandard.values(), _data, _offset);
   }
 }

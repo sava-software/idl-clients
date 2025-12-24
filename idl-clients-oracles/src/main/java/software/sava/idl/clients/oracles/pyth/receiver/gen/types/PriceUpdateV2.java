@@ -3,9 +3,9 @@ package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -19,7 +19,7 @@ public record PriceUpdateV2(PublicKey _address,
                             PublicKey writeAuthority,
                             VerificationLevel verificationLevel,
                             PriceFeedMessage priceMessage,
-                            long postedSlot) implements Borsh {
+                            long postedSlot) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(34, 241, 35, 99, 157, 126, 244, 205);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());

@@ -6,9 +6,10 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -27,7 +28,7 @@ public record ProposalMeta(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey proposal,
                            String title, byte[] _title,
-                           String descriptionLink, byte[] _descriptionLink) implements Borsh {
+                           String descriptionLink, byte[] _descriptionLink) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(50, 100, 46, 24, 151, 174, 216, 78);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -44,7 +45,7 @@ public record ProposalMeta(PublicKey _address,
                                           final PublicKey proposal,
                                           final String title,
                                           final String descriptionLink) {
-    return new ProposalMeta(_address, discriminator, proposal, title, title.getBytes(UTF_8), descriptionLink, descriptionLink.getBytes(UTF_8));
+    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
   }
 
   public static ProposalMeta read(final byte[] _data, final int _offset) {
@@ -78,7 +79,7 @@ public record ProposalMeta(PublicKey _address,
     i += 4;
     final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
     final var descriptionLink = new String(_descriptionLink, UTF_8);
-    return new ProposalMeta(_address, discriminator, proposal, title, _title, descriptionLink, _descriptionLink);
+    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
   }
 
   @Override
@@ -86,8 +87,8 @@ public record ProposalMeta(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     proposal.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(_title, _data, i);
-    i += Borsh.writeVector(_descriptionLink, _data, i);
+    i += SerDeUtil.writeVector(4, _title, _data, i);
+    i += SerDeUtil.writeVector(4, _descriptionLink, _data, i);
     return i - _offset;
   }
 

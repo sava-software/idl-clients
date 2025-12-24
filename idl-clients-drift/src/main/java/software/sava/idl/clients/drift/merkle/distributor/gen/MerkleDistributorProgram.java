@@ -4,9 +4,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -172,11 +173,11 @@ public final class MerkleDistributorProgram {
                                            final long clawbackStartTs,
                                            final long enableSlot,
                                            final boolean closable) {
-    final byte[] _data = new byte[65 + Borsh.lenArray(root)];
+    final byte[] _data = new byte[65 + SerDeUtil.lenArray(root)];
     int i = NEW_DISTRIBUTOR_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, version);
     i += 8;
-    i += Borsh.writeArrayChecked(root, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(root, 32, _data, i);
     putInt64LE(_data, i, maxTotalClaim);
     i += 8;
     putInt64LE(_data, i, maxNumNodes);
@@ -203,7 +204,7 @@ public final class MerkleDistributorProgram {
                                      long endVestingTs,
                                      long clawbackStartTs,
                                      long enableSlot,
-                                     boolean closable) implements Borsh {  
+                                     boolean closable) implements SerDe {  
 
     public static NewDistributorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -221,7 +222,7 @@ public final class MerkleDistributorProgram {
       final var version = getInt64LE(_data, i);
       i += 8;
       final var root = new byte[32];
-      i += Borsh.readArray(root, _data, i);
+      i += SerDeUtil.readArray(root, _data, i);
       final var maxTotalClaim = getInt64LE(_data, i);
       i += 8;
       final var maxNumNodes = getInt64LE(_data, i);
@@ -252,7 +253,7 @@ public final class MerkleDistributorProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, version);
       i += 8;
-      i += Borsh.writeArrayChecked(root, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(root, 32, _data, i);
       putInt64LE(_data, i, maxTotalClaim);
       i += 8;
       putInt64LE(_data, i, maxNumNodes);
@@ -405,7 +406,7 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
-  public record SetEnableSlotIxData(Discriminator discriminator, long enableSlot) implements Borsh {  
+  public record SetEnableSlotIxData(Discriminator discriminator, long enableSlot) implements SerDe {  
 
     public static SetEnableSlotIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -505,13 +506,13 @@ public final class MerkleDistributorProgram {
                                      final long amountUnlocked,
                                      final long amountLocked,
                                      final byte[][] proof) {
-    final byte[] _data = new byte[24 + Borsh.lenVectorArray(proof)];
+    final byte[] _data = new byte[24 + SerDeUtil.lenVectorArray(4, proof)];
     int i = NEW_CLAIM_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amountUnlocked);
     i += 8;
     putInt64LE(_data, i, amountLocked);
     i += 8;
-    Borsh.writeVectorArrayChecked(proof, 32, _data, i);
+    SerDeUtil.writeVectorArrayChecked(4, proof, 32, _data, i);
 
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
@@ -519,7 +520,7 @@ public final class MerkleDistributorProgram {
   public record NewClaimIxData(Discriminator discriminator,
                                long amountUnlocked,
                                long amountLocked,
-                               byte[][] proof) implements Borsh {  
+                               byte[][] proof) implements SerDe {  
 
     public static NewClaimIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -535,7 +536,7 @@ public final class MerkleDistributorProgram {
       i += 8;
       final var amountLocked = getInt64LE(_data, i);
       i += 8;
-      final var proof = Borsh.readMultiDimensionbyteVectorArray(32, _data, i);
+      final var proof = SerDeUtil.readMultiDimensionbyteVectorArray(4, 32, _data, i);
       return new NewClaimIxData(discriminator, amountUnlocked, amountLocked, proof);
     }
 
@@ -546,13 +547,13 @@ public final class MerkleDistributorProgram {
       i += 8;
       putInt64LE(_data, i, amountLocked);
       i += 8;
-      i += Borsh.writeVectorArrayChecked(proof, 32, _data, i);
+      i += SerDeUtil.writeVectorArrayChecked(4, proof, 32, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 8 + 8 + Borsh.lenVectorArray(proof);
+      return 8 + 8 + 8 + SerDeUtil.lenVectorArray(4, proof);
     }
   }
 

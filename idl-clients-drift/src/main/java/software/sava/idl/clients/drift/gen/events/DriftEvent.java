@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface DriftEvent extends Borsh permits
+public sealed interface DriftEvent extends SerDe permits
     NewUserRecord,
     DepositRecord,
     SpotInterestRecord,

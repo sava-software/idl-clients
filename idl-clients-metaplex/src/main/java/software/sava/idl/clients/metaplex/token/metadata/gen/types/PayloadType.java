@@ -1,7 +1,7 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -36,7 +36,7 @@ public sealed interface PayloadType extends RustEnum permits
     }
   }
 
-  record Seeds(SeedsVec val) implements BorshEnum, PayloadType {
+  record Seeds(SeedsVec val) implements SerDeEnum, PayloadType {
 
     public static Seeds read(final byte[] _data, final int _offset) {
       return new Seeds(SeedsVec.read(_data, _offset));
@@ -48,7 +48,7 @@ public sealed interface PayloadType extends RustEnum permits
     }
   }
 
-  record MerkleProof(ProofInfo val) implements BorshEnum, PayloadType {
+  record MerkleProof(ProofInfo val) implements SerDeEnum, PayloadType {
 
     public static MerkleProof read(final byte[] _data, final int _offset) {
       return new MerkleProof(ProofInfo.read(_data, _offset));

@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -96,7 +97,7 @@ public record LendingMarket(PublicKey _address,
                             int priceTriggeredLiquidationDisabled,
                             byte[] padding2,
                             PublicKey proposerAuthority,
-                            long[] padding1) implements Borsh {
+                            long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
   public static final int QUOTE_CURRENCY_LEN = 32;
@@ -297,7 +298,7 @@ public record LendingMarket(PublicKey _address,
     final var lendingMarketOwnerCached = readPubKey(_data, i);
     i += 32;
     final var quoteCurrency = new byte[32];
-    i += Borsh.readArray(quoteCurrency, _data, i);
+    i += SerDeUtil.readArray(quoteCurrency, _data, i);
     final var referralFeeBps = getInt16LE(_data, i);
     i += 2;
     final var emergencyMode = _data[i] & 0xFF;
@@ -317,23 +318,23 @@ public record LendingMarket(PublicKey _address,
     final var maxLiquidatableDebtMarketValueAtOnce = getInt64LE(_data, i);
     i += 8;
     final var reserved0 = new byte[8];
-    i += Borsh.readArray(reserved0, _data, i);
+    i += SerDeUtil.readArray(reserved0, _data, i);
     final var globalAllowedBorrowValue = getInt64LE(_data, i);
     i += 8;
     final var riskCouncil = readPubKey(_data, i);
     i += 32;
     final var reserved1 = new byte[8];
-    i += Borsh.readArray(reserved1, _data, i);
+    i += SerDeUtil.readArray(reserved1, _data, i);
     final var elevationGroups = new ElevationGroup[32];
-    i += Borsh.readArray(elevationGroups, ElevationGroup::read, _data, i);
+    i += SerDeUtil.readArray(elevationGroups, ElevationGroup::read, _data, i);
     final var elevationGroupPadding = new long[90];
-    i += Borsh.readArray(elevationGroupPadding, _data, i);
+    i += SerDeUtil.readArray(elevationGroupPadding, _data, i);
     final var minNetValueInObligationSf = getInt128LE(_data, i);
     i += 16;
     final var minValueSkipLiquidationLtvChecks = getInt64LE(_data, i);
     i += 8;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var minValueSkipLiquidationBfChecks = getInt64LE(_data, i);
     i += 8;
     final var individualAutodeleverageMarginCallPeriodSecs = getInt64LE(_data, i);
@@ -349,11 +350,11 @@ public record LendingMarket(PublicKey _address,
     final var priceTriggeredLiquidationDisabled = _data[i] & 0xFF;
     ++i;
     final var padding2 = new byte[4];
-    i += Borsh.readArray(padding2, _data, i);
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var proposerAuthority = readPubKey(_data, i);
     i += 32;
     final var padding1 = new long[165];
-    Borsh.readArray(padding1, _data, i);
+    SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
                              version,
@@ -402,7 +403,7 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     lendingMarketOwnerCached.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(quoteCurrency, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(quoteCurrency, 32, _data, i);
     putInt16LE(_data, i, referralFeeBps);
     i += 2;
     _data[i] = (byte) emergencyMode;
@@ -421,19 +422,19 @@ public record LendingMarket(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, maxLiquidatableDebtMarketValueAtOnce);
     i += 8;
-    i += Borsh.writeArrayChecked(reserved0, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved0, 8, _data, i);
     putInt64LE(_data, i, globalAllowedBorrowValue);
     i += 8;
     riskCouncil.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(reserved1, 8, _data, i);
-    i += Borsh.writeArrayChecked(elevationGroups, 32, _data, i);
-    i += Borsh.writeArrayChecked(elevationGroupPadding, 90, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved1, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(elevationGroups, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(elevationGroupPadding, 90, _data, i);
     putInt128LE(_data, i, minNetValueInObligationSf);
     i += 16;
     putInt64LE(_data, i, minValueSkipLiquidationLtvChecks);
     i += 8;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     putInt64LE(_data, i, minValueSkipLiquidationBfChecks);
     i += 8;
     putInt64LE(_data, i, individualAutodeleverageMarginCallPeriodSecs);
@@ -448,10 +449,10 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) priceTriggeredLiquidationDisabled;
     ++i;
-    i += Borsh.writeArrayChecked(padding2, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 4, _data, i);
     proposerAuthority.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding1, 165, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 165, _data, i);
     return i - _offset;
   }
 

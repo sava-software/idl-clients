@@ -1,13 +1,13 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 public record DummyIx(PairStatus pairStatus,
                       PairType pairType,
                       ActivationType activationType,
                       TokenProgramFlags tokenProgramFlag,
                       ResizeSide resizeSide,
-                      Rounding rounding) implements Borsh {
+                      Rounding rounding) implements SerDe {
 
   public static final int BYTES = 6;
 

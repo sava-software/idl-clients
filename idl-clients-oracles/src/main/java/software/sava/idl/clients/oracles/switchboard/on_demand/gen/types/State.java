@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -44,7 +45,7 @@ public record State(PublicKey _address,
                     byte[] ebuf4,
                     byte[] ebuf3,
                     byte[] ebuf2,
-                    PublicKey[] costWhitelist) implements Borsh {
+                    PublicKey[] costWhitelist) implements SerDe {
 
   public static final int BYTES = 2136;
   public static final int PADDING_1_LEN = 5;
@@ -192,7 +193,7 @@ public record State(PublicKey _address,
     final var enableStaking = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[5];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var authority = readPubKey(_data, i);
     i += 32;
     final var guardianQueue = readPubKey(_data, i);
@@ -202,11 +203,11 @@ public record State(PublicKey _address,
     final var epochLength = getInt64LE(_data, i);
     i += 8;
     final var reserved2 = new byte[136];
-    i += Borsh.readArray(reserved2, _data, i);
+    i += SerDeUtil.readArray(reserved2, _data, i);
     final var switchMint = readPubKey(_data, i);
     i += 32;
     final var sgxAdvisories = new short[32];
-    i += Borsh.readArray(sgxAdvisories, _data, i);
+    i += SerDeUtil.readArray(sgxAdvisories, _data, i);
     final var advisoriesLen = _data[i] & 0xFF;
     ++i;
     final var padding2 = _data[i] & 0xFF;
@@ -222,21 +223,21 @@ public record State(PublicKey _address,
     final var baseReward = getInt32LE(_data, i);
     i += 4;
     final var padding4 = new byte[4];
-    i += Borsh.readArray(padding4, _data, i);
+    i += SerDeUtil.readArray(padding4, _data, i);
     final var subsidyAmount = getInt64LE(_data, i);
     i += 8;
     final var ebuf6 = new byte[16];
-    i += Borsh.readArray(ebuf6, _data, i);
+    i += SerDeUtil.readArray(ebuf6, _data, i);
     final var ebuf5 = new byte[32];
-    i += Borsh.readArray(ebuf5, _data, i);
+    i += SerDeUtil.readArray(ebuf5, _data, i);
     final var ebuf4 = new byte[64];
-    i += Borsh.readArray(ebuf4, _data, i);
+    i += SerDeUtil.readArray(ebuf4, _data, i);
     final var ebuf3 = new byte[128];
-    i += Borsh.readArray(ebuf3, _data, i);
+    i += SerDeUtil.readArray(ebuf3, _data, i);
     final var ebuf2 = new byte[512];
-    i += Borsh.readArray(ebuf2, _data, i);
+    i += SerDeUtil.readArray(ebuf2, _data, i);
     final var costWhitelist = new PublicKey[32];
-    Borsh.readArray(costWhitelist, _data, i);
+    SerDeUtil.readArray(costWhitelist, _data, i);
     return new State(_address,
                      discriminator,
                      bump,
@@ -276,7 +277,7 @@ public record State(PublicKey _address,
     ++i;
     _data[i] = (byte) enableStaking;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 5, _data, i);
     authority.write(_data, i);
     i += 32;
     guardianQueue.write(_data, i);
@@ -285,10 +286,10 @@ public record State(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, epochLength);
     i += 8;
-    i += Borsh.writeArrayChecked(reserved2, 136, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved2, 136, _data, i);
     switchMint.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(sgxAdvisories, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(sgxAdvisories, 32, _data, i);
     _data[i] = (byte) advisoriesLen;
     ++i;
     _data[i] = (byte) padding2;
@@ -303,15 +304,15 @@ public record State(PublicKey _address,
     i += 8;
     putInt32LE(_data, i, baseReward);
     i += 4;
-    i += Borsh.writeArrayChecked(padding4, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 4, _data, i);
     putInt64LE(_data, i, subsidyAmount);
     i += 8;
-    i += Borsh.writeArrayChecked(ebuf6, 16, _data, i);
-    i += Borsh.writeArrayChecked(ebuf5, 32, _data, i);
-    i += Borsh.writeArrayChecked(ebuf4, 64, _data, i);
-    i += Borsh.writeArrayChecked(ebuf3, 128, _data, i);
-    i += Borsh.writeArrayChecked(ebuf2, 512, _data, i);
-    i += Borsh.writeArrayChecked(costWhitelist, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf6, 16, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf5, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf4, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf3, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf2, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(costWhitelist, 32, _data, i);
     return i - _offset;
   }
 

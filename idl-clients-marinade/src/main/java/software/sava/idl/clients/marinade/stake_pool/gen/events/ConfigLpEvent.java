@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeValueChange;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.U64ValueChange;
 
@@ -74,10 +74,10 @@ public record ConfigLpEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     state.write(_data, i);
     i += 32;
-    i += Borsh.writeOptional(minFeeChange, _data, i);
-    i += Borsh.writeOptional(maxFeeChange, _data, i);
-    i += Borsh.writeOptional(liquidityTargetChange, _data, i);
-    i += Borsh.writeOptional(treasuryCutChange, _data, i);
+    i += SerDeUtil.writeOptional(1, minFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, maxFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, liquidityTargetChange, _data, i);
+    i += SerDeUtil.writeOptional(1, treasuryCutChange, _data, i);
     return i - _offset;
   }
 

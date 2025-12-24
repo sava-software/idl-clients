@@ -1,7 +1,7 @@
 package software.sava.idl.clients.drift.vaults.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record VaultProtocolParams(PublicKey protocol,
                                   long protocolFee,
-                                  int protocolProfitShare) implements Borsh {
+                                  int protocolProfitShare) implements SerDe {
 
   public static final int BYTES = 44;
 

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record AcceptOwnershipParams() implements Borsh {
+public record AcceptOwnershipParams() implements SerDe {
 
   private static final AcceptOwnershipParams INSTANCE = new AcceptOwnershipParams();
 

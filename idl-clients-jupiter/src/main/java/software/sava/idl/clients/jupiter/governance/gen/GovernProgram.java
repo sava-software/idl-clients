@@ -7,9 +7,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.governance.gen.types.GovernanceParameters;
 import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
 
@@ -91,7 +92,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record CreateGovernorIxData(Discriminator discriminator, PublicKey locker, GovernanceParameters params) implements Borsh {  
+  public record CreateGovernorIxData(Discriminator discriminator, PublicKey locker, GovernanceParameters params) implements SerDe {  
 
     public static CreateGovernorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -210,13 +211,13 @@ public final class GovernProgram {
                                            final int proposalType,
                                            final int maxOption,
                                            final ProposalInstruction[] instructions) {
-    final byte[] _data = new byte[10 + Borsh.lenVector(instructions)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenVector(4, instructions)];
     int i = CREATE_PROPOSAL_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) proposalType;
     ++i;
     _data[i] = (byte) maxOption;
     ++i;
-    Borsh.writeVector(instructions, _data, i);
+    SerDeUtil.writeVector(4, instructions, _data, i);
 
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
@@ -224,7 +225,7 @@ public final class GovernProgram {
   public record CreateProposalIxData(Discriminator discriminator,
                                      int proposalType,
                                      int maxOption,
-                                     ProposalInstruction[] instructions) implements Borsh {  
+                                     ProposalInstruction[] instructions) implements SerDe {  
 
     public static CreateProposalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -240,7 +241,7 @@ public final class GovernProgram {
       ++i;
       final var maxOption = _data[i] & 0xFF;
       ++i;
-      final var instructions = Borsh.readVector(ProposalInstruction.class, ProposalInstruction::read, _data, i);
+      final var instructions = SerDeUtil.readVector(4, ProposalInstruction.class, ProposalInstruction::read, _data, i);
       return new CreateProposalIxData(discriminator, proposalType, maxOption, instructions);
     }
 
@@ -251,13 +252,13 @@ public final class GovernProgram {
       ++i;
       _data[i] = (byte) maxOption;
       ++i;
-      i += Borsh.writeVector(instructions, _data, i);
+      i += SerDeUtil.writeVector(4, instructions, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 1 + 1 + Borsh.lenVector(instructions);
+      return 8 + 1 + 1 + SerDeUtil.lenVector(4, instructions);
     }
   }
 
@@ -488,7 +489,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record NewVoteIxData(Discriminator discriminator, PublicKey voter) implements Borsh {  
+  public record NewVoteIxData(Discriminator discriminator, PublicKey voter) implements SerDe {  
 
     public static NewVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -580,7 +581,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements Borsh {  
+  public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {  
 
     public static SetVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -660,7 +661,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetGovernanceParamsIxData(Discriminator discriminator, GovernanceParameters params) implements Borsh {  
+  public record SetGovernanceParamsIxData(Discriminator discriminator, GovernanceParameters params) implements SerDe {  
 
     public static SetGovernanceParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -741,7 +742,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements Borsh {  
+  public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements SerDe {  
 
     public static SetVotingRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -889,7 +890,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetLockerIxData(Discriminator discriminator, PublicKey newLocker) implements Borsh {  
+  public record SetLockerIxData(Discriminator discriminator, PublicKey newLocker) implements SerDe {  
 
     public static SetLockerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -997,8 +998,8 @@ public final class GovernProgram {
     int i = CREATE_PROPOSAL_META_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeVector(_title, _data, i);
-    Borsh.writeVector(_descriptionLink, _data, i);
+    i += SerDeUtil.writeVector(4, _title, _data, i);
+    SerDeUtil.writeVector(4, _descriptionLink, _data, i);
 
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
@@ -1006,7 +1007,7 @@ public final class GovernProgram {
   public record CreateProposalMetaIxData(Discriminator discriminator,
                                          int bump,
                                          String title, byte[] _title,
-                                         String descriptionLink, byte[] _descriptionLink) implements Borsh {  
+                                         String descriptionLink, byte[] _descriptionLink) implements SerDe {  
 
     public static CreateProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1016,7 +1017,7 @@ public final class GovernProgram {
                                                         final int bump,
                                                         final String title,
                                                         final String descriptionLink) {
-      return new CreateProposalMetaIxData(discriminator, bump, title, title.getBytes(UTF_8), descriptionLink, descriptionLink.getBytes(UTF_8));
+      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
     }
 
     public static CreateProposalMetaIxData read(final byte[] _data, final int _offset) {
@@ -1036,7 +1037,7 @@ public final class GovernProgram {
       i += 4;
       final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
       final var descriptionLink = new String(_descriptionLink, UTF_8);
-      return new CreateProposalMetaIxData(discriminator, bump, title, _title, descriptionLink, _descriptionLink);
+      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
     }
 
     @Override
@@ -1044,8 +1045,8 @@ public final class GovernProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) bump;
       ++i;
-      i += Borsh.writeVector(_title, _data, i);
-      i += Borsh.writeVector(_descriptionLink, _data, i);
+      i += SerDeUtil.writeVector(4, _title, _data, i);
+      i += SerDeUtil.writeVector(4, _descriptionLink, _data, i);
       return i - _offset;
     }
 
@@ -1117,16 +1118,16 @@ public final class GovernProgram {
                                                      final List<AccountMeta> keys,
                                                      final int bump,
                                                      final String[] optionDescriptions) {
-    final byte[] _data = new byte[9 + Borsh.lenVector(optionDescriptions)];
+    final byte[] _data = new byte[9 + SerDeUtil.lenVector(4, 4, optionDescriptions)];
     int i = CREATE_OPTION_PROPOSAL_META_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) bump;
     ++i;
-    Borsh.writeVector(optionDescriptions, _data, i);
+    SerDeUtil.writeVector(4, 4, optionDescriptions, _data, i);
 
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions, byte[][] _optionDescriptions) implements Borsh {  
+  public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions) implements SerDe {  
 
     public static CreateOptionProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1140,8 +1141,8 @@ public final class GovernProgram {
       int i = _offset + discriminator.length();
       final var bump = _data[i] & 0xFF;
       ++i;
-      final var optionDescriptions = Borsh.readStringVector(_data, i);
-      return new CreateOptionProposalMetaIxData(discriminator, bump, optionDescriptions, Borsh.getBytes(optionDescriptions));
+      final var optionDescriptions = SerDeUtil.readStringVector(4, 4, _data, i);
+      return new CreateOptionProposalMetaIxData(discriminator, bump, optionDescriptions);
     }
 
     @Override
@@ -1149,13 +1150,13 @@ public final class GovernProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) bump;
       ++i;
-      i += Borsh.writeVector(optionDescriptions, _data, i);
+      i += SerDeUtil.writeVector(4, 4, optionDescriptions, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 1 + Borsh.lenVector(optionDescriptions);
+      return 8 + 1 + SerDeUtil.lenVector(4, 4, optionDescriptions);
     }
   }
 

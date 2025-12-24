@@ -1,7 +1,7 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record Reservation(PublicKey address,
                           long spotsRemaining,
-                          long totalSpots) implements Borsh {
+                          long totalSpots) implements SerDe {
 
   public static final int BYTES = 48;
 

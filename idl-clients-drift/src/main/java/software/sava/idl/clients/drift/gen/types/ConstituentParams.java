@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -20,7 +21,7 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
                                 OptionalLong volatility,
                                 OptionalInt gammaExecution,
                                 OptionalInt gammaInventory,
-                                OptionalInt xi) implements Borsh {
+                                OptionalInt xi) implements SerDe {
 
   public static ConstituentParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -150,18 +151,18 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(maxWeightDeviation, _data, i);
-    i += Borsh.writeOptional(swapFeeMin, _data, i);
-    i += Borsh.writeOptional(swapFeeMax, _data, i);
-    i += Borsh.writeOptional(maxBorrowTokenAmount, _data, i);
-    i += Borsh.writeOptional(oracleStalenessThreshold, _data, i);
-    i += Borsh.writeOptional(costToTradeBps, _data, i);
-    i += Borsh.writeOptionalshort(constituentDerivativeIndex, _data, i);
-    i += Borsh.writeOptional(derivativeWeight, _data, i);
-    i += Borsh.writeOptional(volatility, _data, i);
-    i += Borsh.writeOptionalbyte(gammaExecution, _data, i);
-    i += Borsh.writeOptionalbyte(gammaInventory, _data, i);
-    i += Borsh.writeOptionalbyte(xi, _data, i);
+    i += SerDeUtil.writeOptional(1, maxWeightDeviation, _data, i);
+    i += SerDeUtil.writeOptional(1, swapFeeMin, _data, i);
+    i += SerDeUtil.writeOptional(1, swapFeeMax, _data, i);
+    i += SerDeUtil.writeOptional(1, maxBorrowTokenAmount, _data, i);
+    i += SerDeUtil.writeOptional(1, oracleStalenessThreshold, _data, i);
+    i += SerDeUtil.writeOptional(1, costToTradeBps, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, constituentDerivativeIndex, _data, i);
+    i += SerDeUtil.writeOptional(1, derivativeWeight, _data, i);
+    i += SerDeUtil.writeOptional(1, volatility, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, gammaExecution, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, gammaInventory, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, xi, _data, i);
     return i - _offset;
   }
 

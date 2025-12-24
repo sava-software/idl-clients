@@ -5,9 +5,10 @@ import java.lang.String;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -18,7 +19,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param proposal The Proposal.
 /// @param optionDescriptions description for options
-public record OptionProposalMeta(PublicKey _address, Discriminator discriminator, PublicKey proposal, String[] optionDescriptions, byte[][] _optionDescriptions) implements Borsh {
+public record OptionProposalMeta(PublicKey _address, Discriminator discriminator, PublicKey proposal, String[] optionDescriptions) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(200, 56, 229, 124, 113, 154, 32, 26);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -52,8 +53,8 @@ public record OptionProposalMeta(PublicKey _address, Discriminator discriminator
     int i = _offset + discriminator.length();
     final var proposal = readPubKey(_data, i);
     i += 32;
-    final var optionDescriptions = Borsh.readStringVector(_data, i);
-    return new OptionProposalMeta(_address, discriminator, proposal, optionDescriptions, Borsh.getBytes(optionDescriptions));
+    final var optionDescriptions = SerDeUtil.readStringVector(4, 4, _data, i);
+    return new OptionProposalMeta(_address, discriminator, proposal, optionDescriptions);
   }
 
   @Override
@@ -61,12 +62,12 @@ public record OptionProposalMeta(PublicKey _address, Discriminator discriminator
     int i = _offset + discriminator.write(_data, _offset);
     proposal.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(optionDescriptions, _data, i);
+    i += SerDeUtil.writeVector(4, 4, optionDescriptions, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + Borsh.lenVector(optionDescriptions);
+    return 8 + 32 + SerDeUtil.lenVector(4, 4, optionDescriptions);
   }
 }

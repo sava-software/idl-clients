@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.pyth.lazer.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -21,7 +22,7 @@ public record Storage(PublicKey _address,
                       long singleUpdateFeeInLamports,
                       int numTrustedSigners,
                       TrustedSignerInfo[] trustedSigners,
-                      byte[] extraSpace) implements Borsh {
+                      byte[] extraSpace) implements SerDe {
 
   public static final int BYTES = 381;
   public static final int TRUSTED_SIGNERS_LEN = 5;
@@ -85,9 +86,9 @@ public record Storage(PublicKey _address,
     final var numTrustedSigners = _data[i] & 0xFF;
     ++i;
     final var trustedSigners = new TrustedSignerInfo[5];
-    i += Borsh.readArray(trustedSigners, TrustedSignerInfo::read, _data, i);
+    i += SerDeUtil.readArray(trustedSigners, TrustedSignerInfo::read, _data, i);
     final var extraSpace = new byte[100];
-    Borsh.readArray(extraSpace, _data, i);
+    SerDeUtil.readArray(extraSpace, _data, i);
     return new Storage(_address,
                        discriminator,
                        topAuthority,
@@ -109,8 +110,8 @@ public record Storage(PublicKey _address,
     i += 8;
     _data[i] = (byte) numTrustedSigners;
     ++i;
-    i += Borsh.writeArrayChecked(trustedSigners, 5, _data, i);
-    i += Borsh.writeArrayChecked(extraSpace, 100, _data, i);
+    i += SerDeUtil.writeArrayChecked(trustedSigners, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(extraSpace, 100, _data, i);
     return i - _offset;
   }
 

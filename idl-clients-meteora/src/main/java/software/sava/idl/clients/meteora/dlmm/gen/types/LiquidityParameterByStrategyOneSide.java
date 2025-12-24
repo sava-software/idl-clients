@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record LiquidityParameterByStrategyOneSide(long amount,
                                                   int activeId,
                                                   int maxActiveBinSlippage,
-                                                  StrategyParameters strategyParameters) implements Borsh {
+                                                  StrategyParameters strategyParameters) implements SerDe {
 
   public static final int BYTES = 89;
 

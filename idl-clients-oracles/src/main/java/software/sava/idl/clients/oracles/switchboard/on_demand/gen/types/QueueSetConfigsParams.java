@@ -4,7 +4,8 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -12,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record QueueSetConfigsParams(PublicKey authority,
                                     OptionalInt reward,
-                                    OptionalLong nodeTimeout) implements Borsh {
+                                    OptionalLong nodeTimeout) implements SerDe {
 
   public static QueueSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -50,9 +51,9 @@ public record QueueSetConfigsParams(PublicKey authority,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(authority, _data, i);
-    i += Borsh.writeOptional(reward, _data, i);
-    i += Borsh.writeOptional(nodeTimeout, _data, i);
+    i += SerDeUtil.writeOptional(1, authority, _data, i);
+    i += SerDeUtil.writeOptional(1, reward, _data, i);
+    i += SerDeUtil.writeOptional(1, nodeTimeout, _data, i);
     return i - _offset;
   }
 

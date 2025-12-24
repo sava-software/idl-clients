@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param distributionY DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin.
 public record BinLiquidityDistribution(int binId,
                                        int distributionX,
-                                       int distributionY) implements Borsh {
+                                       int distributionY) implements SerDe {
 
   public static final int BYTES = 8;
 

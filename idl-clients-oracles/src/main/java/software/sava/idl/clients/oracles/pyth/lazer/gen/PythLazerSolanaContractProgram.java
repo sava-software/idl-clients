@@ -5,9 +5,10 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -62,7 +63,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, PublicKey topAuthority, PublicKey treasury) implements Borsh {  
+  public record InitializeIxData(Discriminator discriminator, PublicKey topAuthority, PublicKey treasury) implements SerDe {  
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -133,7 +134,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record UpdateIxData(Discriminator discriminator, PublicKey trustedSigner, long expiresAt) implements Borsh {  
+  public record UpdateIxData(Discriminator discriminator, PublicKey trustedSigner, long expiresAt) implements SerDe {  
 
     public static UpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -249,9 +250,9 @@ public final class PythLazerSolanaContractProgram {
                                           final byte[] messageData,
                                           final int ed25519InstructionIndex,
                                           final int signatureIndex) {
-    final byte[] _data = new byte[11 + Borsh.lenVector(messageData)];
+    final byte[] _data = new byte[11 + SerDeUtil.lenVector(4, messageData)];
     int i = VERIFY_MESSAGE_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(messageData, _data, i);
+    i += SerDeUtil.writeVector(4, messageData, _data, i);
     putInt16LE(_data, i, ed25519InstructionIndex);
     i += 2;
     _data[i] = (byte) signatureIndex;
@@ -262,7 +263,7 @@ public final class PythLazerSolanaContractProgram {
   public record VerifyMessageIxData(Discriminator discriminator,
                                     byte[] messageData,
                                     int ed25519InstructionIndex,
-                                    int signatureIndex) implements Borsh {  
+                                    int signatureIndex) implements SerDe {  
 
     public static VerifyMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -274,8 +275,8 @@ public final class PythLazerSolanaContractProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var messageData = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(messageData);
+      final var messageData = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, messageData);
       final var ed25519InstructionIndex = getInt16LE(_data, i);
       i += 2;
       final var signatureIndex = _data[i] & 0xFF;
@@ -285,7 +286,7 @@ public final class PythLazerSolanaContractProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(messageData, _data, i);
+      i += SerDeUtil.writeVector(4, messageData, _data, i);
       putInt16LE(_data, i, ed25519InstructionIndex);
       i += 2;
       _data[i] = (byte) signatureIndex;
@@ -295,7 +296,7 @@ public final class PythLazerSolanaContractProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(messageData) + 2 + 1;
+      return 8 + SerDeUtil.lenVector(4, messageData) + 2 + 1;
     }
   }
 

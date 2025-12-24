@@ -1,6 +1,6 @@
 package software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param totalClaimedBonus total bonus
 public record AirdropBonus(long totalBonus,
                            long vestingDuration,
-                           long totalClaimedBonus) implements Borsh {
+                           long totalClaimedBonus) implements SerDe {
 
   public static final int BYTES = 24;
 

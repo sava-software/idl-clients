@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -75,7 +76,7 @@ public record UserStats(PublicKey _address,
                         int fuelMaker,
                         long ifStakedGovTokenAmount,
                         int lastFuelIfBonusUpdateTs,
-                        byte[] padding) implements Borsh {
+                        byte[] padding) implements SerDe {
 
   public static final int BYTES = 240;
   public static final int PADDING_LEN = 12;
@@ -318,7 +319,7 @@ public record UserStats(PublicKey _address,
     final var lastFuelIfBonusUpdateTs = getInt32LE(_data, i);
     i += 4;
     final var padding = new byte[12];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new UserStats(_address,
                          discriminator,
                          authority,
@@ -401,7 +402,7 @@ public record UserStats(PublicKey _address,
     i += 8;
     putInt32LE(_data, i, lastFuelIfBonusUpdateTs);
     i += 4;
-    i += Borsh.writeArrayChecked(padding, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 12, _data, i);
     return i - _offset;
   }
 

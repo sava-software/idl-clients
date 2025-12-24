@@ -3,7 +3,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -26,7 +27,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
                                   BigInteger marketValueSf,
                                   BigInteger borrowFactorAdjustedMarketValueSf,
                                   long borrowedAmountOutsideElevationGroups,
-                                  long[] padding2) implements Borsh {
+                                  long[] padding2) implements SerDe {
 
   public static final int BYTES = 200;
   public static final int PADDING_2_LEN = 7;
@@ -51,7 +52,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     final var borrowedAmountOutsideElevationGroups = getInt64LE(_data, i);
     i += 8;
     final var padding2 = new long[7];
-    Borsh.readArray(padding2, _data, i);
+    SerDeUtil.readArray(padding2, _data, i);
     return new ObligationLiquidity(borrowReserve,
                                    cumulativeBorrowRateBsf,
                                    padding,
@@ -78,7 +79,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     i += 16;
     putInt64LE(_data, i, borrowedAmountOutsideElevationGroups);
     i += 8;
-    i += Borsh.writeArrayChecked(padding2, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 7, _data, i);
     return i - _offset;
   }
 

@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -57,7 +58,7 @@ public record Proposal(PublicKey _address,
                        long totalClaimedReward,
                        int proposalType,
                        BigInteger[] buffers,
-                       ProposalInstruction[] instructions) implements Borsh {
+                       ProposalInstruction[] instructions) implements SerDe {
 
   public static final int BUFFERS_LEN = 10;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(26, 94, 189, 187, 116, 136, 53, 33);
@@ -131,8 +132,8 @@ public record Proposal(PublicKey _address,
     i += 8;
     final var maxOption = _data[i] & 0xFF;
     ++i;
-    final var optionVotes = Borsh.readlongVector(_data, i);
-    i += Borsh.lenVector(optionVotes);
+    final var optionVotes = SerDeUtil.readlongVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, optionVotes);
     final var canceledAt = getInt64LE(_data, i);
     i += 8;
     final var createdAt = getInt64LE(_data, i);
@@ -152,8 +153,8 @@ public record Proposal(PublicKey _address,
     final var proposalType = _data[i] & 0xFF;
     ++i;
     final var buffers = new BigInteger[10];
-    i += Borsh.read128Array(buffers, _data, i);
-    final var instructions = Borsh.readVector(ProposalInstruction.class, ProposalInstruction::read, _data, i);
+    i += SerDeUtil.read128Array(buffers, _data, i);
+    final var instructions = SerDeUtil.readVector(4, ProposalInstruction.class, ProposalInstruction::read, _data, i);
     return new Proposal(_address,
                         discriminator,
                         governor,
@@ -191,7 +192,7 @@ public record Proposal(PublicKey _address,
     i += 8;
     _data[i] = (byte) maxOption;
     ++i;
-    i += Borsh.writeVector(optionVotes, _data, i);
+    i += SerDeUtil.writeVector(4, optionVotes, _data, i);
     putInt64LE(_data, i, canceledAt);
     i += 8;
     putInt64LE(_data, i, createdAt);
@@ -209,8 +210,8 @@ public record Proposal(PublicKey _address,
     i += 8;
     _data[i] = (byte) proposalType;
     ++i;
-    i += Borsh.write128ArrayChecked(buffers, 10, _data, i);
-    i += Borsh.writeVector(instructions, _data, i);
+    i += SerDeUtil.write128ArrayChecked(buffers, 10, _data, i);
+    i += SerDeUtil.writeVector(4, instructions, _data, i);
     return i - _offset;
   }
 
@@ -222,7 +223,7 @@ public record Proposal(PublicKey _address,
          + 32
          + 8
          + 1
-         + Borsh.lenVector(optionVotes)
+         + SerDeUtil.lenVector(4, optionVotes)
          + 8
          + 8
          + 8
@@ -232,7 +233,7 @@ public record Proposal(PublicKey _address,
          + votingReward.l()
          + 8
          + 1
-         + Borsh.len128Array(buffers)
-         + Borsh.lenVector(instructions);
+         + SerDeUtil.len128Array(buffers)
+         + SerDeUtil.lenVector(4, instructions);
   }
 }

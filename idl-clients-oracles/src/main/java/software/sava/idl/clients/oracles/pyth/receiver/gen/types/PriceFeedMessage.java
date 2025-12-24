@@ -1,6 +1,7 @@
 package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +15,7 @@ public record PriceFeedMessage(byte[] feedId,
                                long publishTime,
                                long prevPublishTime,
                                long emaPrice,
-                               long emaConf) implements Borsh {
+                               long emaConf) implements SerDe {
 
   public static final int BYTES = 84;
   public static final int FEED_ID_LEN = 32;
@@ -25,7 +26,7 @@ public record PriceFeedMessage(byte[] feedId,
     }
     int i = _offset;
     final var feedId = new byte[32];
-    i += Borsh.readArray(feedId, _data, i);
+    i += SerDeUtil.readArray(feedId, _data, i);
     final var price = getInt64LE(_data, i);
     i += 8;
     final var conf = getInt64LE(_data, i);
@@ -52,7 +53,7 @@ public record PriceFeedMessage(byte[] feedId,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(feedId, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
     putInt64LE(_data, i, price);
     i += 8;
     putInt64LE(_data, i, conf);

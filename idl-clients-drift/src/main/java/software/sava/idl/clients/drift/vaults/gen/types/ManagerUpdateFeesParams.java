@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.vaults.gen.types;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -12,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record ManagerUpdateFeesParams(long timelockDuration,
                                       OptionalLong newManagementFee,
                                       OptionalInt newProfitShare,
-                                      OptionalInt newHurdleRate) implements Borsh {
+                                      OptionalInt newHurdleRate) implements SerDe {
 
   public static ManagerUpdateFeesParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -57,9 +58,9 @@ public record ManagerUpdateFeesParams(long timelockDuration,
     int i = _offset;
     putInt64LE(_data, i, timelockDuration);
     i += 8;
-    i += Borsh.writeOptional(newManagementFee, _data, i);
-    i += Borsh.writeOptional(newProfitShare, _data, i);
-    i += Borsh.writeOptional(newHurdleRate, _data, i);
+    i += SerDeUtil.writeOptional(1, newManagementFee, _data, i);
+    i += SerDeUtil.writeOptional(1, newProfitShare, _data, i);
+    i += SerDeUtil.writeOptional(1, newHurdleRate, _data, i);
     return i - _offset;
   }
 

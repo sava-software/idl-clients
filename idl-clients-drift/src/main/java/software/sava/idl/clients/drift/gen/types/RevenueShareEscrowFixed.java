@@ -1,7 +1,8 @@
 package software.sava.idl.clients.drift.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -13,7 +14,7 @@ public record RevenueShareEscrowFixed(PublicKey authority,
                                       int referrerRewardOffset,
                                       int refereeFeeNumeratorOffset,
                                       int referrerBoostNumerator,
-                                      byte[] reservedFixed) implements Borsh {
+                                      byte[] reservedFixed) implements SerDe {
 
   public static final int BYTES = 88;
   public static final int RESERVED_FIXED_LEN = 17;
@@ -36,7 +37,7 @@ public record RevenueShareEscrowFixed(PublicKey authority,
     final var referrerBoostNumerator = _data[i];
     ++i;
     final var reservedFixed = new byte[17];
-    Borsh.readArray(reservedFixed, _data, i);
+    SerDeUtil.readArray(reservedFixed, _data, i);
     return new RevenueShareEscrowFixed(authority,
                                        referrer,
                                        referrerBoostExpireTs,
@@ -61,7 +62,7 @@ public record RevenueShareEscrowFixed(PublicKey authority,
     ++i;
     _data[i] = (byte) referrerBoostNumerator;
     ++i;
-    i += Borsh.writeArrayChecked(reservedFixed, 17, _data, i);
+    i += SerDeUtil.writeArrayChecked(reservedFixed, 17, _data, i);
     return i - _offset;
   }
 

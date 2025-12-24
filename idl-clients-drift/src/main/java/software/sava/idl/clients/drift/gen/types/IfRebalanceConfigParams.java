@@ -1,6 +1,6 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +14,7 @@ public record IfRebalanceConfigParams(long totalInAmount,
                                       int inMarketIndex,
                                       int maxSlippageBps,
                                       int swapMode,
-                                      int status) implements Borsh {
+                                      int status) implements SerDe {
 
   public static final int BYTES = 32;
 

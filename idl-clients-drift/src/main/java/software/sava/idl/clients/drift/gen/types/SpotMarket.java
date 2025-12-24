@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -197,7 +198,7 @@ public record SpotMarket(PublicKey _address,
                          int fuelBoostInsurance,
                          int tokenProgramFlag,
                          int poolId,
-                         byte[] padding) implements Borsh {
+                         byte[] padding) implements SerDe {
 
   public static final int BYTES = 776;
   public static final int NAME_LEN = 32;
@@ -627,7 +628,7 @@ public record SpotMarket(PublicKey _address,
     final var vault = readPubKey(_data, i);
     i += 32;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var historicalOracleData = HistoricalOracleData.read(_data, i);
     i += historicalOracleData.l();
     final var historicalIndexData = HistoricalIndexData.read(_data, i);
@@ -745,7 +746,7 @@ public record SpotMarket(PublicKey _address,
     final var poolId = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[40];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new SpotMarket(_address,
                           discriminator,
                           pubkey,
@@ -825,7 +826,7 @@ public record SpotMarket(PublicKey _address,
     i += 32;
     vault.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     i += historicalOracleData.write(_data, i);
     i += historicalIndexData.write(_data, i);
     i += revenuePool.write(_data, i);
@@ -934,7 +935,7 @@ public record SpotMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) poolId;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 40, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 40, _data, i);
     return i - _offset;
   }
 

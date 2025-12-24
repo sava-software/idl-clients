@@ -1,7 +1,8 @@
 package software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -21,7 +22,7 @@ public record NewDistributorParams(long version,
                                    long bonusVestingDuration,
                                    int claimType,
                                    PublicKey operator,
-                                   PublicKey locker) implements Borsh {
+                                   PublicKey locker) implements SerDe {
 
   public static final int BYTES = 171;
   public static final int ROOT_LEN = 32;
@@ -34,7 +35,7 @@ public record NewDistributorParams(long version,
     final var version = getInt64LE(_data, i);
     i += 8;
     final var root = new byte[32];
-    i += Borsh.readArray(root, _data, i);
+    i += SerDeUtil.readArray(root, _data, i);
     final var totalClaim = getInt64LE(_data, i);
     i += 8;
     final var maxNumNodes = getInt64LE(_data, i);
@@ -82,7 +83,7 @@ public record NewDistributorParams(long version,
     int i = _offset;
     putInt64LE(_data, i, version);
     i += 8;
-    i += Borsh.writeArrayChecked(root, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(root, 32, _data, i);
     putInt64LE(_data, i, totalClaim);
     i += 8;
     putInt64LE(_data, i, maxNumNodes);

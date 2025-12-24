@@ -1,7 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -17,7 +18,7 @@ public record GuardianQuoteVerifyParams(long timestamp,
                                         long slot,
                                         byte[] signature,
                                         int recoveryId,
-                                        int[] advisories) implements Borsh {
+                                        int[] advisories) implements SerDe {
 
   public static final int MR_ENCLAVE_LEN = 32;
   public static final int SECP_222K_1_KEY_LEN = 64;
@@ -30,20 +31,20 @@ public record GuardianQuoteVerifyParams(long timestamp,
     final var timestamp = getInt64LE(_data, i);
     i += 8;
     final var mrEnclave = new byte[32];
-    i += Borsh.readArray(mrEnclave, _data, i);
+    i += SerDeUtil.readArray(mrEnclave, _data, i);
     final var reserved1 = getInt32LE(_data, i);
     i += 4;
     final var ed25519Key = readPubKey(_data, i);
     i += 32;
     final var secp256k1Key = new byte[64];
-    i += Borsh.readArray(secp256k1Key, _data, i);
+    i += SerDeUtil.readArray(secp256k1Key, _data, i);
     final var slot = getInt64LE(_data, i);
     i += 8;
     final var signature = new byte[64];
-    i += Borsh.readArray(signature, _data, i);
+    i += SerDeUtil.readArray(signature, _data, i);
     final var recoveryId = _data[i] & 0xFF;
     ++i;
-    final var advisories = Borsh.readintVector(_data, i);
+    final var advisories = SerDeUtil.readintVector(4, _data, i);
     return new GuardianQuoteVerifyParams(timestamp,
                                          mrEnclave,
                                          reserved1,
@@ -60,31 +61,31 @@ public record GuardianQuoteVerifyParams(long timestamp,
     int i = _offset;
     putInt64LE(_data, i, timestamp);
     i += 8;
-    i += Borsh.writeArrayChecked(mrEnclave, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(mrEnclave, 32, _data, i);
     putInt32LE(_data, i, reserved1);
     i += 4;
     ed25519Key.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(secp256k1Key, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(secp256k1Key, 64, _data, i);
     putInt64LE(_data, i, slot);
     i += 8;
-    i += Borsh.writeArrayChecked(signature, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(signature, 64, _data, i);
     _data[i] = (byte) recoveryId;
     ++i;
-    i += Borsh.writeVector(advisories, _data, i);
+    i += SerDeUtil.writeVector(4, advisories, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
     return 8
-         + Borsh.lenArray(mrEnclave)
+         + SerDeUtil.lenArray(mrEnclave)
          + 4
          + 32
-         + Borsh.lenArray(secp256k1Key)
+         + SerDeUtil.lenArray(secp256k1Key)
          + 8
-         + Borsh.lenArray(signature)
+         + SerDeUtil.lenArray(signature)
          + 1
-         + Borsh.lenVector(advisories);
+         + SerDeUtil.lenVector(4, advisories);
   }
 }

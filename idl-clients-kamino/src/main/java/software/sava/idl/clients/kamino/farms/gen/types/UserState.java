@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -56,7 +57,7 @@ public record UserState(PublicKey _address,
                         PublicKey delegatee,
                         long lastStakeTs,
                         long[] rewardsIssuedCumulative,
-                        long[] padding1) implements Borsh {
+                        long[] padding1) implements SerDe {
 
   public static final int BYTES = 920;
   public static final int PADDING_0_LEN = 7;
@@ -182,13 +183,13 @@ public record UserState(PublicKey _address,
     final var isFarmDelegated = _data[i] & 0xFF;
     ++i;
     final var padding0 = new byte[7];
-    i += Borsh.readArray(padding0, _data, i);
+    i += SerDeUtil.readArray(padding0, _data, i);
     final var rewardsTallyScaled = new BigInteger[10];
-    i += Borsh.read128Array(rewardsTallyScaled, _data, i);
+    i += SerDeUtil.read128Array(rewardsTallyScaled, _data, i);
     final var rewardsIssuedUnclaimed = new long[10];
-    i += Borsh.readArray(rewardsIssuedUnclaimed, _data, i);
+    i += SerDeUtil.readArray(rewardsIssuedUnclaimed, _data, i);
     final var lastClaimTs = new long[10];
-    i += Borsh.readArray(lastClaimTs, _data, i);
+    i += SerDeUtil.readArray(lastClaimTs, _data, i);
     final var activeStakeScaled = getInt128LE(_data, i);
     i += 16;
     final var pendingDepositStakeScaled = getInt128LE(_data, i);
@@ -206,9 +207,9 @@ public record UserState(PublicKey _address,
     final var lastStakeTs = getInt64LE(_data, i);
     i += 8;
     final var rewardsIssuedCumulative = new long[10];
-    i += Borsh.readArray(rewardsIssuedCumulative, _data, i);
+    i += SerDeUtil.readArray(rewardsIssuedCumulative, _data, i);
     final var padding1 = new long[40];
-    Borsh.readArray(padding1, _data, i);
+    SerDeUtil.readArray(padding1, _data, i);
     return new UserState(_address,
                          discriminator,
                          userId,
@@ -242,10 +243,10 @@ public record UserState(PublicKey _address,
     i += 32;
     _data[i] = (byte) isFarmDelegated;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 7, _data, i);
-    i += Borsh.write128ArrayChecked(rewardsTallyScaled, 10, _data, i);
-    i += Borsh.writeArrayChecked(rewardsIssuedUnclaimed, 10, _data, i);
-    i += Borsh.writeArrayChecked(lastClaimTs, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 7, _data, i);
+    i += SerDeUtil.write128ArrayChecked(rewardsTallyScaled, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewardsIssuedUnclaimed, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(lastClaimTs, 10, _data, i);
     putInt128LE(_data, i, activeStakeScaled);
     i += 16;
     putInt128LE(_data, i, pendingDepositStakeScaled);
@@ -262,8 +263,8 @@ public record UserState(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, lastStakeTs);
     i += 8;
-    i += Borsh.writeArrayChecked(rewardsIssuedCumulative, 10, _data, i);
-    i += Borsh.writeArrayChecked(padding1, 40, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewardsIssuedCumulative, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 40, _data, i);
     return i - _offset;
   }
 

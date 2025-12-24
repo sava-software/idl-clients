@@ -3,8 +3,8 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -13,7 +13,7 @@ public record TokenOwnedEscrow(PublicKey _address,
                                Key key,
                                PublicKey baseToken,
                                EscrowAuthority authority,
-                               int bump) implements Borsh {
+                               int bump) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int BASE_TOKEN_OFFSET = 1;

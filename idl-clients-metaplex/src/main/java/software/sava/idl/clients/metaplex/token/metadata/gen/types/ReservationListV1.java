@@ -4,8 +4,9 @@ import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ public record ReservationListV1(PublicKey _address,
                                 Key key,
                                 PublicKey masterEdition,
                                 OptionalLong supplySnapshot,
-                                ReservationV1[] reservations) implements Borsh {
+                                ReservationV1[] reservations) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int MASTER_EDITION_OFFSET = 1;
@@ -69,7 +70,7 @@ public record ReservationListV1(PublicKey _address,
       supplySnapshot = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
-    final var reservations = Borsh.readVector(ReservationV1.class, ReservationV1::read, _data, i);
+    final var reservations = SerDeUtil.readVector(4, ReservationV1.class, ReservationV1::read, _data, i);
     return new ReservationListV1(_address,
                                  key,
                                  masterEdition,
@@ -83,13 +84,13 @@ public record ReservationListV1(PublicKey _address,
     i += key.write(_data, i);
     masterEdition.write(_data, i);
     i += 32;
-    i += Borsh.writeOptional(supplySnapshot, _data, i);
-    i += Borsh.writeVector(reservations, _data, i);
+    i += SerDeUtil.writeOptional(1, supplySnapshot, _data, i);
+    i += SerDeUtil.writeVector(4, reservations, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return key.l() + 32 + (supplySnapshot == null || supplySnapshot.isEmpty() ? 1 : (1 + 8)) + Borsh.lenVector(reservations);
+    return key.l() + 32 + (supplySnapshot == null || supplySnapshot.isEmpty() ? 1 : (1 + 8)) + SerDeUtil.lenVector(4, reservations);
   }
 }

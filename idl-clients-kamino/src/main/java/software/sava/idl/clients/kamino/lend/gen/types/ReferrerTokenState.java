@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -32,7 +33,7 @@ public record ReferrerTokenState(PublicKey _address,
                                  BigInteger amountUnclaimedSf,
                                  BigInteger amountCumulativeSf,
                                  long bump,
-                                 long[] padding) implements Borsh {
+                                 long[] padding) implements SerDe {
 
   public static final int BYTES = 360;
   public static final int PADDING_LEN = 31;
@@ -105,7 +106,7 @@ public record ReferrerTokenState(PublicKey _address,
     final var bump = getInt64LE(_data, i);
     i += 8;
     final var padding = new long[31];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new ReferrerTokenState(_address,
                                   discriminator,
                                   referrer,
@@ -129,7 +130,7 @@ public record ReferrerTokenState(PublicKey _address,
     i += 16;
     putInt64LE(_data, i, bump);
     i += 8;
-    i += Borsh.writeArrayChecked(padding, 31, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 31, _data, i);
     return i - _offset;
   }
 

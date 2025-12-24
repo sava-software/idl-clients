@@ -3,9 +3,8 @@ package software.sava.idl.clients.spl.system.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
-import software.sava.core.serial.Serializable;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +16,7 @@ public record Nonce(PublicKey _address,
                     NonceState state,
                     PublicKey authority,
                     PublicKey blockhash,
-                    long lamportsPerSignature) implements Serializable {
+                    long lamportsPerSignature) implements SerDe {
 
   public static final int BYTES = 80;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

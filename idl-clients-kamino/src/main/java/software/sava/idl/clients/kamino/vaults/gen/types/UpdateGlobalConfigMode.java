@@ -1,7 +1,7 @@
 package software.sava.idl.clients.kamino.vaults.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;

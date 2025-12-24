@@ -1,13 +1,13 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record SplitStakeAccountInfo(PublicKey account, int index) implements Borsh {
+public record SplitStakeAccountInfo(PublicKey account, int index) implements SerDe {
 
   public static final int BYTES = 36;
 

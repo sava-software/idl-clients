@@ -2,7 +2,8 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -31,7 +32,7 @@ public record CurrentResult(BigInteger value,
                             byte[] padding1,
                             long slot,
                             long minSlot,
-                            long maxSlot) implements Borsh {
+                            long maxSlot) implements SerDe {
 
   public static final int BYTES = 128;
   public static final int PADDING_1_LEN = 6;
@@ -58,7 +59,7 @@ public record CurrentResult(BigInteger value,
     final var submissionIdx = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[6];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var slot = getInt64LE(_data, i);
     i += 8;
     final var minSlot = getInt64LE(_data, i);
@@ -97,7 +98,7 @@ public record CurrentResult(BigInteger value,
     ++i;
     _data[i] = (byte) submissionIdx;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 6, _data, i);
     putInt64LE(_data, i, slot);
     i += 8;
     putInt64LE(_data, i, minSlot);

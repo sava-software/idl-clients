@@ -5,8 +5,8 @@ import java.lang.String;
 import java.util.Arrays;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -31,8 +31,8 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,
                                        proposal,
-                                       title, title.getBytes(UTF_8),
-                                       descriptionLink, descriptionLink.getBytes(UTF_8));
+                                       title, title == null ? null : title.getBytes(UTF_8),
+                                       descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
   }
 
   public static ProposalMetaCreateEvent read(final byte[] _data, final int _offset) {
@@ -57,8 +57,8 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,
                                        proposal,
-                                       title, _title,
-                                       descriptionLink, _descriptionLink);
+                                       title, title == null ? null : title.getBytes(UTF_8),
+                                       descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
   }
 
   @Override
@@ -68,8 +68,8 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     i += 32;
     proposal.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(_title, _data, i);
-    i += Borsh.writeVector(_descriptionLink, _data, i);
+    i += SerDeUtil.writeVector(4, _title, _data, i);
+    i += SerDeUtil.writeVector(4, _descriptionLink, _data, i);
     return i - _offset;
   }
 

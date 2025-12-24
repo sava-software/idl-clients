@@ -2,7 +2,7 @@ package software.sava.idl.clients.drift.vaults.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param ts request ts of vault withdraw
 public record WithdrawRequest(BigInteger shares,
                               long value,
-                              long ts) implements Borsh {
+                              long ts) implements SerDe {
 
   public static final int BYTES = 32;
 

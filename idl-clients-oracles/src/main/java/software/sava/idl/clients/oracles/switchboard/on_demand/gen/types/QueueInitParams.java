@@ -1,6 +1,6 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -13,7 +13,7 @@ public record QueueInitParams(int allowAuthorityOverrideAfter,
                               int maxQuoteVerificationAge,
                               int reward,
                               int nodeTimeout,
-                              long recentSlot) implements Borsh {
+                              long recentSlot) implements SerDe {
 
   public static final int BYTES = 26;
 

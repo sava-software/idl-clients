@@ -1,11 +1,11 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
-public record PubkeyValueChange(PublicKey old, PublicKey _new) implements Borsh {
+public record PubkeyValueChange(PublicKey old, PublicKey _new) implements SerDe {
 
   public static final int BYTES = 64;
 

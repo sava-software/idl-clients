@@ -1,6 +1,6 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface MarginCalculationMode extends RustEnum permits
   MarginCalculationMode.Standard,
@@ -31,7 +31,7 @@ public sealed interface MarginCalculationMode extends RustEnum permits
     }
   }
 
-  record Liquidation(MarketIdentifier val) implements BorshEnum, MarginCalculationMode {
+  record Liquidation(MarketIdentifier val) implements SerDeEnum, MarginCalculationMode {
 
     public static Liquidation read(final byte[] _data, final int _offset) {
       return new Liquidation(MarketIdentifier.read(_data, _offset));

@@ -2,8 +2,9 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 
 import java.util.OptionalInt;
 
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -59,7 +60,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       final var priceType = OracleType.read(_data, i);
       i += priceType.l();
       final var genericData = new byte[20];
-      Borsh.readArray(genericData, _data, i);
+      SerDeUtil.readArray(genericData, _data, i);
       return new MappingConfig(priceType, genericData);
     }
 
@@ -67,7 +68,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += priceType.write(_data, i);
-      i += Borsh.writeArrayChecked(genericData, 20, _data, i);
+      i += SerDeUtil.writeArrayChecked(genericData, 20, _data, i);
       return i - _offset;
     }
 
@@ -128,7 +129,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
 
     public static MetadataName read(final byte[] data, final int _offset) {
-      return createRecord(Borsh.string(data, _offset));
+      return createRecord(SerDeUtil.readString(4, data, _offset));
     }
 
     @Override

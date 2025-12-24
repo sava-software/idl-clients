@@ -3,8 +3,8 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.events;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -25,12 +25,12 @@ public record PullFeedValueEvents(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var feeds = Borsh.readPublicKeyVector(_data, i);
-    i += Borsh.lenVector(feeds);
-    final var oracles = Borsh.readPublicKeyVector(_data, i);
-    i += Borsh.lenVector(oracles);
-    final var values = Borsh.readMultiDimension128Vector(_data, i);
-    i += Borsh.len128Vector(values);
+    final var feeds = SerDeUtil.readPublicKeyVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, feeds);
+    final var oracles = SerDeUtil.readPublicKeyVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, oracles);
+    final var values = SerDeUtil.readMultiDimension128Vector(4, _data, i);
+    i += SerDeUtil.len128Vector(4, values);
     final var reward = getInt32LE(_data, i);
     return new PullFeedValueEvents(discriminator,
                                    feeds,
@@ -42,9 +42,9 @@ public record PullFeedValueEvents(Discriminator discriminator,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeVector(feeds, _data, i);
-    i += Borsh.writeVector(oracles, _data, i);
-    i += Borsh.write128Vector(values, _data, i);
+    i += SerDeUtil.writeVector(4, feeds, _data, i);
+    i += SerDeUtil.writeVector(4, oracles, _data, i);
+    i += SerDeUtil.write128Vector(4, values, _data, i);
     putInt32LE(_data, i, reward);
     i += 4;
     return i - _offset;
@@ -52,6 +52,6 @@ public record PullFeedValueEvents(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + Borsh.lenVector(feeds) + Borsh.lenVector(oracles) + Borsh.len128Vector(values) + 4;
+    return 8 + SerDeUtil.lenVector(4, feeds) + SerDeUtil.lenVector(4, oracles) + SerDeUtil.len128Vector(4, values) + 4;
   }
 }

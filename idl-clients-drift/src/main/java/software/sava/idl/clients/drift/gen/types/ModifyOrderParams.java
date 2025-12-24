@@ -5,7 +5,8 @@ import java.lang.Boolean;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -23,7 +24,7 @@ public record ModifyOrderParams(PositionDirection direction,
                                 OptionalInt auctionDuration,
                                 OptionalLong auctionStartPrice,
                                 OptionalLong auctionEndPrice,
-                                OptionalInt policy) implements Borsh {
+                                OptionalInt policy) implements SerDe {
 
   public static ModifyOrderParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -173,20 +174,20 @@ public record ModifyOrderParams(PositionDirection direction,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(direction, _data, i);
-    i += Borsh.writeOptional(baseAssetAmount, _data, i);
-    i += Borsh.writeOptional(price, _data, i);
-    i += Borsh.writeOptional(reduceOnly, _data, i);
-    i += Borsh.writeOptional(postOnly, _data, i);
-    i += Borsh.writeOptionalbyte(bitFlags, _data, i);
-    i += Borsh.writeOptional(maxTs, _data, i);
-    i += Borsh.writeOptional(triggerPrice, _data, i);
-    i += Borsh.writeOptional(triggerCondition, _data, i);
-    i += Borsh.writeOptional(oraclePriceOffset, _data, i);
-    i += Borsh.writeOptionalbyte(auctionDuration, _data, i);
-    i += Borsh.writeOptional(auctionStartPrice, _data, i);
-    i += Borsh.writeOptional(auctionEndPrice, _data, i);
-    i += Borsh.writeOptionalbyte(policy, _data, i);
+    i += SerDeUtil.writeOptional(1, direction, _data, i);
+    i += SerDeUtil.writeOptional(1, baseAssetAmount, _data, i);
+    i += SerDeUtil.writeOptional(1, price, _data, i);
+    i += SerDeUtil.writeOptional(1, reduceOnly, _data, i);
+    i += SerDeUtil.writeOptional(1, postOnly, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, bitFlags, _data, i);
+    i += SerDeUtil.writeOptional(1, maxTs, _data, i);
+    i += SerDeUtil.writeOptional(1, triggerPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, triggerCondition, _data, i);
+    i += SerDeUtil.writeOptional(1, oraclePriceOffset, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, auctionDuration, _data, i);
+    i += SerDeUtil.writeOptional(1, auctionStartPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, auctionEndPrice, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, policy, _data, i);
     return i - _offset;
   }
 

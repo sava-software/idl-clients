@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -28,7 +29,7 @@ public record RandomnessAccountData(PublicKey _address,
                                     byte[] ebuf2,
                                     byte[] ebuf1,
                                     byte[] activeSecp256k1Signer,
-                                    long activeSecp256k1Expiration) implements Borsh {
+                                    long activeSecp256k1Expiration) implements SerDe {
 
   public static final int BYTES = 480;
   public static final int SEED_SLOTHASH_LEN = 32;
@@ -117,7 +118,7 @@ public record RandomnessAccountData(PublicKey _address,
     final var queue = readPubKey(_data, i);
     i += 32;
     final var seedSlothash = new byte[32];
-    i += Borsh.readArray(seedSlothash, _data, i);
+    i += SerDeUtil.readArray(seedSlothash, _data, i);
     final var seedSlot = getInt64LE(_data, i);
     i += 8;
     final var oracle = readPubKey(_data, i);
@@ -125,17 +126,17 @@ public record RandomnessAccountData(PublicKey _address,
     final var revealSlot = getInt64LE(_data, i);
     i += 8;
     final var value = new byte[32];
-    i += Borsh.readArray(value, _data, i);
+    i += SerDeUtil.readArray(value, _data, i);
     final var lutSlot = getInt64LE(_data, i);
     i += 8;
     final var ebuf3 = new byte[24];
-    i += Borsh.readArray(ebuf3, _data, i);
+    i += SerDeUtil.readArray(ebuf3, _data, i);
     final var ebuf2 = new byte[64];
-    i += Borsh.readArray(ebuf2, _data, i);
+    i += SerDeUtil.readArray(ebuf2, _data, i);
     final var ebuf1 = new byte[128];
-    i += Borsh.readArray(ebuf1, _data, i);
+    i += SerDeUtil.readArray(ebuf1, _data, i);
     final var activeSecp256k1Signer = new byte[64];
-    i += Borsh.readArray(activeSecp256k1Signer, _data, i);
+    i += SerDeUtil.readArray(activeSecp256k1Signer, _data, i);
     final var activeSecp256k1Expiration = getInt64LE(_data, i);
     return new RandomnessAccountData(_address,
                                      discriminator,
@@ -161,20 +162,20 @@ public record RandomnessAccountData(PublicKey _address,
     i += 32;
     queue.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(seedSlothash, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(seedSlothash, 32, _data, i);
     putInt64LE(_data, i, seedSlot);
     i += 8;
     oracle.write(_data, i);
     i += 32;
     putInt64LE(_data, i, revealSlot);
     i += 8;
-    i += Borsh.writeArrayChecked(value, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(value, 32, _data, i);
     putInt64LE(_data, i, lutSlot);
     i += 8;
-    i += Borsh.writeArrayChecked(ebuf3, 24, _data, i);
-    i += Borsh.writeArrayChecked(ebuf2, 64, _data, i);
-    i += Borsh.writeArrayChecked(ebuf1, 128, _data, i);
-    i += Borsh.writeArrayChecked(activeSecp256k1Signer, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf3, 24, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf2, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf1, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(activeSecp256k1Signer, 64, _data, i);
     putInt64LE(_data, i, activeSecp256k1Expiration);
     i += 8;
     return i - _offset;

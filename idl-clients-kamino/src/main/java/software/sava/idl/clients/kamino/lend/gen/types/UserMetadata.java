@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -27,7 +28,7 @@ public record UserMetadata(PublicKey _address,
                            PublicKey userLookupTable,
                            PublicKey owner,
                            long[] padding1,
-                           long[] padding2) implements Borsh {
+                           long[] padding2) implements SerDe {
 
   public static final int BYTES = 1032;
   public static final int PADDING_1_LEN = 51;
@@ -91,9 +92,9 @@ public record UserMetadata(PublicKey _address,
     final var owner = readPubKey(_data, i);
     i += 32;
     final var padding1 = new long[51];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var padding2 = new long[64];
-    Borsh.readArray(padding2, _data, i);
+    SerDeUtil.readArray(padding2, _data, i);
     return new UserMetadata(_address,
                             discriminator,
                             referrer,
@@ -115,8 +116,8 @@ public record UserMetadata(PublicKey _address,
     i += 32;
     owner.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding1, 51, _data, i);
-    i += Borsh.writeArrayChecked(padding2, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 51, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 64, _data, i);
     return i - _offset;
   }
 

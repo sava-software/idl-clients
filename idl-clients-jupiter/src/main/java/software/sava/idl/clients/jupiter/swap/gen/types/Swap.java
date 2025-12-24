@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -127,7 +127,10 @@ public sealed interface Swap extends RustEnum permits
   Swap.CarrotRedeem,
   Swap.Manifest,
   Swap.BisonFi,
-  Swap.HumidiFiV2 {
+  Swap.HumidiFiV2,
+  Swap.PerenaStar,
+  Swap.JupiterRfqV2,
+  Swap.GoonFiV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -252,6 +255,9 @@ public sealed interface Swap extends RustEnum permits
       case 116 -> Manifest.read(_data, i);
       case 117 -> BisonFi.read(_data, i);
       case 118 -> HumidiFiV2.read(_data, i);
+      case 119 -> PerenaStar.read(_data, i);
+      case 120 -> JupiterRfqV2.read(_data, i);
+      case 121 -> GoonFiV2.read(_data, i);
       default -> null;
     };
   }
@@ -381,7 +387,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Serum(Side val) implements BorshEnum, Swap {
+  record Serum(Side val) implements SerDeEnum, Swap {
 
     public static Serum read(final byte[] _data, final int _offset) {
       return new Serum(Side.read(_data, _offset));
@@ -413,7 +419,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Aldrin(Side val) implements BorshEnum, Swap {
+  record Aldrin(Side val) implements SerDeEnum, Swap {
 
     public static Aldrin read(final byte[] _data, final int _offset) {
       return new Aldrin(Side.read(_data, _offset));
@@ -425,7 +431,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record AldrinV2(Side val) implements BorshEnum, Swap {
+  record AldrinV2(Side val) implements SerDeEnum, Swap {
 
     public static AldrinV2 read(final byte[] _data, final int _offset) {
       return new AldrinV2(Side.read(_data, _offset));
@@ -527,7 +533,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Dradex(Side val) implements BorshEnum, Swap {
+  record Dradex(Side val) implements SerDeEnum, Swap {
 
     public static Dradex read(final byte[] _data, final int _offset) {
       return new Dradex(Side.read(_data, _offset));
@@ -559,7 +565,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Openbook(Side val) implements BorshEnum, Swap {
+  record Openbook(Side val) implements SerDeEnum, Swap {
 
     public static Openbook read(final byte[] _data, final int _offset) {
       return new Openbook(Side.read(_data, _offset));
@@ -571,7 +577,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Phoenix(Side val) implements BorshEnum, Swap {
+  record Phoenix(Side val) implements SerDeEnum, Swap {
 
     public static Phoenix read(final byte[] _data, final int _offset) {
       return new Phoenix(Side.read(_data, _offset));
@@ -711,7 +717,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record OpenBookV2(Side val) implements BorshEnum, Swap {
+  record OpenBookV2(Side val) implements SerDeEnum, Swap {
 
     public static OpenBookV2 read(final byte[] _data, final int _offset) {
       return new OpenBookV2(Side.read(_data, _offset));
@@ -943,7 +949,7 @@ public sealed interface Swap extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       _data[i] = (byte) (aToB ? 1 : 0);
       ++i;
-      i += Borsh.writeOptional(remainingAccountsInfo, _data, i);
+      i += SerDeUtil.writeOptional(1, remainingAccountsInfo, _data, i);
       return i - _offset;
     }
 
@@ -1133,7 +1139,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record TokenMill(Side val) implements BorshEnum, Swap {
+  record TokenMill(Side val) implements SerDeEnum, Swap {
 
     public static TokenMill read(final byte[] _data, final int _offset) {
       return new TokenMill(Side.read(_data, _offset));
@@ -1271,7 +1277,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record MeteoraDlmmSwapV2(RemainingAccountsInfo val) implements BorshEnum, Swap {
+  record MeteoraDlmmSwapV2(RemainingAccountsInfo val) implements SerDeEnum, Swap {
 
     public static MeteoraDlmmSwapV2 read(final byte[] _data, final int _offset) {
       return new MeteoraDlmmSwapV2(RemainingAccountsInfo.read(_data, _offset));
@@ -1377,7 +1383,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Plasma(Side val) implements BorshEnum, Swap {
+  record Plasma(Side val) implements SerDeEnum, Swap {
 
     public static Plasma read(final byte[] _data, final int _offset) {
       return new Plasma(Side.read(_data, _offset));
@@ -1471,7 +1477,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record TesseraV(Side val) implements BorshEnum, Swap {
+  record TesseraV(Side val) implements SerDeEnum, Swap {
 
     public static TesseraV read(final byte[] _data, final int _offset) {
       return new TesseraV(Side.read(_data, _offset));
@@ -1647,7 +1653,7 @@ public sealed interface Swap extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       _data[i] = (byte) (aToB ? 1 : 0);
       ++i;
-      i += Borsh.writeOptional(remainingAccountsInfo, _data, i);
+      i += SerDeUtil.writeOptional(1, remainingAccountsInfo, _data, i);
       return i - _offset;
     }
 
@@ -1702,7 +1708,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Futarchy(Side val) implements BorshEnum, Swap {
+  record Futarchy(Side val) implements SerDeEnum, Swap {
 
     public static Futarchy read(final byte[] _data, final int _offset) {
       return new Futarchy(Side.read(_data, _offset));
@@ -1734,7 +1740,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record WhaleStreet(Side val) implements BorshEnum, Swap {
+  record WhaleStreet(Side val) implements SerDeEnum, Swap {
 
     public static WhaleStreet read(final byte[] _data, final int _offset) {
       return new WhaleStreet(Side.read(_data, _offset));
@@ -1752,20 +1758,20 @@ public sealed interface Swap extends RustEnum permits
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var val = Borsh.readVector(CandidateSwap.class, CandidateSwap::read, _data, _offset);
+      final var val = SerDeUtil.readVector(4, CandidateSwap.class, CandidateSwap::read, _data, _offset);
       return new DynamicV1(val);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeVector(val, _data, i);
+      i += SerDeUtil.writeVector(4, val, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 1 + Borsh.lenVector(val);
+      return 1 + SerDeUtil.lenVector(4, val);
     }
 
     @Override
@@ -1814,7 +1820,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record Manifest(Side val) implements BorshEnum, Swap {
+  record Manifest(Side val) implements SerDeEnum, Swap {
 
     public static Manifest read(final byte[] _data, final int _offset) {
       return new Manifest(Side.read(_data, _offset));
@@ -1874,6 +1880,68 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 118;
+    }
+  }
+
+  record PerenaStar(boolean val) implements EnumBool, Swap {
+
+    public static final PerenaStar TRUE = new PerenaStar(true);
+    public static final PerenaStar FALSE = new PerenaStar(false);
+
+    public static PerenaStar read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PerenaStar.TRUE : PerenaStar.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 119;
+    }
+  }
+
+  record JupiterRfqV2(Side side, byte[] fillData) implements Swap {
+
+    public static JupiterRfqV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var side = Side.read(_data, i);
+      i += side.l();
+      final var fillData = SerDeUtil.readbyteVector(4, _data, i);
+      return new JupiterRfqV2(side, fillData);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = writeOrdinal(_data, _offset);
+      i += side.write(_data, i);
+      i += SerDeUtil.writeVector(4, fillData, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + side.l() + SerDeUtil.lenVector(4, fillData);
+    }
+
+    @Override
+    public int ordinal() {
+      return 120;
+    }
+  }
+
+  record GoonFiV2(boolean val) implements EnumBool, Swap {
+
+    public static final GoonFiV2 TRUE = new GoonFiV2(true);
+    public static final GoonFiV2 FALSE = new GoonFiV2(false);
+
+    public static GoonFiV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV2.TRUE : GoonFiV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 121;
     }
   }
 }

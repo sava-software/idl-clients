@@ -2,7 +2,7 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record FeeInfo(BigInteger feeXPerTokenComplete,
                       BigInteger feeYPerTokenComplete,
                       long feeXPending,
-                      long feeYPending) implements Borsh {
+                      long feeYPending) implements SerDe {
 
   public static final int BYTES = 48;
 

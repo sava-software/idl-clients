@@ -1,7 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
@@ -9,7 +10,7 @@ public record ChangeAuthorityData(PublicKey admin,
                                   PublicKey validatorManager,
                                   PublicKey operationalSolAccount,
                                   PublicKey treasuryMsolAccount,
-                                  PublicKey pauseAuthority) implements Borsh {
+                                  PublicKey pauseAuthority) implements SerDe {
 
   public static ChangeAuthorityData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -69,11 +70,11 @@ public record ChangeAuthorityData(PublicKey admin,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(admin, _data, i);
-    i += Borsh.writeOptional(validatorManager, _data, i);
-    i += Borsh.writeOptional(operationalSolAccount, _data, i);
-    i += Borsh.writeOptional(treasuryMsolAccount, _data, i);
-    i += Borsh.writeOptional(pauseAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, admin, _data, i);
+    i += SerDeUtil.writeOptional(1, validatorManager, _data, i);
+    i += SerDeUtil.writeOptional(1, operationalSolAccount, _data, i);
+    i += SerDeUtil.writeOptional(1, treasuryMsolAccount, _data, i);
+    i += SerDeUtil.writeOptional(1, pauseAuthority, _data, i);
     return i - _offset;
   }
 

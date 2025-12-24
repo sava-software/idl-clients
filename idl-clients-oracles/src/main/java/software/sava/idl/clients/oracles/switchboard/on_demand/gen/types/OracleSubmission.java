@@ -3,7 +3,7 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record OracleSubmission(PublicKey oracle,
                                long slot,
                                long landedAt,
-                               BigInteger value) implements Borsh {
+                               BigInteger value) implements SerDe {
 
   public static final int BYTES = 64;
 

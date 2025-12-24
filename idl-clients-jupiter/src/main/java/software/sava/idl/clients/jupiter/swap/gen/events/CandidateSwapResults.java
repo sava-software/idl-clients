@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.swap.gen.events;
 
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.swap.gen.types.CandidateSwapResult;
 
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -17,19 +17,19 @@ public record CandidateSwapResults(Discriminator discriminator, CandidateSwapRes
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var results = Borsh.readVector(CandidateSwapResult.class, CandidateSwapResult::read, _data, i);
+    final var results = SerDeUtil.readVector(4, CandidateSwapResult.class, CandidateSwapResult::read, _data, i);
     return new CandidateSwapResults(discriminator, results);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeVector(results, _data, i);
+    i += SerDeUtil.writeVector(4, results, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + Borsh.lenVector(results);
+    return 8 + SerDeUtil.lenVector(4, results);
   }
 }

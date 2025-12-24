@@ -1,8 +1,8 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -46,7 +46,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     };
   }
 
-  record CollectionV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record CollectionV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static CollectionV1 read(final byte[] _data, final int _offset) {
       return new CollectionV1(AuthorizationData.read(_data, _offset));
@@ -82,7 +82,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -121,7 +121,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -136,7 +136,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record DataV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record DataV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static DataV1 read(final byte[] _data, final int _offset) {
       return new DataV1(AuthorizationData.read(_data, _offset));
@@ -172,7 +172,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -211,7 +211,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -268,7 +268,7 @@ public sealed interface DelegateArgs extends RustEnum permits
       i += 8;
       lockedAddress.write(_data, i);
       i += 32;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -283,7 +283,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record ProgrammableConfigV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record ProgrammableConfigV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static ProgrammableConfigV1 read(final byte[] _data, final int _offset) {
       return new ProgrammableConfigV1(AuthorizationData.read(_data, _offset));
@@ -295,7 +295,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record AuthorityItemV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record AuthorityItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static AuthorityItemV1 read(final byte[] _data, final int _offset) {
       return new AuthorityItemV1(AuthorizationData.read(_data, _offset));
@@ -307,7 +307,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record DataItemV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record DataItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static DataItemV1 read(final byte[] _data, final int _offset) {
       return new DataItemV1(AuthorizationData.read(_data, _offset));
@@ -319,7 +319,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record CollectionItemV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record CollectionItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static CollectionItemV1 read(final byte[] _data, final int _offset) {
       return new CollectionItemV1(AuthorizationData.read(_data, _offset));
@@ -331,7 +331,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record ProgrammableConfigItemV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record ProgrammableConfigItemV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static ProgrammableConfigItemV1 read(final byte[] _data, final int _offset) {
       return new ProgrammableConfigItemV1(AuthorizationData.read(_data, _offset));
@@ -343,7 +343,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
-  record PrintDelegateV1(AuthorizationData val) implements BorshEnum, DelegateArgs {
+  record PrintDelegateV1(AuthorizationData val) implements SerDeEnum, DelegateArgs {
 
     public static PrintDelegateV1 read(final byte[] _data, final int _offset) {
       return new PrintDelegateV1(AuthorizationData.read(_data, _offset));

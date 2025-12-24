@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -44,7 +45,7 @@ public record IfRebalanceConfig(PublicKey _address,
                                 int maxSlippageBps,
                                 int swapMode,
                                 int status,
-                                byte[] padding2) implements Borsh {
+                                byte[] padding2) implements SerDe {
 
   public static final int BYTES = 152;
   public static final int PADDING_2_LEN = 32;
@@ -205,7 +206,7 @@ public record IfRebalanceConfig(PublicKey _address,
     final var status = _data[i] & 0xFF;
     ++i;
     final var padding2 = new byte[32];
-    Borsh.readArray(padding2, _data, i);
+    SerDeUtil.readArray(padding2, _data, i);
     return new IfRebalanceConfig(_address,
                                  discriminator,
                                  pubkey,
@@ -259,7 +260,7 @@ public record IfRebalanceConfig(PublicKey _address,
     ++i;
     _data[i] = (byte) status;
     ++i;
-    i += Borsh.writeArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
     return i - _offset;
   }
 

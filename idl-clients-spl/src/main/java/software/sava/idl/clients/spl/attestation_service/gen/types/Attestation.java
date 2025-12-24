@@ -3,9 +3,10 @@ package software.sava.idl.clients.spl.attestation_service.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -22,7 +23,7 @@ public record Attestation(PublicKey _address,
                           byte[] data,
                           PublicKey signer,
                           long expiry,
-                          PublicKey tokenAccount) implements Borsh {
+                          PublicKey tokenAccount) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(152, 125, 183, 86, 36, 146, 121, 73);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -70,8 +71,8 @@ public record Attestation(PublicKey _address,
     i += 32;
     final var schema = readPubKey(_data, i);
     i += 32;
-    final var data = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(data);
+    final var data = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, data);
     final var signer = readPubKey(_data, i);
     i += 32;
     final var expiry = getInt64LE(_data, i);
@@ -97,7 +98,7 @@ public record Attestation(PublicKey _address,
     i += 32;
     schema.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(data, _data, i);
+    i += SerDeUtil.writeVector(4, data, _data, i);
     signer.write(_data, i);
     i += 32;
     putInt64LE(_data, i, expiry);
@@ -112,7 +113,7 @@ public record Attestation(PublicKey _address,
     return 8 + 32
          + 32
          + 32
-         + Borsh.lenVector(data)
+         + SerDeUtil.lenVector(4, data)
          + 32
          + 8
          + 32;

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -61,7 +61,7 @@ public record DeleteUserRecord(Discriminator discriminator,
     i += 32;
     putInt16LE(_data, i, subAccountId);
     i += 2;
-    i += Borsh.writeOptional(keeper, _data, i);
+    i += SerDeUtil.writeOptional(1, keeper, _data, i);
     return i - _offset;
   }
 

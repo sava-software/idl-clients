@@ -6,9 +6,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.farms.gen.types.FarmConfigOption;
 import software.sava.idl.clients.kamino.farms.gen.types.GlobalConfigOption;
 import software.sava.idl.clients.kamino.farms.gen.types.LockingMode;
@@ -91,16 +92,16 @@ public final class FarmsProgram {
                                                final List<AccountMeta> keys,
                                                final int mode,
                                                final byte[] value) {
-    final byte[] _data = new byte[9 + Borsh.lenArray(value)];
+    final byte[] _data = new byte[9 + SerDeUtil.lenArray(value)];
     int i = UPDATE_GLOBAL_CONFIG_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) mode;
     ++i;
-    Borsh.writeArrayChecked(value, 32, _data, i);
+    SerDeUtil.writeArrayChecked(value, 32, _data, i);
 
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements Borsh {  
+  public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements SerDe {  
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -118,7 +119,7 @@ public final class FarmsProgram {
       final var mode = _data[i] & 0xFF;
       ++i;
       final var value = new byte[32];
-      Borsh.readArray(value, _data, i);
+      SerDeUtil.readArray(value, _data, i);
       return new UpdateGlobalConfigIxData(discriminator, mode, value);
     }
 
@@ -127,7 +128,7 @@ public final class FarmsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) mode;
       ++i;
-      i += Borsh.writeArrayChecked(value, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(value, 32, _data, i);
       return i - _offset;
     }
 
@@ -357,7 +358,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements Borsh {  
+  public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
 
     public static AddRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -425,16 +426,16 @@ public final class FarmsProgram {
                                              final List<AccountMeta> keys,
                                              final int mode,
                                              final byte[] data) {
-    final byte[] _data = new byte[10 + Borsh.lenVector(data)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenVector(4, data)];
     int i = UPDATE_FARM_CONFIG_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, mode);
     i += 2;
-    Borsh.writeVector(data, _data, i);
+    SerDeUtil.writeVector(4, data, _data, i);
 
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements Borsh {  
+  public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements SerDe {  
 
     public static UpdateFarmConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -448,7 +449,7 @@ public final class FarmsProgram {
       int i = _offset + discriminator.length();
       final var mode = getInt16LE(_data, i);
       i += 2;
-      final var data = Borsh.readbyteVector(_data, i);
+      final var data = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateFarmConfigIxData(discriminator, mode, data);
     }
 
@@ -457,13 +458,13 @@ public final class FarmsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, mode);
       i += 2;
-      i += Borsh.writeVector(data, _data, i);
+      i += SerDeUtil.writeVector(4, data, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 2 + Borsh.lenVector(data);
+      return 8 + 2 + SerDeUtil.lenVector(4, data);
     }
   }
 
@@ -623,7 +624,7 @@ public final class FarmsProgram {
   public record RewardUserOnceIxData(Discriminator discriminator,
                                      long rewardIndex,
                                      long amount,
-                                     long expectedRewardIssuedUnclaimed) implements Borsh {  
+                                     long expectedRewardIssuedUnclaimed) implements SerDe {  
 
     public static RewardUserOnceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -747,7 +748,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record StakeIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record StakeIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static StakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -814,7 +815,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements Borsh {  
+  public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements SerDe {  
 
     public static SetStakeDelegatedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -915,7 +916,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements Borsh {  
+  public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {  
 
     public static HarvestRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -988,7 +989,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record UnstakeIxData(Discriminator discriminator, BigInteger stakeSharesScaled) implements Borsh {  
+  public record UnstakeIxData(Discriminator discriminator, BigInteger stakeSharesScaled) implements SerDe {  
 
     public static UnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1147,7 +1148,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawTreasuryIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1222,7 +1223,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositToFarmVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1301,7 +1302,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawFromFarmVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1485,7 +1486,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements Borsh {  
+  public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
 
     public static WithdrawRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1610,7 +1611,7 @@ public final class FarmsProgram {
                                       FarmConfigOption farmConfigOptionKind,
                                       TimeUnit timeUnit,
                                       LockingMode lockingMode,
-                                      RewardType rewardType) implements Borsh {  
+                                      RewardType rewardType) implements SerDe {  
 
     public static IdlMissingTypesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

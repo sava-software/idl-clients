@@ -1,11 +1,11 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record V3(int confidenceFactor) implements Borsh {
+public record V3(int confidenceFactor) implements SerDe {
 
   public static final int BYTES = 4;
 

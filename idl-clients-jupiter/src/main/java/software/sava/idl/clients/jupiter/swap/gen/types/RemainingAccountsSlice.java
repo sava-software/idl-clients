@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record RemainingAccountsSlice(int accountsType, int length) implements Borsh {
+public record RemainingAccountsSlice(int accountsType, int length) implements SerDe {
 
   public static final int BYTES = 2;
 

@@ -216,6 +216,13 @@
       "idlURL": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json"
     },
     {
+      "name": "Squads V4",
+      "source": "idl-clients-squads",
+      "module": "squads",
+      "package": "squads.v4",
+      "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf"
+    },
+    {
       "name": "Switchboard On-Demand",
       "source": "idl-clients-oracles",
       "module": "oracles",

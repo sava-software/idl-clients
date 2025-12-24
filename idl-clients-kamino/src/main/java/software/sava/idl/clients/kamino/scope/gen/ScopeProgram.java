@@ -7,9 +7,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.scope.gen.types.UpdateOracleMappingAndMetadataEntriesWithId;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -76,19 +77,19 @@ public final class ScopeProgram {
     final byte[] _feedName = feedName.getBytes(UTF_8);
     final byte[] _data = new byte[12 + _feedName.length];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(_feedName, _data, i);
+    SerDeUtil.writeVector(4, _feedName, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements Borsh {  
+  public record InitializeIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {  
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static InitializeIxData createRecord(final Discriminator discriminator, final String feedName) {
-      return new InitializeIxData(discriminator, feedName, feedName.getBytes(UTF_8));
+      return new InitializeIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     public static InitializeIxData read(final byte[] _data, final int _offset) {
@@ -101,13 +102,13 @@ public final class ScopeProgram {
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
-      return new InitializeIxData(discriminator, feedName, _feedName);
+      return new InitializeIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_feedName, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;
     }
 
@@ -149,14 +150,14 @@ public final class ScopeProgram {
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final List<AccountMeta> keys,
                                              final short[] tokens) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(tokens)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, tokens)];
     int i = REFRESH_PRICE_LIST_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(tokens, _data, i);
+    SerDeUtil.writeVector(4, tokens, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record RefreshPriceListIxData(Discriminator discriminator, short[] tokens) implements Borsh {  
+  public record RefreshPriceListIxData(Discriminator discriminator, short[] tokens) implements SerDe {  
 
     public static RefreshPriceListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -168,20 +169,20 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tokens = Borsh.readshortVector(_data, i);
+      final var tokens = SerDeUtil.readshortVector(4, _data, i);
       return new RefreshPriceListIxData(discriminator, tokens);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(tokens, _data, i);
+      i += SerDeUtil.writeVector(4, tokens, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(tokens);
+      return 8 + SerDeUtil.lenVector(4, tokens);
     }
   }
 
@@ -247,16 +248,16 @@ public final class ScopeProgram {
                                                   final List<AccountMeta> keys,
                                                   final int token,
                                                   final byte[] serializedChainlinkReport) {
-    final byte[] _data = new byte[10 + Borsh.lenVector(serializedChainlinkReport)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenVector(4, serializedChainlinkReport)];
     int i = REFRESH_CHAINLINK_PRICE_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, token);
     i += 2;
-    Borsh.writeVector(serializedChainlinkReport, _data, i);
+    SerDeUtil.writeVector(4, serializedChainlinkReport, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements Borsh {  
+  public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements SerDe {  
 
     public static RefreshChainlinkPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -270,7 +271,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.length();
       final var token = getInt16LE(_data, i);
       i += 2;
-      final var serializedChainlinkReport = Borsh.readbyteVector(_data, i);
+      final var serializedChainlinkReport = SerDeUtil.readbyteVector(4, _data, i);
       return new RefreshChainlinkPriceIxData(discriminator, token, serializedChainlinkReport);
     }
 
@@ -279,13 +280,13 @@ public final class ScopeProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, token);
       i += 2;
-      i += Borsh.writeVector(serializedChainlinkReport, _data, i);
+      i += SerDeUtil.writeVector(4, serializedChainlinkReport, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 2 + Borsh.lenVector(serializedChainlinkReport);
+      return 8 + 2 + SerDeUtil.lenVector(4, serializedChainlinkReport);
     }
   }
 
@@ -362,10 +363,10 @@ public final class ScopeProgram {
                                                   final short[] tokens,
                                                   final byte[] serializedPythMessage,
                                                   final int ed25519InstructionIndex) {
-    final byte[] _data = new byte[10 + Borsh.lenVector(tokens) + Borsh.lenVector(serializedPythMessage)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage)];
     int i = REFRESH_PYTH_LAZER_PRICE_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(tokens, _data, i);
-    i += Borsh.writeVector(serializedPythMessage, _data, i);
+    i += SerDeUtil.writeVector(4, tokens, _data, i);
+    i += SerDeUtil.writeVector(4, serializedPythMessage, _data, i);
     putInt16LE(_data, i, ed25519InstructionIndex);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
@@ -374,7 +375,7 @@ public final class ScopeProgram {
   public record RefreshPythLazerPriceIxData(Discriminator discriminator,
                                             short[] tokens,
                                             byte[] serializedPythMessage,
-                                            int ed25519InstructionIndex) implements Borsh {  
+                                            int ed25519InstructionIndex) implements SerDe {  
 
     public static RefreshPythLazerPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -386,10 +387,10 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tokens = Borsh.readshortVector(_data, i);
-      i += Borsh.lenVector(tokens);
-      final var serializedPythMessage = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(serializedPythMessage);
+      final var tokens = SerDeUtil.readshortVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, tokens);
+      final var serializedPythMessage = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, serializedPythMessage);
       final var ed25519InstructionIndex = getInt16LE(_data, i);
       return new RefreshPythLazerPriceIxData(discriminator, tokens, serializedPythMessage, ed25519InstructionIndex);
     }
@@ -397,8 +398,8 @@ public final class ScopeProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(tokens, _data, i);
-      i += Borsh.writeVector(serializedPythMessage, _data, i);
+      i += SerDeUtil.writeVector(4, tokens, _data, i);
+      i += SerDeUtil.writeVector(4, serializedPythMessage, _data, i);
       putInt16LE(_data, i, ed25519InstructionIndex);
       i += 2;
       return i - _offset;
@@ -406,7 +407,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(tokens) + Borsh.lenVector(serializedPythMessage) + 2;
+      return 8 + SerDeUtil.lenVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage) + 2;
     }
   }
 
@@ -457,22 +458,22 @@ public final class ScopeProgram {
                                                      final String feedName,
                                                      final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
     final byte[] _feedName = feedName.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + _feedName.length + Borsh.lenVector(updates)];
+    final byte[] _data = new byte[12 + _feedName.length + SerDeUtil.lenVector(4, updates)];
     int i = UPDATE_MAPPING_AND_METADATA_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_feedName, _data, i);
-    Borsh.writeVector(updates, _data, i);
+    i += SerDeUtil.writeVector(4, _feedName, _data, i);
+    SerDeUtil.writeVector(4, updates, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record UpdateMappingAndMetadataIxData(Discriminator discriminator, String feedName, byte[] _feedName, UpdateOracleMappingAndMetadataEntriesWithId[] updates) implements Borsh {  
+  public record UpdateMappingAndMetadataIxData(Discriminator discriminator, String feedName, byte[] _feedName, UpdateOracleMappingAndMetadataEntriesWithId[] updates) implements SerDe {  
 
     public static UpdateMappingAndMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static UpdateMappingAndMetadataIxData createRecord(final Discriminator discriminator, final String feedName, final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
-      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName.getBytes(UTF_8), updates);
+      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8), updates);
     }
 
     public static UpdateMappingAndMetadataIxData read(final byte[] _data, final int _offset) {
@@ -486,21 +487,21 @@ public final class ScopeProgram {
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
       i += _feedName.length;
-      final var updates = Borsh.readVector(UpdateOracleMappingAndMetadataEntriesWithId.class, UpdateOracleMappingAndMetadataEntriesWithId::read, _data, i);
-      return new UpdateMappingAndMetadataIxData(discriminator, feedName, _feedName, updates);
+      final var updates = SerDeUtil.readVector(4, UpdateOracleMappingAndMetadataEntriesWithId.class, UpdateOracleMappingAndMetadataEntriesWithId::read, _data, i);
+      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8), updates);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_feedName, _data, i);
-      i += Borsh.writeVector(updates, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
+      i += SerDeUtil.writeVector(4, updates, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + _feedName.length + Borsh.lenVector(updates);
+      return 8 + _feedName.length + SerDeUtil.lenVector(4, updates);
     }
   }
 
@@ -543,19 +544,19 @@ public final class ScopeProgram {
     int i = RESET_TWAP_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, token);
     i += 8;
-    Borsh.writeVector(_feedName, _data, i);
+    SerDeUtil.writeVector(4, _feedName, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements Borsh {  
+  public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements SerDe {  
 
     public static ResetTwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static ResetTwapIxData createRecord(final Discriminator discriminator, final long token, final String feedName) {
-      return new ResetTwapIxData(discriminator, token, feedName, feedName.getBytes(UTF_8));
+      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     public static ResetTwapIxData read(final byte[] _data, final int _offset) {
@@ -570,7 +571,7 @@ public final class ScopeProgram {
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
-      return new ResetTwapIxData(discriminator, token, feedName, _feedName);
+      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     @Override
@@ -578,7 +579,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, token);
       i += 8;
-      i += Borsh.writeVector(_feedName, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;
     }
 
@@ -619,19 +620,19 @@ public final class ScopeProgram {
     int i = SET_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
     newAdmin.write(_data, i);
     i += 32;
-    Borsh.writeVector(_feedName, _data, i);
+    SerDeUtil.writeVector(4, _feedName, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record SetAdminCachedIxData(Discriminator discriminator, PublicKey newAdmin, String feedName, byte[] _feedName) implements Borsh {  
+  public record SetAdminCachedIxData(Discriminator discriminator, PublicKey newAdmin, String feedName, byte[] _feedName) implements SerDe {  
 
     public static SetAdminCachedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static SetAdminCachedIxData createRecord(final Discriminator discriminator, final PublicKey newAdmin, final String feedName) {
-      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName.getBytes(UTF_8));
+      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     public static SetAdminCachedIxData read(final byte[] _data, final int _offset) {
@@ -646,7 +647,7 @@ public final class ScopeProgram {
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
-      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, _feedName);
+      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     @Override
@@ -654,7 +655,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.write(_data, _offset);
       newAdmin.write(_data, i);
       i += 32;
-      i += Borsh.writeVector(_feedName, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;
     }
 
@@ -691,19 +692,19 @@ public final class ScopeProgram {
     final byte[] _feedName = feedName.getBytes(UTF_8);
     final byte[] _data = new byte[12 + _feedName.length];
     int i = APPROVE_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(_feedName, _data, i);
+    SerDeUtil.writeVector(4, _feedName, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record ApproveAdminCachedIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements Borsh {  
+  public record ApproveAdminCachedIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {  
 
     public static ApproveAdminCachedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static ApproveAdminCachedIxData createRecord(final Discriminator discriminator, final String feedName) {
-      return new ApproveAdminCachedIxData(discriminator, feedName, feedName.getBytes(UTF_8));
+      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     public static ApproveAdminCachedIxData read(final byte[] _data, final int _offset) {
@@ -716,13 +717,13 @@ public final class ScopeProgram {
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
-      return new ApproveAdminCachedIxData(discriminator, feedName, _feedName);
+      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_feedName, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;
     }
 
@@ -777,7 +778,7 @@ public final class ScopeProgram {
                                           final long seedId,
                                           final int bump,
                                           final short[][] scopeChains) {
-    final byte[] _data = new byte[49 + Borsh.lenVectorArray(scopeChains)];
+    final byte[] _data = new byte[49 + SerDeUtil.lenVectorArray(4, scopeChains)];
     int i = CREATE_MINT_MAP_DISCRIMINATOR.write(_data, 0);
     seedPk.write(_data, i);
     i += 32;
@@ -785,7 +786,7 @@ public final class ScopeProgram {
     i += 8;
     _data[i] = (byte) bump;
     ++i;
-    Borsh.writeVectorArrayChecked(scopeChains, 4, _data, i);
+    SerDeUtil.writeVectorArrayChecked(4, scopeChains, 4, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
@@ -794,7 +795,7 @@ public final class ScopeProgram {
                                     PublicKey seedPk,
                                     long seedId,
                                     int bump,
-                                    short[][] scopeChains) implements Borsh {  
+                                    short[][] scopeChains) implements SerDe {  
 
     public static CreateMintMapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -812,7 +813,7 @@ public final class ScopeProgram {
       i += 8;
       final var bump = _data[i] & 0xFF;
       ++i;
-      final var scopeChains = Borsh.readMultiDimensionshortVectorArray(4, _data, i);
+      final var scopeChains = SerDeUtil.readMultiDimensionshortVectorArray(4, 4, _data, i);
       return new CreateMintMapIxData(discriminator,
                                      seedPk,
                                      seedId,
@@ -829,13 +830,13 @@ public final class ScopeProgram {
       i += 8;
       _data[i] = (byte) bump;
       ++i;
-      i += Borsh.writeVectorArrayChecked(scopeChains, 4, _data, i);
+      i += SerDeUtil.writeVectorArrayChecked(4, scopeChains, 4, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 32 + 8 + 1 + Borsh.lenVectorArray(scopeChains);
+      return 8 + 32 + 8 + 1 + SerDeUtil.lenVectorArray(4, scopeChains);
     }
   }
 
@@ -915,19 +916,19 @@ public final class ScopeProgram {
     int i = RESUME_CHAINLINKX_PRICE_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, token);
     i += 2;
-    Borsh.writeVector(_feedName, _data, i);
+    SerDeUtil.writeVector(4, _feedName, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements Borsh {  
+  public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements SerDe {  
 
     public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static ResumeChainlinkxPriceIxData createRecord(final Discriminator discriminator, final int token, final String feedName) {
-      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName.getBytes(UTF_8));
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     public static ResumeChainlinkxPriceIxData read(final byte[] _data, final int _offset) {
@@ -942,7 +943,7 @@ public final class ScopeProgram {
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
       final var feedName = new String(_feedName, UTF_8);
-      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, _feedName);
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
 
     @Override
@@ -950,7 +951,7 @@ public final class ScopeProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, token);
       i += 2;
-      i += Borsh.writeVector(_feedName, _data, i);
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;
     }
 

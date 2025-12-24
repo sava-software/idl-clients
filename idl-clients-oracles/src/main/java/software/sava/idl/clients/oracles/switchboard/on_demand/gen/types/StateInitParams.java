@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record StateInitParams() implements Borsh {
+public record StateInitParams() implements SerDe {
 
   private static final StateInitParams INSTANCE = new StateInitParams();
 

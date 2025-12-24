@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ public record OracleTwaps(PublicKey _address,
                           Discriminator discriminator,
                           PublicKey oraclePrices,
                           PublicKey oracleMappings,
-                          EmaTwap[] twaps) implements Borsh {
+                          EmaTwap[] twaps) implements SerDe {
 
   public static final int BYTES = 344136;
   public static final int TWAPS_LEN = 512;
@@ -62,7 +63,7 @@ public record OracleTwaps(PublicKey _address,
     final var oracleMappings = readPubKey(_data, i);
     i += 32;
     final var twaps = new EmaTwap[512];
-    Borsh.readArray(twaps, EmaTwap::read, _data, i);
+    SerDeUtil.readArray(twaps, EmaTwap::read, _data, i);
     return new OracleTwaps(_address, discriminator, oraclePrices, oracleMappings, twaps);
   }
 
@@ -73,7 +74,7 @@ public record OracleTwaps(PublicKey _address,
     i += 32;
     oracleMappings.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(twaps, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(twaps, 512, _data, i);
     return i - _offset;
   }
 

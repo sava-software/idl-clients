@@ -1,7 +1,7 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -42,7 +42,7 @@ public sealed interface TransferArgs extends RustEnum permits
       int i = writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 

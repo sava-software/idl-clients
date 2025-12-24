@@ -4,14 +4,15 @@ import java.lang.Boolean;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWithUnsettledLp,
                                                  OptionalLong netUnsettledFundingPnl,
                                                  Boolean updateAmmSummaryStats,
-                                                 Boolean excludeTotalLiqFee) implements Borsh {
+                                                 Boolean excludeTotalLiqFee) implements SerDe {
 
   public static UpdatePerpMarketSummaryStatsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -61,10 +62,10 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(quoteAssetAmountWithUnsettledLp, _data, i);
-    i += Borsh.writeOptional(netUnsettledFundingPnl, _data, i);
-    i += Borsh.writeOptional(updateAmmSummaryStats, _data, i);
-    i += Borsh.writeOptional(excludeTotalLiqFee, _data, i);
+    i += SerDeUtil.writeOptional(1, quoteAssetAmountWithUnsettledLp, _data, i);
+    i += SerDeUtil.writeOptional(1, netUnsettledFundingPnl, _data, i);
+    i += SerDeUtil.writeOptional(1, updateAmmSummaryStats, _data, i);
+    i += SerDeUtil.writeOptional(1, excludeTotalLiqFee, _data, i);
     return i - _offset;
   }
 

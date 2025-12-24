@@ -1,13 +1,13 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Price data for standard Chainlink types (v3, v7, v8, v9)
 ///
-public record ChainlinkStandardPriceData(long observationsTimestamp) implements Borsh {
+public record ChainlinkStandardPriceData(long observationsTimestamp) implements SerDe {
 
   public static final int BYTES = 8;
 

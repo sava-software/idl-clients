@@ -5,7 +5,8 @@ import java.math.BigInteger;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -15,7 +16,7 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
                                      BigInteger lastFeePoolTokenAmount,
                                      BigInteger lastNetPnlPoolTokenAmount,
                                      OptionalInt ammPositionScalar,
-                                     OptionalLong ammInventoryLimit) implements Borsh {
+                                     OptionalLong ammInventoryLimit) implements SerDe {
 
   public static OverrideAmmCacheParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -85,12 +86,12 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(quoteOwedFromLpPool, _data, i);
-    i += Borsh.writeOptional(lastSettleSlot, _data, i);
-    i += Borsh.write128Optional(lastFeePoolTokenAmount, _data, i);
-    i += Borsh.write128Optional(lastNetPnlPoolTokenAmount, _data, i);
-    i += Borsh.writeOptionalbyte(ammPositionScalar, _data, i);
-    i += Borsh.writeOptional(ammInventoryLimit, _data, i);
+    i += SerDeUtil.writeOptional(1, quoteOwedFromLpPool, _data, i);
+    i += SerDeUtil.writeOptional(1, lastSettleSlot, _data, i);
+    i += SerDeUtil.write128Optional(1, lastFeePoolTokenAmount, _data, i);
+    i += SerDeUtil.write128Optional(1, lastNetPnlPoolTokenAmount, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, ammPositionScalar, _data, i);
+    i += SerDeUtil.writeOptional(1, ammInventoryLimit, _data, i);
     return i - _offset;
   }
 

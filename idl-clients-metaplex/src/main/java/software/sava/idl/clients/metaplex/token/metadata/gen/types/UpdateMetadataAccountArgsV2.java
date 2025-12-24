@@ -3,14 +3,15 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.lang.Boolean;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
 public record UpdateMetadataAccountArgsV2(DataV2 data,
                                           PublicKey updateAuthority,
                                           Boolean primarySaleHappened,
-                                          Boolean isMutable) implements Borsh {
+                                          Boolean isMutable) implements SerDe {
 
   public static UpdateMetadataAccountArgsV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -60,10 +61,10 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(data, _data, i);
-    i += Borsh.writeOptional(updateAuthority, _data, i);
-    i += Borsh.writeOptional(primarySaleHappened, _data, i);
-    i += Borsh.writeOptional(isMutable, _data, i);
+    i += SerDeUtil.writeOptional(1, data, _data, i);
+    i += SerDeUtil.writeOptional(1, updateAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
+    i += SerDeUtil.writeOptional(1, isMutable, _data, i);
     return i - _offset;
   }
 

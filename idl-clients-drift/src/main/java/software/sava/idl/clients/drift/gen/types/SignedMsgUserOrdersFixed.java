@@ -1,7 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 public record SignedMsgUserOrdersFixed(PublicKey userPubkey,
                                        int padding,
-                                       int len) implements Borsh {
+                                       int len) implements SerDe {
 
   public static final int BYTES = 40;
 

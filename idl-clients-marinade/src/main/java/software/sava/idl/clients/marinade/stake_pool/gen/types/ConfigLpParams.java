@@ -2,14 +2,15 @@ package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record ConfigLpParams(Fee minFee,
                              Fee maxFee,
                              OptionalLong liquidityTarget,
-                             Fee treasuryCut) implements Borsh {
+                             Fee treasuryCut) implements SerDe {
 
   public static ConfigLpParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -59,10 +60,10 @@ public record ConfigLpParams(Fee minFee,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(minFee, _data, i);
-    i += Borsh.writeOptional(maxFee, _data, i);
-    i += Borsh.writeOptional(liquidityTarget, _data, i);
-    i += Borsh.writeOptional(treasuryCut, _data, i);
+    i += SerDeUtil.writeOptional(1, minFee, _data, i);
+    i += SerDeUtil.writeOptional(1, maxFee, _data, i);
+    i += SerDeUtil.writeOptional(1, liquidityTarget, _data, i);
+    i += SerDeUtil.writeOptional(1, treasuryCut, _data, i);
     return i - _offset;
   }
 

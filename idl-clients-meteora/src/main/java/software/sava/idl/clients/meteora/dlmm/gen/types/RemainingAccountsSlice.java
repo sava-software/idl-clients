@@ -1,8 +1,8 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record RemainingAccountsSlice(AccountsType accountsType, int length) implements Borsh {
+public record RemainingAccountsSlice(AccountsType accountsType, int length) implements SerDe {
 
   public static RemainingAccountsSlice read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

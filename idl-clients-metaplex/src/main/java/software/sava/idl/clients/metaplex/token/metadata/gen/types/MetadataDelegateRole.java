@@ -1,8 +1,9 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum MetadataDelegateRole implements Borsh.Enum {
+public enum MetadataDelegateRole implements RustEnum {
 
   AuthorityItem,
   Collection,
@@ -14,6 +15,6 @@ public enum MetadataDelegateRole implements Borsh.Enum {
   ProgrammableConfigItem;
 
   public static MetadataDelegateRole read(final byte[] _data, final int _offset) {
-    return Borsh.read(MetadataDelegateRole.values(), _data, _offset);
+    return SerDeUtil.read(1, MetadataDelegateRole.values(), _data, _offset);
   }
 }

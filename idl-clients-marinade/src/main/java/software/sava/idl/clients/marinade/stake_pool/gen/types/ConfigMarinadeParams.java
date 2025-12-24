@@ -4,7 +4,8 @@ import java.lang.Boolean;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
@@ -18,7 +19,7 @@ public record ConfigMarinadeParams(Fee rewardsFee,
                                    Boolean withdrawStakeAccountEnabled,
                                    FeeCents delayedUnstakeFee,
                                    FeeCents withdrawStakeAccountFee,
-                                   Fee maxStakeMovedPerEpoch) implements Borsh {
+                                   Fee maxStakeMovedPerEpoch) implements SerDe {
 
   public static ConfigMarinadeParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -138,17 +139,17 @@ public record ConfigMarinadeParams(Fee rewardsFee,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(rewardsFee, _data, i);
-    i += Borsh.writeOptional(slotsForStakeDelta, _data, i);
-    i += Borsh.writeOptional(minStake, _data, i);
-    i += Borsh.writeOptional(minDeposit, _data, i);
-    i += Borsh.writeOptional(minWithdraw, _data, i);
-    i += Borsh.writeOptional(stakingSolCap, _data, i);
-    i += Borsh.writeOptional(liquiditySolCap, _data, i);
-    i += Borsh.writeOptional(withdrawStakeAccountEnabled, _data, i);
-    i += Borsh.writeOptional(delayedUnstakeFee, _data, i);
-    i += Borsh.writeOptional(withdrawStakeAccountFee, _data, i);
-    i += Borsh.writeOptional(maxStakeMovedPerEpoch, _data, i);
+    i += SerDeUtil.writeOptional(1, rewardsFee, _data, i);
+    i += SerDeUtil.writeOptional(1, slotsForStakeDelta, _data, i);
+    i += SerDeUtil.writeOptional(1, minStake, _data, i);
+    i += SerDeUtil.writeOptional(1, minDeposit, _data, i);
+    i += SerDeUtil.writeOptional(1, minWithdraw, _data, i);
+    i += SerDeUtil.writeOptional(1, stakingSolCap, _data, i);
+    i += SerDeUtil.writeOptional(1, liquiditySolCap, _data, i);
+    i += SerDeUtil.writeOptional(1, withdrawStakeAccountEnabled, _data, i);
+    i += SerDeUtil.writeOptional(1, delayedUnstakeFee, _data, i);
+    i += SerDeUtil.writeOptional(1, withdrawStakeAccountFee, _data, i);
+    i += SerDeUtil.writeOptional(1, maxStakeMovedPerEpoch, _data, i);
     return i - _offset;
   }
 

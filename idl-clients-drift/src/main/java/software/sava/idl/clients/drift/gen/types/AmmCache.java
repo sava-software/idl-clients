@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -15,7 +16,7 @@ public record AmmCache(PublicKey _address,
                        Discriminator discriminator,
                        int bump,
                        byte[] padding,
-                       CacheInfo[] cache) implements Borsh {
+                       CacheInfo[] cache) implements SerDe {
 
   public static final int PADDING_LEN = 3;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(213, 114, 161, 56, 20, 22, 2, 59);
@@ -52,8 +53,8 @@ public record AmmCache(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[3];
-    i += Borsh.readArray(padding, _data, i);
-    final var cache = Borsh.readVector(CacheInfo.class, CacheInfo::read, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var cache = SerDeUtil.readVector(4, CacheInfo.class, CacheInfo::read, _data, i);
     return new AmmCache(_address, discriminator, bump, padding, cache);
   }
 
@@ -62,13 +63,13 @@ public record AmmCache(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 3, _data, i);
-    i += Borsh.writeVector(cache, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 3, _data, i);
+    i += SerDeUtil.writeVector(4, cache, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 1 + Borsh.lenArray(padding) + Borsh.lenVector(cache);
+    return 8 + 1 + SerDeUtil.lenArray(padding) + SerDeUtil.lenVector(4, cache);
   }
 }

@@ -1,13 +1,13 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record Uses(UseMethod useMethod,
                    long remaining,
-                   long total) implements Borsh {
+                   long total) implements SerDe {
 
   public static final int BYTES = 17;
 

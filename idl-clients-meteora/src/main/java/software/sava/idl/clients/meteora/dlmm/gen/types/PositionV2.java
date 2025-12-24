@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -51,7 +52,7 @@ public record PositionV2(PublicKey _address,
                          long lockReleasePoint,
                          int padding0,
                          PublicKey feeOwner,
-                         byte[] reserved) implements Borsh {
+                         byte[] reserved) implements SerDe {
 
   public static final int BYTES = 8120;
   public static final int LIQUIDITY_SHARES_LEN = 70;
@@ -162,11 +163,11 @@ public record PositionV2(PublicKey _address,
     final var owner = readPubKey(_data, i);
     i += 32;
     final var liquidityShares = new BigInteger[70];
-    i += Borsh.read128Array(liquidityShares, _data, i);
+    i += SerDeUtil.read128Array(liquidityShares, _data, i);
     final var rewardInfos = new UserRewardInfo[70];
-    i += Borsh.readArray(rewardInfos, UserRewardInfo::read, _data, i);
+    i += SerDeUtil.readArray(rewardInfos, UserRewardInfo::read, _data, i);
     final var feeInfos = new FeeInfo[70];
-    i += Borsh.readArray(feeInfos, FeeInfo::read, _data, i);
+    i += SerDeUtil.readArray(feeInfos, FeeInfo::read, _data, i);
     final var lowerBinId = getInt32LE(_data, i);
     i += 4;
     final var upperBinId = getInt32LE(_data, i);
@@ -178,7 +179,7 @@ public record PositionV2(PublicKey _address,
     final var totalClaimedFeeYAmount = getInt64LE(_data, i);
     i += 8;
     final var totalClaimedRewards = new long[2];
-    i += Borsh.readArray(totalClaimedRewards, _data, i);
+    i += SerDeUtil.readArray(totalClaimedRewards, _data, i);
     final var operator = readPubKey(_data, i);
     i += 32;
     final var lockReleasePoint = getInt64LE(_data, i);
@@ -188,7 +189,7 @@ public record PositionV2(PublicKey _address,
     final var feeOwner = readPubKey(_data, i);
     i += 32;
     final var reserved = new byte[87];
-    Borsh.readArray(reserved, _data, i);
+    SerDeUtil.readArray(reserved, _data, i);
     return new PositionV2(_address,
                           discriminator,
                           lbPair,
@@ -216,9 +217,9 @@ public record PositionV2(PublicKey _address,
     i += 32;
     owner.write(_data, i);
     i += 32;
-    i += Borsh.write128ArrayChecked(liquidityShares, 70, _data, i);
-    i += Borsh.writeArrayChecked(rewardInfos, 70, _data, i);
-    i += Borsh.writeArrayChecked(feeInfos, 70, _data, i);
+    i += SerDeUtil.write128ArrayChecked(liquidityShares, 70, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewardInfos, 70, _data, i);
+    i += SerDeUtil.writeArrayChecked(feeInfos, 70, _data, i);
     putInt32LE(_data, i, lowerBinId);
     i += 4;
     putInt32LE(_data, i, upperBinId);
@@ -229,7 +230,7 @@ public record PositionV2(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, totalClaimedFeeYAmount);
     i += 8;
-    i += Borsh.writeArrayChecked(totalClaimedRewards, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(totalClaimedRewards, 2, _data, i);
     operator.write(_data, i);
     i += 32;
     putInt64LE(_data, i, lockReleasePoint);
@@ -238,7 +239,7 @@ public record PositionV2(PublicKey _address,
     ++i;
     feeOwner.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(reserved, 87, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 87, _data, i);
     return i - _offset;
   }
 

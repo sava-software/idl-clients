@@ -3,9 +3,10 @@ package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -18,7 +19,7 @@ public record MessageSent(PublicKey _address,
                           Discriminator discriminator,
                           PublicKey rentPayer,
                           long createdAt,
-                          byte[] message) implements Borsh {
+                          byte[] message) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(131, 100, 133, 56, 166, 225, 151, 60);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -61,7 +62,7 @@ public record MessageSent(PublicKey _address,
     i += 32;
     final var createdAt = getInt64LE(_data, i);
     i += 8;
-    final var message = Borsh.readbyteVector(_data, i);
+    final var message = SerDeUtil.readbyteVector(4, _data, i);
     return new MessageSent(_address, discriminator, rentPayer, createdAt, message);
   }
 
@@ -72,12 +73,12 @@ public record MessageSent(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, createdAt);
     i += 8;
-    i += Borsh.writeVector(message, _data, i);
+    i += SerDeUtil.writeVector(4, message, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + 8 + Borsh.lenVector(message);
+    return 8 + 32 + 8 + SerDeUtil.lenVector(4, message);
   }
 }

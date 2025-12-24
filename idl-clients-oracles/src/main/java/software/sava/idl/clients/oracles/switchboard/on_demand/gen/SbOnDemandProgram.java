@@ -5,9 +5,9 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.oracles.switchboard.on_demand.gen.types.GuardianQuoteVerifyParams;
 import software.sava.idl.clients.oracles.switchboard.on_demand.gen.types.GuardianRegisterParams;
 import software.sava.idl.clients.oracles.switchboard.on_demand.gen.types.GuardianUnregisterParams;
@@ -103,7 +103,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record GuardianQuoteVerifyIxData(Discriminator discriminator, GuardianQuoteVerifyParams params) implements Borsh {  
+  public record GuardianQuoteVerifyIxData(Discriminator discriminator, GuardianQuoteVerifyParams params) implements SerDe {  
 
     public static GuardianQuoteVerifyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -171,7 +171,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record GuardianRegisterIxData(Discriminator discriminator, GuardianRegisterParams params) implements Borsh {  
+  public record GuardianRegisterIxData(Discriminator discriminator, GuardianRegisterParams params) implements SerDe {  
 
     public static GuardianRegisterIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -241,7 +241,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record GuardianUnregisterIxData(Discriminator discriminator, GuardianUnregisterParams params) implements Borsh {  
+  public record GuardianUnregisterIxData(Discriminator discriminator, GuardianUnregisterParams params) implements SerDe {  
 
     public static GuardianUnregisterIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -348,7 +348,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleHeartbeatIxData(Discriminator discriminator, OracleHeartbeatParams params) implements Borsh {  
+  public record OracleHeartbeatIxData(Discriminator discriminator, OracleHeartbeatParams params) implements SerDe {  
 
     public static OracleHeartbeatIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -424,7 +424,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleHeartbeatV2IxData(Discriminator discriminator, OracleHeartbeatV2Params params) implements Borsh {  
+  public record OracleHeartbeatV2IxData(Discriminator discriminator, OracleHeartbeatV2Params params) implements SerDe {  
 
     public static OracleHeartbeatV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -509,7 +509,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleInitIxData(Discriminator discriminator, OracleInitParams params) implements Borsh {  
+  public record OracleInitIxData(Discriminator discriminator, OracleInitParams params) implements SerDe {  
 
     public static OracleInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -602,7 +602,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleInitSvmIxData(Discriminator discriminator, OracleInitSVMParams params) implements Borsh {  
+  public record OracleInitSvmIxData(Discriminator discriminator, OracleInitSVMParams params) implements SerDe {  
 
     public static OracleInitSvmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -683,7 +683,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleResetLutIxData(Discriminator discriminator, OracleResetLutParams params) implements Borsh {  
+  public record OracleResetLutIxData(Discriminator discriminator, OracleResetLutParams params) implements SerDe {  
 
     public static OracleResetLutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -745,7 +745,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleSetConfigsIxData(Discriminator discriminator, OracleSetConfigsParams params) implements Borsh {  
+  public record OracleSetConfigsIxData(Discriminator discriminator, OracleSetConfigsParams params) implements SerDe {  
 
     public static OracleSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -809,7 +809,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleSetOperatorIxData(Discriminator discriminator, OracleSetOperatorParams params) implements Borsh {  
+  public record OracleSetOperatorIxData(Discriminator discriminator, OracleSetOperatorParams params) implements SerDe {  
 
     public static OracleSetOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -920,7 +920,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record OracleSyncLutIxData(Discriminator discriminator, OracleSyncLutParams params) implements Borsh {  
+  public record OracleSyncLutIxData(Discriminator discriminator, OracleSyncLutParams params) implements SerDe {  
 
     public static OracleSyncLutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -982,7 +982,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PermissionSetIxData(Discriminator discriminator, PermissionSetParams params) implements Borsh {  
+  public record PermissionSetIxData(Discriminator discriminator, PermissionSetParams params) implements SerDe {  
 
     public static PermissionSetIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1074,7 +1074,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedCloseIxData(Discriminator discriminator, PullFeedCloseParams params) implements Borsh {  
+  public record PullFeedCloseIxData(Discriminator discriminator, PullFeedCloseParams params) implements SerDe {  
 
     public static PullFeedCloseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1171,7 +1171,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedInitIxData(Discriminator discriminator, PullFeedInitParams params) implements Borsh {  
+  public record PullFeedInitIxData(Discriminator discriminator, PullFeedInitParams params) implements SerDe {  
 
     public static PullFeedInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1231,7 +1231,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSetConfigsIxData(Discriminator discriminator, PullFeedSetConfigsParams params) implements Borsh {  
+  public record PullFeedSetConfigsIxData(Discriminator discriminator, PullFeedSetConfigsParams params) implements SerDe {  
 
     public static PullFeedSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1313,7 +1313,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSubmitResponseIxData(Discriminator discriminator, PullFeedSubmitResponseParams params) implements Borsh {  
+  public record PullFeedSubmitResponseIxData(Discriminator discriminator, PullFeedSubmitResponseParams params) implements SerDe {  
 
     public static PullFeedSubmitResponseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1392,7 +1392,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSubmitResponseConsensusIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusParams params) implements Borsh {  
+  public record PullFeedSubmitResponseConsensusIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusParams params) implements SerDe {  
 
     public static PullFeedSubmitResponseConsensusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1457,7 +1457,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSubmitResponseConsensusLightIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusLightParams params) implements Borsh {  
+  public record PullFeedSubmitResponseConsensusLightIxData(Discriminator discriminator, PullFeedSubmitResponseConsensusLightParams params) implements SerDe {  
 
     public static PullFeedSubmitResponseConsensusLightIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1535,7 +1535,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSubmitResponseManyIxData(Discriminator discriminator, PullFeedSubmitResponseManyParams params) implements Borsh {  
+  public record PullFeedSubmitResponseManyIxData(Discriminator discriminator, PullFeedSubmitResponseManyParams params) implements SerDe {  
 
     public static PullFeedSubmitResponseManyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1617,7 +1617,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record PullFeedSubmitResponseSvmIxData(Discriminator discriminator, PullFeedSubmitResponseSVMParams params) implements Borsh {  
+  public record PullFeedSubmitResponseSvmIxData(Discriminator discriminator, PullFeedSubmitResponseSVMParams params) implements SerDe {  
 
     public static PullFeedSubmitResponseSvmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1685,7 +1685,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueAddMrEnclaveIxData(Discriminator discriminator, QueueAddMrEnclaveParams params) implements Borsh {  
+  public record QueueAddMrEnclaveIxData(Discriminator discriminator, QueueAddMrEnclaveParams params) implements SerDe {  
 
     public static QueueAddMrEnclaveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1751,7 +1751,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueAllowSubsidiesIxData(Discriminator discriminator, QueueAllowSubsidiesParams params) implements Borsh {  
+  public record QueueAllowSubsidiesIxData(Discriminator discriminator, QueueAllowSubsidiesParams params) implements SerDe {  
 
     public static QueueAllowSubsidiesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1821,7 +1821,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueGarbageCollectIxData(Discriminator discriminator, QueueGarbageCollectParams params) implements Borsh {  
+  public record QueueGarbageCollectIxData(Discriminator discriminator, QueueGarbageCollectParams params) implements SerDe {  
 
     public static QueueGarbageCollectIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1914,7 +1914,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueInitIxData(Discriminator discriminator, QueueInitParams params) implements Borsh {  
+  public record QueueInitIxData(Discriminator discriminator, QueueInitParams params) implements SerDe {  
 
     public static QueueInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2007,7 +2007,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueInitSvmIxData(Discriminator discriminator, QueueInitSVMParams params) implements Borsh {  
+  public record QueueInitSvmIxData(Discriminator discriminator, QueueInitSVMParams params) implements SerDe {  
 
     public static QueueInitSvmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2077,7 +2077,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueOverrideSvmIxData(Discriminator discriminator, QueueOverrideSVMParams params) implements Borsh {  
+  public record QueueOverrideSvmIxData(Discriminator discriminator, QueueOverrideSVMParams params) implements SerDe {  
 
     public static QueueOverrideSvmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2173,7 +2173,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueuePaySubsidyIxData(Discriminator discriminator, QueuePaySubsidyParams params) implements Borsh {  
+  public record QueuePaySubsidyIxData(Discriminator discriminator, QueuePaySubsidyParams params) implements SerDe {  
 
     public static QueuePaySubsidyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2243,7 +2243,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueRemoveMrEnclaveIxData(Discriminator discriminator, QueueRemoveMrEnclaveParams params) implements Borsh {  
+  public record QueueRemoveMrEnclaveIxData(Discriminator discriminator, QueueRemoveMrEnclaveParams params) implements SerDe {  
 
     public static QueueRemoveMrEnclaveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2317,7 +2317,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueResetVaultIxData(Discriminator discriminator, QueueResetVaultParams params) implements Borsh {  
+  public record QueueResetVaultIxData(Discriminator discriminator, QueueResetVaultParams params) implements SerDe {  
 
     public static QueueResetVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2383,7 +2383,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueSetConfigsIxData(Discriminator discriminator, QueueSetConfigsParams params) implements Borsh {  
+  public record QueueSetConfigsIxData(Discriminator discriminator, QueueSetConfigsParams params) implements SerDe {  
 
     public static QueueSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2451,7 +2451,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueSetNcnIxData(Discriminator discriminator, QueueSetNcnParams params) implements Borsh {  
+  public record QueueSetNcnIxData(Discriminator discriminator, QueueSetNcnParams params) implements SerDe {  
 
     public static QueueSetNcnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2525,7 +2525,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record QueueSetVaultIxData(Discriminator discriminator, QueueSetVaultParams params) implements Borsh {  
+  public record QueueSetVaultIxData(Discriminator discriminator, QueueSetVaultParams params) implements SerDe {  
 
     public static QueueSetVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2599,7 +2599,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record RandomnessCommitIxData(Discriminator discriminator, RandomnessCommitParams params) implements Borsh {  
+  public record RandomnessCommitIxData(Discriminator discriminator, RandomnessCommitParams params) implements SerDe {  
 
     public static RandomnessCommitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2696,7 +2696,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record RandomnessInitIxData(Discriminator discriminator, RandomnessInitParams params) implements Borsh {  
+  public record RandomnessInitIxData(Discriminator discriminator, RandomnessInitParams params) implements SerDe {  
 
     public static RandomnessInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2792,7 +2792,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record RandomnessRevealIxData(Discriminator discriminator, RandomnessRevealParams params) implements Borsh {  
+  public record RandomnessRevealIxData(Discriminator discriminator, RandomnessRevealParams params) implements SerDe {  
 
     public static RandomnessRevealIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2858,7 +2858,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record StateInitIxData(Discriminator discriminator, StateInitParams params) implements Borsh {  
+  public record StateInitIxData(Discriminator discriminator, StateInitParams params) implements SerDe {  
 
     public static StateInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2932,7 +2932,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record StateSetConfigsIxData(Discriminator discriminator, StateSetConfigsParams params) implements Borsh {  
+  public record StateSetConfigsIxData(Discriminator discriminator, StateSetConfigsParams params) implements SerDe {  
 
     public static StateSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2992,7 +2992,7 @@ public final class SbOnDemandProgram {
     return Instruction.createInstruction(invokedSbOnDemandProgramMeta, keys, _data);
   }
 
-  public record TestUpdateOracleStatsIxData(Discriminator discriminator, TestUpdateOracleStatsParams params) implements Borsh {  
+  public record TestUpdateOracleStatsIxData(Discriminator discriminator, TestUpdateOracleStatsParams params) implements SerDe {  
 
     public static TestUpdateOracleStatsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

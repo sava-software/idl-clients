@@ -1,26 +1,27 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public record RemainingAccountsInfo(RemainingAccountsSlice[] slices) implements Borsh {
+public record RemainingAccountsInfo(RemainingAccountsSlice[] slices) implements SerDe {
 
   public static RemainingAccountsInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var slices = Borsh.readVector(RemainingAccountsSlice.class, RemainingAccountsSlice::read, _data, _offset);
+    final var slices = SerDeUtil.readVector(4, RemainingAccountsSlice.class, RemainingAccountsSlice::read, _data, _offset);
     return new RemainingAccountsInfo(slices);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVector(slices, _data, i);
+    i += SerDeUtil.writeVector(4, slices, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return Borsh.lenVector(slices);
+    return SerDeUtil.lenVector(4, slices);
   }
 }

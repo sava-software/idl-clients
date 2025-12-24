@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.governance.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param rewardPerProposal Total reward per proposal
 public record VotingReward(PublicKey rewardMint,
                            PublicKey rewardVault,
-                           long rewardPerProposal) implements Borsh {
+                           long rewardPerProposal) implements SerDe {
 
   public static final int BYTES = 72;
 

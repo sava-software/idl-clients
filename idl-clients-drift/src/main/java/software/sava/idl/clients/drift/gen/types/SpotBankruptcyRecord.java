@@ -2,7 +2,7 @@ package software.sava.idl.clients.drift.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 public record SpotBankruptcyRecord(int marketIndex,
                                    BigInteger borrowAmount,
                                    BigInteger ifPayment,
-                                   BigInteger cumulativeDepositInterestDelta) implements Borsh {
+                                   BigInteger cumulativeDepositInterestDelta) implements SerDe {
 
   public static final int BYTES = 50;
 

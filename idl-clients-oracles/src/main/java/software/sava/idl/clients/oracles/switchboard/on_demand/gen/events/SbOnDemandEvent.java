@@ -1,8 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface SbOnDemandEvent extends Borsh permits
+public sealed interface SbOnDemandEvent extends SerDe permits
     CostWhitelistEvent,
     GarbageCollectionEvent,
     GuardianQuoteVerifyEvent,

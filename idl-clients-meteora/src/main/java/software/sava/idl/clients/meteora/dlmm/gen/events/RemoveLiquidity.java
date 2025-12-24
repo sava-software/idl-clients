@@ -1,8 +1,8 @@
 package software.sava.idl.clients.meteora.dlmm.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -34,7 +34,7 @@ public record RemoveLiquidity(Discriminator discriminator,
     final var position = readPubKey(_data, i);
     i += 32;
     final var amounts = new long[2];
-    i += Borsh.readArray(amounts, _data, i);
+    i += SerDeUtil.readArray(amounts, _data, i);
     final var activeBinId = getInt32LE(_data, i);
     return new RemoveLiquidity(discriminator,
                                lbPair,
@@ -53,7 +53,7 @@ public record RemoveLiquidity(Discriminator discriminator,
     i += 32;
     position.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(amounts, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(amounts, 2, _data, i);
     putInt32LE(_data, i, activeBinId);
     i += 4;
     return i - _offset;

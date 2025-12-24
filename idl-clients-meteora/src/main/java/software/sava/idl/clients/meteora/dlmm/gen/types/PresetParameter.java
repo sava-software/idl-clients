@@ -3,9 +3,9 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -36,7 +36,7 @@ public record PresetParameter(PublicKey _address,
                               int maxVolatilityAccumulator,
                               int minBinId,
                               int maxBinId,
-                              int protocolShare) implements Borsh {
+                              int protocolShare) implements SerDe {
 
   public static final int BYTES = 36;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

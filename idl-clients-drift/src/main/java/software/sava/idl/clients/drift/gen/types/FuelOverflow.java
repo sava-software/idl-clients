@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -30,7 +31,7 @@ public record FuelOverflow(PublicKey _address,
                            BigInteger fuelMaker,
                            int lastFuelSweepTs,
                            int lastResetTs,
-                           BigInteger[] padding) implements Borsh {
+                           BigInteger[] padding) implements SerDe {
 
   public static final int BYTES = 240;
   public static final int PADDING_LEN = 6;
@@ -141,7 +142,7 @@ public record FuelOverflow(PublicKey _address,
     final var lastResetTs = getInt32LE(_data, i);
     i += 4;
     final var padding = new BigInteger[6];
-    Borsh.read128Array(padding, _data, i);
+    SerDeUtil.read128Array(padding, _data, i);
     return new FuelOverflow(_address,
                             discriminator,
                             authority,
@@ -177,7 +178,7 @@ public record FuelOverflow(PublicKey _address,
     i += 4;
     putInt32LE(_data, i, lastResetTs);
     i += 4;
-    i += Borsh.write128ArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding, 6, _data, i);
     return i - _offset;
   }
 

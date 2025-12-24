@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -23,7 +24,7 @@ public record PrelaunchOracle(PublicKey _address,
                               long lastUpdateSlot,
                               long ammLastUpdateSlot,
                               int perpMarketIndex,
-                              byte[] padding) implements Borsh {
+                              byte[] padding) implements SerDe {
 
   public static final int BYTES = 120;
   public static final int PADDING_LEN = 70;
@@ -109,7 +110,7 @@ public record PrelaunchOracle(PublicKey _address,
     final var perpMarketIndex = getInt16LE(_data, i);
     i += 2;
     final var padding = new byte[70];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new PrelaunchOracle(_address,
                                discriminator,
                                price,
@@ -136,7 +137,7 @@ public record PrelaunchOracle(PublicKey _address,
     i += 8;
     putInt16LE(_data, i, perpMarketIndex);
     i += 2;
-    i += Borsh.writeArrayChecked(padding, 70, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 70, _data, i);
     return i - _offset;
   }
 

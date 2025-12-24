@@ -3,7 +3,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -18,7 +19,7 @@ public record ReserveCollateral(PublicKey mintPubkey,
                                 long mintTotalSupply,
                                 PublicKey supplyVault,
                                 BigInteger[] padding1,
-                                BigInteger[] padding2) implements Borsh {
+                                BigInteger[] padding2) implements SerDe {
 
   public static final int BYTES = 1096;
   public static final int PADDING_1_LEN = 32;
@@ -36,9 +37,9 @@ public record ReserveCollateral(PublicKey mintPubkey,
     final var supplyVault = readPubKey(_data, i);
     i += 32;
     final var padding1 = new BigInteger[32];
-    i += Borsh.read128Array(padding1, _data, i);
+    i += SerDeUtil.read128Array(padding1, _data, i);
     final var padding2 = new BigInteger[32];
-    Borsh.read128Array(padding2, _data, i);
+    SerDeUtil.read128Array(padding2, _data, i);
     return new ReserveCollateral(mintPubkey,
                                  mintTotalSupply,
                                  supplyVault,
@@ -55,8 +56,8 @@ public record ReserveCollateral(PublicKey mintPubkey,
     i += 8;
     supplyVault.write(_data, i);
     i += 32;
-    i += Borsh.write128ArrayChecked(padding1, 32, _data, i);
-    i += Borsh.write128ArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding1, 32, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding2, 32, _data, i);
     return i - _offset;
   }
 

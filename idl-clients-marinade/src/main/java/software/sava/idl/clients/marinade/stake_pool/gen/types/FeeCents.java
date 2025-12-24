@@ -1,6 +1,6 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// FeeCents, same as Fee but / 1_000_000 instead of 10_000
 /// 1 FeeCent = 0.0001%, 10_000 FeeCent = 1%, 1_000_000 FeeCent = 100%
 ///
-public record FeeCents(int bpCents) implements Borsh {
+public record FeeCents(int bpCents) implements SerDe {
 
   public static final int BYTES = 4;
 

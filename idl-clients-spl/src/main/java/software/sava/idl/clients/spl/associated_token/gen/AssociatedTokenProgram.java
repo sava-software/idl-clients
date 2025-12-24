@@ -5,10 +5,9 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
-import software.sava.core.serial.Serializable;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
@@ -83,7 +82,7 @@ public final class AssociatedTokenProgram {
   /// Creates an associated token account for the given wallet address and
   /// token mint Returns an error if the account exists.
   ///
-  public record CreateAssociatedTokenIxData(int discriminator) implements Serializable {  
+  public record CreateAssociatedTokenIxData(int discriminator) implements SerDe {  
 
     public static CreateAssociatedTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -183,7 +182,7 @@ public final class AssociatedTokenProgram {
   /// token mint, if it doesn't already exist. Returns an error if the
   /// account exists, but with a different owner.
   ///
-  public record CreateAssociatedTokenIdempotentIxData(int discriminator) implements Serializable {  
+  public record CreateAssociatedTokenIdempotentIxData(int discriminator) implements SerDe {  
 
     public static CreateAssociatedTokenIdempotentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -319,7 +318,7 @@ public final class AssociatedTokenProgram {
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
   ///
-  public record RecoverNestedAssociatedTokenIxData(int discriminator) implements Serializable {  
+  public record RecoverNestedAssociatedTokenIxData(int discriminator) implements SerDe {  
 
     public static RecoverNestedAssociatedTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +18,7 @@ public record ReferrerName(PublicKey _address,
                            PublicKey authority,
                            PublicKey user,
                            PublicKey userStats,
-                           byte[] name) implements Borsh {
+                           byte[] name) implements SerDe {
 
   public static final int BYTES = 136;
   public static final int NAME_LEN = 32;
@@ -70,7 +71,7 @@ public record ReferrerName(PublicKey _address,
     final var userStats = readPubKey(_data, i);
     i += 32;
     final var name = new byte[32];
-    Borsh.readArray(name, _data, i);
+    SerDeUtil.readArray(name, _data, i);
     return new ReferrerName(_address,
                             discriminator,
                             authority,
@@ -88,7 +89,7 @@ public record ReferrerName(PublicKey _address,
     i += 32;
     userStats.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     return i - _offset;
   }
 

@@ -3,9 +3,10 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +17,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param tokenMint token mint
 /// @param padding Reserve
-public record TokenBadge(PublicKey _address, Discriminator discriminator, PublicKey tokenMint, byte[] padding) implements Borsh {
+public record TokenBadge(PublicKey _address, Discriminator discriminator, PublicKey tokenMint, byte[] padding) implements SerDe {
 
   public static final int BYTES = 168;
   public static final int PADDING_LEN = 128;
@@ -55,7 +56,7 @@ public record TokenBadge(PublicKey _address, Discriminator discriminator, Public
     final var tokenMint = readPubKey(_data, i);
     i += 32;
     final var padding = new byte[128];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new TokenBadge(_address, discriminator, tokenMint, padding);
   }
 
@@ -64,7 +65,7 @@ public record TokenBadge(PublicKey _address, Discriminator discriminator, Public
     int i = _offset + discriminator.write(_data, _offset);
     tokenMint.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 128, _data, i);
     return i - _offset;
   }
 

@@ -3,7 +3,8 @@ package software.sava.idl.clients.kamino.vaults.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -21,7 +22,7 @@ public record VaultAllocation(PublicKey reserve,
                               long ctokenAllocation,
                               long lastInvestSlot,
                               BigInteger tokenTargetAllocationSf,
-                              long[] statePadding) implements Borsh {
+                              long[] statePadding) implements SerDe {
 
   public static final int BYTES = 2160;
   public static final int CONFIG_PADDING_LEN = 127;
@@ -43,7 +44,7 @@ public record VaultAllocation(PublicKey reserve,
     final var ctokenVaultBump = getInt64LE(_data, i);
     i += 8;
     final var configPadding = new long[127];
-    i += Borsh.readArray(configPadding, _data, i);
+    i += SerDeUtil.readArray(configPadding, _data, i);
     final var ctokenAllocation = getInt64LE(_data, i);
     i += 8;
     final var lastInvestSlot = getInt64LE(_data, i);
@@ -51,7 +52,7 @@ public record VaultAllocation(PublicKey reserve,
     final var tokenTargetAllocationSf = getInt128LE(_data, i);
     i += 16;
     final var statePadding = new long[128];
-    Borsh.readArray(statePadding, _data, i);
+    SerDeUtil.readArray(statePadding, _data, i);
     return new VaultAllocation(reserve,
                                ctokenVault,
                                targetAllocationWeight,
@@ -77,14 +78,14 @@ public record VaultAllocation(PublicKey reserve,
     i += 8;
     putInt64LE(_data, i, ctokenVaultBump);
     i += 8;
-    i += Borsh.writeArrayChecked(configPadding, 127, _data, i);
+    i += SerDeUtil.writeArrayChecked(configPadding, 127, _data, i);
     putInt64LE(_data, i, ctokenAllocation);
     i += 8;
     putInt64LE(_data, i, lastInvestSlot);
     i += 8;
     putInt128LE(_data, i, tokenTargetAllocationSf);
     i += 16;
-    i += Borsh.writeArrayChecked(statePadding, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(statePadding, 128, _data, i);
     return i - _offset;
   }
 

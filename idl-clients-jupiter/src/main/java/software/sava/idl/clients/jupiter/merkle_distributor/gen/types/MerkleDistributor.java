@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -67,7 +68,7 @@ public record MerkleDistributor(PublicKey _address,
                                 int closable,
                                 byte[] padding0,
                                 AirdropBonus airdropBonus,
-                                BigInteger[] padding2) implements Borsh {
+                                BigInteger[] padding2) implements SerDe {
 
   public static final int BYTES = 448;
   public static final int ROOT_LEN = 32;
@@ -231,7 +232,7 @@ public record MerkleDistributor(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var root = new byte[32];
-    i += Borsh.readArray(root, _data, i);
+    i += SerDeUtil.readArray(root, _data, i);
     final var mint = readPubKey(_data, i);
     i += 32;
     final var base = readPubKey(_data, i);
@@ -275,11 +276,11 @@ public record MerkleDistributor(PublicKey _address,
     final var closable = _data[i] & 0xFF;
     ++i;
     final var padding0 = new byte[3];
-    i += Borsh.readArray(padding0, _data, i);
+    i += SerDeUtil.readArray(padding0, _data, i);
     final var airdropBonus = AirdropBonus.read(_data, i);
     i += airdropBonus.l();
     final var padding2 = new BigInteger[5];
-    Borsh.read128Array(padding2, _data, i);
+    SerDeUtil.read128Array(padding2, _data, i);
     return new MerkleDistributor(_address,
                                  discriminator,
                                  root,
@@ -312,7 +313,7 @@ public record MerkleDistributor(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(root, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(root, 32, _data, i);
     mint.write(_data, i);
     i += 32;
     base.write(_data, i);
@@ -355,9 +356,9 @@ public record MerkleDistributor(PublicKey _address,
     ++i;
     _data[i] = (byte) closable;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 3, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 3, _data, i);
     i += airdropBonus.write(_data, i);
-    i += Borsh.write128ArrayChecked(padding2, 5, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }
 

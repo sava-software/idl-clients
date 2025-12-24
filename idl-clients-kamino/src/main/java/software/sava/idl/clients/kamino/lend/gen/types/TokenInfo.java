@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -21,7 +22,7 @@ public record TokenInfo(byte[] name,
                         PythConfiguration pythConfiguration,
                         int blockPriceUsage,
                         byte[] reserved,
-                        long[] padding) implements Borsh {
+                        long[] padding) implements SerDe {
 
   public static final int BYTES = 384;
   public static final int NAME_LEN = 32;
@@ -34,7 +35,7 @@ public record TokenInfo(byte[] name,
     }
     int i = _offset;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var heuristic = PriceHeuristic.read(_data, i);
     i += heuristic.l();
     final var maxTwapDivergenceBps = getInt64LE(_data, i);
@@ -52,9 +53,9 @@ public record TokenInfo(byte[] name,
     final var blockPriceUsage = _data[i] & 0xFF;
     ++i;
     final var reserved = new byte[7];
-    i += Borsh.readArray(reserved, _data, i);
+    i += SerDeUtil.readArray(reserved, _data, i);
     final var padding = new long[19];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new TokenInfo(name,
                          heuristic,
                          maxTwapDivergenceBps,
@@ -71,7 +72,7 @@ public record TokenInfo(byte[] name,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     i += heuristic.write(_data, i);
     putInt64LE(_data, i, maxTwapDivergenceBps);
     i += 8;
@@ -84,8 +85,8 @@ public record TokenInfo(byte[] name,
     i += pythConfiguration.write(_data, i);
     _data[i] = (byte) blockPriceUsage;
     ++i;
-    i += Borsh.writeArrayChecked(reserved, 7, _data, i);
-    i += Borsh.writeArrayChecked(padding, 19, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 19, _data, i);
     return i - _offset;
   }
 

@@ -3,11 +3,12 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
-public record EditionMarkerV2(PublicKey _address, Key key, byte[] ledger) implements Borsh {
+public record EditionMarkerV2(PublicKey _address, Key key, byte[] ledger) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int LEDGER_OFFSET = 1;
@@ -37,7 +38,7 @@ public record EditionMarkerV2(PublicKey _address, Key key, byte[] ledger) implem
     int i = _offset;
     final var key = Key.read(_data, i);
     i += key.l();
-    final var ledger = Borsh.readbyteVector(_data, i);
+    final var ledger = SerDeUtil.readbyteVector(4, _data, i);
     return new EditionMarkerV2(_address, key, ledger);
   }
 
@@ -45,12 +46,12 @@ public record EditionMarkerV2(PublicKey _address, Key key, byte[] ledger) implem
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += key.write(_data, i);
-    i += Borsh.writeVector(ledger, _data, i);
+    i += SerDeUtil.writeVector(4, ledger, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return key.l() + Borsh.lenVector(ledger);
+    return key.l() + SerDeUtil.lenVector(4, ledger);
   }
 }

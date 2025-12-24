@@ -1,6 +1,7 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -10,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param binLiquidityDist Liquidity distribution to each bins
 public record LiquidityParameter(long amountX,
                                  long amountY,
-                                 BinLiquidityDistribution[] binLiquidityDist) implements Borsh {
+                                 BinLiquidityDistribution[] binLiquidityDist) implements SerDe {
 
   public static LiquidityParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -21,7 +22,7 @@ public record LiquidityParameter(long amountX,
     i += 8;
     final var amountY = getInt64LE(_data, i);
     i += 8;
-    final var binLiquidityDist = Borsh.readVector(BinLiquidityDistribution.class, BinLiquidityDistribution::read, _data, i);
+    final var binLiquidityDist = SerDeUtil.readVector(4, BinLiquidityDistribution.class, BinLiquidityDistribution::read, _data, i);
     return new LiquidityParameter(amountX, amountY, binLiquidityDist);
   }
 
@@ -32,12 +33,12 @@ public record LiquidityParameter(long amountX,
     i += 8;
     putInt64LE(_data, i, amountY);
     i += 8;
-    i += Borsh.writeVector(binLiquidityDist, _data, i);
+    i += SerDeUtil.writeVector(4, binLiquidityDist, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 8 + Borsh.lenVector(binLiquidityDist);
+    return 8 + 8 + SerDeUtil.lenVector(4, binLiquidityDist);
   }
 }

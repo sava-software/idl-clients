@@ -1,6 +1,6 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record WithdrawalCaps(long configCapacity,
                              long currentTotal,
                              long lastIntervalStartTimestamp,
-                             long configIntervalLengthSeconds) implements Borsh {
+                             long configIntervalLengthSeconds) implements SerDe {
 
   public static final int BYTES = 32;
 

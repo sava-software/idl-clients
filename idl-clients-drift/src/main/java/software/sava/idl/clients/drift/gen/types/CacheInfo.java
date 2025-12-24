@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -34,7 +35,7 @@ public record CacheInfo(PublicKey oracle,
                         int oracleValidity,
                         int lpStatusForPerpMarket,
                         int ammPositionScalar,
-                        byte[] padding) implements Borsh {
+                        byte[] padding) implements SerDe {
 
   public static final int BYTES = 224;
   public static final int PADDING_LEN = 34;
@@ -85,7 +86,7 @@ public record CacheInfo(PublicKey oracle,
     final var ammPositionScalar = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[34];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new CacheInfo(oracle,
                          lastFeePoolTokenAmount,
                          lastNetPnlPoolTokenAmount,
@@ -152,7 +153,7 @@ public record CacheInfo(PublicKey oracle,
     ++i;
     _data[i] = (byte) ammPositionScalar;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 34, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 34, _data, i);
     return i - _offset;
   }
 

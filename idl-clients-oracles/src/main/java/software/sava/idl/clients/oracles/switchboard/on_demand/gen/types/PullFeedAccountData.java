@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -50,7 +51,7 @@ public record PullFeedAccountData(PublicKey _address,
                                   CompactResult[] historicalResults,
                                   byte[] ebuf4,
                                   byte[] ebuf3,
-                                  long[] submissionTimestamps) implements Borsh {
+                                  long[] submissionTimestamps) implements SerDe {
 
   public static final int BYTES = 3208;
   public static final int SUBMISSIONS_LEN = 32;
@@ -179,13 +180,13 @@ public record PullFeedAccountData(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var submissions = new OracleSubmission[32];
-    i += Borsh.readArray(submissions, OracleSubmission::read, _data, i);
+    i += SerDeUtil.readArray(submissions, OracleSubmission::read, _data, i);
     final var authority = readPubKey(_data, i);
     i += 32;
     final var queue = readPubKey(_data, i);
     i += 32;
     final var feedHash = new byte[32];
-    i += Borsh.readArray(feedHash, _data, i);
+    i += SerDeUtil.readArray(feedHash, _data, i);
     final var initializedAt = getInt64LE(_data, i);
     i += 8;
     final var permissions = getInt64LE(_data, i);
@@ -195,9 +196,9 @@ public record PullFeedAccountData(PublicKey _address,
     final var minResponses = getInt32LE(_data, i);
     i += 4;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var padding1 = new byte[1];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var permitWriteByAuthority = _data[i] & 0xFF;
     ++i;
     final var historicalResultIdx = _data[i] & 0xFF;
@@ -209,21 +210,21 @@ public record PullFeedAccountData(PublicKey _address,
     final var lutSlot = getInt64LE(_data, i);
     i += 8;
     final var reserved1 = new byte[32];
-    i += Borsh.readArray(reserved1, _data, i);
+    i += SerDeUtil.readArray(reserved1, _data, i);
     final var result = CurrentResult.read(_data, i);
     i += result.l();
     final var maxStaleness = getInt32LE(_data, i);
     i += 4;
     final var padding2 = new byte[12];
-    i += Borsh.readArray(padding2, _data, i);
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var historicalResults = new CompactResult[32];
-    i += Borsh.readArray(historicalResults, CompactResult::read, _data, i);
+    i += SerDeUtil.readArray(historicalResults, CompactResult::read, _data, i);
     final var ebuf4 = new byte[8];
-    i += Borsh.readArray(ebuf4, _data, i);
+    i += SerDeUtil.readArray(ebuf4, _data, i);
     final var ebuf3 = new byte[24];
-    i += Borsh.readArray(ebuf3, _data, i);
+    i += SerDeUtil.readArray(ebuf3, _data, i);
     final var submissionTimestamps = new long[32];
-    Borsh.readArray(submissionTimestamps, _data, i);
+    SerDeUtil.readArray(submissionTimestamps, _data, i);
     return new PullFeedAccountData(_address,
                                    discriminator,
                                    submissions,
@@ -254,12 +255,12 @@ public record PullFeedAccountData(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(submissions, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(submissions, 32, _data, i);
     authority.write(_data, i);
     i += 32;
     queue.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(feedHash, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(feedHash, 32, _data, i);
     putInt64LE(_data, i, initializedAt);
     i += 8;
     putInt64LE(_data, i, permissions);
@@ -268,8 +269,8 @@ public record PullFeedAccountData(PublicKey _address,
     i += 8;
     putInt32LE(_data, i, minResponses);
     i += 4;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
-    i += Borsh.writeArrayChecked(padding1, 1, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 1, _data, i);
     _data[i] = (byte) permitWriteByAuthority;
     ++i;
     _data[i] = (byte) historicalResultIdx;
@@ -280,15 +281,15 @@ public record PullFeedAccountData(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, lutSlot);
     i += 8;
-    i += Borsh.writeArrayChecked(reserved1, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved1, 32, _data, i);
     i += result.write(_data, i);
     putInt32LE(_data, i, maxStaleness);
     i += 4;
-    i += Borsh.writeArrayChecked(padding2, 12, _data, i);
-    i += Borsh.writeArrayChecked(historicalResults, 32, _data, i);
-    i += Borsh.writeArrayChecked(ebuf4, 8, _data, i);
-    i += Borsh.writeArrayChecked(ebuf3, 24, _data, i);
-    i += Borsh.writeArrayChecked(submissionTimestamps, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(historicalResults, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf4, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf3, 24, _data, i);
+    i += SerDeUtil.writeArrayChecked(submissionTimestamps, 32, _data, i);
     return i - _offset;
   }
 

@@ -2,7 +2,8 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -26,7 +27,7 @@ public record Bin(long amountX,
                   BigInteger feeAmountXPerTokenStored,
                   BigInteger feeAmountYPerTokenStored,
                   BigInteger amountXIn,
-                  BigInteger amountYIn) implements Borsh {
+                  BigInteger amountYIn) implements SerDe {
 
   public static final int BYTES = 144;
   public static final int REWARD_PER_TOKEN_STORED_LEN = 2;
@@ -45,7 +46,7 @@ public record Bin(long amountX,
     final var liquiditySupply = getInt128LE(_data, i);
     i += 16;
     final var rewardPerTokenStored = new BigInteger[2];
-    i += Borsh.read128Array(rewardPerTokenStored, _data, i);
+    i += SerDeUtil.read128Array(rewardPerTokenStored, _data, i);
     final var feeAmountXPerTokenStored = getInt128LE(_data, i);
     i += 16;
     final var feeAmountYPerTokenStored = getInt128LE(_data, i);
@@ -75,7 +76,7 @@ public record Bin(long amountX,
     i += 16;
     putInt128LE(_data, i, liquiditySupply);
     i += 16;
-    i += Borsh.write128ArrayChecked(rewardPerTokenStored, 2, _data, i);
+    i += SerDeUtil.write128ArrayChecked(rewardPerTokenStored, 2, _data, i);
     putInt128LE(_data, i, feeAmountXPerTokenStored);
     i += 16;
     putInt128LE(_data, i, feeAmountYPerTokenStored);

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record InitObligationArgs(int tag, int id) implements Borsh {
+public record InitObligationArgs(int tag, int id) implements SerDe {
 
   public static final int BYTES = 2;
 

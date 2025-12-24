@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +18,7 @@ public record ConstituentCorrelations(PublicKey _address,
                                       PublicKey lpPool,
                                       int bump,
                                       byte[] padding,
-                                      long[] correlations) implements Borsh {
+                                      long[] correlations) implements SerDe {
 
   public static final int PADDING_LEN = 3;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(124, 203, 115, 33, 18, 162, 67, 216);
@@ -61,8 +62,8 @@ public record ConstituentCorrelations(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[3];
-    i += Borsh.readArray(padding, _data, i);
-    final var correlations = Borsh.readlongVector(_data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var correlations = SerDeUtil.readlongVector(4, _data, i);
     return new ConstituentCorrelations(_address,
                                        discriminator,
                                        lpPool,
@@ -78,13 +79,13 @@ public record ConstituentCorrelations(PublicKey _address,
     i += 32;
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 3, _data, i);
-    i += Borsh.writeVector(correlations, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 3, _data, i);
+    i += SerDeUtil.writeVector(4, correlations, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + 1 + Borsh.lenArray(padding) + Borsh.lenVector(correlations);
+    return 8 + 32 + 1 + SerDeUtil.lenArray(padding) + SerDeUtil.lenVector(4, correlations);
   }
 }

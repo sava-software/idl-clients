@@ -3,8 +3,9 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -12,7 +13,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 public record CollectionAuthorityRecord(PublicKey _address,
                                         Key key,
                                         int bump,
-                                        PublicKey updateAuthority) implements Borsh {
+                                        PublicKey updateAuthority) implements SerDe {
 
   public static final int KEY_OFFSET = 0;
   public static final int BUMP_OFFSET = 1;
@@ -72,7 +73,7 @@ public record CollectionAuthorityRecord(PublicKey _address,
     i += key.write(_data, i);
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeOptional(updateAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, updateAuthority, _data, i);
     return i - _offset;
   }
 

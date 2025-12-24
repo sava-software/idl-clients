@@ -1,8 +1,9 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum RevokeArgs implements Borsh.Enum {
+public enum RevokeArgs implements RustEnum {
 
   CollectionV1,
   SaleV1,
@@ -21,6 +22,6 @@ public enum RevokeArgs implements Borsh.Enum {
   PrintDelegateV1;
 
   public static RevokeArgs read(final byte[] _data, final int _offset) {
-    return Borsh.read(RevokeArgs.values(), _data, _offset);
+    return SerDeUtil.read(1, RevokeArgs.values(), _data, _offset);
   }
 }

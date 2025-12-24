@@ -3,9 +3,9 @@ package software.sava.idl.clients.jupiter.swap.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record TokenLedger(PublicKey _address, Discriminator discriminator, PublicKey tokenAccount, long amount) implements Borsh {
+public record TokenLedger(PublicKey _address, Discriminator discriminator, PublicKey tokenAccount, long amount) implements SerDe {
 
   public static final int BYTES = 48;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

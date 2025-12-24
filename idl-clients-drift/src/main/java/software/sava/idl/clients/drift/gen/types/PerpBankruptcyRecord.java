@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.gen.types;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -16,7 +17,7 @@ public record PerpBankruptcyRecord(int marketIndex,
                                    BigInteger ifPayment,
                                    PublicKey clawbackUser,
                                    BigInteger clawbackUserPayment,
-                                   BigInteger cumulativeFundingRateDelta) implements Borsh {
+                                   BigInteger cumulativeFundingRateDelta) implements SerDe {
 
   public static PerpBankruptcyRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -65,8 +66,8 @@ public record PerpBankruptcyRecord(int marketIndex,
     i += 16;
     putInt128LE(_data, i, ifPayment);
     i += 16;
-    i += Borsh.writeOptional(clawbackUser, _data, i);
-    i += Borsh.write128Optional(clawbackUserPayment, _data, i);
+    i += SerDeUtil.writeOptional(1, clawbackUser, _data, i);
+    i += SerDeUtil.write128Optional(1, clawbackUserPayment, _data, i);
     putInt128LE(_data, i, cumulativeFundingRateDelta);
     i += 16;
     return i - _offset;

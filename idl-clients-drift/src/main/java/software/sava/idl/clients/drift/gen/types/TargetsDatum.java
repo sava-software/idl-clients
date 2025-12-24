@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -11,7 +12,7 @@ public record TargetsDatum(int costToTradeBps,
                            byte[] padding,
                            long targetBase,
                            long lastOracleSlot,
-                           long lastPositionSlot) implements Borsh {
+                           long lastPositionSlot) implements SerDe {
 
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 4;
@@ -24,7 +25,7 @@ public record TargetsDatum(int costToTradeBps,
     final var costToTradeBps = getInt32LE(_data, i);
     i += 4;
     final var padding = new byte[4];
-    i += Borsh.readArray(padding, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
     final var targetBase = getInt64LE(_data, i);
     i += 8;
     final var lastOracleSlot = getInt64LE(_data, i);
@@ -42,7 +43,7 @@ public record TargetsDatum(int costToTradeBps,
     int i = _offset;
     putInt32LE(_data, i, costToTradeBps);
     i += 4;
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     putInt64LE(_data, i, targetBase);
     i += 8;
     putInt64LE(_data, i, lastOracleSlot);

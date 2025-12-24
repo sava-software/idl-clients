@@ -1,7 +1,8 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -16,7 +17,7 @@ public record ElevationGroup(int maxLiquidationBonusBps,
                              int maxReservesAsCollateral,
                              int padding0,
                              PublicKey debtReserve,
-                             long[] padding1) implements Borsh {
+                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 72;
   public static final int PADDING_1_LEN = 4;
@@ -43,7 +44,7 @@ public record ElevationGroup(int maxLiquidationBonusBps,
     final var debtReserve = readPubKey(_data, i);
     i += 32;
     final var padding1 = new long[4];
-    Borsh.readArray(padding1, _data, i);
+    SerDeUtil.readArray(padding1, _data, i);
     return new ElevationGroup(maxLiquidationBonusBps,
                               id,
                               ltvPct,
@@ -74,7 +75,7 @@ public record ElevationGroup(int maxLiquidationBonusBps,
     ++i;
     debtReserve.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding1, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 4, _data, i);
     return i - _offset;
   }
 

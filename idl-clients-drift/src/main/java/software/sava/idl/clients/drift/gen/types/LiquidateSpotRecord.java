@@ -2,7 +2,7 @@ package software.sava.idl.clients.drift.gen.types;
 
 import java.math.BigInteger;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -19,7 +19,7 @@ public record LiquidateSpotRecord(int assetMarketIndex,
                                   int liabilityMarketIndex,
                                   long liabilityPrice,
                                   BigInteger liabilityTransfer,
-                                  long ifFee) implements Borsh {
+                                  long ifFee) implements SerDe {
 
   public static final int BYTES = 60;
 

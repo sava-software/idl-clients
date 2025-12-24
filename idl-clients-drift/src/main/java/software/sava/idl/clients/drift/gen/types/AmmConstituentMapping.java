@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,7 +18,7 @@ public record AmmConstituentMapping(PublicKey _address,
                                     PublicKey lpPool,
                                     int bump,
                                     byte[] padding,
-                                    AmmConstituentDatum[] weights) implements Borsh {
+                                    AmmConstituentDatum[] weights) implements SerDe {
 
   public static final int PADDING_LEN = 3;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(254, 89, 5, 173, 66, 54, 214, 247);
@@ -61,8 +62,8 @@ public record AmmConstituentMapping(PublicKey _address,
     final var bump = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[3];
-    i += Borsh.readArray(padding, _data, i);
-    final var weights = Borsh.readVector(AmmConstituentDatum.class, AmmConstituentDatum::read, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var weights = SerDeUtil.readVector(4, AmmConstituentDatum.class, AmmConstituentDatum::read, _data, i);
     return new AmmConstituentMapping(_address,
                                      discriminator,
                                      lpPool,
@@ -78,13 +79,13 @@ public record AmmConstituentMapping(PublicKey _address,
     i += 32;
     _data[i] = (byte) bump;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 3, _data, i);
-    i += Borsh.writeVector(weights, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 3, _data, i);
+    i += SerDeUtil.writeVector(4, weights, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + 32 + 1 + Borsh.lenArray(padding) + Borsh.lenVector(weights);
+    return 8 + 32 + 1 + SerDeUtil.lenArray(padding) + SerDeUtil.lenVector(4, weights);
   }
 }

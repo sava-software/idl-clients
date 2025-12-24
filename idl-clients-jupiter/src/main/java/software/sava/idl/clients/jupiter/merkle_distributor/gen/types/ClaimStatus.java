@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -41,7 +42,7 @@ public record ClaimStatus(PublicKey _address,
                           long bonusAmount,
                           int closable,
                           byte[] padding0,
-                          BigInteger padding1) implements Borsh {
+                          BigInteger padding1) implements SerDe {
 
   public static final int BYTES = 160;
   public static final int PADDING_0_LEN = 7;
@@ -144,7 +145,7 @@ public record ClaimStatus(PublicKey _address,
     final var closable = _data[i] & 0xFF;
     ++i;
     final var padding0 = new byte[7];
-    i += Borsh.readArray(padding0, _data, i);
+    i += SerDeUtil.readArray(padding0, _data, i);
     final var padding1 = getInt128LE(_data, i);
     return new ClaimStatus(_address,
                            discriminator,
@@ -179,7 +180,7 @@ public record ClaimStatus(PublicKey _address,
     i += 8;
     _data[i] = (byte) closable;
     ++i;
-    i += Borsh.writeArrayChecked(padding0, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 7, _data, i);
     putInt128LE(_data, i, padding1);
     i += 16;
     return i - _offset;

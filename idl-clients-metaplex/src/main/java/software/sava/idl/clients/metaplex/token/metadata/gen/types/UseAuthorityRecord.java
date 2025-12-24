@@ -3,8 +3,8 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record UseAuthorityRecord(PublicKey _address,
                                  Key key,
                                  long allowedUses,
-                                 int bump) implements Borsh {
+                                 int bump) implements SerDe {
 
   public static final int BYTES = 10;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

@@ -5,7 +5,8 @@ import java.lang.Boolean;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -16,7 +17,7 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
                                 OptionalLong minDepositAmount,
                                 OptionalInt profitShare,
                                 OptionalInt hurdleRate,
-                                Boolean permissioned) implements Borsh {
+                                Boolean permissioned) implements SerDe {
 
   public static UpdateVaultParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -96,13 +97,13 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeOptional(redeemPeriod, _data, i);
-    i += Borsh.writeOptional(maxTokens, _data, i);
-    i += Borsh.writeOptional(managementFee, _data, i);
-    i += Borsh.writeOptional(minDepositAmount, _data, i);
-    i += Borsh.writeOptional(profitShare, _data, i);
-    i += Borsh.writeOptional(hurdleRate, _data, i);
-    i += Borsh.writeOptional(permissioned, _data, i);
+    i += SerDeUtil.writeOptional(1, redeemPeriod, _data, i);
+    i += SerDeUtil.writeOptional(1, maxTokens, _data, i);
+    i += SerDeUtil.writeOptional(1, managementFee, _data, i);
+    i += SerDeUtil.writeOptional(1, minDepositAmount, _data, i);
+    i += SerDeUtil.writeOptional(1, profitShare, _data, i);
+    i += SerDeUtil.writeOptional(1, hurdleRate, _data, i);
+    i += SerDeUtil.writeOptional(1, permissioned, _data, i);
     return i - _offset;
   }
 

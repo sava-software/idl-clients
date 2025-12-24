@@ -4,7 +4,8 @@ import java.lang.String;
 
 import java.util.Arrays;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -13,15 +14,15 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 public record InitializeTokenizedVaultDepositorParams(String tokenName, byte[] _tokenName,
                                                       String tokenSymbol, byte[] _tokenSymbol,
                                                       String tokenUri, byte[] _tokenUri,
-                                                      int decimals) implements Borsh {
+                                                      int decimals) implements SerDe {
 
   public static InitializeTokenizedVaultDepositorParams createRecord(final String tokenName,
                                                                      final String tokenSymbol,
                                                                      final String tokenUri,
                                                                      final int decimals) {
-    return new InitializeTokenizedVaultDepositorParams(tokenName, tokenName.getBytes(UTF_8),
-                                                       tokenSymbol, tokenSymbol.getBytes(UTF_8),
-                                                       tokenUri, tokenUri.getBytes(UTF_8),
+    return new InitializeTokenizedVaultDepositorParams(tokenName, tokenName == null ? null : tokenName.getBytes(UTF_8),
+                                                       tokenSymbol, tokenSymbol == null ? null : tokenSymbol.getBytes(UTF_8),
+                                                       tokenUri, tokenUri == null ? null : tokenUri.getBytes(UTF_8),
                                                        decimals);
   }
 
@@ -46,18 +47,18 @@ public record InitializeTokenizedVaultDepositorParams(String tokenName, byte[] _
     final var tokenUri = new String(_tokenUri, UTF_8);
     i += _tokenUri.length;
     final var decimals = _data[i] & 0xFF;
-    return new InitializeTokenizedVaultDepositorParams(tokenName, _tokenName,
-                                                       tokenSymbol, _tokenSymbol,
-                                                       tokenUri, _tokenUri,
+    return new InitializeTokenizedVaultDepositorParams(tokenName, tokenName == null ? null : tokenName.getBytes(UTF_8),
+                                                       tokenSymbol, tokenSymbol == null ? null : tokenSymbol.getBytes(UTF_8),
+                                                       tokenUri, tokenUri == null ? null : tokenUri.getBytes(UTF_8),
                                                        decimals);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVector(_tokenName, _data, i);
-    i += Borsh.writeVector(_tokenSymbol, _data, i);
-    i += Borsh.writeVector(_tokenUri, _data, i);
+    i += SerDeUtil.writeVector(4, _tokenName, _data, i);
+    i += SerDeUtil.writeVector(4, _tokenSymbol, _data, i);
+    i += SerDeUtil.writeVector(4, _tokenUri, _data, i);
     _data[i] = (byte) decimals;
     ++i;
     return i - _offset;

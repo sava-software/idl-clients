@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -39,7 +39,7 @@ public record NewUserRecord(Discriminator discriminator,
     final var subAccountId = getInt16LE(_data, i);
     i += 2;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var referrer = readPubKey(_data, i);
     return new NewUserRecord(discriminator,
                              ts,
@@ -61,7 +61,7 @@ public record NewUserRecord(Discriminator discriminator,
     i += 32;
     putInt16LE(_data, i, subAccountId);
     i += 2;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     referrer.write(_data, i);
     i += 32;
     return i - _offset;

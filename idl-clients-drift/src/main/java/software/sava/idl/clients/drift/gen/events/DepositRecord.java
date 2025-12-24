@@ -3,8 +3,8 @@ package software.sava.idl.clients.drift.gen.events;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.drift.gen.types.DepositDirection;
 import software.sava.idl.clients.drift.gen.types.DepositExplanation;
 
@@ -147,8 +147,8 @@ public record DepositRecord(Discriminator discriminator,
     putInt64LE(_data, i, totalWithdrawsAfter);
     i += 8;
     i += explanation.write(_data, i);
-    i += Borsh.writeOptional(transferUser, _data, i);
-    i += Borsh.writeOptional(signer, _data, i);
+    i += SerDeUtil.writeOptional(1, transferUser, _data, i);
+    i += SerDeUtil.writeOptional(1, signer, _data, i);
     putInt128LE(_data, i, userTokenAmountAfter);
     i += 16;
     return i - _offset;

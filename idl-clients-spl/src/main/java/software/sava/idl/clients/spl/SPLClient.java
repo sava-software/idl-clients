@@ -17,9 +17,21 @@ public interface SPLClient {
     return new SPLClientImpl(solanaAccounts);
   }
 
+  static SPLClient createClient() {
+    return createClient(SolanaAccounts.MAIN_NET);
+  }
+
   SolanaAccounts solanaAccounts();
 
   SPLAccountClient createAccountClient(final PublicKey owner, final AccountMeta feePayer);
+
+  default SPLAccountClient createAccountClient(final PublicKey owner, final PublicKey feePayer) {
+    return createAccountClient(owner, AccountMeta.createFeePayer(feePayer));
+  }
+
+  default SPLAccountClient createAccountClient(final PublicKey owner) {
+    return createAccountClient(owner, owner);
+  }
 
   Instruction syncNative(final PublicKey tokenAccount);
 

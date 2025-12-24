@@ -1,21 +1,22 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record AddLiquiditySingleSidePreciseParameter2(CompressedBinDepositAmount[] bins,
                                                       long decompressMultiplier,
-                                                      long maxAmount) implements Borsh {
+                                                      long maxAmount) implements SerDe {
 
   public static AddLiquiditySingleSidePreciseParameter2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     int i = _offset;
-    final var bins = Borsh.readVector(CompressedBinDepositAmount.class, CompressedBinDepositAmount::read, _data, i);
-    i += Borsh.lenVector(bins);
+    final var bins = SerDeUtil.readVector(4, CompressedBinDepositAmount.class, CompressedBinDepositAmount::read, _data, i);
+    i += SerDeUtil.lenVector(4, bins);
     final var decompressMultiplier = getInt64LE(_data, i);
     i += 8;
     final var maxAmount = getInt64LE(_data, i);
@@ -25,7 +26,7 @@ public record AddLiquiditySingleSidePreciseParameter2(CompressedBinDepositAmount
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeVector(bins, _data, i);
+    i += SerDeUtil.writeVector(4, bins, _data, i);
     putInt64LE(_data, i, decompressMultiplier);
     i += 8;
     putInt64LE(_data, i, maxAmount);
@@ -35,6 +36,6 @@ public record AddLiquiditySingleSidePreciseParameter2(CompressedBinDepositAmount
 
   @Override
   public int l() {
-    return Borsh.lenVector(bins) + 8 + 8;
+    return SerDeUtil.lenVector(4, bins) + 8 + 8;
   }
 }

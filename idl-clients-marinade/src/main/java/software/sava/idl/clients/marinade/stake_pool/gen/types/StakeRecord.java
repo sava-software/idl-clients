@@ -1,7 +1,7 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record StakeRecord(PublicKey stakeAccount,
                           long lastUpdateDelegatedLamports,
                           long lastUpdateEpoch,
-                          int isEmergencyUnstaking) implements Borsh {
+                          int isEmergencyUnstaking) implements SerDe {
 
   public static final int BYTES = 49;
 

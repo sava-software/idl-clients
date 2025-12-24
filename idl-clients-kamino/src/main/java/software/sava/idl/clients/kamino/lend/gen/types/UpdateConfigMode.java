@@ -1,8 +1,9 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum UpdateConfigMode implements Borsh.Enum {
+public enum UpdateConfigMode implements RustEnum {
 
   UpdateLoanToValuePct,
   UpdateMaxLiquidationBonusBps,
@@ -59,6 +60,6 @@ public enum UpdateConfigMode implements Borsh.Enum {
   UpdateBlockCTokenUsage;
 
   public static UpdateConfigMode read(final byte[] _data, final int _offset) {
-    return Borsh.read(UpdateConfigMode.values(), _data, _offset);
+    return SerDeUtil.read(1, UpdateConfigMode.values(), _data, _offset);
   }
 }

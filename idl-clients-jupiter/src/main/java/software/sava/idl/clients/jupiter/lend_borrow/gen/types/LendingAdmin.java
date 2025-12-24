@@ -3,9 +3,10 @@ package software.sava.idl.clients.jupiter.lend_borrow.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -21,7 +22,7 @@ public record LendingAdmin(PublicKey _address,
                            PublicKey rebalancer,
                            int nextLendingId,
                            PublicKey[] auths,
-                           int bump) implements Borsh {
+                           int bump) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(42, 8, 33, 220, 163, 40, 210, 5);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -78,8 +79,8 @@ public record LendingAdmin(PublicKey _address,
     i += 32;
     final var nextLendingId = getInt16LE(_data, i);
     i += 2;
-    final var auths = Borsh.readPublicKeyVector(_data, i);
-    i += Borsh.lenVector(auths);
+    final var auths = SerDeUtil.readPublicKeyVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, auths);
     final var bump = _data[i] & 0xFF;
     return new LendingAdmin(_address,
                             discriminator,
@@ -102,7 +103,7 @@ public record LendingAdmin(PublicKey _address,
     i += 32;
     putInt16LE(_data, i, nextLendingId);
     i += 2;
-    i += Borsh.writeVector(auths, _data, i);
+    i += SerDeUtil.writeVector(4, auths, _data, i);
     _data[i] = (byte) bump;
     ++i;
     return i - _offset;
@@ -114,7 +115,7 @@ public record LendingAdmin(PublicKey _address,
          + 32
          + 32
          + 2
-         + Borsh.lenVector(auths)
+         + SerDeUtil.lenVector(4, auths)
          + 1;
   }
 }

@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -16,7 +16,7 @@ public record DynamicFeeParameter(int filterPeriod,
                                   int decayPeriod,
                                   int reductionFactor,
                                   int variableFeeControl,
-                                  int maxVolatilityAccumulator) implements Borsh {
+                                  int maxVolatilityAccumulator) implements SerDe {
 
   public static final int BYTES = 14;
 

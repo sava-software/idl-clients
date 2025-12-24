@@ -1,6 +1,6 @@
 package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
   /// * This enum represents how many guardian signatures were checked for a Pythnet price update
   /// * If full, guardian quorum has been attained

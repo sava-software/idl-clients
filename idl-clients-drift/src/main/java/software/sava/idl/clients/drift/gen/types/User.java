@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -85,7 +86,7 @@ public record User(PublicKey _address,
                    int poolId,
                    byte[] padding1,
                    int lastFuelBonusUpdateTs,
-                   byte[] padding) implements Borsh {
+                   byte[] padding) implements SerDe {
 
   public static final int BYTES = 4376;
   public static final int NAME_LEN = 32;
@@ -284,13 +285,13 @@ public record User(PublicKey _address,
     final var delegate = readPubKey(_data, i);
     i += 32;
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var spotPositions = new SpotPosition[8];
-    i += Borsh.readArray(spotPositions, SpotPosition::read, _data, i);
+    i += SerDeUtil.readArray(spotPositions, SpotPosition::read, _data, i);
     final var perpPositions = new PerpPosition[8];
-    i += Borsh.readArray(perpPositions, PerpPosition::read, _data, i);
+    i += SerDeUtil.readArray(perpPositions, PerpPosition::read, _data, i);
     final var orders = new Order[32];
-    i += Borsh.readArray(orders, Order::read, _data, i);
+    i += SerDeUtil.readArray(orders, Order::read, _data, i);
     final var lastAddPerpLpSharesTs = getInt64LE(_data, i);
     i += 8;
     final var totalDeposits = getInt64LE(_data, i);
@@ -336,11 +337,11 @@ public record User(PublicKey _address,
     final var poolId = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[3];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var lastFuelBonusUpdateTs = getInt32LE(_data, i);
     i += 4;
     final var padding = new byte[12];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new User(_address,
                     discriminator,
                     authority,
@@ -383,10 +384,10 @@ public record User(PublicKey _address,
     i += 32;
     delegate.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
-    i += Borsh.writeArrayChecked(spotPositions, 8, _data, i);
-    i += Borsh.writeArrayChecked(perpPositions, 8, _data, i);
-    i += Borsh.writeArrayChecked(orders, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(spotPositions, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(perpPositions, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(orders, 32, _data, i);
     putInt64LE(_data, i, lastAddPerpLpSharesTs);
     i += 8;
     putInt64LE(_data, i, totalDeposits);
@@ -430,10 +431,10 @@ public record User(PublicKey _address,
     i += marginMode.write(_data, i);
     _data[i] = (byte) poolId;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 3, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 3, _data, i);
     putInt32LE(_data, i, lastFuelBonusUpdateTs);
     i += 4;
-    i += Borsh.writeArrayChecked(padding, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 12, _data, i);
     return i - _offset;
   }
 

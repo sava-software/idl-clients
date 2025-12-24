@@ -3,9 +3,10 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -82,7 +83,7 @@ public record LbPair(PublicKey _address,
                      PublicKey creator,
                      int tokenMintXProgramFlag,
                      int tokenMintYProgramFlag,
-                     byte[] reserved) implements Borsh {
+                     byte[] reserved) implements SerDe {
 
   public static final int BYTES = 904;
   public static final int BUMP_SEED_LEN = 1;
@@ -266,9 +267,9 @@ public record LbPair(PublicKey _address,
     final var vParameters = VariableParameters.read(_data, i);
     i += vParameters.l();
     final var bumpSeed = new byte[1];
-    i += Borsh.readArray(bumpSeed, _data, i);
+    i += SerDeUtil.readArray(bumpSeed, _data, i);
     final var binStepSeed = new byte[2];
-    i += Borsh.readArray(binStepSeed, _data, i);
+    i += SerDeUtil.readArray(binStepSeed, _data, i);
     final var pairType = _data[i] & 0xFF;
     ++i;
     final var activeId = getInt32LE(_data, i);
@@ -280,7 +281,7 @@ public record LbPair(PublicKey _address,
     final var requireBaseFactorSeed = _data[i] & 0xFF;
     ++i;
     final var baseFactorSeed = new byte[2];
-    i += Borsh.readArray(baseFactorSeed, _data, i);
+    i += SerDeUtil.readArray(baseFactorSeed, _data, i);
     final var activationType = _data[i] & 0xFF;
     ++i;
     final var creatorPoolOnOffControl = _data[i] & 0xFF;
@@ -296,17 +297,17 @@ public record LbPair(PublicKey _address,
     final var protocolFee = ProtocolFee.read(_data, i);
     i += protocolFee.l();
     final var padding1 = new byte[32];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var rewardInfos = new RewardInfo[2];
-    i += Borsh.readArray(rewardInfos, RewardInfo::read, _data, i);
+    i += SerDeUtil.readArray(rewardInfos, RewardInfo::read, _data, i);
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var binArrayBitmap = new long[16];
-    i += Borsh.readArray(binArrayBitmap, _data, i);
+    i += SerDeUtil.readArray(binArrayBitmap, _data, i);
     final var lastUpdatedAt = getInt64LE(_data, i);
     i += 8;
     final var padding2 = new byte[32];
-    i += Borsh.readArray(padding2, _data, i);
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var preActivationSwapAddress = readPubKey(_data, i);
     i += 32;
     final var baseKey = readPubKey(_data, i);
@@ -316,7 +317,7 @@ public record LbPair(PublicKey _address,
     final var preActivationDuration = getInt64LE(_data, i);
     i += 8;
     final var padding3 = new byte[8];
-    i += Borsh.readArray(padding3, _data, i);
+    i += SerDeUtil.readArray(padding3, _data, i);
     final var padding4 = getInt64LE(_data, i);
     i += 8;
     final var creator = readPubKey(_data, i);
@@ -326,7 +327,7 @@ public record LbPair(PublicKey _address,
     final var tokenMintYProgramFlag = _data[i] & 0xFF;
     ++i;
     final var reserved = new byte[22];
-    Borsh.readArray(reserved, _data, i);
+    SerDeUtil.readArray(reserved, _data, i);
     return new LbPair(_address,
                       discriminator,
                       parameters,
@@ -369,8 +370,8 @@ public record LbPair(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     i += parameters.write(_data, i);
     i += vParameters.write(_data, i);
-    i += Borsh.writeArrayChecked(bumpSeed, 1, _data, i);
-    i += Borsh.writeArrayChecked(binStepSeed, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(bumpSeed, 1, _data, i);
+    i += SerDeUtil.writeArrayChecked(binStepSeed, 2, _data, i);
     _data[i] = (byte) pairType;
     ++i;
     putInt32LE(_data, i, activeId);
@@ -381,7 +382,7 @@ public record LbPair(PublicKey _address,
     ++i;
     _data[i] = (byte) requireBaseFactorSeed;
     ++i;
-    i += Borsh.writeArrayChecked(baseFactorSeed, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(baseFactorSeed, 2, _data, i);
     _data[i] = (byte) activationType;
     ++i;
     _data[i] = (byte) creatorPoolOnOffControl;
@@ -395,14 +396,14 @@ public record LbPair(PublicKey _address,
     reserveY.write(_data, i);
     i += 32;
     i += protocolFee.write(_data, i);
-    i += Borsh.writeArrayChecked(padding1, 32, _data, i);
-    i += Borsh.writeArrayChecked(rewardInfos, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewardInfos, 2, _data, i);
     oracle.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(binArrayBitmap, 16, _data, i);
+    i += SerDeUtil.writeArrayChecked(binArrayBitmap, 16, _data, i);
     putInt64LE(_data, i, lastUpdatedAt);
     i += 8;
-    i += Borsh.writeArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
     preActivationSwapAddress.write(_data, i);
     i += 32;
     baseKey.write(_data, i);
@@ -411,7 +412,7 @@ public record LbPair(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, preActivationDuration);
     i += 8;
-    i += Borsh.writeArrayChecked(padding3, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 8, _data, i);
     putInt64LE(_data, i, padding4);
     i += 8;
     creator.write(_data, i);
@@ -420,7 +421,7 @@ public record LbPair(PublicKey _address,
     ++i;
     _data[i] = (byte) tokenMintYProgramFlag;
     ++i;
-    i += Borsh.writeArrayChecked(reserved, 22, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 22, _data, i);
     return i - _offset;
   }
 

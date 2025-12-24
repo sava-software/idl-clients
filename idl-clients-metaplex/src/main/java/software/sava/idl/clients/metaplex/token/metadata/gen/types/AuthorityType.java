@@ -1,8 +1,9 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum AuthorityType implements Borsh.Enum {
+public enum AuthorityType implements RustEnum {
 
   None,
   Metadata,
@@ -11,6 +12,6 @@ public enum AuthorityType implements Borsh.Enum {
   TokenDelegate;
 
   public static AuthorityType read(final byte[] _data, final int _offset) {
-    return Borsh.read(AuthorityType.values(), _data, _offset);
+    return SerDeUtil.read(1, AuthorityType.values(), _data, _offset);
   }
 }

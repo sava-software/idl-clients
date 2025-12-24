@@ -1,6 +1,6 @@
 package software.sava.idl.clients.meteora.dlmm.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param binId Define the bin ID wish to deposit to.
 /// @param weight weight of liquidity distributed for this bin id
-public record BinLiquidityDistributionByWeight(int binId, int weight) implements Borsh {
+public record BinLiquidityDistributionByWeight(int binId, int weight) implements SerDe {
 
   public static final int BYTES = 6;
 

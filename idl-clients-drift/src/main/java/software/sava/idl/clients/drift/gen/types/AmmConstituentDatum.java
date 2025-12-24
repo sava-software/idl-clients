@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -12,7 +13,7 @@ public record AmmConstituentDatum(int perpMarketIndex,
                                   int constituentIndex,
                                   byte[] padding,
                                   long lastSlot,
-                                  long weight) implements Borsh {
+                                  long weight) implements SerDe {
 
   public static final int BYTES = 24;
   public static final int PADDING_LEN = 4;
@@ -27,7 +28,7 @@ public record AmmConstituentDatum(int perpMarketIndex,
     final var constituentIndex = getInt16LE(_data, i);
     i += 2;
     final var padding = new byte[4];
-    i += Borsh.readArray(padding, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
     final var lastSlot = getInt64LE(_data, i);
     i += 8;
     final var weight = getInt64LE(_data, i);
@@ -45,7 +46,7 @@ public record AmmConstituentDatum(int perpMarketIndex,
     i += 2;
     putInt16LE(_data, i, constituentIndex);
     i += 2;
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     putInt64LE(_data, i, lastSlot);
     i += 8;
     putInt64LE(_data, i, weight);

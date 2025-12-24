@@ -1,7 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -37,7 +38,7 @@ public record Quote(PublicKey enclaveSigner,
                     byte[] ebuf4,
                     byte[] ebuf3,
                     byte[] ebuf2,
-                    byte[] ebuf1) implements Borsh {
+                    byte[] ebuf1) implements SerDe {
 
   public static final int BYTES = 3432;
   public static final int MR_ENCLAVE_LEN = 32;
@@ -63,47 +64,47 @@ public record Quote(PublicKey enclaveSigner,
     final var enclaveSigner = readPubKey(_data, i);
     i += 32;
     final var mrEnclave = new byte[32];
-    i += Borsh.readArray(mrEnclave, _data, i);
+    i += SerDeUtil.readArray(mrEnclave, _data, i);
     final var verificationStatus = _data[i] & 0xFF;
     ++i;
     final var padding1 = new byte[7];
-    i += Borsh.readArray(padding1, _data, i);
+    i += SerDeUtil.readArray(padding1, _data, i);
     final var verificationTimestamp = getInt64LE(_data, i);
     i += 8;
     final var validUntil = getInt64LE(_data, i);
     i += 8;
     final var quoteRegistry = new byte[32];
-    i += Borsh.readArray(quoteRegistry, _data, i);
+    i += SerDeUtil.readArray(quoteRegistry, _data, i);
     final var registryKey = new byte[64];
-    i += Borsh.readArray(registryKey, _data, i);
+    i += SerDeUtil.readArray(registryKey, _data, i);
     final var secp256k1Signer = new byte[64];
-    i += Borsh.readArray(secp256k1Signer, _data, i);
+    i += SerDeUtil.readArray(secp256k1Signer, _data, i);
     final var lastEd25519Signer = readPubKey(_data, i);
     i += 32;
     final var lastSecp256k1Signer = new byte[64];
-    i += Borsh.readArray(lastSecp256k1Signer, _data, i);
+    i += SerDeUtil.readArray(lastSecp256k1Signer, _data, i);
     final var lastRotateSlot = getInt64LE(_data, i);
     i += 8;
     final var guardianApprovers = new PublicKey[64];
-    i += Borsh.readArray(guardianApprovers, _data, i);
+    i += SerDeUtil.readArray(guardianApprovers, _data, i);
     final var guardianApproversLen = _data[i] & 0xFF;
     ++i;
     final var padding2 = new byte[7];
-    i += Borsh.readArray(padding2, _data, i);
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var stagingEd25519Signer = readPubKey(_data, i);
     i += 32;
     final var stagingSecp256k1Signer = new byte[64];
-    i += Borsh.readArray(stagingSecp256k1Signer, _data, i);
+    i += SerDeUtil.readArray(stagingSecp256k1Signer, _data, i);
     final var ethSigner = new byte[20];
-    i += Borsh.readArray(ethSigner, _data, i);
+    i += SerDeUtil.readArray(ethSigner, _data, i);
     final var ebuf4 = new byte[12];
-    i += Borsh.readArray(ebuf4, _data, i);
+    i += SerDeUtil.readArray(ebuf4, _data, i);
     final var ebuf3 = new byte[128];
-    i += Borsh.readArray(ebuf3, _data, i);
+    i += SerDeUtil.readArray(ebuf3, _data, i);
     final var ebuf2 = new byte[256];
-    i += Borsh.readArray(ebuf2, _data, i);
+    i += SerDeUtil.readArray(ebuf2, _data, i);
     final var ebuf1 = new byte[512];
-    Borsh.readArray(ebuf1, _data, i);
+    SerDeUtil.readArray(ebuf1, _data, i);
     return new Quote(enclaveSigner,
                      mrEnclave,
                      verificationStatus,
@@ -133,34 +134,34 @@ public record Quote(PublicKey enclaveSigner,
     int i = _offset;
     enclaveSigner.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(mrEnclave, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(mrEnclave, 32, _data, i);
     _data[i] = (byte) verificationStatus;
     ++i;
-    i += Borsh.writeArrayChecked(padding1, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 7, _data, i);
     putInt64LE(_data, i, verificationTimestamp);
     i += 8;
     putInt64LE(_data, i, validUntil);
     i += 8;
-    i += Borsh.writeArrayChecked(quoteRegistry, 32, _data, i);
-    i += Borsh.writeArrayChecked(registryKey, 64, _data, i);
-    i += Borsh.writeArrayChecked(secp256k1Signer, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(quoteRegistry, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(registryKey, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(secp256k1Signer, 64, _data, i);
     lastEd25519Signer.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(lastSecp256k1Signer, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(lastSecp256k1Signer, 64, _data, i);
     putInt64LE(_data, i, lastRotateSlot);
     i += 8;
-    i += Borsh.writeArrayChecked(guardianApprovers, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(guardianApprovers, 64, _data, i);
     _data[i] = (byte) guardianApproversLen;
     ++i;
-    i += Borsh.writeArrayChecked(padding2, 7, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 7, _data, i);
     stagingEd25519Signer.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(stagingSecp256k1Signer, 64, _data, i);
-    i += Borsh.writeArrayChecked(ethSigner, 20, _data, i);
-    i += Borsh.writeArrayChecked(ebuf4, 12, _data, i);
-    i += Borsh.writeArrayChecked(ebuf3, 128, _data, i);
-    i += Borsh.writeArrayChecked(ebuf2, 256, _data, i);
-    i += Borsh.writeArrayChecked(ebuf1, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(stagingSecp256k1Signer, 64, _data, i);
+    i += SerDeUtil.writeArrayChecked(ethSigner, 20, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf4, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf3, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf2, 256, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf1, 512, _data, i);
     return i - _offset;
   }
 

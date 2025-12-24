@@ -4,10 +4,9 @@ import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.core.rpc.Filter;
-import software.sava.core.serial.Serializable;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -36,7 +35,7 @@ public record Token(PublicKey _address,
                     AccountState state,
                     OptionalLong isNative,
                     long delegatedAmount,
-                    PublicKey closeAuthority) implements Serializable {
+                    PublicKey closeAuthority) implements SerDe {
 
   public static final int BYTES = 165;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);

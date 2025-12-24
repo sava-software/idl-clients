@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record SwapEventV2(PublicKey inputMint,
                           long inputAmount,
                           PublicKey outputMint,
-                          long outputAmount) implements Borsh {
+                          long outputAmount) implements SerDe {
 
   public static final int BYTES = 80;
 

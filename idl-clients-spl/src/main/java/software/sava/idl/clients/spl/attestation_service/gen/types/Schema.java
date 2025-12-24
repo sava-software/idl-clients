@@ -3,9 +3,10 @@ package software.sava.idl.clients.spl.attestation_service.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -20,7 +21,7 @@ public record Schema(PublicKey _address,
                      byte[] layout,
                      byte[] fieldNames,
                      boolean isPaused,
-                     int version) implements Borsh {
+                     int version) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(197, 41, 118, 109, 215, 189, 52, 105);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -54,14 +55,14 @@ public record Schema(PublicKey _address,
     int i = _offset + discriminator.length();
     final var credential = readPubKey(_data, i);
     i += 32;
-    final var name = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(name);
-    final var description = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(description);
-    final var layout = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(layout);
-    final var fieldNames = Borsh.readbyteVector(_data, i);
-    i += Borsh.lenVector(fieldNames);
+    final var name = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, name);
+    final var description = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, description);
+    final var layout = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, layout);
+    final var fieldNames = SerDeUtil.readbyteVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, fieldNames);
     final var isPaused = _data[i] == 1;
     ++i;
     final var version = _data[i] & 0xFF;
@@ -81,10 +82,10 @@ public record Schema(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     credential.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(name, _data, i);
-    i += Borsh.writeVector(description, _data, i);
-    i += Borsh.writeVector(layout, _data, i);
-    i += Borsh.writeVector(fieldNames, _data, i);
+    i += SerDeUtil.writeVector(4, name, _data, i);
+    i += SerDeUtil.writeVector(4, description, _data, i);
+    i += SerDeUtil.writeVector(4, layout, _data, i);
+    i += SerDeUtil.writeVector(4, fieldNames, _data, i);
     _data[i] = (byte) (isPaused ? 1 : 0);
     ++i;
     _data[i] = (byte) version;
@@ -95,10 +96,10 @@ public record Schema(PublicKey _address,
   @Override
   public int l() {
     return 8 + 32
-         + Borsh.lenVector(name)
-         + Borsh.lenVector(description)
-         + Borsh.lenVector(layout)
-         + Borsh.lenVector(fieldNames)
+         + SerDeUtil.lenVector(4, name)
+         + SerDeUtil.lenVector(4, description)
+         + SerDeUtil.lenVector(4, layout)
+         + SerDeUtil.lenVector(4, fieldNames)
          + 1
          + 1;
   }

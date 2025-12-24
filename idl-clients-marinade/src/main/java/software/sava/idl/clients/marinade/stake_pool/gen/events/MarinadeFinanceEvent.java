@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface MarinadeFinanceEvent extends Borsh permits
+public sealed interface MarinadeFinanceEvent extends SerDe permits
     ChangeAuthorityEvent,
     ConfigLpEvent,
     ConfigMarinadeEvent,

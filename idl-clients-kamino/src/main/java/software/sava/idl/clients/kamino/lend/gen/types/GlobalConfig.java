@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -21,7 +22,7 @@ public record GlobalConfig(PublicKey _address,
                            PublicKey globalAdmin,
                            PublicKey pendingAdmin,
                            PublicKey feeCollector,
-                           byte[] padding) implements Borsh {
+                           byte[] padding) implements SerDe {
 
   public static final int BYTES = 1032;
   public static final int PADDING_LEN = 928;
@@ -74,7 +75,7 @@ public record GlobalConfig(PublicKey _address,
     final var feeCollector = readPubKey(_data, i);
     i += 32;
     final var padding = new byte[928];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new GlobalConfig(_address,
                             discriminator,
                             globalAdmin,
@@ -92,7 +93,7 @@ public record GlobalConfig(PublicKey _address,
     i += 32;
     feeCollector.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 928, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 928, _data, i);
     return i - _offset;
   }
 

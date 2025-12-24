@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -20,7 +21,7 @@ public record Configuration(PublicKey _address,
                             PublicKey tokensMetadata,
                             PublicKey oracleTwaps,
                             PublicKey adminCached,
-                            long[] padding) implements Borsh {
+                            long[] padding) implements SerDe {
 
   public static final int BYTES = 10240;
   public static final int PADDING_LEN = 1255;
@@ -94,7 +95,7 @@ public record Configuration(PublicKey _address,
     final var adminCached = readPubKey(_data, i);
     i += 32;
     final var padding = new long[1255];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new Configuration(_address,
                              discriminator,
                              admin,
@@ -121,7 +122,7 @@ public record Configuration(PublicKey _address,
     i += 32;
     adminCached.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 1255, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 1255, _data, i);
     return i - _offset;
   }
 

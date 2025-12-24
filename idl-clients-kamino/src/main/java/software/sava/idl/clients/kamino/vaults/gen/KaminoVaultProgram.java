@@ -7,9 +7,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.vaults.gen.types.UpdateGlobalConfigMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.UpdateReserveWhitelistMode;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultConfigField;
@@ -160,7 +161,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements Borsh {  
+  public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements SerDe {  
 
     public static UpdateReserveAllocationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -271,7 +272,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record DepositIxData(Discriminator discriminator, long maxAmount) implements Borsh {  
+  public record DepositIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -378,7 +379,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record BuyIxData(Discriminator discriminator, long maxAmount) implements Borsh {  
+  public record BuyIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
 
     public static BuyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -533,7 +534,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements Borsh {  
+  public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -688,7 +689,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record SellIxData(Discriminator discriminator, long sharesAmount) implements Borsh {  
+  public record SellIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static SellIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -843,15 +844,15 @@ public final class KaminoVaultProgram {
                                               final List<AccountMeta> keys,
                                               final VaultConfigField entry,
                                               final byte[] data) {
-    final byte[] _data = new byte[8 + entry.l() + Borsh.lenVector(data)];
+    final byte[] _data = new byte[8 + entry.l() + SerDeUtil.lenVector(4, data)];
     int i = UPDATE_VAULT_CONFIG_DISCRIMINATOR.write(_data, 0);
     i += entry.write(_data, i);
-    Borsh.writeVector(data, _data, i);
+    SerDeUtil.writeVector(4, data, _data, i);
 
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record UpdateVaultConfigIxData(Discriminator discriminator, VaultConfigField entry, byte[] data) implements Borsh {  
+  public record UpdateVaultConfigIxData(Discriminator discriminator, VaultConfigField entry, byte[] data) implements SerDe {  
 
     public static UpdateVaultConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -865,7 +866,7 @@ public final class KaminoVaultProgram {
       int i = _offset + discriminator.length();
       final var entry = VaultConfigField.read(_data, i);
       i += entry.l();
-      final var data = Borsh.readbyteVector(_data, i);
+      final var data = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateVaultConfigIxData(discriminator, entry, data);
     }
 
@@ -873,13 +874,13 @@ public final class KaminoVaultProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += entry.write(_data, i);
-      i += Borsh.writeVector(data, _data, i);
+      i += SerDeUtil.writeVector(4, data, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + entry.l() + Borsh.lenVector(data);
+      return 8 + entry.l() + SerDeUtil.lenVector(4, data);
     }
   }
 
@@ -1026,7 +1027,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements Borsh {  
+  public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements SerDe {  
 
     public static GiveUpPendingFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1121,9 +1122,9 @@ public final class KaminoVaultProgram {
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
     int i = INITIALIZE_SHARES_METADATA_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_name, _data, i);
-    i += Borsh.writeVector(_symbol, _data, i);
-    Borsh.writeVector(_uri, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
+    SerDeUtil.writeVector(4, _uri, _data, i);
 
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
@@ -1131,7 +1132,7 @@ public final class KaminoVaultProgram {
   public record InitializeSharesMetadataIxData(Discriminator discriminator,
                                                String name, byte[] _name,
                                                String symbol, byte[] _symbol,
-                                               String uri, byte[] _uri) implements Borsh {  
+                                               String uri, byte[] _uri) implements SerDe {  
 
     public static InitializeSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1141,7 +1142,7 @@ public final class KaminoVaultProgram {
                                                               final String name,
                                                               final String symbol,
                                                               final String uri) {
-      return new InitializeSharesMetadataIxData(discriminator, name, name.getBytes(UTF_8), symbol, symbol.getBytes(UTF_8), uri, uri.getBytes(UTF_8));
+      return new InitializeSharesMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
     }
 
     public static InitializeSharesMetadataIxData read(final byte[] _data, final int _offset) {
@@ -1164,15 +1165,15 @@ public final class KaminoVaultProgram {
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
       final var uri = new String(_uri, UTF_8);
-      return new InitializeSharesMetadataIxData(discriminator, name, _name, symbol, _symbol, uri, _uri);
+      return new InitializeSharesMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_name, _data, i);
-      i += Borsh.writeVector(_symbol, _data, i);
-      i += Borsh.writeVector(_uri, _data, i);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, _symbol, _data, i);
+      i += SerDeUtil.writeVector(4, _uri, _data, i);
       return i - _offset;
     }
 
@@ -1233,9 +1234,9 @@ public final class KaminoVaultProgram {
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
     int i = UPDATE_SHARES_METADATA_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(_name, _data, i);
-    i += Borsh.writeVector(_symbol, _data, i);
-    Borsh.writeVector(_uri, _data, i);
+    i += SerDeUtil.writeVector(4, _name, _data, i);
+    i += SerDeUtil.writeVector(4, _symbol, _data, i);
+    SerDeUtil.writeVector(4, _uri, _data, i);
 
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
@@ -1243,7 +1244,7 @@ public final class KaminoVaultProgram {
   public record UpdateSharesMetadataIxData(Discriminator discriminator,
                                            String name, byte[] _name,
                                            String symbol, byte[] _symbol,
-                                           String uri, byte[] _uri) implements Borsh {  
+                                           String uri, byte[] _uri) implements SerDe {  
 
     public static UpdateSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1253,7 +1254,7 @@ public final class KaminoVaultProgram {
                                                           final String name,
                                                           final String symbol,
                                                           final String uri) {
-      return new UpdateSharesMetadataIxData(discriminator, name, name.getBytes(UTF_8), symbol, symbol.getBytes(UTF_8), uri, uri.getBytes(UTF_8));
+      return new UpdateSharesMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
     }
 
     public static UpdateSharesMetadataIxData read(final byte[] _data, final int _offset) {
@@ -1276,15 +1277,15 @@ public final class KaminoVaultProgram {
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
       final var uri = new String(_uri, UTF_8);
-      return new UpdateSharesMetadataIxData(discriminator, name, _name, symbol, _symbol, uri, _uri);
+      return new UpdateSharesMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(_name, _data, i);
-      i += Borsh.writeVector(_symbol, _data, i);
-      i += Borsh.writeVector(_uri, _data, i);
+      i += SerDeUtil.writeVector(4, _name, _data, i);
+      i += SerDeUtil.writeVector(4, _symbol, _data, i);
+      i += SerDeUtil.writeVector(4, _uri, _data, i);
       return i - _offset;
     }
 
@@ -1373,7 +1374,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements Borsh {  
+  public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static WithdrawFromAvailableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1502,7 +1503,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode update) implements Borsh {  
+  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode update) implements SerDe {  
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1599,7 +1600,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record AddUpdateWhitelistedReserveIxData(Discriminator discriminator, UpdateReserveWhitelistMode update) implements Borsh {  
+  public record AddUpdateWhitelistedReserveIxData(Discriminator discriminator, UpdateReserveWhitelistMode update) implements SerDe {  
 
     public static AddUpdateWhitelistedReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

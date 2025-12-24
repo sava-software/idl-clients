@@ -1,6 +1,6 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 public record RoutePlanStepV2(Swap swap,
                               int bps,
                               int inputIndex,
-                              int outputIndex) implements Borsh {
+                              int outputIndex) implements SerDe {
 
   public static RoutePlanStepV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

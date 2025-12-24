@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.vaults.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface DriftVaultsEvent extends Borsh permits
+public sealed interface DriftVaultsEvent extends SerDe permits
     VaultRecord,
     VaultDepositorRecord,
     VaultDepositorV1Record,

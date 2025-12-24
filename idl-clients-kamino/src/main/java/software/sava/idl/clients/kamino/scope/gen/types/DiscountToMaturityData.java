@@ -1,13 +1,13 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record DiscountToMaturityData(int discountPerYearBps, long maturityTimestamp) implements Borsh {
+public record DiscountToMaturityData(int discountPerYearBps, long maturityTimestamp) implements SerDe {
 
   public static final int BYTES = 10;
 

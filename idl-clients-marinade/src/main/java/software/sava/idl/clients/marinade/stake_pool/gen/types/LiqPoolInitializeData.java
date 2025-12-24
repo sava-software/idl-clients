@@ -1,6 +1,6 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record LiqPoolInitializeData(long lpLiquidityTarget,
                                     Fee lpMaxFee,
                                     Fee lpMinFee,
-                                    Fee lpTreasuryCut) implements Borsh {
+                                    Fee lpTreasuryCut) implements SerDe {
 
   public static final int BYTES = 20;
 

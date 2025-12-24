@@ -5,8 +5,8 @@ import java.lang.String;
 import java.util.Arrays;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.drift.gen.types.OrderParams;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -41,7 +41,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
                                                   final long ts) {
     return new SignedMsgOrderRecord(discriminator,
                                     user,
-                                    hash, hash.getBytes(UTF_8),
+                                    hash, hash == null ? null : hash.getBytes(UTF_8),
                                     matchingOrderParams,
                                     userOrderId,
                                     signedMsgOrderMaxSlot,
@@ -69,11 +69,11 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     final var signedMsgOrderMaxSlot = getInt64LE(_data, i);
     i += 8;
     final var signedMsgOrderUuid = new byte[8];
-    i += Borsh.readArray(signedMsgOrderUuid, _data, i);
+    i += SerDeUtil.readArray(signedMsgOrderUuid, _data, i);
     final var ts = getInt64LE(_data, i);
     return new SignedMsgOrderRecord(discriminator,
                                     user,
-                                    hash, _hash,
+                                    hash, hash == null ? null : hash.getBytes(UTF_8),
                                     matchingOrderParams,
                                     userOrderId,
                                     signedMsgOrderMaxSlot,
@@ -86,13 +86,13 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     user.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(_hash, _data, i);
+    i += SerDeUtil.writeVector(4, _hash, _data, i);
     i += matchingOrderParams.write(_data, i);
     putInt32LE(_data, i, userOrderId);
     i += 4;
     putInt64LE(_data, i, signedMsgOrderMaxSlot);
     i += 8;
-    i += Borsh.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
     putInt64LE(_data, i, ts);
     i += 8;
     return i - _offset;
@@ -105,7 +105,7 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
          + matchingOrderParams.l()
          + 4
          + 8
-         + Borsh.lenArray(signedMsgOrderUuid)
+         + SerDeUtil.lenArray(signedMsgOrderUuid)
          + 8;
   }
 }

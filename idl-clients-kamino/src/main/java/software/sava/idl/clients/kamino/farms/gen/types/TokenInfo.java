@@ -1,7 +1,8 @@
 package software.sava.idl.clients.kamino.farms.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record TokenInfo(PublicKey mint,
                         long decimals,
                         PublicKey tokenProgram,
-                        long[] padding) implements Borsh {
+                        long[] padding) implements SerDe {
 
   public static final int BYTES = 120;
   public static final int PADDING_LEN = 6;
@@ -27,7 +28,7 @@ public record TokenInfo(PublicKey mint,
     final var tokenProgram = readPubKey(_data, i);
     i += 32;
     final var padding = new long[6];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new TokenInfo(mint,
                          decimals,
                          tokenProgram,
@@ -43,7 +44,7 @@ public record TokenInfo(PublicKey mint,
     i += 8;
     tokenProgram.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
     return i - _offset;
   }
 

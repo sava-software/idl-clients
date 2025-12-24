@@ -1,8 +1,9 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum OrderTriggerCondition implements Borsh.Enum {
+public enum OrderTriggerCondition implements RustEnum {
 
   Above,
   Below,
@@ -10,6 +11,6 @@ public enum OrderTriggerCondition implements Borsh.Enum {
   TriggeredBelow;
 
   public static OrderTriggerCondition read(final byte[] _data, final int _offset) {
-    return Borsh.read(OrderTriggerCondition.values(), _data, _offset);
+    return SerDeUtil.read(1, OrderTriggerCondition.values(), _data, _offset);
   }
 }

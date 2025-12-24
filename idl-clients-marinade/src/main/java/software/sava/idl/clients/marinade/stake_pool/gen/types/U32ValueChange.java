@@ -1,11 +1,11 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record U32ValueChange(int old, int _new) implements Borsh {
+public record U32ValueChange(int old, int _new) implements SerDe {
 
   public static final int BYTES = 8;
 

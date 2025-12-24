@@ -1,8 +1,9 @@
 package software.sava.idl.clients.drift.vaults.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum VaultDepositorAction implements Borsh.Enum {
+public enum VaultDepositorAction implements RustEnum {
 
   Deposit,
   WithdrawRequest,
@@ -13,6 +14,6 @@ public enum VaultDepositorAction implements Borsh.Enum {
   RedeemTokens;
 
   public static VaultDepositorAction read(final byte[] _data, final int _offset) {
-    return Borsh.read(VaultDepositorAction.values(), _data, _offset);
+    return SerDeUtil.read(1, VaultDepositorAction.values(), _data, _offset);
   }
 }

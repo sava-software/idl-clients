@@ -3,9 +3,10 @@ package software.sava.idl.clients.kamino.vaults.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -23,7 +24,7 @@ public record ReserveWhitelistEntry(PublicKey _address,
                                     PublicKey reserve,
                                     int whitelistAddAllocation,
                                     int whitelistInvest,
-                                    byte[] padding) implements Borsh {
+                                    byte[] padding) implements SerDe {
 
   public static final int BYTES = 136;
   public static final int PADDING_LEN = 62;
@@ -83,7 +84,7 @@ public record ReserveWhitelistEntry(PublicKey _address,
     final var whitelistInvest = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[62];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new ReserveWhitelistEntry(_address,
                                      discriminator,
                                      tokenMint,
@@ -104,7 +105,7 @@ public record ReserveWhitelistEntry(PublicKey _address,
     ++i;
     _data[i] = (byte) whitelistInvest;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 62, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 62, _data, i);
     return i - _offset;
   }
 

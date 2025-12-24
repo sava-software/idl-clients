@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -10,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record SignedMsgOrderId(byte[] uuid,
                                long maxSlot,
                                int orderId,
-                               int padding) implements Borsh {
+                               int padding) implements SerDe {
 
   public static final int BYTES = 24;
   public static final int UUID_LEN = 8;
@@ -21,7 +22,7 @@ public record SignedMsgOrderId(byte[] uuid,
     }
     int i = _offset;
     final var uuid = new byte[8];
-    i += Borsh.readArray(uuid, _data, i);
+    i += SerDeUtil.readArray(uuid, _data, i);
     final var maxSlot = getInt64LE(_data, i);
     i += 8;
     final var orderId = getInt32LE(_data, i);
@@ -36,7 +37,7 @@ public record SignedMsgOrderId(byte[] uuid,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(uuid, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(uuid, 8, _data, i);
     putInt64LE(_data, i, maxSlot);
     i += 8;
     putInt32LE(_data, i, orderId);

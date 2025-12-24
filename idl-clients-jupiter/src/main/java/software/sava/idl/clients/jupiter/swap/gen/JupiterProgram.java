@@ -5,9 +5,10 @@ import java.util.List;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStep;
 import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStepV2;
 
@@ -61,7 +62,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
-  public record ClaimIxData(Discriminator discriminator, int id) implements Borsh {  
+  public record ClaimIxData(Discriminator discriminator, int id) implements SerDe {  
 
     public static ClaimIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -149,7 +150,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
-  public record ClaimTokenIxData(Discriminator discriminator, int id) implements Borsh {  
+  public record ClaimTokenIxData(Discriminator discriminator, int id) implements SerDe {  
 
     public static ClaimTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -232,7 +233,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
-  public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements Borsh {  
+  public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements SerDe {  
 
     public static CloseTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -340,7 +341,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
-  public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements Borsh {  
+  public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements SerDe {  
 
     public static CreateTokenAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -450,9 +451,9 @@ public final class JupiterProgram {
                                           final long quotedInAmount,
                                           final int slippageBps,
                                           final int platformFeeBps) {
-    final byte[] _data = new byte[27 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[27 + SerDeUtil.lenVector(4, routePlan)];
     int i = EXACT_OUT_ROUTE_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, outAmount);
     i += 8;
     putInt64LE(_data, i, quotedInAmount);
@@ -469,7 +470,7 @@ public final class JupiterProgram {
                                     long outAmount,
                                     long quotedInAmount,
                                     int slippageBps,
-                                    int platformFeeBps) implements Borsh {  
+                                    int platformFeeBps) implements SerDe {  
 
     public static ExactOutRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -481,8 +482,8 @@ public final class JupiterProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var outAmount = getInt64LE(_data, i);
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
@@ -501,7 +502,7 @@ public final class JupiterProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, outAmount);
       i += 8;
       putInt64LE(_data, i, quotedInAmount);
@@ -515,7 +516,7 @@ public final class JupiterProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(routePlan)
+      return 8 + SerDeUtil.lenVector(4, routePlan)
            + 8
            + 8
            + 2
@@ -593,9 +594,9 @@ public final class JupiterProgram {
                                   final long quotedOutAmount,
                                   final int slippageBps,
                                   final int platformFeeBps) {
-    final byte[] _data = new byte[27 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[27 + SerDeUtil.lenVector(4, routePlan)];
     int i = ROUTE_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, inAmount);
     i += 8;
     putInt64LE(_data, i, quotedOutAmount);
@@ -612,7 +613,7 @@ public final class JupiterProgram {
                             long inAmount,
                             long quotedOutAmount,
                             int slippageBps,
-                            int platformFeeBps) implements Borsh {  
+                            int platformFeeBps) implements SerDe {  
 
     public static RouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -624,8 +625,8 @@ public final class JupiterProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var inAmount = getInt64LE(_data, i);
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
@@ -644,7 +645,7 @@ public final class JupiterProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, inAmount);
       i += 8;
       putInt64LE(_data, i, quotedOutAmount);
@@ -658,7 +659,7 @@ public final class JupiterProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(routePlan)
+      return 8 + SerDeUtil.lenVector(4, routePlan)
            + 8
            + 8
            + 2
@@ -737,9 +738,9 @@ public final class JupiterProgram {
                                                  final long quotedOutAmount,
                                                  final int slippageBps,
                                                  final int platformFeeBps) {
-    final byte[] _data = new byte[19 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[19 + SerDeUtil.lenVector(4, routePlan)];
     int i = ROUTE_WITH_TOKEN_LEDGER_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, quotedOutAmount);
     i += 8;
     putInt16LE(_data, i, slippageBps);
@@ -753,7 +754,7 @@ public final class JupiterProgram {
                                            RoutePlanStep[] routePlan,
                                            long quotedOutAmount,
                                            int slippageBps,
-                                           int platformFeeBps) implements Borsh {  
+                                           int platformFeeBps) implements SerDe {  
 
     public static RouteWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -765,8 +766,8 @@ public final class JupiterProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
       final var slippageBps = getInt16LE(_data, i);
@@ -782,7 +783,7 @@ public final class JupiterProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, quotedOutAmount);
       i += 8;
       putInt16LE(_data, i, slippageBps);
@@ -794,7 +795,7 @@ public final class JupiterProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(routePlan) + 8 + 2 + 1;
+      return 8 + SerDeUtil.lenVector(4, routePlan) + 8 + 2 + 1;
     }
   }
 
@@ -912,11 +913,11 @@ public final class JupiterProgram {
                                                         final long quotedInAmount,
                                                         final int slippageBps,
                                                         final int platformFeeBps) {
-    final byte[] _data = new byte[28 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[28 + SerDeUtil.lenVector(4, routePlan)];
     int i = SHARED_ACCOUNTS_EXACT_OUT_ROUTE_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) id;
     ++i;
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, outAmount);
     i += 8;
     putInt64LE(_data, i, quotedInAmount);
@@ -934,7 +935,7 @@ public final class JupiterProgram {
                                                   long outAmount,
                                                   long quotedInAmount,
                                                   int slippageBps,
-                                                  int platformFeeBps) implements Borsh {  
+                                                  int platformFeeBps) implements SerDe {  
 
     public static SharedAccountsExactOutRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -948,8 +949,8 @@ public final class JupiterProgram {
       int i = _offset + discriminator.length();
       final var id = _data[i] & 0xFF;
       ++i;
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var outAmount = getInt64LE(_data, i);
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
@@ -971,7 +972,7 @@ public final class JupiterProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) id;
       ++i;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, outAmount);
       i += 8;
       putInt64LE(_data, i, quotedInAmount);
@@ -986,7 +987,7 @@ public final class JupiterProgram {
     @Override
     public int l() {
       return 8 + 1
-           + Borsh.lenVector(routePlan)
+           + SerDeUtil.lenVector(4, routePlan)
            + 8
            + 8
            + 2
@@ -1083,11 +1084,11 @@ public final class JupiterProgram {
                                                 final long quotedOutAmount,
                                                 final int slippageBps,
                                                 final int platformFeeBps) {
-    final byte[] _data = new byte[28 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[28 + SerDeUtil.lenVector(4, routePlan)];
     int i = SHARED_ACCOUNTS_ROUTE_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) id;
     ++i;
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, inAmount);
     i += 8;
     putInt64LE(_data, i, quotedOutAmount);
@@ -1105,7 +1106,7 @@ public final class JupiterProgram {
                                           long inAmount,
                                           long quotedOutAmount,
                                           int slippageBps,
-                                          int platformFeeBps) implements Borsh {  
+                                          int platformFeeBps) implements SerDe {  
 
     public static SharedAccountsRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1119,8 +1120,8 @@ public final class JupiterProgram {
       int i = _offset + discriminator.length();
       final var id = _data[i] & 0xFF;
       ++i;
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var inAmount = getInt64LE(_data, i);
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
@@ -1142,7 +1143,7 @@ public final class JupiterProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) id;
       ++i;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, inAmount);
       i += 8;
       putInt64LE(_data, i, quotedOutAmount);
@@ -1157,7 +1158,7 @@ public final class JupiterProgram {
     @Override
     public int l() {
       return 8 + 1
-           + Borsh.lenVector(routePlan)
+           + SerDeUtil.lenVector(4, routePlan)
            + 8
            + 8
            + 2
@@ -1255,11 +1256,11 @@ public final class JupiterProgram {
                                                                final long quotedOutAmount,
                                                                final int slippageBps,
                                                                final int platformFeeBps) {
-    final byte[] _data = new byte[20 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[20 + SerDeUtil.lenVector(4, routePlan)];
     int i = SHARED_ACCOUNTS_ROUTE_WITH_TOKEN_LEDGER_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) id;
     ++i;
-    i += Borsh.writeVector(routePlan, _data, i);
+    i += SerDeUtil.writeVector(4, routePlan, _data, i);
     putInt64LE(_data, i, quotedOutAmount);
     i += 8;
     putInt16LE(_data, i, slippageBps);
@@ -1274,7 +1275,7 @@ public final class JupiterProgram {
                                                          RoutePlanStep[] routePlan,
                                                          long quotedOutAmount,
                                                          int slippageBps,
-                                                         int platformFeeBps) implements Borsh {  
+                                                         int platformFeeBps) implements SerDe {  
 
     public static SharedAccountsRouteWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1288,8 +1289,8 @@ public final class JupiterProgram {
       int i = _offset + discriminator.length();
       final var id = _data[i] & 0xFF;
       ++i;
-      final var routePlan = Borsh.readVector(RoutePlanStep.class, RoutePlanStep::read, _data, i);
-      i += Borsh.lenVector(routePlan);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStep.class, RoutePlanStep::read, _data, i);
+      i += SerDeUtil.lenVector(4, routePlan);
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
       final var slippageBps = getInt16LE(_data, i);
@@ -1308,7 +1309,7 @@ public final class JupiterProgram {
       int i = _offset + discriminator.write(_data, _offset);
       _data[i] = (byte) id;
       ++i;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       putInt64LE(_data, i, quotedOutAmount);
       i += 8;
       putInt16LE(_data, i, slippageBps);
@@ -1321,7 +1322,7 @@ public final class JupiterProgram {
     @Override
     public int l() {
       return 8 + 1
-           + Borsh.lenVector(routePlan)
+           + SerDeUtil.lenVector(4, routePlan)
            + 8
            + 2
            + 1;
@@ -1405,7 +1406,7 @@ public final class JupiterProgram {
                                             final int platformFeeBps,
                                             final int positiveSlippageBps,
                                             final RoutePlanStepV2[] routePlan) {
-    final byte[] _data = new byte[30 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[30 + SerDeUtil.lenVector(4, routePlan)];
     int i = EXACT_OUT_ROUTE_V_2_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, outAmount);
     i += 8;
@@ -1417,7 +1418,7 @@ public final class JupiterProgram {
     i += 2;
     putInt16LE(_data, i, positiveSlippageBps);
     i += 2;
-    Borsh.writeVector(routePlan, _data, i);
+    SerDeUtil.writeVector(4, routePlan, _data, i);
 
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
@@ -1428,7 +1429,7 @@ public final class JupiterProgram {
                                       int slippageBps,
                                       int platformFeeBps,
                                       int positiveSlippageBps,
-                                      RoutePlanStepV2[] routePlan) implements Borsh {  
+                                      RoutePlanStepV2[] routePlan) implements SerDe {  
 
     public static ExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1450,7 +1451,7 @@ public final class JupiterProgram {
       i += 2;
       final var positiveSlippageBps = getInt16LE(_data, i);
       i += 2;
-      final var routePlan = Borsh.readVector(RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new ExactOutRouteV2IxData(discriminator,
                                        outAmount,
                                        quotedInAmount,
@@ -1473,7 +1474,7 @@ public final class JupiterProgram {
       i += 2;
       putInt16LE(_data, i, positiveSlippageBps);
       i += 2;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       return i - _offset;
     }
 
@@ -1484,7 +1485,7 @@ public final class JupiterProgram {
            + 2
            + 2
            + 2
-           + Borsh.lenVector(routePlan);
+           + SerDeUtil.lenVector(4, routePlan);
     }
   }
 
@@ -1565,7 +1566,7 @@ public final class JupiterProgram {
                                     final int platformFeeBps,
                                     final int positiveSlippageBps,
                                     final RoutePlanStepV2[] routePlan) {
-    final byte[] _data = new byte[30 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[30 + SerDeUtil.lenVector(4, routePlan)];
     int i = ROUTE_V_2_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, inAmount);
     i += 8;
@@ -1577,7 +1578,7 @@ public final class JupiterProgram {
     i += 2;
     putInt16LE(_data, i, positiveSlippageBps);
     i += 2;
-    Borsh.writeVector(routePlan, _data, i);
+    SerDeUtil.writeVector(4, routePlan, _data, i);
 
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
@@ -1588,7 +1589,7 @@ public final class JupiterProgram {
                               int slippageBps,
                               int platformFeeBps,
                               int positiveSlippageBps,
-                              RoutePlanStepV2[] routePlan) implements Borsh {  
+                              RoutePlanStepV2[] routePlan) implements SerDe {  
 
     public static RouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1610,7 +1611,7 @@ public final class JupiterProgram {
       i += 2;
       final var positiveSlippageBps = getInt16LE(_data, i);
       i += 2;
-      final var routePlan = Borsh.readVector(RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new RouteV2IxData(discriminator,
                                inAmount,
                                quotedOutAmount,
@@ -1633,7 +1634,7 @@ public final class JupiterProgram {
       i += 2;
       putInt16LE(_data, i, positiveSlippageBps);
       i += 2;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       return i - _offset;
     }
 
@@ -1644,7 +1645,7 @@ public final class JupiterProgram {
            + 2
            + 2
            + 2
-           + Borsh.lenVector(routePlan);
+           + SerDeUtil.lenVector(4, routePlan);
     }
   }
 
@@ -1734,7 +1735,7 @@ public final class JupiterProgram {
                                                           final int platformFeeBps,
                                                           final int positiveSlippageBps,
                                                           final RoutePlanStepV2[] routePlan) {
-    final byte[] _data = new byte[31 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[31 + SerDeUtil.lenVector(4, routePlan)];
     int i = SHARED_ACCOUNTS_EXACT_OUT_ROUTE_V_2_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) id;
     ++i;
@@ -1748,7 +1749,7 @@ public final class JupiterProgram {
     i += 2;
     putInt16LE(_data, i, positiveSlippageBps);
     i += 2;
-    Borsh.writeVector(routePlan, _data, i);
+    SerDeUtil.writeVector(4, routePlan, _data, i);
 
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
@@ -1760,7 +1761,7 @@ public final class JupiterProgram {
                                                     int slippageBps,
                                                     int platformFeeBps,
                                                     int positiveSlippageBps,
-                                                    RoutePlanStepV2[] routePlan) implements Borsh {  
+                                                    RoutePlanStepV2[] routePlan) implements SerDe {  
 
     public static SharedAccountsExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1784,7 +1785,7 @@ public final class JupiterProgram {
       i += 2;
       final var positiveSlippageBps = getInt16LE(_data, i);
       i += 2;
-      final var routePlan = Borsh.readVector(RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new SharedAccountsExactOutRouteV2IxData(discriminator,
                                                      id,
                                                      outAmount,
@@ -1810,7 +1811,7 @@ public final class JupiterProgram {
       i += 2;
       putInt16LE(_data, i, positiveSlippageBps);
       i += 2;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       return i - _offset;
     }
 
@@ -1822,7 +1823,7 @@ public final class JupiterProgram {
            + 2
            + 2
            + 2
-           + Borsh.lenVector(routePlan);
+           + SerDeUtil.lenVector(4, routePlan);
     }
   }
 
@@ -1912,7 +1913,7 @@ public final class JupiterProgram {
                                                   final int platformFeeBps,
                                                   final int positiveSlippageBps,
                                                   final RoutePlanStepV2[] routePlan) {
-    final byte[] _data = new byte[31 + Borsh.lenVector(routePlan)];
+    final byte[] _data = new byte[31 + SerDeUtil.lenVector(4, routePlan)];
     int i = SHARED_ACCOUNTS_ROUTE_V_2_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) id;
     ++i;
@@ -1926,7 +1927,7 @@ public final class JupiterProgram {
     i += 2;
     putInt16LE(_data, i, positiveSlippageBps);
     i += 2;
-    Borsh.writeVector(routePlan, _data, i);
+    SerDeUtil.writeVector(4, routePlan, _data, i);
 
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
@@ -1938,7 +1939,7 @@ public final class JupiterProgram {
                                             int slippageBps,
                                             int platformFeeBps,
                                             int positiveSlippageBps,
-                                            RoutePlanStepV2[] routePlan) implements Borsh {  
+                                            RoutePlanStepV2[] routePlan) implements SerDe {  
 
     public static SharedAccountsRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1962,7 +1963,7 @@ public final class JupiterProgram {
       i += 2;
       final var positiveSlippageBps = getInt16LE(_data, i);
       i += 2;
-      final var routePlan = Borsh.readVector(RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
+      final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new SharedAccountsRouteV2IxData(discriminator,
                                              id,
                                              inAmount,
@@ -1988,7 +1989,7 @@ public final class JupiterProgram {
       i += 2;
       putInt16LE(_data, i, positiveSlippageBps);
       i += 2;
-      i += Borsh.writeVector(routePlan, _data, i);
+      i += SerDeUtil.writeVector(4, routePlan, _data, i);
       return i - _offset;
     }
 
@@ -2000,7 +2001,7 @@ public final class JupiterProgram {
            + 2
            + 2
            + 2
-           + Borsh.lenVector(routePlan);
+           + SerDeUtil.lenVector(4, routePlan);
     }
   }
 

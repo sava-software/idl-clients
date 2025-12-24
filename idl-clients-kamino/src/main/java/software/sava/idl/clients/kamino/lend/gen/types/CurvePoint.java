@@ -1,11 +1,11 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record CurvePoint(int utilizationRateBps, int borrowRateBps) implements Borsh {
+public record CurvePoint(int utilizationRateBps, int borrowRateBps) implements SerDe {
 
   public static final int BYTES = 8;
 

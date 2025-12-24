@@ -7,9 +7,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -92,7 +93,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record NewLockerIxData(Discriminator discriminator, LockerParams params) implements Borsh {  
+  public record NewLockerIxData(Discriminator discriminator, LockerParams params) implements SerDe {  
 
     public static NewLockerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -251,7 +252,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static IncreaseLockedAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -330,7 +331,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record ExtendLockDurationIxData(Discriminator discriminator, long duration) implements Borsh {  
+  public record ExtendLockDurationIxData(Discriminator discriminator, long duration) implements SerDe {  
 
     public static ExtendLockDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -409,7 +410,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record ToggleMaxLockIxData(Discriminator discriminator, boolean isMaxLock) implements Borsh {  
+  public record ToggleMaxLockIxData(Discriminator discriminator, boolean isMaxLock) implements SerDe {  
 
     public static ToggleMaxLockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -630,7 +631,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record CastVoteIxData(Discriminator discriminator, int side) implements Borsh {  
+  public record CastVoteIxData(Discriminator discriminator, int side) implements SerDe {  
 
     public static CastVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -703,7 +704,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record SetVoteDelegateIxData(Discriminator discriminator, PublicKey newDelegate) implements Borsh {  
+  public record SetVoteDelegateIxData(Discriminator discriminator, PublicKey newDelegate) implements SerDe {  
 
     public static SetVoteDelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -782,7 +783,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record SetLockerParamsIxData(Discriminator discriminator, LockerParams params) implements Borsh {  
+  public record SetLockerParamsIxData(Discriminator discriminator, LockerParams params) implements SerDe {  
 
     public static SetLockerParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -870,19 +871,19 @@ public final class LockedVoterProgram {
     int i = OPEN_PARTIAL_UNSTAKING_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
     i += 8;
-    Borsh.writeVector(_memo, _data, i);
+    SerDeUtil.writeVector(4, _memo, _data, i);
 
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements Borsh {  
+  public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements SerDe {  
 
     public static OpenPartialUnstakingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static OpenPartialUnstakingIxData createRecord(final Discriminator discriminator, final long amount, final String memo) {
-      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo.getBytes(UTF_8));
+      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : memo.getBytes(UTF_8));
     }
 
     public static OpenPartialUnstakingIxData read(final byte[] _data, final int _offset) {
@@ -897,7 +898,7 @@ public final class LockedVoterProgram {
       i += 4;
       final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
       final var memo = new String(_memo, UTF_8);
-      return new OpenPartialUnstakingIxData(discriminator, amount, memo, _memo);
+      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : memo.getBytes(UTF_8));
     }
 
     @Override
@@ -905,7 +906,7 @@ public final class LockedVoterProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += Borsh.writeVector(_memo, _data, i);
+      i += SerDeUtil.writeVector(4, _memo, _data, i);
       return i - _offset;
     }
 

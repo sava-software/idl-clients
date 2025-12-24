@@ -3,8 +3,8 @@ package software.sava.idl.clients.drift.gen.events;
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.drift.gen.types.LiquidateBorrowForPerpPnlRecord;
 import software.sava.idl.clients.drift.gen.types.LiquidatePerpPnlForDepositRecord;
 import software.sava.idl.clients.drift.gen.types.LiquidatePerpRecord;
@@ -67,8 +67,8 @@ public record LiquidationRecord(Discriminator discriminator,
     i += 2;
     final var bankrupt = _data[i] == 1;
     ++i;
-    final var canceledOrderIds = Borsh.readintVector(_data, i);
-    i += Borsh.lenVector(canceledOrderIds);
+    final var canceledOrderIds = SerDeUtil.readintVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, canceledOrderIds);
     final var liquidatePerp = LiquidatePerpRecord.read(_data, i);
     i += liquidatePerp.l();
     final var liquidateSpot = LiquidateSpotRecord.read(_data, i);
@@ -119,7 +119,7 @@ public record LiquidationRecord(Discriminator discriminator,
     i += 2;
     _data[i] = (byte) (bankrupt ? 1 : 0);
     ++i;
-    i += Borsh.writeVector(canceledOrderIds, _data, i);
+    i += SerDeUtil.writeVector(4, canceledOrderIds, _data, i);
     i += liquidatePerp.write(_data, i);
     i += liquidateSpot.write(_data, i);
     i += liquidateBorrowForPerpPnl.write(_data, i);
@@ -140,7 +140,7 @@ public record LiquidationRecord(Discriminator discriminator,
          + 8
          + 2
          + 1
-         + Borsh.lenVector(canceledOrderIds)
+         + SerDeUtil.lenVector(4, canceledOrderIds)
          + liquidatePerp.l()
          + liquidateSpot.l()
          + liquidateBorrowForPerpPnl.l()

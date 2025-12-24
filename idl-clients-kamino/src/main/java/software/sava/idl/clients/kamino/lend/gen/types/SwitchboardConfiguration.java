@@ -1,12 +1,12 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
 /// @param priceAggregator Pubkey of the base price feed (disabled if `null` or `default`)
-public record SwitchboardConfiguration(PublicKey priceAggregator, PublicKey twapAggregator) implements Borsh {
+public record SwitchboardConfiguration(PublicKey priceAggregator, PublicKey twapAggregator) implements SerDe {
 
   public static final int BYTES = 64;
 

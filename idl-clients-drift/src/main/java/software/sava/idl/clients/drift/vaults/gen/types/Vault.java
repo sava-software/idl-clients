@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -113,7 +114,7 @@ public record Vault(PublicKey _address,
                     BigInteger cumulativeFuelPerShare,
                     BigInteger cumulativeFuel,
                     long managerBorrowedValue,
-                    long[] padding) implements Borsh {
+                    long[] padding) implements SerDe {
 
   public static final int BYTES = 536;
   public static final int NAME_LEN = 32;
@@ -399,7 +400,7 @@ public record Vault(PublicKey _address,
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var name = new byte[32];
-    i += Borsh.readArray(name, _data, i);
+    i += SerDeUtil.readArray(name, _data, i);
     final var pubkey = readPubKey(_data, i);
     i += 32;
     final var manager = readPubKey(_data, i);
@@ -481,7 +482,7 @@ public record Vault(PublicKey _address,
     final var managerBorrowedValue = getInt64LE(_data, i);
     i += 8;
     final var padding = new long[2];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new Vault(_address,
                      discriminator,
                      name,
@@ -531,7 +532,7 @@ public record Vault(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     pubkey.write(_data, i);
     i += 32;
     manager.write(_data, i);
@@ -611,7 +612,7 @@ public record Vault(PublicKey _address,
     i += 16;
     putInt64LE(_data, i, managerBorrowedValue);
     i += 8;
-    i += Borsh.writeArrayChecked(padding, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 2, _data, i);
     return i - _offset;
   }
 

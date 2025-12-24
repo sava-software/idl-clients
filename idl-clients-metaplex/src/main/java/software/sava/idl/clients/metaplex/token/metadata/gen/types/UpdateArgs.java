@@ -3,8 +3,8 @@ package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 import java.lang.Boolean;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
@@ -116,15 +116,15 @@ public sealed interface UpdateArgs extends RustEnum permits
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeOptional(newUpdateAuthority, _data, i);
-      i += Borsh.writeOptional(data, _data, i);
-      i += Borsh.writeOptional(primarySaleHappened, _data, i);
-      i += Borsh.writeOptional(isMutable, _data, i);
+      i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
+      i += SerDeUtil.writeOptional(1, data, _data, i);
+      i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
+      i += SerDeUtil.writeOptional(1, isMutable, _data, i);
       i += collection.write(_data, i);
       i += collectionDetails.write(_data, i);
       i += uses.write(_data, i);
       i += ruleSet.write(_data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -238,16 +238,16 @@ public sealed interface UpdateArgs extends RustEnum permits
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeOptional(newUpdateAuthority, _data, i);
-      i += Borsh.writeOptional(data, _data, i);
-      i += Borsh.writeOptional(primarySaleHappened, _data, i);
-      i += Borsh.writeOptional(isMutable, _data, i);
+      i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
+      i += SerDeUtil.writeOptional(1, data, _data, i);
+      i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
+      i += SerDeUtil.writeOptional(1, isMutable, _data, i);
       i += collection.write(_data, i);
       i += collectionDetails.write(_data, i);
       i += uses.write(_data, i);
       i += ruleSet.write(_data, i);
-      i += Borsh.writeOptional(tokenStandard, _data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, tokenStandard, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -335,11 +335,11 @@ public sealed interface UpdateArgs extends RustEnum permits
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeOptional(newUpdateAuthority, _data, i);
-      i += Borsh.writeOptional(primarySaleHappened, _data, i);
-      i += Borsh.writeOptional(isMutable, _data, i);
-      i += Borsh.writeOptional(tokenStandard, _data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
+      i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
+      i += SerDeUtil.writeOptional(1, isMutable, _data, i);
+      i += SerDeUtil.writeOptional(1, tokenStandard, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -381,7 +381,7 @@ public sealed interface UpdateArgs extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += collection.write(_data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -425,8 +425,8 @@ public sealed interface UpdateArgs extends RustEnum permits
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeOptional(data, _data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, data, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -464,7 +464,7 @@ public sealed interface UpdateArgs extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += ruleSet.write(_data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -508,8 +508,8 @@ public sealed interface UpdateArgs extends RustEnum permits
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += Borsh.writeOptional(data, _data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, data, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -547,7 +547,7 @@ public sealed interface UpdateArgs extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += collection.write(_data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 
@@ -585,7 +585,7 @@ public sealed interface UpdateArgs extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
       i += ruleSet.write(_data, i);
-      i += Borsh.writeOptional(authorizationData, _data, i);
+      i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
     }
 

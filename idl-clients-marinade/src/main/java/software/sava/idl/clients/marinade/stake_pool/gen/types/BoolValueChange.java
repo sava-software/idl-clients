@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public record BoolValueChange(boolean old, boolean _new) implements Borsh {
+public record BoolValueChange(boolean old, boolean _new) implements SerDe {
 
   public static final int BYTES = 2;
 

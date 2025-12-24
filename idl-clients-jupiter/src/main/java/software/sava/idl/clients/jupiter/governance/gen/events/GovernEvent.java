@@ -1,8 +1,8 @@
 package software.sava.idl.clients.jupiter.governance.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface GovernEvent extends Borsh permits
+public sealed interface GovernEvent extends SerDe permits
     ProposalActivateEvent,
     ProposalCancelEvent,
     ClaimRewardEvent,

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.SplitStakeAccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -143,7 +143,7 @@ public record RedelegateEvent(Discriminator discriminator,
     i += 8;
     putInt64LE(_data, i, redelegateAmount);
     i += 8;
-    i += Borsh.writeOptional(splitStakeAccount, _data, i);
+    i += SerDeUtil.writeOptional(1, splitStakeAccount, _data, i);
     putInt32LE(_data, i, redelegateStakeIndex);
     i += 4;
     redelegateStakeAccount.write(_data, i);

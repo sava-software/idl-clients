@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -24,7 +25,7 @@ public record FeeUpdate(PublicKey _address,
                         int incomingProfitShare,
                         int incomingHurdleRate,
                         BigInteger[] padding,
-                        byte[] padding2) implements Borsh {
+                        byte[] padding2) implements SerDe {
 
   public static final int BYTES = 200;
   public static final int PADDING_LEN = 10;
@@ -94,9 +95,9 @@ public record FeeUpdate(PublicKey _address,
     final var incomingHurdleRate = getInt32LE(_data, i);
     i += 4;
     final var padding = new BigInteger[10];
-    i += Borsh.read128Array(padding, _data, i);
+    i += SerDeUtil.read128Array(padding, _data, i);
     final var padding2 = new byte[8];
-    Borsh.readArray(padding2, _data, i);
+    SerDeUtil.readArray(padding2, _data, i);
     return new FeeUpdate(_address,
                          discriminator,
                          incomingUpdateTs,
@@ -118,8 +119,8 @@ public record FeeUpdate(PublicKey _address,
     i += 4;
     putInt32LE(_data, i, incomingHurdleRate);
     i += 4;
-    i += Borsh.write128ArrayChecked(padding, 10, _data, i);
-    i += Borsh.writeArrayChecked(padding2, 8, _data, i);
+    i += SerDeUtil.write128ArrayChecked(padding, 10, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 8, _data, i);
     return i - _offset;
   }
 

@@ -1,6 +1,6 @@
 package software.sava.idl.clients.metaplex.token.metadata.gen.types;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface UnlockArgs extends RustEnum permits
   UnlockArgs.V1 {
@@ -14,7 +14,7 @@ public sealed interface UnlockArgs extends RustEnum permits
     };
   }
 
-  record V1(AuthorizationData val) implements BorshEnum, UnlockArgs {
+  record V1(AuthorizationData val) implements SerDeEnum, UnlockArgs {
 
     public static V1 read(final byte[] _data, final int _offset) {
       return new V1(AuthorizationData.read(_data, _offset));

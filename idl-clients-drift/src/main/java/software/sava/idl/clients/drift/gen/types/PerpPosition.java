@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -52,7 +53,7 @@ public record PerpPosition(long lastCumulativeFundingRate,
                            int maxMarginRatio,
                            int marketIndex,
                            int openOrders,
-                           int perLpBase) implements Borsh {
+                           int perLpBase) implements SerDe {
 
   public static final int BYTES = 96;
   public static final int PADDING_LEN = 2;
@@ -85,7 +86,7 @@ public record PerpPosition(long lastCumulativeFundingRate,
     final var lastQuoteAssetAmountPerLp = getInt64LE(_data, i);
     i += 8;
     final var padding = new byte[2];
-    i += Borsh.readArray(padding, _data, i);
+    i += SerDeUtil.readArray(padding, _data, i);
     final var maxMarginRatio = getInt16LE(_data, i);
     i += 2;
     final var marketIndex = getInt16LE(_data, i);
@@ -136,7 +137,7 @@ public record PerpPosition(long lastCumulativeFundingRate,
     i += 8;
     putInt64LE(_data, i, lastQuoteAssetAmountPerLp);
     i += 8;
-    i += Borsh.writeArrayChecked(padding, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 2, _data, i);
     putInt16LE(_data, i, maxMarginRatio);
     i += 2;
     putInt16LE(_data, i, marketIndex);

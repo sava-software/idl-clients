@@ -1,8 +1,8 @@
 package software.sava.idl.clients.drift.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.drift.gen.types.MarketType;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -80,8 +80,8 @@ public record RevenueShareSettleRecord(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     putInt64LE(_data, i, ts);
     i += 8;
-    i += Borsh.writeOptional(builder, _data, i);
-    i += Borsh.writeOptional(referrer, _data, i);
+    i += SerDeUtil.writeOptional(1, builder, _data, i);
+    i += SerDeUtil.writeOptional(1, referrer, _data, i);
     putInt64LE(_data, i, feeSettled);
     i += 8;
     putInt16LE(_data, i, marketIndex);

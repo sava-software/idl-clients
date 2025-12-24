@@ -1,8 +1,9 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum UpdateLendingMarketMode implements Borsh.Enum {
+public enum UpdateLendingMarketMode implements RustEnum {
 
   UpdateOwner,
   UpdateEmergencyMode,
@@ -33,6 +34,6 @@ public enum UpdateLendingMarketMode implements Borsh.Enum {
   UpdatePriceTriggeredLiquidationDisabled;
 
   public static UpdateLendingMarketMode read(final byte[] _data, final int _offset) {
-    return Borsh.read(UpdateLendingMarketMode.values(), _data, _offset);
+    return SerDeUtil.read(1, UpdateLendingMarketMode.values(), _data, _offset);
   }
 }

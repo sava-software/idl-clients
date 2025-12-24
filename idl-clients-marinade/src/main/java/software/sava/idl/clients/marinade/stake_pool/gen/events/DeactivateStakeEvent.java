@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.SplitStakeAccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -105,7 +105,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, lastUpdateStakeDelegation);
     i += 8;
-    i += Borsh.writeOptional(splitStakeAccount, _data, i);
+    i += SerDeUtil.writeOptional(1, splitStakeAccount, _data, i);
     putInt32LE(_data, i, validatorIndex);
     i += 4;
     validatorVote.write(_data, i);

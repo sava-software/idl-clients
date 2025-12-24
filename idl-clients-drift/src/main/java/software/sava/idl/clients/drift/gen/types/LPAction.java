@@ -1,8 +1,9 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum LPAction implements Borsh.Enum {
+public enum LPAction implements RustEnum {
 
   AddLiquidity,
   RemoveLiquidity,
@@ -10,6 +11,6 @@ public enum LPAction implements Borsh.Enum {
   RemoveLiquidityDerisk;
 
   public static LPAction read(final byte[] _data, final int _offset) {
-    return Borsh.read(LPAction.values(), _data, _offset);
+    return SerDeUtil.read(1, LPAction.values(), _data, _offset);
   }
 }

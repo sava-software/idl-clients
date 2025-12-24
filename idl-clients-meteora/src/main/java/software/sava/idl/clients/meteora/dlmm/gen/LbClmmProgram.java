@@ -6,9 +6,10 @@ import java.util.OptionalInt;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.meteora.dlmm.gen.types.AddLiquiditySingleSidePreciseParameter;
 import software.sava.idl.clients.meteora.dlmm.gen.types.AddLiquiditySingleSidePreciseParameter2;
 import software.sava.idl.clients.meteora.dlmm.gen.types.BaseFeeParameter;
@@ -135,7 +136,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityIxData(Discriminator discriminator, LiquidityParameter liquidityParameter) implements Borsh {  
+  public record AddLiquidityIxData(Discriminator discriminator, LiquidityParameter liquidityParameter) implements SerDe {  
 
     public static AddLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -248,7 +249,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidity2IxData(Discriminator discriminator, LiquidityParameter liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record AddLiquidity2IxData(Discriminator discriminator, LiquidityParameter liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static AddLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -369,7 +370,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityByStrategyIxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter) implements Borsh {  
+  public record AddLiquidityByStrategyIxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter) implements SerDe {  
 
     public static AddLiquidityByStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -484,7 +485,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityByStrategy2IxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record AddLiquidityByStrategy2IxData(Discriminator discriminator, LiquidityParameterByStrategy liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static AddLiquidityByStrategy2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -589,7 +590,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityByStrategyOneSideIxData(Discriminator discriminator, LiquidityParameterByStrategyOneSide liquidityParameter) implements Borsh {  
+  public record AddLiquidityByStrategyOneSideIxData(Discriminator discriminator, LiquidityParameterByStrategyOneSide liquidityParameter) implements SerDe {  
 
     public static AddLiquidityByStrategyOneSideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -709,7 +710,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityByWeightIxData(Discriminator discriminator, LiquidityParameterByWeight liquidityParameter) implements Borsh {  
+  public record AddLiquidityByWeightIxData(Discriminator discriminator, LiquidityParameterByWeight liquidityParameter) implements SerDe {  
 
     public static AddLiquidityByWeightIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -811,7 +812,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityOneSideIxData(Discriminator discriminator, LiquidityOneSideParameter liquidityParameter) implements Borsh {  
+  public record AddLiquidityOneSideIxData(Discriminator discriminator, LiquidityOneSideParameter liquidityParameter) implements SerDe {  
 
     public static AddLiquidityOneSideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -913,7 +914,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityOneSidePreciseIxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter parameter) implements Borsh {  
+  public record AddLiquidityOneSidePreciseIxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter parameter) implements SerDe {  
 
     public static AddLiquidityOneSidePreciseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1010,7 +1011,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record AddLiquidityOneSidePrecise2IxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter2 liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record AddLiquidityOneSidePrecise2IxData(Discriminator discriminator, AddLiquiditySingleSidePreciseParameter2 liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static AddLiquidityOneSidePrecise2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1211,7 +1212,7 @@ public final class LbClmmProgram {
   public record ClaimFee2IxData(Discriminator discriminator,
                                 int minBinId,
                                 int maxBinId,
-                                RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static ClaimFee2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1315,7 +1316,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record ClaimRewardIxData(Discriminator discriminator, long rewardIndex) implements Borsh {  
+  public record ClaimRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {  
 
     public static ClaimRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1433,7 +1434,7 @@ public final class LbClmmProgram {
                                    long rewardIndex,
                                    int minBinId,
                                    int maxBinId,
-                                   RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                   RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static ClaimReward2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1801,7 +1802,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record DecreasePositionLengthIxData(Discriminator discriminator, int lengthToRemove, int side) implements Borsh {  
+  public record DecreasePositionLengthIxData(Discriminator discriminator, int lengthToRemove, int side) implements SerDe {  
 
     public static DecreasePositionLengthIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1864,7 +1865,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record ForIdlTypeGenerationDoNotCallIxData(Discriminator discriminator, DummyIx ix) implements Borsh {  
+  public record ForIdlTypeGenerationDoNotCallIxData(Discriminator discriminator, DummyIx ix) implements SerDe {  
 
     public static ForIdlTypeGenerationDoNotCallIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1977,7 +1978,7 @@ public final class LbClmmProgram {
                                  long rewardIndex,
                                  long amount,
                                  boolean carryForward,
-                                 RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                 RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static FundRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2071,7 +2072,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record GoToABinIxData(Discriminator discriminator, int binId) implements Borsh {  
+  public record GoToABinIxData(Discriminator discriminator, int binId) implements SerDe {  
 
     public static GoToABinIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2146,7 +2147,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record IncreaseOracleLengthIxData(Discriminator discriminator, long lengthToAdd) implements Borsh {  
+  public record IncreaseOracleLengthIxData(Discriminator discriminator, long lengthToAdd) implements SerDe {  
 
     public static IncreaseOracleLengthIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2233,7 +2234,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record IncreasePositionLengthIxData(Discriminator discriminator, int lengthToAdd, int side) implements Borsh {  
+  public record IncreasePositionLengthIxData(Discriminator discriminator, int lengthToAdd, int side) implements SerDe {  
 
     public static IncreasePositionLengthIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2320,7 +2321,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record IncreasePositionLength2IxData(Discriminator discriminator, int minimumUpperBinId) implements Borsh {  
+  public record IncreasePositionLength2IxData(Discriminator discriminator, int minimumUpperBinId) implements SerDe {  
 
     public static IncreasePositionLength2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2391,7 +2392,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializeBinArrayIxData(Discriminator discriminator, long index) implements Borsh {  
+  public record InitializeBinArrayIxData(Discriminator discriminator, long index) implements SerDe {  
 
     public static InitializeBinArrayIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2540,7 +2541,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializeCustomizablePermissionlessLbPairIxData(Discriminator discriminator, CustomizableParams params) implements Borsh {  
+  public record InitializeCustomizablePermissionlessLbPairIxData(Discriminator discriminator, CustomizableParams params) implements SerDe {  
 
     public static InitializeCustomizablePermissionlessLbPairIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2662,7 +2663,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializeCustomizablePermissionlessLbPair2IxData(Discriminator discriminator, CustomizableParams params) implements Borsh {  
+  public record InitializeCustomizablePermissionlessLbPair2IxData(Discriminator discriminator, CustomizableParams params) implements SerDe {  
 
     public static InitializeCustomizablePermissionlessLbPair2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2773,7 +2774,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializeLbPairIxData(Discriminator discriminator, int activeId, int binStep) implements Borsh {  
+  public record InitializeLbPairIxData(Discriminator discriminator, int activeId, int binStep) implements SerDe {  
 
     public static InitializeLbPairIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2898,7 +2899,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializeLbPair2IxData(Discriminator discriminator, InitializeLbPair2Params params) implements Borsh {  
+  public record InitializeLbPair2IxData(Discriminator discriminator, InitializeLbPair2Params params) implements SerDe {  
 
     public static InitializeLbPair2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3019,7 +3020,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePermissionLbPairIxData(Discriminator discriminator, InitPermissionPairIx ixData) implements Borsh {  
+  public record InitializePermissionLbPairIxData(Discriminator discriminator, InitPermissionPairIx ixData) implements SerDe {  
 
     public static InitializePermissionLbPairIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3106,7 +3107,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePositionIxData(Discriminator discriminator, int lowerBinId, int width) implements Borsh {  
+  public record InitializePositionIxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {  
 
     public static InitializePositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3197,7 +3198,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePosition2IxData(Discriminator discriminator, int lowerBinId, int width) implements Borsh {  
+  public record InitializePosition2IxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {  
 
     public static InitializePosition2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3325,7 +3326,7 @@ public final class LbClmmProgram {
                                                    int lowerBinId,
                                                    int width,
                                                    PublicKey feeOwner,
-                                                   long lockReleasePoint) implements Borsh {  
+                                                   long lockReleasePoint) implements SerDe {  
 
     public static InitializePositionByOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3435,7 +3436,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePositionPdaIxData(Discriminator discriminator, int lowerBinId, int width) implements Borsh {  
+  public record InitializePositionPdaIxData(Discriminator discriminator, int lowerBinId, int width) implements SerDe {  
 
     public static InitializePositionPdaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3507,7 +3508,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePresetParameterIxData(Discriminator discriminator, InitPresetParametersIx ix) implements Borsh {  
+  public record InitializePresetParameterIxData(Discriminator discriminator, InitPresetParametersIx ix) implements SerDe {  
 
     public static InitializePresetParameterIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3573,7 +3574,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record InitializePresetParameter2IxData(Discriminator discriminator, InitPresetParameters2Ix ix) implements Borsh {  
+  public record InitializePresetParameter2IxData(Discriminator discriminator, InitPresetParameters2Ix ix) implements SerDe {  
 
     public static InitializePresetParameter2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3683,7 +3684,7 @@ public final class LbClmmProgram {
   public record InitializeRewardIxData(Discriminator discriminator,
                                        long rewardIndex,
                                        long rewardDuration,
-                                       PublicKey funder) implements Borsh {  
+                                       PublicKey funder) implements SerDe {  
 
     public static InitializeRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3930,7 +3931,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record RebalanceLiquidityIxData(Discriminator discriminator, RebalanceLiquidityParams params, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record RebalanceLiquidityIxData(Discriminator discriminator, RebalanceLiquidityParams params, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static RebalanceLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4127,14 +4128,14 @@ public final class LbClmmProgram {
   public static Instruction removeLiquidity(final AccountMeta invokedLbClmmProgramMeta,
                                             final List<AccountMeta> keys,
                                             final BinLiquidityReduction[] binLiquidityRemoval) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(binLiquidityRemoval)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, binLiquidityRemoval)];
     int i = REMOVE_LIQUIDITY_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(binLiquidityRemoval, _data, i);
+    SerDeUtil.writeVector(4, binLiquidityRemoval, _data, i);
 
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record RemoveLiquidityIxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval) implements Borsh {  
+  public record RemoveLiquidityIxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval) implements SerDe {  
 
     public static RemoveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4146,20 +4147,20 @@ public final class LbClmmProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var binLiquidityRemoval = Borsh.readVector(BinLiquidityReduction.class, BinLiquidityReduction::read, _data, i);
+      final var binLiquidityRemoval = SerDeUtil.readVector(4, BinLiquidityReduction.class, BinLiquidityReduction::read, _data, i);
       return new RemoveLiquidityIxData(discriminator, binLiquidityRemoval);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(binLiquidityRemoval, _data, i);
+      i += SerDeUtil.writeVector(4, binLiquidityRemoval, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(binLiquidityRemoval);
+      return 8 + SerDeUtil.lenVector(4, binLiquidityRemoval);
     }
   }
 
@@ -4243,15 +4244,15 @@ public final class LbClmmProgram {
                                              final List<AccountMeta> keys,
                                              final BinLiquidityReduction[] binLiquidityRemoval,
                                              final RemainingAccountsInfo remainingAccountsInfo) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(binLiquidityRemoval) + remainingAccountsInfo.l()];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, binLiquidityRemoval) + remainingAccountsInfo.l()];
     int i = REMOVE_LIQUIDITY_2_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(binLiquidityRemoval, _data, i);
+    i += SerDeUtil.writeVector(4, binLiquidityRemoval, _data, i);
     remainingAccountsInfo.write(_data, i);
 
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record RemoveLiquidity2IxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record RemoveLiquidity2IxData(Discriminator discriminator, BinLiquidityReduction[] binLiquidityRemoval, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static RemoveLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4263,8 +4264,8 @@ public final class LbClmmProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var binLiquidityRemoval = Borsh.readVector(BinLiquidityReduction.class, BinLiquidityReduction::read, _data, i);
-      i += Borsh.lenVector(binLiquidityRemoval);
+      final var binLiquidityRemoval = SerDeUtil.readVector(4, BinLiquidityReduction.class, BinLiquidityReduction::read, _data, i);
+      i += SerDeUtil.lenVector(4, binLiquidityRemoval);
       final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       return new RemoveLiquidity2IxData(discriminator, binLiquidityRemoval, remainingAccountsInfo);
     }
@@ -4272,14 +4273,14 @@ public final class LbClmmProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(binLiquidityRemoval, _data, i);
+      i += SerDeUtil.writeVector(4, binLiquidityRemoval, _data, i);
       i += remainingAccountsInfo.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(binLiquidityRemoval) + remainingAccountsInfo.l();
+      return 8 + SerDeUtil.lenVector(4, binLiquidityRemoval) + remainingAccountsInfo.l();
     }
   }
 
@@ -4389,7 +4390,7 @@ public final class LbClmmProgram {
   public record RemoveLiquidityByRangeIxData(Discriminator discriminator,
                                              int fromBinId,
                                              int toBinId,
-                                             int bpsToRemove) implements Borsh {  
+                                             int bpsToRemove) implements SerDe {  
 
     public static RemoveLiquidityByRangeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4537,7 +4538,7 @@ public final class LbClmmProgram {
                                               int fromBinId,
                                               int toBinId,
                                               int bpsToRemove,
-                                              RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                              RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static RemoveLiquidityByRange2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4613,7 +4614,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements Borsh {  
+  public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {  
 
     public static SetActivationPointIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4676,7 +4677,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SetPairStatusIxData(Discriminator discriminator, int status) implements Borsh {  
+  public record SetPairStatusIxData(Discriminator discriminator, int status) implements SerDe {  
 
     public static SetPairStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4739,7 +4740,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SetPairStatusPermissionlessIxData(Discriminator discriminator, int status) implements Borsh {  
+  public record SetPairStatusPermissionlessIxData(Discriminator discriminator, int status) implements SerDe {  
 
     public static SetPairStatusPermissionlessIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4802,7 +4803,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SetPreActivationDurationIxData(Discriminator discriminator, long preActivationDuration) implements Borsh {  
+  public record SetPreActivationDurationIxData(Discriminator discriminator, long preActivationDuration) implements SerDe {  
 
     public static SetPreActivationDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4865,7 +4866,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SetPreActivationSwapAddressIxData(Discriminator discriminator, PublicKey preActivationSwapAddress) implements Borsh {  
+  public record SetPreActivationSwapAddressIxData(Discriminator discriminator, PublicKey preActivationSwapAddress) implements SerDe {  
 
     public static SetPreActivationSwapAddressIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4986,7 +4987,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SwapIxData(Discriminator discriminator, long amountIn, long minAmountOut) implements Borsh {  
+  public record SwapIxData(Discriminator discriminator, long amountIn, long minAmountOut) implements SerDe {  
 
     public static SwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5128,7 +5129,7 @@ public final class LbClmmProgram {
   public record Swap2IxData(Discriminator discriminator,
                             long amountIn,
                             long minAmountOut,
-                            RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                            RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static Swap2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5254,7 +5255,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record SwapExactOutIxData(Discriminator discriminator, long maxInAmount, long outAmount) implements Borsh {  
+  public record SwapExactOutIxData(Discriminator discriminator, long maxInAmount, long outAmount) implements SerDe {  
 
     public static SwapExactOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5396,7 +5397,7 @@ public final class LbClmmProgram {
   public record SwapExactOut2IxData(Discriminator discriminator,
                                     long maxInAmount,
                                     long outAmount,
-                                    RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                    RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static SwapExactOut2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5528,7 +5529,7 @@ public final class LbClmmProgram {
     int i = SWAP_WITH_PRICE_IMPACT_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amountIn);
     i += 8;
-    i += Borsh.writeOptional(activeId, _data, i);
+    i += SerDeUtil.writeOptional(1, activeId, _data, i);
     putInt16LE(_data, i, maxPriceImpactBps);
 
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
@@ -5537,7 +5538,7 @@ public final class LbClmmProgram {
   public record SwapWithPriceImpactIxData(Discriminator discriminator,
                                           long amountIn,
                                           OptionalInt activeId,
-                                          int maxPriceImpactBps) implements Borsh {  
+                                          int maxPriceImpactBps) implements SerDe {  
 
     public static SwapWithPriceImpactIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5569,7 +5570,7 @@ public final class LbClmmProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amountIn);
       i += 8;
-      i += Borsh.writeOptional(activeId, _data, i);
+      i += SerDeUtil.writeOptional(1, activeId, _data, i);
       putInt16LE(_data, i, maxPriceImpactBps);
       i += 2;
       return i - _offset;
@@ -5683,7 +5684,7 @@ public final class LbClmmProgram {
     int i = SWAP_WITH_PRICE_IMPACT_2_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amountIn);
     i += 8;
-    i += Borsh.writeOptional(activeId, _data, i);
+    i += SerDeUtil.writeOptional(1, activeId, _data, i);
     putInt16LE(_data, i, maxPriceImpactBps);
     i += 2;
     remainingAccountsInfo.write(_data, i);
@@ -5695,7 +5696,7 @@ public final class LbClmmProgram {
                                            long amountIn,
                                            OptionalInt activeId,
                                            int maxPriceImpactBps,
-                                           RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                           RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static SwapWithPriceImpact2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5733,7 +5734,7 @@ public final class LbClmmProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amountIn);
       i += 8;
-      i += Borsh.writeOptional(activeId, _data, i);
+      i += SerDeUtil.writeOptional(1, activeId, _data, i);
       putInt16LE(_data, i, maxPriceImpactBps);
       i += 2;
       i += remainingAccountsInfo.write(_data, i);
@@ -5785,7 +5786,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdateBaseFeeParametersIxData(Discriminator discriminator, BaseFeeParameter feeParameter) implements Borsh {  
+  public record UpdateBaseFeeParametersIxData(Discriminator discriminator, BaseFeeParameter feeParameter) implements SerDe {  
 
     public static UpdateBaseFeeParametersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5855,7 +5856,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdateDynamicFeeParametersIxData(Discriminator discriminator, DynamicFeeParameter feeParameter) implements Borsh {  
+  public record UpdateDynamicFeeParametersIxData(Discriminator discriminator, DynamicFeeParameter feeParameter) implements SerDe {  
 
     public static UpdateDynamicFeeParametersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5925,7 +5926,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdateFeesAndReward2IxData(Discriminator discriminator, int minBinId, int maxBinId) implements Borsh {  
+  public record UpdateFeesAndReward2IxData(Discriminator discriminator, int minBinId, int maxBinId) implements SerDe {  
 
     public static UpdateFeesAndReward2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6037,7 +6038,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdatePositionOperatorIxData(Discriminator discriminator, PublicKey operator) implements Borsh {  
+  public record UpdatePositionOperatorIxData(Discriminator discriminator, PublicKey operator) implements SerDe {  
 
     public static UpdatePositionOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6116,7 +6117,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdateRewardDurationIxData(Discriminator discriminator, long rewardIndex, long newDuration) implements Borsh {  
+  public record UpdateRewardDurationIxData(Discriminator discriminator, long rewardIndex, long newDuration) implements SerDe {  
 
     public static UpdateRewardDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6195,7 +6196,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record UpdateRewardFunderIxData(Discriminator discriminator, long rewardIndex, PublicKey newFunder) implements Borsh {  
+  public record UpdateRewardFunderIxData(Discriminator discriminator, long rewardIndex, PublicKey newFunder) implements SerDe {  
 
     public static UpdateRewardFunderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6298,7 +6299,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
-  public record WithdrawIneligibleRewardIxData(Discriminator discriminator, long rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+  public record WithdrawIneligibleRewardIxData(Discriminator discriminator, long rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static WithdrawIneligibleRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6421,7 +6422,7 @@ public final class LbClmmProgram {
   public record WithdrawProtocolFeeIxData(Discriminator discriminator,
                                           long maxAmountX,
                                           long maxAmountY,
-                                          RemainingAccountsInfo remainingAccountsInfo) implements Borsh {  
+                                          RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static WithdrawProtocolFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

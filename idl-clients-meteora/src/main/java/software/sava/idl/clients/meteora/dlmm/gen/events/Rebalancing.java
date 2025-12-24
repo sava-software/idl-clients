@@ -1,8 +1,8 @@
 package software.sava.idl.clients.meteora.dlmm.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -68,7 +68,7 @@ public record Rebalancing(Discriminator discriminator,
     final var newMaxId = getInt32LE(_data, i);
     i += 4;
     final var rewards = new long[2];
-    Borsh.readArray(rewards, _data, i);
+    SerDeUtil.readArray(rewards, _data, i);
     return new Rebalancing(discriminator,
                            lbPair,
                            position,
@@ -118,7 +118,7 @@ public record Rebalancing(Discriminator discriminator,
     i += 4;
     putInt32LE(_data, i, newMaxId);
     i += 4;
-    i += Borsh.writeArrayChecked(rewards, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(rewards, 2, _data, i);
     return i - _offset;
   }
 

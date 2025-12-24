@@ -1,11 +1,11 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
-public record EnableAttesterParams(PublicKey newAttester) implements Borsh {
+public record EnableAttesterParams(PublicKey newAttester) implements SerDe {
 
   public static final int BYTES = 32;
 

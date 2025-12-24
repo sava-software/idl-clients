@@ -1,6 +1,7 @@
 package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -18,7 +19,7 @@ public record TwapPrice(byte[] feedId,
                         long price,
                         long conf,
                         int exponent,
-                        int downSlotsRatio) implements Borsh {
+                        int downSlotsRatio) implements SerDe {
 
   public static final int BYTES = 72;
   public static final int FEED_ID_LEN = 32;
@@ -29,7 +30,7 @@ public record TwapPrice(byte[] feedId,
     }
     int i = _offset;
     final var feedId = new byte[32];
-    i += Borsh.readArray(feedId, _data, i);
+    i += SerDeUtil.readArray(feedId, _data, i);
     final var startTime = getInt64LE(_data, i);
     i += 8;
     final var endTime = getInt64LE(_data, i);
@@ -53,7 +54,7 @@ public record TwapPrice(byte[] feedId,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += Borsh.writeArrayChecked(feedId, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
     putInt64LE(_data, i, startTime);
     i += 8;
     putInt64LE(_data, i, endTime);

@@ -1,7 +1,8 @@
 package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -11,7 +12,7 @@ public record SendMessageParams(int destinationDomain,
                                 PublicKey recipient,
                                 PublicKey destinationCaller,
                                 int minFinalityThreshold,
-                                byte[] messageBody) implements Borsh {
+                                byte[] messageBody) implements SerDe {
 
   public static SendMessageParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -26,7 +27,7 @@ public record SendMessageParams(int destinationDomain,
     i += 32;
     final var minFinalityThreshold = getInt32LE(_data, i);
     i += 4;
-    final var messageBody = Borsh.readbyteVector(_data, i);
+    final var messageBody = SerDeUtil.readbyteVector(4, _data, i);
     return new SendMessageParams(destinationDomain,
                                  recipient,
                                  destinationCaller,
@@ -45,7 +46,7 @@ public record SendMessageParams(int destinationDomain,
     i += 32;
     putInt32LE(_data, i, minFinalityThreshold);
     i += 4;
-    i += Borsh.writeVector(messageBody, _data, i);
+    i += SerDeUtil.writeVector(4, messageBody, _data, i);
     return i - _offset;
   }
 
@@ -55,6 +56,6 @@ public record SendMessageParams(int destinationDomain,
          + 32
          + 32
          + 4
-         + Borsh.lenVector(messageBody);
+         + SerDeUtil.lenVector(4, messageBody);
   }
 }

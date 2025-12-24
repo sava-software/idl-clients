@@ -2,7 +2,8 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -27,7 +28,7 @@ public record CustomizableParams(int activeId,
                                  OptionalLong activationPoint,
                                  boolean creatorPoolOnOffControl,
                                  int baseFeePowerFactor,
-                                 byte[] padding) implements Borsh {
+                                 byte[] padding) implements SerDe {
 
   public static final int PADDING_LEN = 62;
   public static CustomizableParams read(final byte[] _data, final int _offset) {
@@ -59,7 +60,7 @@ public record CustomizableParams(int activeId,
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[62];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new CustomizableParams(activeId,
                                   binStep,
                                   baseFactor,
@@ -84,12 +85,12 @@ public record CustomizableParams(int activeId,
     ++i;
     _data[i] = (byte) (hasAlphaVault ? 1 : 0);
     ++i;
-    i += Borsh.writeOptional(activationPoint, _data, i);
+    i += SerDeUtil.writeOptional(1, activationPoint, _data, i);
     _data[i] = (byte) (creatorPoolOnOffControl ? 1 : 0);
     ++i;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 62, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 62, _data, i);
     return i - _offset;
   }
 
@@ -103,6 +104,6 @@ public record CustomizableParams(int activeId,
          + (activationPoint == null || activationPoint.isEmpty() ? 1 : (1 + 8))
          + 1
          + 1
-         + Borsh.lenArray(padding);
+         + SerDeUtil.lenArray(padding);
   }
 }

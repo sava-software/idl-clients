@@ -4,9 +4,10 @@ import java.util.List;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.oracles.pyth.push.gen.types.PostUpdateParams;
 import software.sava.idl.clients.oracles.pyth.receiver.gen.types.Config;
 import software.sava.idl.clients.oracles.pyth.receiver.gen.types.DataSource;
@@ -60,7 +61,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, Config initialConfig) implements Borsh {  
+  public record InitializeIxData(Discriminator discriminator, Config initialConfig) implements SerDe {  
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -120,7 +121,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record RequestGovernanceAuthorityTransferIxData(Discriminator discriminator, PublicKey targetGovernanceAuthority) implements Borsh {  
+  public record RequestGovernanceAuthorityTransferIxData(Discriminator discriminator, PublicKey targetGovernanceAuthority) implements SerDe {  
 
     public static RequestGovernanceAuthorityTransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -226,14 +227,14 @@ public final class PythSolanaReceiverProgram {
   public static Instruction setDataSources(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                            final List<AccountMeta> keys,
                                            final DataSource[] validDataSources) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(validDataSources)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, validDataSources)];
     int i = SET_DATA_SOURCES_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(validDataSources, _data, i);
+    SerDeUtil.writeVector(4, validDataSources, _data, i);
 
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetDataSourcesIxData(Discriminator discriminator, DataSource[] validDataSources) implements Borsh {  
+  public record SetDataSourcesIxData(Discriminator discriminator, DataSource[] validDataSources) implements SerDe {  
 
     public static SetDataSourcesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -245,20 +246,20 @@ public final class PythSolanaReceiverProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var validDataSources = Borsh.readVector(DataSource.class, DataSource::read, _data, i);
+      final var validDataSources = SerDeUtil.readVector(4, DataSource.class, DataSource::read, _data, i);
       return new SetDataSourcesIxData(discriminator, validDataSources);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(validDataSources, _data, i);
+      i += SerDeUtil.writeVector(4, validDataSources, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(validDataSources);
+      return 8 + SerDeUtil.lenVector(4, validDataSources);
     }
   }
 
@@ -293,7 +294,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements Borsh {  
+  public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements SerDe {  
 
     public static SetFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -356,7 +357,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetWormholeAddressIxData(Discriminator discriminator, PublicKey wormhole) implements Borsh {  
+  public record SetWormholeAddressIxData(Discriminator discriminator, PublicKey wormhole) implements SerDe {  
 
     public static SetWormholeAddressIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -419,7 +420,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements Borsh {  
+  public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements SerDe {  
 
     public static SetMinimumSignaturesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -541,7 +542,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostUpdateAtomicIxData(Discriminator discriminator, PostUpdateAtomicParams params) implements Borsh {  
+  public record PostUpdateAtomicIxData(Discriminator discriminator, PostUpdateAtomicParams params) implements SerDe {  
 
     public static PostUpdateAtomicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -637,7 +638,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostUpdateIxData(Discriminator discriminator, PostUpdateParams params) implements Borsh {  
+  public record PostUpdateIxData(Discriminator discriminator, PostUpdateParams params) implements SerDe {  
 
     public static PostUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -737,7 +738,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostTwapUpdateIxData(Discriminator discriminator, PostTwapUpdateParams params) implements Borsh {  
+  public record PostTwapUpdateIxData(Discriminator discriminator, PostTwapUpdateParams params) implements SerDe {  
 
     public static PostTwapUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

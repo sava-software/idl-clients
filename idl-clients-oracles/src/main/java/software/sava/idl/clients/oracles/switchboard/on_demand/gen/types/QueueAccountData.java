@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -65,7 +66,7 @@ public record QueueAccountData(PublicKey _address,
                                VaultInfo[] vaults,
                                byte[] ebuf4,
                                byte[] ebuf2,
-                               byte[] ebuf1) implements Borsh {
+                               byte[] ebuf1) implements SerDe {
 
   public static final int BYTES = 6280;
   public static final int MR_ENCLAVES_LEN = 32;
@@ -235,9 +236,9 @@ public record QueueAccountData(PublicKey _address,
     final var authority = readPubKey(_data, i);
     i += 32;
     final var mrEnclaves = new byte[32][32];
-    i += Borsh.readArray(mrEnclaves, _data, i);
+    i += SerDeUtil.readArray(mrEnclaves, _data, i);
     final var oracleKeys = new PublicKey[128];
-    i += Borsh.readArray(oracleKeys, _data, i);
+    i += SerDeUtil.readArray(oracleKeys, _data, i);
     final var maxQuoteVerificationAge = getInt64LE(_data, i);
     i += 8;
     final var lastHeartbeat = getInt64LE(_data, i);
@@ -273,19 +274,19 @@ public record QueueAccountData(PublicKey _address,
     final var allowSubsidies = _data[i] & 0xFF;
     ++i;
     final var ebuf6 = new byte[15];
-    i += Borsh.readArray(ebuf6, _data, i);
+    i += SerDeUtil.readArray(ebuf6, _data, i);
     final var ncn = readPubKey(_data, i);
     i += 32;
     final var resrved = getInt64LE(_data, i);
     i += 8;
     final var vaults = new VaultInfo[4];
-    i += Borsh.readArray(vaults, VaultInfo::read, _data, i);
+    i += SerDeUtil.readArray(vaults, VaultInfo::read, _data, i);
     final var ebuf4 = new byte[32];
-    i += Borsh.readArray(ebuf4, _data, i);
+    i += SerDeUtil.readArray(ebuf4, _data, i);
     final var ebuf2 = new byte[256];
-    i += Borsh.readArray(ebuf2, _data, i);
+    i += SerDeUtil.readArray(ebuf2, _data, i);
     final var ebuf1 = new byte[512];
-    Borsh.readArray(ebuf1, _data, i);
+    SerDeUtil.readArray(ebuf1, _data, i);
     return new QueueAccountData(_address,
                                 discriminator,
                                 authority,
@@ -322,8 +323,8 @@ public record QueueAccountData(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     authority.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(mrEnclaves, 32, _data, i);
-    i += Borsh.writeArrayChecked(oracleKeys, 128, _data, i);
+    i += SerDeUtil.writeArrayChecked(mrEnclaves, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(oracleKeys, 128, _data, i);
     putInt64LE(_data, i, maxQuoteVerificationAge);
     i += 8;
     putInt64LE(_data, i, lastHeartbeat);
@@ -358,15 +359,15 @@ public record QueueAccountData(PublicKey _address,
     i += 8;
     _data[i] = (byte) allowSubsidies;
     ++i;
-    i += Borsh.writeArrayChecked(ebuf6, 15, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf6, 15, _data, i);
     ncn.write(_data, i);
     i += 32;
     putInt64LE(_data, i, resrved);
     i += 8;
-    i += Borsh.writeArrayChecked(vaults, 4, _data, i);
-    i += Borsh.writeArrayChecked(ebuf4, 32, _data, i);
-    i += Borsh.writeArrayChecked(ebuf2, 256, _data, i);
-    i += Borsh.writeArrayChecked(ebuf1, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(vaults, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf4, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf2, 256, _data, i);
+    i += SerDeUtil.writeArrayChecked(ebuf1, 512, _data, i);
     return i - _offset;
   }
 

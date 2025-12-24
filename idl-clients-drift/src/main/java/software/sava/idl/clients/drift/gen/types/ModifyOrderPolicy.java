@@ -1,13 +1,14 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum ModifyOrderPolicy implements Borsh.Enum {
+public enum ModifyOrderPolicy implements RustEnum {
 
   MustModify,
   ExcludePreviousFill;
 
   public static ModifyOrderPolicy read(final byte[] _data, final int _offset) {
-    return Borsh.read(ModifyOrderPolicy.values(), _data, _offset);
+    return SerDeUtil.read(1, ModifyOrderPolicy.values(), _data, _offset);
   }
 }

@@ -1,6 +1,7 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -26,7 +27,7 @@ public record SpotPosition(long scaledBalance,
                            int marketIndex,
                            SpotBalanceType balanceType,
                            int openOrders,
-                           byte[] padding) implements Borsh {
+                           byte[] padding) implements SerDe {
 
   public static final int BYTES = 40;
   public static final int PADDING_LEN = 4;
@@ -51,7 +52,7 @@ public record SpotPosition(long scaledBalance,
     final var openOrders = _data[i] & 0xFF;
     ++i;
     final var padding = new byte[4];
-    Borsh.readArray(padding, _data, i);
+    SerDeUtil.readArray(padding, _data, i);
     return new SpotPosition(scaledBalance,
                             openBids,
                             openAsks,
@@ -78,7 +79,7 @@ public record SpotPosition(long scaledBalance,
     i += balanceType.write(_data, i);
     _data[i] = (byte) openOrders;
     ++i;
-    i += Borsh.writeArrayChecked(padding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     return i - _offset;
   }
 

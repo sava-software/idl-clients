@@ -1,7 +1,8 @@
 package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -11,7 +12,7 @@ public record OracleInitSVMParams(long recentSlot,
                                   PublicKey authority,
                                   PublicKey queue,
                                   byte[] secpAuthority,
-                                  PublicKey sourceOracleKey) implements Borsh {
+                                  PublicKey sourceOracleKey) implements SerDe {
 
   public static OracleInitSVMParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -31,7 +32,7 @@ public record OracleInitSVMParams(long recentSlot,
     } else {
       ++i;
       secpAuthority = new byte[64];
-      i += Borsh.readArray(secpAuthority, _data, i);
+      i += SerDeUtil.readArray(secpAuthority, _data, i);
     }
     final var sourceOracleKey = readPubKey(_data, i);
     return new OracleInitSVMParams(recentSlot,
@@ -54,7 +55,7 @@ public record OracleInitSVMParams(long recentSlot,
       _data[i++] = 0;
     } else {
       _data[i++] = 1;
-      i += Borsh.writeArrayChecked(secpAuthority, 64, _data, i);
+      i += SerDeUtil.writeArrayChecked(secpAuthority, 64, _data, i);
     }
     sourceOracleKey.write(_data, i);
     i += 32;
@@ -66,7 +67,7 @@ public record OracleInitSVMParams(long recentSlot,
     return 8
          + 32
          + 32
-         + (secpAuthority == null || secpAuthority.length == 0 ? 1 : (1 + Borsh.lenArray(secpAuthority)))
+         + (secpAuthority == null || secpAuthority.length == 0 ? 1 : (1 + SerDeUtil.lenArray(secpAuthority)))
          + 32;
   }
 }

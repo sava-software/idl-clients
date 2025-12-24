@@ -3,9 +3,10 @@ package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -21,7 +22,7 @@ public record Config(PublicKey _address,
                      PublicKey wormhole,
                      DataSource[] validDataSources,
                      long singleUpdateFeeInLamports,
-                     int minimumSignatures) implements Borsh {
+                     int minimumSignatures) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(155, 12, 170, 224, 30, 250, 204, 130);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -73,8 +74,8 @@ public record Config(PublicKey _address,
     }
     final var wormhole = readPubKey(_data, i);
     i += 32;
-    final var validDataSources = Borsh.readVector(DataSource.class, DataSource::read, _data, i);
-    i += Borsh.lenVector(validDataSources);
+    final var validDataSources = SerDeUtil.readVector(4, DataSource.class, DataSource::read, _data, i);
+    i += SerDeUtil.lenVector(4, validDataSources);
     final var singleUpdateFeeInLamports = getInt64LE(_data, i);
     i += 8;
     final var minimumSignatures = _data[i] & 0xFF;
@@ -93,10 +94,10 @@ public record Config(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     governanceAuthority.write(_data, i);
     i += 32;
-    i += Borsh.writeOptional(targetGovernanceAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, targetGovernanceAuthority, _data, i);
     wormhole.write(_data, i);
     i += 32;
-    i += Borsh.writeVector(validDataSources, _data, i);
+    i += SerDeUtil.writeVector(4, validDataSources, _data, i);
     putInt64LE(_data, i, singleUpdateFeeInLamports);
     i += 8;
     _data[i] = (byte) minimumSignatures;
@@ -109,7 +110,7 @@ public record Config(PublicKey _address,
     return 8 + 32
          + (targetGovernanceAuthority == null ? 1 : (1 + 32))
          + 32
-         + Borsh.lenVector(validDataSources)
+         + SerDeUtil.lenVector(4, validDataSources)
          + 8
          + 1;
   }

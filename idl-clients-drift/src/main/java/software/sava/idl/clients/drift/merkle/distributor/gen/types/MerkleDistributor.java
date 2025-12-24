@@ -3,9 +3,10 @@ package software.sava.idl.clients.drift.merkle.distributor.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -59,7 +60,7 @@ public record MerkleDistributor(PublicKey _address,
                                 boolean closable,
                                 byte[] buffer0,
                                 byte[] buffer1,
-                                byte[] buffer2) implements Borsh {
+                                byte[] buffer2) implements SerDe {
 
   public static final int BYTES = 347;
   public static final int ROOT_LEN = 32;
@@ -206,7 +207,7 @@ public record MerkleDistributor(PublicKey _address,
     final var version = getInt64LE(_data, i);
     i += 8;
     final var root = new byte[32];
-    i += Borsh.readArray(root, _data, i);
+    i += SerDeUtil.readArray(root, _data, i);
     final var mint = readPubKey(_data, i);
     i += 32;
     final var tokenVault = readPubKey(_data, i);
@@ -238,11 +239,11 @@ public record MerkleDistributor(PublicKey _address,
     final var closable = _data[i] == 1;
     ++i;
     final var buffer0 = new byte[32];
-    i += Borsh.readArray(buffer0, _data, i);
+    i += SerDeUtil.readArray(buffer0, _data, i);
     final var buffer1 = new byte[32];
-    i += Borsh.readArray(buffer1, _data, i);
+    i += SerDeUtil.readArray(buffer1, _data, i);
     final var buffer2 = new byte[32];
-    Borsh.readArray(buffer2, _data, i);
+    SerDeUtil.readArray(buffer2, _data, i);
     return new MerkleDistributor(_address,
                                  discriminator,
                                  bump,
@@ -275,7 +276,7 @@ public record MerkleDistributor(PublicKey _address,
     ++i;
     putInt64LE(_data, i, version);
     i += 8;
-    i += Borsh.writeArrayChecked(root, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(root, 32, _data, i);
     mint.write(_data, i);
     i += 32;
     tokenVault.write(_data, i);
@@ -306,9 +307,9 @@ public record MerkleDistributor(PublicKey _address,
     i += 8;
     _data[i] = (byte) (closable ? 1 : 0);
     ++i;
-    i += Borsh.writeArrayChecked(buffer0, 32, _data, i);
-    i += Borsh.writeArrayChecked(buffer1, 32, _data, i);
-    i += Borsh.writeArrayChecked(buffer2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(buffer0, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(buffer1, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(buffer2, 32, _data, i);
     return i - _offset;
   }
 

@@ -1,8 +1,8 @@
 package software.sava.idl.clients.marinade.stake_pool.gen.events;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.BoolValueChange;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeCentsValueChange;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeValueChange;
@@ -153,17 +153,17 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     state.write(_data, i);
     i += 32;
-    i += Borsh.writeOptional(rewardsFeeChange, _data, i);
-    i += Borsh.writeOptional(slotsForStakeDeltaChange, _data, i);
-    i += Borsh.writeOptional(minStakeChange, _data, i);
-    i += Borsh.writeOptional(minDepositChange, _data, i);
-    i += Borsh.writeOptional(minWithdrawChange, _data, i);
-    i += Borsh.writeOptional(stakingSolCapChange, _data, i);
-    i += Borsh.writeOptional(liquiditySolCapChange, _data, i);
-    i += Borsh.writeOptional(withdrawStakeAccountEnabledChange, _data, i);
-    i += Borsh.writeOptional(delayedUnstakeFeeChange, _data, i);
-    i += Borsh.writeOptional(withdrawStakeAccountFeeChange, _data, i);
-    i += Borsh.writeOptional(maxStakeMovedPerEpochChange, _data, i);
+    i += SerDeUtil.writeOptional(1, rewardsFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, slotsForStakeDeltaChange, _data, i);
+    i += SerDeUtil.writeOptional(1, minStakeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, minDepositChange, _data, i);
+    i += SerDeUtil.writeOptional(1, minWithdrawChange, _data, i);
+    i += SerDeUtil.writeOptional(1, stakingSolCapChange, _data, i);
+    i += SerDeUtil.writeOptional(1, liquiditySolCapChange, _data, i);
+    i += SerDeUtil.writeOptional(1, withdrawStakeAccountEnabledChange, _data, i);
+    i += SerDeUtil.writeOptional(1, delayedUnstakeFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, withdrawStakeAccountFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, maxStakeMovedPerEpochChange, _data, i);
     return i - _offset;
   }
 

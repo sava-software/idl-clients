@@ -8,9 +8,10 @@ import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.drift.gen.types.AddAmmConstituentMappingDatum;
 import software.sava.idl.clients.drift.gen.types.AssetTier;
 import software.sava.idl.clients.drift.gen.types.ConstituentParams;
@@ -97,16 +98,16 @@ public final class DriftProgram {
                                            final List<AccountMeta> keys,
                                            final int subAccountId,
                                            final byte[] name) {
-    final byte[] _data = new byte[10 + Borsh.lenArray(name)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenArray(name)];
     int i = INITIALIZE_USER_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, subAccountId);
     i += 2;
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeUserIxData(Discriminator discriminator, int subAccountId, byte[] name) implements Borsh {  
+  public record InitializeUserIxData(Discriminator discriminator, int subAccountId, byte[] name) implements SerDe {  
 
     public static InitializeUserIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -124,7 +125,7 @@ public final class DriftProgram {
       final var subAccountId = getInt16LE(_data, i);
       i += 2;
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new InitializeUserIxData(discriminator, subAccountId, name);
     }
 
@@ -133,7 +134,7 @@ public final class DriftProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, subAccountId);
       i += 2;
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -227,7 +228,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeSignedMsgUserOrdersIxData(Discriminator discriminator, int numOrders) implements Borsh {  
+  public record InitializeSignedMsgUserOrdersIxData(Discriminator discriminator, int numOrders) implements SerDe {  
 
     public static InitializeSignedMsgUserOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -302,7 +303,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ResizeSignedMsgUserOrdersIxData(Discriminator discriminator, int numOrders) implements Borsh {  
+  public record ResizeSignedMsgUserOrdersIxData(Discriminator discriminator, int numOrders) implements SerDe {  
 
     public static ResizeSignedMsgUserOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -366,14 +367,14 @@ public final class DriftProgram {
   public static Instruction initializeSignedMsgWsDelegates(final AccountMeta invokedDriftProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final PublicKey[] delegates) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(delegates)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, delegates)];
     int i = INITIALIZE_SIGNED_MSG_WS_DELEGATES_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(delegates, _data, i);
+    SerDeUtil.writeVector(4, delegates, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeSignedMsgWsDelegatesIxData(Discriminator discriminator, PublicKey[] delegates) implements Borsh {  
+  public record InitializeSignedMsgWsDelegatesIxData(Discriminator discriminator, PublicKey[] delegates) implements SerDe {  
 
     public static InitializeSignedMsgWsDelegatesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -385,20 +386,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var delegates = Borsh.readPublicKeyVector(_data, i);
+      final var delegates = SerDeUtil.readPublicKeyVector(4, _data, i);
       return new InitializeSignedMsgWsDelegatesIxData(discriminator, delegates);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(delegates, _data, i);
+      i += SerDeUtil.writeVector(4, delegates, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(delegates);
+      return 8 + SerDeUtil.lenVector(4, delegates);
     }
   }
 
@@ -441,7 +442,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ChangeSignedMsgWsDelegateStatusIxData(Discriminator discriminator, PublicKey delegate, boolean add) implements Borsh {  
+  public record ChangeSignedMsgWsDelegateStatusIxData(Discriminator discriminator, PublicKey delegate, boolean add) implements SerDe {  
 
     public static ChangeSignedMsgWsDelegateStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -628,14 +629,14 @@ public final class DriftProgram {
   public static Instruction initializeReferrerName(final AccountMeta invokedDriftProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final byte[] name) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(name)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(name)];
     int i = INITIALIZE_REFERRER_NAME_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeReferrerNameIxData(Discriminator discriminator, byte[] name) implements Borsh {  
+  public record InitializeReferrerNameIxData(Discriminator discriminator, byte[] name) implements SerDe {  
 
     public static InitializeReferrerNameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -651,14 +652,14 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new InitializeReferrerNameIxData(discriminator, name);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -736,7 +737,7 @@ public final class DriftProgram {
   public record DepositIxData(Discriminator discriminator,
                               int marketIndex,
                               long amount,
-                              boolean reduceOnly) implements Borsh {  
+                              boolean reduceOnly) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -848,7 +849,7 @@ public final class DriftProgram {
   public record WithdrawIxData(Discriminator discriminator,
                                int marketIndex,
                                long amount,
-                               boolean reduceOnly) implements Borsh {  
+                               boolean reduceOnly) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -939,7 +940,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record TransferDepositIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record TransferDepositIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static TransferDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1064,8 +1065,8 @@ public final class DriftProgram {
     i += 2;
     putInt16LE(_data, i, borrowToMarketIndex);
     i += 2;
-    i += Borsh.writeOptional(depositAmount, _data, i);
-    Borsh.writeOptional(borrowAmount, _data, i);
+    i += SerDeUtil.writeOptional(1, depositAmount, _data, i);
+    SerDeUtil.writeOptional(1, borrowAmount, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -1076,7 +1077,7 @@ public final class DriftProgram {
                                     int borrowFromMarketIndex,
                                     int borrowToMarketIndex,
                                     OptionalLong depositAmount,
-                                    OptionalLong borrowAmount) implements Borsh {  
+                                    OptionalLong borrowAmount) implements SerDe {  
 
     public static TransferPoolsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1132,8 +1133,8 @@ public final class DriftProgram {
       i += 2;
       putInt16LE(_data, i, borrowToMarketIndex);
       i += 2;
-      i += Borsh.writeOptional(depositAmount, _data, i);
-      i += Borsh.writeOptional(borrowAmount, _data, i);
+      i += SerDeUtil.writeOptional(1, depositAmount, _data, i);
+      i += SerDeUtil.writeOptional(1, borrowAmount, _data, i);
       return i - _offset;
     }
 
@@ -1193,12 +1194,12 @@ public final class DriftProgram {
     int i = TRANSFER_PERP_POSITION_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    Borsh.writeOptional(amount, _data, i);
+    SerDeUtil.writeOptional(1, amount, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record TransferPerpPositionIxData(Discriminator discriminator, int marketIndex, OptionalLong amount) implements Borsh {  
+  public record TransferPerpPositionIxData(Discriminator discriminator, int marketIndex, OptionalLong amount) implements SerDe {  
 
     public static TransferPerpPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1227,7 +1228,7 @@ public final class DriftProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, marketIndex);
       i += 2;
-      i += Borsh.writeOptional(amount, _data, i);
+      i += SerDeUtil.writeOptional(1, amount, _data, i);
       return i - _offset;
     }
 
@@ -1272,7 +1273,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlacePerpOrderIxData(Discriminator discriminator, OrderParams params) implements Borsh {  
+  public record PlacePerpOrderIxData(Discriminator discriminator, OrderParams params) implements SerDe {  
 
     public static PlacePerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1334,12 +1335,12 @@ public final class DriftProgram {
     + (orderId == null || orderId.isEmpty() ? 1 : 5)
     ];
     int i = CANCEL_ORDER_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeOptional(orderId, _data, i);
+    SerDeUtil.writeOptional(1, orderId, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record CancelOrderIxData(Discriminator discriminator, OptionalInt orderId) implements Borsh {  
+  public record CancelOrderIxData(Discriminator discriminator, OptionalInt orderId) implements SerDe {  
 
     public static CancelOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1364,7 +1365,7 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(orderId, _data, i);
+      i += SerDeUtil.writeOptional(1, orderId, _data, i);
       return i - _offset;
     }
 
@@ -1409,7 +1410,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record CancelOrderByUserIdIxData(Discriminator discriminator, int userOrderId) implements Borsh {  
+  public record CancelOrderByUserIdIxData(Discriminator discriminator, int userOrderId) implements SerDe {  
 
     public static CancelOrderByUserIdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1486,9 +1487,9 @@ public final class DriftProgram {
     + (direction == null ? 1 : (1 + direction.l()))
     ];
     int i = CANCEL_ORDERS_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptional(marketType, _data, i);
-    i += Borsh.writeOptionalshort(marketIndex, _data, i);
-    Borsh.writeOptional(direction, _data, i);
+    i += SerDeUtil.writeOptional(1, marketType, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, marketIndex, _data, i);
+    SerDeUtil.writeOptional(1, direction, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -1496,7 +1497,7 @@ public final class DriftProgram {
   public record CancelOrdersIxData(Discriminator discriminator,
                                    MarketType marketType,
                                    OptionalInt marketIndex,
-                                   PositionDirection direction) implements Borsh {  
+                                   PositionDirection direction) implements SerDe {  
 
     public static CancelOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1539,9 +1540,9 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(marketType, _data, i);
-      i += Borsh.writeOptionalshort(marketIndex, _data, i);
-      i += Borsh.writeOptional(direction, _data, i);
+      i += SerDeUtil.writeOptional(1, marketType, _data, i);
+      i += SerDeUtil.writeOptionalshort(1, marketIndex, _data, i);
+      i += SerDeUtil.writeOptional(1, direction, _data, i);
       return i - _offset;
     }
 
@@ -1579,14 +1580,14 @@ public final class DriftProgram {
   public static Instruction cancelOrdersByIds(final AccountMeta invokedDriftProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int[] orderIds) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(orderIds)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, orderIds)];
     int i = CANCEL_ORDERS_BY_IDS_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(orderIds, _data, i);
+    SerDeUtil.writeVector(4, orderIds, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record CancelOrdersByIdsIxData(Discriminator discriminator, int[] orderIds) implements Borsh {  
+  public record CancelOrdersByIdsIxData(Discriminator discriminator, int[] orderIds) implements SerDe {  
 
     public static CancelOrdersByIdsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1598,20 +1599,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var orderIds = Borsh.readintVector(_data, i);
+      final var orderIds = SerDeUtil.readintVector(4, _data, i);
       return new CancelOrdersByIdsIxData(discriminator, orderIds);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(orderIds, _data, i);
+      i += SerDeUtil.writeVector(4, orderIds, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(orderIds);
+      return 8 + SerDeUtil.lenVector(4, orderIds);
     }
   }
 
@@ -1650,13 +1651,13 @@ public final class DriftProgram {
     + (orderId == null || orderId.isEmpty() ? 1 : 5) + modifyOrderParams.l()
     ];
     int i = MODIFY_ORDER_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptional(orderId, _data, i);
+    i += SerDeUtil.writeOptional(1, orderId, _data, i);
     modifyOrderParams.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ModifyOrderIxData(Discriminator discriminator, OptionalInt orderId, ModifyOrderParams modifyOrderParams) implements Borsh {  
+  public record ModifyOrderIxData(Discriminator discriminator, OptionalInt orderId, ModifyOrderParams modifyOrderParams) implements SerDe {  
 
     public static ModifyOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1684,7 +1685,7 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(orderId, _data, i);
+      i += SerDeUtil.writeOptional(1, orderId, _data, i);
       i += modifyOrderParams.write(_data, i);
       return i - _offset;
     }
@@ -1734,7 +1735,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ModifyOrderByUserIdIxData(Discriminator discriminator, int userOrderId, ModifyOrderParams modifyOrderParams) implements Borsh {  
+  public record ModifyOrderByUserIdIxData(Discriminator discriminator, int userOrderId, ModifyOrderParams modifyOrderParams) implements SerDe {  
 
     public static ModifyOrderByUserIdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1807,12 +1808,12 @@ public final class DriftProgram {
     ];
     int i = PLACE_AND_TAKE_PERP_ORDER_DISCRIMINATOR.write(_data, 0);
     i += params.write(_data, i);
-    Borsh.writeOptional(successCondition, _data, i);
+    SerDeUtil.writeOptional(1, successCondition, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceAndTakePerpOrderIxData(Discriminator discriminator, OrderParams params, OptionalInt successCondition) implements Borsh {  
+  public record PlaceAndTakePerpOrderIxData(Discriminator discriminator, OrderParams params, OptionalInt successCondition) implements SerDe {  
 
     public static PlaceAndTakePerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1840,7 +1841,7 @@ public final class DriftProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += params.write(_data, i);
-      i += Borsh.writeOptional(successCondition, _data, i);
+      i += SerDeUtil.writeOptional(1, successCondition, _data, i);
       return i - _offset;
     }
 
@@ -1900,7 +1901,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceAndMakePerpOrderIxData(Discriminator discriminator, OrderParams params, int takerOrderId) implements Borsh {  
+  public record PlaceAndMakePerpOrderIxData(Discriminator discriminator, OrderParams params, int takerOrderId) implements SerDe {  
 
     public static PlaceAndMakePerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1979,15 +1980,15 @@ public final class DriftProgram {
                                                            final List<AccountMeta> keys,
                                                            final OrderParams params,
                                                            final byte[] signedMsgOrderUuid) {
-    final byte[] _data = new byte[8 + params.l() + Borsh.lenArray(signedMsgOrderUuid)];
+    final byte[] _data = new byte[8 + params.l() + SerDeUtil.lenArray(signedMsgOrderUuid)];
     int i = PLACE_AND_MAKE_SIGNED_MSG_PERP_ORDER_DISCRIMINATOR.write(_data, 0);
     i += params.write(_data, i);
-    Borsh.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
+    SerDeUtil.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceAndMakeSignedMsgPerpOrderIxData(Discriminator discriminator, OrderParams params, byte[] signedMsgOrderUuid) implements Borsh {  
+  public record PlaceAndMakeSignedMsgPerpOrderIxData(Discriminator discriminator, OrderParams params, byte[] signedMsgOrderUuid) implements SerDe {  
 
     public static PlaceAndMakeSignedMsgPerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2003,7 +2004,7 @@ public final class DriftProgram {
       final var params = OrderParams.read(_data, i);
       i += params.l();
       final var signedMsgOrderUuid = new byte[8];
-      Borsh.readArray(signedMsgOrderUuid, _data, i);
+      SerDeUtil.readArray(signedMsgOrderUuid, _data, i);
       return new PlaceAndMakeSignedMsgPerpOrderIxData(discriminator, params, signedMsgOrderUuid);
     }
 
@@ -2011,13 +2012,13 @@ public final class DriftProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += params.write(_data, i);
-      i += Borsh.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
+      i += SerDeUtil.writeArrayChecked(signedMsgOrderUuid, 8, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + params.l() + Borsh.lenArray(signedMsgOrderUuid);
+      return 8 + params.l() + SerDeUtil.lenArray(signedMsgOrderUuid);
     }
   }
 
@@ -2069,15 +2070,15 @@ public final class DriftProgram {
                                                      final List<AccountMeta> keys,
                                                      final byte[] signedMsgOrderParamsMessageBytes,
                                                      final boolean isDelegateSigner) {
-    final byte[] _data = new byte[9 + Borsh.lenVector(signedMsgOrderParamsMessageBytes)];
+    final byte[] _data = new byte[9 + SerDeUtil.lenVector(4, signedMsgOrderParamsMessageBytes)];
     int i = PLACE_SIGNED_MSG_TAKER_ORDER_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(signedMsgOrderParamsMessageBytes, _data, i);
+    i += SerDeUtil.writeVector(4, signedMsgOrderParamsMessageBytes, _data, i);
     _data[i] = (byte) (isDelegateSigner ? 1 : 0);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceSignedMsgTakerOrderIxData(Discriminator discriminator, byte[] signedMsgOrderParamsMessageBytes, boolean isDelegateSigner) implements Borsh {  
+  public record PlaceSignedMsgTakerOrderIxData(Discriminator discriminator, byte[] signedMsgOrderParamsMessageBytes, boolean isDelegateSigner) implements SerDe {  
 
     public static PlaceSignedMsgTakerOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2089,8 +2090,8 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var signedMsgOrderParamsMessageBytes = Borsh.readbyteVector(_data, i);
-      i += Borsh.lenVector(signedMsgOrderParamsMessageBytes);
+      final var signedMsgOrderParamsMessageBytes = SerDeUtil.readbyteVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, signedMsgOrderParamsMessageBytes);
       final var isDelegateSigner = _data[i] == 1;
       return new PlaceSignedMsgTakerOrderIxData(discriminator, signedMsgOrderParamsMessageBytes, isDelegateSigner);
     }
@@ -2098,7 +2099,7 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(signedMsgOrderParamsMessageBytes, _data, i);
+      i += SerDeUtil.writeVector(4, signedMsgOrderParamsMessageBytes, _data, i);
       _data[i] = (byte) (isDelegateSigner ? 1 : 0);
       ++i;
       return i - _offset;
@@ -2106,7 +2107,7 @@ public final class DriftProgram {
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(signedMsgOrderParamsMessageBytes) + 1;
+      return 8 + SerDeUtil.lenVector(4, signedMsgOrderParamsMessageBytes) + 1;
     }
   }
 
@@ -2145,7 +2146,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceSpotOrderIxData(Discriminator discriminator, OrderParams params) implements Borsh {  
+  public record PlaceSpotOrderIxData(Discriminator discriminator, OrderParams params) implements SerDe {  
 
     public static PlaceSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2223,8 +2224,8 @@ public final class DriftProgram {
     ];
     int i = PLACE_AND_TAKE_SPOT_ORDER_DISCRIMINATOR.write(_data, 0);
     i += params.write(_data, i);
-    i += Borsh.writeOptional(fulfillmentType, _data, i);
-    Borsh.writeOptional(makerOrderId, _data, i);
+    i += SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
+    SerDeUtil.writeOptional(1, makerOrderId, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -2232,7 +2233,7 @@ public final class DriftProgram {
   public record PlaceAndTakeSpotOrderIxData(Discriminator discriminator,
                                             OrderParams params,
                                             SpotFulfillmentType fulfillmentType,
-                                            OptionalInt makerOrderId) implements Borsh {  
+                                            OptionalInt makerOrderId) implements SerDe {  
 
     public static PlaceAndTakeSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2269,8 +2270,8 @@ public final class DriftProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       i += params.write(_data, i);
-      i += Borsh.writeOptional(fulfillmentType, _data, i);
-      i += Borsh.writeOptional(makerOrderId, _data, i);
+      i += SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
+      i += SerDeUtil.writeOptional(1, makerOrderId, _data, i);
       return i - _offset;
     }
 
@@ -2338,7 +2339,7 @@ public final class DriftProgram {
     i += params.write(_data, i);
     putInt32LE(_data, i, takerOrderId);
     i += 4;
-    Borsh.writeOptional(fulfillmentType, _data, i);
+    SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -2346,7 +2347,7 @@ public final class DriftProgram {
   public record PlaceAndMakeSpotOrderIxData(Discriminator discriminator,
                                             OrderParams params,
                                             int takerOrderId,
-                                            SpotFulfillmentType fulfillmentType) implements Borsh {  
+                                            SpotFulfillmentType fulfillmentType) implements SerDe {  
 
     public static PlaceAndMakeSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2378,7 +2379,7 @@ public final class DriftProgram {
       i += params.write(_data, i);
       putInt32LE(_data, i, takerOrderId);
       i += 4;
-      i += Borsh.writeOptional(fulfillmentType, _data, i);
+      i += SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
       return i - _offset;
     }
 
@@ -2416,14 +2417,14 @@ public final class DriftProgram {
   public static Instruction placeOrders(final AccountMeta invokedDriftProgramMeta,
                                         final List<AccountMeta> keys,
                                         final OrderParams[] params) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(params)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, params)];
     int i = PLACE_ORDERS_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(params, _data, i);
+    SerDeUtil.writeVector(4, params, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PlaceOrdersIxData(Discriminator discriminator, OrderParams[] params) implements Borsh {  
+  public record PlaceOrdersIxData(Discriminator discriminator, OrderParams[] params) implements SerDe {  
 
     public static PlaceOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2435,20 +2436,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var params = Borsh.readVector(OrderParams.class, OrderParams::read, _data, i);
+      final var params = SerDeUtil.readVector(4, OrderParams.class, OrderParams::read, _data, i);
       return new PlaceOrdersIxData(discriminator, params);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(params, _data, i);
+      i += SerDeUtil.writeVector(4, params, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(params);
+      return 8 + SerDeUtil.lenVector(4, params);
     }
   }
 
@@ -2538,7 +2539,7 @@ public final class DriftProgram {
   public record BeginSwapIxData(Discriminator discriminator,
                                 int inMarketIndex,
                                 int outMarketIndex,
-                                long amountIn) implements Borsh {  
+                                long amountIn) implements SerDe {  
 
     public static BeginSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2663,8 +2664,8 @@ public final class DriftProgram {
     i += 2;
     putInt16LE(_data, i, outMarketIndex);
     i += 2;
-    i += Borsh.writeOptional(limitPrice, _data, i);
-    Borsh.writeOptional(reduceOnly, _data, i);
+    i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
+    SerDeUtil.writeOptional(1, reduceOnly, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -2673,7 +2674,7 @@ public final class DriftProgram {
                               int inMarketIndex,
                               int outMarketIndex,
                               OptionalLong limitPrice,
-                              SwapReduceOnly reduceOnly) implements Borsh {  
+                              SwapReduceOnly reduceOnly) implements SerDe {  
 
     public static EndSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2719,8 +2720,8 @@ public final class DriftProgram {
       i += 2;
       putInt16LE(_data, i, outMarketIndex);
       i += 2;
-      i += Borsh.writeOptional(limitPrice, _data, i);
-      i += Borsh.writeOptional(reduceOnly, _data, i);
+      i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
+      i += SerDeUtil.writeOptional(1, reduceOnly, _data, i);
       return i - _offset;
     }
 
@@ -2756,16 +2757,16 @@ public final class DriftProgram {
                                            final List<AccountMeta> keys,
                                            final int subAccountId,
                                            final byte[] name) {
-    final byte[] _data = new byte[10 + Borsh.lenArray(name)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenArray(name)];
     int i = UPDATE_USER_NAME_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, subAccountId);
     i += 2;
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserNameIxData(Discriminator discriminator, int subAccountId, byte[] name) implements Borsh {  
+  public record UpdateUserNameIxData(Discriminator discriminator, int subAccountId, byte[] name) implements SerDe {  
 
     public static UpdateUserNameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2783,7 +2784,7 @@ public final class DriftProgram {
       final var subAccountId = getInt16LE(_data, i);
       i += 2;
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new UpdateUserNameIxData(discriminator, subAccountId, name);
     }
 
@@ -2792,7 +2793,7 @@ public final class DriftProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, subAccountId);
       i += 2;
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -2837,7 +2838,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserCustomMarginRatioIxData(Discriminator discriminator, int subAccountId, int marginRatio) implements Borsh {  
+  public record UpdateUserCustomMarginRatioIxData(Discriminator discriminator, int subAccountId, int marginRatio) implements SerDe {  
 
     public static UpdateUserCustomMarginRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2921,7 +2922,7 @@ public final class DriftProgram {
   public record UpdateUserPerpPositionCustomMarginRatioIxData(Discriminator discriminator,
                                                               int subAccountId,
                                                               int perpMarketIndex,
-                                                              int marginRatio) implements Borsh {  
+                                                              int marginRatio) implements SerDe {  
 
     public static UpdateUserPerpPositionCustomMarginRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2996,7 +2997,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserMarginTradingEnabledIxData(Discriminator discriminator, int subAccountId, boolean marginTradingEnabled) implements Borsh {  
+  public record UpdateUserMarginTradingEnabledIxData(Discriminator discriminator, int subAccountId, boolean marginTradingEnabled) implements SerDe {  
 
     public static UpdateUserMarginTradingEnabledIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3067,7 +3068,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserPoolIdIxData(Discriminator discriminator, int subAccountId, int poolId) implements Borsh {  
+  public record UpdateUserPoolIdIxData(Discriminator discriminator, int subAccountId, int poolId) implements SerDe {  
 
     public static UpdateUserPoolIdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3138,7 +3139,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserDelegateIxData(Discriminator discriminator, int subAccountId, PublicKey delegate) implements Borsh {  
+  public record UpdateUserDelegateIxData(Discriminator discriminator, int subAccountId, PublicKey delegate) implements SerDe {  
 
     public static UpdateUserDelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3209,7 +3210,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserReduceOnlyIxData(Discriminator discriminator, int subAccountId, boolean reduceOnly) implements Borsh {  
+  public record UpdateUserReduceOnlyIxData(Discriminator discriminator, int subAccountId, boolean reduceOnly) implements SerDe {  
 
     public static UpdateUserReduceOnlyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3288,7 +3289,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateUserProtectedMakerOrdersIxData(Discriminator discriminator, int subAccountId, boolean protectedMakerOrders) implements Borsh {  
+  public record UpdateUserProtectedMakerOrdersIxData(Discriminator discriminator, int subAccountId, boolean protectedMakerOrders) implements SerDe {  
 
     public static UpdateUserProtectedMakerOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3503,7 +3504,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record EnableUserHighLeverageModeIxData(Discriminator discriminator, int subAccountId) implements Borsh {  
+  public record EnableUserHighLeverageModeIxData(Discriminator discriminator, int subAccountId) implements SerDe {  
 
     public static EnableUserHighLeverageModeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3583,13 +3584,13 @@ public final class DriftProgram {
     + (makerOrderId == null || makerOrderId.isEmpty() ? 1 : 5)
     ];
     int i = FILL_PERP_ORDER_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptional(orderId, _data, i);
-    Borsh.writeOptional(makerOrderId, _data, i);
+    i += SerDeUtil.writeOptional(1, orderId, _data, i);
+    SerDeUtil.writeOptional(1, makerOrderId, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record FillPerpOrderIxData(Discriminator discriminator, OptionalInt orderId, OptionalInt makerOrderId) implements Borsh {  
+  public record FillPerpOrderIxData(Discriminator discriminator, OptionalInt orderId, OptionalInt makerOrderId) implements SerDe {  
 
     public static FillPerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3623,8 +3624,8 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(orderId, _data, i);
-      i += Borsh.writeOptional(makerOrderId, _data, i);
+      i += SerDeUtil.writeOptional(1, orderId, _data, i);
+      i += SerDeUtil.writeOptional(1, makerOrderId, _data, i);
       return i - _offset;
     }
 
@@ -3724,9 +3725,9 @@ public final class DriftProgram {
     + (makerOrderId == null || makerOrderId.isEmpty() ? 1 : 5)
     ];
     int i = FILL_SPOT_ORDER_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptional(orderId, _data, i);
-    i += Borsh.writeOptional(fulfillmentType, _data, i);
-    Borsh.writeOptional(makerOrderId, _data, i);
+    i += SerDeUtil.writeOptional(1, orderId, _data, i);
+    i += SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
+    SerDeUtil.writeOptional(1, makerOrderId, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -3734,7 +3735,7 @@ public final class DriftProgram {
   public record FillSpotOrderIxData(Discriminator discriminator,
                                     OptionalInt orderId,
                                     SpotFulfillmentType fulfillmentType,
-                                    OptionalInt makerOrderId) implements Borsh {  
+                                    OptionalInt makerOrderId) implements SerDe {  
 
     public static FillSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3777,9 +3778,9 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(orderId, _data, i);
-      i += Borsh.writeOptional(fulfillmentType, _data, i);
-      i += Borsh.writeOptional(makerOrderId, _data, i);
+      i += SerDeUtil.writeOptional(1, orderId, _data, i);
+      i += SerDeUtil.writeOptional(1, fulfillmentType, _data, i);
+      i += SerDeUtil.writeOptional(1, makerOrderId, _data, i);
       return i - _offset;
     }
 
@@ -3828,7 +3829,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record TriggerOrderIxData(Discriminator discriminator, int orderId) implements Borsh {  
+  public record TriggerOrderIxData(Discriminator discriminator, int orderId) implements SerDe {  
 
     public static TriggerOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3994,7 +3995,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DisableUserHighLeverageModeIxData(Discriminator discriminator, boolean disableMaintenance) implements Borsh {  
+  public record DisableUserHighLeverageModeIxData(Discriminator discriminator, boolean disableMaintenance) implements SerDe {  
 
     public static DisableUserHighLeverageModeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4090,7 +4091,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record AdminUpdateUserStatsPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements Borsh {  
+  public record AdminUpdateUserStatsPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements SerDe {  
 
     public static AdminUpdateUserStatsPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4161,7 +4162,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record SettlePnlIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record SettlePnlIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static SettlePnlIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4227,15 +4228,15 @@ public final class DriftProgram {
                                                final List<AccountMeta> keys,
                                                final short[] marketIndexes,
                                                final SettlePnlMode mode) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(marketIndexes) + mode.l()];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, marketIndexes) + mode.l()];
     int i = SETTLE_MULTIPLE_PNLS_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeVector(marketIndexes, _data, i);
+    i += SerDeUtil.writeVector(4, marketIndexes, _data, i);
     mode.write(_data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record SettleMultiplePnlsIxData(Discriminator discriminator, short[] marketIndexes, SettlePnlMode mode) implements Borsh {  
+  public record SettleMultiplePnlsIxData(Discriminator discriminator, short[] marketIndexes, SettlePnlMode mode) implements SerDe {  
 
     public static SettleMultiplePnlsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4247,8 +4248,8 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var marketIndexes = Borsh.readshortVector(_data, i);
-      i += Borsh.lenVector(marketIndexes);
+      final var marketIndexes = SerDeUtil.readshortVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, marketIndexes);
       final var mode = SettlePnlMode.read(_data, i);
       return new SettleMultiplePnlsIxData(discriminator, marketIndexes, mode);
     }
@@ -4256,14 +4257,14 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(marketIndexes, _data, i);
+      i += SerDeUtil.writeVector(4, marketIndexes, _data, i);
       i += mode.write(_data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(marketIndexes) + mode.l();
+      return 8 + SerDeUtil.lenVector(4, marketIndexes) + mode.l();
     }
   }
 
@@ -4327,7 +4328,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record SettleExpiredMarketIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record SettleExpiredMarketIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static SettleExpiredMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4418,7 +4419,7 @@ public final class DriftProgram {
     i += 2;
     putInt64LE(_data, i, liquidatorMaxBaseAssetAmount);
     i += 8;
-    Borsh.writeOptional(limitPrice, _data, i);
+    SerDeUtil.writeOptional(1, limitPrice, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -4426,7 +4427,7 @@ public final class DriftProgram {
   public record LiquidatePerpIxData(Discriminator discriminator,
                                     int marketIndex,
                                     long liquidatorMaxBaseAssetAmount,
-                                    OptionalLong limitPrice) implements Borsh {  
+                                    OptionalLong limitPrice) implements SerDe {  
 
     public static LiquidatePerpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4459,7 +4460,7 @@ public final class DriftProgram {
       i += 2;
       putInt64LE(_data, i, liquidatorMaxBaseAssetAmount);
       i += 8;
-      i += Borsh.writeOptional(limitPrice, _data, i);
+      i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
       return i - _offset;
     }
 
@@ -4516,7 +4517,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record LiquidatePerpWithFillIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record LiquidatePerpWithFillIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static LiquidatePerpWithFillIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4612,7 +4613,7 @@ public final class DriftProgram {
     i += 2;
     putInt128LE(_data, i, liquidatorMaxLiabilityTransfer);
     i += 16;
-    Borsh.writeOptional(limitPrice, _data, i);
+    SerDeUtil.writeOptional(1, limitPrice, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -4621,7 +4622,7 @@ public final class DriftProgram {
                                     int assetMarketIndex,
                                     int liabilityMarketIndex,
                                     BigInteger liquidatorMaxLiabilityTransfer,
-                                    OptionalLong limitPrice) implements Borsh {  
+                                    OptionalLong limitPrice) implements SerDe {  
 
     public static LiquidateSpotIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4662,7 +4663,7 @@ public final class DriftProgram {
       i += 2;
       putInt128LE(_data, i, liquidatorMaxLiabilityTransfer);
       i += 16;
-      i += Borsh.writeOptional(limitPrice, _data, i);
+      i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
       return i - _offset;
     }
 
@@ -4766,7 +4767,7 @@ public final class DriftProgram {
   public record LiquidateSpotWithSwapBeginIxData(Discriminator discriminator,
                                                  int assetMarketIndex,
                                                  int liabilityMarketIndex,
-                                                 long swapAmount) implements Borsh {  
+                                                 long swapAmount) implements SerDe {  
 
     public static LiquidateSpotWithSwapBeginIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4887,7 +4888,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record LiquidateSpotWithSwapEndIxData(Discriminator discriminator, int assetMarketIndex, int liabilityMarketIndex) implements Borsh {  
+  public record LiquidateSpotWithSwapEndIxData(Discriminator discriminator, int assetMarketIndex, int liabilityMarketIndex) implements SerDe {  
 
     public static LiquidateSpotWithSwapEndIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4987,7 +4988,7 @@ public final class DriftProgram {
     i += 2;
     putInt128LE(_data, i, liquidatorMaxLiabilityTransfer);
     i += 16;
-    Borsh.writeOptional(limitPrice, _data, i);
+    SerDeUtil.writeOptional(1, limitPrice, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -4996,7 +4997,7 @@ public final class DriftProgram {
                                                 int perpMarketIndex,
                                                 int spotMarketIndex,
                                                 BigInteger liquidatorMaxLiabilityTransfer,
-                                                OptionalLong limitPrice) implements Borsh {  
+                                                OptionalLong limitPrice) implements SerDe {  
 
     public static LiquidateBorrowForPerpPnlIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5037,7 +5038,7 @@ public final class DriftProgram {
       i += 2;
       putInt128LE(_data, i, liquidatorMaxLiabilityTransfer);
       i += 16;
-      i += Borsh.writeOptional(limitPrice, _data, i);
+      i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
       return i - _offset;
     }
 
@@ -5111,7 +5112,7 @@ public final class DriftProgram {
     i += 2;
     putInt128LE(_data, i, liquidatorMaxPnlTransfer);
     i += 16;
-    Borsh.writeOptional(limitPrice, _data, i);
+    SerDeUtil.writeOptional(1, limitPrice, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -5120,7 +5121,7 @@ public final class DriftProgram {
                                                  int perpMarketIndex,
                                                  int spotMarketIndex,
                                                  BigInteger liquidatorMaxPnlTransfer,
-                                                 OptionalLong limitPrice) implements Borsh {  
+                                                 OptionalLong limitPrice) implements SerDe {  
 
     public static LiquidatePerpPnlForDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5161,7 +5162,7 @@ public final class DriftProgram {
       i += 2;
       putInt128LE(_data, i, liquidatorMaxPnlTransfer);
       i += 16;
-      i += Borsh.writeOptional(limitPrice, _data, i);
+      i += SerDeUtil.writeOptional(1, limitPrice, _data, i);
       return i - _offset;
     }
 
@@ -5251,7 +5252,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ResolvePerpPnlDeficitIxData(Discriminator discriminator, int spotMarketIndex, int perpMarketIndex) implements Borsh {  
+  public record ResolvePerpPnlDeficitIxData(Discriminator discriminator, int spotMarketIndex, int perpMarketIndex) implements SerDe {  
 
     public static ResolvePerpPnlDeficitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5354,7 +5355,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ResolvePerpBankruptcyIxData(Discriminator discriminator, int quoteSpotMarketIndex, int marketIndex) implements Borsh {  
+  public record ResolvePerpBankruptcyIxData(Discriminator discriminator, int quoteSpotMarketIndex, int marketIndex) implements SerDe {  
 
     public static ResolvePerpBankruptcyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5453,7 +5454,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ResolveSpotBankruptcyIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record ResolveSpotBankruptcyIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static ResolveSpotBankruptcyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5532,7 +5533,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record SettleRevenueToInsuranceFundIxData(Discriminator discriminator, int spotMarketIndex) implements Borsh {  
+  public record SettleRevenueToInsuranceFundIxData(Discriminator discriminator, int spotMarketIndex) implements SerDe {  
 
     public static SettleRevenueToInsuranceFundIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5599,7 +5600,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFundingRateIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record UpdateFundingRateIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static UpdateFundingRateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5754,14 +5755,14 @@ public final class DriftProgram {
   public static Instruction updateAmms(final AccountMeta invokedDriftProgramMeta,
                                        final List<AccountMeta> keys,
                                        final short[] marketIndexes) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(marketIndexes)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, marketIndexes)];
     int i = UPDATE_AMMS_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(marketIndexes, _data, i);
+    SerDeUtil.writeVector(4, marketIndexes, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateAmmsIxData(Discriminator discriminator, short[] marketIndexes) implements Borsh {  
+  public record UpdateAmmsIxData(Discriminator discriminator, short[] marketIndexes) implements SerDe {  
 
     public static UpdateAmmsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5773,20 +5774,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var marketIndexes = Borsh.readshortVector(_data, i);
+      final var marketIndexes = SerDeUtil.readshortVector(4, _data, i);
       return new UpdateAmmsIxData(discriminator, marketIndexes);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(marketIndexes, _data, i);
+      i += SerDeUtil.writeVector(4, marketIndexes, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(marketIndexes);
+      return 8 + SerDeUtil.lenVector(4, marketIndexes);
     }
   }
 
@@ -5825,7 +5826,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketExpiryIxData(Discriminator discriminator, long expiryTs) implements Borsh {  
+  public record UpdateSpotMarketExpiryIxData(Discriminator discriminator, long expiryTs) implements SerDe {  
 
     public static UpdateSpotMarketExpiryIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6035,7 +6036,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record InitializeInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static InitializeInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6134,7 +6135,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record AddInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record AddInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static AddInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6217,7 +6218,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RequestRemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record RequestRemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static RequestRemoveInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6296,7 +6297,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record CancelRequestRemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record CancelRequestRemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static CancelRequestRemoveInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6387,7 +6388,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record RemoveInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static RemoveInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6501,7 +6502,7 @@ public final class DriftProgram {
   public record BeginInsuranceFundSwapIxData(Discriminator discriminator,
                                              int inMarketIndex,
                                              int outMarketIndex,
-                                             long amountIn) implements Borsh {  
+                                             long amountIn) implements SerDe {  
 
     public static BeginInsuranceFundSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6610,7 +6611,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record EndInsuranceFundSwapIxData(Discriminator discriminator, int inMarketIndex, int outMarketIndex) implements Borsh {  
+  public record EndInsuranceFundSwapIxData(Discriminator discriminator, int inMarketIndex, int outMarketIndex) implements SerDe {  
 
     public static EndInsuranceFundSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6701,7 +6702,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record TransferProtocolIfSharesToRevenuePoolIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record TransferProtocolIfSharesToRevenuePoolIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static TransferProtocolIfSharesToRevenuePoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6804,7 +6805,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DepositIntoInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record DepositIntoInsuranceFundStakeIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static DepositIntoInsuranceFundStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6874,15 +6875,15 @@ public final class DriftProgram {
                                                  final List<AccountMeta> keys,
                                                  final byte[] feedId,
                                                  final byte[] params) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(feedId) + Borsh.lenVector(params)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(feedId) + SerDeUtil.lenVector(4, params)];
     int i = UPDATE_PYTH_PULL_ORACLE_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeArrayChecked(feedId, 32, _data, i);
-    Borsh.writeVector(params, _data, i);
+    i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
+    SerDeUtil.writeVector(4, params, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePythPullOracleIxData(Discriminator discriminator, byte[] feedId, byte[] params) implements Borsh {  
+  public record UpdatePythPullOracleIxData(Discriminator discriminator, byte[] feedId, byte[] params) implements SerDe {  
 
     public static UpdatePythPullOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6896,22 +6897,22 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var feedId = new byte[32];
-      i += Borsh.readArray(feedId, _data, i);
-      final var params = Borsh.readbyteVector(_data, i);
+      i += SerDeUtil.readArray(feedId, _data, i);
+      final var params = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdatePythPullOracleIxData(discriminator, feedId, params);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(feedId, 32, _data, i);
-      i += Borsh.writeVector(params, _data, i);
+      i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
+      i += SerDeUtil.writeVector(4, params, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenArray(feedId) + Borsh.lenVector(params);
+      return 8 + SerDeUtil.lenArray(feedId) + SerDeUtil.lenVector(4, params);
     }
   }
 
@@ -6949,15 +6950,15 @@ public final class DriftProgram {
                                                            final List<AccountMeta> keys,
                                                            final byte[] feedId,
                                                            final byte[] params) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(feedId) + Borsh.lenVector(params)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(feedId) + SerDeUtil.lenVector(4, params)];
     int i = POST_PYTH_PULL_ORACLE_UPDATE_ATOMIC_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeArrayChecked(feedId, 32, _data, i);
-    Borsh.writeVector(params, _data, i);
+    i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
+    SerDeUtil.writeVector(4, params, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PostPythPullOracleUpdateAtomicIxData(Discriminator discriminator, byte[] feedId, byte[] params) implements Borsh {  
+  public record PostPythPullOracleUpdateAtomicIxData(Discriminator discriminator, byte[] feedId, byte[] params) implements SerDe {  
 
     public static PostPythPullOracleUpdateAtomicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6971,22 +6972,22 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var feedId = new byte[32];
-      i += Borsh.readArray(feedId, _data, i);
-      final var params = Borsh.readbyteVector(_data, i);
+      i += SerDeUtil.readArray(feedId, _data, i);
+      final var params = SerDeUtil.readbyteVector(4, _data, i);
       return new PostPythPullOracleUpdateAtomicIxData(discriminator, feedId, params);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(feedId, 32, _data, i);
-      i += Borsh.writeVector(params, _data, i);
+      i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
+      i += SerDeUtil.writeVector(4, params, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenArray(feedId) + Borsh.lenVector(params);
+      return 8 + SerDeUtil.lenArray(feedId) + SerDeUtil.lenVector(4, params);
     }
   }
 
@@ -7018,14 +7019,14 @@ public final class DriftProgram {
   public static Instruction postMultiPythPullOracleUpdatesAtomic(final AccountMeta invokedDriftProgramMeta,
                                                                  final List<AccountMeta> keys,
                                                                  final byte[] params) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(params)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, params)];
     int i = POST_MULTI_PYTH_PULL_ORACLE_UPDATES_ATOMIC_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(params, _data, i);
+    SerDeUtil.writeVector(4, params, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PostMultiPythPullOracleUpdatesAtomicIxData(Discriminator discriminator, byte[] params) implements Borsh {  
+  public record PostMultiPythPullOracleUpdatesAtomicIxData(Discriminator discriminator, byte[] params) implements SerDe {  
 
     public static PostMultiPythPullOracleUpdatesAtomicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7037,20 +7038,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var params = Borsh.readbyteVector(_data, i);
+      final var params = SerDeUtil.readbyteVector(4, _data, i);
       return new PostMultiPythPullOracleUpdatesAtomicIxData(discriminator, params);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(params, _data, i);
+      i += SerDeUtil.writeVector(4, params, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(params);
+      return 8 + SerDeUtil.lenVector(4, params);
     }
   }
 
@@ -7250,7 +7251,7 @@ public final class DriftProgram {
                                                  final long orderStepSize,
                                                  final int ifTotalFactor,
                                                  final byte[] name) {
-    final byte[] _data = new byte[85 + oracleSource.l() + assetTier.l() + Borsh.lenArray(name)];
+    final byte[] _data = new byte[85 + oracleSource.l() + assetTier.l() + SerDeUtil.lenArray(name)];
     int i = INITIALIZE_SPOT_MARKET_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, optimalUtilization);
     i += 4;
@@ -7286,7 +7287,7 @@ public final class DriftProgram {
     i += 8;
     putInt32LE(_data, i, ifTotalFactor);
     i += 4;
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -7310,7 +7311,7 @@ public final class DriftProgram {
                                            long orderTickSize,
                                            long orderStepSize,
                                            int ifTotalFactor,
-                                           byte[] name) implements Borsh {  
+                                           byte[] name) implements SerDe {  
 
     public static InitializeSpotMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7362,7 +7363,7 @@ public final class DriftProgram {
       final var ifTotalFactor = getInt32LE(_data, i);
       i += 4;
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new InitializeSpotMarketIxData(discriminator,
                                             optimalUtilization,
                                             optimalBorrowRate,
@@ -7422,7 +7423,7 @@ public final class DriftProgram {
       i += 8;
       putInt32LE(_data, i, ifTotalFactor);
       i += 4;
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -7483,7 +7484,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DeleteInitializedSpotMarketIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record DeleteInitializedSpotMarketIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static DeleteInitializedSpotMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7582,7 +7583,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeSerumFulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record InitializeSerumFulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static InitializeSerumFulfillmentConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7649,7 +7650,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSerumFulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements Borsh {  
+  public record UpdateSerumFulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements SerDe {  
 
     public static UpdateSerumFulfillmentConfigStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7743,7 +7744,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeOpenbookV2FulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record InitializeOpenbookV2FulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static InitializeOpenbookV2FulfillmentConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7810,7 +7811,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record OpenbookV2FulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements Borsh {  
+  public record OpenbookV2FulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements SerDe {  
 
     public static OpenbookV2FulfillmentConfigStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7904,7 +7905,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializePhoenixFulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record InitializePhoenixFulfillmentConfigIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static InitializePhoenixFulfillmentConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7971,7 +7972,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PhoenixFulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements Borsh {  
+  public record PhoenixFulfillmentConfigStatusIxData(Discriminator discriminator, SpotFulfillmentConfigStatus status) implements SerDe {  
 
     public static PhoenixFulfillmentConfigStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8121,7 +8122,7 @@ public final class DriftProgram {
                                                  final int ammJitIntensity,
                                                  final byte[] name,
                                                  final int lpPoolId) {
-    final byte[] _data = new byte[170 + oracleSource.l() + contractTier.l() + Borsh.lenArray(name)];
+    final byte[] _data = new byte[170 + oracleSource.l() + contractTier.l() + SerDeUtil.lenArray(name)];
     int i = INITIALIZE_PERP_MARKET_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, marketIndex);
     i += 2;
@@ -8169,7 +8170,7 @@ public final class DriftProgram {
     ++i;
     _data[i] = (byte) ammJitIntensity;
     ++i;
-    i += Borsh.writeArrayChecked(name, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     _data[i] = (byte) lpPoolId;
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
@@ -8201,7 +8202,7 @@ public final class DriftProgram {
                                            int curveUpdateIntensity,
                                            int ammJitIntensity,
                                            byte[] name,
-                                           int lpPoolId) implements Borsh {  
+                                           int lpPoolId) implements SerDe {  
 
     public static InitializePerpMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8265,7 +8266,7 @@ public final class DriftProgram {
       final var ammJitIntensity = _data[i] & 0xFF;
       ++i;
       final var name = new byte[32];
-      i += Borsh.readArray(name, _data, i);
+      i += SerDeUtil.readArray(name, _data, i);
       final var lpPoolId = _data[i] & 0xFF;
       return new InitializePerpMarketIxData(discriminator,
                                             marketIndex,
@@ -8345,7 +8346,7 @@ public final class DriftProgram {
       ++i;
       _data[i] = (byte) ammJitIntensity;
       ++i;
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       _data[i] = (byte) lpPoolId;
       ++i;
       return i - _offset;
@@ -8557,7 +8558,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DeleteInitializedPerpMarketIxData(Discriminator discriminator, int marketIndex) implements Borsh {  
+  public record DeleteInitializedPerpMarketIxData(Discriminator discriminator, int marketIndex) implements SerDe {  
 
     public static DeleteInitializedPerpMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8641,7 +8642,7 @@ public final class DriftProgram {
   public record MoveAmmPriceIxData(Discriminator discriminator,
                                    BigInteger baseAssetReserve,
                                    BigInteger quoteAssetReserve,
-                                   BigInteger sqrtK) implements Borsh {  
+                                   BigInteger sqrtK) implements SerDe {  
 
     public static MoveAmmPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8720,7 +8721,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RecenterPerpMarketAmmIxData(Discriminator discriminator, BigInteger pegMultiplier, BigInteger sqrtK) implements Borsh {  
+  public record RecenterPerpMarketAmmIxData(Discriminator discriminator, BigInteger pegMultiplier, BigInteger sqrtK) implements SerDe {  
 
     public static RecenterPerpMarketAmmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8797,12 +8798,12 @@ public final class DriftProgram {
     + (depth == null ? 1 : 17)
     ];
     int i = RECENTER_PERP_MARKET_AMM_CRANK_DISCRIMINATOR.write(_data, 0);
-    Borsh.write128Optional(depth, _data, i);
+    SerDeUtil.write128Optional(1, depth, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RecenterPerpMarketAmmCrankIxData(Discriminator discriminator, BigInteger depth) implements Borsh {  
+  public record RecenterPerpMarketAmmCrankIxData(Discriminator discriminator, BigInteger depth) implements SerDe {  
 
     public static RecenterPerpMarketAmmCrankIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8827,7 +8828,7 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.write128Optional(depth, _data, i);
+      i += SerDeUtil.write128Optional(1, depth, _data, i);
       return i - _offset;
     }
 
@@ -8880,7 +8881,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketAmmSummaryStatsIxData(Discriminator discriminator, UpdatePerpMarketSummaryStatsParams params) implements Borsh {  
+  public record UpdatePerpMarketAmmSummaryStatsIxData(Discriminator discriminator, UpdatePerpMarketSummaryStatsParams params) implements SerDe {  
 
     public static UpdatePerpMarketAmmSummaryStatsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8944,7 +8945,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketExpiryIxData(Discriminator discriminator, long expiryTs) implements Borsh {  
+  public record UpdatePerpMarketExpiryIxData(Discriminator discriminator, long expiryTs) implements SerDe {  
 
     public static UpdatePerpMarketExpiryIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9011,7 +9012,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketLpPoolPausedOperationsIxData(Discriminator discriminator, int lpPausedOperations) implements Borsh {  
+  public record UpdatePerpMarketLpPoolPausedOperationsIxData(Discriminator discriminator, int lpPausedOperations) implements SerDe {  
 
     public static UpdatePerpMarketLpPoolPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9082,7 +9083,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketLpPoolStatusIxData(Discriminator discriminator, int lpStatus) implements Borsh {  
+  public record UpdatePerpMarketLpPoolStatusIxData(Discriminator discriminator, int lpStatus) implements SerDe {  
 
     public static UpdatePerpMarketLpPoolStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9150,13 +9151,13 @@ public final class DriftProgram {
     + (optionalLpNetPnlTransferScalar == null || optionalLpNetPnlTransferScalar.isEmpty() ? 1 : 2)
     ];
     int i = UPDATE_PERP_MARKET_LP_POOL_FEE_TRANSFER_SCALAR_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptionalbyte(optionalLpFeeTransferScalar, _data, i);
-    Borsh.writeOptionalbyte(optionalLpNetPnlTransferScalar, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, optionalLpFeeTransferScalar, _data, i);
+    SerDeUtil.writeOptionalbyte(1, optionalLpNetPnlTransferScalar, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketLpPoolFeeTransferScalarIxData(Discriminator discriminator, OptionalInt optionalLpFeeTransferScalar, OptionalInt optionalLpNetPnlTransferScalar) implements Borsh {  
+  public record UpdatePerpMarketLpPoolFeeTransferScalarIxData(Discriminator discriminator, OptionalInt optionalLpFeeTransferScalar, OptionalInt optionalLpNetPnlTransferScalar) implements SerDe {  
 
     public static UpdatePerpMarketLpPoolFeeTransferScalarIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9190,8 +9191,8 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptionalbyte(optionalLpFeeTransferScalar, _data, i);
-      i += Borsh.writeOptionalbyte(optionalLpNetPnlTransferScalar, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, optionalLpFeeTransferScalar, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, optionalLpNetPnlTransferScalar, _data, i);
       return i - _offset;
     }
 
@@ -9289,7 +9290,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DepositIntoPerpMarketFeePoolIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record DepositIntoPerpMarketFeePoolIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositIntoPerpMarketFeePoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9364,7 +9365,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketPnlPoolIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record UpdatePerpMarketPnlPoolIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static UpdatePerpMarketPnlPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9443,7 +9444,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DepositIntoSpotMarketVaultIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record DepositIntoSpotMarketVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositIntoSpotMarketVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9522,7 +9523,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DepositIntoSpotMarketRevenuePoolIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record DepositIntoSpotMarketRevenuePoolIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositIntoSpotMarketRevenuePoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9593,7 +9594,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RepegAmmCurveIxData(Discriminator discriminator, BigInteger newPegCandidate) implements Borsh {  
+  public record RepegAmmCurveIxData(Discriminator discriminator, BigInteger newPegCandidate) implements SerDe {  
 
     public static RepegAmmCurveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9730,7 +9731,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateKIxData(Discriminator discriminator, BigInteger sqrtK) implements Borsh {  
+  public record UpdateKIxData(Discriminator discriminator, BigInteger sqrtK) implements SerDe {  
 
     public static UpdateKIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9801,7 +9802,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMarginRatioIxData(Discriminator discriminator, int marginRatioInitial, int marginRatioMaintenance) implements Borsh {  
+  public record UpdatePerpMarketMarginRatioIxData(Discriminator discriminator, int marginRatioInitial, int marginRatioMaintenance) implements SerDe {  
 
     public static UpdatePerpMarketMarginRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9876,7 +9877,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketHighLeverageMarginRatioIxData(Discriminator discriminator, int marginRatioInitial, int marginRatioMaintenance) implements Borsh {  
+  public record UpdatePerpMarketHighLeverageMarginRatioIxData(Discriminator discriminator, int marginRatioInitial, int marginRatioMaintenance) implements SerDe {  
 
     public static UpdatePerpMarketHighLeverageMarginRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9947,7 +9948,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketFundingPeriodIxData(Discriminator discriminator, long fundingPeriod) implements Borsh {  
+  public record UpdatePerpMarketFundingPeriodIxData(Discriminator discriminator, long fundingPeriod) implements SerDe {  
 
     public static UpdatePerpMarketFundingPeriodIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10031,7 +10032,7 @@ public final class DriftProgram {
   public record UpdatePerpMarketMaxImbalancesIxData(Discriminator discriminator,
                                                     long unrealizedMaxImbalance,
                                                     long maxRevenueWithdrawPerPeriod,
-                                                    long quoteMaxInsurance) implements Borsh {  
+                                                    long quoteMaxInsurance) implements SerDe {  
 
     public static UpdatePerpMarketMaxImbalancesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10110,7 +10111,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketLiquidationFeeIxData(Discriminator discriminator, int liquidatorFee, int ifLiquidationFee) implements Borsh {  
+  public record UpdatePerpMarketLiquidationFeeIxData(Discriminator discriminator, int liquidatorFee, int ifLiquidationFee) implements SerDe {  
 
     public static UpdatePerpMarketLiquidationFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10181,7 +10182,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketLpPoolIdIxData(Discriminator discriminator, int lpPoolId) implements Borsh {  
+  public record UpdatePerpMarketLpPoolIdIxData(Discriminator discriminator, int lpPoolId) implements SerDe {  
 
     public static UpdatePerpMarketLpPoolIdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10248,7 +10249,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateInsuranceFundUnstakingPeriodIxData(Discriminator discriminator, long insuranceFundUnstakingPeriod) implements Borsh {  
+  public record UpdateInsuranceFundUnstakingPeriodIxData(Discriminator discriminator, long insuranceFundUnstakingPeriod) implements SerDe {  
 
     public static UpdateInsuranceFundUnstakingPeriodIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10315,7 +10316,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketPoolIdIxData(Discriminator discriminator, int poolId) implements Borsh {  
+  public record UpdateSpotMarketPoolIdIxData(Discriminator discriminator, int poolId) implements SerDe {  
 
     public static UpdateSpotMarketPoolIdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10386,7 +10387,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketLiquidationFeeIxData(Discriminator discriminator, int liquidatorFee, int ifLiquidationFee) implements Borsh {  
+  public record UpdateSpotMarketLiquidationFeeIxData(Discriminator discriminator, int liquidatorFee, int ifLiquidationFee) implements SerDe {  
 
     public static UpdateSpotMarketLiquidationFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10457,7 +10458,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateWithdrawGuardThresholdIxData(Discriminator discriminator, long withdrawGuardThreshold) implements Borsh {  
+  public record UpdateWithdrawGuardThresholdIxData(Discriminator discriminator, long withdrawGuardThreshold) implements SerDe {  
 
     public static UpdateWithdrawGuardThresholdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10541,7 +10542,7 @@ public final class DriftProgram {
   public record UpdateSpotMarketIfFactorIxData(Discriminator discriminator,
                                                int spotMarketIndex,
                                                int userIfFactor,
-                                               int totalIfFactor) implements Borsh {  
+                                               int totalIfFactor) implements SerDe {  
 
     public static UpdateSpotMarketIfFactorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10616,7 +10617,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketRevenueSettlePeriodIxData(Discriminator discriminator, long revenueSettlePeriod) implements Borsh {  
+  public record UpdateSpotMarketRevenueSettlePeriodIxData(Discriminator discriminator, long revenueSettlePeriod) implements SerDe {  
 
     public static UpdateSpotMarketRevenueSettlePeriodIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10683,7 +10684,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketStatusIxData(Discriminator discriminator, MarketStatus status) implements Borsh {  
+  public record UpdateSpotMarketStatusIxData(Discriminator discriminator, MarketStatus status) implements SerDe {  
 
     public static UpdateSpotMarketStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10749,7 +10750,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements Borsh {  
+  public record UpdateSpotMarketPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements SerDe {  
 
     public static UpdateSpotMarketPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10816,7 +10817,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketAssetTierIxData(Discriminator discriminator, AssetTier assetTier) implements Borsh {  
+  public record UpdateSpotMarketAssetTierIxData(Discriminator discriminator, AssetTier assetTier) implements SerDe {  
 
     public static UpdateSpotMarketAssetTierIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10911,7 +10912,7 @@ public final class DriftProgram {
                                                     int maintenanceAssetWeight,
                                                     int initialLiabilityWeight,
                                                     int maintenanceLiabilityWeight,
-                                                    int imfFactor) implements Borsh {  
+                                                    int imfFactor) implements SerDe {  
 
     public static UpdateSpotMarketMarginWeightsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11016,7 +11017,7 @@ public final class DriftProgram {
     i += 4;
     putInt32LE(_data, i, maxBorrowRate);
     i += 4;
-    Borsh.writeOptionalbyte(minBorrowRate, _data, i);
+    SerDeUtil.writeOptionalbyte(1, minBorrowRate, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -11025,7 +11026,7 @@ public final class DriftProgram {
                                                  int optimalUtilization,
                                                  int optimalBorrowRate,
                                                  int maxBorrowRate,
-                                                 OptionalInt minBorrowRate) implements Borsh {  
+                                                 OptionalInt minBorrowRate) implements SerDe {  
 
     public static UpdateSpotMarketBorrowRateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11066,7 +11067,7 @@ public final class DriftProgram {
       i += 4;
       putInt32LE(_data, i, maxBorrowRate);
       i += 4;
-      i += Borsh.writeOptionalbyte(minBorrowRate, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, minBorrowRate, _data, i);
       return i - _offset;
     }
 
@@ -11111,7 +11112,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketMaxTokenDepositsIxData(Discriminator discriminator, long maxTokenDeposits) implements Borsh {  
+  public record UpdateSpotMarketMaxTokenDepositsIxData(Discriminator discriminator, long maxTokenDeposits) implements SerDe {  
 
     public static UpdateSpotMarketMaxTokenDepositsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11178,7 +11179,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketMaxTokenBorrowsIxData(Discriminator discriminator, int maxTokenBorrowsFraction) implements Borsh {  
+  public record UpdateSpotMarketMaxTokenBorrowsIxData(Discriminator discriminator, int maxTokenBorrowsFraction) implements SerDe {  
 
     public static UpdateSpotMarketMaxTokenBorrowsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11245,7 +11246,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketScaleInitialAssetWeightStartIxData(Discriminator discriminator, long scaleInitialAssetWeightStart) implements Borsh {  
+  public record UpdateSpotMarketScaleInitialAssetWeightStartIxData(Discriminator discriminator, long scaleInitialAssetWeightStart) implements SerDe {  
 
     public static UpdateSpotMarketScaleInitialAssetWeightStartIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11336,7 +11337,7 @@ public final class DriftProgram {
   public record UpdateSpotMarketOracleIxData(Discriminator discriminator,
                                              PublicKey oracle,
                                              OracleSource oracleSource,
-                                             boolean skipInvariantCheck) implements Borsh {  
+                                             boolean skipInvariantCheck) implements SerDe {  
 
     public static UpdateSpotMarketOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11414,7 +11415,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketStepSizeAndTickSizeIxData(Discriminator discriminator, long stepSize, long tickSize) implements Borsh {  
+  public record UpdateSpotMarketStepSizeAndTickSizeIxData(Discriminator discriminator, long stepSize, long tickSize) implements SerDe {  
 
     public static UpdateSpotMarketStepSizeAndTickSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11485,7 +11486,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketMinOrderSizeIxData(Discriminator discriminator, long orderSize) implements Borsh {  
+  public record UpdateSpotMarketMinOrderSizeIxData(Discriminator discriminator, long orderSize) implements SerDe {  
 
     public static UpdateSpotMarketMinOrderSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11552,7 +11553,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketOrdersEnabledIxData(Discriminator discriminator, boolean ordersEnabled) implements Borsh {  
+  public record UpdateSpotMarketOrdersEnabledIxData(Discriminator discriminator, boolean ordersEnabled) implements SerDe {  
 
     public static UpdateSpotMarketOrdersEnabledIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11619,7 +11620,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketIfPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements Borsh {  
+  public record UpdateSpotMarketIfPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements SerDe {  
 
     public static UpdateSpotMarketIfPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11679,14 +11680,14 @@ public final class DriftProgram {
   public static Instruction updateSpotMarketName(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final byte[] name) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(name)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(name)];
     int i = UPDATE_SPOT_MARKET_NAME_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketNameIxData(Discriminator discriminator, byte[] name) implements Borsh {  
+  public record UpdateSpotMarketNameIxData(Discriminator discriminator, byte[] name) implements SerDe {  
 
     public static UpdateSpotMarketNameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11702,14 +11703,14 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new UpdateSpotMarketNameIxData(discriminator, name);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -11754,7 +11755,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketStatusIxData(Discriminator discriminator, MarketStatus status) implements Borsh {  
+  public record UpdatePerpMarketStatusIxData(Discriminator discriminator, MarketStatus status) implements SerDe {  
 
     public static UpdatePerpMarketStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11820,7 +11821,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements Borsh {  
+  public record UpdatePerpMarketPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements SerDe {  
 
     public static UpdatePerpMarketPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11887,7 +11888,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketContractTierIxData(Discriminator discriminator, ContractTier contractTier) implements Borsh {  
+  public record UpdatePerpMarketContractTierIxData(Discriminator discriminator, ContractTier contractTier) implements SerDe {  
 
     public static UpdatePerpMarketContractTierIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11957,7 +11958,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketImfFactorIxData(Discriminator discriminator, int imfFactor, int unrealizedPnlImfFactor) implements Borsh {  
+  public record UpdatePerpMarketImfFactorIxData(Discriminator discriminator, int imfFactor, int unrealizedPnlImfFactor) implements SerDe {  
 
     public static UpdatePerpMarketImfFactorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12032,7 +12033,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketUnrealizedAssetWeightIxData(Discriminator discriminator, int unrealizedInitialAssetWeight, int unrealizedMaintenanceAssetWeight) implements Borsh {  
+  public record UpdatePerpMarketUnrealizedAssetWeightIxData(Discriminator discriminator, int unrealizedInitialAssetWeight, int unrealizedMaintenanceAssetWeight) implements SerDe {  
 
     public static UpdatePerpMarketUnrealizedAssetWeightIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12103,7 +12104,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketConcentrationCoefIxData(Discriminator discriminator, BigInteger concentrationScale) implements Borsh {  
+  public record UpdatePerpMarketConcentrationCoefIxData(Discriminator discriminator, BigInteger concentrationScale) implements SerDe {  
 
     public static UpdatePerpMarketConcentrationCoefIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12170,7 +12171,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketCurveUpdateIntensityIxData(Discriminator discriminator, int curveUpdateIntensity) implements Borsh {  
+  public record UpdatePerpMarketCurveUpdateIntensityIxData(Discriminator discriminator, int curveUpdateIntensity) implements SerDe {  
 
     public static UpdatePerpMarketCurveUpdateIntensityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12237,7 +12238,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketReferencePriceOffsetDeadbandPctIxData(Discriminator discriminator, int referencePriceOffsetDeadbandPct) implements Borsh {  
+  public record UpdatePerpMarketReferencePriceOffsetDeadbandPctIxData(Discriminator discriminator, int referencePriceOffsetDeadbandPct) implements SerDe {  
 
     public static UpdatePerpMarketReferencePriceOffsetDeadbandPctIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12300,7 +12301,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpFeeStructureIxData(Discriminator discriminator, FeeStructure feeStructure) implements Borsh {  
+  public record UpdatePerpFeeStructureIxData(Discriminator discriminator, FeeStructure feeStructure) implements SerDe {  
 
     public static UpdatePerpFeeStructureIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12362,7 +12363,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotFeeStructureIxData(Discriminator discriminator, FeeStructure feeStructure) implements Borsh {  
+  public record UpdateSpotFeeStructureIxData(Discriminator discriminator, FeeStructure feeStructure) implements SerDe {  
 
     public static UpdateSpotFeeStructureIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12424,7 +12425,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateInitialPctToLiquidateIxData(Discriminator discriminator, int initialPctToLiquidate) implements Borsh {  
+  public record UpdateInitialPctToLiquidateIxData(Discriminator discriminator, int initialPctToLiquidate) implements SerDe {  
 
     public static UpdateInitialPctToLiquidateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12487,7 +12488,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateLiquidationDurationIxData(Discriminator discriminator, int liquidationDuration) implements Borsh {  
+  public record UpdateLiquidationDurationIxData(Discriminator discriminator, int liquidationDuration) implements SerDe {  
 
     public static UpdateLiquidationDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12550,7 +12551,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateLiquidationMarginBufferRatioIxData(Discriminator discriminator, int liquidationMarginBufferRatio) implements Borsh {  
+  public record UpdateLiquidationMarginBufferRatioIxData(Discriminator discriminator, int liquidationMarginBufferRatio) implements SerDe {  
 
     public static UpdateLiquidationMarginBufferRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12613,7 +12614,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateOracleGuardRailsIxData(Discriminator discriminator, OracleGuardRails oracleGuardRails) implements Borsh {  
+  public record UpdateOracleGuardRailsIxData(Discriminator discriminator, OracleGuardRails oracleGuardRails) implements SerDe {  
 
     public static UpdateOracleGuardRailsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12675,7 +12676,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateStateSettlementDurationIxData(Discriminator discriminator, int settlementDuration) implements Borsh {  
+  public record UpdateStateSettlementDurationIxData(Discriminator discriminator, int settlementDuration) implements SerDe {  
 
     public static UpdateStateSettlementDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12738,7 +12739,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateStateMaxNumberOfSubAccountsIxData(Discriminator discriminator, int maxNumberOfSubAccounts) implements Borsh {  
+  public record UpdateStateMaxNumberOfSubAccountsIxData(Discriminator discriminator, int maxNumberOfSubAccounts) implements SerDe {  
 
     public static UpdateStateMaxNumberOfSubAccountsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12801,7 +12802,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateStateMaxInitializeUserFeeIxData(Discriminator discriminator, int maxInitializeUserFee) implements Borsh {  
+  public record UpdateStateMaxInitializeUserFeeIxData(Discriminator discriminator, int maxInitializeUserFee) implements SerDe {  
 
     public static UpdateStateMaxInitializeUserFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12896,7 +12897,7 @@ public final class DriftProgram {
   public record UpdatePerpMarketOracleIxData(Discriminator discriminator,
                                              PublicKey oracle,
                                              OracleSource oracleSource,
-                                             boolean skipInvariantCheck) implements Borsh {  
+                                             boolean skipInvariantCheck) implements SerDe {  
 
     public static UpdatePerpMarketOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12970,7 +12971,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketBaseSpreadIxData(Discriminator discriminator, int baseSpread) implements Borsh {  
+  public record UpdatePerpMarketBaseSpreadIxData(Discriminator discriminator, int baseSpread) implements SerDe {  
 
     public static UpdatePerpMarketBaseSpreadIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13037,7 +13038,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateAmmJitIntensityIxData(Discriminator discriminator, int ammJitIntensity) implements Borsh {  
+  public record UpdateAmmJitIntensityIxData(Discriminator discriminator, int ammJitIntensity) implements SerDe {  
 
     public static UpdateAmmJitIntensityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13104,7 +13105,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMaxSpreadIxData(Discriminator discriminator, int maxSpread) implements Borsh {  
+  public record UpdatePerpMarketMaxSpreadIxData(Discriminator discriminator, int maxSpread) implements SerDe {  
 
     public static UpdatePerpMarketMaxSpreadIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13175,7 +13176,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketStepSizeAndTickSizeIxData(Discriminator discriminator, long stepSize, long tickSize) implements Borsh {  
+  public record UpdatePerpMarketStepSizeAndTickSizeIxData(Discriminator discriminator, long stepSize, long tickSize) implements SerDe {  
 
     public static UpdatePerpMarketStepSizeAndTickSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13239,14 +13240,14 @@ public final class DriftProgram {
   public static Instruction updatePerpMarketName(final AccountMeta invokedDriftProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final byte[] name) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(name)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(name)];
     int i = UPDATE_PERP_MARKET_NAME_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeArrayChecked(name, 32, _data, i);
+    SerDeUtil.writeArrayChecked(name, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketNameIxData(Discriminator discriminator, byte[] name) implements Borsh {  
+  public record UpdatePerpMarketNameIxData(Discriminator discriminator, byte[] name) implements SerDe {  
 
     public static UpdatePerpMarketNameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13262,14 +13263,14 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var name = new byte[32];
-      Borsh.readArray(name, _data, i);
+      SerDeUtil.readArray(name, _data, i);
       return new UpdatePerpMarketNameIxData(discriminator, name);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(name, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       return i - _offset;
     }
 
@@ -13314,7 +13315,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMinOrderSizeIxData(Discriminator discriminator, long orderSize) implements Borsh {  
+  public record UpdatePerpMarketMinOrderSizeIxData(Discriminator discriminator, long orderSize) implements SerDe {  
 
     public static UpdatePerpMarketMinOrderSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13381,7 +13382,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMaxSlippageRatioIxData(Discriminator discriminator, int maxSlippageRatio) implements Borsh {  
+  public record UpdatePerpMarketMaxSlippageRatioIxData(Discriminator discriminator, int maxSlippageRatio) implements SerDe {  
 
     public static UpdatePerpMarketMaxSlippageRatioIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13448,7 +13449,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMaxFillReserveFractionIxData(Discriminator discriminator, int maxFillReserveFraction) implements Borsh {  
+  public record UpdatePerpMarketMaxFillReserveFractionIxData(Discriminator discriminator, int maxFillReserveFraction) implements SerDe {  
 
     public static UpdatePerpMarketMaxFillReserveFractionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13515,7 +13516,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketMaxOpenInterestIxData(Discriminator discriminator, BigInteger maxOpenInterest) implements Borsh {  
+  public record UpdatePerpMarketMaxOpenInterestIxData(Discriminator discriminator, BigInteger maxOpenInterest) implements SerDe {  
 
     public static UpdatePerpMarketMaxOpenInterestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13583,13 +13584,13 @@ public final class DriftProgram {
     + (numberOfUsersWithBase == null || numberOfUsersWithBase.isEmpty() ? 1 : 5)
     ];
     int i = UPDATE_PERP_MARKET_NUMBER_OF_USERS_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptional(numberOfUsers, _data, i);
-    Borsh.writeOptional(numberOfUsersWithBase, _data, i);
+    i += SerDeUtil.writeOptional(1, numberOfUsers, _data, i);
+    SerDeUtil.writeOptional(1, numberOfUsersWithBase, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketNumberOfUsersIxData(Discriminator discriminator, OptionalInt numberOfUsers, OptionalInt numberOfUsersWithBase) implements Borsh {  
+  public record UpdatePerpMarketNumberOfUsersIxData(Discriminator discriminator, OptionalInt numberOfUsers, OptionalInt numberOfUsersWithBase) implements SerDe {  
 
     public static UpdatePerpMarketNumberOfUsersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13623,8 +13624,8 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptional(numberOfUsers, _data, i);
-      i += Borsh.writeOptional(numberOfUsersWithBase, _data, i);
+      i += SerDeUtil.writeOptional(1, numberOfUsers, _data, i);
+      i += SerDeUtil.writeOptional(1, numberOfUsersWithBase, _data, i);
       return i - _offset;
     }
 
@@ -13669,7 +13670,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketFeeAdjustmentIxData(Discriminator discriminator, int feeAdjustment) implements Borsh {  
+  public record UpdatePerpMarketFeeAdjustmentIxData(Discriminator discriminator, int feeAdjustment) implements SerDe {  
 
     public static UpdatePerpMarketFeeAdjustmentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13736,7 +13737,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotMarketFeeAdjustmentIxData(Discriminator discriminator, int feeAdjustment) implements Borsh {  
+  public record UpdateSpotMarketFeeAdjustmentIxData(Discriminator discriminator, int feeAdjustment) implements SerDe {  
 
     public static UpdateSpotMarketFeeAdjustmentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13804,13 +13805,13 @@ public final class DriftProgram {
     + (protectedMakerDynamicDivisor == null || protectedMakerDynamicDivisor.isEmpty() ? 1 : 2)
     ];
     int i = UPDATE_PERP_MARKET_PROTECTED_MAKER_PARAMS_DISCRIMINATOR.write(_data, 0);
-    i += Borsh.writeOptionalbyte(protectedMakerLimitPriceDivisor, _data, i);
-    Borsh.writeOptionalbyte(protectedMakerDynamicDivisor, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, protectedMakerLimitPriceDivisor, _data, i);
+    SerDeUtil.writeOptionalbyte(1, protectedMakerDynamicDivisor, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketProtectedMakerParamsIxData(Discriminator discriminator, OptionalInt protectedMakerLimitPriceDivisor, OptionalInt protectedMakerDynamicDivisor) implements Borsh {  
+  public record UpdatePerpMarketProtectedMakerParamsIxData(Discriminator discriminator, OptionalInt protectedMakerLimitPriceDivisor, OptionalInt protectedMakerDynamicDivisor) implements SerDe {  
 
     public static UpdatePerpMarketProtectedMakerParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13844,8 +13845,8 @@ public final class DriftProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeOptionalbyte(protectedMakerLimitPriceDivisor, _data, i);
-      i += Borsh.writeOptionalbyte(protectedMakerDynamicDivisor, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, protectedMakerLimitPriceDivisor, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, protectedMakerDynamicDivisor, _data, i);
       return i - _offset;
     }
 
@@ -13890,7 +13891,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketOracleLowRiskSlotDelayOverrideIxData(Discriminator discriminator, int oracleLowRiskSlotDelayOverride) implements Borsh {  
+  public record UpdatePerpMarketOracleLowRiskSlotDelayOverrideIxData(Discriminator discriminator, int oracleLowRiskSlotDelayOverride) implements SerDe {  
 
     public static UpdatePerpMarketOracleLowRiskSlotDelayOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -13974,7 +13975,7 @@ public final class DriftProgram {
   public record UpdatePerpMarketAmmSpreadAdjustmentIxData(Discriminator discriminator,
                                                           int ammSpreadAdjustment,
                                                           int ammInventorySpreadAdjustment,
-                                                          int referencePriceOffset) implements Borsh {  
+                                                          int referencePriceOffset) implements SerDe {  
 
     public static UpdatePerpMarketAmmSpreadAdjustmentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14049,7 +14050,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpMarketOracleSlotDelayOverrideIxData(Discriminator discriminator, int oracleSlotDelayOverride) implements Borsh {  
+  public record UpdatePerpMarketOracleSlotDelayOverrideIxData(Discriminator discriminator, int oracleSlotDelayOverride) implements SerDe {  
 
     public static UpdatePerpMarketOracleSlotDelayOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14112,7 +14113,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateAdminIxData(Discriminator discriminator, PublicKey admin) implements Borsh {  
+  public record UpdateAdminIxData(Discriminator discriminator, PublicKey admin) implements SerDe {  
 
     public static UpdateAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14175,7 +14176,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateDiscountMintIxData(Discriminator discriminator, PublicKey discountMint) implements Borsh {  
+  public record UpdateDiscountMintIxData(Discriminator discriminator, PublicKey discountMint) implements SerDe {  
 
     public static UpdateDiscountMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14238,7 +14239,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateExchangeStatusIxData(Discriminator discriminator, int exchangeStatus) implements Borsh {  
+  public record UpdateExchangeStatusIxData(Discriminator discriminator, int exchangeStatus) implements SerDe {  
 
     public static UpdateExchangeStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14301,7 +14302,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePerpAuctionDurationIxData(Discriminator discriminator, int minPerpAuctionDuration) implements Borsh {  
+  public record UpdatePerpAuctionDurationIxData(Discriminator discriminator, int minPerpAuctionDuration) implements SerDe {  
 
     public static UpdatePerpAuctionDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14364,7 +14365,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateSpotAuctionDurationIxData(Discriminator discriminator, int defaultSpotAuctionDuration) implements Borsh {  
+  public record UpdateSpotAuctionDurationIxData(Discriminator discriminator, int defaultSpotAuctionDuration) implements SerDe {  
 
     public static UpdateSpotAuctionDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14439,7 +14440,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializePrelaunchOracleIxData(Discriminator discriminator, PrelaunchOracleParams params) implements Borsh {  
+  public record InitializePrelaunchOracleIxData(Discriminator discriminator, PrelaunchOracleParams params) implements SerDe {  
 
     public static InitializePrelaunchOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14507,7 +14508,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdatePrelaunchOracleParamsIxData(Discriminator discriminator, PrelaunchOracleParams params) implements Borsh {  
+  public record UpdatePrelaunchOracleParamsIxData(Discriminator discriminator, PrelaunchOracleParams params) implements SerDe {  
 
     public static UpdatePrelaunchOracleParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14575,7 +14576,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DeletePrelaunchOracleIxData(Discriminator discriminator, int perpMarketIndex) implements Borsh {  
+  public record DeletePrelaunchOracleIxData(Discriminator discriminator, int perpMarketIndex) implements SerDe {  
 
     public static DeletePrelaunchOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14643,14 +14644,14 @@ public final class DriftProgram {
   public static Instruction initializePythPullOracle(final AccountMeta invokedDriftProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final byte[] feedId) {
-    final byte[] _data = new byte[8 + Borsh.lenArray(feedId)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenArray(feedId)];
     int i = INITIALIZE_PYTH_PULL_ORACLE_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeArrayChecked(feedId, 32, _data, i);
+    SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializePythPullOracleIxData(Discriminator discriminator, byte[] feedId) implements Borsh {  
+  public record InitializePythPullOracleIxData(Discriminator discriminator, byte[] feedId) implements SerDe {  
 
     public static InitializePythPullOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14666,14 +14667,14 @@ public final class DriftProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var feedId = new byte[32];
-      Borsh.readArray(feedId, _data, i);
+      SerDeUtil.readArray(feedId, _data, i);
       return new InitializePythPullOracleIxData(discriminator, feedId);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeArrayChecked(feedId, 32, _data, i);
+      i += SerDeUtil.writeArrayChecked(feedId, 32, _data, i);
       return i - _offset;
     }
 
@@ -14726,7 +14727,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializePythLazerOracleIxData(Discriminator discriminator, int feedId) implements Borsh {  
+  public record InitializePythLazerOracleIxData(Discriminator discriminator, int feedId) implements SerDe {  
 
     public static InitializePythLazerOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14786,14 +14787,14 @@ public final class DriftProgram {
   public static Instruction postPythLazerOracleUpdate(final AccountMeta invokedDriftProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final byte[] pythMessage) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(pythMessage)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, pythMessage)];
     int i = POST_PYTH_LAZER_ORACLE_UPDATE_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(pythMessage, _data, i);
+    SerDeUtil.writeVector(4, pythMessage, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record PostPythLazerOracleUpdateIxData(Discriminator discriminator, byte[] pythMessage) implements Borsh {  
+  public record PostPythLazerOracleUpdateIxData(Discriminator discriminator, byte[] pythMessage) implements SerDe {  
 
     public static PostPythLazerOracleUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14805,20 +14806,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var pythMessage = Borsh.readbyteVector(_data, i);
+      final var pythMessage = SerDeUtil.readbyteVector(4, _data, i);
       return new PostPythLazerOracleUpdateIxData(discriminator, pythMessage);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(pythMessage, _data, i);
+      i += SerDeUtil.writeVector(4, pythMessage, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(pythMessage);
+      return 8 + SerDeUtil.lenVector(4, pythMessage);
     }
   }
 
@@ -14865,7 +14866,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeHighLeverageModeConfigIxData(Discriminator discriminator, int maxUsers) implements Borsh {  
+  public record InitializeHighLeverageModeConfigIxData(Discriminator discriminator, int maxUsers) implements SerDe {  
 
     public static InitializeHighLeverageModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14944,7 +14945,7 @@ public final class DriftProgram {
     i += 4;
     _data[i] = (byte) (reduceOnly ? 1 : 0);
     ++i;
-    Borsh.writeOptional(currentUsers, _data, i);
+    SerDeUtil.writeOptional(1, currentUsers, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -14952,7 +14953,7 @@ public final class DriftProgram {
   public record UpdateHighLeverageModeConfigIxData(Discriminator discriminator,
                                                    int maxUsers,
                                                    boolean reduceOnly,
-                                                   OptionalInt currentUsers) implements Borsh {  
+                                                   OptionalInt currentUsers) implements SerDe {  
 
     public static UpdateHighLeverageModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -14985,7 +14986,7 @@ public final class DriftProgram {
       i += 4;
       _data[i] = (byte) (reduceOnly ? 1 : 0);
       ++i;
-      i += Borsh.writeOptional(currentUsers, _data, i);
+      i += SerDeUtil.writeOptional(1, currentUsers, _data, i);
       return i - _offset;
     }
 
@@ -15038,7 +15039,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeProtectedMakerModeConfigIxData(Discriminator discriminator, int maxUsers) implements Borsh {  
+  public record InitializeProtectedMakerModeConfigIxData(Discriminator discriminator, int maxUsers) implements SerDe {  
 
     public static InitializeProtectedMakerModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15117,7 +15118,7 @@ public final class DriftProgram {
     i += 4;
     _data[i] = (byte) (reduceOnly ? 1 : 0);
     ++i;
-    Borsh.writeOptional(currentUsers, _data, i);
+    SerDeUtil.writeOptional(1, currentUsers, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -15125,7 +15126,7 @@ public final class DriftProgram {
   public record UpdateProtectedMakerModeConfigIxData(Discriminator discriminator,
                                                      int maxUsers,
                                                      boolean reduceOnly,
-                                                     OptionalInt currentUsers) implements Borsh {  
+                                                     OptionalInt currentUsers) implements SerDe {  
 
     public static UpdateProtectedMakerModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15158,7 +15159,7 @@ public final class DriftProgram {
       i += 4;
       _data[i] = (byte) (reduceOnly ? 1 : 0);
       ++i;
-      i += Borsh.writeOptional(currentUsers, _data, i);
+      i += SerDeUtil.writeOptional(1, currentUsers, _data, i);
       return i - _offset;
     }
 
@@ -15219,7 +15220,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record AdminDepositIxData(Discriminator discriminator, int marketIndex, long amount) implements Borsh {  
+  public record AdminDepositIxData(Discriminator discriminator, int marketIndex, long amount) implements SerDe {  
 
     public static AdminDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15298,7 +15299,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeIfRebalanceConfigIxData(Discriminator discriminator, IfRebalanceConfigParams params) implements Borsh {  
+  public record InitializeIfRebalanceConfigIxData(Discriminator discriminator, IfRebalanceConfigParams params) implements SerDe {  
 
     public static InitializeIfRebalanceConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15364,7 +15365,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateIfRebalanceConfigIxData(Discriminator discriminator, IfRebalanceConfigParams params) implements Borsh {  
+  public record UpdateIfRebalanceConfigIxData(Discriminator discriminator, IfRebalanceConfigParams params) implements SerDe {  
 
     public static UpdateIfRebalanceConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15426,7 +15427,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsMmOracleIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsMmOracleIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsMmOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15518,7 +15519,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsMedianTriggerPriceIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsMedianTriggerPriceIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsMedianTriggerPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15581,7 +15582,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsBuilderCodesIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsBuilderCodesIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsBuilderCodesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15701,7 +15702,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record InitializeRevenueShareEscrowIxData(Discriminator discriminator, int numOrders) implements Borsh {  
+  public record InitializeRevenueShareEscrowIxData(Discriminator discriminator, int numOrders) implements SerDe {  
 
     public static InitializeRevenueShareEscrowIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15772,7 +15773,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ResizeRevenueShareEscrowOrdersIxData(Discriminator discriminator, int numOrders) implements Borsh {  
+  public record ResizeRevenueShareEscrowOrdersIxData(Discriminator discriminator, int numOrders) implements SerDe {  
 
     public static ResizeRevenueShareEscrowOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15860,7 +15861,7 @@ public final class DriftProgram {
   public record ChangeApprovedBuilderIxData(Discriminator discriminator,
                                             PublicKey builder,
                                             int maxFeeBps,
-                                            boolean add) implements Borsh {  
+                                            boolean add) implements SerDe {  
 
     public static ChangeApprovedBuilderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -15996,7 +15997,7 @@ public final class DriftProgram {
                                        long minMintFee,
                                        BigInteger maxAum,
                                        long maxSettleQuoteAmountPerMarket,
-                                       PublicKey whitelistMint) implements Borsh {  
+                                       PublicKey whitelistMint) implements SerDe {  
 
     public static InitializeLpPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16080,7 +16081,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsSettleLpPoolIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsSettleLpPoolIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsSettleLpPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16143,7 +16144,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsSwapLpPoolIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsSwapLpPoolIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsSwapLpPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16206,7 +16207,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateFeatureBitFlagsMintRedeemLpPoolIxData(Discriminator discriminator, boolean enable) implements Borsh {  
+  public record UpdateFeatureBitFlagsMintRedeemLpPoolIxData(Discriminator discriminator, boolean enable) implements SerDe {  
 
     public static UpdateFeatureBitFlagsMintRedeemLpPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16353,7 +16354,7 @@ public final class DriftProgram {
                                                   final long[] newConstituentCorrelations) {
     final byte[] _data = new byte[
     82
-    + (constituentDerivativeIndex == null || constituentDerivativeIndex.isEmpty() ? 1 : 3) + Borsh.lenVector(newConstituentCorrelations)
+    + (constituentDerivativeIndex == null || constituentDerivativeIndex.isEmpty() ? 1 : 3) + SerDeUtil.lenVector(4, newConstituentCorrelations)
     ];
     int i = INITIALIZE_CONSTITUENT_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, spotMarketIndex);
@@ -16372,7 +16373,7 @@ public final class DriftProgram {
     i += 8;
     putInt32LE(_data, i, costToTrade);
     i += 4;
-    i += Borsh.writeOptionalshort(constituentDerivativeIndex, _data, i);
+    i += SerDeUtil.writeOptionalshort(1, constituentDerivativeIndex, _data, i);
     putInt64LE(_data, i, constituentDerivativeDepegThreshold);
     i += 8;
     putInt64LE(_data, i, derivativeWeight);
@@ -16385,7 +16386,7 @@ public final class DriftProgram {
     ++i;
     _data[i] = (byte) xi;
     ++i;
-    Borsh.writeVector(newConstituentCorrelations, _data, i);
+    SerDeUtil.writeVector(4, newConstituentCorrelations, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
@@ -16406,7 +16407,7 @@ public final class DriftProgram {
                                             int gammaExecution,
                                             int gammaInventory,
                                             int xi,
-                                            long[] newConstituentCorrelations) implements Borsh {  
+                                            long[] newConstituentCorrelations) implements SerDe {  
 
     public static InitializeConstituentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16455,7 +16456,7 @@ public final class DriftProgram {
       ++i;
       final var xi = _data[i] & 0xFF;
       ++i;
-      final var newConstituentCorrelations = Borsh.readlongVector(_data, i);
+      final var newConstituentCorrelations = SerDeUtil.readlongVector(4, _data, i);
       return new InitializeConstituentIxData(discriminator,
                                              spotMarketIndex,
                                              decimals,
@@ -16494,7 +16495,7 @@ public final class DriftProgram {
       i += 8;
       putInt32LE(_data, i, costToTrade);
       i += 4;
-      i += Borsh.writeOptionalshort(constituentDerivativeIndex, _data, i);
+      i += SerDeUtil.writeOptionalshort(1, constituentDerivativeIndex, _data, i);
       putInt64LE(_data, i, constituentDerivativeDepegThreshold);
       i += 8;
       putInt64LE(_data, i, derivativeWeight);
@@ -16507,7 +16508,7 @@ public final class DriftProgram {
       ++i;
       _data[i] = (byte) xi;
       ++i;
-      i += Borsh.writeVector(newConstituentCorrelations, _data, i);
+      i += SerDeUtil.writeVector(4, newConstituentCorrelations, _data, i);
       return i - _offset;
     }
 
@@ -16528,7 +16529,7 @@ public final class DriftProgram {
            + 1
            + 1
            + 1
-           + Borsh.lenVector(newConstituentCorrelations);
+           + SerDeUtil.lenVector(4, newConstituentCorrelations);
     }
   }
 
@@ -16567,7 +16568,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateConstituentStatusIxData(Discriminator discriminator, int newStatus) implements Borsh {  
+  public record UpdateConstituentStatusIxData(Discriminator discriminator, int newStatus) implements SerDe {  
 
     public static UpdateConstituentStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16634,7 +16635,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateConstituentPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements Borsh {  
+  public record UpdateConstituentPausedOperationsIxData(Discriminator discriminator, int pausedOperations) implements SerDe {  
 
     public static UpdateConstituentPausedOperationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16709,7 +16710,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateConstituentParamsIxData(Discriminator discriminator, ConstituentParams constituentParams) implements Borsh {  
+  public record UpdateConstituentParamsIxData(Discriminator discriminator, ConstituentParams constituentParams) implements SerDe {  
 
     public static UpdateConstituentParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16773,7 +16774,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateLpPoolParamsIxData(Discriminator discriminator, LpPoolParams lpPoolParams) implements Borsh {  
+  public record UpdateLpPoolParamsIxData(Discriminator discriminator, LpPoolParams lpPoolParams) implements SerDe {  
 
     public static UpdateLpPoolParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16842,14 +16843,14 @@ public final class DriftProgram {
   public static Instruction addAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(ammConstituentMappingData)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, ammConstituentMappingData)];
     int i = ADD_AMM_CONSTITUENT_MAPPING_DATA_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(ammConstituentMappingData, _data, i);
+    SerDeUtil.writeVector(4, ammConstituentMappingData, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record AddAmmConstituentMappingDataIxData(Discriminator discriminator, AddAmmConstituentMappingDatum[] ammConstituentMappingData) implements Borsh {  
+  public record AddAmmConstituentMappingDataIxData(Discriminator discriminator, AddAmmConstituentMappingDatum[] ammConstituentMappingData) implements SerDe {  
 
     public static AddAmmConstituentMappingDataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16861,20 +16862,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var ammConstituentMappingData = Borsh.readVector(AddAmmConstituentMappingDatum.class, AddAmmConstituentMappingDatum::read, _data, i);
+      final var ammConstituentMappingData = SerDeUtil.readVector(4, AddAmmConstituentMappingDatum.class, AddAmmConstituentMappingDatum::read, _data, i);
       return new AddAmmConstituentMappingDataIxData(discriminator, ammConstituentMappingData);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(ammConstituentMappingData, _data, i);
+      i += SerDeUtil.writeVector(4, ammConstituentMappingData, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(ammConstituentMappingData);
+      return 8 + SerDeUtil.lenVector(4, ammConstituentMappingData);
     }
   }
 
@@ -16914,14 +16915,14 @@ public final class DriftProgram {
   public static Instruction updateAmmConstituentMappingData(final AccountMeta invokedDriftProgramMeta,
                                                             final List<AccountMeta> keys,
                                                             final AddAmmConstituentMappingDatum[] ammConstituentMappingData) {
-    final byte[] _data = new byte[8 + Borsh.lenVector(ammConstituentMappingData)];
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, ammConstituentMappingData)];
     int i = UPDATE_AMM_CONSTITUENT_MAPPING_DATA_DISCRIMINATOR.write(_data, 0);
-    Borsh.writeVector(ammConstituentMappingData, _data, i);
+    SerDeUtil.writeVector(4, ammConstituentMappingData, _data, i);
 
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record UpdateAmmConstituentMappingDataIxData(Discriminator discriminator, AddAmmConstituentMappingDatum[] ammConstituentMappingData) implements Borsh {  
+  public record UpdateAmmConstituentMappingDataIxData(Discriminator discriminator, AddAmmConstituentMappingDatum[] ammConstituentMappingData) implements SerDe {  
 
     public static UpdateAmmConstituentMappingDataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -16933,20 +16934,20 @@ public final class DriftProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var ammConstituentMappingData = Borsh.readVector(AddAmmConstituentMappingDatum.class, AddAmmConstituentMappingDatum::read, _data, i);
+      final var ammConstituentMappingData = SerDeUtil.readVector(4, AddAmmConstituentMappingDatum.class, AddAmmConstituentMappingDatum::read, _data, i);
       return new UpdateAmmConstituentMappingDataIxData(discriminator, ammConstituentMappingData);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += Borsh.writeVector(ammConstituentMappingData, _data, i);
+      i += SerDeUtil.writeVector(4, ammConstituentMappingData, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + Borsh.lenVector(ammConstituentMappingData);
+      return 8 + SerDeUtil.lenVector(4, ammConstituentMappingData);
     }
   }
 
@@ -16997,7 +16998,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record RemoveAmmConstituentMappingDataIxData(Discriminator discriminator, int perpMarketIndex, int constituentIndex) implements Borsh {  
+  public record RemoveAmmConstituentMappingDataIxData(Discriminator discriminator, int perpMarketIndex, int constituentIndex) implements SerDe {  
 
     public static RemoveAmmConstituentMappingDataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17089,7 +17090,7 @@ public final class DriftProgram {
   public record UpdateConstituentCorrelationDataIxData(Discriminator discriminator,
                                                        int index1,
                                                        int index2,
-                                                       long correlation) implements Borsh {  
+                                                       long correlation) implements SerDe {  
 
     public static UpdateConstituentCorrelationDataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17279,7 +17280,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record OverrideAmmCacheInfoIxData(Discriminator discriminator, int marketIndex, OverrideAmmCacheParams overrideParams) implements Borsh {  
+  public record OverrideAmmCacheInfoIxData(Discriminator discriminator, int marketIndex, OverrideAmmCacheParams overrideParams) implements SerDe {  
 
     public static OverrideAmmCacheInfoIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17414,7 +17415,7 @@ public final class DriftProgram {
                                  int inMarketIndex,
                                  int outMarketIndex,
                                  long inAmount,
-                                 long minOutAmount) implements Borsh {  
+                                 long minOutAmount) implements SerDe {  
 
     public static LpPoolSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17558,7 +17559,7 @@ public final class DriftProgram {
                                          int outMarketIndex,
                                          long inAmount,
                                          long inTargetWeight,
-                                         long outTargetWeight) implements Borsh {  
+                                         long outTargetWeight) implements SerDe {  
 
     public static ViewLpPoolSwapFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17699,7 +17700,7 @@ public final class DriftProgram {
   public record LpPoolAddLiquidityIxData(Discriminator discriminator,
                                          int inMarketIndex,
                                          BigInteger inAmount,
-                                         long minMintAmount) implements Borsh {  
+                                         long minMintAmount) implements SerDe {  
 
     public static LpPoolAddLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17839,7 +17840,7 @@ public final class DriftProgram {
   public record LpPoolRemoveLiquidityIxData(Discriminator discriminator,
                                             int inMarketIndex,
                                             long inAmount,
-                                            BigInteger minOutAmount) implements Borsh {  
+                                            BigInteger minOutAmount) implements SerDe {  
 
     public static LpPoolRemoveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -17934,7 +17935,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ViewLpPoolAddLiquidityFeesIxData(Discriminator discriminator, int inMarketIndex, BigInteger inAmount) implements Borsh {  
+  public record ViewLpPoolAddLiquidityFeesIxData(Discriminator discriminator, int inMarketIndex, BigInteger inAmount) implements SerDe {  
 
     public static ViewLpPoolAddLiquidityFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -18025,7 +18026,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record ViewLpPoolRemoveLiquidityFeesIxData(Discriminator discriminator, int inMarketIndex, long inAmount) implements Borsh {  
+  public record ViewLpPoolRemoveLiquidityFeesIxData(Discriminator discriminator, int inMarketIndex, long inAmount) implements SerDe {  
 
     public static ViewLpPoolRemoveLiquidityFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -18153,7 +18154,7 @@ public final class DriftProgram {
   public record BeginLpSwapIxData(Discriminator discriminator,
                                   int inMarketIndex,
                                   int outMarketIndex,
-                                  long amountIn) implements Borsh {  
+                                  long amountIn) implements SerDe {  
 
     public static BeginLpSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -18272,7 +18273,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record EndLpSwapIxData(Discriminator discriminator, int inMarketIndex, int outMarketIndex) implements Borsh {  
+  public record EndLpSwapIxData(Discriminator discriminator, int inMarketIndex, int outMarketIndex) implements SerDe {  
 
     public static EndLpSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -18404,7 +18405,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record DepositToProgramVaultIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record DepositToProgramVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositToProgramVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -18499,7 +18500,7 @@ public final class DriftProgram {
     return Instruction.createInstruction(invokedDriftProgramMeta, keys, _data);
   }
 
-  public record WithdrawFromProgramVaultIxData(Discriminator discriminator, long amount) implements Borsh {  
+  public record WithdrawFromProgramVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawFromProgramVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

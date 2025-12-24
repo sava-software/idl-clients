@@ -1,8 +1,9 @@
 package software.sava.idl.clients.drift.gen.types;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
-public enum DepositExplanation implements Borsh.Enum {
+public enum DepositExplanation implements RustEnum {
 
   None,
   Transfer,
@@ -11,6 +12,6 @@ public enum DepositExplanation implements Borsh.Enum {
   Reward;
 
   public static DepositExplanation read(final byte[] _data, final int _offset) {
-    return Borsh.read(DepositExplanation.values(), _data, _offset);
+    return SerDeUtil.read(1, DepositExplanation.values(), _data, _offset);
   }
 }

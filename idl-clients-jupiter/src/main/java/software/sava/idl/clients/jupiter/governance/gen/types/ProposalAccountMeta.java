@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.governance.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
@@ -12,7 +12,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 /// @param isWritable True if the `pubkey` can be loaded as a read-write account.
 public record ProposalAccountMeta(PublicKey pubkey,
                                   boolean isSigner,
-                                  boolean isWritable) implements Borsh {
+                                  boolean isWritable) implements SerDe {
 
   public static final int BYTES = 34;
 

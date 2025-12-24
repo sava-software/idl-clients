@@ -3,7 +3,8 @@ package software.sava.idl.clients.drift.gen.types;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -27,7 +28,7 @@ public record OrderParams(OrderType orderType,
                           OptionalInt oraclePriceOffset,
                           OptionalInt auctionDuration,
                           OptionalLong auctionStartPrice,
-                          OptionalLong auctionEndPrice) implements Borsh {
+                          OptionalLong auctionEndPrice) implements SerDe {
 
   public static OrderParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -146,13 +147,13 @@ public record OrderParams(OrderType orderType,
     i += postOnly.write(_data, i);
     _data[i] = (byte) bitFlags;
     ++i;
-    i += Borsh.writeOptional(maxTs, _data, i);
-    i += Borsh.writeOptional(triggerPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, maxTs, _data, i);
+    i += SerDeUtil.writeOptional(1, triggerPrice, _data, i);
     i += triggerCondition.write(_data, i);
-    i += Borsh.writeOptional(oraclePriceOffset, _data, i);
-    i += Borsh.writeOptionalbyte(auctionDuration, _data, i);
-    i += Borsh.writeOptional(auctionStartPrice, _data, i);
-    i += Borsh.writeOptional(auctionEndPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, oraclePriceOffset, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, auctionDuration, _data, i);
+    i += SerDeUtil.writeOptional(1, auctionStartPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, auctionEndPrice, _data, i);
     return i - _offset;
   }
 

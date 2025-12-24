@@ -1,9 +1,9 @@
 package software.sava.idl.clients.spl.system.gen.types;
 
 import software.sava.core.encoding.ByteUtil;
-import software.sava.core.serial.Serializable;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public enum NonceVersion implements Serializable {
+public enum NonceVersion implements SerDe {
 
   legacy,
   current;

@@ -5,9 +5,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -73,7 +74,7 @@ public record Obligation(PublicKey _address,
                          long highestBorrowFactorPct,
                          long autodeleverageMarginCallStartedTimestamp,
                          ObligationOrder[] orders,
-                         long[] padding3) implements Borsh {
+                         long[] padding3) implements SerDe {
 
   public static final int BYTES = 3344;
   public static final int DEPOSITS_LEN = 8;
@@ -241,13 +242,13 @@ public record Obligation(PublicKey _address,
     final var owner = readPubKey(_data, i);
     i += 32;
     final var deposits = new ObligationCollateral[8];
-    i += Borsh.readArray(deposits, ObligationCollateral::read, _data, i);
+    i += SerDeUtil.readArray(deposits, ObligationCollateral::read, _data, i);
     final var lowestReserveDepositLiquidationLtv = getInt64LE(_data, i);
     i += 8;
     final var depositedValueSf = getInt128LE(_data, i);
     i += 16;
     final var borrows = new ObligationLiquidity[5];
-    i += Borsh.readArray(borrows, ObligationLiquidity::read, _data, i);
+    i += SerDeUtil.readArray(borrows, ObligationLiquidity::read, _data, i);
     final var borrowFactorAdjustedDebtValueSf = getInt128LE(_data, i);
     i += 16;
     final var borrowedAssetsMarketValueSf = getInt128LE(_data, i);
@@ -257,7 +258,7 @@ public record Obligation(PublicKey _address,
     final var unhealthyBorrowValueSf = getInt128LE(_data, i);
     i += 16;
     final var paddingDeprecatedAssetTiers = new byte[13];
-    i += Borsh.readArray(paddingDeprecatedAssetTiers, _data, i);
+    i += SerDeUtil.readArray(paddingDeprecatedAssetTiers, _data, i);
     final var elevationGroup = _data[i] & 0xFF;
     ++i;
     final var numOfObsoleteDepositReserves = _data[i] & 0xFF;
@@ -275,15 +276,15 @@ public record Obligation(PublicKey _address,
     final var numOfObsoleteBorrowReserves = _data[i] & 0xFF;
     ++i;
     final var reserved = new byte[4];
-    i += Borsh.readArray(reserved, _data, i);
+    i += SerDeUtil.readArray(reserved, _data, i);
     final var highestBorrowFactorPct = getInt64LE(_data, i);
     i += 8;
     final var autodeleverageMarginCallStartedTimestamp = getInt64LE(_data, i);
     i += 8;
     final var orders = new ObligationOrder[2];
-    i += Borsh.readArray(orders, ObligationOrder::read, _data, i);
+    i += SerDeUtil.readArray(orders, ObligationOrder::read, _data, i);
     final var padding3 = new long[93];
-    Borsh.readArray(padding3, _data, i);
+    SerDeUtil.readArray(padding3, _data, i);
     return new Obligation(_address,
                           discriminator,
                           tag,
@@ -324,12 +325,12 @@ public record Obligation(PublicKey _address,
     i += 32;
     owner.write(_data, i);
     i += 32;
-    i += Borsh.writeArrayChecked(deposits, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(deposits, 8, _data, i);
     putInt64LE(_data, i, lowestReserveDepositLiquidationLtv);
     i += 8;
     putInt128LE(_data, i, depositedValueSf);
     i += 16;
-    i += Borsh.writeArrayChecked(borrows, 5, _data, i);
+    i += SerDeUtil.writeArrayChecked(borrows, 5, _data, i);
     putInt128LE(_data, i, borrowFactorAdjustedDebtValueSf);
     i += 16;
     putInt128LE(_data, i, borrowedAssetsMarketValueSf);
@@ -338,7 +339,7 @@ public record Obligation(PublicKey _address,
     i += 16;
     putInt128LE(_data, i, unhealthyBorrowValueSf);
     i += 16;
-    i += Borsh.writeArrayChecked(paddingDeprecatedAssetTiers, 13, _data, i);
+    i += SerDeUtil.writeArrayChecked(paddingDeprecatedAssetTiers, 13, _data, i);
     _data[i] = (byte) elevationGroup;
     ++i;
     _data[i] = (byte) numOfObsoleteDepositReserves;
@@ -355,13 +356,13 @@ public record Obligation(PublicKey _address,
     ++i;
     _data[i] = (byte) numOfObsoleteBorrowReserves;
     ++i;
-    i += Borsh.writeArrayChecked(reserved, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 4, _data, i);
     putInt64LE(_data, i, highestBorrowFactorPct);
     i += 8;
     putInt64LE(_data, i, autodeleverageMarginCallStartedTimestamp);
     i += 8;
-    i += Borsh.writeArrayChecked(orders, 2, _data, i);
-    i += Borsh.writeArrayChecked(padding3, 93, _data, i);
+    i += SerDeUtil.writeArrayChecked(orders, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 93, _data, i);
     return i - _offset;
   }
 

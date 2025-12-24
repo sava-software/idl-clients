@@ -1,8 +1,8 @@
 package software.sava.idl.clients.kamino.vaults.gen.events;
 
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.SerDe;
 
-public sealed interface KaminoVaultEvent extends Borsh permits
+public sealed interface KaminoVaultEvent extends SerDe permits
     DepositResultEvent,
     DepositUserAtaBalanceEvent,
     SharesToWithdrawEvent,

@@ -3,9 +3,10 @@ package software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
 import java.util.function.BiFunction;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -29,7 +30,7 @@ public record MessageTransmitter(PublicKey _address,
                                  int version,
                                  int signatureThreshold,
                                  PublicKey[] enabledAttesters,
-                                 long maxMessageBodySize) implements Borsh {
+                                 long maxMessageBodySize) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(71, 40, 180, 142, 19, 203, 35, 252);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -118,8 +119,8 @@ public record MessageTransmitter(PublicKey _address,
     i += 4;
     final var signatureThreshold = getInt32LE(_data, i);
     i += 4;
-    final var enabledAttesters = Borsh.readPublicKeyVector(_data, i);
-    i += Borsh.lenVector(enabledAttesters);
+    final var enabledAttesters = SerDeUtil.readPublicKeyVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, enabledAttesters);
     final var maxMessageBodySize = getInt64LE(_data, i);
     return new MessageTransmitter(_address,
                                   discriminator,
@@ -154,7 +155,7 @@ public record MessageTransmitter(PublicKey _address,
     i += 4;
     putInt32LE(_data, i, signatureThreshold);
     i += 4;
-    i += Borsh.writeVector(enabledAttesters, _data, i);
+    i += SerDeUtil.writeVector(4, enabledAttesters, _data, i);
     putInt64LE(_data, i, maxMessageBodySize);
     i += 8;
     return i - _offset;
@@ -170,7 +171,7 @@ public record MessageTransmitter(PublicKey _address,
          + 4
          + 4
          + 4
-         + Borsh.lenVector(enabledAttesters)
+         + SerDeUtil.lenVector(4, enabledAttesters)
          + 8;
   }
 }
