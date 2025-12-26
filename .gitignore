@@ -76,3 +76,6 @@ node_modules/
 /scope
 Integ.*
 /markets/
+/rebalance-service
+/glam-sdk-java
+/glam-rest-api
