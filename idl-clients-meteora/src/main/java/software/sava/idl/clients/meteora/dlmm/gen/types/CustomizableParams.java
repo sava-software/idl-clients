@@ -19,6 +19,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param activationPoint Decide when does the pool start trade. None = Now
 /// @param creatorPoolOnOffControl Pool creator have permission to enable/disable pool with restricted program validation. Only applicable for customizable permissionless pool.
 /// @param baseFeePowerFactor Base fee power factor
+/// @param functionType function type
 /// @param padding Padding, for future use
 public record CustomizableParams(int activeId,
                                  int binStep,
@@ -28,9 +29,10 @@ public record CustomizableParams(int activeId,
                                  OptionalLong activationPoint,
                                  boolean creatorPoolOnOffControl,
                                  int baseFeePowerFactor,
+                                 int functionType,
                                  byte[] padding) implements SerDe {
 
-  public static final int PADDING_LEN = 62;
+  public static final int PADDING_LEN = 61;
   public static CustomizableParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
@@ -59,7 +61,9 @@ public record CustomizableParams(int activeId,
     ++i;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[62];
+    final var functionType = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[61];
     SerDeUtil.readArray(padding, _data, i);
     return new CustomizableParams(activeId,
                                   binStep,
@@ -69,6 +73,7 @@ public record CustomizableParams(int activeId,
                                   activationPoint,
                                   creatorPoolOnOffControl,
                                   baseFeePowerFactor,
+                                  functionType,
                                   padding);
   }
 
@@ -90,7 +95,9 @@ public record CustomizableParams(int activeId,
     ++i;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 62, _data, i);
+    _data[i] = (byte) functionType;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 61, _data, i);
     return i - _offset;
   }
 
@@ -102,6 +109,7 @@ public record CustomizableParams(int activeId,
          + 1
          + 1
          + (activationPoint == null || activationPoint.isEmpty() ? 1 : (1 + 8))
+         + 1
          + 1
          + 1
          + SerDeUtil.lenArray(padding);

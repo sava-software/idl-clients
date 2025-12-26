@@ -134,19 +134,11 @@ public final class MeteoraPDAs {
     return LbClmmPDAs.rewardVaultPDA(programId, lbPair, rewardIndexBytes);
   }
 
-  public static ProgramDerivedAddress presetParameterPDA(final int binStep,
-                                                         final int baseFactor,
+  public static ProgramDerivedAddress presetParameterPDA(final int ixIndex,
                                                          final PublicKey programId) {
-    final byte[] binStepBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(binStepBytes, 0, binStep);
-    final byte[] baseFactorBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(baseFactorBytes, 0, baseFactor);
-
-    return LbClmmPDAs.presetParameterPDA(
-        programId,
-        binStepBytes,
-        baseFactorBytes
-    );
+    final byte[] ixIndexBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(ixIndexBytes, 0, ixIndex);
+    return LbClmmPDAs.presetParameterPDA(programId, ixIndexBytes);
   }
 
   private MeteoraPDAs() {

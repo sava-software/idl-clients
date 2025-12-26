@@ -13,6 +13,7 @@ val idlClientModules = setOf(
   "idl-clients-meteora",
   "idl-clients-oracles",
   "idl-clients-spl",
+  "idl-clients-squads",
 )
 
 val selectedModule: String? = providers

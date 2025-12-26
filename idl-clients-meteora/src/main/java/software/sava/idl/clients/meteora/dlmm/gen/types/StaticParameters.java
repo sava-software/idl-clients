@@ -20,6 +20,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param maxBinId Max bin id supported by the pool based on the configured bin step.
 /// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 /// @param baseFeePowerFactor Base fee power factor
+/// @param functionType function type
 /// @param padding Padding for bytemuck safe alignment
 public record StaticParameters(int baseFactor,
                                int filterPeriod,
@@ -31,10 +32,11 @@ public record StaticParameters(int baseFactor,
                                int maxBinId,
                                int protocolShare,
                                int baseFeePowerFactor,
+                               int functionType,
                                byte[] padding) implements SerDe {
 
   public static final int BYTES = 32;
-  public static final int PADDING_LEN = 5;
+  public static final int PADDING_LEN = 4;
 
   public static StaticParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -61,7 +63,9 @@ public record StaticParameters(int baseFactor,
     i += 2;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[5];
+    final var functionType = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[4];
     SerDeUtil.readArray(padding, _data, i);
     return new StaticParameters(baseFactor,
                                 filterPeriod,
@@ -73,6 +77,7 @@ public record StaticParameters(int baseFactor,
                                 maxBinId,
                                 protocolShare,
                                 baseFeePowerFactor,
+                                functionType,
                                 padding);
   }
 
@@ -99,7 +104,9 @@ public record StaticParameters(int baseFactor,
     i += 2;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 5, _data, i);
+    _data[i] = (byte) functionType;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
     return i - _offset;
   }
 

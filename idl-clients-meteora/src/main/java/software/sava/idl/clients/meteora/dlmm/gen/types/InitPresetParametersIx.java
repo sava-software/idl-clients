@@ -15,22 +15,29 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param variableFeeControl Used to scale the variable fee component depending on the dynamic of the market
 /// @param maxVolatilityAccumulator Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
 /// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
-public record InitPresetParametersIx(int binStep,
+/// @param baseFeePowerFactor Base fee power factor
+/// @param functionType function type
+public record InitPresetParametersIx(int index,
+                                     int binStep,
                                      int baseFactor,
                                      int filterPeriod,
                                      int decayPeriod,
                                      int reductionFactor,
                                      int variableFeeControl,
                                      int maxVolatilityAccumulator,
-                                     int protocolShare) implements SerDe {
+                                     int protocolShare,
+                                     int baseFeePowerFactor,
+                                     int functionType) implements SerDe {
 
-  public static final int BYTES = 20;
+  public static final int BYTES = 24;
 
   public static InitPresetParametersIx read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     int i = _offset;
+    final var index = getInt16LE(_data, i);
+    i += 2;
     final var binStep = getInt16LE(_data, i);
     i += 2;
     final var baseFactor = getInt16LE(_data, i);
@@ -46,19 +53,28 @@ public record InitPresetParametersIx(int binStep,
     final var maxVolatilityAccumulator = getInt32LE(_data, i);
     i += 4;
     final var protocolShare = getInt16LE(_data, i);
-    return new InitPresetParametersIx(binStep,
+    i += 2;
+    final var baseFeePowerFactor = _data[i] & 0xFF;
+    ++i;
+    final var functionType = _data[i] & 0xFF;
+    return new InitPresetParametersIx(index,
+                                      binStep,
                                       baseFactor,
                                       filterPeriod,
                                       decayPeriod,
                                       reductionFactor,
                                       variableFeeControl,
                                       maxVolatilityAccumulator,
-                                      protocolShare);
+                                      protocolShare,
+                                      baseFeePowerFactor,
+                                      functionType);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
+    putInt16LE(_data, i, index);
+    i += 2;
     putInt16LE(_data, i, binStep);
     i += 2;
     putInt16LE(_data, i, baseFactor);
@@ -75,6 +91,10 @@ public record InitPresetParametersIx(int binStep,
     i += 4;
     putInt16LE(_data, i, protocolShare);
     i += 2;
+    _data[i] = (byte) baseFeePowerFactor;
+    ++i;
+    _data[i] = (byte) functionType;
+    ++i;
     return i - _offset;
   }
 

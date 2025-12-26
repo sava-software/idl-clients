@@ -14,23 +14,23 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param amountY Amount of token Y in the bin. This already excluded protocol fees.
 /// @param price Bin price
 /// @param liquiditySupply Liquidities of the bin. This is the same as LP mint supply. q-number
-/// @param rewardPerTokenStored reward_a_per_token_stored
+/// @param functionBytes function bytes, could be used for liquidity mining or other functions in future
 /// @param feeAmountXPerTokenStored Swap fee amount of token X per liquidity deposited.
 /// @param feeAmountYPerTokenStored Swap fee amount of token Y per liquidity deposited.
-/// @param amountXIn Total token X swap into the bin. Only used for tracking purpose.
-/// @param amountYIn Total token Y swap into he bin. Only used for tracking purpose.
+/// @param padding0 _padding_0, previous amount_x_in, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
+/// @param padding1 _padding_1, previous amount_y_in, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
 public record Bin(long amountX,
                   long amountY,
                   BigInteger price,
                   BigInteger liquiditySupply,
-                  BigInteger[] rewardPerTokenStored,
+                  BigInteger[] functionBytes,
                   BigInteger feeAmountXPerTokenStored,
                   BigInteger feeAmountYPerTokenStored,
-                  BigInteger amountXIn,
-                  BigInteger amountYIn) implements SerDe {
+                  BigInteger padding0,
+                  BigInteger padding1) implements SerDe {
 
   public static final int BYTES = 144;
-  public static final int REWARD_PER_TOKEN_STORED_LEN = 2;
+  public static final int FUNCTION_BYTES_LEN = 2;
 
   public static Bin read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -45,24 +45,24 @@ public record Bin(long amountX,
     i += 16;
     final var liquiditySupply = getInt128LE(_data, i);
     i += 16;
-    final var rewardPerTokenStored = new BigInteger[2];
-    i += SerDeUtil.read128Array(rewardPerTokenStored, _data, i);
+    final var functionBytes = new BigInteger[2];
+    i += SerDeUtil.read128Array(functionBytes, _data, i);
     final var feeAmountXPerTokenStored = getInt128LE(_data, i);
     i += 16;
     final var feeAmountYPerTokenStored = getInt128LE(_data, i);
     i += 16;
-    final var amountXIn = getInt128LE(_data, i);
+    final var padding0 = getInt128LE(_data, i);
     i += 16;
-    final var amountYIn = getInt128LE(_data, i);
+    final var padding1 = getInt128LE(_data, i);
     return new Bin(amountX,
                    amountY,
                    price,
                    liquiditySupply,
-                   rewardPerTokenStored,
+                   functionBytes,
                    feeAmountXPerTokenStored,
                    feeAmountYPerTokenStored,
-                   amountXIn,
-                   amountYIn);
+                   padding0,
+                   padding1);
   }
 
   @Override
@@ -76,14 +76,14 @@ public record Bin(long amountX,
     i += 16;
     putInt128LE(_data, i, liquiditySupply);
     i += 16;
-    i += SerDeUtil.write128ArrayChecked(rewardPerTokenStored, 2, _data, i);
+    i += SerDeUtil.write128ArrayChecked(functionBytes, 2, _data, i);
     putInt128LE(_data, i, feeAmountXPerTokenStored);
     i += 16;
     putInt128LE(_data, i, feeAmountYPerTokenStored);
     i += 16;
-    putInt128LE(_data, i, amountXIn);
+    putInt128LE(_data, i, padding0);
     i += 16;
-    putInt128LE(_data, i, amountYIn);
+    putInt128LE(_data, i, padding1);
     i += 16;
     return i - _offset;
   }

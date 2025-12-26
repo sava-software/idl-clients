@@ -26,7 +26,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 /// @param index index
 /// @param baseFeePowerFactor Base fee power factor
-/// @param padding0 Padding 0 for future use
+/// @param functionType function type, to check whether the pool should have LM farming or other functions in the future, refer FunctionType
 /// @param padding1 Padding 1 for future use
 public record PresetParameter2(PublicKey _address,
                                Discriminator discriminator,
@@ -40,7 +40,7 @@ public record PresetParameter2(PublicKey _address,
                                int protocolShare,
                                int index,
                                int baseFeePowerFactor,
-                               int padding0,
+                               int functionType,
                                long[] padding1) implements SerDe {
 
   public static final int BYTES = 192;
@@ -60,7 +60,7 @@ public record PresetParameter2(PublicKey _address,
   public static final int PROTOCOL_SHARE_OFFSET = 26;
   public static final int INDEX_OFFSET = 28;
   public static final int BASE_FEE_POWER_FACTOR_OFFSET = 30;
-  public static final int PADDING_0_OFFSET = 31;
+  public static final int FUNCTION_TYPE_OFFSET = 31;
   public static final int PADDING_1_OFFSET = 32;
 
   public static Filter createBinStepFilter(final int binStep) {
@@ -121,8 +121,8 @@ public record PresetParameter2(PublicKey _address,
     return Filter.createMemCompFilter(BASE_FEE_POWER_FACTOR_OFFSET, new byte[]{(byte) baseFeePowerFactor});
   }
 
-  public static Filter createPadding0Filter(final int padding0) {
-    return Filter.createMemCompFilter(PADDING_0_OFFSET, new byte[]{(byte) padding0});
+  public static Filter createFunctionTypeFilter(final int functionType) {
+    return Filter.createMemCompFilter(FUNCTION_TYPE_OFFSET, new byte[]{(byte) functionType});
   }
 
   public static PresetParameter2 read(final byte[] _data, final int _offset) {
@@ -165,7 +165,7 @@ public record PresetParameter2(PublicKey _address,
     i += 2;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
-    final var padding0 = _data[i] & 0xFF;
+    final var functionType = _data[i] & 0xFF;
     ++i;
     final var padding1 = new long[20];
     SerDeUtil.readArray(padding1, _data, i);
@@ -181,7 +181,7 @@ public record PresetParameter2(PublicKey _address,
                                 protocolShare,
                                 index,
                                 baseFeePowerFactor,
-                                padding0,
+                                functionType,
                                 padding1);
   }
 
@@ -208,7 +208,7 @@ public record PresetParameter2(PublicKey _address,
     i += 2;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    _data[i] = (byte) padding0;
+    _data[i] = (byte) functionType;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding1, 20, _data, i);
     return i - _offset;
