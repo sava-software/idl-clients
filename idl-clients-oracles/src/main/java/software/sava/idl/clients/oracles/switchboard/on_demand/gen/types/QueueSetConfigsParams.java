@@ -13,7 +13,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record QueueSetConfigsParams(PublicKey authority,
                                     OptionalInt reward,
-                                    OptionalLong nodeTimeout) implements SerDe {
+                                    OptionalLong nodeTimeout,
+                                    OptionalInt oracleFeeProportionBps) implements SerDe {
 
   public static QueueSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -41,11 +42,23 @@ public record QueueSetConfigsParams(PublicKey authority,
     final OptionalLong nodeTimeout;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       nodeTimeout = OptionalLong.empty();
+      ++i;
     } else {
       ++i;
       nodeTimeout = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
     }
-    return new QueueSetConfigsParams(authority, reward, nodeTimeout);
+    final OptionalInt oracleFeeProportionBps;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      oracleFeeProportionBps = OptionalInt.empty();
+    } else {
+      ++i;
+      oracleFeeProportionBps = OptionalInt.of(getInt32LE(_data, i));
+    }
+    return new QueueSetConfigsParams(authority,
+                                     reward,
+                                     nodeTimeout,
+                                     oracleFeeProportionBps);
   }
 
   @Override
@@ -54,11 +67,12 @@ public record QueueSetConfigsParams(PublicKey authority,
     i += SerDeUtil.writeOptional(1, authority, _data, i);
     i += SerDeUtil.writeOptional(1, reward, _data, i);
     i += SerDeUtil.writeOptional(1, nodeTimeout, _data, i);
+    i += SerDeUtil.writeOptional(1, oracleFeeProportionBps, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return (authority == null ? 1 : (1 + 32)) + (reward == null || reward.isEmpty() ? 1 : (1 + 4)) + (nodeTimeout == null || nodeTimeout.isEmpty() ? 1 : (1 + 8));
+    return (authority == null ? 1 : (1 + 32)) + (reward == null || reward.isEmpty() ? 1 : (1 + 4)) + (nodeTimeout == null || nodeTimeout.isEmpty() ? 1 : (1 + 8)) + (oracleFeeProportionBps == null || oracleFeeProportionBps.isEmpty() ? 1 : (1 + 4));
   }
 }
