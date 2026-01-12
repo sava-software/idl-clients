@@ -1,24 +1,26 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
 
 public record NotYetSupported(PublicKey priceAccount,
                               OracleType oracleType,
                               ScopeEntry twapSource,
-                              boolean twapEnabled,
+                              Set<EmaType> emaTypes,
                               ScopeEntry refPrice,
                               byte[] generic) implements ScopeEntry {
 
   @Override
   public boolean equals(final Object o) {
     if (o instanceof NotYetSupported(
-        PublicKey account, OracleType type, ScopeEntry source, boolean enabled, ScopeEntry price, byte[] oGeneric
+        PublicKey account, OracleType type, ScopeEntry source, Set<EmaType> _emaTypes, ScopeEntry price, byte[] oGeneric
     )) {
-      return twapEnabled == enabled
+      return emaTypes.equals(_emaTypes)
           && Arrays.equals(generic, oGeneric)
           && Objects.equals(refPrice, price)
           && oracleType == type
@@ -34,7 +36,7 @@ public record NotYetSupported(PublicKey priceAccount,
     int result = Objects.hashCode(priceAccount);
     result = 31 * result + oracleType.hashCode();
     result = 31 * result + Objects.hashCode(twapSource);
-    result = 31 * result + Boolean.hashCode(twapEnabled);
+    result = 31 * result + emaTypes.hashCode();
     result = 31 * result + Objects.hashCode(refPrice);
     result = 31 * result + Arrays.hashCode(generic);
     return result;

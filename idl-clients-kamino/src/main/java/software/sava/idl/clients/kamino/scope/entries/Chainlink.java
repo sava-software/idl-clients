@@ -1,11 +1,14 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
+
+import java.util.Set;
 
 public record Chainlink(PublicKey oracle,
                         int confidenceFactor,
-                        boolean twapEnabled,
+                        Set<EmaType> emaTypes,
                         ScopeEntry refPrice) implements ReferencesEntry {
 
   @Override

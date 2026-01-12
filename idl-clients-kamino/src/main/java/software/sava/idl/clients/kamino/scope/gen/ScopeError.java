@@ -60,7 +60,12 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.CompositeOracleInvalidSourceIndex,
     ScopeError.CappedFlooredBothCapAndFloorAreNone,
     ScopeError.MissingPriceAccount,
-    ScopeError.ChainlinkXPriceNotSuspended {
+    ScopeError.ChainlinkXPriceNotSuspended,
+    ScopeError.OutsideMarketHours,
+    ScopeError.PythLazerExponentNotPresent,
+    ScopeError.PythLazerUnexpectedExponent,
+    ScopeError.InvalidConversionToEmaTypeForOracleType,
+    ScopeError.TwapEnabledBitmaskConversionFailure {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -122,6 +127,11 @@ public sealed interface ScopeError extends ProgramError permits
       case 6055 -> CappedFlooredBothCapAndFloorAreNone.INSTANCE;
       case 6056 -> MissingPriceAccount.INSTANCE;
       case 6057 -> ChainlinkXPriceNotSuspended.INSTANCE;
+      case 6058 -> OutsideMarketHours.INSTANCE;
+      case 6059 -> PythLazerExponentNotPresent.INSTANCE;
+      case 6060 -> PythLazerUnexpectedExponent.INSTANCE;
+      case 6061 -> InvalidConversionToEmaTypeForOracleType.INSTANCE;
+      case 6062 -> TwapEnabledBitmaskConversionFailure.INSTANCE;
       default -> null;
     };
   }
@@ -262,7 +272,7 @@ public sealed interface ScopeError extends ProgramError permits
   record PriceAccountNotExpected(int code, String msg) implements ScopeError {
 
     public static final PriceAccountNotExpected INSTANCE = new PriceAccountNotExpected(
-        6019, "TWAP price account is different than Scope ID"
+        6019, "Received a price account when none is expected"
     );
   }
 
@@ -529,6 +539,41 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final ChainlinkXPriceNotSuspended INSTANCE = new ChainlinkXPriceNotSuspended(
         6057, "Cannot resume a ChainlinkX price that was not suspended"
+    );
+  }
+
+  record OutsideMarketHours(int code, String msg) implements ScopeError {
+
+    public static final OutsideMarketHours INSTANCE = new OutsideMarketHours(
+        6058, "Price update rejected as outside of market hours"
+    );
+  }
+
+  record PythLazerExponentNotPresent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerExponentNotPresent INSTANCE = new PythLazerExponentNotPresent(
+        6059, "Property fields in the feed of the PythLazer payload do not contain an exponent"
+    );
+  }
+
+  record PythLazerUnexpectedExponent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerUnexpectedExponent INSTANCE = new PythLazerUnexpectedExponent(
+        6060, "The exponent provided in the feed of the PythLazer payload is not the expected one"
+    );
+  }
+
+  record InvalidConversionToEmaTypeForOracleType(int code, String msg) implements ScopeError {
+
+    public static final InvalidConversionToEmaTypeForOracleType INSTANCE = new InvalidConversionToEmaTypeForOracleType(
+        6061, "Cannot convert oracle type to EMA type"
+    );
+  }
+
+  record TwapEnabledBitmaskConversionFailure(int code, String msg) implements ScopeError {
+
+    public static final TwapEnabledBitmaskConversionFailure INSTANCE = new TwapEnabledBitmaskConversionFailure(
+        6062, "Invalid TWAP enabled bitmask value"
     );
   }
 }

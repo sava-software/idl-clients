@@ -1,6 +1,9 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
+
+import java.util.Set;
 
 public sealed interface OracleEntry extends ScopeEntry permits
     AdrenaLp,
@@ -26,5 +29,9 @@ public sealed interface OracleEntry extends ScopeEntry permits
 
   PublicKey oracle();
 
-  boolean twapEnabled();
+  Set<EmaType> emaTypes();
+
+  default boolean twapEnabled() {
+    return !emaTypes().isEmpty();
+  }
 }

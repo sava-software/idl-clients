@@ -1,25 +1,22 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
-import java.util.OptionalInt;
-
 import software.sava.idl.clients.core.gen.RustEnum;
-import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.OptionalInt;
 
-import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static software.sava.core.encoding.ByteUtil.*;
 
 public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum permits
-  UpdateOracleMappingAndMetadataEntry.RemoveEntry,
-  UpdateOracleMappingAndMetadataEntry.MappingConfig,
-  UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
-  UpdateOracleMappingAndMetadataEntry.MappingTwapEnabled,
-  UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
-  UpdateOracleMappingAndMetadataEntry.MetadataName,
-  UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
-  UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
+    UpdateOracleMappingAndMetadataEntry.RemoveEntry,
+    UpdateOracleMappingAndMetadataEntry.MappingConfig,
+    UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
+    UpdateOracleMappingAndMetadataEntry.MappingTwapEnabledBitmask,
+    UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
+    UpdateOracleMappingAndMetadataEntry.MetadataName,
+    UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
+    UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
 
   static UpdateOracleMappingAndMetadataEntry read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -28,7 +25,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       case 0 -> RemoveEntry.INSTANCE;
       case 1 -> MappingConfig.read(_data, i);
       case 2 -> MappingTwapEntry.read(_data, i);
-      case 3 -> MappingTwapEnabled.read(_data, i);
+      case 3 -> MappingTwapEnabledBitmask.read(_data, i);
       case 4 -> MappingRefPrice.read(_data, i);
       case 5 -> MetadataName.read(_data, i);
       case 6 -> MetadataMaxPriceAgeSlots.read(_data, i);
@@ -83,10 +80,33 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
-  record MappingTwapEntry(int val) implements EnumInt16, UpdateOracleMappingAndMetadataEntry {
+  record MappingTwapEntry(OracleType priceType, int twapSource) implements UpdateOracleMappingAndMetadataEntry {
 
-    public static MappingTwapEntry read(final byte[] _data, int i) {
-      return new MappingTwapEntry(getInt16LE(_data, i));
+    public static final int BYTES = 3;
+
+    public static MappingTwapEntry read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var priceType = OracleType.read(_data, i);
+      i += priceType.l();
+      final var twapSource = getInt16LE(_data, i);
+      return new MappingTwapEntry(priceType, twapSource);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = writeOrdinal(_data, _offset);
+      i += priceType.write(_data, i);
+      putInt16LE(_data, i, twapSource);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
     }
 
     @Override
@@ -95,13 +115,10 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
-  record MappingTwapEnabled(boolean val) implements EnumBool, UpdateOracleMappingAndMetadataEntry {
+  record MappingTwapEnabledBitmask(int val) implements EnumInt8, UpdateOracleMappingAndMetadataEntry {
 
-    public static final MappingTwapEnabled TRUE = new MappingTwapEnabled(true);
-    public static final MappingTwapEnabled FALSE = new MappingTwapEnabled(false);
-
-    public static MappingTwapEnabled read(final byte[] _data, int i) {
-      return _data[i] == 1 ? MappingTwapEnabled.TRUE : MappingTwapEnabled.FALSE;
+    public static MappingTwapEnabledBitmask read(final byte[] _data, int i) {
+      return new MappingTwapEnabledBitmask(_data[i] & 0xFF);
     }
 
     @Override

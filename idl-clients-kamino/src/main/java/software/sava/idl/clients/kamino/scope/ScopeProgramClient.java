@@ -77,7 +77,7 @@ public interface ScopeProgramClient {
       final var oracleType = oracleTypeEnums[oracleTypes[token]];
       switch (oracleType) {
         case KToken, KTokenToTokenA, KTokenToTokenB,
-             JupiterLpCompute, JupiterLpFetch, JupiterLpScope,
+             JupiterLpFetch,
              MeteoraDlmmAtoB, MeteoraDlmmBtoA,
              OrcaWhirlpoolAtoB, OrcaWhirlpoolBtoA,
              Securitize -> throw new IllegalStateException(oracleType + "Requires asset mints as well.");

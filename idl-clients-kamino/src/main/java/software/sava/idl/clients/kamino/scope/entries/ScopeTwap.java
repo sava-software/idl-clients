@@ -2,10 +2,6 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record ScopeTwap(ScopeEntry sourceEntry) implements ScopeEntry {
-
-  @Override
-  public OracleType oracleType() {
-    return OracleType.ScopeTwap;
-  }
+public record ScopeTwap(OracleType oracleType, ScopeEntry sourceEntry) implements ScopeEntry {
+  
 }

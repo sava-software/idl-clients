@@ -17,15 +17,15 @@ public enum OracleType implements RustEnum {
   KTokenToTokenA,
   KTokenToTokenB,
   JupiterLpFetch,
-  ScopeTwap,
+  ScopeTwap1h,
   OrcaWhirlpoolAtoB,
   OrcaWhirlpoolBtoA,
   RaydiumAmmV3AtoB,
   RaydiumAmmV3BtoA,
-  JupiterLpCompute,
+  DeprecatedPlaceholder6,
   MeteoraDlmmAtoB,
   MeteoraDlmmBtoA,
-  JupiterLpScope,
+  DeprecatedPlaceholder7,
   PythPull,
   PythPullEMA,
   FixedPrice,
@@ -44,7 +44,9 @@ public enum OracleType implements RustEnum {
   FlashtradeLp,
   ChainlinkX,
   ChainlinkExchangeRate,
-  CappedMostRecentOf;
+  CappedMostRecentOf,
+  ScopeTwap8h,
+  ScopeTwap24h;
 
   public static OracleType read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleType.values(), _data, _offset);

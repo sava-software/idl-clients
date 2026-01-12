@@ -1,9 +1,12 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record KToken(PublicKey oracle, boolean twapEnabled) implements OracleEntry {
+import java.util.Set;
+
+public record KToken(PublicKey oracle, Set<EmaType> emaTypes) implements OracleEntry {
 
   @Override
   public OracleType oracleType() {

@@ -23,7 +23,7 @@ public interface ScopeReader {
         priceAccounts,
         oracleMappings.priceTypes(),
         oracleMappings.twapSource(),
-        oracleMappings.twapEnabled(),
+        oracleMappings.twapEnabledBitmask(),
         oracleMappings.refPrice(),
         oracleMappings.generic(),
         OracleType.values()
