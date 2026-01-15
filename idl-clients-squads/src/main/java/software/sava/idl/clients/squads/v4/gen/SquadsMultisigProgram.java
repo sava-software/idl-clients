@@ -38,7 +38,7 @@ import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public final class SquadsMultisigProgramProgram {
+public final class SquadsMultisigProgram {
 
   public static final Discriminator PROGRAM_CONFIG_INIT_DISCRIMINATOR = toDiscriminator(184, 188, 198, 195, 205, 124, 117, 216);
 
@@ -2415,6 +2415,6 @@ public final class SquadsMultisigProgramProgram {
     return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, BATCH_ACCOUNTS_CLOSE_DISCRIMINATOR);
   }
 
-  private SquadsMultisigProgramProgram() {
+  private SquadsMultisigProgram() {
   }
 }
