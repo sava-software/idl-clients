@@ -9,6 +9,8 @@ public record UtilizeArgs(long numberOfUses) implements SerDe {
 
   public static final int BYTES = 8;
 
+  public static final int NUMBER_OF_USES_OFFSET = 0;
+
   public static UtilizeArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

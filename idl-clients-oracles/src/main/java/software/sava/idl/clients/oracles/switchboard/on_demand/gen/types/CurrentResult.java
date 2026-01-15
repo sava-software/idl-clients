@@ -37,6 +37,19 @@ public record CurrentResult(BigInteger value,
   public static final int BYTES = 128;
   public static final int PADDING_1_LEN = 6;
 
+  public static final int VALUE_OFFSET = 0;
+  public static final int STD_DEV_OFFSET = 16;
+  public static final int MEAN_OFFSET = 32;
+  public static final int RANGE_OFFSET = 48;
+  public static final int MIN_VALUE_OFFSET = 64;
+  public static final int MAX_VALUE_OFFSET = 80;
+  public static final int NUM_SAMPLES_OFFSET = 96;
+  public static final int SUBMISSION_IDX_OFFSET = 97;
+  public static final int PADDING_1_OFFSET = 98;
+  public static final int SLOT_OFFSET = 104;
+  public static final int MIN_SLOT_OFFSET = 112;
+  public static final int MAX_SLOT_OFFSET = 120;
+
   public static CurrentResult read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

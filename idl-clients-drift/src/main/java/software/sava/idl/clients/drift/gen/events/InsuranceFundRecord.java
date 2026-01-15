@@ -30,6 +30,17 @@ public record InsuranceFundRecord(Discriminator discriminator,
   public static final int BYTES = 84;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 16;
+  public static final int PERP_MARKET_INDEX_OFFSET = 18;
+  public static final int USER_IF_FACTOR_OFFSET = 20;
+  public static final int TOTAL_IF_FACTOR_OFFSET = 24;
+  public static final int VAULT_AMOUNT_BEFORE_OFFSET = 28;
+  public static final int INSURANCE_VAULT_AMOUNT_BEFORE_OFFSET = 36;
+  public static final int TOTAL_IF_SHARES_BEFORE_OFFSET = 44;
+  public static final int TOTAL_IF_SHARES_AFTER_OFFSET = 60;
+  public static final int AMOUNT_OFFSET = 76;
+
   public static InsuranceFundRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

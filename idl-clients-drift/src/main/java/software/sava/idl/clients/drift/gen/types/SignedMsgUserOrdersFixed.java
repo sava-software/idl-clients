@@ -13,6 +13,10 @@ public record SignedMsgUserOrdersFixed(PublicKey userPubkey,
 
   public static final int BYTES = 40;
 
+  public static final int USER_PUBKEY_OFFSET = 0;
+  public static final int PADDING_OFFSET = 32;
+  public static final int LEN_OFFSET = 36;
+
   public static SignedMsgUserOrdersFixed read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

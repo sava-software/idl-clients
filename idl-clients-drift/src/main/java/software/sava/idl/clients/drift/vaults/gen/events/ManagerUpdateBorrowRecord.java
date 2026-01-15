@@ -21,6 +21,14 @@ public record ManagerUpdateBorrowRecord(Discriminator discriminator,
   public static final int BYTES = 112;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int MANAGER_OFFSET = 48;
+  public static final int PREVIOUS_BORROW_VALUE_OFFSET = 80;
+  public static final int NEW_BORROW_VALUE_OFFSET = 88;
+  public static final int VAULT_EQUITY_BEFORE_OFFSET = 96;
+  public static final int VAULT_EQUITY_AFTER_OFFSET = 104;
+
   public static ManagerUpdateBorrowRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record ProofInfo(byte[][] proof) implements SerDe {
 
+  public static final int PROOF_OFFSET = 0;
+
   public static ProofInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

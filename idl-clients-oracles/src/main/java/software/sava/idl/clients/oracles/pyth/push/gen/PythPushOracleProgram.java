@@ -94,6 +94,8 @@ public final class PythPushOracleProgram {
     }
 
     public static final int FEED_ID_LEN = 32;
+    public static final int PARAMS_OFFSET = 8;
+
     public static UpdatePriceFeedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

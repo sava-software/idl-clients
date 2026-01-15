@@ -16,6 +16,15 @@ public record FeeTier(int feeNumerator,
 
   public static final int BYTES = 32;
 
+  public static final int FEE_NUMERATOR_OFFSET = 0;
+  public static final int FEE_DENOMINATOR_OFFSET = 4;
+  public static final int MAKER_REBATE_NUMERATOR_OFFSET = 8;
+  public static final int MAKER_REBATE_DENOMINATOR_OFFSET = 12;
+  public static final int REFERRER_REWARD_NUMERATOR_OFFSET = 16;
+  public static final int REFERRER_REWARD_DENOMINATOR_OFFSET = 20;
+  public static final int REFEREE_FEE_NUMERATOR_OFFSET = 24;
+  public static final int REFEREE_FEE_DENOMINATOR_OFFSET = 28;
+
   public static FeeTier read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -42,6 +42,29 @@ public record LPSwapRecord(Discriminator discriminator,
   public static final int BYTES = 248;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int SLOT_OFFSET = 16;
+  public static final int AUTHORITY_OFFSET = 24;
+  public static final int OUT_AMOUNT_OFFSET = 56;
+  public static final int IN_AMOUNT_OFFSET = 72;
+  public static final int OUT_FEE_OFFSET = 88;
+  public static final int IN_FEE_OFFSET = 104;
+  public static final int OUT_SPOT_MARKET_INDEX_OFFSET = 120;
+  public static final int IN_SPOT_MARKET_INDEX_OFFSET = 122;
+  public static final int OUT_CONSTITUENT_INDEX_OFFSET = 124;
+  public static final int IN_CONSTITUENT_INDEX_OFFSET = 126;
+  public static final int OUT_ORACLE_PRICE_OFFSET = 128;
+  public static final int IN_ORACLE_PRICE_OFFSET = 136;
+  public static final int LAST_AUM_OFFSET = 144;
+  public static final int LAST_AUM_SLOT_OFFSET = 160;
+  public static final int IN_MARKET_CURRENT_WEIGHT_OFFSET = 168;
+  public static final int OUT_MARKET_CURRENT_WEIGHT_OFFSET = 176;
+  public static final int IN_MARKET_TARGET_WEIGHT_OFFSET = 184;
+  public static final int OUT_MARKET_TARGET_WEIGHT_OFFSET = 192;
+  public static final int IN_SWAP_ID_OFFSET = 200;
+  public static final int OUT_SWAP_ID_OFFSET = 208;
+  public static final int LP_POOL_OFFSET = 216;
+
   public static LPSwapRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

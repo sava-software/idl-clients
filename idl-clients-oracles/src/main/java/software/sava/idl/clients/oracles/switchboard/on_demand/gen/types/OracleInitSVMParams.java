@@ -14,6 +14,11 @@ public record OracleInitSVMParams(long recentSlot,
                                   byte[] secpAuthority,
                                   PublicKey sourceOracleKey) implements SerDe {
 
+  public static final int RECENT_SLOT_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int QUEUE_OFFSET = 40;
+  public static final int SECP_AUTHORITY_OFFSET = 73;
+
   public static OracleInitSVMParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

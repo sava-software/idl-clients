@@ -23,6 +23,16 @@ public record PullFeedInitParams(byte[] feedHash,
   public static final int FEED_HASH_LEN = 32;
   public static final int NAME_LEN = 32;
   public static final int IPFS_HASH_LEN = 32;
+  public static final int FEED_HASH_OFFSET = 0;
+  public static final int MAX_VARIANCE_OFFSET = 32;
+  public static final int MIN_RESPONSES_OFFSET = 40;
+  public static final int NAME_OFFSET = 44;
+  public static final int RECENT_SLOT_OFFSET = 76;
+  public static final int IPFS_HASH_OFFSET = 84;
+  public static final int MIN_SAMPLE_SIZE_OFFSET = 116;
+  public static final int MAX_STALENESS_OFFSET = 117;
+  public static final int PERMIT_WRITE_BY_AUTHORITY_OFFSET = 122;
+
   public static PullFeedInitParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

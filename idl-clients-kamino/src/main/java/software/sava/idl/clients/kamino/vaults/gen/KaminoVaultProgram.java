@@ -169,6 +169,9 @@ public final class KaminoVaultProgram {
 
     public static final int BYTES = 24;
 
+    public static final int WEIGHT_OFFSET = 8;
+    public static final int CAP_OFFSET = 16;
+
     public static UpdateReserveAllocationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -280,6 +283,8 @@ public final class KaminoVaultProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MAX_AMOUNT_OFFSET = 8;
+
     public static DepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -386,6 +391,8 @@ public final class KaminoVaultProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int MAX_AMOUNT_OFFSET = 8;
 
     public static BuyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -542,6 +549,8 @@ public final class KaminoVaultProgram {
 
     public static final int BYTES = 16;
 
+    public static final int SHARES_AMOUNT_OFFSET = 8;
+
     public static WithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -696,6 +705,8 @@ public final class KaminoVaultProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int SHARES_AMOUNT_OFFSET = 8;
 
     public static SellIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -857,6 +868,9 @@ public final class KaminoVaultProgram {
     public static UpdateVaultConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ENTRY_OFFSET = 8;
+    public static final int DATA_OFFSET = 9;
 
     public static UpdateVaultConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1035,6 +1049,8 @@ public final class KaminoVaultProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MAX_AMOUNT_TO_GIVE_UP_OFFSET = 8;
+
     public static GiveUpPendingFeesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1137,6 +1153,8 @@ public final class KaminoVaultProgram {
     public static InitializeSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int NAME_OFFSET = 8;
 
     public static InitializeSharesMetadataIxData createRecord(final Discriminator discriminator,
                                                               final String name,
@@ -1249,6 +1267,8 @@ public final class KaminoVaultProgram {
     public static UpdateSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int NAME_OFFSET = 8;
 
     public static UpdateSharesMetadataIxData createRecord(final Discriminator discriminator,
                                                           final String name,
@@ -1382,6 +1402,8 @@ public final class KaminoVaultProgram {
 
     public static final int BYTES = 16;
 
+    public static final int SHARES_AMOUNT_OFFSET = 8;
+
     public static WithdrawFromAvailableIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1509,6 +1531,8 @@ public final class KaminoVaultProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int UPDATE_OFFSET = 8;
+
     public static UpdateGlobalConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1605,6 +1629,8 @@ public final class KaminoVaultProgram {
     public static AddUpdateWhitelistedReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int UPDATE_OFFSET = 8;
 
     public static AddUpdateWhitelistedReserveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

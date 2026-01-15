@@ -19,6 +19,12 @@ public record ValidatorRecord(PublicKey validatorAccount,
 
   public static final int BYTES = 53;
 
+  public static final int VALIDATOR_ACCOUNT_OFFSET = 0;
+  public static final int ACTIVE_BALANCE_OFFSET = 32;
+  public static final int SCORE_OFFSET = 40;
+  public static final int LAST_STAKE_DELTA_EPOCH_OFFSET = 44;
+  public static final int DUPLICATION_FLAG_BUMP_SEED_OFFSET = 52;
+
   public static ValidatorRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

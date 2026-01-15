@@ -9,6 +9,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record CreateMasterEditionArgs(OptionalLong maxSupply) implements SerDe {
 
+  public static final int MAX_SUPPLY_OFFSET = 1;
+
   public static CreateMasterEditionArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

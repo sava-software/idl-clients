@@ -14,6 +14,13 @@ public record OracleEpochInfo(long id,
 
   public static final int BYTES = 48;
 
+  public static final int ID_OFFSET = 0;
+  public static final int RESERVED_1_OFFSET = 8;
+  public static final int RESERVED_OFFSET = 16;
+  public static final int SLASH_SCORE_OFFSET = 24;
+  public static final int REWARD_SCORE_OFFSET = 32;
+  public static final int STAKE_SCORE_OFFSET = 40;
+
   public static OracleEpochInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

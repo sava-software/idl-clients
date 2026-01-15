@@ -12,6 +12,9 @@ public record GarbageCollectionEvent(Discriminator discriminator, PublicKey orac
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(232, 235, 2, 188, 8, 143, 145, 237);
 
+  public static final int ORACLE_OFFSET = 8;
+  public static final int QUEUE_OFFSET = 40;
+
   public static GarbageCollectionEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

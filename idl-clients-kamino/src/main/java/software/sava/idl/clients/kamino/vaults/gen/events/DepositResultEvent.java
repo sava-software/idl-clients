@@ -15,6 +15,10 @@ public record DepositResultEvent(Discriminator discriminator,
   public static final int BYTES = 32;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
 
+  public static final int SHARES_TO_MINT_OFFSET = 8;
+  public static final int TOKEN_TO_DEPOSIT_OFFSET = 16;
+  public static final int CRANK_FUNDS_TO_DEPOSIT_OFFSET = 24;
+
   public static DepositResultEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

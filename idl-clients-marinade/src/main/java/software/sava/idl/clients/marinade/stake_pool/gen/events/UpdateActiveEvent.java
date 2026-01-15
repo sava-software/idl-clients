@@ -36,6 +36,15 @@ public record UpdateActiveEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int STAKE_INDEX_OFFSET = 48;
+  public static final int STAKE_ACCOUNT_OFFSET = 52;
+  public static final int VALIDATOR_INDEX_OFFSET = 84;
+  public static final int VALIDATOR_VOTE_OFFSET = 88;
+  public static final int DELEGATION_CHANGE_OFFSET = 120;
+  public static final int DELEGATION_GROWTH_MSOL_FEES_OFFSET = 137;
+
   public static UpdateActiveEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

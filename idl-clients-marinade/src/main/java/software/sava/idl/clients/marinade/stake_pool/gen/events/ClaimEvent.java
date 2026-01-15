@@ -23,6 +23,16 @@ public record ClaimEvent(Discriminator discriminator,
   public static final int BYTES = 152;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int TICKET_OFFSET = 48;
+  public static final int BENEFICIARY_OFFSET = 80;
+  public static final int CIRCULATING_TICKET_BALANCE_OFFSET = 112;
+  public static final int CIRCULATING_TICKET_COUNT_OFFSET = 120;
+  public static final int RESERVE_BALANCE_OFFSET = 128;
+  public static final int USER_BALANCE_OFFSET = 136;
+  public static final int AMOUNT_OFFSET = 144;
+
   public static ClaimEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

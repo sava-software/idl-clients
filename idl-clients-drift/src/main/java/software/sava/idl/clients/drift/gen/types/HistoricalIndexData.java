@@ -18,6 +18,12 @@ public record HistoricalIndexData(long lastIndexBidPrice,
 
   public static final int BYTES = 40;
 
+  public static final int LAST_INDEX_BID_PRICE_OFFSET = 0;
+  public static final int LAST_INDEX_ASK_PRICE_OFFSET = 8;
+  public static final int LAST_INDEX_PRICE_TWAP_OFFSET = 16;
+  public static final int LAST_INDEX_PRICE_TWAP_5MIN_OFFSET = 24;
+  public static final int LAST_INDEX_PRICE_TWAP_TS_OFFSET = 32;
+
   public static HistoricalIndexData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

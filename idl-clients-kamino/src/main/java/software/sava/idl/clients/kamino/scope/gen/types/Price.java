@@ -9,6 +9,9 @@ public record Price(long value, long exp) implements SerDe {
 
   public static final int BYTES = 16;
 
+  public static final int VALUE_OFFSET = 0;
+  public static final int EXP_OFFSET = 8;
+
   public static Price read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

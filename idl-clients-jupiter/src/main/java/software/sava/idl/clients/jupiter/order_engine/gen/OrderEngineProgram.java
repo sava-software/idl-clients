@@ -115,6 +115,10 @@ public final class OrderEngineProgram {
 
     public static final int BYTES = 32;
 
+    public static final int INPUT_AMOUNT_OFFSET = 8;
+    public static final int OUTPUT_AMOUNT_OFFSET = 16;
+    public static final int EXPIRE_AT_OFFSET = 24;
+
     public static FillIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

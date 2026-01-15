@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record RemainingAccountsInfo(RemainingAccountsSlice[] slices) implements SerDe {
 
+  public static final int SLICES_OFFSET = 0;
+
   public static RemainingAccountsInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

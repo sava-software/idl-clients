@@ -28,6 +28,10 @@ public record ReserveFees(long originationFeeSf,
   public static final int BYTES = 24;
   public static final int PADDING_LEN = 8;
 
+  public static final int ORIGINATION_FEE_SF_OFFSET = 0;
+  public static final int FLASH_LOAN_FEE_SF_OFFSET = 8;
+  public static final int PADDING_OFFSET = 16;
+
   public static ReserveFees read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

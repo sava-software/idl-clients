@@ -9,6 +9,8 @@ public record Fee(int basisPoints) implements SerDe {
 
   public static final int BYTES = 4;
 
+  public static final int BASIS_POINTS_OFFSET = 0;
+
   public static Fee read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

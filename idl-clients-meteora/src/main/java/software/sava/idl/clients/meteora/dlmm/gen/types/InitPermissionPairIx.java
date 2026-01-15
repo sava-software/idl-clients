@@ -16,6 +16,13 @@ public record InitPermissionPairIx(int activeId,
 
   public static final int BYTES = 12;
 
+  public static final int ACTIVE_ID_OFFSET = 0;
+  public static final int BIN_STEP_OFFSET = 4;
+  public static final int BASE_FACTOR_OFFSET = 6;
+  public static final int BASE_FEE_POWER_FACTOR_OFFSET = 8;
+  public static final int ACTIVATION_TYPE_OFFSET = 9;
+  public static final int PROTOCOL_SHARE_OFFSET = 10;
+
   public static InitPermissionPairIx read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

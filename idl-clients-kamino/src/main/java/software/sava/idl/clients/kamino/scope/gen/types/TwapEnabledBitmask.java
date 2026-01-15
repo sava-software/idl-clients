@@ -6,6 +6,8 @@ public record TwapEnabledBitmask(int bitmask) implements SerDe {
 
   public static final int BYTES = 1;
 
+  public static final int BITMASK_OFFSET = 0;
+
   public static TwapEnabledBitmask read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

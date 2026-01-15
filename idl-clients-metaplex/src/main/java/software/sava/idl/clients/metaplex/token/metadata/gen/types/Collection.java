@@ -9,6 +9,9 @@ public record Collection(boolean verified, PublicKey key) implements SerDe {
 
   public static final int BYTES = 33;
 
+  public static final int VERIFIED_OFFSET = 0;
+  public static final int KEY_OFFSET = 1;
+
   public static Collection read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

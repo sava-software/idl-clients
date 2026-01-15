@@ -9,6 +9,9 @@ public record AddressBool(PublicKey addr, boolean value) implements SerDe {
 
   public static final int BYTES = 33;
 
+  public static final int ADDR_OFFSET = 0;
+  public static final int VALUE_OFFSET = 32;
+
   public static AddressBool read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

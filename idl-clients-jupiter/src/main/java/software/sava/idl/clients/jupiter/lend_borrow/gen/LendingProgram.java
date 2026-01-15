@@ -125,6 +125,8 @@ public final class LendingProgram {
 
     public static final int BYTES = 16;
 
+    public static final int ASSETS_OFFSET = 8;
+
     public static DepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -249,6 +251,9 @@ public final class LendingProgram {
 
     public static final int BYTES = 24;
 
+    public static final int ASSETS_OFFSET = 8;
+    public static final int MIN_AMOUNT_OUT_OFFSET = 16;
+
     public static DepositWithMinAmountOutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -352,6 +357,8 @@ public final class LendingProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int SYMBOL_OFFSET = 8;
+
     public static InitLendingIxData createRecord(final Discriminator discriminator, final String symbol, final PublicKey liquidityProgram) {
       return new InitLendingIxData(discriminator, symbol, symbol == null ? null : symbol.getBytes(UTF_8), liquidityProgram);
     }
@@ -445,6 +452,10 @@ public final class LendingProgram {
     }
 
     public static final int BYTES = 104;
+
+    public static final int LIQUIDITY_PROGRAM_OFFSET = 8;
+    public static final int REBALANCER_OFFSET = 40;
+    public static final int AUTHORITY_OFFSET = 72;
 
     public static InitLendingAdminIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -574,6 +585,8 @@ public final class LendingProgram {
 
     public static final int BYTES = 16;
 
+    public static final int SHARES_OFFSET = 8;
+
     public static MintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -697,6 +710,9 @@ public final class LendingProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int SHARES_OFFSET = 8;
+    public static final int MAX_ASSETS_OFFSET = 16;
 
     public static MintWithMaxAssetsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -904,6 +920,8 @@ public final class LendingProgram {
 
     public static final int BYTES = 16;
 
+    public static final int SHARES_OFFSET = 8;
+
     public static RedeemIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1032,6 +1050,9 @@ public final class LendingProgram {
 
     public static final int BYTES = 24;
 
+    public static final int SHARES_OFFSET = 8;
+    public static final int MIN_AMOUNT_OUT_OFFSET = 16;
+
     public static RedeemWithMinAmountOutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1115,6 +1136,8 @@ public final class LendingProgram {
 
     public static final int BYTES = 40;
 
+    public static final int MINT_OFFSET = 8;
+
     public static SetRewardsRateModelIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1178,6 +1201,8 @@ public final class LendingProgram {
 
     public static final int BYTES = 40;
 
+    public static final int NEW_AUTHORITY_OFFSET = 8;
+
     public static UpdateAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1238,6 +1263,8 @@ public final class LendingProgram {
     public static UpdateAuthsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int AUTH_STATUS_OFFSET = 8;
 
     public static UpdateAuthsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1337,6 +1364,8 @@ public final class LendingProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int NEW_REBALANCER_OFFSET = 8;
 
     public static UpdateRebalancerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1461,6 +1490,8 @@ public final class LendingProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
 
     public static WithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1589,6 +1620,9 @@ public final class LendingProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int MAX_SHARES_BURN_OFFSET = 16;
 
     public static WithdrawWithMaxSharesBurnIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

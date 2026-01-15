@@ -10,6 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record PullFeedSubmitResponseConsensusLightParams(long slot, BigInteger[] values) implements SerDe {
 
+  public static final int SLOT_OFFSET = 0;
+  public static final int VALUES_OFFSET = 8;
+
   public static PullFeedSubmitResponseConsensusLightParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

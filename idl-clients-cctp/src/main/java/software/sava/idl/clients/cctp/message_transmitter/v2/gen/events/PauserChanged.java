@@ -12,6 +12,8 @@ public record PauserChanged(Discriminator discriminator, PublicKey newAddress) i
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 157, 158, 87, 127, 8, 119, 55);
 
+  public static final int NEW_ADDRESS_OFFSET = 8;
+
   public static PauserChanged read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

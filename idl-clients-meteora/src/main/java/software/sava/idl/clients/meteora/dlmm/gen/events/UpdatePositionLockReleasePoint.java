@@ -19,6 +19,12 @@ public record UpdatePositionLockReleasePoint(Discriminator discriminator,
   public static final int BYTES = 96;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(133, 214, 66, 224, 64, 12, 7, 191);
 
+  public static final int POSITION_OFFSET = 8;
+  public static final int CURRENT_POINT_OFFSET = 40;
+  public static final int NEW_LOCK_RELEASE_POINT_OFFSET = 48;
+  public static final int OLD_LOCK_RELEASE_POINT_OFFSET = 56;
+  public static final int SENDER_OFFSET = 64;
+
   public static UpdatePositionLockReleasePoint read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

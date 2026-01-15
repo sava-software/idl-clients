@@ -11,6 +11,8 @@ public record SwapsEvent(Discriminator discriminator, SwapEventV2[] swapEvents) 
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(152, 47, 78, 235, 192, 96, 110, 106);
 
+  public static final int SWAP_EVENTS_OFFSET = 8;
+
   public static SwapsEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -13,6 +13,11 @@ public record OracleInitParams(long recentSlot,
                                PublicKey queue,
                                byte[] secpAuthority) implements SerDe {
 
+  public static final int RECENT_SLOT_OFFSET = 0;
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int QUEUE_OFFSET = 40;
+  public static final int SECP_AUTHORITY_OFFSET = 73;
+
   public static OracleInitParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

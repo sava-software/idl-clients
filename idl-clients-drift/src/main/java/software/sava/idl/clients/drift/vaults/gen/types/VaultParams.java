@@ -23,6 +23,16 @@ public record VaultParams(byte[] name,
   public static final int BYTES = 75;
   public static final int NAME_LEN = 32;
 
+  public static final int NAME_OFFSET = 0;
+  public static final int REDEEM_PERIOD_OFFSET = 32;
+  public static final int MAX_TOKENS_OFFSET = 40;
+  public static final int MANAGEMENT_FEE_OFFSET = 48;
+  public static final int MIN_DEPOSIT_AMOUNT_OFFSET = 56;
+  public static final int PROFIT_SHARE_OFFSET = 64;
+  public static final int HURDLE_RATE_OFFSET = 68;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 72;
+  public static final int PERMISSIONED_OFFSET = 74;
+
   public static VaultParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

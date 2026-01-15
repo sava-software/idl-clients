@@ -9,6 +9,9 @@ public record MarketIdentifier(MarketType marketType, int marketIndex) implement
 
   public static final int BYTES = 3;
 
+  public static final int MARKET_TYPE_OFFSET = 0;
+  public static final int MARKET_INDEX_OFFSET = 1;
+
   public static MarketIdentifier read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

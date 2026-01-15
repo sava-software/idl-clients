@@ -22,6 +22,16 @@ public record ElevationGroup(int maxLiquidationBonusBps,
   public static final int BYTES = 72;
   public static final int PADDING_1_LEN = 4;
 
+  public static final int MAX_LIQUIDATION_BONUS_BPS_OFFSET = 0;
+  public static final int ID_OFFSET = 2;
+  public static final int LTV_PCT_OFFSET = 3;
+  public static final int LIQUIDATION_THRESHOLD_PCT_OFFSET = 4;
+  public static final int ALLOW_NEW_LOANS_OFFSET = 5;
+  public static final int MAX_RESERVES_AS_COLLATERAL_OFFSET = 6;
+  public static final int PADDING_0_OFFSET = 7;
+  public static final int DEBT_RESERVE_OFFSET = 8;
+  public static final int PADDING_1_OFFSET = 40;
+
   public static ElevationGroup read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

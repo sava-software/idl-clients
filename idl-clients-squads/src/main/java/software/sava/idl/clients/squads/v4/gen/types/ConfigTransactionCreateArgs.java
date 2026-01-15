@@ -14,6 +14,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 public record ConfigTransactionCreateArgs(ConfigAction[] actions, String memo, byte[] _memo) implements SerDe {
 
+  public static final int ACTIONS_OFFSET = 0;
+
   public static ConfigTransactionCreateArgs createRecord(final ConfigAction[] actions, final String memo) {
     return new ConfigTransactionCreateArgs(actions, memo, memo == null ? null : memo.getBytes(UTF_8));
   }

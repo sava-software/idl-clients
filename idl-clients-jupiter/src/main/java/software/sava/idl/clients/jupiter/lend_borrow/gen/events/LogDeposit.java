@@ -18,6 +18,11 @@ public record LogDeposit(Discriminator discriminator,
   public static final int BYTES = 88;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(176, 243, 1, 56, 142, 206, 1, 106);
 
+  public static final int SENDER_OFFSET = 8;
+  public static final int RECEIVER_OFFSET = 40;
+  public static final int ASSETS_OFFSET = 72;
+  public static final int SHARES_MINTED_OFFSET = 80;
+
   public static LogDeposit read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

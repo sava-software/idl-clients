@@ -12,6 +12,9 @@ public record PositionClose(Discriminator discriminator, PublicKey position, Pub
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(255, 196, 16, 107, 28, 202, 53, 128);
 
+  public static final int POSITION_OFFSET = 8;
+  public static final int OWNER_OFFSET = 40;
+
   public static PositionClose read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

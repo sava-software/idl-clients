@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record OracleHeartbeatV2Params(byte[] gatewayUri) implements SerDe {
 
+  public static final int GATEWAY_URI_OFFSET = 1;
+
   public static OracleHeartbeatV2Params read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

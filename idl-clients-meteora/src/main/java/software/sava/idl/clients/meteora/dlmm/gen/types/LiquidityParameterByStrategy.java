@@ -20,6 +20,12 @@ public record LiquidityParameterByStrategy(long amountX,
 
   public static final int BYTES = 97;
 
+  public static final int AMOUNT_X_OFFSET = 0;
+  public static final int AMOUNT_Y_OFFSET = 8;
+  public static final int ACTIVE_ID_OFFSET = 16;
+  public static final int MAX_ACTIVE_BIN_SLIPPAGE_OFFSET = 20;
+  public static final int STRATEGY_PARAMETERS_OFFSET = 24;
+
   public static LiquidityParameterByStrategy read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

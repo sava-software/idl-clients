@@ -15,6 +15,10 @@ public record OrderFillerRewardStructure(int rewardNumerator,
 
   public static final int BYTES = 24;
 
+  public static final int REWARD_NUMERATOR_OFFSET = 0;
+  public static final int REWARD_DENOMINATOR_OFFSET = 4;
+  public static final int TIME_BASED_REWARD_LOWER_BOUND_OFFSET = 8;
+
   public static OrderFillerRewardStructure read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -38,6 +38,19 @@ public record StaticParameters(int baseFactor,
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 4;
 
+  public static final int BASE_FACTOR_OFFSET = 0;
+  public static final int FILTER_PERIOD_OFFSET = 2;
+  public static final int DECAY_PERIOD_OFFSET = 4;
+  public static final int REDUCTION_FACTOR_OFFSET = 6;
+  public static final int VARIABLE_FEE_CONTROL_OFFSET = 8;
+  public static final int MAX_VOLATILITY_ACCUMULATOR_OFFSET = 12;
+  public static final int MIN_BIN_ID_OFFSET = 16;
+  public static final int MAX_BIN_ID_OFFSET = 20;
+  public static final int PROTOCOL_SHARE_OFFSET = 24;
+  public static final int BASE_FEE_POWER_FACTOR_OFFSET = 26;
+  public static final int FUNCTION_TYPE_OFFSET = 27;
+  public static final int PADDING_OFFSET = 28;
+
   public static StaticParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

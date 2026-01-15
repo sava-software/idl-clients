@@ -14,6 +14,11 @@ public record FeeStructure(FeeTier[] feeTiers,
   public static final int BYTES = 360;
   public static final int FEE_TIERS_LEN = 10;
 
+  public static final int FEE_TIERS_OFFSET = 0;
+  public static final int FILLER_REWARD_STRUCTURE_OFFSET = 320;
+  public static final int REFERRER_REWARD_EPOCH_UPPER_BOUND_OFFSET = 344;
+  public static final int FLAT_FILLER_FEE_OFFSET = 352;
+
   public static FeeStructure read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

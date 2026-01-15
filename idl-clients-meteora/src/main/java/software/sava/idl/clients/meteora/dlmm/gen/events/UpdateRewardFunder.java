@@ -18,6 +18,11 @@ public record UpdateRewardFunder(Discriminator discriminator,
   public static final int BYTES = 112;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(224, 178, 174, 74, 252, 165, 85, 180);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int REWARD_INDEX_OFFSET = 40;
+  public static final int OLD_FUNDER_OFFSET = 48;
+  public static final int NEW_FUNDER_OFFSET = 80;
+
   public static UpdateRewardFunder read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

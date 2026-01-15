@@ -28,6 +28,9 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int REWARDS_FEE_CHANGE_OFFSET = 41;
+
   public static ConfigMarinadeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

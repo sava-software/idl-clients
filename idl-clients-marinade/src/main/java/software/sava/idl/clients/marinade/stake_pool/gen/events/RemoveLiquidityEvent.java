@@ -24,6 +24,17 @@ public record RemoveLiquidityEvent(Discriminator discriminator,
   public static final int BYTES = 112;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int SOL_LEG_BALANCE_OFFSET = 40;
+  public static final int MSOL_LEG_BALANCE_OFFSET = 48;
+  public static final int USER_LP_BALANCE_OFFSET = 56;
+  public static final int USER_SOL_BALANCE_OFFSET = 64;
+  public static final int USER_MSOL_BALANCE_OFFSET = 72;
+  public static final int LP_MINT_SUPPLY_OFFSET = 80;
+  public static final int LP_BURNED_OFFSET = 88;
+  public static final int SOL_OUT_AMOUNT_OFFSET = 96;
+  public static final int MSOL_OUT_AMOUNT_OFFSET = 104;
+
   public static RemoveLiquidityEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

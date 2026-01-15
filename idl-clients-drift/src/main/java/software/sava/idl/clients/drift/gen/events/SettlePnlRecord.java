@@ -30,6 +30,16 @@ public record SettlePnlRecord(Discriminator discriminator,
   public static final int BYTES = 99;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_OFFSET = 16;
+  public static final int MARKET_INDEX_OFFSET = 48;
+  public static final int PNL_OFFSET = 50;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 66;
+  public static final int QUOTE_ASSET_AMOUNT_AFTER_OFFSET = 74;
+  public static final int QUOTE_ENTRY_AMOUNT_OFFSET = 82;
+  public static final int SETTLE_PRICE_OFFSET = 90;
+  public static final int EXPLANATION_OFFSET = 98;
+
   public static SettlePnlRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

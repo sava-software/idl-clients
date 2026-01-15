@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record SeedsVec(byte[][] seeds) implements SerDe {
 
+  public static final int SEEDS_OFFSET = 0;
+
   public static SeedsVec read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

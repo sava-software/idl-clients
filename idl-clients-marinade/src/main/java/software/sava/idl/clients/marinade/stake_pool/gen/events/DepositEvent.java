@@ -27,6 +27,20 @@ public record DepositEvent(Discriminator discriminator,
   public static final int BYTES = 160;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int SOL_OWNER_OFFSET = 40;
+  public static final int USER_SOL_BALANCE_OFFSET = 72;
+  public static final int USER_MSOL_BALANCE_OFFSET = 80;
+  public static final int SOL_LEG_BALANCE_OFFSET = 88;
+  public static final int MSOL_LEG_BALANCE_OFFSET = 96;
+  public static final int RESERVE_BALANCE_OFFSET = 104;
+  public static final int SOL_SWAPPED_OFFSET = 112;
+  public static final int MSOL_SWAPPED_OFFSET = 120;
+  public static final int SOL_DEPOSITED_OFFSET = 128;
+  public static final int MSOL_MINTED_OFFSET = 136;
+  public static final int TOTAL_VIRTUAL_STAKED_LAMPORTS_OFFSET = 144;
+  public static final int MSOL_SUPPLY_OFFSET = 152;
+
   public static DepositEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -32,6 +32,14 @@ public record UpdateDeactivatedEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int STAKE_INDEX_OFFSET = 48;
+  public static final int STAKE_ACCOUNT_OFFSET = 52;
+  public static final int BALANCE_WITHOUT_RENT_EXEMPT_OFFSET = 84;
+  public static final int LAST_UPDATE_DELEGATED_LAMPORTS_OFFSET = 92;
+  public static final int MSOL_FEES_OFFSET = 101;
+
   public static UpdateDeactivatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

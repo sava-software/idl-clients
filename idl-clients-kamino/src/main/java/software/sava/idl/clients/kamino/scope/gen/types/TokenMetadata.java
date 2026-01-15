@@ -15,6 +15,11 @@ public record TokenMetadata(byte[] name,
   public static final int NAME_LEN = 32;
   public static final int RESERVED_LEN = 15;
 
+  public static final int NAME_OFFSET = 0;
+  public static final int MAX_AGE_PRICE_SLOTS_OFFSET = 32;
+  public static final int GROUP_IDS_BITSET_OFFSET = 40;
+  public static final int RESERVED_OFFSET = 48;
+
   public static TokenMetadata read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

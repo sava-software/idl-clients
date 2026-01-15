@@ -1,22 +1,25 @@
 package software.sava.idl.clients.kamino.scope.gen.types;
 
+import java.util.OptionalInt;
+
 import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.OptionalInt;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static software.sava.core.encoding.ByteUtil.*;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum permits
-    UpdateOracleMappingAndMetadataEntry.RemoveEntry,
-    UpdateOracleMappingAndMetadataEntry.MappingConfig,
-    UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
-    UpdateOracleMappingAndMetadataEntry.MappingTwapEnabledBitmask,
-    UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
-    UpdateOracleMappingAndMetadataEntry.MetadataName,
-    UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
-    UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
+  UpdateOracleMappingAndMetadataEntry.RemoveEntry,
+  UpdateOracleMappingAndMetadataEntry.MappingConfig,
+  UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
+  UpdateOracleMappingAndMetadataEntry.MappingTwapEnabledBitmask,
+  UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
+  UpdateOracleMappingAndMetadataEntry.MetadataName,
+  UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
+  UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
 
   static UpdateOracleMappingAndMetadataEntry read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -48,6 +51,9 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     public static final int BYTES = 21;
     public static final int GENERIC_DATA_LEN = 20;
+
+    public static final int PRICE_TYPE_OFFSET = 0;
+    public static final int GENERIC_DATA_OFFSET = 1;
 
     public static MappingConfig read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -83,6 +89,9 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
   record MappingTwapEntry(OracleType priceType, int twapSource) implements UpdateOracleMappingAndMetadataEntry {
 
     public static final int BYTES = 3;
+
+    public static final int PRICE_TYPE_OFFSET = 0;
+    public static final int TWAP_SOURCE_OFFSET = 1;
 
     public static MappingTwapEntry read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

@@ -12,6 +12,11 @@ public record MegaSlotInfo(long reserved1,
 
   public static final int BYTES = 32;
 
+  public static final int RESERVED_1_OFFSET = 0;
+  public static final int SLOT_END_OFFSET = 8;
+  public static final int PERF_GOAL_OFFSET = 16;
+  public static final int CURRENT_SIGNATURE_COUNT_OFFSET = 24;
+
   public static MegaSlotInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

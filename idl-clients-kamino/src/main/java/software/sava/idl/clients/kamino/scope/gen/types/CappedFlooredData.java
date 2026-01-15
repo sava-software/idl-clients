@@ -12,6 +12,9 @@ public record CappedFlooredData(int sourceEntry,
                                 OptionalInt capEntry,
                                 OptionalInt floorEntry) implements SerDe {
 
+  public static final int SOURCE_ENTRY_OFFSET = 0;
+  public static final int CAP_ENTRY_OFFSET = 3;
+
   public static CappedFlooredData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -9,6 +9,8 @@ public record TransferOutOfEscrowArgs(long amount) implements SerDe {
 
   public static final int BYTES = 8;
 
+  public static final int AMOUNT_OFFSET = 0;
+
   public static TransferOutOfEscrowArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

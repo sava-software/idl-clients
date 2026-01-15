@@ -11,6 +11,10 @@ public record Uses(UseMethod useMethod,
 
   public static final int BYTES = 17;
 
+  public static final int USE_METHOD_OFFSET = 0;
+  public static final int REMAINING_OFFSET = 1;
+  public static final int TOTAL_OFFSET = 9;
+
   public static Uses read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

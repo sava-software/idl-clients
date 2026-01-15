@@ -28,6 +28,13 @@ public record VariableParameters(int volatilityAccumulator,
   public static final int PADDING_LEN = 4;
   public static final int PADDING_1_LEN = 8;
 
+  public static final int VOLATILITY_ACCUMULATOR_OFFSET = 0;
+  public static final int VOLATILITY_REFERENCE_OFFSET = 4;
+  public static final int INDEX_REFERENCE_OFFSET = 8;
+  public static final int PADDING_OFFSET = 12;
+  public static final int LAST_UPDATE_TIMESTAMP_OFFSET = 16;
+  public static final int PADDING_1_OFFSET = 24;
+
   public static VariableParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -12,6 +12,9 @@ public record OracleQuoteOverrideEvent(Discriminator discriminator, PublicKey or
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(78, 204, 191, 210, 164, 196, 244, 65);
 
+  public static final int ORACLE_OFFSET = 8;
+  public static final int QUEUE_OFFSET = 40;
+
   public static OracleQuoteOverrideEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

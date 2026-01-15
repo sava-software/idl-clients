@@ -33,6 +33,22 @@ public record Rebalancing(Discriminator discriminator,
   public static final int REWARDS_LEN = 2;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(0, 109, 117, 179, 61, 91, 199, 200);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int ACTIVE_BIN_ID_OFFSET = 104;
+  public static final int X_WITHDRAWN_AMOUNT_OFFSET = 108;
+  public static final int X_ADDED_AMOUNT_OFFSET = 116;
+  public static final int Y_WITHDRAWN_AMOUNT_OFFSET = 124;
+  public static final int Y_ADDED_AMOUNT_OFFSET = 132;
+  public static final int X_FEE_AMOUNT_OFFSET = 140;
+  public static final int Y_FEE_AMOUNT_OFFSET = 148;
+  public static final int OLD_MIN_ID_OFFSET = 156;
+  public static final int OLD_MAX_ID_OFFSET = 160;
+  public static final int NEW_MIN_ID_OFFSET = 164;
+  public static final int NEW_MAX_ID_OFFSET = 168;
+  public static final int REWARDS_OFFSET = 172;
+
   public static Rebalancing read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

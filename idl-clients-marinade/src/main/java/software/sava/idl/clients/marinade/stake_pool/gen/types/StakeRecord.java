@@ -14,6 +14,11 @@ public record StakeRecord(PublicKey stakeAccount,
 
   public static final int BYTES = 49;
 
+  public static final int STAKE_ACCOUNT_OFFSET = 0;
+  public static final int LAST_UPDATE_DELEGATED_LAMPORTS_OFFSET = 32;
+  public static final int LAST_UPDATE_EPOCH_OFFSET = 40;
+  public static final int IS_EMERGENCY_UNSTAKING_OFFSET = 48;
+
   public static StakeRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

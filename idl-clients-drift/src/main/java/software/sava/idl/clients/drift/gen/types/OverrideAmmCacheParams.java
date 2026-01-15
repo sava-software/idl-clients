@@ -18,6 +18,8 @@ public record OverrideAmmCacheParams(OptionalLong quoteOwedFromLpPool,
                                      OptionalInt ammPositionScalar,
                                      OptionalLong ammInventoryLimit) implements SerDe {
 
+  public static final int QUOTE_OWED_FROM_LP_POOL_OFFSET = 1;
+
   public static OverrideAmmCacheParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

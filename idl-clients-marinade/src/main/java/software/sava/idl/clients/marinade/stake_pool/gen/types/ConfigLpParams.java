@@ -12,6 +12,8 @@ public record ConfigLpParams(Fee minFee,
                              OptionalLong liquidityTarget,
                              Fee treasuryCut) implements SerDe {
 
+  public static final int MIN_FEE_OFFSET = 1;
+
   public static ConfigLpParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

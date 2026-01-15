@@ -31,6 +31,20 @@ public record FundingRateRecord(Discriminator discriminator,
   public static final int BYTES = 154;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int RECORD_ID_OFFSET = 16;
+  public static final int MARKET_INDEX_OFFSET = 24;
+  public static final int FUNDING_RATE_OFFSET = 26;
+  public static final int FUNDING_RATE_LONG_OFFSET = 34;
+  public static final int FUNDING_RATE_SHORT_OFFSET = 50;
+  public static final int CUMULATIVE_FUNDING_RATE_LONG_OFFSET = 66;
+  public static final int CUMULATIVE_FUNDING_RATE_SHORT_OFFSET = 82;
+  public static final int ORACLE_PRICE_TWAP_OFFSET = 98;
+  public static final int MARK_PRICE_TWAP_OFFSET = 106;
+  public static final int PERIOD_REVENUE_OFFSET = 114;
+  public static final int BASE_ASSET_AMOUNT_WITH_AMM_OFFSET = 122;
+  public static final int BASE_ASSET_AMOUNT_WITH_UNSETTLED_LP_OFFSET = 138;
+
   public static FundingRateRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

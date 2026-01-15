@@ -20,6 +20,8 @@ public record LpPoolParams(OptionalLong maxSettleQuoteAmount,
                            BigInteger maxAum,
                            PublicKey whitelistMint) implements SerDe {
 
+  public static final int MAX_SETTLE_QUOTE_AMOUNT_OFFSET = 1;
+
   public static LpPoolParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

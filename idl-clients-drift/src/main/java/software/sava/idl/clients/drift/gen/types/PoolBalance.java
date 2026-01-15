@@ -21,6 +21,10 @@ public record PoolBalance(BigInteger scaledBalance,
   public static final int BYTES = 24;
   public static final int PADDING_LEN = 6;
 
+  public static final int SCALED_BALANCE_OFFSET = 0;
+  public static final int MARKET_INDEX_OFFSET = 16;
+  public static final int PADDING_OFFSET = 18;
+
   public static PoolBalance read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

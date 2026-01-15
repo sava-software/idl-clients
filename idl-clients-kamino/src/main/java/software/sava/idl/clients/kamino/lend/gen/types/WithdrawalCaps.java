@@ -14,6 +14,11 @@ public record WithdrawalCaps(long configCapacity,
 
   public static final int BYTES = 32;
 
+  public static final int CONFIG_CAPACITY_OFFSET = 0;
+  public static final int CURRENT_TOTAL_OFFSET = 8;
+  public static final int LAST_INTERVAL_START_TIMESTAMP_OFFSET = 16;
+  public static final int CONFIG_INTERVAL_LENGTH_SECONDS_OFFSET = 24;
+
   public static WithdrawalCaps read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

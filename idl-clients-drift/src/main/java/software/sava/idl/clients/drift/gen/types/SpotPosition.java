@@ -32,6 +32,15 @@ public record SpotPosition(long scaledBalance,
   public static final int BYTES = 40;
   public static final int PADDING_LEN = 4;
 
+  public static final int SCALED_BALANCE_OFFSET = 0;
+  public static final int OPEN_BIDS_OFFSET = 8;
+  public static final int OPEN_ASKS_OFFSET = 16;
+  public static final int CUMULATIVE_DEPOSITS_OFFSET = 24;
+  public static final int MARKET_INDEX_OFFSET = 32;
+  public static final int BALANCE_TYPE_OFFSET = 34;
+  public static final int OPEN_ORDERS_OFFSET = 35;
+  public static final int PADDING_OFFSET = 36;
+
   public static SpotPosition read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

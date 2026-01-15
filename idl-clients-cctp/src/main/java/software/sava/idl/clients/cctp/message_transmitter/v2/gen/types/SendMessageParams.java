@@ -14,6 +14,12 @@ public record SendMessageParams(int destinationDomain,
                                 int minFinalityThreshold,
                                 byte[] messageBody) implements SerDe {
 
+  public static final int DESTINATION_DOMAIN_OFFSET = 0;
+  public static final int RECIPIENT_OFFSET = 4;
+  public static final int DESTINATION_CALLER_OFFSET = 36;
+  public static final int MIN_FINALITY_THRESHOLD_OFFSET = 68;
+  public static final int MESSAGE_BODY_OFFSET = 72;
+
   public static SendMessageParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -27,6 +27,17 @@ public record LPBorrowLendDepositRecord(Discriminator discriminator,
   public static final int BYTES = 93;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int SLOT_OFFSET = 16;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 24;
+  public static final int CONSTITUENT_INDEX_OFFSET = 26;
+  public static final int DIRECTION_OFFSET = 28;
+  public static final int TOKEN_BALANCE_OFFSET = 29;
+  public static final int LAST_TOKEN_BALANCE_OFFSET = 37;
+  public static final int INTEREST_ACCRUED_TOKEN_AMOUNT_OFFSET = 45;
+  public static final int AMOUNT_DEPOSIT_WITHDRAW_OFFSET = 53;
+  public static final int LP_POOL_OFFSET = 61;
+
   public static LPBorrowLendDepositRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

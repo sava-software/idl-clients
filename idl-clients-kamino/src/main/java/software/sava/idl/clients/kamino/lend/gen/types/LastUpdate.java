@@ -19,6 +19,11 @@ public record LastUpdate(long slot,
   public static final int BYTES = 16;
   public static final int PLACEHOLDER_LEN = 6;
 
+  public static final int SLOT_OFFSET = 0;
+  public static final int STALE_OFFSET = 8;
+  public static final int PRICE_STATUS_OFFSET = 9;
+  public static final int PLACEHOLDER_OFFSET = 10;
+
   public static LastUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

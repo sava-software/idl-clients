@@ -19,6 +19,11 @@ public record PerpBankruptcyRecord(int marketIndex,
                                    BigInteger clawbackUserPayment,
                                    BigInteger cumulativeFundingRateDelta) implements SerDe {
 
+  public static final int MARKET_INDEX_OFFSET = 0;
+  public static final int PNL_OFFSET = 2;
+  public static final int IF_PAYMENT_OFFSET = 18;
+  public static final int CLAWBACK_USER_OFFSET = 35;
+
   public static PerpBankruptcyRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

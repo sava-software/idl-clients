@@ -15,6 +15,10 @@ public record VaultProtocolParams(PublicKey protocol,
 
   public static final int BYTES = 44;
 
+  public static final int PROTOCOL_OFFSET = 0;
+  public static final int PROTOCOL_FEE_OFFSET = 32;
+  public static final int PROTOCOL_PROFIT_SHARE_OFFSET = 40;
+
   public static VaultProtocolParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

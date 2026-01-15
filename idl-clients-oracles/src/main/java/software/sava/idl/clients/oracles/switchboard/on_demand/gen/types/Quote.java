@@ -57,6 +57,30 @@ public record Quote(PublicKey enclaveSigner,
   public static final int EBUF_2_LEN = 256;
   public static final int EBUF_1_LEN = 512;
 
+  public static final int ENCLAVE_SIGNER_OFFSET = 0;
+  public static final int MR_ENCLAVE_OFFSET = 32;
+  public static final int VERIFICATION_STATUS_OFFSET = 64;
+  public static final int PADDING_1_OFFSET = 65;
+  public static final int VERIFICATION_TIMESTAMP_OFFSET = 72;
+  public static final int VALID_UNTIL_OFFSET = 80;
+  public static final int QUOTE_REGISTRY_OFFSET = 88;
+  public static final int REGISTRY_KEY_OFFSET = 120;
+  public static final int SECP_222K_1_SIGNER_OFFSET = 184;
+  public static final int LAST_ED_22222_SIGNER_OFFSET = 248;
+  public static final int LAST_SECP_222K_1_SIGNER_OFFSET = 280;
+  public static final int LAST_ROTATE_SLOT_OFFSET = 344;
+  public static final int GUARDIAN_APPROVERS_OFFSET = 352;
+  public static final int GUARDIAN_APPROVERS_LEN_OFFSET = 2400;
+  public static final int PADDING_2_OFFSET = 2401;
+  public static final int STAGING_ED_22222_SIGNER_OFFSET = 2408;
+  public static final int STAGING_SECP_222K_1_SIGNER_OFFSET = 2440;
+  public static final int ETH_SIGNER_OFFSET = 2504;
+  public static final int EBUF_4_OFFSET = 2524;
+  public static final int LAST_SIGN_TS_OFFSET = 2528;
+  public static final int EBUF_3_OFFSET = 2536;
+  public static final int EBUF_2_OFFSET = 2664;
+  public static final int EBUF_1_OFFSET = 2920;
+
   public static Quote read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

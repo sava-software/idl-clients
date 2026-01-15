@@ -11,6 +11,10 @@ public record RandomnessRevealParams(byte[] signature,
   public static final int SIGNATURE_LEN = 64;
   public static final int VALUE_LEN = 32;
 
+  public static final int SIGNATURE_OFFSET = 0;
+  public static final int RECOVERY_ID_OFFSET = 64;
+  public static final int VALUE_OFFSET = 65;
+
   public static RandomnessRevealParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

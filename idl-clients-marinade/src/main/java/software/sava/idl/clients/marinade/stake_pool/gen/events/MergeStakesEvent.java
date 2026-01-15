@@ -31,6 +31,22 @@ public record MergeStakesEvent(Discriminator discriminator,
   public static final int BYTES = 212;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int DESTINATION_STAKE_INDEX_OFFSET = 48;
+  public static final int DESTINATION_STAKE_ACCOUNT_OFFSET = 52;
+  public static final int LAST_UPDATE_DESTINATION_STAKE_DELEGATION_OFFSET = 84;
+  public static final int SOURCE_STAKE_INDEX_OFFSET = 92;
+  public static final int SOURCE_STAKE_ACCOUNT_OFFSET = 96;
+  public static final int LAST_UPDATE_SOURCE_STAKE_DELEGATION_OFFSET = 128;
+  public static final int VALIDATOR_INDEX_OFFSET = 136;
+  public static final int VALIDATOR_VOTE_OFFSET = 140;
+  public static final int EXTRA_DELEGATED_OFFSET = 172;
+  public static final int RETURNED_STAKE_RENT_OFFSET = 180;
+  public static final int VALIDATOR_ACTIVE_BALANCE_OFFSET = 188;
+  public static final int TOTAL_ACTIVE_BALANCE_OFFSET = 196;
+  public static final int OPERATIONAL_SOL_BALANCE_OFFSET = 204;
+
   public static MergeStakesEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

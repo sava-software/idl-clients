@@ -32,6 +32,16 @@ public record Bin(long amountX,
   public static final int BYTES = 144;
   public static final int FUNCTION_BYTES_LEN = 2;
 
+  public static final int AMOUNT_X_OFFSET = 0;
+  public static final int AMOUNT_Y_OFFSET = 8;
+  public static final int PRICE_OFFSET = 16;
+  public static final int LIQUIDITY_SUPPLY_OFFSET = 32;
+  public static final int FUNCTION_BYTES_OFFSET = 48;
+  public static final int FEE_AMOUNT_X_PER_TOKEN_STORED_OFFSET = 80;
+  public static final int FEE_AMOUNT_Y_PER_TOKEN_STORED_OFFSET = 96;
+  public static final int PADDING_0_OFFSET = 112;
+  public static final int PADDING_1_OFFSET = 128;
+
   public static Bin read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

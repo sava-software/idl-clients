@@ -19,6 +19,8 @@ public record CostWhitelistEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(56, 107, 191, 127, 116, 6, 138, 149);
 
+  public static final int FEEDS_OFFSET = 8;
+
   public static CostWhitelistEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

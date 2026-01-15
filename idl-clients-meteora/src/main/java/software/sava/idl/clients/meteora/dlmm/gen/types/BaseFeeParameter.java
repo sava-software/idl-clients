@@ -14,6 +14,10 @@ public record BaseFeeParameter(int protocolShare,
 
   public static final int BYTES = 5;
 
+  public static final int PROTOCOL_SHARE_OFFSET = 0;
+  public static final int BASE_FACTOR_OFFSET = 2;
+  public static final int BASE_FEE_POWER_FACTOR_OFFSET = 4;
+
   public static BaseFeeParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

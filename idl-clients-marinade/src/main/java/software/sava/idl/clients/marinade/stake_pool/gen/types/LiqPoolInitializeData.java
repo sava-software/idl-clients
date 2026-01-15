@@ -12,6 +12,11 @@ public record LiqPoolInitializeData(long lpLiquidityTarget,
 
   public static final int BYTES = 20;
 
+  public static final int LP_LIQUIDITY_TARGET_OFFSET = 0;
+  public static final int LP_MAX_FEE_OFFSET = 8;
+  public static final int LP_MIN_FEE_OFFSET = 12;
+  public static final int LP_TREASURY_CUT_OFFSET = 16;
+
   public static LiqPoolInitializeData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

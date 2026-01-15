@@ -11,6 +11,9 @@ public record DiscountToMaturityData(int discountPerYearBps, long maturityTimest
 
   public static final int BYTES = 10;
 
+  public static final int DISCOUNT_PER_YEAR_BPS_OFFSET = 0;
+  public static final int MATURITY_TIMESTAMP_OFFSET = 2;
+
   public static DiscountToMaturityData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

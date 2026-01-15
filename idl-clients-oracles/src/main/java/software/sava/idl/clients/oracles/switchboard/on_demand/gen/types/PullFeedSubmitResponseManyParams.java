@@ -8,6 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record PullFeedSubmitResponseManyParams(long slot, MultiSubmission[] submissions) implements SerDe {
 
+  public static final int SLOT_OFFSET = 0;
+  public static final int SUBMISSIONS_OFFSET = 8;
+
   public static PullFeedSubmitResponseManyParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

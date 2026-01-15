@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record ReclaimEventAccountParams(byte[] attestation, byte[] destinationMessage) implements SerDe {
 
+  public static final int ATTESTATION_OFFSET = 0;
+
   public static ReclaimEventAccountParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

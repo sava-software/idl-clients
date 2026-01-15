@@ -4,6 +4,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasuryId) implements SerDe {
 
+  public static final int MERKLE_PRICE_UPDATE_OFFSET = 0;
+
   public static PostUpdateParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

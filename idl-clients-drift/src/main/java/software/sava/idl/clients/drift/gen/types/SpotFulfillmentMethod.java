@@ -35,6 +35,9 @@ public sealed interface SpotFulfillmentMethod extends RustEnum permits
 
     public static final int BYTES = 34;
 
+    public static final int _PUBLIC_KEY_OFFSET = 0;
+    public static final int _U_11_OFFSET = 32;
+
     public static Match read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

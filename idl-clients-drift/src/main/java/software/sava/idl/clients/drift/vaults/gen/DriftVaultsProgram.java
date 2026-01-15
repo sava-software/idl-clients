@@ -114,6 +114,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 83;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -224,6 +226,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 127;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeVaultWithProtocolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -293,6 +297,8 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int DELEGATE_OFFSET = 8;
 
     public static UpdateDelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -365,6 +371,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ENABLED_OFFSET = 8;
+
     public static UpdateMarginTradingEnabledIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -436,6 +444,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 9;
 
+    public static final int POOL_ID_OFFSET = 8;
+
     public static UpdateUserPoolIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -501,6 +511,8 @@ public final class DriftVaultsProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static UpdateVaultProtocolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -560,6 +572,8 @@ public final class DriftVaultsProgram {
     public static UpdateVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static UpdateVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -622,6 +636,8 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int MANAGER_OFFSET = 8;
 
     public static UpdateVaultManagerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -786,6 +802,8 @@ public final class DriftVaultsProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeTokenizedVaultDepositorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -875,6 +893,9 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 17;
+
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int UNIT_OFFSET = 16;
 
     public static TokenizeSharesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -969,6 +990,8 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int TOKENS_TO_BURN_OFFSET = 8;
 
     public static RedeemTokensIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1069,6 +1092,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static DepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1147,6 +1172,9 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 17;
+
+    public static final int WITHDRAW_AMOUNT_OFFSET = 8;
+    public static final int WITHDRAW_UNIT_OFFSET = 16;
 
     public static RequestWithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1496,6 +1524,9 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 18;
 
+    public static final int BORROW_SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int BORROW_AMOUNT_OFFSET = 10;
+
     public static ManagerBorrowIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1617,6 +1648,10 @@ public final class DriftVaultsProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int REPAY_SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int REPAY_AMOUNT_OFFSET = 10;
+    public static final int REPAY_VALUE_OFFSET = 19;
+
     public static ManagerRepayIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1700,6 +1735,8 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int NEW_BORROW_VALUE_OFFSET = 8;
 
     public static ManagerUpdateBorrowIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1796,6 +1833,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static ManagerDepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1870,6 +1909,9 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 17;
+
+    public static final int WITHDRAW_AMOUNT_OFFSET = 8;
+    public static final int WITHDRAW_UNIT_OFFSET = 16;
 
     public static ManagerRequestWithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2031,6 +2073,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 9;
 
+    public static final int FUEL_DISTRIBUTION_MODE_OFFSET = 8;
+
     public static ManagerUpdateFuelDistributionModeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2160,6 +2204,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 9;
 
+    public static final int NEW_VAULT_CLASS_OFFSET = 8;
+
     public static AdminUpdateVaultClassIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2224,6 +2270,8 @@ public final class DriftVaultsProgram {
     public static ManagerUpdateFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static ManagerUpdateFeesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2532,6 +2580,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static InitializeInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2643,6 +2693,9 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 18;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+
     public static AddInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2733,6 +2786,9 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 18;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
 
     public static RequestRemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2841,6 +2897,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static RemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2924,6 +2982,8 @@ public final class DriftVaultsProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static CancelRequestRemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3002,6 +3062,9 @@ public final class DriftVaultsProgram {
     }
 
     public static final int BYTES = 17;
+
+    public static final int WITHDRAW_AMOUNT_OFFSET = 8;
+    public static final int WITHDRAW_UNIT_OFFSET = 16;
 
     public static ProtocolRequestWithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

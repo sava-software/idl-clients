@@ -40,6 +40,27 @@ public record InsuranceFundSwapRecord(Discriminator discriminator,
   public static final int BYTES = 244;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int REBALANCE_CONFIG_OFFSET = 8;
+  public static final int IN_IF_TOTAL_SHARES_BEFORE_OFFSET = 40;
+  public static final int OUT_IF_TOTAL_SHARES_BEFORE_OFFSET = 56;
+  public static final int IN_IF_USER_SHARES_BEFORE_OFFSET = 72;
+  public static final int OUT_IF_USER_SHARES_BEFORE_OFFSET = 88;
+  public static final int IN_IF_TOTAL_SHARES_AFTER_OFFSET = 104;
+  public static final int OUT_IF_TOTAL_SHARES_AFTER_OFFSET = 120;
+  public static final int IN_IF_USER_SHARES_AFTER_OFFSET = 136;
+  public static final int OUT_IF_USER_SHARES_AFTER_OFFSET = 152;
+  public static final int TS_OFFSET = 168;
+  public static final int IN_AMOUNT_OFFSET = 176;
+  public static final int OUT_AMOUNT_OFFSET = 184;
+  public static final int OUT_ORACLE_PRICE_OFFSET = 192;
+  public static final int OUT_ORACLE_PRICE_TWAP_OFFSET = 200;
+  public static final int IN_VAULT_AMOUNT_BEFORE_OFFSET = 208;
+  public static final int OUT_VAULT_AMOUNT_BEFORE_OFFSET = 216;
+  public static final int IN_FUND_VAULT_AMOUNT_AFTER_OFFSET = 224;
+  public static final int OUT_FUND_VAULT_AMOUNT_AFTER_OFFSET = 232;
+  public static final int IN_MARKET_INDEX_OFFSET = 240;
+  public static final int OUT_MARKET_INDEX_OFFSET = 242;
+
   public static InsuranceFundSwapRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

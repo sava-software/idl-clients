@@ -14,6 +14,9 @@ public record NewClaimEvent(Discriminator discriminator, PublicKey claimant, lon
   public static final int BYTES = 48;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 211, 255, 5, 24, 206, 76, 171);
 
+  public static final int CLAIMANT_OFFSET = 8;
+  public static final int TIMESTAMP_OFFSET = 40;
+
   public static NewClaimEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

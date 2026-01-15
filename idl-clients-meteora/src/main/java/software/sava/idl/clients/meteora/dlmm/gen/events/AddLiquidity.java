@@ -21,6 +21,12 @@ public record AddLiquidity(Discriminator discriminator,
   public static final int AMOUNTS_LEN = 2;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(31, 94, 125, 90, 227, 52, 61, 186);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FROM_OFFSET = 40;
+  public static final int POSITION_OFFSET = 72;
+  public static final int AMOUNTS_OFFSET = 104;
+  public static final int ACTIVE_BIN_ID_OFFSET = 120;
+
   public static AddLiquidity read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

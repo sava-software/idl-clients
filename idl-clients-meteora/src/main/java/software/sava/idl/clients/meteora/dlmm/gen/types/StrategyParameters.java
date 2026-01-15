@@ -18,6 +18,11 @@ public record StrategyParameters(int minBinId,
   public static final int BYTES = 73;
   public static final int PARAMETERES_LEN = 64;
 
+  public static final int MIN_BIN_ID_OFFSET = 0;
+  public static final int MAX_BIN_ID_OFFSET = 4;
+  public static final int STRATEGY_TYPE_OFFSET = 8;
+  public static final int PARAMETERES_OFFSET = 9;
+
   public static StrategyParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

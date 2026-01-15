@@ -36,6 +36,18 @@ public record RebalanceLiquidityParams(int activeId,
                                        AddLiquidityParams[] adds) implements SerDe {
 
   public static final int PADDING_LEN = 31;
+  public static final int ACTIVE_ID_OFFSET = 0;
+  public static final int MAX_ACTIVE_BIN_SLIPPAGE_OFFSET = 4;
+  public static final int SHOULD_CLAIM_FEE_OFFSET = 6;
+  public static final int SHOULD_CLAIM_REWARD_OFFSET = 7;
+  public static final int MIN_WITHDRAW_X_AMOUNT_OFFSET = 8;
+  public static final int MAX_DEPOSIT_X_AMOUNT_OFFSET = 16;
+  public static final int MIN_WITHDRAW_Y_AMOUNT_OFFSET = 24;
+  public static final int MAX_DEPOSIT_Y_AMOUNT_OFFSET = 32;
+  public static final int SHRINK_MODE_OFFSET = 40;
+  public static final int PADDING_OFFSET = 41;
+  public static final int REMOVES_OFFSET = 72;
+
   public static RebalanceLiquidityParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

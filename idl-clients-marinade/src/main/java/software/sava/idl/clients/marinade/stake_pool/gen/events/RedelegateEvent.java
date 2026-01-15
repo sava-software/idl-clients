@@ -36,6 +36,24 @@ public record RedelegateEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int STAKE_INDEX_OFFSET = 48;
+  public static final int STAKE_ACCOUNT_OFFSET = 52;
+  public static final int LAST_UPDATE_DELEGATION_OFFSET = 84;
+  public static final int SOURCE_VALIDATOR_INDEX_OFFSET = 92;
+  public static final int SOURCE_VALIDATOR_VOTE_OFFSET = 96;
+  public static final int SOURCE_VALIDATOR_SCORE_OFFSET = 128;
+  public static final int SOURCE_VALIDATOR_BALANCE_OFFSET = 132;
+  public static final int SOURCE_VALIDATOR_STAKE_TARGET_OFFSET = 140;
+  public static final int DEST_VALIDATOR_INDEX_OFFSET = 148;
+  public static final int DEST_VALIDATOR_VOTE_OFFSET = 152;
+  public static final int DEST_VALIDATOR_SCORE_OFFSET = 184;
+  public static final int DEST_VALIDATOR_BALANCE_OFFSET = 188;
+  public static final int DEST_VALIDATOR_STAKE_TARGET_OFFSET = 196;
+  public static final int REDELEGATE_AMOUNT_OFFSET = 204;
+  public static final int SPLIT_STAKE_ACCOUNT_OFFSET = 213;
+
   public static RedelegateEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

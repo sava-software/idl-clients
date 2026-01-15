@@ -16,6 +16,8 @@ public record InitializeTokenizedVaultDepositorParams(String tokenName, byte[] _
                                                       String tokenUri, byte[] _tokenUri,
                                                       int decimals) implements SerDe {
 
+  public static final int TOKEN_NAME_OFFSET = 0;
+
   public static InitializeTokenizedVaultDepositorParams createRecord(final String tokenName,
                                                                      final String tokenSymbol,
                                                                      final String tokenUri,

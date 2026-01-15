@@ -213,6 +213,16 @@ public final class MerkleDistributorProgram {
     public static final int BYTES = 97;
     public static final int ROOT_LEN = 32;
 
+    public static final int VERSION_OFFSET = 8;
+    public static final int ROOT_OFFSET = 16;
+    public static final int MAX_TOTAL_CLAIM_OFFSET = 48;
+    public static final int MAX_NUM_NODES_OFFSET = 56;
+    public static final int START_VESTING_TS_OFFSET = 64;
+    public static final int END_VESTING_TS_OFFSET = 72;
+    public static final int CLAWBACK_START_TS_OFFSET = 80;
+    public static final int ENABLE_SLOT_OFFSET = 88;
+    public static final int CLOSABLE_OFFSET = 96;
+
     public static NewDistributorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -414,6 +424,8 @@ public final class MerkleDistributorProgram {
 
     public static final int BYTES = 16;
 
+    public static final int ENABLE_SLOT_OFFSET = 8;
+
     public static SetEnableSlotIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -525,6 +537,10 @@ public final class MerkleDistributorProgram {
     public static NewClaimIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int AMOUNT_UNLOCKED_OFFSET = 8;
+    public static final int AMOUNT_LOCKED_OFFSET = 16;
+    public static final int PROOF_OFFSET = 24;
 
     public static NewClaimIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

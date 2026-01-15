@@ -23,6 +23,14 @@ public record LiquidateSpotRecord(int assetMarketIndex,
 
   public static final int BYTES = 60;
 
+  public static final int ASSET_MARKET_INDEX_OFFSET = 0;
+  public static final int ASSET_PRICE_OFFSET = 2;
+  public static final int ASSET_TRANSFER_OFFSET = 10;
+  public static final int LIABILITY_MARKET_INDEX_OFFSET = 26;
+  public static final int LIABILITY_PRICE_OFFSET = 28;
+  public static final int LIABILITY_TRANSFER_OFFSET = 36;
+  public static final int IF_FEE_OFFSET = 52;
+
   public static LiquidateSpotRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

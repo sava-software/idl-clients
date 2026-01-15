@@ -78,6 +78,8 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int NAME_OFFSET = 8;
+
     public static CreateCredentialIxData createRecord(final Discriminator discriminator, final String name, final PublicKey[] signers) {
       return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
     }
@@ -184,6 +186,8 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int NAME_OFFSET = 8;
+
     public static CreateSchemaIxData createRecord(final Discriminator discriminator,
                                                   final String name,
                                                   final String description,
@@ -285,6 +289,8 @@ public final class SolanaAttestationServiceProgram {
 
     public static final int BYTES = 9;
 
+    public static final int IS_PAUSED_OFFSET = 8;
+
     public static ChangeSchemaStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -355,6 +361,8 @@ public final class SolanaAttestationServiceProgram {
     public static ChangeAuthorizedSignersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int SIGNERS_OFFSET = 8;
 
     public static ChangeAuthorizedSignersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -432,6 +440,8 @@ public final class SolanaAttestationServiceProgram {
     public static ChangeSchemaDescriptionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DESCRIPTION_OFFSET = 8;
 
     public static ChangeSchemaDescriptionIxData createRecord(final Discriminator discriminator, final String description) {
       return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
@@ -520,6 +530,8 @@ public final class SolanaAttestationServiceProgram {
     public static ChangeSchemaVersionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int LAYOUT_OFFSET = 8;
 
     public static ChangeSchemaVersionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -621,6 +633,9 @@ public final class SolanaAttestationServiceProgram {
     public static CreateAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int NONCE_OFFSET = 8;
+    public static final int DATA_OFFSET = 40;
 
     public static CreateAttestationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -768,6 +783,8 @@ public final class SolanaAttestationServiceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int MAX_SIZE_OFFSET = 8;
 
     public static TokenizeSchemaIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -929,6 +946,9 @@ public final class SolanaAttestationServiceProgram {
     public static CreateTokenizedAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int NONCE_OFFSET = 8;
+    public static final int DATA_OFFSET = 40;
 
     public static CreateTokenizedAttestationIxData createRecord(final Discriminator discriminator,
                                                                 final PublicKey nonce,

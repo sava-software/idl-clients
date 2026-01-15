@@ -13,6 +13,10 @@ public record ChainlinkXPriceData(long observationsTimestamp,
 
   public static final int BYTES = 17;
 
+  public static final int OBSERVATIONS_TIMESTAMP_OFFSET = 0;
+  public static final int SUSPENDED_OFFSET = 8;
+  public static final int ACTIVATION_DATE_TIME_OFFSET = 9;
+
   public static ChainlinkXPriceData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

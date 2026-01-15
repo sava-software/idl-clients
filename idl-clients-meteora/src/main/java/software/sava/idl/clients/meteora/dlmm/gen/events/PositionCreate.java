@@ -15,6 +15,10 @@ public record PositionCreate(Discriminator discriminator,
   public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(144, 142, 252, 84, 157, 53, 37, 121);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+
   public static PositionCreate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

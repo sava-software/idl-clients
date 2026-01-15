@@ -21,6 +21,13 @@ public record MessageReceived(Discriminator discriminator,
   public static final int NONCE_LEN = 32;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(231, 68, 47, 77, 173, 241, 157, 166);
 
+  public static final int CALLER_OFFSET = 8;
+  public static final int SOURCE_DOMAIN_OFFSET = 40;
+  public static final int NONCE_OFFSET = 44;
+  public static final int SENDER_OFFSET = 76;
+  public static final int FINALITY_THRESHOLD_EXECUTED_OFFSET = 108;
+  public static final int MESSAGE_BODY_OFFSET = 112;
+
   public static MessageReceived read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -80,6 +80,9 @@ public sealed interface OracleValidity extends RustEnum permits
 
     public static final int BYTES = 2;
 
+    public static final int IMMEDIATE_OFFSET = 0;
+    public static final int LOW_RISK_OFFSET = 1;
+
     public static StaleForAMM read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

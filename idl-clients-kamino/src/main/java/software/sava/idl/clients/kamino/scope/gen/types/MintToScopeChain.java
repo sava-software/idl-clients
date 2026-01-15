@@ -11,6 +11,9 @@ public record MintToScopeChain(PublicKey mint, short[] scopeChain) implements Se
   public static final int BYTES = 40;
   public static final int SCOPE_CHAIN_LEN = 4;
 
+  public static final int MINT_OFFSET = 0;
+  public static final int SCOPE_CHAIN_OFFSET = 32;
+
   public static MintToScopeChain read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -44,6 +44,9 @@ public sealed interface FillMode extends RustEnum permits
 
     public static final int BYTES = 2;
 
+    public static final int _BOOL_OFFSET = 0;
+    public static final int _U_8_OFFSET = 1;
+
     public static PlaceAndTake read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

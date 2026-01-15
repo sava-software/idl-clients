@@ -593,6 +593,9 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 16;
 
+    public static final int FROM_TOKEN_ID_OFFSET = 0;
+    public static final int TO_TOKEN_ID_OFFSET = 8;
+
     public static Symmetry read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -757,6 +760,10 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 3;
 
+    public static final int POOL_INDEX_OFFSET = 0;
+    public static final int QUANTITY_IS_INPUT_OFFSET = 1;
+    public static final int QUANTITY_IS_COLLATERAL_OFFSET = 2;
+
     public static Clone read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -799,6 +806,11 @@ public sealed interface Swap extends RustEnum permits
                   int dstLstIndex) implements Swap {
 
     public static final int BYTES = 10;
+
+    public static final int SRC_LST_VALUE_CALC_ACCS_OFFSET = 0;
+    public static final int DST_LST_VALUE_CALC_ACCS_OFFSET = 1;
+    public static final int SRC_LST_INDEX_OFFSET = 2;
+    public static final int DST_LST_INDEX_OFFSET = 6;
 
     public static SanctumS read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -847,6 +859,9 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 5;
 
+    public static final int LST_VALUE_CALC_ACCS_OFFSET = 0;
+    public static final int LST_INDEX_OFFSET = 1;
+
     public static SanctumSAddLiquidity read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -882,6 +897,9 @@ public sealed interface Swap extends RustEnum permits
   record SanctumSRemoveLiquidity(int lstValueCalcAccs, int lstIndex) implements Swap {
 
     public static final int BYTES = 5;
+
+    public static final int LST_VALUE_CALC_ACCS_OFFSET = 0;
+    public static final int LST_INDEX_OFFSET = 1;
 
     public static SanctumSRemoveLiquidity read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -926,6 +944,9 @@ public sealed interface Swap extends RustEnum permits
   }
 
   record WhirlpoolSwapV2(boolean aToB, RemainingAccountsInfo remainingAccountsInfo) implements Swap {
+
+    public static final int A_TO_B_OFFSET = 0;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 2;
 
     public static WhirlpoolSwapV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1215,6 +1236,9 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 2;
 
+    public static final int IN_INDEX_OFFSET = 0;
+    public static final int OUT_INDEX_OFFSET = 1;
+
     public static Perena read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1399,6 +1423,9 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 2;
 
+    public static final int IS_BID_OFFSET = 0;
+    public static final int BLACKLIST_BUMP_OFFSET = 1;
+
     public static GoonFi read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1434,6 +1461,9 @@ public sealed interface Swap extends RustEnum permits
   record HumidiFi(long swapId, boolean isBaseToQuote) implements Swap {
 
     public static final int BYTES = 9;
+
+    public static final int SWAP_ID_OFFSET = 0;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 8;
 
     public static HumidiFi read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1631,6 +1661,9 @@ public sealed interface Swap extends RustEnum permits
 
   record DefiTuna(boolean aToB, RemainingAccountsInfo remainingAccountsInfo) implements Swap {
 
+    public static final int A_TO_B_OFFSET = 0;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 2;
+
     public static DefiTuna read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1754,6 +1787,8 @@ public sealed interface Swap extends RustEnum permits
 
   record DynamicV1(CandidateSwap[] val) implements Swap {
 
+    public static final int VAL_OFFSET = 0;
+
     public static DynamicV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1851,6 +1886,9 @@ public sealed interface Swap extends RustEnum permits
 
     public static final int BYTES = 9;
 
+    public static final int SWAP_ID_OFFSET = 0;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 8;
+
     public static HumidiFiV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1899,6 +1937,9 @@ public sealed interface Swap extends RustEnum permits
   }
 
   record JupiterRfqV2(Side side, byte[] fillData) implements Swap {
+
+    public static final int SIDE_OFFSET = 0;
+    public static final int FILL_DATA_OFFSET = 1;
 
     public static JupiterRfqV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

@@ -15,6 +15,10 @@ public record UpdatePositionOperator(Discriminator discriminator,
   public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(39, 115, 48, 204, 246, 47, 66, 57);
 
+  public static final int POSITION_OFFSET = 8;
+  public static final int OLD_OPERATOR_OFFSET = 40;
+  public static final int NEW_OPERATOR_OFFSET = 72;
+
   public static UpdatePositionOperator read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

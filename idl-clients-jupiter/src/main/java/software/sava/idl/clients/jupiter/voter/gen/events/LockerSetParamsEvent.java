@@ -16,6 +16,10 @@ public record LockerSetParamsEvent(Discriminator discriminator,
   public static final int BYTES = 90;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int LOCKER_OFFSET = 8;
+  public static final int PREV_PARAMS_OFFSET = 40;
+  public static final int PARAMS_OFFSET = 65;
+
   public static LockerSetParamsEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

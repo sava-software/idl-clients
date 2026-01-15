@@ -31,6 +31,18 @@ public record Swap(Discriminator discriminator,
   public static final int BYTES = 137;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(81, 108, 227, 190, 205, 208, 10, 196);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FROM_OFFSET = 40;
+  public static final int START_BIN_ID_OFFSET = 72;
+  public static final int END_BIN_ID_OFFSET = 76;
+  public static final int AMOUNT_IN_OFFSET = 80;
+  public static final int AMOUNT_OUT_OFFSET = 88;
+  public static final int SWAP_FOR_Y_OFFSET = 96;
+  public static final int FEE_OFFSET = 97;
+  public static final int PROTOCOL_FEE_OFFSET = 105;
+  public static final int FEE_BPS_OFFSET = 113;
+  public static final int HOST_FEE_OFFSET = 129;
+
   public static Swap read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

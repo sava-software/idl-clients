@@ -11,6 +11,9 @@ public record BinLiquidityReduction(int binId, int bpsToRemove) implements SerDe
 
   public static final int BYTES = 6;
 
+  public static final int BIN_ID_OFFSET = 0;
+  public static final int BPS_TO_REMOVE_OFFSET = 4;
+
   public static BinLiquidityReduction read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

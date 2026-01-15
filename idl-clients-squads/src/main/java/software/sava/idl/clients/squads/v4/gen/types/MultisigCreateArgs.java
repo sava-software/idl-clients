@@ -29,6 +29,8 @@ public record MultisigCreateArgs(PublicKey configAuthority,
                                  int timeLock,
                                  String memo, byte[] _memo) implements SerDe {
 
+  public static final int CONFIG_AUTHORITY_OFFSET = 1;
+
   public static MultisigCreateArgs createRecord(final PublicKey configAuthority,
                                                 final int threshold,
                                                 final Member[] members,

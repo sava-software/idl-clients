@@ -84,6 +84,15 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
   public static final int PADDING_1_LEN = 10;
   public static final int PADDING_2_LEN = 5;
 
+  public static final int CONDITION_THRESHOLD_SF_OFFSET = 0;
+  public static final int OPPORTUNITY_PARAMETER_SF_OFFSET = 16;
+  public static final int MIN_EXECUTION_BONUS_BPS_OFFSET = 32;
+  public static final int MAX_EXECUTION_BONUS_BPS_OFFSET = 34;
+  public static final int CONDITION_TYPE_OFFSET = 36;
+  public static final int OPPORTUNITY_TYPE_OFFSET = 37;
+  public static final int PADDING_1_OFFSET = 38;
+  public static final int PADDING_2_OFFSET = 48;
+
   public static ObligationOrder read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

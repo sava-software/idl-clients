@@ -27,6 +27,22 @@ public record NewDistributorParams(long version,
   public static final int BYTES = 171;
   public static final int ROOT_LEN = 32;
 
+  public static final int VERSION_OFFSET = 0;
+  public static final int ROOT_OFFSET = 8;
+  public static final int TOTAL_CLAIM_OFFSET = 40;
+  public static final int MAX_NUM_NODES_OFFSET = 48;
+  public static final int START_VESTING_TS_OFFSET = 56;
+  public static final int END_VESTING_TS_OFFSET = 64;
+  public static final int CLAWBACK_START_TS_OFFSET = 72;
+  public static final int ACTIVATION_POINT_OFFSET = 80;
+  public static final int ACTIVATION_TYPE_OFFSET = 88;
+  public static final int CLOSABLE_OFFSET = 89;
+  public static final int TOTAL_BONUS_OFFSET = 90;
+  public static final int BONUS_VESTING_DURATION_OFFSET = 98;
+  public static final int CLAIM_TYPE_OFFSET = 106;
+  public static final int OPERATOR_OFFSET = 107;
+  public static final int LOCKER_OFFSET = 139;
+
   public static NewDistributorParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

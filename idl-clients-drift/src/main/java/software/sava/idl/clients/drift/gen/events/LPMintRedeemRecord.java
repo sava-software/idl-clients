@@ -39,6 +39,26 @@ public record LPMintRedeemRecord(Discriminator discriminator,
   public static final int BYTES = 245;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int SLOT_OFFSET = 16;
+  public static final int AUTHORITY_OFFSET = 24;
+  public static final int DESCRIPTION_OFFSET = 56;
+  public static final int AMOUNT_OFFSET = 57;
+  public static final int FEE_OFFSET = 73;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 89;
+  public static final int CONSTITUENT_INDEX_OFFSET = 91;
+  public static final int ORACLE_PRICE_OFFSET = 93;
+  public static final int MINT_OFFSET = 101;
+  public static final int LP_AMOUNT_OFFSET = 133;
+  public static final int LP_FEE_OFFSET = 141;
+  public static final int LP_PRICE_OFFSET = 149;
+  public static final int MINT_REDEEM_ID_OFFSET = 165;
+  public static final int LAST_AUM_OFFSET = 173;
+  public static final int LAST_AUM_SLOT_OFFSET = 189;
+  public static final int IN_MARKET_CURRENT_WEIGHT_OFFSET = 197;
+  public static final int IN_MARKET_TARGET_WEIGHT_OFFSET = 205;
+  public static final int LP_POOL_OFFSET = 213;
+
   public static LPMintRedeemRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

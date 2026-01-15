@@ -101,6 +101,8 @@ public final class LockedVoterProgram {
 
     public static final int BYTES = 33;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static NewLockerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -260,6 +262,8 @@ public final class LockedVoterProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static IncreaseLockedAmountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -339,6 +343,8 @@ public final class LockedVoterProgram {
 
     public static final int BYTES = 16;
 
+    public static final int DURATION_OFFSET = 8;
+
     public static ExtendLockDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -417,6 +423,8 @@ public final class LockedVoterProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int IS_MAX_LOCK_OFFSET = 8;
 
     public static ToggleMaxLockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -639,6 +647,8 @@ public final class LockedVoterProgram {
 
     public static final int BYTES = 9;
 
+    public static final int SIDE_OFFSET = 8;
+
     public static CastVoteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -711,6 +721,8 @@ public final class LockedVoterProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int NEW_DELEGATE_OFFSET = 8;
 
     public static SetVoteDelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -790,6 +802,8 @@ public final class LockedVoterProgram {
     }
 
     public static final int BYTES = 33;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static SetLockerParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -881,6 +895,9 @@ public final class LockedVoterProgram {
     public static OpenPartialUnstakingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int MEMO_OFFSET = 16;
 
     public static OpenPartialUnstakingIxData createRecord(final Discriminator discriminator, final long amount, final String memo) {
       return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : memo.getBytes(UTF_8));

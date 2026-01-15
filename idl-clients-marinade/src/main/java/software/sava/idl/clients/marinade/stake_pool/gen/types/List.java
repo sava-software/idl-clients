@@ -15,6 +15,12 @@ public record List(PublicKey account,
 
   public static final int BYTES = 76;
 
+  public static final int ACCOUNT_OFFSET = 0;
+  public static final int ITEM_SIZE_OFFSET = 32;
+  public static final int COUNT_OFFSET = 36;
+  public static final int RESERVED_1_OFFSET = 40;
+  public static final int RESERVED_2_OFFSET = 72;
+
   public static List read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

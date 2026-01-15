@@ -9,6 +9,9 @@ public record PriceDivergenceGuardRails(long markOraclePercentDivergence, long o
 
   public static final int BYTES = 16;
 
+  public static final int MARK_ORACLE_PERCENT_DIVERGENCE_OFFSET = 0;
+  public static final int ORACLE_TWAP_5MIN_PERCENT_DIVERGENCE_OFFSET = 8;
+
   public static PriceDivergenceGuardRails read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

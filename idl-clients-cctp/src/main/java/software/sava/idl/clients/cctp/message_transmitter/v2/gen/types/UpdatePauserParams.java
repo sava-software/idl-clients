@@ -9,6 +9,8 @@ public record UpdatePauserParams(PublicKey newPauser) implements SerDe {
 
   public static final int BYTES = 32;
 
+  public static final int NEW_PAUSER_OFFSET = 0;
+
   public static UpdatePauserParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

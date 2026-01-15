@@ -16,6 +16,10 @@ public record ProposalAccountMeta(PublicKey pubkey,
 
   public static final int BYTES = 34;
 
+  public static final int PUBKEY_OFFSET = 0;
+  public static final int IS_SIGNER_OFFSET = 32;
+  public static final int IS_WRITABLE_OFFSET = 33;
+
   public static ProposalAccountMeta read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

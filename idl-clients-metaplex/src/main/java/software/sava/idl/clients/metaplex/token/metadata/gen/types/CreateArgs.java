@@ -21,6 +21,8 @@ public sealed interface CreateArgs extends RustEnum permits
             OptionalInt decimals,
             PrintSupply printSupply) implements CreateArgs {
 
+    public static final int ASSET_DATA_OFFSET = 0;
+
     public static V1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

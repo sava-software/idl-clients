@@ -15,6 +15,9 @@ public record ProposalInstruction(PublicKey programId,
                                   ProposalAccountMeta[] keys,
                                   byte[] data) implements SerDe {
 
+  public static final int PROGRAM_ID_OFFSET = 0;
+  public static final int KEYS_OFFSET = 32;
+
   public static ProposalInstruction read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

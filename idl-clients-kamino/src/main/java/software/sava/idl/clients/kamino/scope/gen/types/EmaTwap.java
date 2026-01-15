@@ -25,6 +25,17 @@ public record EmaTwap(long lastUpdateSlot,
   public static final int BYTES = 672;
   public static final int PADDING_1_LEN = 36;
 
+  public static final int LAST_UPDATE_SLOT_OFFSET = 0;
+  public static final int LAST_UPDATE_UNIX_TIMESTAMP_OFFSET = 8;
+  public static final int CURRENT_EMA_1H_OFFSET = 16;
+  public static final int UPDATES_TRACKER_1H_OFFSET = 32;
+  public static final int PADDING_0_OFFSET = 40;
+  public static final int CURRENT_EMA_8H_OFFSET = 48;
+  public static final int CURRENT_EMA_22H_OFFSET = 64;
+  public static final int UPDATES_TRACKER_8H_OFFSET = 80;
+  public static final int UPDATES_TRACKER_22H_OFFSET = 88;
+  public static final int PADDING_1_OFFSET = 96;
+
   public static EmaTwap read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -12,6 +12,9 @@ public record SharesToWithdrawEvent(Discriminator discriminator, long sharesAmou
   public static final int BYTES = 24;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
 
+  public static final int SHARES_AMOUNT_OFFSET = 8;
+  public static final int USER_SHARES_BEFORE_OFFSET = 16;
+
   public static SharesToWithdrawEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

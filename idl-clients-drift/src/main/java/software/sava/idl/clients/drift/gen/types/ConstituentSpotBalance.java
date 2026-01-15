@@ -28,6 +28,12 @@ public record ConstituentSpotBalance(BigInteger scaledBalance,
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 5;
 
+  public static final int SCALED_BALANCE_OFFSET = 0;
+  public static final int CUMULATIVE_DEPOSITS_OFFSET = 16;
+  public static final int MARKET_INDEX_OFFSET = 24;
+  public static final int BALANCE_TYPE_OFFSET = 26;
+  public static final int PADDING_OFFSET = 27;
+
   public static ConstituentSpotBalance read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

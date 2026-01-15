@@ -29,6 +29,16 @@ public record SpotInterestRecord(Discriminator discriminator,
   public static final int BYTES = 94;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int MARKET_INDEX_OFFSET = 16;
+  public static final int DEPOSIT_BALANCE_OFFSET = 18;
+  public static final int CUMULATIVE_DEPOSIT_INTEREST_OFFSET = 34;
+  public static final int BORROW_BALANCE_OFFSET = 50;
+  public static final int CUMULATIVE_BORROW_INTEREST_OFFSET = 66;
+  public static final int OPTIMAL_UTILIZATION_OFFSET = 82;
+  public static final int OPTIMAL_BORROW_RATE_OFFSET = 86;
+  public static final int MAX_BORROW_RATE_OFFSET = 90;
+
   public static SpotInterestRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

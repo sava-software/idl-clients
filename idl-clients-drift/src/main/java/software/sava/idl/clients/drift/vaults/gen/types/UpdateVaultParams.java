@@ -19,6 +19,8 @@ public record UpdateVaultParams(OptionalLong redeemPeriod,
                                 OptionalInt hurdleRate,
                                 Boolean permissioned) implements SerDe {
 
+  public static final int REDEEM_PERIOD_OFFSET = 1;
+
   public static UpdateVaultParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

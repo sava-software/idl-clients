@@ -32,6 +32,13 @@ public record DeactivateStakeEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int STAKE_INDEX_OFFSET = 48;
+  public static final int STAKE_ACCOUNT_OFFSET = 52;
+  public static final int LAST_UPDATE_STAKE_DELEGATION_OFFSET = 84;
+  public static final int SPLIT_STAKE_ACCOUNT_OFFSET = 93;
+
   public static DeactivateStakeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

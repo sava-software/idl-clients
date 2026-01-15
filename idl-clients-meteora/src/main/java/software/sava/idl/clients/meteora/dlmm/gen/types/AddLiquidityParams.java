@@ -21,6 +21,16 @@ public record AddLiquidityParams(int minDeltaId,
   public static final int BYTES = 58;
   public static final int PADDING_LEN = 16;
 
+  public static final int MIN_DELTA_ID_OFFSET = 0;
+  public static final int MAX_DELTA_ID_OFFSET = 4;
+  public static final int X_0_OFFSET = 8;
+  public static final int Y_0_OFFSET = 16;
+  public static final int DELTA_X_OFFSET = 24;
+  public static final int DELTA_Y_OFFSET = 32;
+  public static final int BIT_FLAG_OFFSET = 40;
+  public static final int FAVOR_X_IN_ACTIVE_ID_OFFSET = 41;
+  public static final int PADDING_OFFSET = 42;
+
   public static AddLiquidityParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

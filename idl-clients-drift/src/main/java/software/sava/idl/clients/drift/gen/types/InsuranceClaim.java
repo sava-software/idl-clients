@@ -24,6 +24,12 @@ public record InsuranceClaim(long revenueWithdrawSinceLastSettle,
 
   public static final int BYTES = 40;
 
+  public static final int REVENUE_WITHDRAW_SINCE_LAST_SETTLE_OFFSET = 0;
+  public static final int MAX_REVENUE_WITHDRAW_PER_PERIOD_OFFSET = 8;
+  public static final int QUOTE_MAX_INSURANCE_OFFSET = 16;
+  public static final int QUOTE_SETTLED_INSURANCE_OFFSET = 24;
+  public static final int LAST_REVENUE_WITHDRAW_TS_OFFSET = 32;
+
   public static InsuranceClaim read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

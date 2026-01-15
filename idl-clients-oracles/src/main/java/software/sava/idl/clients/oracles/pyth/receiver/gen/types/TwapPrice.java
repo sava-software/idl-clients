@@ -24,6 +24,14 @@ public record TwapPrice(byte[] feedId,
   public static final int BYTES = 72;
   public static final int FEED_ID_LEN = 32;
 
+  public static final int FEED_ID_OFFSET = 0;
+  public static final int START_TIME_OFFSET = 32;
+  public static final int END_TIME_OFFSET = 40;
+  public static final int PRICE_OFFSET = 48;
+  public static final int CONF_OFFSET = 56;
+  public static final int EXPONENT_OFFSET = 64;
+  public static final int DOWN_SLOTS_RATIO_OFFSET = 68;
+
   public static TwapPrice read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

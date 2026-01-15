@@ -15,6 +15,9 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 /// @param vaultIndex Index of the vault this transaction belongs to.
 public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) implements SerDe {
 
+  public static final int VAULT_INDEX_OFFSET = 0;
+  public static final int MEMO_OFFSET = 2;
+
   public static BatchCreateArgs createRecord(final int vaultIndex, final String memo) {
     return new BatchCreateArgs(vaultIndex, memo, memo == null ? null : memo.getBytes(UTF_8));
   }

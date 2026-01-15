@@ -23,6 +23,16 @@ public record GuardianQuoteVerifyParams(long timestamp,
   public static final int MR_ENCLAVE_LEN = 32;
   public static final int SECP_222K_1_KEY_LEN = 64;
   public static final int SIGNATURE_LEN = 64;
+  public static final int TIMESTAMP_OFFSET = 0;
+  public static final int MR_ENCLAVE_OFFSET = 8;
+  public static final int RESERVED_1_OFFSET = 40;
+  public static final int ED_22222_KEY_OFFSET = 44;
+  public static final int SECP_222K_1_KEY_OFFSET = 76;
+  public static final int SLOT_OFFSET = 140;
+  public static final int SIGNATURE_OFFSET = 148;
+  public static final int RECOVERY_ID_OFFSET = 212;
+  public static final int ADVISORIES_OFFSET = 213;
+
   public static GuardianQuoteVerifyParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -25,6 +25,17 @@ public record LiquidatePerpRecord(int marketIndex,
 
   public static final int BYTES = 66;
 
+  public static final int MARKET_INDEX_OFFSET = 0;
+  public static final int ORACLE_PRICE_OFFSET = 2;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 10;
+  public static final int QUOTE_ASSET_AMOUNT_OFFSET = 18;
+  public static final int LP_SHARES_OFFSET = 26;
+  public static final int FILL_RECORD_ID_OFFSET = 34;
+  public static final int USER_ORDER_ID_OFFSET = 42;
+  public static final int LIQUIDATOR_ORDER_ID_OFFSET = 46;
+  public static final int LIQUIDATOR_FEE_OFFSET = 50;
+  public static final int IF_FEE_OFFSET = 58;
+
   public static LiquidatePerpRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

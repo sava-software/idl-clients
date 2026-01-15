@@ -17,6 +17,10 @@ public record WithdrawIneligibleReward(Discriminator discriminator,
   public static final int BYTES = 80;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(231, 189, 65, 149, 102, 215, 154, 244);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int REWARD_MINT_OFFSET = 40;
+  public static final int AMOUNT_OFFSET = 72;
+
   public static WithdrawIneligibleReward read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -16,6 +16,11 @@ public record InitializeParams(int localDomain,
 
   public static final int BYTES = 48;
 
+  public static final int LOCAL_DOMAIN_OFFSET = 0;
+  public static final int ATTESTER_OFFSET = 4;
+  public static final int MAX_MESSAGE_BODY_SIZE_OFFSET = 36;
+  public static final int VERSION_OFFSET = 44;
+
   public static InitializeParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

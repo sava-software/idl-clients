@@ -13,6 +13,9 @@ public record BinLiquidityDistributionByWeight(int binId, int weight) implements
 
   public static final int BYTES = 6;
 
+  public static final int BIN_ID_OFFSET = 0;
+  public static final int WEIGHT_OFFSET = 4;
+
   public static BinLiquidityDistributionByWeight read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

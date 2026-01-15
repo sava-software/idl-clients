@@ -12,6 +12,8 @@ public record LogUpdateRewards(Discriminator discriminator, PublicKey rewardsRat
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 13, 111, 186, 47, 245, 162, 121);
 
+  public static final int REWARDS_RATE_MODEL_OFFSET = 8;
+
   public static LogUpdateRewards read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

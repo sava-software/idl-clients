@@ -17,6 +17,10 @@ public record FeeParameterUpdate(Discriminator discriminator,
   public static final int BYTES = 44;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(48, 76, 241, 117, 144, 215, 242, 44);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int PROTOCOL_SHARE_OFFSET = 40;
+  public static final int BASE_FACTOR_OFFSET = 42;
+
   public static FeeParameterUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

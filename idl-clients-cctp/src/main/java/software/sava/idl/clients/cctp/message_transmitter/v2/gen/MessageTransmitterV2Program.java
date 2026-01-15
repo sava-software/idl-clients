@@ -79,6 +79,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static AcceptOwnershipIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -157,6 +159,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 40;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static DisableAttesterIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -234,6 +238,8 @@ public final class MessageTransmitterV2Program {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static EnableAttesterIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -320,6 +326,8 @@ public final class MessageTransmitterV2Program {
     }
 
     public static final int BYTES = 56;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static InitializeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -414,6 +422,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PauseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -504,6 +514,8 @@ public final class MessageTransmitterV2Program {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static ReceiveMessageIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -569,6 +581,8 @@ public final class MessageTransmitterV2Program {
     public static ReclaimEventAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static ReclaimEventAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -646,6 +660,8 @@ public final class MessageTransmitterV2Program {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static SendMessageIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -715,6 +731,8 @@ public final class MessageTransmitterV2Program {
     }
 
     public static final int BYTES = 16;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static SetMaxMessageBodySizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -786,6 +804,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 12;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static SetSignatureThresholdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -855,6 +875,8 @@ public final class MessageTransmitterV2Program {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static TransferOwnershipIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -926,6 +948,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static UnpauseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -996,6 +1020,8 @@ public final class MessageTransmitterV2Program {
 
     public static final int BYTES = 40;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static UpdateAttesterManagerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1065,6 +1091,8 @@ public final class MessageTransmitterV2Program {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static UpdatePauserIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

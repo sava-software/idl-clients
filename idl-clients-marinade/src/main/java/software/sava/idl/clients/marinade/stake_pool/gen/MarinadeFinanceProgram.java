@@ -105,6 +105,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 152;
 
+    public static final int DATA_OFFSET = 8;
+
     public static InitializeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -164,6 +166,8 @@ public final class MarinadeFinanceProgram {
     public static ChangeAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DATA_OFFSET = 8;
 
     public static ChangeAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -257,6 +261,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 12;
 
+    public static final int SCORE_OFFSET = 8;
+
     public static AddValidatorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -335,6 +341,9 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 44;
+
+    public static final int INDEX_OFFSET = 8;
+    public static final int VALIDATOR_VOTE_OFFSET = 12;
 
     public static RemoveValidatorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -424,6 +433,10 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 48;
 
+    public static final int INDEX_OFFSET = 8;
+    public static final int VALIDATOR_VOTE_OFFSET = 12;
+    public static final int SCORE_OFFSET = 44;
+
     public static SetValidatorScoreIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -494,6 +507,8 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int EXTRA_RUNS_OFFSET = 8;
 
     public static ConfigValidatorSystemIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -595,6 +610,8 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int LAMPORTS_OFFSET = 8;
 
     public static DepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -713,6 +730,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 12;
 
+    public static final int VALIDATOR_INDEX_OFFSET = 8;
+
     public static DepositStakeAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -808,6 +827,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MSOL_AMOUNT_OFFSET = 8;
+
     public static LiquidUnstakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -898,6 +919,8 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int LAMPORTS_OFFSET = 8;
 
     public static AddLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -998,6 +1021,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 16;
 
+    public static final int TOKENS_OFFSET = 8;
+
     public static RemoveLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1059,6 +1084,8 @@ public final class MarinadeFinanceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static ConfigLpIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1118,6 +1145,8 @@ public final class MarinadeFinanceProgram {
     public static ConfigMarinadeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static ConfigMarinadeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1204,6 +1233,8 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int MSOL_AMOUNT_OFFSET = 8;
 
     public static OrderUnstakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1361,6 +1392,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 12;
 
+    public static final int VALIDATOR_INDEX_OFFSET = 8;
+
     public static StakeReserveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1471,6 +1504,9 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
 
     public static UpdateActiveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1587,6 +1623,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 12;
 
+    public static final int STAKE_INDEX_OFFSET = 8;
+
     public static UpdateDeactivatedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1702,6 +1740,9 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 16;
 
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
+
     public static DeactivateStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1796,6 +1837,9 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
 
     public static EmergencyUnstakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1929,6 +1973,10 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 24;
 
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
+    public static final int DESIRED_UNSTAKE_AMOUNT_OFFSET = 16;
+
     public static PartialUnstakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2052,6 +2100,10 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 20;
+
+    public static final int DESTINATION_STAKE_INDEX_OFFSET = 8;
+    public static final int SOURCE_STAKE_INDEX_OFFSET = 12;
+    public static final int VALIDATOR_INDEX_OFFSET = 16;
 
     public static MergeStakesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2192,6 +2244,10 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 20;
+
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int SOURCE_VALIDATOR_INDEX_OFFSET = 12;
+    public static final int DEST_VALIDATOR_INDEX_OFFSET = 16;
 
     public static RedelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2393,6 +2449,11 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 56;
 
+    public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
+    public static final int MSOL_AMOUNT_OFFSET = 16;
+    public static final int BENEFICIARY_OFFSET = 24;
+
     public static WithdrawStakeAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2484,6 +2545,8 @@ public final class MarinadeFinanceProgram {
 
     public static final int BYTES = 12;
 
+    public static final int CAPACITY_OFFSET = 8;
+
     public static ReallocValidatorListIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2558,6 +2621,8 @@ public final class MarinadeFinanceProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int CAPACITY_OFFSET = 8;
 
     public static ReallocStakeListIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

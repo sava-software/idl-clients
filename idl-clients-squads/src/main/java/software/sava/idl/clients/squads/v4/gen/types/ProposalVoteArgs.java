@@ -14,6 +14,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 public record ProposalVoteArgs(String memo, byte[] _memo) implements SerDe {
 
+  public static final int MEMO_OFFSET = 1;
+
   public static ProposalVoteArgs createRecord(final String memo) {
     return new ProposalVoteArgs(memo, memo == null ? null : memo.getBytes(UTF_8));
   }

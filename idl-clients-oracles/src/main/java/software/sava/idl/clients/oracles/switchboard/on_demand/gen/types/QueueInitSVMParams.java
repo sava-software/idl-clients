@@ -20,6 +20,15 @@ public record QueueInitSVMParams(int allowAuthorityOverrideAfter,
 
   public static final int BYTES = 58;
 
+  public static final int ALLOW_AUTHORITY_OVERRIDE_AFTER_OFFSET = 0;
+  public static final int REQUIRE_AUTHORITY_HEARTBEAT_PERMISSION_OFFSET = 4;
+  public static final int REQUIRE_USAGE_PERMISSIONS_OFFSET = 5;
+  public static final int MAX_QUOTE_VERIFICATION_AGE_OFFSET = 6;
+  public static final int REWARD_OFFSET = 10;
+  public static final int NODE_TIMEOUT_OFFSET = 14;
+  public static final int RECENT_SLOT_OFFSET = 18;
+  public static final int SOURCE_QUEUE_KEY_OFFSET = 26;
+
   public static QueueInitSVMParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -18,6 +18,12 @@ public record AmmConstituentDatum(int perpMarketIndex,
   public static final int BYTES = 24;
   public static final int PADDING_LEN = 4;
 
+  public static final int PERP_MARKET_INDEX_OFFSET = 0;
+  public static final int CONSTITUENT_INDEX_OFFSET = 2;
+  public static final int PADDING_OFFSET = 4;
+  public static final int LAST_SLOT_OFFSET = 8;
+  public static final int WEIGHT_OFFSET = 16;
+
   public static AmmConstituentDatum read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

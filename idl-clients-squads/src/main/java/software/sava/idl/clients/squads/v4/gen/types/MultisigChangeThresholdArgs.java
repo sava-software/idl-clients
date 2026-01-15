@@ -17,6 +17,9 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// @param memo Memo is used for indexing only.
 public record MultisigChangeThresholdArgs(int newThreshold, String memo, byte[] _memo) implements SerDe {
 
+  public static final int NEW_THRESHOLD_OFFSET = 0;
+  public static final int MEMO_OFFSET = 3;
+
   public static MultisigChangeThresholdArgs createRecord(final int newThreshold, final String memo) {
     return new MultisigChangeThresholdArgs(newThreshold, memo, memo == null ? null : memo.getBytes(UTF_8));
   }

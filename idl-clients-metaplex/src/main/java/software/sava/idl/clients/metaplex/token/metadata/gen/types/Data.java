@@ -19,6 +19,8 @@ public record Data(String name, byte[] _name,
                    int sellerFeeBasisPoints,
                    Creator[] creators) implements SerDe {
 
+  public static final int NAME_OFFSET = 0;
+
   public static Data createRecord(final String name,
                                   final String symbol,
                                   final String uri,

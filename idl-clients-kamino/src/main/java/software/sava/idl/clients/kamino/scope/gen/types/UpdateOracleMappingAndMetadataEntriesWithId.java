@@ -8,6 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOracleMappingAndMetadataEntry[] updates) implements SerDe {
 
+  public static final int ENTRY_ID_OFFSET = 0;
+  public static final int UPDATES_OFFSET = 2;
+
   public static UpdateOracleMappingAndMetadataEntriesWithId read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

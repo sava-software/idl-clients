@@ -12,6 +12,8 @@ public record EmergencyPauseEvent(Discriminator discriminator, PublicKey state) 
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+
   public static EmergencyPauseEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

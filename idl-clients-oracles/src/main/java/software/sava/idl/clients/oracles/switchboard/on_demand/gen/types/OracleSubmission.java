@@ -22,6 +22,11 @@ public record OracleSubmission(PublicKey oracle,
 
   public static final int BYTES = 64;
 
+  public static final int ORACLE_OFFSET = 0;
+  public static final int SLOT_OFFSET = 32;
+  public static final int LANDED_AT_OFFSET = 40;
+  public static final int VALUE_OFFSET = 48;
+
   public static OracleSubmission read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

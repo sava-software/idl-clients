@@ -40,6 +40,27 @@ public record CurveRecord(Discriminator discriminator,
   public static final int BYTES = 278;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int RECORD_ID_OFFSET = 16;
+  public static final int PEG_MULTIPLIER_BEFORE_OFFSET = 24;
+  public static final int BASE_ASSET_RESERVE_BEFORE_OFFSET = 40;
+  public static final int QUOTE_ASSET_RESERVE_BEFORE_OFFSET = 56;
+  public static final int SQRT_K_BEFORE_OFFSET = 72;
+  public static final int PEG_MULTIPLIER_AFTER_OFFSET = 88;
+  public static final int BASE_ASSET_RESERVE_AFTER_OFFSET = 104;
+  public static final int QUOTE_ASSET_RESERVE_AFTER_OFFSET = 120;
+  public static final int SQRT_K_AFTER_OFFSET = 136;
+  public static final int BASE_ASSET_AMOUNT_LONG_OFFSET = 152;
+  public static final int BASE_ASSET_AMOUNT_SHORT_OFFSET = 168;
+  public static final int BASE_ASSET_AMOUNT_WITH_AMM_OFFSET = 184;
+  public static final int TOTAL_FEE_OFFSET = 200;
+  public static final int TOTAL_FEE_MINUS_DISTRIBUTIONS_OFFSET = 216;
+  public static final int ADJUSTMENT_COST_OFFSET = 232;
+  public static final int ORACLE_PRICE_OFFSET = 248;
+  public static final int FILL_RECORD_OFFSET = 256;
+  public static final int NUMBER_OF_USERS_OFFSET = 272;
+  public static final int MARKET_INDEX_OFFSET = 276;
+
   public static CurveRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

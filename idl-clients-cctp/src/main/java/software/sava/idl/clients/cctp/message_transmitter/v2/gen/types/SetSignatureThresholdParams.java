@@ -9,6 +9,8 @@ public record SetSignatureThresholdParams(int newSignatureThreshold) implements 
 
   public static final int BYTES = 4;
 
+  public static final int NEW_SIGNATURE_THRESHOLD_OFFSET = 0;
+
   public static SetSignatureThresholdParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

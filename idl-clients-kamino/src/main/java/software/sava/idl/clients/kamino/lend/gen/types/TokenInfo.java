@@ -29,6 +29,18 @@ public record TokenInfo(byte[] name,
   public static final int RESERVED_LEN = 7;
   public static final int PADDING_LEN = 19;
 
+  public static final int NAME_OFFSET = 0;
+  public static final int HEURISTIC_OFFSET = 32;
+  public static final int MAX_TWAP_DIVERGENCE_BPS_OFFSET = 56;
+  public static final int MAX_AGE_PRICE_SECONDS_OFFSET = 64;
+  public static final int MAX_AGE_TWAP_SECONDS_OFFSET = 72;
+  public static final int SCOPE_CONFIGURATION_OFFSET = 80;
+  public static final int SWITCHBOARD_CONFIGURATION_OFFSET = 128;
+  public static final int PYTH_CONFIGURATION_OFFSET = 192;
+  public static final int BLOCK_PRICE_USAGE_OFFSET = 224;
+  public static final int RESERVED_OFFSET = 225;
+  public static final int PADDING_OFFSET = 232;
+
   public static TokenInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

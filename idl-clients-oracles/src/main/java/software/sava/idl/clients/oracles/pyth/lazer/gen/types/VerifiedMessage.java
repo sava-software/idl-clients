@@ -12,6 +12,9 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 /// @param payload Signed message payload.
 public record VerifiedMessage(PublicKey publicKey, byte[] payload) implements SerDe {
 
+  public static final int PUBLIC_KEY_OFFSET = 0;
+  public static final int PAYLOAD_OFFSET = 32;
+
   public static VerifiedMessage read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

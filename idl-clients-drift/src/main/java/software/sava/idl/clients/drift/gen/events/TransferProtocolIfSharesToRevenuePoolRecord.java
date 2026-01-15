@@ -25,6 +25,14 @@ public record TransferProtocolIfSharesToRevenuePoolRecord(Discriminator discrimi
   public static final int BYTES = 74;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int MARKET_INDEX_OFFSET = 16;
+  public static final int AMOUNT_OFFSET = 18;
+  public static final int SHARES_OFFSET = 26;
+  public static final int IF_VAULT_AMOUNT_BEFORE_OFFSET = 42;
+  public static final int PROTOCOL_SHARES_BEFORE_OFFSET = 50;
+  public static final int TRANSFER_AMOUNT_OFFSET = 66;
+
   public static TransferProtocolIfSharesToRevenuePoolRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

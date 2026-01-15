@@ -12,6 +12,9 @@ public record SignatureThresholdUpdated(Discriminator discriminator, int oldSign
   public static final int BYTES = 16;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 99, 103, 200, 15, 38, 122, 189);
 
+  public static final int OLD_SIGNATURE_THRESHOLD_OFFSET = 8;
+  public static final int NEW_SIGNATURE_THRESHOLD_OFFSET = 12;
+
   public static SignatureThresholdUpdated read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

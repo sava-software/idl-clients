@@ -22,6 +22,13 @@ public record ClaimReward2(Discriminator discriminator,
   public static final int BYTES = 124;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(27, 143, 244, 33, 80, 43, 110, 146);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int REWARD_INDEX_OFFSET = 104;
+  public static final int TOTAL_REWARD_OFFSET = 112;
+  public static final int ACTIVE_BIN_ID_OFFSET = 120;
+
   public static ClaimReward2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

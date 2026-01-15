@@ -58,6 +58,23 @@ public record PerpPosition(long lastCumulativeFundingRate,
   public static final int BYTES = 96;
   public static final int PADDING_LEN = 2;
 
+  public static final int LAST_CUMULATIVE_FUNDING_RATE_OFFSET = 0;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 8;
+  public static final int QUOTE_ASSET_AMOUNT_OFFSET = 16;
+  public static final int QUOTE_BREAK_EVEN_AMOUNT_OFFSET = 24;
+  public static final int QUOTE_ENTRY_AMOUNT_OFFSET = 32;
+  public static final int OPEN_BIDS_OFFSET = 40;
+  public static final int OPEN_ASKS_OFFSET = 48;
+  public static final int SETTLED_PNL_OFFSET = 56;
+  public static final int LP_SHARES_OFFSET = 64;
+  public static final int LAST_BASE_ASSET_AMOUNT_PER_LP_OFFSET = 72;
+  public static final int LAST_QUOTE_ASSET_AMOUNT_PER_LP_OFFSET = 80;
+  public static final int PADDING_OFFSET = 88;
+  public static final int MAX_MARGIN_RATIO_OFFSET = 90;
+  public static final int MARKET_INDEX_OFFSET = 92;
+  public static final int OPEN_ORDERS_OFFSET = 94;
+  public static final int PER_LP_BASE_OFFSET = 95;
+
   public static PerpPosition read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

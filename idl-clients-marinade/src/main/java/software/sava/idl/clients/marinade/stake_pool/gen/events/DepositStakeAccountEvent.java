@@ -29,6 +29,20 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
   public static final int BYTES = 200;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int STAKE_OFFSET = 40;
+  public static final int DELEGATED_OFFSET = 72;
+  public static final int WITHDRAWER_OFFSET = 80;
+  public static final int STAKE_INDEX_OFFSET = 112;
+  public static final int VALIDATOR_OFFSET = 116;
+  public static final int VALIDATOR_INDEX_OFFSET = 148;
+  public static final int VALIDATOR_ACTIVE_BALANCE_OFFSET = 152;
+  public static final int TOTAL_ACTIVE_BALANCE_OFFSET = 160;
+  public static final int USER_MSOL_BALANCE_OFFSET = 168;
+  public static final int MSOL_MINTED_OFFSET = 176;
+  public static final int TOTAL_VIRTUAL_STAKED_LAMPORTS_OFFSET = 184;
+  public static final int MSOL_SUPPLY_OFFSET = 192;
+
   public static DepositStakeAccountEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

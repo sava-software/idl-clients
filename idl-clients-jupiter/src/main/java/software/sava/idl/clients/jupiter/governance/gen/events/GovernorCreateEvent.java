@@ -17,6 +17,11 @@ public record GovernorCreateEvent(Discriminator discriminator,
   public static final int BYTES = 136;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
 
+  public static final int GOVERNOR_OFFSET = 8;
+  public static final int LOCKER_OFFSET = 40;
+  public static final int SMART_WALLET_OFFSET = 72;
+  public static final int PARAMETERS_OFFSET = 104;
+
   public static GovernorCreateEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

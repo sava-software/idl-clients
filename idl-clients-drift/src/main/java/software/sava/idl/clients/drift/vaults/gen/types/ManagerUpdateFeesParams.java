@@ -15,6 +15,9 @@ public record ManagerUpdateFeesParams(long timelockDuration,
                                       OptionalInt newProfitShare,
                                       OptionalInt newHurdleRate) implements SerDe {
 
+  public static final int TIMELOCK_DURATION_OFFSET = 0;
+  public static final int NEW_MANAGEMENT_FEE_OFFSET = 9;
+
   public static ManagerUpdateFeesParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

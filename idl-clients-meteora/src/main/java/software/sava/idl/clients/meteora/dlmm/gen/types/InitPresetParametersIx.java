@@ -31,6 +31,18 @@ public record InitPresetParametersIx(int index,
 
   public static final int BYTES = 24;
 
+  public static final int INDEX_OFFSET = 0;
+  public static final int BIN_STEP_OFFSET = 2;
+  public static final int BASE_FACTOR_OFFSET = 4;
+  public static final int FILTER_PERIOD_OFFSET = 6;
+  public static final int DECAY_PERIOD_OFFSET = 8;
+  public static final int REDUCTION_FACTOR_OFFSET = 10;
+  public static final int VARIABLE_FEE_CONTROL_OFFSET = 12;
+  public static final int MAX_VOLATILITY_ACCUMULATOR_OFFSET = 16;
+  public static final int PROTOCOL_SHARE_OFFSET = 20;
+  public static final int BASE_FEE_POWER_FACTOR_OFFSET = 22;
+  public static final int FUNCTION_TYPE_OFFSET = 23;
+
   public static InitPresetParametersIx read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -19,6 +19,12 @@ public record ValidatorSystem(List validatorList,
 
   public static final int BYTES = 121;
 
+  public static final int VALIDATOR_LIST_OFFSET = 0;
+  public static final int MANAGER_AUTHORITY_OFFSET = 76;
+  public static final int TOTAL_VALIDATOR_SCORE_OFFSET = 108;
+  public static final int TOTAL_ACTIVE_BALANCE_OFFSET = 112;
+  public static final int AUTO_ADD_VALIDATOR_ENABLED_OFFSET = 120;
+
   public static ValidatorSystem read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

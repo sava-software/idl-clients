@@ -23,6 +23,10 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
 
+  public static final int GOVERNOR_OFFSET = 8;
+  public static final int PROPOSAL_OFFSET = 40;
+  public static final int TITLE_OFFSET = 72;
+
   public static ProposalMetaCreateEvent createRecord(final Discriminator discriminator,
                                                      final PublicKey governor,
                                                      final PublicKey proposal,

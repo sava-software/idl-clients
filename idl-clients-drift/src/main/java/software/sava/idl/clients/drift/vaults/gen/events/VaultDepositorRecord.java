@@ -38,6 +38,24 @@ public record VaultDepositorRecord(Discriminator discriminator,
   public static final int BYTES = 227;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int DEPOSITOR_AUTHORITY_OFFSET = 48;
+  public static final int ACTION_OFFSET = 80;
+  public static final int AMOUNT_OFFSET = 81;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 89;
+  public static final int VAULT_SHARES_BEFORE_OFFSET = 91;
+  public static final int VAULT_SHARES_AFTER_OFFSET = 107;
+  public static final int VAULT_EQUITY_BEFORE_OFFSET = 123;
+  public static final int USER_VAULT_SHARES_BEFORE_OFFSET = 131;
+  public static final int TOTAL_VAULT_SHARES_BEFORE_OFFSET = 147;
+  public static final int USER_VAULT_SHARES_AFTER_OFFSET = 163;
+  public static final int TOTAL_VAULT_SHARES_AFTER_OFFSET = 179;
+  public static final int PROFIT_SHARE_OFFSET = 195;
+  public static final int MANAGEMENT_FEE_OFFSET = 203;
+  public static final int MANAGEMENT_FEE_SHARES_OFFSET = 211;
+  public static final int DEPOSIT_ORACLE_PRICE_OFFSET = 219;
+
   public static VaultDepositorRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

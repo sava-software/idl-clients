@@ -12,6 +12,8 @@ public record LogRebalance(Discriminator discriminator, long assets) implements 
   public static final int BYTES = 16;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(90, 67, 219, 41, 181, 118, 132, 9);
 
+  public static final int ASSETS_OFFSET = 8;
+
   public static LogRebalance read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

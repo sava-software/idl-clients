@@ -19,6 +19,12 @@ public record InitializeReward(Discriminator discriminator,
   public static final int BYTES = 120;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(211, 153, 88, 62, 149, 60, 177, 70);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int REWARD_MINT_OFFSET = 40;
+  public static final int FUNDER_OFFSET = 72;
+  public static final int REWARD_INDEX_OFFSET = 104;
+  public static final int REWARD_DURATION_OFFSET = 112;
+
   public static InitializeReward read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

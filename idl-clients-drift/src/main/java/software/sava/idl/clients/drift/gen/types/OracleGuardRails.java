@@ -6,6 +6,9 @@ public record OracleGuardRails(PriceDivergenceGuardRails priceDivergence, Validi
 
   public static final int BYTES = 48;
 
+  public static final int PRICE_DIVERGENCE_OFFSET = 0;
+  public static final int VALIDITY_OFFSET = 16;
+
   public static OracleGuardRails read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

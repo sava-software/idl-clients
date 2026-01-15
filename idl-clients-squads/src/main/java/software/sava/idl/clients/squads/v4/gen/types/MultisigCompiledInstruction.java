@@ -12,6 +12,9 @@ public record MultisigCompiledInstruction(int programIdIndex,
                                           byte[] accountIndexes,
                                           byte[] data) implements SerDe {
 
+  public static final int PROGRAM_ID_INDEX_OFFSET = 0;
+  public static final int ACCOUNT_INDEXES_OFFSET = 1;
+
   public static MultisigCompiledInstruction read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

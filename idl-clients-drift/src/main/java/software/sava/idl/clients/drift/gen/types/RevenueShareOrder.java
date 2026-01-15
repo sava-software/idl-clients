@@ -40,6 +40,17 @@ public record RevenueShareOrder(long feesAccrued,
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 10;
 
+  public static final int FEES_ACCRUED_OFFSET = 0;
+  public static final int ORDER_ID_OFFSET = 8;
+  public static final int FEE_TENTH_BPS_OFFSET = 12;
+  public static final int MARKET_INDEX_OFFSET = 14;
+  public static final int SUB_ACCOUNT_ID_OFFSET = 16;
+  public static final int BUILDER_IDX_OFFSET = 18;
+  public static final int BIT_FLAGS_OFFSET = 19;
+  public static final int USER_ORDER_INDEX_OFFSET = 20;
+  public static final int MARKET_TYPE_OFFSET = 21;
+  public static final int PADDING_OFFSET = 22;
+
   public static RevenueShareOrder read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -116,6 +116,9 @@ public final class DriftProgram {
     public static final int BYTES = 42;
     public static final int NAME_LEN = 32;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int NAME_OFFSET = 10;
+
     public static InitializeUserIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -236,6 +239,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int NUM_ORDERS_OFFSET = 8;
+
     public static InitializeSignedMsgUserOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -311,6 +316,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int NUM_ORDERS_OFFSET = 8;
+
     public static ResizeSignedMsgUserOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -379,6 +386,8 @@ public final class DriftProgram {
     public static InitializeSignedMsgWsDelegatesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DELEGATES_OFFSET = 8;
 
     public static InitializeSignedMsgWsDelegatesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -449,6 +458,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 41;
+
+    public static final int DELEGATE_OFFSET = 8;
+    public static final int ADD_OFFSET = 40;
 
     public static ChangeSignedMsgWsDelegateStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -645,6 +657,8 @@ public final class DriftProgram {
     public static final int BYTES = 40;
     public static final int NAME_LEN = 32;
 
+    public static final int NAME_OFFSET = 8;
+
     public static InitializeReferrerNameIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -744,6 +758,10 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 19;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+    public static final int REDUCE_ONLY_OFFSET = 18;
 
     public static DepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -857,6 +875,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 19;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+    public static final int REDUCE_ONLY_OFFSET = 18;
+
     public static WithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -947,6 +969,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 18;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
 
     public static TransferDepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1083,6 +1108,12 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int DEPOSIT_FROM_MARKET_INDEX_OFFSET = 8;
+    public static final int DEPOSIT_TO_MARKET_INDEX_OFFSET = 10;
+    public static final int BORROW_FROM_MARKET_INDEX_OFFSET = 12;
+    public static final int BORROW_TO_MARKET_INDEX_OFFSET = 14;
+    public static final int DEPOSIT_AMOUNT_OFFSET = 17;
+
     public static TransferPoolsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1205,6 +1236,9 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 11;
+
     public static TransferPerpPositionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1279,6 +1313,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PlacePerpOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1345,6 +1381,8 @@ public final class DriftProgram {
     public static CancelOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ORDER_ID_OFFSET = 9;
 
     public static CancelOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1417,6 +1455,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int USER_ORDER_ID_OFFSET = 8;
 
     public static CancelOrderByUserIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1502,6 +1542,8 @@ public final class DriftProgram {
     public static CancelOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MARKET_TYPE_OFFSET = 9;
 
     public static CancelOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1593,6 +1635,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ORDER_IDS_OFFSET = 8;
+
     public static CancelOrdersByIdsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1662,6 +1706,8 @@ public final class DriftProgram {
     public static ModifyOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ORDER_ID_OFFSET = 9;
 
     public static ModifyOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1741,6 +1787,9 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int USER_ORDER_ID_OFFSET = 8;
+    public static final int MODIFY_ORDER_PARAMS_OFFSET = 9;
+
     public static ModifyOrderByUserIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1818,6 +1867,8 @@ public final class DriftProgram {
     public static PlaceAndTakePerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PlaceAndTakePerpOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1907,6 +1958,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PlaceAndMakePerpOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1995,6 +2048,8 @@ public final class DriftProgram {
     }
 
     public static final int SIGNED_MSG_ORDER_UUID_LEN = 8;
+    public static final int PARAMS_OFFSET = 8;
+
     public static PlaceAndMakeSignedMsgPerpOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2084,6 +2139,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int SIGNED_MSG_ORDER_PARAMS_MESSAGE_BYTES_OFFSET = 8;
+
     public static PlaceSignedMsgTakerOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2151,6 +2208,8 @@ public final class DriftProgram {
     public static PlaceSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PlaceSpotOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2238,6 +2297,8 @@ public final class DriftProgram {
     public static PlaceAndTakeSpotOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PlaceAndTakeSpotOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2353,6 +2414,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PlaceAndMakeSpotOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2429,6 +2492,8 @@ public final class DriftProgram {
     public static PlaceOrdersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PlaceOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2546,6 +2611,10 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 20;
+
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int AMOUNT_IN_OFFSET = 12;
 
     public static BeginSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2680,6 +2749,10 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int LIMIT_PRICE_OFFSET = 13;
+
     public static EndSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2775,6 +2848,9 @@ public final class DriftProgram {
     public static final int BYTES = 42;
     public static final int NAME_LEN = 32;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int NAME_OFFSET = 10;
+
     public static UpdateUserNameIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2845,6 +2921,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 14;
+
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int MARGIN_RATIO_OFFSET = 10;
 
     public static UpdateUserCustomMarginRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2930,6 +3009,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 14;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int PERP_MARKET_INDEX_OFFSET = 10;
+    public static final int MARGIN_RATIO_OFFSET = 12;
+
     public static UpdateUserPerpPositionCustomMarginRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3005,6 +3088,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 11;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int MARGIN_TRADING_ENABLED_OFFSET = 10;
+
     public static UpdateUserMarginTradingEnabledIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3075,6 +3161,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 11;
+
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int POOL_ID_OFFSET = 10;
 
     public static UpdateUserPoolIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3147,6 +3236,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 42;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int DELEGATE_OFFSET = 10;
+
     public static UpdateUserDelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3217,6 +3309,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 11;
+
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int REDUCE_ONLY_OFFSET = 10;
 
     public static UpdateUserReduceOnlyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3296,6 +3391,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 11;
+
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+    public static final int PROTECTED_MAKER_ORDERS_OFFSET = 10;
 
     public static UpdateUserProtectedMakerOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3512,6 +3610,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int SUB_ACCOUNT_ID_OFFSET = 8;
+
     public static EnableUserHighLeverageModeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3595,6 +3695,8 @@ public final class DriftProgram {
     public static FillPerpOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ORDER_ID_OFFSET = 9;
 
     public static FillPerpOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3741,6 +3843,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ORDER_ID_OFFSET = 9;
+
     public static FillSpotOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3836,6 +3940,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int ORDER_ID_OFFSET = 8;
 
     public static TriggerOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4003,6 +4109,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISABLE_MAINTENANCE_OFFSET = 8;
+
     public static DisableUserHighLeverageModeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4099,6 +4207,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int PAUSED_OPERATIONS_OFFSET = 8;
+
     public static AdminUpdateUserStatsPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4169,6 +4279,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static SettlePnlIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4241,6 +4353,8 @@ public final class DriftProgram {
     public static SettleMultiplePnlsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MARKET_INDEXES_OFFSET = 8;
 
     public static SettleMultiplePnlsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4335,6 +4449,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static SettleExpiredMarketIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4433,6 +4549,10 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int LIQUIDATOR_MAX_BASE_ASSET_AMOUNT_OFFSET = 10;
+    public static final int LIMIT_PRICE_OFFSET = 19;
+
     public static LiquidatePerpIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4524,6 +4644,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static LiquidatePerpWithFillIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4627,6 +4749,11 @@ public final class DriftProgram {
     public static LiquidateSpotIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ASSET_MARKET_INDEX_OFFSET = 8;
+    public static final int LIABILITY_MARKET_INDEX_OFFSET = 10;
+    public static final int LIQUIDATOR_MAX_LIABILITY_TRANSFER_OFFSET = 12;
+    public static final int LIMIT_PRICE_OFFSET = 29;
 
     public static LiquidateSpotIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4775,6 +4902,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 20;
 
+    public static final int ASSET_MARKET_INDEX_OFFSET = 8;
+    public static final int LIABILITY_MARKET_INDEX_OFFSET = 10;
+    public static final int SWAP_AMOUNT_OFFSET = 12;
+
     public static LiquidateSpotWithSwapBeginIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4896,6 +5027,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int ASSET_MARKET_INDEX_OFFSET = 8;
+    public static final int LIABILITY_MARKET_INDEX_OFFSET = 10;
+
     public static LiquidateSpotWithSwapEndIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5002,6 +5136,11 @@ public final class DriftProgram {
     public static LiquidateBorrowForPerpPnlIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PERP_MARKET_INDEX_OFFSET = 8;
+    public static final int SPOT_MARKET_INDEX_OFFSET = 10;
+    public static final int LIQUIDATOR_MAX_LIABILITY_TRANSFER_OFFSET = 12;
+    public static final int LIMIT_PRICE_OFFSET = 29;
 
     public static LiquidateBorrowForPerpPnlIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5126,6 +5265,11 @@ public final class DriftProgram {
     public static LiquidatePerpPnlForDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PERP_MARKET_INDEX_OFFSET = 8;
+    public static final int SPOT_MARKET_INDEX_OFFSET = 10;
+    public static final int LIQUIDATOR_MAX_PNL_TRANSFER_OFFSET = 12;
+    public static final int LIMIT_PRICE_OFFSET = 29;
 
     public static LiquidatePerpPnlForDepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5260,6 +5404,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int PERP_MARKET_INDEX_OFFSET = 10;
+
     public static ResolvePerpPnlDeficitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5363,6 +5510,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int QUOTE_SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int MARKET_INDEX_OFFSET = 10;
+
     public static ResolvePerpBankruptcyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5462,6 +5612,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static ResolveSpotBankruptcyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5541,6 +5693,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int SPOT_MARKET_INDEX_OFFSET = 8;
+
     public static SettleRevenueToInsuranceFundIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5607,6 +5761,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static UpdateFundingRateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5768,6 +5924,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MARKET_INDEXES_OFFSET = 8;
+
     public static UpdateAmmsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5833,6 +5991,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int EXPIRY_TS_OFFSET = 8;
 
     public static UpdateSpotMarketExpiryIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6044,6 +6204,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static InitializeInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6143,6 +6305,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 18;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+
     public static AddInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6226,6 +6391,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 18;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+
     public static RequestRemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6304,6 +6472,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static CancelRequestRemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6395,6 +6565,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
 
     public static RemoveInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6510,6 +6682,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 20;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int AMOUNT_IN_OFFSET = 12;
+
     public static BeginInsuranceFundSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6619,6 +6795,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+
     public static EndInsuranceFundSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6709,6 +6888,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 18;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
 
     public static TransferProtocolIfSharesToRevenuePoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6813,6 +6995,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 18;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+
     public static DepositIntoInsuranceFundStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6890,6 +7075,9 @@ public final class DriftProgram {
     }
 
     public static final int FEED_ID_LEN = 32;
+    public static final int FEED_ID_OFFSET = 8;
+    public static final int PARAMS_OFFSET = 40;
+
     public static UpdatePythPullOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6965,6 +7153,9 @@ public final class DriftProgram {
     }
 
     public static final int FEED_ID_LEN = 32;
+    public static final int FEED_ID_OFFSET = 8;
+    public static final int PARAMS_OFFSET = 40;
+
     public static PostPythPullOracleUpdateAtomicIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7031,6 +7222,8 @@ public final class DriftProgram {
     public static PostMultiPythPullOracleUpdatesAtomicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PostMultiPythPullOracleUpdatesAtomicIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -7320,6 +7513,26 @@ public final class DriftProgram {
     public static final int BYTES = 119;
     public static final int NAME_LEN = 32;
 
+    public static final int OPTIMAL_UTILIZATION_OFFSET = 8;
+    public static final int OPTIMAL_BORROW_RATE_OFFSET = 12;
+    public static final int MAX_BORROW_RATE_OFFSET = 16;
+    public static final int ORACLE_SOURCE_OFFSET = 20;
+    public static final int INITIAL_ASSET_WEIGHT_OFFSET = 21;
+    public static final int MAINTENANCE_ASSET_WEIGHT_OFFSET = 25;
+    public static final int INITIAL_LIABILITY_WEIGHT_OFFSET = 29;
+    public static final int MAINTENANCE_LIABILITY_WEIGHT_OFFSET = 33;
+    public static final int IMF_FACTOR_OFFSET = 37;
+    public static final int LIQUIDATOR_FEE_OFFSET = 41;
+    public static final int IF_LIQUIDATION_FEE_OFFSET = 45;
+    public static final int ACTIVE_STATUS_OFFSET = 49;
+    public static final int ASSET_TIER_OFFSET = 50;
+    public static final int SCALE_INITIAL_ASSET_WEIGHT_START_OFFSET = 51;
+    public static final int WITHDRAW_GUARD_THRESHOLD_OFFSET = 59;
+    public static final int ORDER_TICK_SIZE_OFFSET = 67;
+    public static final int ORDER_STEP_SIZE_OFFSET = 75;
+    public static final int IF_TOTAL_FACTOR_OFFSET = 83;
+    public static final int NAME_OFFSET = 87;
+
     public static InitializeSpotMarketIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7492,6 +7705,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static DeleteInitializedSpotMarketIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7591,6 +7806,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static InitializeSerumFulfillmentConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7657,6 +7874,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int STATUS_OFFSET = 8;
 
     public static UpdateSerumFulfillmentConfigStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -7752,6 +7971,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static InitializeOpenbookV2FulfillmentConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7818,6 +8039,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int STATUS_OFFSET = 8;
 
     public static OpenbookV2FulfillmentConfigStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -7913,6 +8136,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static InitializePhoenixFulfillmentConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -7979,6 +8204,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int STATUS_OFFSET = 8;
 
     public static PhoenixFulfillmentConfigStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -8210,6 +8437,33 @@ public final class DriftProgram {
 
     public static final int BYTES = 204;
     public static final int NAME_LEN = 32;
+
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMM_BASE_ASSET_RESERVE_OFFSET = 10;
+    public static final int AMM_QUOTE_ASSET_RESERVE_OFFSET = 26;
+    public static final int AMM_PERIODICITY_OFFSET = 42;
+    public static final int AMM_PEG_MULTIPLIER_OFFSET = 50;
+    public static final int ORACLE_SOURCE_OFFSET = 66;
+    public static final int CONTRACT_TIER_OFFSET = 67;
+    public static final int MARGIN_RATIO_INITIAL_OFFSET = 68;
+    public static final int MARGIN_RATIO_MAINTENANCE_OFFSET = 72;
+    public static final int LIQUIDATOR_FEE_OFFSET = 76;
+    public static final int IF_LIQUIDATION_FEE_OFFSET = 80;
+    public static final int IMF_FACTOR_OFFSET = 84;
+    public static final int ACTIVE_STATUS_OFFSET = 88;
+    public static final int BASE_SPREAD_OFFSET = 89;
+    public static final int MAX_SPREAD_OFFSET = 93;
+    public static final int MAX_OPEN_INTEREST_OFFSET = 97;
+    public static final int MAX_REVENUE_WITHDRAW_PER_PERIOD_OFFSET = 113;
+    public static final int QUOTE_MAX_INSURANCE_OFFSET = 121;
+    public static final int ORDER_STEP_SIZE_OFFSET = 129;
+    public static final int ORDER_TICK_SIZE_OFFSET = 137;
+    public static final int MIN_ORDER_SIZE_OFFSET = 145;
+    public static final int CONCENTRATION_COEF_SCALE_OFFSET = 153;
+    public static final int CURVE_UPDATE_INTENSITY_OFFSET = 169;
+    public static final int AMM_JIT_INTENSITY_OFFSET = 170;
+    public static final int NAME_OFFSET = 171;
+    public static final int LP_POOL_ID_OFFSET = 203;
 
     public static InitializePerpMarketIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -8566,6 +8820,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+
     public static DeleteInitializedPerpMarketIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -8650,6 +8906,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 56;
 
+    public static final int BASE_ASSET_RESERVE_OFFSET = 8;
+    public static final int QUOTE_ASSET_RESERVE_OFFSET = 24;
+    public static final int SQRT_K_OFFSET = 40;
+
     public static MoveAmmPriceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -8728,6 +8988,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PEG_MULTIPLIER_OFFSET = 8;
+    public static final int SQRT_K_OFFSET = 24;
 
     public static RecenterPerpMarketAmmIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -8809,6 +9072,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int DEPTH_OFFSET = 9;
+
     public static RecenterPerpMarketAmmCrankIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -8887,6 +9152,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static UpdatePerpMarketAmmSummaryStatsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -8952,6 +9219,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int EXPIRY_TS_OFFSET = 8;
 
     public static UpdatePerpMarketExpiryIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9019,6 +9288,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int LP_PAUSED_OPERATIONS_OFFSET = 8;
 
     public static UpdatePerpMarketLpPoolPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9091,6 +9362,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int LP_STATUS_OFFSET = 8;
+
     public static UpdatePerpMarketLpPoolStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9162,6 +9435,8 @@ public final class DriftProgram {
     public static UpdatePerpMarketLpPoolFeeTransferScalarIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int OPTIONAL_LP_FEE_TRANSFER_SCALAR_OFFSET = 9;
 
     public static UpdatePerpMarketLpPoolFeeTransferScalarIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9298,6 +9573,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static DepositIntoPerpMarketFeePoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9372,6 +9649,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
 
     public static UpdatePerpMarketPnlPoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9452,6 +9731,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static DepositIntoSpotMarketVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9531,6 +9812,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static DepositIntoSpotMarketRevenuePoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9601,6 +9884,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int NEW_PEG_CANDIDATE_OFFSET = 8;
 
     public static RepegAmmCurveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9739,6 +10024,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 24;
 
+    public static final int SQRT_K_OFFSET = 8;
+
     public static UpdateKIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9809,6 +10096,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int MARGIN_RATIO_INITIAL_OFFSET = 8;
+    public static final int MARGIN_RATIO_MAINTENANCE_OFFSET = 12;
 
     public static UpdatePerpMarketMarginRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -9885,6 +10175,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int MARGIN_RATIO_INITIAL_OFFSET = 8;
+    public static final int MARGIN_RATIO_MAINTENANCE_OFFSET = 10;
+
     public static UpdatePerpMarketHighLeverageMarginRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -9955,6 +10248,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int FUNDING_PERIOD_OFFSET = 8;
 
     public static UpdatePerpMarketFundingPeriodIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -10040,6 +10335,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 32;
 
+    public static final int UNREALIZED_MAX_IMBALANCE_OFFSET = 8;
+    public static final int MAX_REVENUE_WITHDRAW_PER_PERIOD_OFFSET = 16;
+    public static final int QUOTE_MAX_INSURANCE_OFFSET = 24;
+
     public static UpdatePerpMarketMaxImbalancesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10119,6 +10418,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int LIQUIDATOR_FEE_OFFSET = 8;
+    public static final int IF_LIQUIDATION_FEE_OFFSET = 12;
+
     public static UpdatePerpMarketLiquidationFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10190,6 +10492,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int LP_POOL_ID_OFFSET = 8;
+
     public static UpdatePerpMarketLpPoolIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10257,6 +10561,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int INSURANCE_FUND_UNSTAKING_PERIOD_OFFSET = 8;
+
     public static UpdateInsuranceFundUnstakingPeriodIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10323,6 +10629,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int POOL_ID_OFFSET = 8;
 
     public static UpdateSpotMarketPoolIdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -10395,6 +10703,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int LIQUIDATOR_FEE_OFFSET = 8;
+    public static final int IF_LIQUIDATION_FEE_OFFSET = 12;
+
     public static UpdateSpotMarketLiquidationFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10465,6 +10776,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int WITHDRAW_GUARD_THRESHOLD_OFFSET = 8;
 
     public static UpdateWithdrawGuardThresholdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -10550,6 +10863,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 18;
 
+    public static final int SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int USER_IF_FACTOR_OFFSET = 10;
+    public static final int TOTAL_IF_FACTOR_OFFSET = 14;
+
     public static UpdateSpotMarketIfFactorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10625,6 +10942,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int REVENUE_SETTLE_PERIOD_OFFSET = 8;
+
     public static UpdateSpotMarketRevenueSettlePeriodIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10692,6 +11011,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int STATUS_OFFSET = 8;
+
     public static UpdateSpotMarketStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -10757,6 +11078,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PAUSED_OPERATIONS_OFFSET = 8;
 
     public static UpdateSpotMarketPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -10824,6 +11147,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int ASSET_TIER_OFFSET = 8;
 
     public static UpdateSpotMarketAssetTierIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -10919,6 +11244,12 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 28;
+
+    public static final int INITIAL_ASSET_WEIGHT_OFFSET = 8;
+    public static final int MAINTENANCE_ASSET_WEIGHT_OFFSET = 12;
+    public static final int INITIAL_LIABILITY_WEIGHT_OFFSET = 16;
+    public static final int MAINTENANCE_LIABILITY_WEIGHT_OFFSET = 20;
+    public static final int IMF_FACTOR_OFFSET = 24;
 
     public static UpdateSpotMarketMarginWeightsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -11032,6 +11363,11 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int OPTIMAL_UTILIZATION_OFFSET = 8;
+    public static final int OPTIMAL_BORROW_RATE_OFFSET = 12;
+    public static final int MAX_BORROW_RATE_OFFSET = 16;
+    public static final int MIN_BORROW_RATE_OFFSET = 21;
+
     public static UpdateSpotMarketBorrowRateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11120,6 +11456,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MAX_TOKEN_DEPOSITS_OFFSET = 8;
+
     public static UpdateSpotMarketMaxTokenDepositsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11187,6 +11525,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MAX_TOKEN_BORROWS_FRACTION_OFFSET = 8;
+
     public static UpdateSpotMarketMaxTokenBorrowsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11253,6 +11593,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int SCALE_INITIAL_ASSET_WEIGHT_START_OFFSET = 8;
 
     public static UpdateSpotMarketScaleInitialAssetWeightStartIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -11345,6 +11687,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 42;
 
+    public static final int ORACLE_OFFSET = 8;
+    public static final int ORACLE_SOURCE_OFFSET = 40;
+    public static final int SKIP_INVARIANT_CHECK_OFFSET = 41;
+
     public static UpdateSpotMarketOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11423,6 +11769,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 24;
 
+    public static final int STEP_SIZE_OFFSET = 8;
+    public static final int TICK_SIZE_OFFSET = 16;
+
     public static UpdateSpotMarketStepSizeAndTickSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11494,6 +11843,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int ORDER_SIZE_OFFSET = 8;
+
     public static UpdateSpotMarketMinOrderSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11561,6 +11912,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ORDERS_ENABLED_OFFSET = 8;
+
     public static UpdateSpotMarketOrdersEnabledIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11627,6 +11980,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PAUSED_OPERATIONS_OFFSET = 8;
 
     public static UpdateSpotMarketIfPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -11696,6 +12051,8 @@ public final class DriftProgram {
     public static final int BYTES = 40;
     public static final int NAME_LEN = 32;
 
+    public static final int NAME_OFFSET = 8;
+
     public static UpdateSpotMarketNameIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11763,6 +12120,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int STATUS_OFFSET = 8;
+
     public static UpdatePerpMarketStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -11828,6 +12187,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PAUSED_OPERATIONS_OFFSET = 8;
 
     public static UpdatePerpMarketPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -11895,6 +12256,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int CONTRACT_TIER_OFFSET = 8;
 
     public static UpdatePerpMarketContractTierIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -11965,6 +12328,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int IMF_FACTOR_OFFSET = 8;
+    public static final int UNREALIZED_PNL_IMF_FACTOR_OFFSET = 12;
 
     public static UpdatePerpMarketImfFactorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12041,6 +12407,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int UNREALIZED_INITIAL_ASSET_WEIGHT_OFFSET = 8;
+    public static final int UNREALIZED_MAINTENANCE_ASSET_WEIGHT_OFFSET = 12;
+
     public static UpdatePerpMarketUnrealizedAssetWeightIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12112,6 +12481,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 24;
 
+    public static final int CONCENTRATION_SCALE_OFFSET = 8;
+
     public static UpdatePerpMarketConcentrationCoefIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12178,6 +12549,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int CURVE_UPDATE_INTENSITY_OFFSET = 8;
 
     public static UpdatePerpMarketCurveUpdateIntensityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12246,6 +12619,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int REFERENCE_PRICE_OFFSET_DEADBAND_PCT_OFFSET = 8;
+
     public static UpdatePerpMarketReferencePriceOffsetDeadbandPctIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12309,6 +12684,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 368;
 
+    public static final int FEE_STRUCTURE_OFFSET = 8;
+
     public static UpdatePerpFeeStructureIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12371,6 +12748,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 368;
 
+    public static final int FEE_STRUCTURE_OFFSET = 8;
+
     public static UpdateSpotFeeStructureIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12432,6 +12811,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int INITIAL_PCT_TO_LIQUIDATE_OFFSET = 8;
 
     public static UpdateInitialPctToLiquidateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12496,6 +12877,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int LIQUIDATION_DURATION_OFFSET = 8;
+
     public static UpdateLiquidationDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12558,6 +12941,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int LIQUIDATION_MARGIN_BUFFER_RATIO_OFFSET = 8;
 
     public static UpdateLiquidationMarginBufferRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12622,6 +13007,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 56;
 
+    public static final int ORACLE_GUARD_RAILS_OFFSET = 8;
+
     public static UpdateOracleGuardRailsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12683,6 +13070,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int SETTLEMENT_DURATION_OFFSET = 8;
 
     public static UpdateStateSettlementDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12747,6 +13136,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MAX_NUMBER_OF_SUB_ACCOUNTS_OFFSET = 8;
+
     public static UpdateStateMaxNumberOfSubAccountsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12809,6 +13200,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int MAX_INITIALIZE_USER_FEE_OFFSET = 8;
 
     public static UpdateStateMaxInitializeUserFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -12905,6 +13298,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 42;
 
+    public static final int ORACLE_OFFSET = 8;
+    public static final int ORACLE_SOURCE_OFFSET = 40;
+    public static final int SKIP_INVARIANT_CHECK_OFFSET = 41;
+
     public static UpdatePerpMarketOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -12979,6 +13376,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int BASE_SPREAD_OFFSET = 8;
+
     public static UpdatePerpMarketBaseSpreadIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13046,6 +13445,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int AMM_JIT_INTENSITY_OFFSET = 8;
+
     public static UpdateAmmJitIntensityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13112,6 +13513,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int MAX_SPREAD_OFFSET = 8;
 
     public static UpdatePerpMarketMaxSpreadIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13183,6 +13586,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int STEP_SIZE_OFFSET = 8;
+    public static final int TICK_SIZE_OFFSET = 16;
 
     public static UpdatePerpMarketStepSizeAndTickSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13256,6 +13662,8 @@ public final class DriftProgram {
     public static final int BYTES = 40;
     public static final int NAME_LEN = 32;
 
+    public static final int NAME_OFFSET = 8;
+
     public static UpdatePerpMarketNameIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13322,6 +13730,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int ORDER_SIZE_OFFSET = 8;
 
     public static UpdatePerpMarketMinOrderSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13390,6 +13800,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MAX_SLIPPAGE_RATIO_OFFSET = 8;
+
     public static UpdatePerpMarketMaxSlippageRatioIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13457,6 +13869,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int MAX_FILL_RESERVE_FRACTION_OFFSET = 8;
+
     public static UpdatePerpMarketMaxFillReserveFractionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13523,6 +13937,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int MAX_OPEN_INTEREST_OFFSET = 8;
 
     public static UpdatePerpMarketMaxOpenInterestIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13595,6 +14011,8 @@ public final class DriftProgram {
     public static UpdatePerpMarketNumberOfUsersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int NUMBER_OF_USERS_OFFSET = 9;
 
     public static UpdatePerpMarketNumberOfUsersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13678,6 +14096,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int FEE_ADJUSTMENT_OFFSET = 8;
+
     public static UpdatePerpMarketFeeAdjustmentIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -13744,6 +14164,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int FEE_ADJUSTMENT_OFFSET = 8;
 
     public static UpdateSpotMarketFeeAdjustmentIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13816,6 +14238,8 @@ public final class DriftProgram {
     public static UpdatePerpMarketProtectedMakerParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PROTECTED_MAKER_LIMIT_PRICE_DIVISOR_OFFSET = 9;
 
     public static UpdatePerpMarketProtectedMakerParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13898,6 +14322,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int ORACLE_LOW_RISK_SLOT_DELAY_OVERRIDE_OFFSET = 8;
 
     public static UpdatePerpMarketOracleLowRiskSlotDelayOverrideIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -13983,6 +14409,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 14;
 
+    public static final int AMM_SPREAD_ADJUSTMENT_OFFSET = 8;
+    public static final int AMM_INVENTORY_SPREAD_ADJUSTMENT_OFFSET = 9;
+    public static final int REFERENCE_PRICE_OFFSET_OFFSET = 10;
+
     public static UpdatePerpMarketAmmSpreadAdjustmentIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14058,6 +14488,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ORACLE_SLOT_DELAY_OVERRIDE_OFFSET = 8;
+
     public static UpdatePerpMarketOracleSlotDelayOverrideIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14120,6 +14552,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int ADMIN_OFFSET = 8;
 
     public static UpdateAdminIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14184,6 +14618,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 40;
 
+    public static final int DISCOUNT_MINT_OFFSET = 8;
+
     public static UpdateDiscountMintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14246,6 +14682,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int EXCHANGE_STATUS_OFFSET = 8;
 
     public static UpdateExchangeStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14310,6 +14748,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int MIN_PERP_AUCTION_DURATION_OFFSET = 8;
+
     public static UpdatePerpAuctionDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14372,6 +14812,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int DEFAULT_SPOT_AUCTION_DURATION_OFFSET = 8;
 
     public static UpdateSpotAuctionDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14446,6 +14888,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializePrelaunchOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14513,6 +14957,8 @@ public final class DriftProgram {
     public static UpdatePrelaunchOracleParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static UpdatePrelaunchOracleParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14583,6 +15029,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int PERP_MARKET_INDEX_OFFSET = 8;
 
     public static DeletePrelaunchOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14660,6 +15108,8 @@ public final class DriftProgram {
     public static final int BYTES = 40;
     public static final int FEED_ID_LEN = 32;
 
+    public static final int FEED_ID_OFFSET = 8;
+
     public static InitializePythPullOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14735,6 +15185,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int FEED_ID_OFFSET = 8;
+
     public static InitializePythLazerOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -14799,6 +15251,8 @@ public final class DriftProgram {
     public static PostPythLazerOracleUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PYTH_MESSAGE_OFFSET = 8;
 
     public static PostPythLazerOracleUpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14873,6 +15327,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int MAX_USERS_OFFSET = 8;
 
     public static InitializeHighLeverageModeConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -14958,6 +15414,10 @@ public final class DriftProgram {
     public static UpdateHighLeverageModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MAX_USERS_OFFSET = 8;
+    public static final int REDUCE_ONLY_OFFSET = 12;
+    public static final int CURRENT_USERS_OFFSET = 14;
 
     public static UpdateHighLeverageModeConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -15047,6 +15507,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 12;
 
+    public static final int MAX_USERS_OFFSET = 8;
+
     public static InitializeProtectedMakerModeConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15131,6 +15593,10 @@ public final class DriftProgram {
     public static UpdateProtectedMakerModeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MAX_USERS_OFFSET = 8;
+    public static final int REDUCE_ONLY_OFFSET = 12;
+    public static final int CURRENT_USERS_OFFSET = 14;
 
     public static UpdateProtectedMakerModeConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -15228,6 +15694,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 18;
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 10;
+
     public static AdminDepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15307,6 +15776,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 40;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeIfRebalanceConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15373,6 +15844,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 40;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static UpdateIfRebalanceConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15434,6 +15907,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int ENABLE_OFFSET = 8;
 
     public static UpdateFeatureBitFlagsMmOracleIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -15527,6 +16002,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ENABLE_OFFSET = 8;
+
     public static UpdateFeatureBitFlagsMedianTriggerPriceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15589,6 +16066,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int ENABLE_OFFSET = 8;
 
     public static UpdateFeatureBitFlagsBuilderCodesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -15710,6 +16189,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 10;
 
+    public static final int NUM_ORDERS_OFFSET = 8;
+
     public static InitializeRevenueShareEscrowIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -15780,6 +16261,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int NUM_ORDERS_OFFSET = 8;
 
     public static ResizeRevenueShareEscrowOrdersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -15868,6 +16351,10 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 43;
+
+    public static final int BUILDER_OFFSET = 8;
+    public static final int MAX_FEE_BPS_OFFSET = 40;
+    public static final int ADD_OFFSET = 42;
 
     public static ChangeApprovedBuilderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -16005,6 +16492,12 @@ public final class DriftProgram {
 
     public static final int BYTES = 73;
 
+    public static final int LP_POOL_ID_OFFSET = 8;
+    public static final int MIN_MINT_FEE_OFFSET = 9;
+    public static final int MAX_AUM_OFFSET = 17;
+    public static final int MAX_SETTLE_QUOTE_AMOUNT_PER_MARKET_OFFSET = 33;
+    public static final int WHITELIST_MINT_OFFSET = 41;
+
     public static InitializeLpPoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16089,6 +16582,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ENABLE_OFFSET = 8;
+
     public static UpdateFeatureBitFlagsSettleLpPoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16152,6 +16647,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ENABLE_OFFSET = 8;
+
     public static UpdateFeatureBitFlagsSwapLpPoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16214,6 +16711,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int ENABLE_OFFSET = 8;
 
     public static UpdateFeatureBitFlagsMintRedeemLpPoolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -16413,6 +16912,16 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int SPOT_MARKET_INDEX_OFFSET = 8;
+    public static final int DECIMALS_OFFSET = 10;
+    public static final int MAX_WEIGHT_DEVIATION_OFFSET = 11;
+    public static final int SWAP_FEE_MIN_OFFSET = 19;
+    public static final int SWAP_FEE_MAX_OFFSET = 27;
+    public static final int MAX_BORROW_TOKEN_AMOUNT_OFFSET = 35;
+    public static final int ORACLE_STALENESS_THRESHOLD_OFFSET = 43;
+    public static final int COST_TO_TRADE_OFFSET = 51;
+    public static final int CONSTITUENT_DERIVATIVE_INDEX_OFFSET = 56;
+
     public static InitializeConstituentIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16576,6 +17085,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 9;
 
+    public static final int NEW_STATUS_OFFSET = 8;
+
     public static UpdateConstituentStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16642,6 +17153,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PAUSED_OPERATIONS_OFFSET = 8;
 
     public static UpdateConstituentPausedOperationsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -16716,6 +17229,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int CONSTITUENT_PARAMS_OFFSET = 8;
+
     public static UpdateConstituentParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16779,6 +17294,8 @@ public final class DriftProgram {
     public static UpdateLpPoolParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int LP_POOL_PARAMS_OFFSET = 8;
 
     public static UpdateLpPoolParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -16856,6 +17373,8 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int AMM_CONSTITUENT_MAPPING_DATA_OFFSET = 8;
+
     public static AddAmmConstituentMappingDataIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -16927,6 +17446,8 @@ public final class DriftProgram {
     public static UpdateAmmConstituentMappingDataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int AMM_CONSTITUENT_MAPPING_DATA_OFFSET = 8;
 
     public static UpdateAmmConstituentMappingDataIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -17005,6 +17526,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int PERP_MARKET_INDEX_OFFSET = 8;
+    public static final int CONSTITUENT_INDEX_OFFSET = 10;
 
     public static RemoveAmmConstituentMappingDataIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -17097,6 +17621,10 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 20;
+
+    public static final int INDEX_1_OFFSET = 8;
+    public static final int INDEX_2_OFFSET = 10;
+    public static final int CORRELATION_OFFSET = 12;
 
     public static UpdateConstituentCorrelationDataIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -17286,6 +17814,9 @@ public final class DriftProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MARKET_INDEX_OFFSET = 8;
+    public static final int OVERRIDE_PARAMS_OFFSET = 10;
+
     public static OverrideAmmCacheInfoIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -17422,6 +17953,11 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 28;
+
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int IN_AMOUNT_OFFSET = 12;
+    public static final int MIN_OUT_AMOUNT_OFFSET = 20;
 
     public static LpPoolSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -17567,6 +18103,12 @@ public final class DriftProgram {
 
     public static final int BYTES = 36;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int IN_AMOUNT_OFFSET = 12;
+    public static final int IN_TARGET_WEIGHT_OFFSET = 20;
+    public static final int OUT_TARGET_WEIGHT_OFFSET = 28;
+
     public static ViewLpPoolSwapFeesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -17708,6 +18250,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 34;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 10;
+    public static final int MIN_MINT_AMOUNT_OFFSET = 26;
+
     public static LpPoolAddLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -17848,6 +18394,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 34;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 10;
+    public static final int MIN_OUT_AMOUNT_OFFSET = 18;
+
     public static LpPoolRemoveLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -17943,6 +18493,9 @@ public final class DriftProgram {
 
     public static final int BYTES = 26;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 10;
+
     public static ViewLpPoolAddLiquidityFeesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -18033,6 +18586,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 18;
+
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 10;
 
     public static ViewLpPoolRemoveLiquidityFeesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -18162,6 +18718,10 @@ public final class DriftProgram {
 
     public static final int BYTES = 20;
 
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
+    public static final int AMOUNT_IN_OFFSET = 12;
+
     public static BeginLpSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -18280,6 +18840,9 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int IN_MARKET_INDEX_OFFSET = 8;
+    public static final int OUT_MARKET_INDEX_OFFSET = 10;
 
     public static EndLpSwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -18413,6 +18976,8 @@ public final class DriftProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static DepositToProgramVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -18507,6 +19072,8 @@ public final class DriftProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
 
     public static WithdrawFromProgramVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

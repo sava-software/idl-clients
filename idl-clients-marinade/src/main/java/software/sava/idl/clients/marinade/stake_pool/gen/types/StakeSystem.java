@@ -24,6 +24,15 @@ public record StakeSystem(List stakeList,
 
   public static final int BYTES = 114;
 
+  public static final int STAKE_LIST_OFFSET = 0;
+  public static final int DELAYED_UNSTAKE_COOLING_DOWN_OFFSET = 76;
+  public static final int STAKE_DEPOSIT_BUMP_SEED_OFFSET = 84;
+  public static final int STAKE_WITHDRAW_BUMP_SEED_OFFSET = 85;
+  public static final int SLOTS_FOR_STAKE_DELTA_OFFSET = 86;
+  public static final int LAST_STAKE_DELTA_EPOCH_OFFSET = 94;
+  public static final int MIN_STAKE_OFFSET = 102;
+  public static final int EXTRA_STAKE_DELTA_RUNS_OFFSET = 110;
+
   public static StakeSystem read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

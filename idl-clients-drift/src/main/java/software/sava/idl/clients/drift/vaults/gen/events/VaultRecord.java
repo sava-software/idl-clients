@@ -17,6 +17,10 @@ public record VaultRecord(Discriminator discriminator,
   public static final int BYTES = 26;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 16;
+  public static final int VAULT_EQUITY_BEFORE_OFFSET = 18;
+
   public static VaultRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

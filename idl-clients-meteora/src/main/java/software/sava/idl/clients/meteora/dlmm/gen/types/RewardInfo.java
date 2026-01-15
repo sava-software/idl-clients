@@ -32,6 +32,15 @@ public record RewardInfo(PublicKey mint,
 
   public static final int BYTES = 144;
 
+  public static final int MINT_OFFSET = 0;
+  public static final int VAULT_OFFSET = 32;
+  public static final int FUNDER_OFFSET = 64;
+  public static final int REWARD_DURATION_OFFSET = 96;
+  public static final int REWARD_DURATION_END_OFFSET = 104;
+  public static final int REWARD_RATE_OFFSET = 112;
+  public static final int LAST_UPDATE_TIME_OFFSET = 128;
+  public static final int CUMULATIVE_SECONDS_WITH_EMPTY_LIQUIDITY_REWARD_OFFSET = 136;
+
   public static RewardInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -11,6 +11,9 @@ public record VaultInfo(PublicKey vaultKey, long lastRewardEpoch) implements Ser
 
   public static final int BYTES = 40;
 
+  public static final int VAULT_KEY_OFFSET = 0;
+  public static final int LAST_REWARD_EPOCH_OFFSET = 32;
+
   public static VaultInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

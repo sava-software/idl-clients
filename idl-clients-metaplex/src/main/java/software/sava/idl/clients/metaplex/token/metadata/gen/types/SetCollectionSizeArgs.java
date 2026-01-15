@@ -9,6 +9,8 @@ public record SetCollectionSizeArgs(long size) implements SerDe {
 
   public static final int BYTES = 8;
 
+  public static final int SIZE_OFFSET = 0;
+
   public static SetCollectionSizeArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

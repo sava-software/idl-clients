@@ -16,6 +16,10 @@ public record BinLiquidityDistribution(int binId,
 
   public static final int BYTES = 8;
 
+  public static final int BIN_ID_OFFSET = 0;
+  public static final int DISTRIBUTION_X_OFFSET = 4;
+  public static final int DISTRIBUTION_Y_OFFSET = 6;
+
   public static BinLiquidityDistribution read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

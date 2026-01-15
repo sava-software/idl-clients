@@ -32,6 +32,15 @@ public record ObligationLiquidity(PublicKey borrowReserve,
   public static final int BYTES = 200;
   public static final int PADDING_2_LEN = 7;
 
+  public static final int BORROW_RESERVE_OFFSET = 0;
+  public static final int CUMULATIVE_BORROW_RATE_BSF_OFFSET = 32;
+  public static final int PADDING_OFFSET = 80;
+  public static final int BORROWED_AMOUNT_SF_OFFSET = 88;
+  public static final int MARKET_VALUE_SF_OFFSET = 104;
+  public static final int BORROW_FACTOR_ADJUSTED_MARKET_VALUE_SF_OFFSET = 120;
+  public static final int BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUPS_OFFSET = 136;
+  public static final int PADDING_2_OFFSET = 144;
+
   public static ObligationLiquidity read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

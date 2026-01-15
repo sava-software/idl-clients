@@ -14,6 +14,8 @@ public record UpdatePerpMarketSummaryStatsParams(OptionalLong quoteAssetAmountWi
                                                  Boolean updateAmmSummaryStats,
                                                  Boolean excludeTotalLiqFee) implements SerDe {
 
+  public static final int QUOTE_ASSET_AMOUNT_WITH_UNSETTLED_LP_OFFSET = 1;
+
   public static UpdatePerpMarketSummaryStatsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -26,6 +26,13 @@ public record UserFees(long totalFeePaid,
 
   public static final int BYTES = 48;
 
+  public static final int TOTAL_FEE_PAID_OFFSET = 0;
+  public static final int TOTAL_FEE_REBATE_OFFSET = 8;
+  public static final int TOTAL_TOKEN_DISCOUNT_OFFSET = 16;
+  public static final int TOTAL_REFEREE_DISCOUNT_OFFSET = 24;
+  public static final int TOTAL_REFERRER_REWARD_OFFSET = 32;
+  public static final int CURRENT_EPOCH_REFERRER_REWARD_OFFSET = 40;
+
   public static UserFees read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

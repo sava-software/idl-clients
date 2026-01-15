@@ -9,6 +9,8 @@ public record TestUpdateOracleStatsParams(long newRewardScore) implements SerDe 
 
   public static final int BYTES = 8;
 
+  public static final int NEW_REWARD_SCORE_OFFSET = 0;
+
   public static TestUpdateOracleStatsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

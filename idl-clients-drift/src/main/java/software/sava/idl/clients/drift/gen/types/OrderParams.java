@@ -30,6 +30,18 @@ public record OrderParams(OrderType orderType,
                           OptionalLong auctionStartPrice,
                           OptionalLong auctionEndPrice) implements SerDe {
 
+  public static final int ORDER_TYPE_OFFSET = 0;
+  public static final int MARKET_TYPE_OFFSET = 1;
+  public static final int DIRECTION_OFFSET = 2;
+  public static final int USER_ORDER_ID_OFFSET = 3;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 4;
+  public static final int PRICE_OFFSET = 12;
+  public static final int MARKET_INDEX_OFFSET = 20;
+  public static final int REDUCE_ONLY_OFFSET = 22;
+  public static final int POST_ONLY_OFFSET = 23;
+  public static final int BIT_FLAGS_OFFSET = 24;
+  public static final int MAX_TS_OFFSET = 26;
+
   public static OrderParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

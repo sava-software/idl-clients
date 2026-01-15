@@ -9,6 +9,9 @@ public record RewardPerTimeUnitPoint(long tsStart, long rewardPerTimeUnit) imple
 
   public static final int BYTES = 16;
 
+  public static final int TS_START_OFFSET = 0;
+  public static final int REWARD_PER_TIME_UNIT_OFFSET = 8;
+
   public static RewardPerTimeUnitPoint read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

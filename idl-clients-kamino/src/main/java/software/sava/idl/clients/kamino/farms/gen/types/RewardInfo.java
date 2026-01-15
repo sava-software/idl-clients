@@ -31,6 +31,21 @@ public record RewardInfo(TokenInfo token,
   public static final int PADDING_0_LEN = 6;
   public static final int PADDING_1_LEN = 20;
 
+  public static final int TOKEN_OFFSET = 0;
+  public static final int REWARDS_VAULT_OFFSET = 120;
+  public static final int REWARDS_AVAILABLE_OFFSET = 152;
+  public static final int REWARD_SCHEDULE_CURVE_OFFSET = 160;
+  public static final int MIN_CLAIM_DURATION_SECONDS_OFFSET = 480;
+  public static final int LAST_ISSUANCE_TS_OFFSET = 488;
+  public static final int REWARDS_ISSUED_UNCLAIMED_OFFSET = 496;
+  public static final int REWARDS_ISSUED_CUMULATIVE_OFFSET = 504;
+  public static final int REWARD_PER_SHARE_SCALED_OFFSET = 512;
+  public static final int PLACEHOLDER_0_OFFSET = 528;
+  public static final int REWARD_TYPE_OFFSET = 536;
+  public static final int REWARDS_PER_SECOND_DECIMALS_OFFSET = 537;
+  public static final int PADDING_0_OFFSET = 538;
+  public static final int PADDING_1_OFFSET = 544;
+
   public static RewardInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

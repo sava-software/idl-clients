@@ -12,6 +12,8 @@ public record MaxMessageBodySizeUpdated(Discriminator discriminator, long newMax
   public static final int BYTES = 16;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(134, 206, 151, 111, 137, 11, 160, 225);
 
+  public static final int NEW_MAX_MESSAGE_BODY_SIZE_OFFSET = 8;
+
   public static MaxMessageBodySizeUpdated read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -10,6 +10,10 @@ public record CloseAttestationEvent(int discriminator,
                                     PublicKey schema,
                                     byte[] attestationData) implements SerDe {
 
+  public static final int DISCRIMINATOR_OFFSET = 0;
+  public static final int SCHEMA_OFFSET = 1;
+  public static final int ATTESTATION_DATA_OFFSET = 33;
+
   public static CloseAttestationEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

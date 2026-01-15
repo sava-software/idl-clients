@@ -91,6 +91,8 @@ public final class SquadsMultisigProgramProgram {
 
     public static final int BYTES = 80;
 
+    public static final int ARGS_OFFSET = 8;
+
     public static ProgramConfigInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -158,6 +160,8 @@ public final class SquadsMultisigProgramProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int ARGS_OFFSET = 8;
 
     public static ProgramConfigSetAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -227,6 +231,8 @@ public final class SquadsMultisigProgramProgram {
 
     public static final int BYTES = 16;
 
+    public static final int ARGS_OFFSET = 8;
+
     public static ProgramConfigSetMultisigCreationFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -294,6 +300,8 @@ public final class SquadsMultisigProgramProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int ARGS_OFFSET = 8;
 
     public static ProgramConfigSetTreasuryIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -374,6 +382,8 @@ public final class SquadsMultisigProgramProgram {
     public static MultisigCreateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static MultisigCreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -467,6 +477,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static MultisigCreateV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -552,6 +564,8 @@ public final class SquadsMultisigProgramProgram {
     public static MultisigAddMemberIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static MultisigAddMemberIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -639,6 +653,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static MultisigRemoveMemberIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -724,6 +740,8 @@ public final class SquadsMultisigProgramProgram {
     public static MultisigSetTimeLockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static MultisigSetTimeLockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -811,6 +829,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static MultisigChangeThresholdIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -896,6 +916,8 @@ public final class SquadsMultisigProgramProgram {
     public static MultisigSetConfigAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static MultisigSetConfigAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -983,6 +1005,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static MultisigSetRentCollectorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1065,6 +1089,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static MultisigAddSpendingLimitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1142,6 +1168,8 @@ public final class SquadsMultisigProgramProgram {
     public static MultisigRemoveSpendingLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static MultisigRemoveSpendingLimitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1224,6 +1252,8 @@ public final class SquadsMultisigProgramProgram {
     public static ConfigTransactionCreateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static ConfigTransactionCreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1375,6 +1405,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static VaultTransactionCreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1503,6 +1535,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static BatchCreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1598,6 +1632,8 @@ public final class SquadsMultisigProgramProgram {
     public static BatchAddTransactionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static BatchAddTransactionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1736,6 +1772,8 @@ public final class SquadsMultisigProgramProgram {
 
     public static final int BYTES = 17;
 
+    public static final int ARGS_OFFSET = 8;
+
     public static ProposalCreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1844,6 +1882,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static ProposalApproveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1917,6 +1957,8 @@ public final class SquadsMultisigProgramProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ARGS_OFFSET = 8;
+
     public static ProposalRejectIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1989,6 +2031,8 @@ public final class SquadsMultisigProgramProgram {
     public static ProposalCancelIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static ProposalCancelIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2107,6 +2151,8 @@ public final class SquadsMultisigProgramProgram {
     public static SpendingLimitUseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ARGS_OFFSET = 8;
 
     public static SpendingLimitUseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

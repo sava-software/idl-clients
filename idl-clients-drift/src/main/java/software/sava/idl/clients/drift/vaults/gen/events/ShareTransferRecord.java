@@ -28,6 +28,17 @@ public record ShareTransferRecord(Discriminator discriminator,
   public static final int BYTES = 200;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int FROM_VAULT_DEPOSITOR_OFFSET = 48;
+  public static final int TO_VAULT_DEPOSITOR_OFFSET = 80;
+  public static final int SHARES_OFFSET = 112;
+  public static final int VALUE_OFFSET = 128;
+  public static final int FROM_DEPOSITOR_SHARES_BEFORE_OFFSET = 136;
+  public static final int FROM_DEPOSITOR_SHARES_AFTER_OFFSET = 152;
+  public static final int TO_DEPOSITOR_SHARES_BEFORE_OFFSET = 168;
+  public static final int TO_DEPOSITOR_SHARES_AFTER_OFFSET = 184;
+
   public static ShareTransferRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

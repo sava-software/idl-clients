@@ -128,6 +128,11 @@ public final class TokenProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int DECIMALS_OFFSET = 1;
+    public static final int MINT_AUTHORITY_OFFSET = 2;
+    public static final int FREEZE_AUTHORITY_OFFSET = 35;
+
     public static InitializeMintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -266,6 +271,8 @@ public final class TokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static InitializeAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -380,6 +387,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 2;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int M_OFFSET = 1;
+
     public static InitializeMultisigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -476,6 +486,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+
     public static TransferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -568,6 +581,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+
     public static ApproveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -643,6 +659,8 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static RevokeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -733,6 +751,10 @@ public final class TokenProgram {
     public static SetAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AUTHORITY_TYPE_OFFSET = 1;
+    public static final int NEW_AUTHORITY_OFFSET = 3;
 
     public static SetAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -830,6 +852,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+
     public static MintToIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -920,6 +945,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+
     public static BurnIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1006,6 +1034,8 @@ public final class TokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static CloseAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1082,6 +1112,8 @@ public final class TokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static FreezeAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1157,6 +1189,8 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static ThawAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1283,6 +1317,10 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+    public static final int DECIMALS_OFFSET = 9;
 
     public static TransferCheckedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1416,6 +1454,10 @@ public final class TokenProgram {
 
     public static final int BYTES = 10;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+    public static final int DECIMALS_OFFSET = 9;
+
     public static ApproveCheckedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1537,6 +1579,10 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+    public static final int DECIMALS_OFFSET = 9;
 
     public static MintToCheckedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1664,6 +1710,10 @@ public final class TokenProgram {
 
     public static final int BYTES = 10;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+    public static final int DECIMALS_OFFSET = 9;
+
     public static BurnCheckedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1766,6 +1816,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 33;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int OWNER_OFFSET = 1;
+
     public static InitializeAccount2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1852,6 +1905,8 @@ public final class TokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static SyncNativeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1928,6 +1983,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 33;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int OWNER_OFFSET = 1;
+
     public static InitializeAccount3IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2003,6 +2061,9 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 2;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int M_OFFSET = 1;
 
     public static InitializeMultisig2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2103,6 +2164,11 @@ public final class TokenProgram {
     public static InitializeMint2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int DECIMALS_OFFSET = 1;
+    public static final int MINT_AUTHORITY_OFFSET = 2;
+    public static final int FREEZE_AUTHORITY_OFFSET = 35;
 
     public static InitializeMint2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2206,6 +2272,8 @@ public final class TokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static GetAccountDataSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2293,6 +2361,8 @@ public final class TokenProgram {
     }
 
     public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static InitializeImmutableOwnerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2392,6 +2462,9 @@ public final class TokenProgram {
 
     public static final int BYTES = 9;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 1;
+
     public static AmountToUiAmountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2488,6 +2561,9 @@ public final class TokenProgram {
     public static UiAmountToAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int UI_AMOUNT_OFFSET = 1;
 
     public static UiAmountToAmountIxData createRecord(final int discriminator, final String uiAmount) {
       return new UiAmountToAmountIxData(discriminator, uiAmount, uiAmount.getBytes(UTF_8));

@@ -29,6 +29,16 @@ public record FundingPaymentRecord(Discriminator discriminator,
   public static final int BYTES = 138;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_AUTHORITY_OFFSET = 16;
+  public static final int USER_OFFSET = 48;
+  public static final int MARKET_INDEX_OFFSET = 80;
+  public static final int FUNDING_PAYMENT_OFFSET = 82;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 90;
+  public static final int USER_LAST_CUMULATIVE_FUNDING_OFFSET = 98;
+  public static final int AMM_CUMULATIVE_FUNDING_LONG_OFFSET = 106;
+  public static final int AMM_CUMULATIVE_FUNDING_SHORT_OFFSET = 122;
+
   public static FundingPaymentRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

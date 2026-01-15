@@ -12,6 +12,8 @@ public record OracleQuoteRotateEvent(Discriminator discriminator, PublicKey orac
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(26, 189, 196, 192, 225, 127, 26, 228);
 
+  public static final int ORACLE_OFFSET = 8;
+
   public static OracleQuoteRotateEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -31,6 +31,9 @@ public record SignedMsgOrderRecord(Discriminator discriminator,
   public static final int SIGNED_MSG_ORDER_UUID_LEN = 8;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int USER_OFFSET = 8;
+  public static final int HASH_OFFSET = 40;
+
   public static SignedMsgOrderRecord createRecord(final Discriminator discriminator,
                                                   final PublicKey user,
                                                   final String hash,

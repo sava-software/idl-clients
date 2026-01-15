@@ -9,6 +9,8 @@ public record EnableAttesterParams(PublicKey newAttester) implements SerDe {
 
   public static final int BYTES = 32;
 
+  public static final int NEW_ATTESTER_OFFSET = 0;
+
   public static EnableAttesterParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

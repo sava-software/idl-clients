@@ -22,6 +22,13 @@ public record CompositionFee(Discriminator discriminator,
   public static final int BYTES = 74;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(128, 151, 123, 106, 17, 102, 113, 142);
 
+  public static final int FROM_OFFSET = 8;
+  public static final int BIN_ID_OFFSET = 40;
+  public static final int TOKEN_X_FEE_AMOUNT_OFFSET = 42;
+  public static final int TOKEN_Y_FEE_AMOUNT_OFFSET = 50;
+  public static final int PROTOCOL_TOKEN_X_FEE_AMOUNT_OFFSET = 58;
+  public static final int PROTOCOL_TOKEN_Y_FEE_AMOUNT_OFFSET = 66;
+
   public static CompositionFee read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

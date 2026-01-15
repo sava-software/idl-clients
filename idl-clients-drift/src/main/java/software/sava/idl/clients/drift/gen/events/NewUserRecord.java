@@ -24,6 +24,13 @@ public record NewUserRecord(Discriminator discriminator,
   public static final int NAME_LEN = 32;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_AUTHORITY_OFFSET = 16;
+  public static final int USER_OFFSET = 48;
+  public static final int SUB_ACCOUNT_ID_OFFSET = 80;
+  public static final int NAME_OFFSET = 82;
+  public static final int REFERRER_OFFSET = 114;
+
   public static NewUserRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

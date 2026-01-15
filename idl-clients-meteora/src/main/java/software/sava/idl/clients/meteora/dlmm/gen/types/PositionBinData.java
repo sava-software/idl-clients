@@ -13,6 +13,10 @@ public record PositionBinData(BigInteger liquidityShare,
 
   public static final int BYTES = 112;
 
+  public static final int LIQUIDITY_SHARE_OFFSET = 0;
+  public static final int REWARD_INFO_OFFSET = 16;
+  public static final int FEE_INFO_OFFSET = 64;
+
   public static PositionBinData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

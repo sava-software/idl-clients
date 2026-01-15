@@ -9,6 +9,9 @@ public record ProtocolFee(long amountX, long amountY) implements SerDe {
 
   public static final int BYTES = 16;
 
+  public static final int AMOUNT_X_OFFSET = 0;
+  public static final int AMOUNT_Y_OFFSET = 8;
+
   public static ProtocolFee read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

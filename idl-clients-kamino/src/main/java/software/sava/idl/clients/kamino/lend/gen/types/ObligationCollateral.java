@@ -30,6 +30,12 @@ public record ObligationCollateral(PublicKey depositReserve,
   public static final int BYTES = 136;
   public static final int PADDING_LEN = 9;
 
+  public static final int DEPOSIT_RESERVE_OFFSET = 0;
+  public static final int DEPOSITED_AMOUNT_OFFSET = 32;
+  public static final int MARKET_VALUE_SF_OFFSET = 40;
+  public static final int BORROWED_AMOUNT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_OFFSET = 56;
+  public static final int PADDING_OFFSET = 64;
+
   public static ObligationCollateral read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -28,6 +28,19 @@ public record OrderUnstakeEvent(Discriminator discriminator,
   public static final int BYTES = 172;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int TICKET_EPOCH_OFFSET = 40;
+  public static final int TICKET_OFFSET = 48;
+  public static final int BENEFICIARY_OFFSET = 80;
+  public static final int CIRCULATING_TICKET_BALANCE_OFFSET = 112;
+  public static final int CIRCULATING_TICKET_COUNT_OFFSET = 120;
+  public static final int USER_MSOL_BALANCE_OFFSET = 128;
+  public static final int BURNED_MSOL_AMOUNT_OFFSET = 136;
+  public static final int SOL_AMOUNT_OFFSET = 144;
+  public static final int FEE_BP_CENTS_OFFSET = 152;
+  public static final int TOTAL_VIRTUAL_STAKED_LAMPORTS_OFFSET = 156;
+  public static final int MSOL_SUPPLY_OFFSET = 164;
+
   public static OrderUnstakeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

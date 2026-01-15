@@ -19,6 +19,10 @@ public record VaultTransactionCreateArgs(int vaultIndex,
                                          byte[] transactionMessage,
                                          String memo, byte[] _memo) implements SerDe {
 
+  public static final int VAULT_INDEX_OFFSET = 0;
+  public static final int EPHEMERAL_SIGNERS_OFFSET = 1;
+  public static final int TRANSACTION_MESSAGE_OFFSET = 2;
+
   public static VaultTransactionCreateArgs createRecord(final int vaultIndex,
                                                         final int ephemeralSigners,
                                                         final byte[] transactionMessage,

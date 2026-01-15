@@ -46,6 +46,10 @@ public sealed interface PerpFulfillmentMethod extends RustEnum permits
 
     public static final int BYTES = 42;
 
+    public static final int _PUBLIC_KEY_OFFSET = 0;
+    public static final int _U_11_OFFSET = 32;
+    public static final int _U_66_OFFSET = 34;
+
     public static Match read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

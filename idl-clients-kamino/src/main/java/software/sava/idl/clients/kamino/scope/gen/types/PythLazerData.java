@@ -13,6 +13,10 @@ public record PythLazerData(int feedId,
 
   public static final int BYTES = 7;
 
+  public static final int FEED_ID_OFFSET = 0;
+  public static final int EXPONENT_OFFSET = 2;
+  public static final int CONFIDENCE_FACTOR_OFFSET = 3;
+
   public static PythLazerData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

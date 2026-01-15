@@ -7,6 +7,8 @@ public record CreateMetadataAccountArgsV3(DataV2 data,
                                           boolean isMutable,
                                           CollectionDetails collectionDetails) implements SerDe {
 
+  public static final int DATA_OFFSET = 0;
+
   public static CreateMetadataAccountArgsV3 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

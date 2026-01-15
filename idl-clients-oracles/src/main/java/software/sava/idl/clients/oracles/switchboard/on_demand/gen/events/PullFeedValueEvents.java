@@ -19,6 +19,8 @@ public record PullFeedValueEvents(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(86, 7, 231, 28, 122, 161, 117, 69);
 
+  public static final int FEEDS_OFFSET = 8;
+
   public static PullFeedValueEvents read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

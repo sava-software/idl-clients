@@ -12,6 +12,8 @@ public record LogUpdateRebalancer(Discriminator discriminator, PublicKey newReba
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(66, 79, 144, 204, 26, 217, 153, 225);
 
+  public static final int NEW_REBALANCER_OFFSET = 8;
+
   public static LogUpdateRebalancer read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

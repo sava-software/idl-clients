@@ -18,6 +18,15 @@ public record IfRebalanceConfigParams(long totalInAmount,
 
   public static final int BYTES = 32;
 
+  public static final int TOTAL_IN_AMOUNT_OFFSET = 0;
+  public static final int EPOCH_MAX_IN_AMOUNT_OFFSET = 8;
+  public static final int EPOCH_DURATION_OFFSET = 16;
+  public static final int OUT_MARKET_INDEX_OFFSET = 24;
+  public static final int IN_MARKET_INDEX_OFFSET = 26;
+  public static final int MAX_SLIPPAGE_BPS_OFFSET = 28;
+  public static final int SWAP_MODE_OFFSET = 30;
+  public static final int STATUS_OFFSET = 31;
+
   public static IfRebalanceConfigParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

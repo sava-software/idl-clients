@@ -14,6 +14,9 @@ public record QueueRemoveMrEnclaveEvent(Discriminator discriminator, PublicKey q
   public static final int MR_ENCLAVE_LEN = 32;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(4, 105, 196, 60, 84, 122, 203, 196);
 
+  public static final int QUEUE_OFFSET = 8;
+  public static final int MR_ENCLAVE_OFFSET = 40;
+
   public static QueueRemoveMrEnclaveEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

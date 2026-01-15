@@ -17,6 +17,10 @@ public record ScopeConfiguration(PublicKey priceFeed,
   public static final int PRICE_CHAIN_LEN = 4;
   public static final int TWAP_CHAIN_LEN = 4;
 
+  public static final int PRICE_FEED_OFFSET = 0;
+  public static final int PRICE_CHAIN_OFFSET = 32;
+  public static final int TWAP_CHAIN_OFFSET = 40;
+
   public static ScopeConfiguration read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

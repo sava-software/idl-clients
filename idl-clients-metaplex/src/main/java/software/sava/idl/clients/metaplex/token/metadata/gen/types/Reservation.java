@@ -13,6 +13,10 @@ public record Reservation(PublicKey address,
 
   public static final int BYTES = 48;
 
+  public static final int ADDRESS_OFFSET = 0;
+  public static final int SPOTS_REMAINING_OFFSET = 32;
+  public static final int TOTAL_SPOTS_OFFSET = 40;
+
   public static Reservation read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -11,6 +11,8 @@ public record ChainlinkStandardPriceData(long observationsTimestamp) implements 
 
   public static final int BYTES = 8;
 
+  public static final int OBSERVATIONS_TIMESTAMP_OFFSET = 0;
+
   public static ChainlinkStandardPriceData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

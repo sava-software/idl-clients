@@ -23,6 +23,16 @@ public record StateSetConfigsParams(PublicKey newAuthority,
 
   public static final int BYTES = 145;
 
+  public static final int NEW_AUTHORITY_OFFSET = 0;
+  public static final int TEE_VERIFY_MODE_OFFSET = 32;
+  public static final int ADD_ADVISORY_OFFSET = 33;
+  public static final int RM_ADVISORY_OFFSET = 35;
+  public static final int SWITCH_MINT_OFFSET = 37;
+  public static final int SUBSIDY_AMOUNT_OFFSET = 69;
+  public static final int BASE_REWARD_OFFSET = 77;
+  public static final int ADD_COST_WL_OFFSET = 81;
+  public static final int RM_COST_WL_OFFSET = 113;
+
   public static StateSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

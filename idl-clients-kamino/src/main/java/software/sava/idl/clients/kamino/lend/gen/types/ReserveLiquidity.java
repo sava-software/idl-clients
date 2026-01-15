@@ -55,6 +55,25 @@ public record ReserveLiquidity(PublicKey mintPubkey,
   public static final int PADDING_2_LEN = 51;
   public static final int PADDING_3_LEN = 32;
 
+  public static final int MINT_PUBKEY_OFFSET = 0;
+  public static final int SUPPLY_VAULT_OFFSET = 32;
+  public static final int FEE_VAULT_OFFSET = 64;
+  public static final int AVAILABLE_AMOUNT_OFFSET = 96;
+  public static final int BORROWED_AMOUNT_SF_OFFSET = 104;
+  public static final int MARKET_PRICE_SF_OFFSET = 120;
+  public static final int MARKET_PRICE_LAST_UPDATED_TS_OFFSET = 136;
+  public static final int MINT_DECIMALS_OFFSET = 144;
+  public static final int DEPOSIT_LIMIT_CROSSED_TIMESTAMP_OFFSET = 152;
+  public static final int BORROW_LIMIT_CROSSED_TIMESTAMP_OFFSET = 160;
+  public static final int CUMULATIVE_BORROW_RATE_BSF_OFFSET = 168;
+  public static final int ACCUMULATED_PROTOCOL_FEES_SF_OFFSET = 216;
+  public static final int ACCUMULATED_REFERRER_FEES_SF_OFFSET = 232;
+  public static final int PENDING_REFERRER_FEES_SF_OFFSET = 248;
+  public static final int ABSOLUTE_REFERRAL_RATE_SF_OFFSET = 264;
+  public static final int TOKEN_PROGRAM_OFFSET = 280;
+  public static final int PADDING_2_OFFSET = 312;
+  public static final int PADDING_3_OFFSET = 720;
+
   public static ReserveLiquidity read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

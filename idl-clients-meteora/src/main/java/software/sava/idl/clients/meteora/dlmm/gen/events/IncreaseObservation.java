@@ -14,6 +14,9 @@ public record IncreaseObservation(Discriminator discriminator, PublicKey oracle,
   public static final int BYTES = 48;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(99, 249, 17, 121, 166, 156, 207, 215);
 
+  public static final int ORACLE_OFFSET = 8;
+  public static final int NEW_OBSERVATION_LENGTH_OFFSET = 40;
+
   public static IncreaseObservation read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

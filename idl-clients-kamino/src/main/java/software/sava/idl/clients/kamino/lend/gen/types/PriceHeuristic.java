@@ -14,6 +14,10 @@ public record PriceHeuristic(long lower,
 
   public static final int BYTES = 24;
 
+  public static final int LOWER_OFFSET = 0;
+  public static final int UPPER_OFFSET = 8;
+  public static final int EXP_OFFSET = 16;
+
   public static PriceHeuristic read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

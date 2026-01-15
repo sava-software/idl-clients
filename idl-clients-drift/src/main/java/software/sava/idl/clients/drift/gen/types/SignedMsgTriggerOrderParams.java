@@ -9,6 +9,9 @@ public record SignedMsgTriggerOrderParams(long triggerPrice, long baseAssetAmoun
 
   public static final int BYTES = 16;
 
+  public static final int TRIGGER_PRICE_OFFSET = 0;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 8;
+
   public static SignedMsgTriggerOrderParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

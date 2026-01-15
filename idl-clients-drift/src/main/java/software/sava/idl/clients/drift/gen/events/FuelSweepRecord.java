@@ -34,6 +34,21 @@ public record FuelSweepRecord(Discriminator discriminator,
   public static final int BYTES = 168;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int AUTHORITY_OFFSET = 16;
+  public static final int USER_STATS_FUEL_INSURANCE_OFFSET = 48;
+  public static final int USER_STATS_FUEL_DEPOSITS_OFFSET = 52;
+  public static final int USER_STATS_FUEL_BORROWS_OFFSET = 56;
+  public static final int USER_STATS_FUEL_POSITIONS_OFFSET = 60;
+  public static final int USER_STATS_FUEL_TAKER_OFFSET = 64;
+  public static final int USER_STATS_FUEL_MAKER_OFFSET = 68;
+  public static final int FUEL_OVERFLOW_FUEL_INSURANCE_OFFSET = 72;
+  public static final int FUEL_OVERFLOW_FUEL_DEPOSITS_OFFSET = 88;
+  public static final int FUEL_OVERFLOW_FUEL_BORROWS_OFFSET = 104;
+  public static final int FUEL_OVERFLOW_FUEL_POSITIONS_OFFSET = 120;
+  public static final int FUEL_OVERFLOW_FUEL_TAKER_OFFSET = 136;
+  public static final int FUEL_OVERFLOW_FUEL_MAKER_OFFSET = 152;
+
   public static FuelSweepRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

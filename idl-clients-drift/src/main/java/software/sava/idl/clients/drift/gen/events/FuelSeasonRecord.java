@@ -27,6 +27,16 @@ public record FuelSeasonRecord(Discriminator discriminator,
   public static final int BYTES = 160;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int AUTHORITY_OFFSET = 16;
+  public static final int FUEL_INSURANCE_OFFSET = 48;
+  public static final int FUEL_DEPOSITS_OFFSET = 64;
+  public static final int FUEL_BORROWS_OFFSET = 80;
+  public static final int FUEL_POSITIONS_OFFSET = 96;
+  public static final int FUEL_TAKER_OFFSET = 112;
+  public static final int FUEL_MAKER_OFFSET = 128;
+  public static final int FUEL_TOTAL_OFFSET = 144;
+
   public static FuelSeasonRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

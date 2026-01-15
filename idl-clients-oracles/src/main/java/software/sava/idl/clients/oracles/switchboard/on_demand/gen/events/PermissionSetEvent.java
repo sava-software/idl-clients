@@ -12,6 +12,8 @@ public record PermissionSetEvent(Discriminator discriminator, PublicKey permissi
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(148, 86, 123, 0, 102, 20, 119, 206);
 
+  public static final int PERMISSION_OFFSET = 8;
+
   public static PermissionSetEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

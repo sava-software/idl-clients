@@ -33,6 +33,28 @@ public record State(PublicKey msolMint,
 
   public static final int BYTES = 568;
 
+  public static final int MSOL_MINT_OFFSET = 0;
+  public static final int ADMIN_AUTHORITY_OFFSET = 32;
+  public static final int OPERATIONAL_SOL_ACCOUNT_OFFSET = 64;
+  public static final int TREASURY_MSOL_ACCOUNT_OFFSET = 96;
+  public static final int RESERVE_BUMP_SEED_OFFSET = 128;
+  public static final int MSOL_MINT_AUTHORITY_BUMP_SEED_OFFSET = 129;
+  public static final int RENT_EXEMPT_FOR_TOKEN_ACC_OFFSET = 130;
+  public static final int REWARD_FEE_OFFSET = 138;
+  public static final int STAKE_SYSTEM_OFFSET = 142;
+  public static final int VALIDATOR_SYSTEM_OFFSET = 256;
+  public static final int LIQ_POOL_OFFSET = 377;
+  public static final int AVAILABLE_RESERVE_BALANCE_OFFSET = 488;
+  public static final int MSOL_SUPPLY_OFFSET = 496;
+  public static final int MSOL_PRICE_OFFSET = 504;
+  public static final int CIRCULATING_TICKET_COUNT_OFFSET = 512;
+  public static final int CIRCULATING_TICKET_BALANCE_OFFSET = 520;
+  public static final int LENT_FROM_RESERVE_OFFSET = 528;
+  public static final int MIN_DEPOSIT_OFFSET = 536;
+  public static final int MIN_WITHDRAW_OFFSET = 544;
+  public static final int STAKING_SOL_CAP_OFFSET = 552;
+  public static final int EMERGENCY_COOLING_DOWN_OFFSET = 560;
+
   public static State read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

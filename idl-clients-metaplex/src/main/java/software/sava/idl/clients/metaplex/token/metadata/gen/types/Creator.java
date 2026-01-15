@@ -11,6 +11,10 @@ public record Creator(PublicKey address,
 
   public static final int BYTES = 34;
 
+  public static final int ADDRESS_OFFSET = 0;
+  public static final int VERIFIED_OFFSET = 32;
+  public static final int SHARE_OFFSET = 33;
+
   public static Creator read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

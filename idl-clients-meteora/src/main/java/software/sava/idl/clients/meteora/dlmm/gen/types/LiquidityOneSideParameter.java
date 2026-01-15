@@ -17,6 +17,11 @@ public record LiquidityOneSideParameter(long amount,
                                         int maxActiveBinSlippage,
                                         BinLiquidityDistributionByWeight[] binLiquidityDist) implements SerDe {
 
+  public static final int AMOUNT_OFFSET = 0;
+  public static final int ACTIVE_ID_OFFSET = 8;
+  public static final int MAX_ACTIVE_BIN_SLIPPAGE_OFFSET = 12;
+  public static final int BIN_LIQUIDITY_DIST_OFFSET = 16;
+
   public static LiquidityOneSideParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

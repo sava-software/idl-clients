@@ -84,6 +84,11 @@ public final class SystemProgram {
 
     public static final int BYTES = 52;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int LAMPORTS_OFFSET = 4;
+    public static final int SPACE_OFFSET = 12;
+    public static final int PROGRAM_ADDRESS_OFFSET = 20;
+
     public static CreateAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -158,6 +163,9 @@ public final class SystemProgram {
 
     public static final int BYTES = 36;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int PROGRAM_ADDRESS_OFFSET = 4;
+
     public static AssignIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -224,6 +232,9 @@ public final class SystemProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 4;
 
     public static TransferSolIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -327,6 +338,10 @@ public final class SystemProgram {
     public static CreateAccountWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int BASE_OFFSET = 4;
+    public static final int SEED_OFFSET = 36;
 
     public static CreateAccountWithSeedIxData createRecord(final int discriminator,
                                                            final PublicKey base,
@@ -441,6 +456,8 @@ public final class SystemProgram {
 
     public static final int BYTES = 4;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static AdvanceNonceAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -511,6 +528,9 @@ public final class SystemProgram {
 
     public static final int BYTES = 12;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int WITHDRAW_AMOUNT_OFFSET = 4;
+
     public static WithdrawNonceAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -579,6 +599,9 @@ public final class SystemProgram {
 
     public static final int BYTES = 36;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int NONCE_AUTHORITY_OFFSET = 4;
+
     public static InitializeNonceAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -646,6 +669,9 @@ public final class SystemProgram {
 
     public static final int BYTES = 36;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int NEW_NONCE_AUTHORITY_OFFSET = 4;
+
     public static AuthorizeNonceAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -708,6 +734,9 @@ public final class SystemProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int SPACE_OFFSET = 4;
 
     public static AllocateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -799,6 +828,10 @@ public final class SystemProgram {
     public static AllocateWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int BASE_OFFSET = 4;
+    public static final int SEED_OFFSET = 36;
 
     public static AllocateWithSeedIxData createRecord(final int discriminator,
                                                       final PublicKey base,
@@ -922,6 +955,10 @@ public final class SystemProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int BASE_OFFSET = 4;
+    public static final int SEED_OFFSET = 36;
+
     public static AssignWithSeedIxData createRecord(final int discriminator,
                                                     final PublicKey base,
                                                     final String seed,
@@ -1037,6 +1074,10 @@ public final class SystemProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 4;
+    public static final int FROM_SEED_OFFSET = 12;
+
     public static TransferSolWithSeedIxData createRecord(final int discriminator,
                                                          final long amount,
                                                          final String fromSeed,
@@ -1122,6 +1163,8 @@ public final class SystemProgram {
     }
 
     public static final int BYTES = 4;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static UpgradeNonceAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

@@ -21,6 +21,8 @@ public record ConfigMarinadeParams(Fee rewardsFee,
                                    FeeCents withdrawStakeAccountFee,
                                    Fee maxStakeMovedPerEpoch) implements SerDe {
 
+  public static final int REWARDS_FEE_OFFSET = 1;
+
   public static ConfigMarinadeParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

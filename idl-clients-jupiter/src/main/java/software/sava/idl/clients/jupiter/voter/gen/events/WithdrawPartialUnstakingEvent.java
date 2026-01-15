@@ -20,6 +20,13 @@ public record WithdrawPartialUnstakingEvent(Discriminator discriminator,
   public static final int BYTES = 128;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int ESCROW_OWNER_OFFSET = 8;
+  public static final int LOCKER_OFFSET = 40;
+  public static final int PARTIAL_UNSTAKING_OFFSET = 72;
+  public static final int TIMESTAMP_OFFSET = 104;
+  public static final int LOCKER_SUPPLY_OFFSET = 112;
+  public static final int RELEASED_AMOUNT_OFFSET = 120;
+
   public static WithdrawPartialUnstakingEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

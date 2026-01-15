@@ -10,6 +10,9 @@ public record SwitchboardConfiguration(PublicKey priceAggregator, PublicKey twap
 
   public static final int BYTES = 64;
 
+  public static final int PRICE_AGGREGATOR_OFFSET = 0;
+  public static final int TWAP_AGGREGATOR_OFFSET = 32;
+
   public static SwitchboardConfiguration read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -22,6 +22,14 @@ public record ProposalCreateEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
 
+  public static final int GOVERNOR_OFFSET = 8;
+  public static final int PROPOSAL_OFFSET = 40;
+  public static final int PROPOSER_OFFSET = 72;
+  public static final int PROPOSAL_TYPE_OFFSET = 104;
+  public static final int MAX_OPTION_OFFSET = 105;
+  public static final int INDEX_OFFSET = 106;
+  public static final int INSTRUCTIONS_OFFSET = 114;
+
   public static ProposalCreateEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

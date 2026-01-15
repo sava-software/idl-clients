@@ -27,6 +27,18 @@ public record ManagerRepayRecord(Discriminator discriminator,
   public static final int BYTES = 132;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int MANAGER_OFFSET = 48;
+  public static final int REPAY_AMOUNT_OFFSET = 80;
+  public static final int REPAY_VALUE_OFFSET = 88;
+  public static final int REPAY_SPOT_MARKET_INDEX_OFFSET = 96;
+  public static final int REPAY_ORACLE_PRICE_OFFSET = 98;
+  public static final int DEPOSIT_SPOT_MARKET_INDEX_OFFSET = 106;
+  public static final int DEPOSIT_ORACLE_PRICE_OFFSET = 108;
+  public static final int VAULT_EQUITY_BEFORE_OFFSET = 116;
+  public static final int VAULT_EQUITY_AFTER_OFFSET = 124;
+
   public static ManagerRepayRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

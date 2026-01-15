@@ -33,6 +33,24 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
   public static final int BYTES = 276;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int EPOCH_OFFSET = 40;
+  public static final int STAKE_OFFSET = 48;
+  public static final int LAST_UPDATE_STAKE_DELEGATION_OFFSET = 80;
+  public static final int STAKE_INDEX_OFFSET = 88;
+  public static final int VALIDATOR_OFFSET = 92;
+  public static final int VALIDATOR_INDEX_OFFSET = 124;
+  public static final int USER_MSOL_BALANCE_OFFSET = 128;
+  public static final int USER_MSOL_AUTH_OFFSET = 136;
+  public static final int MSOL_BURNED_OFFSET = 168;
+  public static final int MSOL_FEES_OFFSET = 176;
+  public static final int SPLIT_STAKE_OFFSET = 184;
+  public static final int BENEFICIARY_OFFSET = 216;
+  public static final int SPLIT_LAMPORTS_OFFSET = 248;
+  public static final int FEE_BP_CENTS_OFFSET = 256;
+  public static final int TOTAL_VIRTUAL_STAKED_LAMPORTS_OFFSET = 260;
+  public static final int MSOL_SUPPLY_OFFSET = 268;
+
   public static WithdrawStakeAccountEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

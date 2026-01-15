@@ -9,6 +9,9 @@ public record CurvePoint(int utilizationRateBps, int borrowRateBps) implements S
 
   public static final int BYTES = 8;
 
+  public static final int UTILIZATION_RATE_BPS_OFFSET = 0;
+  public static final int BORROW_RATE_BPS_OFFSET = 4;
+
   public static CurvePoint read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

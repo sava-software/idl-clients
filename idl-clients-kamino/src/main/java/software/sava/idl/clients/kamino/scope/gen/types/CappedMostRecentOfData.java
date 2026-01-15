@@ -16,6 +16,11 @@ public record CappedMostRecentOfData(short[] sourceEntries,
   public static final int BYTES = 20;
   public static final int SOURCE_ENTRIES_LEN = 4;
 
+  public static final int SOURCE_ENTRIES_OFFSET = 0;
+  public static final int MAX_DIVERGENCE_BPS_OFFSET = 8;
+  public static final int SOURCES_MAX_AGE_S_OFFSET = 10;
+  public static final int CAP_ENTRY_OFFSET = 18;
+
   public static CappedMostRecentOfData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -33,6 +33,13 @@ public record CustomizableParams(int activeId,
                                  byte[] padding) implements SerDe {
 
   public static final int PADDING_LEN = 61;
+  public static final int ACTIVE_ID_OFFSET = 0;
+  public static final int BIN_STEP_OFFSET = 4;
+  public static final int BASE_FACTOR_OFFSET = 6;
+  public static final int ACTIVATION_TYPE_OFFSET = 8;
+  public static final int HAS_ALPHA_VAULT_OFFSET = 9;
+  public static final int ACTIVATION_POINT_OFFSET = 11;
+
   public static CustomizableParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

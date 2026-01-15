@@ -17,6 +17,10 @@ public record MergePartialUnstakingEvent(Discriminator discriminator,
   public static final int BYTES = 80;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int PARTIAL_UNSTAKE_OFFSET = 8;
+  public static final int ESCROW_OFFSET = 40;
+  public static final int AMOUNT_OFFSET = 72;
+
   public static MergePartialUnstakingEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

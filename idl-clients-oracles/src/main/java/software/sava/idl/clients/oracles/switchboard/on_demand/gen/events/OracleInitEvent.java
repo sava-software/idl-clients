@@ -12,6 +12,8 @@ public record OracleInitEvent(Discriminator discriminator, PublicKey oracle) imp
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(89, 193, 219, 200, 1, 83, 167, 24);
 
+  public static final int ORACLE_OFFSET = 8;
+
   public static OracleInitEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

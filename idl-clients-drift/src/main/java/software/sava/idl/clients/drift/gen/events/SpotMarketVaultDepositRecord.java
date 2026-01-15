@@ -25,6 +25,14 @@ public record SpotMarketVaultDepositRecord(Discriminator discriminator,
   public static final int BYTES = 82;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int MARKET_INDEX_OFFSET = 16;
+  public static final int DEPOSIT_BALANCE_OFFSET = 18;
+  public static final int CUMULATIVE_DEPOSIT_INTEREST_BEFORE_OFFSET = 34;
+  public static final int CUMULATIVE_DEPOSIT_INTEREST_AFTER_OFFSET = 50;
+  public static final int DEPOSIT_TOKEN_AMOUNT_BEFORE_OFFSET = 66;
+  public static final int AMOUNT_OFFSET = 74;
+
   public static SpotMarketVaultDepositRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

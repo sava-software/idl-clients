@@ -103,6 +103,13 @@ public sealed interface ConfigAction extends RustEnum permits
                           PublicKey[] members,
                           PublicKey[] destinations) implements ConfigAction {
 
+    public static final int CREATE_KEY_OFFSET = 0;
+    public static final int VAULT_INDEX_OFFSET = 32;
+    public static final int MINT_OFFSET = 33;
+    public static final int AMOUNT_OFFSET = 65;
+    public static final int PERIOD_OFFSET = 73;
+    public static final int MEMBERS_OFFSET = 74;
+
     public static AddSpendingLimit read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

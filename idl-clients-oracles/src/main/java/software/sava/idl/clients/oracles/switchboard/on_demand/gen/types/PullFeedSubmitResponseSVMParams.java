@@ -13,6 +13,9 @@ public record PullFeedSubmitResponseSVMParams(long slot,
                                               PublicKey sourceQueueKey,
                                               int queueBump) implements SerDe {
 
+  public static final int SLOT_OFFSET = 0;
+  public static final int SUBMISSIONS_OFFSET = 8;
+
   public static PullFeedSubmitResponseSVMParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -12,6 +12,8 @@ public record DepositUserAtaBalanceEvent(Discriminator discriminator, long userA
   public static final int BYTES = 16;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
 
+  public static final int USER_ATA_BALANCE_OFFSET = 8;
+
   public static DepositUserAtaBalanceEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

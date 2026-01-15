@@ -13,6 +13,10 @@ public record AmmCacheFixed(int bump,
   public static final int BYTES = 8;
   public static final int PAD_LEN = 3;
 
+  public static final int BUMP_OFFSET = 0;
+  public static final int PAD_OFFSET = 1;
+  public static final int LEN_OFFSET = 4;
+
   public static AmmCacheFixed read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

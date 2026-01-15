@@ -23,6 +23,8 @@ public record ConstituentParams(OptionalLong maxWeightDeviation,
                                 OptionalInt gammaInventory,
                                 OptionalInt xi) implements SerDe {
 
+  public static final int MAX_WEIGHT_DEVIATION_OFFSET = 1;
+
   public static ConstituentParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

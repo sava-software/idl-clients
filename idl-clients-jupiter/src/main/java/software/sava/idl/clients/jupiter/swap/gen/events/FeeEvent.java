@@ -17,6 +17,10 @@ public record FeeEvent(Discriminator discriminator,
   public static final int BYTES = 80;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(73, 79, 78, 127, 184, 213, 13, 220);
 
+  public static final int ACCOUNT_OFFSET = 8;
+  public static final int MINT_OFFSET = 40;
+  public static final int AMOUNT_OFFSET = 72;
+
   public static FeeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -71,6 +71,8 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
     public static final int BYTES = 8;
     public static final int VAL_LEN = 8;
 
+    public static final int VAL_OFFSET = 0;
+
     public static U8Array read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -162,6 +164,8 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
 
     public static final int BYTES = 32;
     public static final int VAL_LEN = 32;
+
+    public static final int VAL_OFFSET = 0;
 
     public static Name read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

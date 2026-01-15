@@ -6,6 +6,9 @@ public record BoolValueChange(boolean old, boolean _new) implements SerDe {
 
   public static final int BYTES = 2;
 
+  public static final int OLD_OFFSET = 0;
+  public static final int _NEW_OFFSET = 1;
+
   public static BoolValueChange read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

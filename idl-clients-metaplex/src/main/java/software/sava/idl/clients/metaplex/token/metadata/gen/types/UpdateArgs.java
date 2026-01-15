@@ -46,6 +46,8 @@ public sealed interface UpdateArgs extends RustEnum permits
             RuleSetToggle ruleSet,
             AuthorizationData authorizationData) implements UpdateArgs {
 
+    public static final int NEW_UPDATE_AUTHORITY_OFFSET = 1;
+
     public static V1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -157,6 +159,8 @@ public sealed interface UpdateArgs extends RustEnum permits
                              RuleSetToggle ruleSet,
                              TokenStandard tokenStandard,
                              AuthorizationData authorizationData) implements UpdateArgs {
+
+    public static final int NEW_UPDATE_AUTHORITY_OFFSET = 1;
 
     public static AsUpdateAuthorityV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -277,6 +281,8 @@ public sealed interface UpdateArgs extends RustEnum permits
                                    TokenStandard tokenStandard,
                                    AuthorizationData authorizationData) implements UpdateArgs {
 
+    public static final int NEW_UPDATE_AUTHORITY_OFFSET = 1;
+
     public static AsAuthorityItemDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -360,6 +366,8 @@ public sealed interface UpdateArgs extends RustEnum permits
 
   record AsCollectionDelegateV2(CollectionToggle collection, AuthorizationData authorizationData) implements UpdateArgs {
 
+    public static final int COLLECTION_OFFSET = 0;
+
     public static AsCollectionDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -397,6 +405,8 @@ public sealed interface UpdateArgs extends RustEnum permits
   }
 
   record AsDataDelegateV2(Data data, AuthorizationData authorizationData) implements UpdateArgs {
+
+    public static final int DATA_OFFSET = 1;
 
     public static AsDataDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -443,6 +453,8 @@ public sealed interface UpdateArgs extends RustEnum permits
 
   record AsProgrammableConfigDelegateV2(RuleSetToggle ruleSet, AuthorizationData authorizationData) implements UpdateArgs {
 
+    public static final int RULE_SET_OFFSET = 0;
+
     public static AsProgrammableConfigDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -480,6 +492,8 @@ public sealed interface UpdateArgs extends RustEnum permits
   }
 
   record AsDataItemDelegateV2(Data data, AuthorizationData authorizationData) implements UpdateArgs {
+
+    public static final int DATA_OFFSET = 1;
 
     public static AsDataItemDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -526,6 +540,8 @@ public sealed interface UpdateArgs extends RustEnum permits
 
   record AsCollectionItemDelegateV2(CollectionToggle collection, AuthorizationData authorizationData) implements UpdateArgs {
 
+    public static final int COLLECTION_OFFSET = 0;
+
     public static AsCollectionItemDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -563,6 +579,8 @@ public sealed interface UpdateArgs extends RustEnum permits
   }
 
   record AsProgrammableConfigItemDelegateV2(RuleSetToggle ruleSet, AuthorizationData authorizationData) implements UpdateArgs {
+
+    public static final int RULE_SET_OFFSET = 0;
 
     public static AsProgrammableConfigItemDelegateV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

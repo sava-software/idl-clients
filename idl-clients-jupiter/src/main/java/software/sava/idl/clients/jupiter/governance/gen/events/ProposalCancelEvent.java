@@ -12,6 +12,9 @@ public record ProposalCancelEvent(Discriminator discriminator, PublicKey governo
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
 
+  public static final int GOVERNOR_OFFSET = 8;
+  public static final int PROPOSAL_OFFSET = 40;
+
   public static ProposalCancelEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

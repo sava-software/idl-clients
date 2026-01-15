@@ -32,6 +32,8 @@ public record MultisigCreateArgsV2(PublicKey configAuthority,
                                    PublicKey rentCollector,
                                    String memo, byte[] _memo) implements SerDe {
 
+  public static final int CONFIG_AUTHORITY_OFFSET = 1;
+
   public static MultisigCreateArgsV2 createRecord(final PublicKey configAuthority,
                                                   final int threshold,
                                                   final Member[] members,

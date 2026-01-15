@@ -19,6 +19,14 @@ public record RevenueShareEscrowFixed(PublicKey authority,
   public static final int BYTES = 88;
   public static final int RESERVED_FIXED_LEN = 17;
 
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int REFERRER_OFFSET = 32;
+  public static final int REFERRER_BOOST_EXPIRE_TS_OFFSET = 64;
+  public static final int REFERRER_REWARD_OFFSET_OFFSET = 68;
+  public static final int REFEREE_FEE_NUMERATOR_OFFSET_OFFSET = 69;
+  public static final int REFERRER_BOOST_NUMERATOR_OFFSET = 70;
+  public static final int RESERVED_FIXED_OFFSET = 71;
+
   public static RevenueShareEscrowFixed read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

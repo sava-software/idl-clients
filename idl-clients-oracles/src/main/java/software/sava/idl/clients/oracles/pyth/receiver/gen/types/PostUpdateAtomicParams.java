@@ -8,6 +8,8 @@ public record PostUpdateAtomicParams(byte[] vaa,
                                      MerklePriceUpdate merklePriceUpdate,
                                      int treasuryId) implements SerDe {
 
+  public static final int VAA_OFFSET = 0;
+
   public static PostUpdateAtomicParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

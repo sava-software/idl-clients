@@ -8,6 +8,8 @@ public record BorrowRateCurve(CurvePoint[] points) implements SerDe {
   public static final int BYTES = 88;
   public static final int POINTS_LEN = 11;
 
+  public static final int POINTS_OFFSET = 0;
+
   public static BorrowRateCurve read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

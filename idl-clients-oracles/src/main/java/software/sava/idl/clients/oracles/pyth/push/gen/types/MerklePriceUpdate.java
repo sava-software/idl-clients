@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 public record MerklePriceUpdate(byte[] message, byte[][] proof) implements SerDe {
 
+  public static final int MESSAGE_OFFSET = 0;
+
   public static MerklePriceUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

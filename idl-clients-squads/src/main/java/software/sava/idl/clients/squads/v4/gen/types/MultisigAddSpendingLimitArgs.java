@@ -39,6 +39,13 @@ public record MultisigAddSpendingLimitArgs(PublicKey createKey,
                                            PublicKey[] destinations,
                                            String memo, byte[] _memo) implements SerDe {
 
+  public static final int CREATE_KEY_OFFSET = 0;
+  public static final int VAULT_INDEX_OFFSET = 32;
+  public static final int MINT_OFFSET = 33;
+  public static final int AMOUNT_OFFSET = 65;
+  public static final int PERIOD_OFFSET = 73;
+  public static final int MEMBERS_OFFSET = 74;
+
   public static MultisigAddSpendingLimitArgs createRecord(final PublicKey createKey,
                                                           final int vaultIndex,
                                                           final PublicKey mint,

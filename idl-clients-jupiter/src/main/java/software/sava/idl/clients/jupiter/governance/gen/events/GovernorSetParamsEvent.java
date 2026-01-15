@@ -16,6 +16,10 @@ public record GovernorSetParamsEvent(Discriminator discriminator,
   public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
 
+  public static final int GOVERNOR_OFFSET = 8;
+  public static final int PREV_PARAMS_OFFSET = 40;
+  public static final int PARAMS_OFFSET = 72;
+
   public static GovernorSetParamsEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

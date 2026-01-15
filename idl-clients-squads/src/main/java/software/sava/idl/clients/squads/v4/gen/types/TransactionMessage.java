@@ -20,6 +20,11 @@ public record TransactionMessage(int numSigners,
                                  CompiledInstruction[] instructions,
                                  MessageAddressTableLookup[] addressTableLookups) implements SerDe {
 
+  public static final int NUM_SIGNERS_OFFSET = 0;
+  public static final int NUM_WRITABLE_SIGNERS_OFFSET = 1;
+  public static final int NUM_WRITABLE_NON_SIGNERS_OFFSET = 2;
+  public static final int ACCOUNT_KEYS_OFFSET = 3;
+
   public static TransactionMessage read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

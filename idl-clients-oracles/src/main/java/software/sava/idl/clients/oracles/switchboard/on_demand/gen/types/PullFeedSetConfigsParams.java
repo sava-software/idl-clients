@@ -23,6 +23,8 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
                                        OptionalInt maxStaleness,
                                        Boolean permitWriteByAuthority) implements SerDe {
 
+  public static final int FEED_HASH_OFFSET = 1;
+
   public static PullFeedSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

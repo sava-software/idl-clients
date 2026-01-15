@@ -19,6 +19,11 @@ public record LockerParams(int maxStakeVoteMultiplier,
 
   public static final int BYTES = 25;
 
+  public static final int MAX_STAKE_VOTE_MULTIPLIER_OFFSET = 0;
+  public static final int MIN_STAKE_DURATION_OFFSET = 1;
+  public static final int MAX_STAKE_DURATION_OFFSET = 9;
+  public static final int PROPOSAL_ACTIVATION_MIN_VOTES_OFFSET = 17;
+
   public static LockerParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

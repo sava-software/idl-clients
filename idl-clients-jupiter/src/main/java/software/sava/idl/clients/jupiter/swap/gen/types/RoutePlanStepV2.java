@@ -10,6 +10,8 @@ public record RoutePlanStepV2(Swap swap,
                               int inputIndex,
                               int outputIndex) implements SerDe {
 
+  public static final int SWAP_OFFSET = 0;
+
   public static RoutePlanStepV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

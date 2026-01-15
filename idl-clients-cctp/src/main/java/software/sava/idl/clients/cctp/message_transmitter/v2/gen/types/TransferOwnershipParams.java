@@ -9,6 +9,8 @@ public record TransferOwnershipParams(PublicKey newOwner) implements SerDe {
 
   public static final int BYTES = 32;
 
+  public static final int NEW_OWNER_OFFSET = 0;
+
   public static TransferOwnershipParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

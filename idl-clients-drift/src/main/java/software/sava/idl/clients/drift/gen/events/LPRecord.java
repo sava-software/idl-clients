@@ -25,6 +25,15 @@ public record LPRecord(Discriminator discriminator,
   public static final int BYTES = 83;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_OFFSET = 16;
+  public static final int ACTION_OFFSET = 48;
+  public static final int N_SHARES_OFFSET = 49;
+  public static final int MARKET_INDEX_OFFSET = 57;
+  public static final int DELTA_BASE_ASSET_AMOUNT_OFFSET = 59;
+  public static final int DELTA_QUOTE_ASSET_AMOUNT_OFFSET = 67;
+  public static final int PNL_OFFSET = 75;
+
   public static LPRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -18,6 +18,11 @@ public record LiquidityParameterByStrategyOneSide(long amount,
 
   public static final int BYTES = 89;
 
+  public static final int AMOUNT_OFFSET = 0;
+  public static final int ACTIVE_ID_OFFSET = 8;
+  public static final int MAX_ACTIVE_BIN_SLIPPAGE_OFFSET = 12;
+  public static final int STRATEGY_PARAMETERS_OFFSET = 16;
+
   public static LiquidityParameterByStrategyOneSide read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

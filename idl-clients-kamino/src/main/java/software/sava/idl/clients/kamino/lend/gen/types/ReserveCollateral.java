@@ -25,6 +25,12 @@ public record ReserveCollateral(PublicKey mintPubkey,
   public static final int PADDING_1_LEN = 32;
   public static final int PADDING_2_LEN = 32;
 
+  public static final int MINT_PUBKEY_OFFSET = 0;
+  public static final int MINT_TOTAL_SUPPLY_OFFSET = 32;
+  public static final int SUPPLY_VAULT_OFFSET = 40;
+  public static final int PADDING_1_OFFSET = 72;
+  public static final int PADDING_2_OFFSET = 584;
+
   public static ReserveCollateral read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

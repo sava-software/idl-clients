@@ -11,6 +11,9 @@ public record DataSource(int chain, PublicKey emitter) implements SerDe {
 
   public static final int BYTES = 34;
 
+  public static final int CHAIN_OFFSET = 0;
+  public static final int EMITTER_OFFSET = 2;
+
   public static DataSource read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

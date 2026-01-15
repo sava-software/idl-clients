@@ -17,6 +17,12 @@ public record TargetsDatum(int costToTradeBps,
   public static final int BYTES = 32;
   public static final int PADDING_LEN = 4;
 
+  public static final int COST_TO_TRADE_BPS_OFFSET = 0;
+  public static final int PADDING_OFFSET = 4;
+  public static final int TARGET_BASE_OFFSET = 8;
+  public static final int LAST_ORACLE_SLOT_OFFSET = 16;
+  public static final int LAST_POSITION_SLOT_OFFSET = 24;
+
   public static TargetsDatum read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

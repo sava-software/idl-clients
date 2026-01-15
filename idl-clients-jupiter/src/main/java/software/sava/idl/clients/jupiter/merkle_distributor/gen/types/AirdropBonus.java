@@ -13,6 +13,10 @@ public record AirdropBonus(long totalBonus,
 
   public static final int BYTES = 24;
 
+  public static final int TOTAL_BONUS_OFFSET = 0;
+  public static final int VESTING_DURATION_OFFSET = 8;
+  public static final int TOTAL_CLAIMED_BONUS_OFFSET = 16;
+
   public static AirdropBonus read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -32,6 +32,12 @@ public record LiquidUnstakeEvent(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int MSOL_OWNER_OFFSET = 40;
+  public static final int LIQ_POOL_SOL_BALANCE_OFFSET = 72;
+  public static final int LIQ_POOL_MSOL_BALANCE_OFFSET = 80;
+  public static final int TREASURY_MSOL_BALANCE_OFFSET = 89;
+
   public static LiquidUnstakeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -16,6 +16,9 @@ public record MultisigMessageAddressTableLookup(PublicKey accountKey,
                                                 byte[] writableIndexes,
                                                 byte[] readonlyIndexes) implements SerDe {
 
+  public static final int ACCOUNT_KEY_OFFSET = 0;
+  public static final int WRITABLE_INDEXES_OFFSET = 32;
+
   public static MultisigMessageAddressTableLookup read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

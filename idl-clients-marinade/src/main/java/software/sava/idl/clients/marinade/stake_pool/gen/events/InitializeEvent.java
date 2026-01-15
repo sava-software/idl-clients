@@ -22,6 +22,16 @@ public record InitializeEvent(Discriminator discriminator,
   public static final int BYTES = 408;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int PARAMS_OFFSET = 40;
+  public static final int STAKE_LIST_OFFSET = 184;
+  public static final int VALIDATOR_LIST_OFFSET = 216;
+  public static final int MSOL_MINT_OFFSET = 248;
+  public static final int OPERATIONAL_SOL_ACCOUNT_OFFSET = 280;
+  public static final int LP_MINT_OFFSET = 312;
+  public static final int LP_MSOL_LEG_OFFSET = 344;
+  public static final int TREASURY_MSOL_ACCOUNT_OFFSET = 376;
+
   public static InitializeEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

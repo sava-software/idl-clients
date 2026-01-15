@@ -16,6 +16,8 @@ public record QueueSetConfigsParams(PublicKey authority,
                                     OptionalLong nodeTimeout,
                                     OptionalInt oracleFeeProportionBps) implements SerDe {
 
+  public static final int AUTHORITY_OFFSET = 1;
+
   public static QueueSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -12,6 +12,8 @@ public record AttesterEnabled(Discriminator discriminator, PublicKey attester) i
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(88, 57, 14, 133, 5, 219, 62, 190);
 
+  public static final int ATTESTER_OFFSET = 8;
+
   public static AttesterEnabled read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

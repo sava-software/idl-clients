@@ -28,6 +28,8 @@ public record AssetData(String name, byte[] _name,
                         CollectionDetails collectionDetails,
                         PublicKey ruleSet) implements SerDe {
 
+  public static final int NAME_OFFSET = 0;
+
   public static AssetData createRecord(final String name,
                                        final String symbol,
                                        final String uri,

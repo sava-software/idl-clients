@@ -13,6 +13,9 @@ public record InitializeLbPair2Params(int activeId, byte[] padding) implements S
   public static final int BYTES = 100;
   public static final int PADDING_LEN = 96;
 
+  public static final int ACTIVE_ID_OFFSET = 0;
+  public static final int PADDING_OFFSET = 4;
+
   public static InitializeLbPair2Params read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

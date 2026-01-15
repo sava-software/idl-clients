@@ -6,6 +6,8 @@ public record V8V10(MarketStatusBehavior marketStatusBehavior) implements SerDe 
 
   public static final int BYTES = 1;
 
+  public static final int MARKET_STATUS_BEHAVIOR_OFFSET = 0;
+
   public static V8V10 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

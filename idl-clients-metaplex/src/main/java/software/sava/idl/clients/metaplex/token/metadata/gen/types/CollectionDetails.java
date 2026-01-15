@@ -36,6 +36,8 @@ public sealed interface CollectionDetails extends RustEnum permits
     public static final int BYTES = 8;
     public static final int VAL_LEN = 8;
 
+    public static final int VAL_OFFSET = 0;
+
     public static V2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

@@ -15,6 +15,10 @@ public record BuilderInfo(PublicKey authority,
   public static final int BYTES = 40;
   public static final int PADDING_LEN = 6;
 
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int MAX_FEE_TENTH_BPS_OFFSET = 32;
+  public static final int PADDING_OFFSET = 34;
+
   public static BuilderInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

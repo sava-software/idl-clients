@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 
 public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAuthority) implements SerDe {
 
+  public static final int NEW_AUTHORITY_OFFSET = 1;
+
   public static OracleSetConfigsParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -18,6 +18,11 @@ public record AddValidatorEvent(Discriminator discriminator,
   public static final int BYTES = 80;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
 
+  public static final int STATE_OFFSET = 8;
+  public static final int VALIDATOR_OFFSET = 40;
+  public static final int INDEX_OFFSET = 72;
+  public static final int SCORE_OFFSET = 76;
+
   public static AddValidatorEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -43,6 +43,17 @@ public record LiquidationRecord(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int LIQUIDATION_TYPE_OFFSET = 16;
+  public static final int USER_OFFSET = 17;
+  public static final int LIQUIDATOR_OFFSET = 49;
+  public static final int MARGIN_REQUIREMENT_OFFSET = 81;
+  public static final int TOTAL_COLLATERAL_OFFSET = 97;
+  public static final int MARGIN_FREED_OFFSET = 113;
+  public static final int LIQUIDATION_ID_OFFSET = 121;
+  public static final int BANKRUPT_OFFSET = 123;
+  public static final int CANCELED_ORDER_IDS_OFFSET = 124;
+
   public static LiquidationRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -15,6 +15,8 @@ public record RemoveLiquidityParams(OptionalInt minBinId,
                                     byte[] padding) implements SerDe {
 
   public static final int PADDING_LEN = 16;
+  public static final int MIN_BIN_ID_OFFSET = 1;
+
   public static RemoveLiquidityParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

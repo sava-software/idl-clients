@@ -22,6 +22,13 @@ public record ClaimFee2(Discriminator discriminator,
   public static final int BYTES = 124;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(232, 171, 242, 97, 58, 77, 35, 45);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int FEE_X_OFFSET = 104;
+  public static final int FEE_Y_OFFSET = 112;
+  public static final int ACTIVE_BIN_ID_OFFSET = 120;
+
   public static ClaimFee2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

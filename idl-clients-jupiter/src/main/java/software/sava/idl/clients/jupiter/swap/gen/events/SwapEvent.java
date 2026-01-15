@@ -19,6 +19,12 @@ public record SwapEvent(Discriminator discriminator,
   public static final int BYTES = 120;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(64, 198, 205, 232, 38, 8, 113, 226);
 
+  public static final int AMM_OFFSET = 8;
+  public static final int INPUT_MINT_OFFSET = 40;
+  public static final int INPUT_AMOUNT_OFFSET = 72;
+  public static final int OUTPUT_MINT_OFFSET = 80;
+  public static final int OUTPUT_AMOUNT_OFFSET = 112;
+
   public static SwapEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

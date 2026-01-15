@@ -16,6 +16,11 @@ public record SbOnDemandActionsPullFeedPullFeedSubmitResponseActionSubmission(Bi
   public static final int BYTES = 82;
   public static final int SIGNATURE_LEN = 64;
 
+  public static final int VALUE_OFFSET = 0;
+  public static final int SIGNATURE_OFFSET = 16;
+  public static final int RECOVERY_ID_OFFSET = 80;
+  public static final int OFFSET_OFFSET = 81;
+
   public static SbOnDemandActionsPullFeedPullFeedSubmitResponseActionSubmission read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

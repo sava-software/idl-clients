@@ -4,6 +4,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 public record AuthorizationData(Payload payload) implements SerDe {
 
+  public static final int PAYLOAD_OFFSET = 0;
+
   public static AuthorizationData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

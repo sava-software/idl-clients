@@ -26,6 +26,17 @@ public record ManagerBorrowRecord(Discriminator discriminator,
   public static final int BYTES = 124;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int MANAGER_OFFSET = 48;
+  public static final int BORROW_AMOUNT_OFFSET = 80;
+  public static final int BORROW_VALUE_OFFSET = 88;
+  public static final int BORROW_SPOT_MARKET_INDEX_OFFSET = 96;
+  public static final int BORROW_ORACLE_PRICE_OFFSET = 98;
+  public static final int DEPOSIT_SPOT_MARKET_INDEX_OFFSET = 106;
+  public static final int DEPOSIT_ORACLE_PRICE_OFFSET = 108;
+  public static final int VAULT_EQUITY_OFFSET = 116;
+
   public static ManagerBorrowRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

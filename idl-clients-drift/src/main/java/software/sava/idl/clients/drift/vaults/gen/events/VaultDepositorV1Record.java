@@ -43,6 +43,29 @@ public record VaultDepositorV1Record(Discriminator discriminator,
   public static final int BYTES = 283;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int VAULT_OFFSET = 16;
+  public static final int DEPOSITOR_AUTHORITY_OFFSET = 48;
+  public static final int ACTION_OFFSET = 80;
+  public static final int AMOUNT_OFFSET = 81;
+  public static final int SPOT_MARKET_INDEX_OFFSET = 89;
+  public static final int VAULT_SHARES_BEFORE_OFFSET = 91;
+  public static final int VAULT_SHARES_AFTER_OFFSET = 107;
+  public static final int VAULT_EQUITY_BEFORE_OFFSET = 123;
+  public static final int USER_VAULT_SHARES_BEFORE_OFFSET = 131;
+  public static final int TOTAL_VAULT_SHARES_BEFORE_OFFSET = 147;
+  public static final int USER_VAULT_SHARES_AFTER_OFFSET = 163;
+  public static final int TOTAL_VAULT_SHARES_AFTER_OFFSET = 179;
+  public static final int PROTOCOL_SHARES_BEFORE_OFFSET = 195;
+  public static final int PROTOCOL_SHARES_AFTER_OFFSET = 211;
+  public static final int PROTOCOL_PROFIT_SHARE_OFFSET = 227;
+  public static final int PROTOCOL_FEE_OFFSET = 235;
+  public static final int PROTOCOL_FEE_SHARES_OFFSET = 243;
+  public static final int MANAGER_PROFIT_SHARE_OFFSET = 251;
+  public static final int MANAGEMENT_FEE_OFFSET = 259;
+  public static final int MANAGEMENT_FEE_SHARES_OFFSET = 267;
+  public static final int DEPOSIT_ORACLE_PRICE_OFFSET = 275;
+
   public static VaultDepositorV1Record read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

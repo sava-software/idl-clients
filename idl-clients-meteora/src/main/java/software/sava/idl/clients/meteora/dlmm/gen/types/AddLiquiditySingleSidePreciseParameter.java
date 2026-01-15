@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record AddLiquiditySingleSidePreciseParameter(CompressedBinDepositAmount[] bins, long decompressMultiplier) implements SerDe {
 
+  public static final int BINS_OFFSET = 0;
+
   public static AddLiquiditySingleSidePreciseParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

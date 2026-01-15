@@ -19,6 +19,12 @@ public record LogWithdraw(Discriminator discriminator,
   public static final int BYTES = 120;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(49, 9, 176, 179, 222, 190, 6, 117);
 
+  public static final int SENDER_OFFSET = 8;
+  public static final int RECEIVER_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int ASSETS_OFFSET = 104;
+  public static final int SHARES_BURNED_OFFSET = 112;
+
   public static LogWithdraw read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

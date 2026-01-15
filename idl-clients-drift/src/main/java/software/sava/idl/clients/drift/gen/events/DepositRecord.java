@@ -40,6 +40,23 @@ public record DepositRecord(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_AUTHORITY_OFFSET = 16;
+  public static final int USER_OFFSET = 48;
+  public static final int DIRECTION_OFFSET = 80;
+  public static final int DEPOSIT_RECORD_ID_OFFSET = 81;
+  public static final int AMOUNT_OFFSET = 89;
+  public static final int MARKET_INDEX_OFFSET = 97;
+  public static final int ORACLE_PRICE_OFFSET = 99;
+  public static final int MARKET_DEPOSIT_BALANCE_OFFSET = 107;
+  public static final int MARKET_WITHDRAW_BALANCE_OFFSET = 123;
+  public static final int MARKET_CUMULATIVE_DEPOSIT_INTEREST_OFFSET = 139;
+  public static final int MARKET_CUMULATIVE_BORROW_INTEREST_OFFSET = 155;
+  public static final int TOTAL_DEPOSITS_AFTER_OFFSET = 171;
+  public static final int TOTAL_WITHDRAWS_AFTER_OFFSET = 179;
+  public static final int EXPLANATION_OFFSET = 187;
+  public static final int TRANSFER_USER_OFFSET = 189;
+
   public static DepositRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

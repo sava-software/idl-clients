@@ -9,6 +9,8 @@ public record UpdateAttesterManagerParams(PublicKey newAttesterManager) implemen
 
   public static final int BYTES = 32;
 
+  public static final int NEW_ATTESTER_MANAGER_OFFSET = 0;
+
   public static UpdateAttesterManagerParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

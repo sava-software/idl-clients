@@ -15,6 +15,10 @@ public record GuardianQuoteVerifyEvent(Discriminator discriminator,
   public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(31, 37, 39, 6, 214, 186, 33, 115);
 
+  public static final int QUOTE_OFFSET = 8;
+  public static final int QUEUE_OFFSET = 40;
+  public static final int ORACLE_OFFSET = 72;
+
   public static GuardianQuoteVerifyEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

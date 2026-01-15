@@ -15,6 +15,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 /// @param memo Memo is used for indexing only.
 public record MultisigRemoveSpendingLimitArgs(String memo, byte[] _memo) implements SerDe {
 
+  public static final int MEMO_OFFSET = 1;
+
   public static MultisigRemoveSpendingLimitArgs createRecord(final String memo) {
     return new MultisigRemoveSpendingLimitArgs(memo, memo == null ? null : memo.getBytes(UTF_8));
   }

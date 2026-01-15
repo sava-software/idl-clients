@@ -12,6 +12,8 @@ public record ChangeAuthorityData(PublicKey admin,
                                   PublicKey treasuryMsolAccount,
                                   PublicKey pauseAuthority) implements SerDe {
 
+  public static final int ADMIN_OFFSET = 1;
+
   public static ChangeAuthorityData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

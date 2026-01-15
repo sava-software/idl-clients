@@ -13,6 +13,10 @@ public record AddAmmConstituentMappingDatum(int constituentIndex,
 
   public static final int BYTES = 12;
 
+  public static final int CONSTITUENT_INDEX_OFFSET = 0;
+  public static final int PERP_MARKET_INDEX_OFFSET = 2;
+  public static final int WEIGHT_OFFSET = 4;
+
   public static AddAmmConstituentMappingDatum read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

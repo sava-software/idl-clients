@@ -6,6 +6,9 @@ public record PermissionSetParams(int permission, boolean enable) implements Ser
 
   public static final int BYTES = 2;
 
+  public static final int PERMISSION_OFFSET = 0;
+  public static final int ENABLE_OFFSET = 1;
+
   public static PermissionSetParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

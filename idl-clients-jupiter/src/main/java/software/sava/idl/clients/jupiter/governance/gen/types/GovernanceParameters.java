@@ -18,6 +18,11 @@ public record GovernanceParameters(long votingDelay,
 
   public static final int BYTES = 32;
 
+  public static final int VOTING_DELAY_OFFSET = 0;
+  public static final int VOTING_PERIOD_OFFSET = 8;
+  public static final int QUORUM_VOTES_OFFSET = 16;
+  public static final int TIMELOCK_DELAY_SECONDS_OFFSET = 24;
+
   public static GovernanceParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

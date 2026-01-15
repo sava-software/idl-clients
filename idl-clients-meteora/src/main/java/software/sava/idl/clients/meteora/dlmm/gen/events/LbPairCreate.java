@@ -18,6 +18,11 @@ public record LbPairCreate(Discriminator discriminator,
   public static final int BYTES = 106;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(185, 74, 252, 125, 27, 215, 188, 111);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int BIN_STEP_OFFSET = 40;
+  public static final int TOKEN_X_OFFSET = 42;
+  public static final int TOKEN_Y_OFFSET = 74;
+
   public static LbPairCreate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

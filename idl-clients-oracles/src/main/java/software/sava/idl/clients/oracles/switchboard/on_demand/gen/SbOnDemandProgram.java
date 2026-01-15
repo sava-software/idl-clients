@@ -116,6 +116,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static GuardianQuoteVerifyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -186,6 +188,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static GuardianRegisterIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -255,6 +259,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static GuardianUnregisterIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -361,6 +367,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static OracleHeartbeatIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -436,6 +444,8 @@ public final class SbOnDemandProgram {
     public static OracleHeartbeatV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static OracleHeartbeatV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -522,6 +532,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static OracleInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -607,6 +619,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static OracleInitSvmIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -690,6 +704,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 16;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static OracleResetLutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -749,6 +765,8 @@ public final class SbOnDemandProgram {
     public static OracleSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static OracleSetConfigsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -815,6 +833,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static OracleSetOperatorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -927,6 +947,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static OracleSyncLutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -988,6 +1010,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PermissionSetIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1080,6 +1104,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PullFeedCloseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1176,6 +1202,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PullFeedInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1235,6 +1263,8 @@ public final class SbOnDemandProgram {
     public static PullFeedSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PullFeedSetConfigsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1318,6 +1348,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PullFeedSubmitResponseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1397,6 +1429,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PullFeedSubmitResponseConsensusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1461,6 +1495,8 @@ public final class SbOnDemandProgram {
     public static PullFeedSubmitResponseConsensusLightIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PullFeedSubmitResponseConsensusLightIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1539,6 +1575,8 @@ public final class SbOnDemandProgram {
     public static PullFeedSubmitResponseManyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PullFeedSubmitResponseManyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1622,6 +1660,8 @@ public final class SbOnDemandProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PullFeedSubmitResponseSvmIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1692,6 +1732,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 40;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueueAddMrEnclaveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1757,6 +1799,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueAllowSubsidiesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1827,6 +1871,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 12;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueGarbageCollectIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1921,6 +1967,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 34;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueueInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2014,6 +2062,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 66;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueueInitSvmIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2083,6 +2133,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 120;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueOverrideSvmIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2171,6 +2223,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueuePayRewardsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2268,6 +2322,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueuePaySubsidyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2337,6 +2393,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueRemoveMrEnclaveIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2421,6 +2479,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 16;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueueResetLutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2495,6 +2555,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static QueueResetVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2558,6 +2620,8 @@ public final class SbOnDemandProgram {
     public static QueueSetConfigsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueSetConfigsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2628,6 +2692,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueSetNcnIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2702,6 +2768,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static QueueSetVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2791,6 +2859,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 8;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static RandomnessCloseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2864,6 +2934,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static RandomnessCommitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2962,6 +3034,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 16;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static RandomnessInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3058,6 +3132,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 105;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static RandomnessRevealIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3123,6 +3199,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 8;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static StateInitIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3198,6 +3276,8 @@ public final class SbOnDemandProgram {
 
     public static final int BYTES = 153;
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static StateSetConfigsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3257,6 +3337,8 @@ public final class SbOnDemandProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static TestUpdateOracleStatsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

@@ -12,6 +12,9 @@ public record BestSwapOutAmountViolation(Discriminator discriminator, long expec
   public static final int BYTES = 24;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(124, 66, 196, 51, 218, 173, 46, 93);
 
+  public static final int EXPECTED_OUT_AMOUNT_OFFSET = 8;
+  public static final int OUT_AMOUNT_OFFSET = 16;
+
   public static BestSwapOutAmountViolation read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

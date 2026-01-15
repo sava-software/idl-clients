@@ -12,6 +12,9 @@ public record LogUpdateRates(Discriminator discriminator, long tokenExchangePric
   public static final int BYTES = 24;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(222, 11, 113, 60, 147, 15, 68, 217);
 
+  public static final int TOKEN_EXCHANGE_PRICE_OFFSET = 8;
+  public static final int LIQUIDITY_EXCHANGE_PRICE_OFFSET = 16;
+
   public static LogUpdateRates read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

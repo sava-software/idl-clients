@@ -32,6 +32,19 @@ public record LPSettleRecord(Discriminator discriminator,
   public static final int BYTES = 138;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int RECORD_ID_OFFSET = 8;
+  public static final int LAST_TS_OFFSET = 16;
+  public static final int LAST_SLOT_OFFSET = 24;
+  public static final int TS_OFFSET = 32;
+  public static final int SLOT_OFFSET = 40;
+  public static final int PERP_MARKET_INDEX_OFFSET = 48;
+  public static final int SETTLE_TO_LP_AMOUNT_OFFSET = 50;
+  public static final int PERP_AMM_PNL_DELTA_OFFSET = 58;
+  public static final int PERP_AMM_EX_FEE_DELTA_OFFSET = 66;
+  public static final int LP_AUM_OFFSET = 74;
+  public static final int LP_PRICE_OFFSET = 90;
+  public static final int LP_POOL_OFFSET = 106;
+
   public static LPSettleRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

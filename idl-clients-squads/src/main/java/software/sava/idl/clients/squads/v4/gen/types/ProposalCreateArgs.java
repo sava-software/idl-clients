@@ -11,6 +11,9 @@ public record ProposalCreateArgs(long transactionIndex, boolean draft) implement
 
   public static final int BYTES = 9;
 
+  public static final int TRANSACTION_INDEX_OFFSET = 0;
+  public static final int DRAFT_OFFSET = 8;
+
   public static ProposalCreateArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

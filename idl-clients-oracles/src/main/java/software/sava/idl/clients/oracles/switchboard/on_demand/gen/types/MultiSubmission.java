@@ -10,6 +10,8 @@ public record MultiSubmission(BigInteger[] values,
                               int recoveryId) implements SerDe {
 
   public static final int SIGNATURE_LEN = 64;
+  public static final int VALUES_OFFSET = 0;
+
   public static MultiSubmission read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

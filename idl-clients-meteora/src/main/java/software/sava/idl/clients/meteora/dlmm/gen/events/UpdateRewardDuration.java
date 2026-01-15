@@ -18,6 +18,11 @@ public record UpdateRewardDuration(Discriminator discriminator,
   public static final int BYTES = 64;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(223, 245, 224, 153, 49, 29, 163, 172);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int REWARD_INDEX_OFFSET = 40;
+  public static final int OLD_REWARD_DURATION_OFFSET = 48;
+  public static final int NEW_REWARD_DURATION_OFFSET = 56;
+
   public static UpdateRewardDuration read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

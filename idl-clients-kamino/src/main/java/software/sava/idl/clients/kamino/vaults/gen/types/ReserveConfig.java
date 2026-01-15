@@ -102,6 +102,39 @@ public record ReserveConfig(int status,
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
 
+  public static final int STATUS_OFFSET = 0;
+  public static final int ASSET_TIER_OFFSET = 1;
+  public static final int HOST_FIXED_INTEREST_RATE_BPS_OFFSET = 2;
+  public static final int MIN_DELEVERAGING_BONUS_BPS_OFFSET = 4;
+  public static final int BLOCK_CTOKEN_USAGE_OFFSET = 6;
+  public static final int RESERVED_1_OFFSET = 7;
+  public static final int PROTOCOL_ORDER_EXECUTION_FEE_PCT_OFFSET = 13;
+  public static final int PROTOCOL_TAKE_RATE_PCT_OFFSET = 14;
+  public static final int PROTOCOL_LIQUIDATION_FEE_PCT_OFFSET = 15;
+  public static final int LOAN_TO_VALUE_PCT_OFFSET = 16;
+  public static final int LIQUIDATION_THRESHOLD_PCT_OFFSET = 17;
+  public static final int MIN_LIQUIDATION_BONUS_BPS_OFFSET = 18;
+  public static final int MAX_LIQUIDATION_BONUS_BPS_OFFSET = 20;
+  public static final int BAD_DEBT_LIQUIDATION_BONUS_BPS_OFFSET = 22;
+  public static final int DELEVERAGING_MARGIN_CALL_PERIOD_SECS_OFFSET = 24;
+  public static final int DELEVERAGING_THRESHOLD_DECREASE_BPS_PER_DAY_OFFSET = 32;
+  public static final int FEES_OFFSET = 40;
+  public static final int BORROW_RATE_CURVE_OFFSET = 64;
+  public static final int BORROW_FACTOR_PCT_OFFSET = 152;
+  public static final int DEPOSIT_LIMIT_OFFSET = 160;
+  public static final int BORROW_LIMIT_OFFSET = 168;
+  public static final int TOKEN_INFO_OFFSET = 176;
+  public static final int DEPOSIT_WITHDRAWAL_CAP_OFFSET = 560;
+  public static final int DEBT_WITHDRAWAL_CAP_OFFSET = 592;
+  public static final int ELEVATION_GROUPS_OFFSET = 624;
+  public static final int DISABLE_USAGE_AS_COLL_OUTSIDE_EMODE_OFFSET = 644;
+  public static final int UTILIZATION_LIMIT_BLOCK_BORROWING_ABOVE_PCT_OFFSET = 645;
+  public static final int AUTODELEVERAGE_ENABLED_OFFSET = 646;
+  public static final int PROPOSER_AUTHORITY_LOCKED_OFFSET = 647;
+  public static final int BORROW_LIMIT_OUTSIDE_ELEVATION_GROUP_OFFSET = 648;
+  public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_OFFSET = 656;
+  public static final int DELEVERAGING_BONUS_INCREASE_BPS_PER_DAY_OFFSET = 912;
+
   public static ReserveConfig read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

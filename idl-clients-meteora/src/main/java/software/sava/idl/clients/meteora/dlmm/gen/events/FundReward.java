@@ -18,6 +18,11 @@ public record FundReward(Discriminator discriminator,
   public static final int BYTES = 88;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 228, 58, 130, 145, 170, 79, 204);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FUNDER_OFFSET = 40;
+  public static final int REWARD_INDEX_OFFSET = 72;
+  public static final int AMOUNT_OFFSET = 80;
+
   public static FundReward read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -9,6 +9,8 @@ public record V3(int confidenceFactor) implements SerDe {
 
   public static final int BYTES = 4;
 
+  public static final int CONFIDENCE_FACTOR_OFFSET = 0;
+
   public static V3 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

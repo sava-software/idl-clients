@@ -12,6 +12,9 @@ public record OracleQuoteVerifyRequestEvent(Discriminator discriminator, PublicK
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(203, 209, 79, 0, 20, 71, 226, 202);
 
+  public static final int QUOTE_OFFSET = 8;
+  public static final int ORACLE_OFFSET = 40;
+
   public static OracleQuoteVerifyRequestEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

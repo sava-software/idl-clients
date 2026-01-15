@@ -11,6 +11,9 @@ public record TrustedSignerInfo(PublicKey pubkey, long expiresAt) implements Ser
 
   public static final int BYTES = 40;
 
+  public static final int PUBKEY_OFFSET = 0;
+  public static final int EXPIRES_AT_OFFSET = 32;
+
   public static TrustedSignerInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

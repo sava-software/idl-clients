@@ -60,6 +60,13 @@ public record OrderActionRecord(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int ACTION_OFFSET = 16;
+  public static final int ACTION_EXPLANATION_OFFSET = 17;
+  public static final int MARKET_INDEX_OFFSET = 18;
+  public static final int MARKET_TYPE_OFFSET = 20;
+  public static final int FILLER_OFFSET = 22;
+
   public static OrderActionRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

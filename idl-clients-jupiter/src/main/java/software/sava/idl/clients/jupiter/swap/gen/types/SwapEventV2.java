@@ -14,6 +14,11 @@ public record SwapEventV2(PublicKey inputMint,
 
   public static final int BYTES = 80;
 
+  public static final int INPUT_MINT_OFFSET = 0;
+  public static final int INPUT_AMOUNT_OFFSET = 32;
+  public static final int OUTPUT_MINT_OFFSET = 40;
+  public static final int OUTPUT_AMOUNT_OFFSET = 72;
+
   public static SwapEventV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

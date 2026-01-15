@@ -26,6 +26,19 @@ public record LiqPool(PublicKey lpMint,
 
   public static final int BYTES = 111;
 
+  public static final int LP_MINT_OFFSET = 0;
+  public static final int LP_MINT_AUTHORITY_BUMP_SEED_OFFSET = 32;
+  public static final int SOL_LEG_BUMP_SEED_OFFSET = 33;
+  public static final int MSOL_LEG_AUTHORITY_BUMP_SEED_OFFSET = 34;
+  public static final int MSOL_LEG_OFFSET = 35;
+  public static final int LP_LIQUIDITY_TARGET_OFFSET = 67;
+  public static final int LP_MAX_FEE_OFFSET = 75;
+  public static final int LP_MIN_FEE_OFFSET = 79;
+  public static final int TREASURY_CUT_OFFSET = 83;
+  public static final int LP_SUPPLY_OFFSET = 87;
+  public static final int LENT_FROM_SOL_LEG_OFFSET = 95;
+  public static final int LIQUIDITY_SOL_CAP_OFFSET = 103;
+
   public static LiqPool read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -20,6 +20,9 @@ public sealed interface TransferArgs extends RustEnum permits
 
   record V1(long amount, AuthorizationData authorizationData) implements TransferArgs {
 
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int AUTHORIZATION_DATA_OFFSET = 9;
+
     public static V1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;

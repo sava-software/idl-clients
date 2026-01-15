@@ -20,6 +20,12 @@ public record DynamicFeeParameter(int filterPeriod,
 
   public static final int BYTES = 14;
 
+  public static final int FILTER_PERIOD_OFFSET = 0;
+  public static final int DECAY_PERIOD_OFFSET = 2;
+  public static final int REDUCTION_FACTOR_OFFSET = 4;
+  public static final int VARIABLE_FEE_CONTROL_OFFSET = 6;
+  public static final int MAX_VOLATILITY_ACCUMULATOR_OFFSET = 10;
+
   public static DynamicFeeParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

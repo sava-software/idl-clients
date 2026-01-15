@@ -12,6 +12,9 @@ public record OwnershipTransferred(Discriminator discriminator, PublicKey previo
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(172, 61, 205, 183, 250, 50, 38, 98);
 
+  public static final int PREVIOUS_OWNER_OFFSET = 8;
+  public static final int NEW_OWNER_OFFSET = 40;
+
   public static OwnershipTransferred read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -11,6 +11,8 @@ public record CandidateSwapResults(Discriminator discriminator, CandidateSwapRes
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(45, 9, 244, 30, 229, 52, 168, 123);
 
+  public static final int RESULTS_OFFSET = 8;
+
   public static CandidateSwapResults read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -13,6 +13,9 @@ public record PrelaunchOracleParams(int perpMarketIndex,
                                     OptionalLong price,
                                     OptionalLong maxPrice) implements SerDe {
 
+  public static final int PERP_MARKET_INDEX_OFFSET = 0;
+  public static final int PRICE_OFFSET = 3;
+
   public static PrelaunchOracleParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -110,6 +110,9 @@ public final class FarmsProgram {
     public static final int BYTES = 41;
     public static final int VALUE_LEN = 32;
 
+    public static final int MODE_OFFSET = 8;
+    public static final int VALUE_OFFSET = 9;
+
     public static UpdateGlobalConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -366,6 +369,9 @@ public final class FarmsProgram {
 
     public static final int BYTES = 24;
 
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int REWARD_INDEX_OFFSET = 16;
+
     public static AddRewardsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -440,6 +446,9 @@ public final class FarmsProgram {
     public static UpdateFarmConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MODE_OFFSET = 8;
+    public static final int DATA_OFFSET = 10;
 
     public static UpdateFarmConfigIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -632,6 +641,10 @@ public final class FarmsProgram {
 
     public static final int BYTES = 32;
 
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 16;
+    public static final int EXPECTED_REWARD_ISSUED_UNCLAIMED_OFFSET = 24;
+
     public static RewardUserOnceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -756,6 +769,8 @@ public final class FarmsProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static StakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -822,6 +837,8 @@ public final class FarmsProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int NEW_AMOUNT_OFFSET = 8;
 
     public static SetStakeDelegatedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -924,6 +941,8 @@ public final class FarmsProgram {
 
     public static final int BYTES = 16;
 
+    public static final int REWARD_INDEX_OFFSET = 8;
+
     public static HarvestRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -996,6 +1015,8 @@ public final class FarmsProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int STAKE_SHARES_SCALED_OFFSET = 8;
 
     public static UnstakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1156,6 +1177,8 @@ public final class FarmsProgram {
 
     public static final int BYTES = 16;
 
+    public static final int AMOUNT_OFFSET = 8;
+
     public static WithdrawTreasuryIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1230,6 +1253,8 @@ public final class FarmsProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
 
     public static DepositToFarmVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1309,6 +1334,8 @@ public final class FarmsProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
 
     public static WithdrawFromFarmVaultIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1494,6 +1521,9 @@ public final class FarmsProgram {
 
     public static final int BYTES = 24;
 
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int REWARD_INDEX_OFFSET = 16;
+
     public static WithdrawRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1618,6 +1648,12 @@ public final class FarmsProgram {
     }
 
     public static final int BYTES = 13;
+
+    public static final int GLOBAL_CONFIG_OPTION_KIND_OFFSET = 8;
+    public static final int FARM_CONFIG_OPTION_KIND_OFFSET = 9;
+    public static final int TIME_UNIT_OFFSET = 10;
+    public static final int LOCKING_MODE_OFFSET = 11;
+    public static final int REWARD_TYPE_OFFSET = 12;
 
     public static IdlMissingTypesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

@@ -13,6 +13,10 @@ public record LiquidityParameter(long amountX,
                                  long amountY,
                                  BinLiquidityDistribution[] binLiquidityDist) implements SerDe {
 
+  public static final int AMOUNT_X_OFFSET = 0;
+  public static final int AMOUNT_Y_OFFSET = 8;
+  public static final int BIN_LIQUIDITY_DIST_OFFSET = 16;
+
   public static LiquidityParameter read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

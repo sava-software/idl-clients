@@ -20,6 +20,13 @@ public record LiquidateBorrowForPerpPnlRecord(int perpMarketIndex,
 
   public static final int BYTES = 52;
 
+  public static final int PERP_MARKET_INDEX_OFFSET = 0;
+  public static final int MARKET_ORACLE_PRICE_OFFSET = 2;
+  public static final int PNL_TRANSFER_OFFSET = 10;
+  public static final int LIABILITY_MARKET_INDEX_OFFSET = 26;
+  public static final int LIABILITY_PRICE_OFFSET = 28;
+  public static final int LIABILITY_TRANSFER_OFFSET = 36;
+
   public static LiquidateBorrowForPerpPnlRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

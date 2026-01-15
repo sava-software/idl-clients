@@ -19,6 +19,12 @@ public record IncreasePositionLength(Discriminator discriminator,
   public static final int BYTES = 107;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(157, 239, 42, 204, 30, 56, 223, 46);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int LENGTH_TO_ADD_OFFSET = 104;
+  public static final int SIDE_OFFSET = 106;
+
   public static IncreasePositionLength read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

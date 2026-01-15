@@ -16,6 +16,11 @@ public record WithdrawResultEvent(Discriminator discriminator,
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
 
+  public static final int SHARES_TO_BURN_OFFSET = 8;
+  public static final int AVAILABLE_TO_SEND_TO_USER_OFFSET = 16;
+  public static final int INVESTED_TO_DISINVEST_CTOKENS_OFFSET = 24;
+  public static final int INVESTED_LIQUIDITY_TO_SEND_TO_USER_OFFSET = 32;
+
   public static WithdrawResultEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

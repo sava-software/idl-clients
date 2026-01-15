@@ -77,6 +77,33 @@ public record Order(long slot,
   public static final int BYTES = 96;
   public static final int PADDING_LEN = 1;
 
+  public static final int SLOT_OFFSET = 0;
+  public static final int PRICE_OFFSET = 8;
+  public static final int BASE_ASSET_AMOUNT_OFFSET = 16;
+  public static final int BASE_ASSET_AMOUNT_FILLED_OFFSET = 24;
+  public static final int QUOTE_ASSET_AMOUNT_FILLED_OFFSET = 32;
+  public static final int TRIGGER_PRICE_OFFSET = 40;
+  public static final int AUCTION_START_PRICE_OFFSET = 48;
+  public static final int AUCTION_END_PRICE_OFFSET = 56;
+  public static final int MAX_TS_OFFSET = 64;
+  public static final int ORACLE_PRICE_OFFSET_OFFSET = 72;
+  public static final int ORDER_ID_OFFSET = 76;
+  public static final int MARKET_INDEX_OFFSET = 80;
+  public static final int STATUS_OFFSET = 82;
+  public static final int ORDER_TYPE_OFFSET = 83;
+  public static final int MARKET_TYPE_OFFSET = 84;
+  public static final int USER_ORDER_ID_OFFSET = 85;
+  public static final int EXISTING_POSITION_DIRECTION_OFFSET = 86;
+  public static final int DIRECTION_OFFSET = 87;
+  public static final int REDUCE_ONLY_OFFSET = 88;
+  public static final int POST_ONLY_OFFSET = 89;
+  public static final int IMMEDIATE_OR_CANCEL_OFFSET = 90;
+  public static final int TRIGGER_CONDITION_OFFSET = 91;
+  public static final int AUCTION_DURATION_OFFSET = 92;
+  public static final int POSTED_SLOT_TAIL_OFFSET = 93;
+  public static final int BIT_FLAGS_OFFSET = 94;
+  public static final int PADDING_OFFSET = 95;
+
   public static Order read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

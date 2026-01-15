@@ -12,6 +12,8 @@ public record QueueInitEvent(Discriminator discriminator, PublicKey queue) imple
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(44, 137, 99, 227, 107, 8, 30, 105);
 
+  public static final int QUEUE_OFFSET = 8;
+
   public static QueueInitEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

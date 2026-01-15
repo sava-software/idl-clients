@@ -21,6 +21,12 @@ public record DeleteUserRecord(Discriminator discriminator,
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(218, 84, 214, 163, 196, 206, 189, 250);
 
+  public static final int TS_OFFSET = 8;
+  public static final int USER_AUTHORITY_OFFSET = 16;
+  public static final int USER_OFFSET = 48;
+  public static final int SUB_ACCOUNT_ID_OFFSET = 80;
+  public static final int KEEPER_OFFSET = 83;
+
   public static DeleteUserRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

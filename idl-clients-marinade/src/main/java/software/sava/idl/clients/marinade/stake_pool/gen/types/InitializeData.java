@@ -21,6 +21,16 @@ public record InitializeData(PublicKey adminAuthority,
 
   public static final int BYTES = 144;
 
+  public static final int ADMIN_AUTHORITY_OFFSET = 0;
+  public static final int VALIDATOR_MANAGER_AUTHORITY_OFFSET = 32;
+  public static final int MIN_STAKE_OFFSET = 64;
+  public static final int REWARDS_FEE_OFFSET = 72;
+  public static final int LIQ_POOL_OFFSET = 76;
+  public static final int ADDITIONAL_STAKE_RECORD_SPACE_OFFSET = 96;
+  public static final int ADDITIONAL_VALIDATOR_RECORD_SPACE_OFFSET = 100;
+  public static final int SLOTS_FOR_STAKE_DELTA_OFFSET = 104;
+  public static final int PAUSE_AUTHORITY_OFFSET = 112;
+
   public static InitializeData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

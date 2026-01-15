@@ -25,6 +25,16 @@ public record InsuranceFund(PublicKey vault,
 
   public static final int BYTES = 112;
 
+  public static final int VAULT_OFFSET = 0;
+  public static final int TOTAL_SHARES_OFFSET = 32;
+  public static final int USER_SHARES_OFFSET = 48;
+  public static final int SHARES_BASE_OFFSET = 64;
+  public static final int UNSTAKING_PERIOD_OFFSET = 80;
+  public static final int LAST_REVENUE_SETTLE_TS_OFFSET = 88;
+  public static final int REVENUE_SETTLE_PERIOD_OFFSET = 96;
+  public static final int TOTAL_FACTOR_OFFSET = 104;
+  public static final int USER_FACTOR_OFFSET = 108;
+
   public static InsuranceFund read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

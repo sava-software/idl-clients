@@ -11,6 +11,8 @@ public record LogUpdateAuths(Discriminator discriminator, AddressBool[] authStat
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(88, 80, 109, 48, 111, 203, 76, 251);
 
+  public static final int AUTH_STATUS_OFFSET = 8;
+
   public static LogUpdateAuths read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

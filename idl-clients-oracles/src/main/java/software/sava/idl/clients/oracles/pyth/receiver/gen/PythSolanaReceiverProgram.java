@@ -67,6 +67,8 @@ public final class PythSolanaReceiverProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int INITIAL_CONFIG_OFFSET = 8;
+
     public static InitializeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -128,6 +130,8 @@ public final class PythSolanaReceiverProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int TARGET_GOVERNANCE_AUTHORITY_OFFSET = 8;
 
     public static RequestGovernanceAuthorityTransferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -240,6 +244,8 @@ public final class PythSolanaReceiverProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int VALID_DATA_SOURCES_OFFSET = 8;
+
     public static SetDataSourcesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -301,6 +307,8 @@ public final class PythSolanaReceiverProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int SINGLE_UPDATE_FEE_IN_LAMPORTS_OFFSET = 8;
 
     public static SetFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -365,6 +373,8 @@ public final class PythSolanaReceiverProgram {
 
     public static final int BYTES = 40;
 
+    public static final int WORMHOLE_OFFSET = 8;
+
     public static SetWormholeAddressIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -427,6 +437,8 @@ public final class PythSolanaReceiverProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int MINIMUM_SIGNATURES_OFFSET = 8;
 
     public static SetMinimumSignaturesIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -548,6 +560,8 @@ public final class PythSolanaReceiverProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static PostUpdateAtomicIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -643,6 +657,8 @@ public final class PythSolanaReceiverProgram {
     public static PostUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PostUpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -743,6 +759,8 @@ public final class PythSolanaReceiverProgram {
     public static PostTwapUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static PostTwapUpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

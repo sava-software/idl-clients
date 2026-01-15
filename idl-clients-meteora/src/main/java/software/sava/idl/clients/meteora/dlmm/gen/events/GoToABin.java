@@ -17,6 +17,10 @@ public record GoToABin(Discriminator discriminator,
   public static final int BYTES = 48;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(59, 138, 76, 68, 138, 131, 176, 67);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FROM_BIN_ID_OFFSET = 40;
+  public static final int TO_BIN_ID_OFFSET = 44;
+
   public static GoToABin read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

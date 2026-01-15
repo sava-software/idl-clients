@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record UpdateVaultProtocolParams(OptionalLong protocolFee, OptionalInt protocolProfitShare) implements SerDe {
 
+  public static final int PROTOCOL_FEE_OFFSET = 1;
+
   public static UpdateVaultProtocolParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

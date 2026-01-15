@@ -13,6 +13,8 @@ public record UpdateMetadataAccountArgsV2(DataV2 data,
                                           Boolean primarySaleHappened,
                                           Boolean isMutable) implements SerDe {
 
+  public static final int DATA_OFFSET = 1;
+
   public static UpdateMetadataAccountArgsV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

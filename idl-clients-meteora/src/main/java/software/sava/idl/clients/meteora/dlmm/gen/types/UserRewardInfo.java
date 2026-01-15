@@ -11,6 +11,9 @@ public record UserRewardInfo(BigInteger[] rewardPerTokenCompletes, long[] reward
   public static final int REWARD_PER_TOKEN_COMPLETES_LEN = 2;
   public static final int REWARD_PENDINGS_LEN = 2;
 
+  public static final int REWARD_PER_TOKEN_COMPLETES_OFFSET = 0;
+  public static final int REWARD_PENDINGS_OFFSET = 32;
+
   public static UserRewardInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

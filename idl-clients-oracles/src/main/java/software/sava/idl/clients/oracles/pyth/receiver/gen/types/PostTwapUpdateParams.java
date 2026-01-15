@@ -7,6 +7,8 @@ public record PostTwapUpdateParams(MerklePriceUpdate startMerklePriceUpdate,
                                    MerklePriceUpdate endMerklePriceUpdate,
                                    int treasuryId) implements SerDe {
 
+  public static final int START_MERKLE_PRICE_UPDATE_OFFSET = 0;
+
   public static PostTwapUpdateParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

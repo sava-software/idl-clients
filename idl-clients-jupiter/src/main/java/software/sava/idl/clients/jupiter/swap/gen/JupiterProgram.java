@@ -70,6 +70,8 @@ public final class JupiterProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ID_OFFSET = 8;
+
     public static ClaimIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -158,6 +160,8 @@ public final class JupiterProgram {
 
     public static final int BYTES = 9;
 
+    public static final int ID_OFFSET = 8;
+
     public static ClaimTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -240,6 +244,9 @@ public final class JupiterProgram {
     }
 
     public static final int BYTES = 10;
+
+    public static final int ID_OFFSET = 8;
+    public static final int BURN_ALL_OFFSET = 9;
 
     public static CloseTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -348,6 +355,8 @@ public final class JupiterProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int BUMP_OFFSET = 8;
 
     public static CreateTokenAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -475,6 +484,8 @@ public final class JupiterProgram {
     public static ExactOutRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ROUTE_PLAN_OFFSET = 8;
 
     public static ExactOutRouteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -619,6 +630,8 @@ public final class JupiterProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ROUTE_PLAN_OFFSET = 8;
+
     public static RouteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -759,6 +772,8 @@ public final class JupiterProgram {
     public static RouteWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ROUTE_PLAN_OFFSET = 8;
 
     public static RouteWithTokenLedgerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -941,6 +956,9 @@ public final class JupiterProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ID_OFFSET = 8;
+    public static final int ROUTE_PLAN_OFFSET = 9;
+
     public static SharedAccountsExactOutRouteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1112,6 +1130,9 @@ public final class JupiterProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ID_OFFSET = 8;
+    public static final int ROUTE_PLAN_OFFSET = 9;
+
     public static SharedAccountsRouteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1281,6 +1302,9 @@ public final class JupiterProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int ID_OFFSET = 8;
+    public static final int ROUTE_PLAN_OFFSET = 9;
+
     public static SharedAccountsRouteWithTokenLedgerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1434,6 +1458,13 @@ public final class JupiterProgram {
     public static ExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int OUT_AMOUNT_OFFSET = 8;
+    public static final int QUOTED_IN_AMOUNT_OFFSET = 16;
+    public static final int SLIPPAGE_BPS_OFFSET = 24;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 26;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 28;
+    public static final int ROUTE_PLAN_OFFSET = 30;
 
     public static ExactOutRouteV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1594,6 +1625,13 @@ public final class JupiterProgram {
     public static RouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int IN_AMOUNT_OFFSET = 8;
+    public static final int QUOTED_OUT_AMOUNT_OFFSET = 16;
+    public static final int SLIPPAGE_BPS_OFFSET = 24;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 26;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 28;
+    public static final int ROUTE_PLAN_OFFSET = 30;
 
     public static RouteV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1766,6 +1804,14 @@ public final class JupiterProgram {
     public static SharedAccountsExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ID_OFFSET = 8;
+    public static final int OUT_AMOUNT_OFFSET = 9;
+    public static final int QUOTED_IN_AMOUNT_OFFSET = 17;
+    public static final int SLIPPAGE_BPS_OFFSET = 25;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 27;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 29;
+    public static final int ROUTE_PLAN_OFFSET = 31;
 
     public static SharedAccountsExactOutRouteV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1944,6 +1990,14 @@ public final class JupiterProgram {
     public static SharedAccountsRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int ID_OFFSET = 8;
+    public static final int IN_AMOUNT_OFFSET = 9;
+    public static final int QUOTED_OUT_AMOUNT_OFFSET = 17;
+    public static final int SLIPPAGE_BPS_OFFSET = 25;
+    public static final int PLATFORM_FEE_BPS_OFFSET = 27;
+    public static final int POSITIVE_SLIPPAGE_BPS_OFFSET = 29;
+    public static final int ROUTE_PLAN_OFFSET = 31;
 
     public static SharedAccountsRouteV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

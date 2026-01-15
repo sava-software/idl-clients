@@ -25,6 +25,9 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     public static final int BYTES = 9;
 
+    public static final int SWAP_ID_OFFSET = 0;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 8;
+
     public static HumidiFi read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -72,6 +75,9 @@ public sealed interface CandidateSwap extends RustEnum permits
   record HumidiFiV2(long swapId, boolean isBaseToQuote) implements CandidateSwap {
 
     public static final int BYTES = 9;
+
+    public static final int SWAP_ID_OFFSET = 0;
+    public static final int IS_BASE_TO_QUOTE_OFFSET = 8;
 
     public static HumidiFiV2 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

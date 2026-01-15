@@ -9,6 +9,8 @@ public record MintNewEditionFromMasterEditionViaTokenArgs(long edition) implemen
 
   public static final int BYTES = 8;
 
+  public static final int EDITION_OFFSET = 0;
+
   public static MintNewEditionFromMasterEditionViaTokenArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

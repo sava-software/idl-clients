@@ -14,6 +14,11 @@ public record DatedPrice(Price price,
   public static final int BYTES = 56;
   public static final int GENERIC_DATA_LEN = 24;
 
+  public static final int PRICE_OFFSET = 0;
+  public static final int LAST_UPDATED_SLOT_OFFSET = 16;
+  public static final int UNIX_TIMESTAMP_OFFSET = 24;
+  public static final int GENERIC_DATA_OFFSET = 32;
+
   public static DatedPrice read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

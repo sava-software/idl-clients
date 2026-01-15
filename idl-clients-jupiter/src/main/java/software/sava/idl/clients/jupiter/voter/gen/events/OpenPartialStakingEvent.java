@@ -18,6 +18,11 @@ public record OpenPartialStakingEvent(Discriminator discriminator,
   public static final int BYTES = 88;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int PARTIAL_UNSTAKE_OFFSET = 8;
+  public static final int ESCROW_OFFSET = 40;
+  public static final int AMOUNT_OFFSET = 72;
+  public static final int EXPIRATION_OFFSET = 80;
+
   public static OpenPartialStakingEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

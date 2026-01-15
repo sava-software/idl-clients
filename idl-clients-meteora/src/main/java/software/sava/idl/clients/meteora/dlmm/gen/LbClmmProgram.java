@@ -145,6 +145,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
+
     public static AddLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -257,6 +259,8 @@ public final class LbClmmProgram {
     public static AddLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
 
     public static AddLiquidity2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -381,6 +385,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 105;
 
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
+
     public static AddLiquidityByStrategyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -494,6 +500,9 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 105;
+
     public static AddLiquidityByStrategy2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -600,6 +609,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 97;
+
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
 
     public static AddLiquidityByStrategyOneSideIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -719,6 +730,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
+
     public static AddLiquidityByWeightIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -820,6 +833,8 @@ public final class LbClmmProgram {
     public static AddLiquidityOneSideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
 
     public static AddLiquidityOneSideIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -923,6 +938,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMETER_OFFSET = 8;
+
     public static AddLiquidityOneSidePreciseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1019,6 +1036,8 @@ public final class LbClmmProgram {
     public static AddLiquidityOneSidePrecise2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
 
     public static AddLiquidityOneSidePrecise2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1221,6 +1240,10 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MIN_BIN_ID_OFFSET = 8;
+    public static final int MAX_BIN_ID_OFFSET = 12;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 16;
+
     public static ClaimFee2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1326,6 +1349,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int REWARD_INDEX_OFFSET = 8;
 
     public static ClaimRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1442,6 +1467,11 @@ public final class LbClmmProgram {
     public static ClaimReward2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int MIN_BIN_ID_OFFSET = 16;
+    public static final int MAX_BIN_ID_OFFSET = 20;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 24;
 
     public static ClaimReward2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1813,6 +1843,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 24;
 
+    public static final int PERMISSION_OFFSET = 8;
+
     public static CreateOperatorAccountIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1896,6 +1928,9 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 11;
 
+    public static final int LENGTH_TO_REMOVE_OFFSET = 8;
+    public static final int SIDE_OFFSET = 10;
+
     public static DecreasePositionLengthIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1958,6 +1993,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 14;
+
+    public static final int IX_OFFSET = 8;
 
     public static ForIdlTypeGenerationDoNotCallIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2070,6 +2107,11 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int AMOUNT_OFFSET = 16;
+    public static final int CARRY_FORWARD_OFFSET = 24;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 25;
+
     public static FundRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2166,6 +2208,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 12;
 
+    public static final int BIN_ID_OFFSET = 8;
+
     public static GoToABinIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2240,6 +2284,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int LENGTH_TO_ADD_OFFSET = 8;
 
     public static IncreaseOracleLengthIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2328,6 +2374,9 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 11;
 
+    public static final int LENGTH_TO_ADD_OFFSET = 8;
+    public static final int SIDE_OFFSET = 10;
+
     public static IncreasePositionLengthIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2415,6 +2464,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 12;
 
+    public static final int MINIMUM_UPPER_BIN_ID_OFFSET = 8;
+
     public static IncreasePositionLength2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2485,6 +2536,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int INDEX_OFFSET = 8;
 
     public static InitializeBinArrayIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2636,6 +2689,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeCustomizablePermissionlessLbPairIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2758,6 +2813,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static InitializeCustomizablePermissionlessLbPair2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2873,6 +2930,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 14;
+
+    public static final int ACTIVE_ID_OFFSET = 8;
+    public static final int BIN_STEP_OFFSET = 12;
 
     public static InitializeLbPairIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2998,6 +3058,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 108;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static InitializeLbPair2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3127,6 +3189,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 20;
 
+    public static final int IX_DATA_OFFSET = 8;
+
     public static InitializePermissionLbPairIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3216,6 +3280,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int LOWER_BIN_ID_OFFSET = 8;
+    public static final int WIDTH_OFFSET = 12;
 
     public static InitializePositionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3307,6 +3374,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int LOWER_BIN_ID_OFFSET = 8;
+    public static final int WIDTH_OFFSET = 12;
 
     public static InitializePosition2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3436,6 +3506,11 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 56;
 
+    public static final int LOWER_BIN_ID_OFFSET = 8;
+    public static final int WIDTH_OFFSET = 12;
+    public static final int FEE_OWNER_OFFSET = 16;
+    public static final int LOCK_RELEASE_POINT_OFFSET = 48;
+
     public static InitializePositionByOperatorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3549,6 +3624,9 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 16;
 
+    public static final int LOWER_BIN_ID_OFFSET = 8;
+    public static final int WIDTH_OFFSET = 12;
+
     public static InitializePositionPdaIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3627,6 +3705,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 32;
+
+    public static final int IX_OFFSET = 8;
 
     public static InitializePresetParameterIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3744,6 +3824,10 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 56;
+
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int REWARD_DURATION_OFFSET = 16;
+    public static final int FUNDER_OFFSET = 24;
 
     public static InitializeRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3977,6 +4061,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int PARAMS_OFFSET = 8;
+
     public static RebalanceLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4181,6 +4267,8 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int BIN_LIQUIDITY_REMOVAL_OFFSET = 8;
+
     public static RemoveLiquidityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4297,6 +4385,8 @@ public final class LbClmmProgram {
     public static RemoveLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int BIN_LIQUIDITY_REMOVAL_OFFSET = 8;
 
     public static RemoveLiquidity2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4437,6 +4527,10 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 18;
+
+    public static final int FROM_BIN_ID_OFFSET = 8;
+    public static final int TO_BIN_ID_OFFSET = 12;
+    public static final int BPS_TO_REMOVE_OFFSET = 16;
 
     public static RemoveLiquidityByRangeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4583,6 +4677,11 @@ public final class LbClmmProgram {
     public static RemoveLiquidityByRange2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int FROM_BIN_ID_OFFSET = 8;
+    public static final int TO_BIN_ID_OFFSET = 12;
+    public static final int BPS_TO_REMOVE_OFFSET = 16;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 18;
 
     public static RemoveLiquidityByRange2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4753,6 +4852,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 16;
 
+    public static final int ACTIVATION_POINT_OFFSET = 8;
+
     public static SetActivationPointIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4820,6 +4921,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 9;
 
+    public static final int STATUS_OFFSET = 8;
+
     public static SetPairStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4882,6 +4985,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int STATUS_OFFSET = 8;
 
     public static SetPairStatusPermissionlessIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4946,6 +5051,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 16;
 
+    public static final int PRE_ACTIVATION_DURATION_OFFSET = 8;
+
     public static SetPreActivationDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5008,6 +5115,8 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PRE_ACTIVATION_SWAP_ADDRESS_OFFSET = 8;
 
     public static SetPreActivationSwapAddressIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5129,6 +5238,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int AMOUNT_IN_OFFSET = 8;
+    public static final int MIN_AMOUNT_OUT_OFFSET = 16;
 
     public static SwapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5270,6 +5382,10 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int AMOUNT_IN_OFFSET = 8;
+    public static final int MIN_AMOUNT_OUT_OFFSET = 16;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 24;
+
     public static Swap2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5397,6 +5513,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 24;
+
+    public static final int MAX_IN_AMOUNT_OFFSET = 8;
+    public static final int OUT_AMOUNT_OFFSET = 16;
 
     public static SwapExactOutIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5538,6 +5657,10 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MAX_IN_AMOUNT_OFFSET = 8;
+    public static final int OUT_AMOUNT_OFFSET = 16;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 24;
+
     public static SwapExactOut2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5678,6 +5801,9 @@ public final class LbClmmProgram {
     public static SwapWithPriceImpactIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int AMOUNT_IN_OFFSET = 8;
+    public static final int ACTIVE_ID_OFFSET = 17;
 
     public static SwapWithPriceImpactIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5837,6 +5963,9 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int AMOUNT_IN_OFFSET = 8;
+    public static final int ACTIVE_ID_OFFSET = 17;
+
     public static SwapWithPriceImpact2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -5933,6 +6062,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 13;
 
+    public static final int FEE_PARAMETER_OFFSET = 8;
+
     public static UpdateBaseFeeParametersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6007,6 +6138,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 22;
 
+    public static final int FEE_PARAMETER_OFFSET = 8;
+
     public static UpdateDynamicFeeParametersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6076,6 +6209,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int MIN_BIN_ID_OFFSET = 8;
+    public static final int MAX_BIN_ID_OFFSET = 12;
 
     public static UpdateFeesAndReward2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6189,6 +6325,8 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 40;
 
+    public static final int OPERATOR_OFFSET = 8;
+
     public static UpdatePositionOperatorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6272,6 +6410,9 @@ public final class LbClmmProgram {
 
     public static final int BYTES = 24;
 
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int NEW_DURATION_OFFSET = 16;
+
     public static UpdateRewardDurationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6354,6 +6495,9 @@ public final class LbClmmProgram {
     }
 
     public static final int BYTES = 48;
+
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int NEW_FUNDER_OFFSET = 16;
 
     public static UpdateRewardFunderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6455,6 +6599,9 @@ public final class LbClmmProgram {
     public static WithdrawIneligibleRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int REWARD_INDEX_OFFSET = 8;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 16;
 
     public static WithdrawIneligibleRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -6575,6 +6722,10 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MAX_AMOUNT_X_OFFSET = 8;
+    public static final int MAX_AMOUNT_Y_OFFSET = 16;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 24;
+
     public static WithdrawProtocolFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -6672,6 +6823,9 @@ public final class LbClmmProgram {
     public static ZapProtocolFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MAX_AMOUNT_OFFSET = 8;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 16;
 
     public static ZapProtocolFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

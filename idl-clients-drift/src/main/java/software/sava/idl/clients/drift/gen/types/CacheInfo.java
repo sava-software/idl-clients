@@ -40,6 +40,28 @@ public record CacheInfo(PublicKey oracle,
   public static final int BYTES = 224;
   public static final int PADDING_LEN = 34;
 
+  public static final int ORACLE_OFFSET = 0;
+  public static final int LAST_FEE_POOL_TOKEN_AMOUNT_OFFSET = 32;
+  public static final int LAST_NET_PNL_POOL_TOKEN_AMOUNT_OFFSET = 48;
+  public static final int LAST_EXCHANGE_FEES_OFFSET = 64;
+  public static final int LAST_SETTLE_AMM_EX_FEES_OFFSET = 80;
+  public static final int LAST_SETTLE_AMM_PNL_OFFSET = 96;
+  public static final int POSITION_OFFSET = 112;
+  public static final int SLOT_OFFSET = 120;
+  public static final int LAST_SETTLE_AMOUNT_OFFSET = 128;
+  public static final int LAST_SETTLE_SLOT_OFFSET = 136;
+  public static final int LAST_SETTLE_TS_OFFSET = 144;
+  public static final int QUOTE_OWED_FROM_LP_POOL_OFFSET = 152;
+  public static final int AMM_INVENTORY_LIMIT_OFFSET = 160;
+  public static final int ORACLE_PRICE_OFFSET = 168;
+  public static final int ORACLE_SLOT_OFFSET = 176;
+  public static final int MARKET_INDEX_OFFSET = 184;
+  public static final int ORACLE_SOURCE_OFFSET = 186;
+  public static final int ORACLE_VALIDITY_OFFSET = 187;
+  public static final int LP_STATUS_FOR_PERP_MARKET_OFFSET = 188;
+  public static final int AMM_POSITION_SCALAR_OFFSET = 189;
+  public static final int PADDING_OFFSET = 190;
+
   public static CacheInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

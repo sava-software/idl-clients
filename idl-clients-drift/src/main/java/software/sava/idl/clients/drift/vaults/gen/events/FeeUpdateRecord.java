@@ -27,6 +27,17 @@ public record FeeUpdateRecord(Discriminator discriminator,
   public static final int BYTES = 89;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(138, 224, 172, 3, 244, 19, 253, 232);
 
+  public static final int TS_OFFSET = 8;
+  public static final int ACTION_OFFSET = 16;
+  public static final int TIMELOCK_END_TS_OFFSET = 17;
+  public static final int VAULT_OFFSET = 25;
+  public static final int OLD_MANAGEMENT_FEE_OFFSET = 57;
+  public static final int OLD_PROFIT_SHARE_OFFSET = 65;
+  public static final int OLD_HURDLE_RATE_OFFSET = 69;
+  public static final int NEW_MANAGEMENT_FEE_OFFSET = 73;
+  public static final int NEW_PROFIT_SHARE_OFFSET = 81;
+  public static final int NEW_HURDLE_RATE_OFFSET = 85;
+
   public static FeeUpdateRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

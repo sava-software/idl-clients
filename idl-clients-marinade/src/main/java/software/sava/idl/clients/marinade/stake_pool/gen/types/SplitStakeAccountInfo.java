@@ -11,6 +11,9 @@ public record SplitStakeAccountInfo(PublicKey account, int index) implements Ser
 
   public static final int BYTES = 36;
 
+  public static final int ACCOUNT_OFFSET = 0;
+  public static final int INDEX_OFFSET = 32;
+
   public static SplitStakeAccountInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

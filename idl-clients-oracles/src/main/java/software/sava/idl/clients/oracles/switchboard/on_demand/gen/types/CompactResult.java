@@ -16,6 +16,10 @@ public record CompactResult(float stdDev,
 
   public static final int BYTES = 16;
 
+  public static final int STD_DEV_OFFSET = 0;
+  public static final int MEAN_OFFSET = 4;
+  public static final int SLOT_OFFSET = 8;
+
   public static CompactResult read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

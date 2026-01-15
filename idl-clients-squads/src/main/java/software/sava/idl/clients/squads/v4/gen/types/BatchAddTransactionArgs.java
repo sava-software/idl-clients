@@ -6,6 +6,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 /// @param ephemeralSigners Number of ephemeral signing PDAs required by the transaction.
 public record BatchAddTransactionArgs(int ephemeralSigners, byte[] transactionMessage) implements SerDe {
 
+  public static final int EPHEMERAL_SIGNERS_OFFSET = 0;
+  public static final int TRANSACTION_MESSAGE_OFFSET = 1;
+
   public static BatchAddTransactionArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

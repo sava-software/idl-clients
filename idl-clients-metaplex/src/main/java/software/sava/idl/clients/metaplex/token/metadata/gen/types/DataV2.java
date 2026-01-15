@@ -21,6 +21,8 @@ public record DataV2(String name, byte[] _name,
                      Collection collection,
                      Uses uses) implements SerDe {
 
+  public static final int NAME_OFFSET = 0;
+
   public static DataV2 createRecord(final String name,
                                     final String symbol,
                                     final String uri,

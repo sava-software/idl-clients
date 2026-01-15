@@ -13,6 +13,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 public record Payload(String key, byte[] _key, PayloadType payloadType) implements SerDe {
 
+  public static final int KEY_OFFSET = 0;
+
   public static Payload createRecord(final String key, final PayloadType payloadType) {
     return new Payload(key, key == null ? null : key.getBytes(UTF_8), payloadType);
   }

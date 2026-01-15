@@ -12,6 +12,8 @@ public record LogUpdateAuthority(Discriminator discriminator, PublicKey newAutho
   public static final int BYTES = 40;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(150, 152, 157, 143, 6, 135, 193, 101);
 
+  public static final int NEW_AUTHORITY_OFFSET = 8;
+
   public static LogUpdateAuthority read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

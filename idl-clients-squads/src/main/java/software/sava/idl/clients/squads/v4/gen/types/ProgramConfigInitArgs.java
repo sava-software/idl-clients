@@ -16,6 +16,10 @@ public record ProgramConfigInitArgs(PublicKey authority,
 
   public static final int BYTES = 72;
 
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int MULTISIG_CREATION_FEE_OFFSET = 32;
+  public static final int TREASURY_OFFSET = 40;
+
   public static ProgramConfigInitArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

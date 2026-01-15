@@ -18,6 +18,10 @@ public record WithdrawRequest(BigInteger shares,
 
   public static final int BYTES = 32;
 
+  public static final int SHARES_OFFSET = 0;
+  public static final int VALUE_OFFSET = 16;
+  public static final int TS_OFFSET = 24;
+
   public static WithdrawRequest read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

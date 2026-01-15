@@ -16,6 +16,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param memo Memo is used for indexing only.
 public record MultisigSetTimeLockArgs(int timeLock, String memo, byte[] _memo) implements SerDe {
 
+  public static final int TIME_LOCK_OFFSET = 0;
+  public static final int MEMO_OFFSET = 5;
+
   public static MultisigSetTimeLockArgs createRecord(final int timeLock, final String memo) {
     return new MultisigSetTimeLockArgs(timeLock, memo, memo == null ? null : memo.getBytes(UTF_8));
   }

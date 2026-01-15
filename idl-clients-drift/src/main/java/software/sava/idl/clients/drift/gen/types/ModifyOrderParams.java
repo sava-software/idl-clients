@@ -26,6 +26,8 @@ public record ModifyOrderParams(PositionDirection direction,
                                 OptionalLong auctionEndPrice,
                                 OptionalInt policy) implements SerDe {
 
+  public static final int DIRECTION_OFFSET = 1;
+
   public static ModifyOrderParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -15,6 +15,10 @@ public record SetVoteDelegateEvent(Discriminator discriminator,
   public static final int BYTES = 104;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int ESCROW_OWNER_OFFSET = 8;
+  public static final int OLD_DELEGATE_OFFSET = 40;
+  public static final int NEW_DELEGATE_OFFSET = 72;
+
   public static SetVoteDelegateEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

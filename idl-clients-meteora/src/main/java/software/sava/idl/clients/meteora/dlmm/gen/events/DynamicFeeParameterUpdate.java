@@ -27,6 +27,13 @@ public record DynamicFeeParameterUpdate(Discriminator discriminator,
   public static final int BYTES = 54;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(88, 88, 178, 135, 194, 146, 91, 243);
 
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FILTER_PERIOD_OFFSET = 40;
+  public static final int DECAY_PERIOD_OFFSET = 42;
+  public static final int REDUCTION_FACTOR_OFFSET = 44;
+  public static final int VARIABLE_FEE_CONTROL_OFFSET = 46;
+  public static final int MAX_VOLATILITY_ACCUMULATOR_OFFSET = 50;
+
   public static DynamicFeeParameterUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

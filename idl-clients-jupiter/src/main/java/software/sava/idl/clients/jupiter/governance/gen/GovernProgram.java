@@ -100,6 +100,9 @@ public final class GovernProgram {
 
     public static final int BYTES = 72;
 
+    public static final int LOCKER_OFFSET = 8;
+    public static final int PARAMS_OFFSET = 40;
+
     public static CreateGovernorIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -230,6 +233,10 @@ public final class GovernProgram {
     public static CreateProposalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PROPOSAL_TYPE_OFFSET = 8;
+    public static final int MAX_OPTION_OFFSET = 9;
+    public static final int INSTRUCTIONS_OFFSET = 10;
 
     public static CreateProposalIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -497,6 +504,8 @@ public final class GovernProgram {
 
     public static final int BYTES = 40;
 
+    public static final int VOTER_OFFSET = 8;
+
     public static NewVoteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -589,6 +598,9 @@ public final class GovernProgram {
 
     public static final int BYTES = 17;
 
+    public static final int SIDE_OFFSET = 8;
+    public static final int WEIGHT_OFFSET = 9;
+
     public static SetVoteIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -668,6 +680,8 @@ public final class GovernProgram {
     }
 
     public static final int BYTES = 40;
+
+    public static final int PARAMS_OFFSET = 8;
 
     public static SetGovernanceParamsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -749,6 +763,8 @@ public final class GovernProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int REWARD_PER_PROPOSAL_OFFSET = 8;
 
     public static SetVotingRewardIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -898,6 +914,8 @@ public final class GovernProgram {
 
     public static final int BYTES = 40;
 
+    public static final int NEW_LOCKER_OFFSET = 8;
+
     public static SetLockerIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1012,6 +1030,9 @@ public final class GovernProgram {
     public static CreateProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int BUMP_OFFSET = 8;
+    public static final int TITLE_OFFSET = 9;
 
     public static CreateProposalMetaIxData createRecord(final Discriminator discriminator,
                                                         final int bump,
@@ -1132,6 +1153,9 @@ public final class GovernProgram {
     public static CreateOptionProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int BUMP_OFFSET = 8;
+    public static final int OPTION_DESCRIPTIONS_OFFSET = 9;
 
     public static CreateOptionProposalMetaIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

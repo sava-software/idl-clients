@@ -16,6 +16,11 @@ public record SignedMsgOrderId(byte[] uuid,
   public static final int BYTES = 24;
   public static final int UUID_LEN = 8;
 
+  public static final int UUID_OFFSET = 0;
+  public static final int MAX_SLOT_OFFSET = 8;
+  public static final int ORDER_ID_OFFSET = 16;
+  public static final int PADDING_OFFSET = 20;
+
   public static SignedMsgOrderId read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

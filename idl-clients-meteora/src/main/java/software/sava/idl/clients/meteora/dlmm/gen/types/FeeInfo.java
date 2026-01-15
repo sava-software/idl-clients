@@ -16,6 +16,11 @@ public record FeeInfo(BigInteger feeXPerTokenComplete,
 
   public static final int BYTES = 48;
 
+  public static final int FEE_X_PER_TOKEN_COMPLETE_OFFSET = 0;
+  public static final int FEE_Y_PER_TOKEN_COMPLETE_OFFSET = 16;
+  public static final int FEE_X_PENDING_OFFSET = 32;
+  public static final int FEE_Y_PENDING_OFFSET = 40;
+
   public static FeeInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

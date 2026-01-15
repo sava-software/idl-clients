@@ -71,6 +71,9 @@ public final class PythLazerSolanaContractProgram {
 
     public static final int BYTES = 72;
 
+    public static final int TOP_AUTHORITY_OFFSET = 8;
+    public static final int TREASURY_OFFSET = 40;
+
     public static InitializeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -141,6 +144,9 @@ public final class PythLazerSolanaContractProgram {
     }
 
     public static final int BYTES = 48;
+
+    public static final int TRUSTED_SIGNER_OFFSET = 8;
+    public static final int EXPIRES_AT_OFFSET = 40;
 
     public static UpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -268,6 +274,8 @@ public final class PythLazerSolanaContractProgram {
     public static VerifyMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int MESSAGE_DATA_OFFSET = 8;
 
     public static VerifyMessageIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

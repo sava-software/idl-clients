@@ -819,6 +819,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 8;
+
     public static MintNewEditionFromMasterEditionViaTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1012,6 +1014,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 16;
 
+    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 8;
+
     public static MintNewEditionFromMasterEditionViaVaultProxyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1098,6 +1102,8 @@ public final class TokenMetadataProgram {
     public static UpdateMetadataAccountV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int UPDATE_METADATA_ACCOUNT_ARGS_V_2_OFFSET = 8;
 
     public static UpdateMetadataAccountV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1267,6 +1273,8 @@ public final class TokenMetadataProgram {
     public static CreateMasterEditionV3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int CREATE_MASTER_EDITION_ARGS_OFFSET = 8;
 
     public static CreateMasterEditionV3IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1451,6 +1459,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 16;
 
+    public static final int UTILIZE_ARGS_OFFSET = 8;
+
     public static UtilizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -1572,6 +1582,8 @@ public final class TokenMetadataProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int APPROVE_USE_AUTHORITY_ARGS_OFFSET = 8;
 
     public static ApproveUseAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2351,6 +2363,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int CREATE_METADATA_ACCOUNT_ARGS_V_3_OFFSET = 8;
+
     public static CreateMetadataAccountV3IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -2430,6 +2444,8 @@ public final class TokenMetadataProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 8;
 
     public static SetCollectionSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2559,6 +2575,8 @@ public final class TokenMetadataProgram {
     }
 
     public static final int BYTES = 16;
+
+    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 8;
 
     public static BubblegumSetCollectionSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2909,6 +2927,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 16;
 
+    public static final int TRANSFER_OUT_OF_ESCROW_ARGS_OFFSET = 8;
+
     public static TransferOutOfEscrowIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3047,6 +3067,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int BURN_ARGS_OFFSET = 8;
+
     public static BurnIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3154,6 +3176,8 @@ public final class TokenMetadataProgram {
     public static CreateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int CREATE_ARGS_OFFSET = 8;
 
     public static CreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3299,6 +3323,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int MINT_ARGS_OFFSET = 8;
+
     public static MintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3436,6 +3462,8 @@ public final class TokenMetadataProgram {
     public static DelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int DELEGATE_ARGS_OFFSET = 8;
 
     public static DelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3577,6 +3605,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 9;
 
+    public static final int REVOKE_ARGS_OFFSET = 8;
+
     public static RevokeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3709,6 +3739,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int LOCK_ARGS_OFFSET = 8;
+
     public static LockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -3840,6 +3872,8 @@ public final class TokenMetadataProgram {
     public static UnlockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int UNLOCK_ARGS_OFFSET = 8;
 
     public static UnlockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4106,6 +4140,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int TRANSFER_ARGS_OFFSET = 8;
+
     public static TransferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4225,6 +4261,8 @@ public final class TokenMetadataProgram {
     public static UpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int UPDATE_ARGS_OFFSET = 8;
 
     public static UpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4352,6 +4390,8 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int USE_ARGS_OFFSET = 8;
+
     public static UseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4456,6 +4496,8 @@ public final class TokenMetadataProgram {
 
     public static final int BYTES = 9;
 
+    public static final int VERIFICATION_ARGS_OFFSET = 8;
+
     public static VerifyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -4553,6 +4595,8 @@ public final class TokenMetadataProgram {
     }
 
     public static final int BYTES = 9;
+
+    public static final int VERIFICATION_ARGS_OFFSET = 8;
 
     public static UnverifyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4744,6 +4788,8 @@ public final class TokenMetadataProgram {
     public static PrintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int PRINT_ARGS_OFFSET = 8;
 
     public static PrintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

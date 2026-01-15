@@ -9,6 +9,8 @@ public record ProgramConfigSetAuthorityArgs(PublicKey newAuthority) implements S
 
   public static final int BYTES = 32;
 
+  public static final int NEW_AUTHORITY_OFFSET = 0;
+
   public static ProgramConfigSetAuthorityArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -22,6 +22,15 @@ public record ExtendLockDurationEvent(Discriminator discriminator,
   public static final int BYTES = 144;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
 
+  public static final int LOCKER_OFFSET = 8;
+  public static final int ESCROW_OWNER_OFFSET = 40;
+  public static final int TOKEN_MINT_OFFSET = 72;
+  public static final int LOCKER_SUPPLY_OFFSET = 104;
+  public static final int DURATION_OFFSET = 112;
+  public static final int PREV_ESCROW_ENDS_AT_OFFSET = 120;
+  public static final int NEXT_ESCROW_ENDS_AT_OFFSET = 128;
+  public static final int NEXT_ESCROW_STARTED_AT_OFFSET = 136;
+
   public static ExtendLockDurationEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

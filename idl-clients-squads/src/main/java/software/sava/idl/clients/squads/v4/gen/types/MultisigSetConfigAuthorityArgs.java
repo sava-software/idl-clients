@@ -17,6 +17,9 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 /// @param memo Memo is used for indexing only.
 public record MultisigSetConfigAuthorityArgs(PublicKey configAuthority, String memo, byte[] _memo) implements SerDe {
 
+  public static final int CONFIG_AUTHORITY_OFFSET = 0;
+  public static final int MEMO_OFFSET = 33;
+
   public static MultisigSetConfigAuthorityArgs createRecord(final PublicKey configAuthority, final String memo) {
     return new MultisigSetConfigAuthorityArgs(configAuthority, memo, memo == null ? null : memo.getBytes(UTF_8));
   }

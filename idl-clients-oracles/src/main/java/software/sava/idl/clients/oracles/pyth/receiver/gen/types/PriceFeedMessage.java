@@ -20,6 +20,15 @@ public record PriceFeedMessage(byte[] feedId,
   public static final int BYTES = 84;
   public static final int FEED_ID_LEN = 32;
 
+  public static final int FEED_ID_OFFSET = 0;
+  public static final int PRICE_OFFSET = 32;
+  public static final int CONF_OFFSET = 40;
+  public static final int EXPONENT_OFFSET = 48;
+  public static final int PUBLISH_TIME_OFFSET = 52;
+  public static final int PREV_PUBLISH_TIME_OFFSET = 60;
+  public static final int EMA_PRICE_OFFSET = 68;
+  public static final int EMA_CONF_OFFSET = 76;
+
   public static PriceFeedMessage read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -16,6 +16,11 @@ public record SpotBankruptcyRecord(int marketIndex,
 
   public static final int BYTES = 50;
 
+  public static final int MARKET_INDEX_OFFSET = 0;
+  public static final int BORROW_AMOUNT_OFFSET = 2;
+  public static final int IF_PAYMENT_OFFSET = 18;
+  public static final int CUMULATIVE_DEPOSIT_INTEREST_DELTA_OFFSET = 34;
+
   public static SpotBankruptcyRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

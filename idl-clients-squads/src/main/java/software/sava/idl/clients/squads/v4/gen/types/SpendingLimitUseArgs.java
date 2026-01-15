@@ -21,6 +21,10 @@ public record SpendingLimitUseArgs(long amount,
                                    int decimals,
                                    String memo, byte[] _memo) implements SerDe {
 
+  public static final int AMOUNT_OFFSET = 0;
+  public static final int DECIMALS_OFFSET = 8;
+  public static final int MEMO_OFFSET = 10;
+
   public static SpendingLimitUseArgs createRecord(final long amount,
                                                   final int decimals,
                                                   final String memo) {

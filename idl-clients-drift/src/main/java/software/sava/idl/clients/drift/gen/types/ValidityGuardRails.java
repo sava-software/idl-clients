@@ -12,6 +12,11 @@ public record ValidityGuardRails(long slotsBeforeStaleForAmm,
 
   public static final int BYTES = 32;
 
+  public static final int SLOTS_BEFORE_STALE_FOR_AMM_OFFSET = 0;
+  public static final int SLOTS_BEFORE_STALE_FOR_MARGIN_OFFSET = 8;
+  public static final int CONFIDENCE_INTERVAL_MAX_SIZE_OFFSET = 16;
+  public static final int TOO_VOLATILE_RATIO_OFFSET = 24;
+
   public static ValidityGuardRails read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

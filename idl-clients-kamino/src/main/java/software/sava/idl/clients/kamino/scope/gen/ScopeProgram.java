@@ -88,6 +88,8 @@ public final class ScopeProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int FEED_NAME_OFFSET = 8;
+
     public static InitializeIxData createRecord(final Discriminator discriminator, final String feedName) {
       return new InitializeIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
@@ -162,6 +164,8 @@ public final class ScopeProgram {
     public static RefreshPriceListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int TOKENS_OFFSET = 8;
 
     public static RefreshPriceListIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -262,6 +266,9 @@ public final class ScopeProgram {
     public static RefreshChainlinkPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int TOKEN_OFFSET = 8;
+    public static final int SERIALIZED_CHAINLINK_REPORT_OFFSET = 10;
 
     public static RefreshChainlinkPriceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -381,6 +388,8 @@ public final class ScopeProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int TOKENS_OFFSET = 8;
+
     public static RefreshPythLazerPriceIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -472,6 +481,8 @@ public final class ScopeProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int FEED_NAME_OFFSET = 8;
+
     public static UpdateMappingAndMetadataIxData createRecord(final Discriminator discriminator, final String feedName, final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
       return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8), updates);
     }
@@ -555,6 +566,9 @@ public final class ScopeProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int TOKEN_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 16;
+
     public static ResetTwapIxData createRecord(final Discriminator discriminator, final long token, final String feedName) {
       return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
@@ -631,6 +645,9 @@ public final class ScopeProgram {
       return read(instruction.data(), instruction.offset());
     }
 
+    public static final int NEW_ADMIN_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 40;
+
     public static SetAdminCachedIxData createRecord(final Discriminator discriminator, final PublicKey newAdmin, final String feedName) {
       return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
     }
@@ -702,6 +719,8 @@ public final class ScopeProgram {
     public static ApproveAdminCachedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int FEED_NAME_OFFSET = 8;
 
     public static ApproveAdminCachedIxData createRecord(final Discriminator discriminator, final String feedName) {
       return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
@@ -800,6 +819,11 @@ public final class ScopeProgram {
     public static CreateMintMapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int SEED_PK_OFFSET = 8;
+    public static final int SEED_ID_OFFSET = 40;
+    public static final int BUMP_OFFSET = 48;
+    public static final int SCOPE_CHAINS_OFFSET = 49;
 
     public static CreateMintMapIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -926,6 +950,9 @@ public final class ScopeProgram {
     public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
+
+    public static final int TOKEN_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 10;
 
     public static ResumeChainlinkxPriceIxData createRecord(final Discriminator discriminator, final int token, final String feedName) {
       return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));

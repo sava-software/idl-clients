@@ -60,6 +60,9 @@ public sealed interface DelegateArgs extends RustEnum permits
 
   record SaleV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int AUTHORIZATION_DATA_OFFSET = 9;
+
     public static SaleV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -98,6 +101,9 @@ public sealed interface DelegateArgs extends RustEnum permits
   }
 
   record TransferV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
+
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int AUTHORIZATION_DATA_OFFSET = 9;
 
     public static TransferV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -150,6 +156,9 @@ public sealed interface DelegateArgs extends RustEnum permits
 
   record UtilityV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int AUTHORIZATION_DATA_OFFSET = 9;
+
     public static UtilityV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -188,6 +197,9 @@ public sealed interface DelegateArgs extends RustEnum permits
   }
 
   record StakingV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
+
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int AUTHORIZATION_DATA_OFFSET = 9;
 
     public static StakingV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -241,6 +253,10 @@ public sealed interface DelegateArgs extends RustEnum permits
   record LockedTransferV1(long amount,
                           PublicKey lockedAddress,
                           AuthorizationData authorizationData) implements DelegateArgs {
+
+    public static final int AMOUNT_OFFSET = 0;
+    public static final int LOCKED_ADDRESS_OFFSET = 8;
+    public static final int AUTHORIZATION_DATA_OFFSET = 41;
 
     public static LockedTransferV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

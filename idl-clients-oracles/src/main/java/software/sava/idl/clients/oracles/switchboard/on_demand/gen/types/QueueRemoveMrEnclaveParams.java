@@ -8,6 +8,8 @@ public record QueueRemoveMrEnclaveParams(byte[] mrEnclave) implements SerDe {
   public static final int BYTES = 32;
   public static final int MR_ENCLAVE_LEN = 32;
 
+  public static final int MR_ENCLAVE_OFFSET = 0;
+
   public static QueueRemoveMrEnclaveParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

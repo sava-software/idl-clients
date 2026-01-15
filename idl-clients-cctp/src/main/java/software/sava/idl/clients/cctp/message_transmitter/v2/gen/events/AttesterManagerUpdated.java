@@ -12,6 +12,9 @@ public record AttesterManagerUpdated(Discriminator discriminator, PublicKey prev
   public static final int BYTES = 72;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(5, 97, 191, 108, 44, 189, 69, 88);
 
+  public static final int PREVIOUS_ATTESTER_MANAGER_OFFSET = 8;
+  public static final int NEW_ATTESTER_MANAGER_OFFSET = 40;
+
   public static AttesterManagerUpdated read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

@@ -20,6 +20,13 @@ public record HistoricalOracleData(long lastOraclePrice,
 
   public static final int BYTES = 48;
 
+  public static final int LAST_ORACLE_PRICE_OFFSET = 0;
+  public static final int LAST_ORACLE_CONF_OFFSET = 8;
+  public static final int LAST_ORACLE_DELAY_OFFSET = 16;
+  public static final int LAST_ORACLE_PRICE_TWAP_OFFSET = 24;
+  public static final int LAST_ORACLE_PRICE_TWAP_5MIN_OFFSET = 32;
+  public static final int LAST_ORACLE_PRICE_TWAP_TS_OFFSET = 40;
+
   public static HistoricalOracleData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

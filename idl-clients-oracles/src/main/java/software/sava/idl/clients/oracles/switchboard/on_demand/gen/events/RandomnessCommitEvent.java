@@ -20,6 +20,11 @@ public record RandomnessCommitEvent(Discriminator discriminator,
   public static final int SLOTHASH_LEN = 32;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(88, 60, 172, 90, 112, 10, 206, 147);
 
+  public static final int RANDOMNESS_ACCOUNT_OFFSET = 8;
+  public static final int ORACLE_OFFSET = 40;
+  public static final int SLOT_OFFSET = 72;
+  public static final int SLOTHASH_OFFSET = 80;
+
   public static RandomnessCommitEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

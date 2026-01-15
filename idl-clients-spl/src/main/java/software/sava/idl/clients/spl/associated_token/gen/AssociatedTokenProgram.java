@@ -90,6 +90,8 @@ public final class AssociatedTokenProgram {
 
     public static final int BYTES = 1;
 
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
     public static CreateAssociatedTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
@@ -189,6 +191,8 @@ public final class AssociatedTokenProgram {
     }
 
     public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static CreateAssociatedTokenIdempotentIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -325,6 +329,8 @@ public final class AssociatedTokenProgram {
     }
 
     public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
 
     public static RecoverNestedAssociatedTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

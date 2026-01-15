@@ -11,6 +11,13 @@ public record DummyIx(PairStatus pairStatus,
 
   public static final int BYTES = 6;
 
+  public static final int PAIR_STATUS_OFFSET = 0;
+  public static final int PAIR_TYPE_OFFSET = 1;
+  public static final int ACTIVATION_TYPE_OFFSET = 2;
+  public static final int TOKEN_PROGRAM_FLAG_OFFSET = 3;
+  public static final int RESIZE_SIDE_OFFSET = 4;
+  public static final int ROUNDING_OFFSET = 5;
+
   public static DummyIx read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

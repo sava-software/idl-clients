@@ -9,6 +9,8 @@ public record QueueGarbageCollectParams(int idx) implements SerDe {
 
   public static final int BYTES = 4;
 
+  public static final int IDX_OFFSET = 0;
+
   public static QueueGarbageCollectParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;

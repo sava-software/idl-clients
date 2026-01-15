@@ -28,6 +28,17 @@ public record VaultAllocation(PublicKey reserve,
   public static final int CONFIG_PADDING_LEN = 127;
   public static final int STATE_PADDING_LEN = 128;
 
+  public static final int RESERVE_OFFSET = 0;
+  public static final int CTOKEN_VAULT_OFFSET = 32;
+  public static final int TARGET_ALLOCATION_WEIGHT_OFFSET = 64;
+  public static final int TOKEN_ALLOCATION_CAP_OFFSET = 72;
+  public static final int CTOKEN_VAULT_BUMP_OFFSET = 80;
+  public static final int CONFIG_PADDING_OFFSET = 88;
+  public static final int CTOKEN_ALLOCATION_OFFSET = 1104;
+  public static final int LAST_INVEST_SLOT_OFFSET = 1112;
+  public static final int TOKEN_TARGET_ALLOCATION_SF_OFFSET = 1120;
+  public static final int STATE_PADDING_OFFSET = 1136;
+
   public static VaultAllocation read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
