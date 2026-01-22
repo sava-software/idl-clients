@@ -1,8 +1,13 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
+import java.math.BigInteger;
+
+import java.util.OptionalInt;
+
 import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -130,7 +135,10 @@ public sealed interface Swap extends RustEnum permits
   Swap.HumidiFiV2,
   Swap.PerenaStar,
   Swap.JupiterRfqV2,
-  Swap.GoonFiV2 {
+  Swap.GoonFiV2,
+  Swap.Scorch,
+  Swap.VaultLiquidUnstake,
+  Swap.XOrca {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -258,6 +266,9 @@ public sealed interface Swap extends RustEnum permits
       case 119 -> PerenaStar.read(_data, i);
       case 120 -> JupiterRfqV2.read(_data, i);
       case 121 -> GoonFiV2.read(_data, i);
+      case 122 -> Scorch.read(_data, i);
+      case 123 -> VaultLiquidUnstake.read(_data, i);
+      case 124 -> XOrca.INSTANCE;
       default -> null;
     };
   }
@@ -1785,28 +1796,38 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record DynamicV1(CandidateSwap[] val) implements Swap {
+  record DynamicV1(CandidateSwap[] candidateSwaps, OptionalInt bestPosition) implements Swap {
 
-    public static final int VAL_OFFSET = 0;
+    public static final int CANDIDATE_SWAPS_OFFSET = 0;
 
     public static DynamicV1 read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var val = SerDeUtil.readVector(4, CandidateSwap.class, CandidateSwap::read, _data, _offset);
-      return new DynamicV1(val);
+      int i = _offset;
+      final var candidateSwaps = SerDeUtil.readVector(4, CandidateSwap.class, CandidateSwap::read, _data, i);
+      i += SerDeUtil.lenVector(4, candidateSwaps);
+      final OptionalInt bestPosition;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        bestPosition = OptionalInt.empty();
+      } else {
+        ++i;
+        bestPosition = OptionalInt.of(_data[i] & 0xFF);
+      }
+      return new DynamicV1(candidateSwaps, bestPosition);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = writeOrdinal(_data, _offset);
-      i += SerDeUtil.writeVector(4, val, _data, i);
+      i += SerDeUtil.writeVector(4, candidateSwaps, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, bestPosition, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 1 + SerDeUtil.lenVector(4, val);
+      return 1 + SerDeUtil.lenVector(4, candidateSwaps) + (bestPosition == null || bestPosition.isEmpty() ? 1 : (1 + 1));
     }
 
     @Override
@@ -1983,6 +2004,67 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 121;
+    }
+  }
+
+  record Scorch(BigInteger val) implements EnumInt128, Swap {
+
+    public static Scorch read(final byte[] _data, int i) {
+      return new Scorch(getInt128LE(_data, i));
+    }
+
+    @Override
+    public int ordinal() {
+      return 122;
+    }
+  }
+
+  record VaultLiquidUnstake(long[] lstAmounts, long seed) implements Swap {
+
+    public static final int BYTES = 48;
+    public static final int LST_AMOUNTS_LEN = 5;
+
+    public static final int LST_AMOUNTS_OFFSET = 0;
+    public static final int SEED_OFFSET = 40;
+
+    public static VaultLiquidUnstake read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var lstAmounts = new long[5];
+      i += SerDeUtil.readArray(lstAmounts, _data, i);
+      final var seed = getInt64LE(_data, i);
+      return new VaultLiquidUnstake(lstAmounts, seed);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = writeOrdinal(_data, _offset);
+      i += SerDeUtil.writeArrayChecked(lstAmounts, 5, _data, i);
+      putInt64LE(_data, i, seed);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 123;
+    }
+  }
+
+  record XOrca() implements EnumNone, Swap {
+
+    public static final XOrca INSTANCE = new XOrca();
+
+    @Override
+    public int ordinal() {
+      return 124;
     }
   }
 }
