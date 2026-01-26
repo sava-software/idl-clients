@@ -139,7 +139,7 @@ public sealed interface ConfigAction extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       createKey.write(_data, i);
       i += 32;
       _data[i] = (byte) vaultIndex;

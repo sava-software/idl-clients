@@ -51,7 +51,7 @@ public sealed interface CreateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += assetData.write(_data, i);
       i += SerDeUtil.writeOptionalbyte(1, decimals, _data, i);
       i += SerDeUtil.writeOptional(1, printSupply, _data, i);

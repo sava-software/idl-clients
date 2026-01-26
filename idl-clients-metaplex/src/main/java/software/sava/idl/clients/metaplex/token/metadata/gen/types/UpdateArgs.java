@@ -117,7 +117,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
       i += SerDeUtil.writeOptional(1, data, _data, i);
       i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
@@ -241,7 +241,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
       i += SerDeUtil.writeOptional(1, data, _data, i);
       i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
@@ -340,7 +340,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeOptional(1, newUpdateAuthority, _data, i);
       i += SerDeUtil.writeOptional(1, primarySaleHappened, _data, i);
       i += SerDeUtil.writeOptional(1, isMutable, _data, i);
@@ -387,7 +387,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += collection.write(_data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
@@ -434,7 +434,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeOptional(1, data, _data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
@@ -474,7 +474,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += ruleSet.write(_data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
@@ -521,7 +521,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeOptional(1, data, _data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
@@ -561,7 +561,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += collection.write(_data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;
@@ -601,7 +601,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += ruleSet.write(_data, i);
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
       return i - _offset;

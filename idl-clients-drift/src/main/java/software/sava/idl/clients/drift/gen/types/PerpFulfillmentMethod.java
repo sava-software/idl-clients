@@ -65,7 +65,7 @@ public sealed interface PerpFulfillmentMethod extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _publicKey.write(_data, i);
       i += 32;
       putInt16LE(_data, i, _u16);

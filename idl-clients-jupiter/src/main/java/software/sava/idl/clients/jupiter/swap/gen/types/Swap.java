@@ -620,7 +620,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, fromTokenId);
       i += 8;
       putInt64LE(_data, i, toTokenId);
@@ -790,7 +790,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) poolIndex;
       ++i;
       _data[i] = (byte) (quantityIsInput ? 1 : 0);
@@ -843,7 +843,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) srcLstValueCalcAccs;
       ++i;
       _data[i] = (byte) dstLstValueCalcAccs;
@@ -886,7 +886,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) lstValueCalcAccs;
       ++i;
       putInt32LE(_data, i, lstIndex);
@@ -925,7 +925,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) lstValueCalcAccs;
       ++i;
       putInt32LE(_data, i, lstIndex);
@@ -978,7 +978,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) (aToB ? 1 : 0);
       ++i;
       i += SerDeUtil.writeOptional(1, remainingAccountsInfo, _data, i);
@@ -1263,7 +1263,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) inIndex;
       ++i;
       _data[i] = (byte) outIndex;
@@ -1450,7 +1450,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) (isBid ? 1 : 0);
       ++i;
       _data[i] = (byte) blacklistBump;
@@ -1489,7 +1489,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, swapId);
       i += 8;
       _data[i] = (byte) (isBaseToQuote ? 1 : 0);
@@ -1694,7 +1694,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) (aToB ? 1 : 0);
       ++i;
       i += SerDeUtil.writeOptional(1, remainingAccountsInfo, _data, i);
@@ -1819,7 +1819,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeVector(4, candidateSwaps, _data, i);
       i += SerDeUtil.writeOptionalbyte(1, bestPosition, _data, i);
       return i - _offset;
@@ -1923,7 +1923,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, swapId);
       i += 8;
       _data[i] = (byte) (isBaseToQuote ? 1 : 0);
@@ -1975,7 +1975,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += side.write(_data, i);
       i += SerDeUtil.writeVector(4, fillData, _data, i);
       return i - _offset;
@@ -2040,7 +2040,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeArrayChecked(lstAmounts, 5, _data, i);
       putInt64LE(_data, i, seed);
       i += 8;

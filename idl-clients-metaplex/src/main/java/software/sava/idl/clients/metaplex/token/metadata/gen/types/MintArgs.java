@@ -42,7 +42,7 @@ public sealed interface MintArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);

@@ -82,7 +82,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
@@ -124,7 +124,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
@@ -178,7 +178,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
@@ -220,7 +220,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       i += SerDeUtil.writeOptional(1, authorizationData, _data, i);
@@ -279,7 +279,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
       lockedAddress.write(_data, i);

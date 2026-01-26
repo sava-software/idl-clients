@@ -41,7 +41,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, swapId);
       i += 8;
       _data[i] = (byte) (isBaseToQuote ? 1 : 0);
@@ -92,7 +92,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       putInt64LE(_data, i, swapId);
       i += 8;
       _data[i] = (byte) (isBaseToQuote ? 1 : 0);

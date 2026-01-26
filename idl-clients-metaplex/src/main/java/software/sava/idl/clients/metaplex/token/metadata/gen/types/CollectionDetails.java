@@ -49,7 +49,7 @@ public sealed interface CollectionDetails extends RustEnum permits
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += SerDeUtil.writeArrayChecked(val, 8, _data, i);
       return i - _offset;
     }

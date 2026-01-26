@@ -69,7 +69,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += priceType.write(_data, i);
       i += SerDeUtil.writeArrayChecked(genericData, 20, _data, i);
       return i - _offset;
@@ -106,7 +106,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     @Override
     public int write(final byte[] _data, final int _offset) {
-      int i = writeOrdinal(_data, _offset);
+      int i = _offset + writeOrdinal(_data, _offset);
       i += priceType.write(_data, i);
       putInt16LE(_data, i, twapSource);
       i += 2;
