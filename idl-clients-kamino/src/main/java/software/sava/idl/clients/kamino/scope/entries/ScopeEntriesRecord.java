@@ -2,6 +2,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
+import software.sava.idl.clients.kamino.lend.gen.types.ScopeConfiguration;
 
 import java.util.Arrays;
 
@@ -10,10 +11,15 @@ record ScopeEntriesRecord(PublicKey pubKey, long slot, ScopeEntry[] scopeEntries
   @Override
   public PriceChains readPriceChains(final Reserve reserve) {
     final var mintKey = reserve.liquidity().mintPubkey();
+    final var scopeConfiguration = reserve.config().tokenInfo().scopeConfiguration();
+    return readPriceChains(mintKey, scopeConfiguration);
+  }
+
+  @Override
+  public PriceChains readPriceChains(final PublicKey mintKey, final ScopeConfiguration scopeConfiguration) {
     if (mintKey.equals(PublicKey.NONE)) {
       return null;
     }
-    final var scopeConfiguration = reserve.config().tokenInfo().scopeConfiguration();
     final var priceChain = parseChain(scopeConfiguration.priceChain(), scopeEntries);
     final var twapChain = parseChain(scopeConfiguration.twapChain(), scopeEntries);
     return new PriceChainsRecord(priceChain, twapChain);

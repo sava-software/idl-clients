@@ -77,5 +77,4 @@ node_modules/
 Integ.*
 /markets/
 /rebalance-service
-/glam-sdk-java
-/glam-rest-api
+/sym/
