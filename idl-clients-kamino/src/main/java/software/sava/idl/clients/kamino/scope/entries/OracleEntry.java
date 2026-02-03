@@ -27,6 +27,7 @@ public sealed interface OracleEntry extends ScopeEntry permits
     SplStake,
     SwitchboardOnDemand {
 
+  ///  Also known as a price account.
   PublicKey oracle();
 
   Set<EmaType> emaTypes();

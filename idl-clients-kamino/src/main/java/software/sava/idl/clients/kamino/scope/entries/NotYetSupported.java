@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
-public record NotYetSupported(PublicKey priceAccount,
+public record NotYetSupported(int index,
+                              PublicKey priceAccount,
                               OracleType oracleType,
                               ScopeEntry twapSource,
                               Set<EmaType> emaTypes,
@@ -18,9 +19,10 @@ public record NotYetSupported(PublicKey priceAccount,
   @Override
   public boolean equals(final Object o) {
     if (o instanceof NotYetSupported(
-        PublicKey account, OracleType type, ScopeEntry source, Set<EmaType> _emaTypes, ScopeEntry price, byte[] oGeneric
+        int i, PublicKey account, OracleType type, ScopeEntry source, Set<EmaType> _emaTypes, ScopeEntry price, byte[] oGeneric
     )) {
-      return emaTypes.equals(_emaTypes)
+      return index == i
+          && emaTypes.equals(_emaTypes)
           && Arrays.equals(generic, oGeneric)
           && Objects.equals(refPrice, price)
           && oracleType == type

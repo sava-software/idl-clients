@@ -13,5 +13,7 @@ public sealed interface ScopeEntry permits
     ScopeTwap,
     Unused {
 
+  int index();
+
   OracleType oracleType();
 }

@@ -77,59 +77,60 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     final var emaTypes = emaTypes(this.twapEnabledBitmasks[i].bitmask());
     final var refPrice = entry(this.refPrice[i]);
     return switch (oracleType) {
-      case AdrenaLp -> new AdrenaLp(priceAccount, emaTypes);
+      case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
       case CappedFloored -> {
         final var cappedFlooredData = CappedFlooredData.read(generic[i], 0);
         final var sourceEntry = entry(cappedFlooredData.sourceEntry());
         final var capEntry = entry(cappedFlooredData.capEntry());
         final var floorEntry = entry(cappedFlooredData.floorEntry());
-        yield new CappedFloored(sourceEntry, capEntry, floorEntry);
+        yield new CappedFloored(i, sourceEntry, capEntry, floorEntry);
       }
       case CappedMostRecentOf -> {
         final var cappedMostRecentOf = CappedMostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(cappedMostRecentOf.sourceEntries());
         final var capEntry = entry(cappedMostRecentOf.capEntry());
-        yield new CappedMostRecentOf(sources, cappedMostRecentOf.maxDivergenceBps(), cappedMostRecentOf.sourcesMaxAgeS(), capEntry);
+        yield new CappedMostRecentOf(i, sources, cappedMostRecentOf.maxDivergenceBps(), cappedMostRecentOf.sourcesMaxAgeS(), capEntry);
       }
       case ChainlinkRWA -> {
         final var cfg = V8V10.read(generic[i], 0);
-        yield new ChainlinkRWA(priceAccount, cfg.marketStatusBehavior(), emaTypes);
+        yield new ChainlinkRWA(i, priceAccount, cfg.marketStatusBehavior(), emaTypes);
       }
       case ChainlinkX -> {
         final var cfg = V8V10.read(generic[i], 0);
-        yield new ChainlinkX(priceAccount, cfg.marketStatusBehavior(), emaTypes);
+        yield new ChainlinkX(i, priceAccount, cfg.marketStatusBehavior(), emaTypes);
       }
       case Chainlink -> {
         final var cfg = V3.read(generic[i], 0);
-        yield new Chainlink(priceAccount, cfg.confidenceFactor(), emaTypes, refPrice);
+        yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, refPrice);
       }
-      case ChainlinkExchangeRate -> new ChainlinkExchangeRate(priceAccount, emaTypes);
-      case ChainlinkNAV -> new ChainlinkNAV(priceAccount, emaTypes);
+      case ChainlinkExchangeRate -> new ChainlinkExchangeRate(i, priceAccount, emaTypes);
+      case ChainlinkNAV -> new ChainlinkNAV(i, priceAccount, emaTypes);
       case DiscountToMaturity -> {
         final var dtm = DiscountToMaturityData.read(generic[i], 0);
-        yield new DiscountToMaturity(dtm.discountPerYearBps(), dtm.maturityTimestamp());
+        yield new DiscountToMaturity(i, dtm.discountPerYearBps(), dtm.maturityTimestamp());
       }
       case FixedPrice -> {
         final var price = Price.read(generic[i], 0);
-        yield software.sava.idl.clients.kamino.scope.entries.FixedPrice.createEntry(price.value(), Math.toIntExact(price.exp()));
+        yield software.sava.idl.clients.kamino.scope.entries.FixedPrice.createEntry(i, price.value(), Math.toIntExact(price.exp()));
       }
-      case FlashtradeLp -> new FlashtradeLp(priceAccount, emaTypes);
-      case JitoRestaking -> new JitoRestaking(priceAccount, emaTypes);
-      case JupiterLpFetch -> new JupiterLpFetch(priceAccount, emaTypes);
-      case KToken -> new KToken(priceAccount, emaTypes);
-      case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(priceAccount, emaTypes);
-      case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(priceAccount, emaTypes);
+      case FlashtradeLp -> new FlashtradeLp(i, priceAccount, emaTypes);
+      case JitoRestaking -> new JitoRestaking(i, priceAccount, emaTypes);
+      case JupiterLpFetch -> new JupiterLpFetch(i, priceAccount, emaTypes);
+      case KToken -> new KToken(i, priceAccount, emaTypes);
+      case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(i, priceAccount, emaTypes);
+      case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(i, priceAccount, emaTypes);
       case MostRecentOf -> {
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(mostRecentOf.sourceEntries());
-        yield new MostRecentOfEntry(sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
+        yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
       }
-      case MsolStake -> new MsolStake(priceAccount, emaTypes);
-      case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(priceAccount, emaTypes);
-      case OrcaWhirlpoolBtoA -> new OrcaWhirlpoolBtoA(priceAccount, emaTypes);
+      case MsolStake -> new MsolStake(i, priceAccount, emaTypes);
+      case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(i, priceAccount, emaTypes);
+      case OrcaWhirlpoolBtoA -> new OrcaWhirlpoolBtoA(i, priceAccount, emaTypes);
       case PythLazer -> {
         final var data = PythLazerData.read(generic[i], 0);
         yield new PythLazer(
+            i,
             priceAccount,
             data.feedId(),
             data.exponent(),
@@ -138,23 +139,23 @@ record ScopeReaderRecord(ScopeEntry[] entries,
             refPrice
         );
       }
-      case PythPull -> new PythPull(priceAccount, emaTypes, refPrice);
-      case PythPullEMA -> new PythPullEMA(priceAccount, emaTypes);
-      case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(priceAccount, emaTypes);
-      case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(priceAccount, emaTypes);
-      case RedStone -> new RedStone(priceAccount, emaTypes);
-      case ScopeTwap1h -> new ScopeTwap(ScopeTwap1h, entry(twapSource[i]));
-      case ScopeTwap8h -> new ScopeTwap(ScopeTwap8h, entry(twapSource[i]));
-      case ScopeTwap24h -> new ScopeTwap(ScopeTwap24h, entry(twapSource[i]));
-      case Securitize -> new Securitize(priceAccount, emaTypes, refPrice);
-      case SplStake -> new SplStake(priceAccount, emaTypes);
-      case SwitchboardOnDemand -> new SwitchboardOnDemand(priceAccount, emaTypes);
-      case Unused -> software.sava.idl.clients.kamino.scope.entries.Unused.INSTANCE;
+      case PythPull -> new PythPull(i, priceAccount, emaTypes, refPrice);
+      case PythPullEMA -> new PythPullEMA(i, priceAccount, emaTypes);
+      case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
+      case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
+      case RedStone -> new RedStone(i, priceAccount, emaTypes);
+      case ScopeTwap1h -> new ScopeTwap(i, ScopeTwap1h, entry(twapSource[i]));
+      case ScopeTwap8h -> new ScopeTwap(i, ScopeTwap8h, entry(twapSource[i]));
+      case ScopeTwap24h -> new ScopeTwap(i, ScopeTwap24h, entry(twapSource[i]));
+      case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice);
+      case SplStake -> new SplStake(i, priceAccount, emaTypes);
+      case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
+      case Unused -> new software.sava.idl.clients.kamino.scope.entries.Unused(i);
       default -> {
         if (oracleType.name().startsWith("Deprecated")) {
-          yield Deprecated.INSTANCE;
+          yield new Deprecated(i);
         } else {
-          yield new NotYetSupported(priceAccount, oracleType, entry(i), emaTypes, refPrice, generic[i]);
+          yield new NotYetSupported(i, priceAccount, oracleType, entry(twapSource[i]), emaTypes, refPrice, generic[i]);
         }
       }
     };

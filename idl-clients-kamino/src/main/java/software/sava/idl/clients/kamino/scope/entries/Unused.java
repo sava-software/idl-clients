@@ -2,9 +2,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
-public record Unused() implements ScopeEntry {
-
-  public static final Unused INSTANCE = new Unused();
+public record Unused(int index) implements ScopeEntry {
 
   @Override
   public OracleType oracleType() {

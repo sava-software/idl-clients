@@ -19,6 +19,8 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public interface KaminoAccounts {
 
+  PublicKey NULL_KEY = PublicKey.fromBase58Encoded("nu11111111111111111111111111111111111111111");
+
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/examples/utils/constants.ts
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/src/utils/seeds.ts
   // https://github.com/Kamino-Finance/klend/blob/master/programs/klend/src/utils/seeds.rs

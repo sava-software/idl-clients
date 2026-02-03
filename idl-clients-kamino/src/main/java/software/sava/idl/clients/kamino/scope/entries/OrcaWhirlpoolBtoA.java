@@ -6,7 +6,7 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Set;
 
-public record OrcaWhirlpoolBtoA(PublicKey oracle, Set<EmaType> emaTypes) implements OracleEntry {
+public record OrcaWhirlpoolBtoA(int index, PublicKey oracle, Set<EmaType> emaTypes) implements OracleEntry {
 
   @Override
   public OracleType oracleType() {

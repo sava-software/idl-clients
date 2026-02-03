@@ -6,7 +6,8 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Set;
 
-public record PythLazer(PublicKey oracle,
+public record PythLazer(int index,
+                        PublicKey oracle,
                         int feedId,
                         int exponent,
                         int confidenceFactor,

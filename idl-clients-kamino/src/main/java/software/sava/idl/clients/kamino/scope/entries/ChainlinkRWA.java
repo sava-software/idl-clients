@@ -7,7 +7,8 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Set;
 
-public record ChainlinkRWA(PublicKey oracle,
+public record ChainlinkRWA(int index,
+                           PublicKey oracle,
                            MarketStatusBehavior marketStatusBehavior,
                            Set<EmaType> emaTypes) implements ChainlinkStatusEntry {
 
