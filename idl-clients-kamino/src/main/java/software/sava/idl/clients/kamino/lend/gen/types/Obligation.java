@@ -45,8 +45,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param numOfObsoleteBorrowReserves The number of obsolete reserves the obligation has a borrow in
 /// @param autodeleverageMarginCallStartedTimestamp A timestamp at which the risk council most-recently marked this obligation for deleveraging.
 ///                                                 Zero if not currently subject to deleveraging.
-/// @param orders Owner-defined, liquidator-executed orders applicable to this obligation.
-///               Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
+/// @param obligationOrders Owner-defined, permissionlessly-executed repay orders.
+///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
+/// @param borrowOrder Owner-defined, permissionlessly-executed borrow order applicable to this obligation.
+///                    Non-zeroed only on a newly-initialized fixed-rate, fixed-term obligation.
 public record Obligation(PublicKey _address,
                          Discriminator discriminator,
                          long tag,
@@ -73,7 +75,8 @@ public record Obligation(PublicKey _address,
                          byte[] reserved,
                          long highestBorrowFactorPct,
                          long autodeleverageMarginCallStartedTimestamp,
-                         ObligationOrder[] orders,
+                         ObligationOrder[] obligationOrders,
+                         BorrowOrder borrowOrder,
                          long[] padding3) implements SerDe {
 
   public static final int BYTES = 3344;
@@ -81,8 +84,8 @@ public record Obligation(PublicKey _address,
   public static final int BORROWS_LEN = 5;
   public static final int PADDING_DEPRECATED_ASSET_TIERS_LEN = 13;
   public static final int RESERVED_LEN = 4;
-  public static final int ORDERS_LEN = 2;
-  public static final int PADDING_3_LEN = 93;
+  public static final int OBLIGATION_ORDERS_LEN = 2;
+  public static final int PADDING_3_LEN = 73;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(168, 206, 141, 106, 88, 76, 172, 167);
@@ -112,8 +115,9 @@ public record Obligation(PublicKey _address,
   public static final int RESERVED_OFFSET = 2324;
   public static final int HIGHEST_BORROW_FACTOR_PCT_OFFSET = 2328;
   public static final int AUTODELEVERAGE_MARGIN_CALL_STARTED_TIMESTAMP_OFFSET = 2336;
-  public static final int ORDERS_OFFSET = 2344;
-  public static final int PADDING_3_OFFSET = 2600;
+  public static final int OBLIGATION_ORDERS_OFFSET = 2344;
+  public static final int BORROW_ORDER_OFFSET = 2600;
+  public static final int PADDING_3_OFFSET = 2760;
 
   public static Filter createTagFilter(final long tag) {
     final byte[] _data = new byte[8];
@@ -281,9 +285,11 @@ public record Obligation(PublicKey _address,
     i += 8;
     final var autodeleverageMarginCallStartedTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var orders = new ObligationOrder[2];
-    i += SerDeUtil.readArray(orders, ObligationOrder::read, _data, i);
-    final var padding3 = new long[93];
+    final var obligationOrders = new ObligationOrder[2];
+    i += SerDeUtil.readArray(obligationOrders, ObligationOrder::read, _data, i);
+    final var borrowOrder = BorrowOrder.read(_data, i);
+    i += borrowOrder.l();
+    final var padding3 = new long[73];
     SerDeUtil.readArray(padding3, _data, i);
     return new Obligation(_address,
                           discriminator,
@@ -311,7 +317,8 @@ public record Obligation(PublicKey _address,
                           reserved,
                           highestBorrowFactorPct,
                           autodeleverageMarginCallStartedTimestamp,
-                          orders,
+                          obligationOrders,
+                          borrowOrder,
                           padding3);
   }
 
@@ -361,8 +368,9 @@ public record Obligation(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, autodeleverageMarginCallStartedTimestamp);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(orders, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding3, 93, _data, i);
+    i += SerDeUtil.writeArrayChecked(obligationOrders, 2, _data, i);
+    i += borrowOrder.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 73, _data, i);
     return i - _offset;
   }
 

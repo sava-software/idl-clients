@@ -1,6 +1,7 @@
 package software.sava.idl.clients.jupiter.voter.rest.response;
 
 import software.sava.core.accounts.PublicKey;
+import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
@@ -38,9 +39,9 @@ public record ClaimProof(PublicKey mint,
     @Override
     public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
       if (fieldEquals("mint", buf, offset, len)) {
-        mint = PublicKey.fromBase58Encoded(ji.readString());
+        mint = PublicKeyEncoding.parseBase58Encoded(ji);
       } else if (fieldEquals("merkle_tree", buf, offset, len)) {
-        merkleTree = PublicKey.fromBase58Encoded(ji.readString());
+        merkleTree = PublicKeyEncoding.parseBase58Encoded(ji);
       } else if (fieldEquals("amount", buf, offset, len)) {
         amount = ji.readLong();
       } else if (fieldEquals("locked_amount", buf, offset, len)) {

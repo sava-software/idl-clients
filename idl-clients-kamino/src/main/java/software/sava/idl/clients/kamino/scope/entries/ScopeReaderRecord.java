@@ -150,10 +150,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice);
       case SplStake -> new SplStake(i, priceAccount, emaTypes);
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
-      case Unused -> new software.sava.idl.clients.kamino.scope.entries.Unused(i);
+      case Unused -> new Unused(i);
       default -> {
         if (oracleType.name().startsWith("Deprecated")) {
-          yield new Deprecated(i);
+          yield new Deprecated(i, oracleType);
         } else {
           yield new NotYetSupported(i, priceAccount, oracleType, entry(twapSource[i]), emaTypes, refPrice, generic[i]);
         }

@@ -62,7 +62,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                          
 ///                                          *Caution:* this flag is *disabling* the liquidations when `1` - contrary to all the other
 ///                                          liquidation-driving flags (see e.g. Self::autodeleverage_enabled).
+/// @param matureReserveDebtLiquidationEnabled Whether the debts that reached their reserve's ReserveConfig::debt_maturity_timestamp can
+///                                            be liquidated.
+/// @param obligationBorrowDebtTermLiquidationEnabled Whether the Obligation::borrows that reached their ReserveConfig::debt_term_seconds can
+///                                                   be liquidated.
+/// @param borrowOrderCreationEnabled Whether new borrow orders can be created.
+///                                   Note: updating or cancelling existing orders is *not* affected by this flag.
+/// @param borrowOrderExecutionEnabled Whether the existing borrow orders can be filled.
 /// @param proposerAuthority Authority that can propose creating of new reserves but cannot enable them.
+/// @param minBorrowOrderFillValue Minimum value that can be filled in a single `fill_borrow_order()` call, in full units of
+///                                the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
                             long version,
@@ -95,8 +104,12 @@ public record LendingMarket(PublicKey _address,
                             int immutable,
                             int obligationOrderCreationEnabled,
                             int priceTriggeredLiquidationDisabled,
-                            byte[] padding2,
+                            int matureReserveDebtLiquidationEnabled,
+                            int obligationBorrowDebtTermLiquidationEnabled,
+                            int borrowOrderCreationEnabled,
+                            int borrowOrderExecutionEnabled,
                             PublicKey proposerAuthority,
+                            long minBorrowOrderFillValue,
                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
@@ -106,8 +119,7 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_2_LEN = 4;
-  public static final int PADDING_1_LEN = 165;
+  public static final int PADDING_1_LEN = 164;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 114, 50, 98, 72, 157, 28, 120);
@@ -143,9 +155,13 @@ public record LendingMarket(PublicKey _address,
   public static final int IMMUTABLE_OFFSET = 3305;
   public static final int OBLIGATION_ORDER_CREATION_ENABLED_OFFSET = 3306;
   public static final int PRICE_TRIGGERED_LIQUIDATION_DISABLED_OFFSET = 3307;
-  public static final int PADDING_2_OFFSET = 3308;
+  public static final int MATURE_RESERVE_DEBT_LIQUIDATION_ENABLED_OFFSET = 3308;
+  public static final int OBLIGATION_BORROW_DEBT_TERM_LIQUIDATION_ENABLED_OFFSET = 3309;
+  public static final int BORROW_ORDER_CREATION_ENABLED_OFFSET = 3310;
+  public static final int BORROW_ORDER_EXECUTION_ENABLED_OFFSET = 3311;
   public static final int PROPOSER_AUTHORITY_OFFSET = 3312;
-  public static final int PADDING_1_OFFSET = 3344;
+  public static final int MIN_BORROW_ORDER_FILL_VALUE_OFFSET = 3344;
+  public static final int PADDING_1_OFFSET = 3352;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -265,8 +281,30 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(PRICE_TRIGGERED_LIQUIDATION_DISABLED_OFFSET, new byte[]{(byte) priceTriggeredLiquidationDisabled});
   }
 
+  public static Filter createMatureReserveDebtLiquidationEnabledFilter(final int matureReserveDebtLiquidationEnabled) {
+    return Filter.createMemCompFilter(MATURE_RESERVE_DEBT_LIQUIDATION_ENABLED_OFFSET, new byte[]{(byte) matureReserveDebtLiquidationEnabled});
+  }
+
+  public static Filter createObligationBorrowDebtTermLiquidationEnabledFilter(final int obligationBorrowDebtTermLiquidationEnabled) {
+    return Filter.createMemCompFilter(OBLIGATION_BORROW_DEBT_TERM_LIQUIDATION_ENABLED_OFFSET, new byte[]{(byte) obligationBorrowDebtTermLiquidationEnabled});
+  }
+
+  public static Filter createBorrowOrderCreationEnabledFilter(final int borrowOrderCreationEnabled) {
+    return Filter.createMemCompFilter(BORROW_ORDER_CREATION_ENABLED_OFFSET, new byte[]{(byte) borrowOrderCreationEnabled});
+  }
+
+  public static Filter createBorrowOrderExecutionEnabledFilter(final int borrowOrderExecutionEnabled) {
+    return Filter.createMemCompFilter(BORROW_ORDER_EXECUTION_ENABLED_OFFSET, new byte[]{(byte) borrowOrderExecutionEnabled});
+  }
+
   public static Filter createProposerAuthorityFilter(final PublicKey proposerAuthority) {
     return Filter.createMemCompFilter(PROPOSER_AUTHORITY_OFFSET, proposerAuthority);
+  }
+
+  public static Filter createMinBorrowOrderFillValueFilter(final long minBorrowOrderFillValue) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, minBorrowOrderFillValue);
+    return Filter.createMemCompFilter(MIN_BORROW_ORDER_FILL_VALUE_OFFSET, _data);
   }
 
   public static LendingMarket read(final byte[] _data, final int _offset) {
@@ -349,11 +387,19 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var priceTriggeredLiquidationDisabled = _data[i] & 0xFF;
     ++i;
-    final var padding2 = new byte[4];
-    i += SerDeUtil.readArray(padding2, _data, i);
+    final var matureReserveDebtLiquidationEnabled = _data[i] & 0xFF;
+    ++i;
+    final var obligationBorrowDebtTermLiquidationEnabled = _data[i] & 0xFF;
+    ++i;
+    final var borrowOrderCreationEnabled = _data[i] & 0xFF;
+    ++i;
+    final var borrowOrderExecutionEnabled = _data[i] & 0xFF;
+    ++i;
     final var proposerAuthority = readPubKey(_data, i);
     i += 32;
-    final var padding1 = new long[165];
+    final var minBorrowOrderFillValue = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[164];
     SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
@@ -387,8 +433,12 @@ public record LendingMarket(PublicKey _address,
                              immutable,
                              obligationOrderCreationEnabled,
                              priceTriggeredLiquidationDisabled,
-                             padding2,
+                             matureReserveDebtLiquidationEnabled,
+                             obligationBorrowDebtTermLiquidationEnabled,
+                             borrowOrderCreationEnabled,
+                             borrowOrderExecutionEnabled,
                              proposerAuthority,
+                             minBorrowOrderFillValue,
                              padding1);
   }
 
@@ -449,10 +499,19 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) priceTriggeredLiquidationDisabled;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 4, _data, i);
+    _data[i] = (byte) matureReserveDebtLiquidationEnabled;
+    ++i;
+    _data[i] = (byte) obligationBorrowDebtTermLiquidationEnabled;
+    ++i;
+    _data[i] = (byte) borrowOrderCreationEnabled;
+    ++i;
+    _data[i] = (byte) borrowOrderExecutionEnabled;
+    ++i;
     proposerAuthority.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding1, 165, _data, i);
+    putInt64LE(_data, i, minBorrowOrderFillValue);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 164, _data, i);
     return i - _offset;
   }
 

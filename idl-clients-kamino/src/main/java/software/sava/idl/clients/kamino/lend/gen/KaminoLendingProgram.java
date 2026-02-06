@@ -11,6 +11,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.kamino.lend.gen.types.BorrowOrderConfigArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.FeeCalculation;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
@@ -4223,6 +4224,241 @@ public final class KaminoLendingProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator SET_BORROW_ORDER_DISCRIMINATOR = toDiscriminator(177, 186, 45, 61, 235, 91, 68, 139);
+
+  /// @param ownerKey The Self::obligation's owner.
+  /// @param obligationKey The obligation to set the BorrowOrder on.
+  /// @param lendingMarketKey The Self::obligation's market - needed only to validate the borrow orders' feature flag.
+  /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
+  ///                                 updates.
+  ///                                 Ignored when cancelling the order.
+  /// @param debtLiquidityMintKey The BorrowOrder::debt_liquidity_mint to set on order creation. Not editable on order
+  ///                             updates.
+  ///                             Ignored when cancelling the order.
+  public static List<AccountMeta> setBorrowOrderKeys(final PublicKey ownerKey,
+                                                     final PublicKey obligationKey,
+                                                     final PublicKey lendingMarketKey,
+                                                     final PublicKey filledDebtDestinationKey,
+                                                     final PublicKey debtLiquidityMintKey,
+                                                     final PublicKey instructionSysvarAccountKey,
+                                                     final PublicKey eventAuthorityKey,
+                                                     final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(ownerKey),
+      createWrite(obligationKey),
+      createRead(lendingMarketKey),
+      createRead(filledDebtDestinationKey),
+      createRead(debtLiquidityMintKey),
+      createRead(instructionSysvarAccountKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param ownerKey The Self::obligation's owner.
+  /// @param obligationKey The obligation to set the BorrowOrder on.
+  /// @param lendingMarketKey The Self::obligation's market - needed only to validate the borrow orders' feature flag.
+  /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
+  ///                                 updates.
+  ///                                 Ignored when cancelling the order.
+  /// @param debtLiquidityMintKey The BorrowOrder::debt_liquidity_mint to set on order creation. Not editable on order
+  ///                             updates.
+  ///                             Ignored when cancelling the order.
+  public static Instruction setBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
+                                           final PublicKey ownerKey,
+                                           final PublicKey obligationKey,
+                                           final PublicKey lendingMarketKey,
+                                           final PublicKey filledDebtDestinationKey,
+                                           final PublicKey debtLiquidityMintKey,
+                                           final PublicKey instructionSysvarAccountKey,
+                                           final PublicKey eventAuthorityKey,
+                                           final PublicKey programKey,
+                                           final BorrowOrderConfigArgs orderConfig,
+                                           final long minExpectedCurrentRemainingDebtAmount) {
+    final var keys = setBorrowOrderKeys(
+      ownerKey,
+      obligationKey,
+      lendingMarketKey,
+      filledDebtDestinationKey,
+      debtLiquidityMintKey,
+      instructionSysvarAccountKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return setBorrowOrder(invokedKaminoLendingProgramMeta, keys, orderConfig, minExpectedCurrentRemainingDebtAmount);
+  }
+
+  public static Instruction setBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
+                                           final List<AccountMeta> keys,
+                                           final BorrowOrderConfigArgs orderConfig,
+                                           final long minExpectedCurrentRemainingDebtAmount) {
+    final byte[] _data = new byte[16 + orderConfig.l()];
+    int i = SET_BORROW_ORDER_DISCRIMINATOR.write(_data, 0);
+    i += orderConfig.write(_data, i);
+    putInt64LE(_data, i, minExpectedCurrentRemainingDebtAmount);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record SetBorrowOrderIxData(Discriminator discriminator, BorrowOrderConfigArgs orderConfig, long minExpectedCurrentRemainingDebtAmount) implements SerDe {  
+
+    public static SetBorrowOrderIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 44;
+
+    public static final int ORDER_CONFIG_OFFSET = 8;
+    public static final int MIN_EXPECTED_CURRENT_REMAINING_DEBT_AMOUNT_OFFSET = 36;
+
+    public static SetBorrowOrderIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var orderConfig = BorrowOrderConfigArgs.read(_data, i);
+      i += orderConfig.l();
+      final var minExpectedCurrentRemainingDebtAmount = getInt64LE(_data, i);
+      return new SetBorrowOrderIxData(discriminator, orderConfig, minExpectedCurrentRemainingDebtAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += orderConfig.write(_data, i);
+      putInt64LE(_data, i, minExpectedCurrentRemainingDebtAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator FILL_BORROW_ORDER_DISCRIMINATOR = toDiscriminator(102, 4, 167, 76, 131, 170, 93, 19);
+
+  /// @param borrowAccountsObligationKey The obligation with a BorrowOrder.
+  /// @param borrowAccountsLendingMarketKey The Self::obligation's market - needed for borrowing-related configuration.
+  /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
+  ///                                                the Self::reserve_source_liquidity.
+  /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
+  ///                                       
+  ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint.
+  /// @param borrowAccountsBorrowReserveLiquidityMintKey The mint of Self::borrow_reserve - needed to execute the transfer.
+  /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
+  /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
+  /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
+  ///                                                  
+  ///                                                  It must match BorrowOrder::filled_debt_destination, owner and mint.
+  ///                                                  
+  ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
+  /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
+  /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
+  public static List<AccountMeta> fillBorrowOrderKeys(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                      final PublicKey borrowAccountsPayerKey,
+                                                      final PublicKey borrowAccountsObligationKey,
+                                                      final PublicKey borrowAccountsLendingMarketKey,
+                                                      final PublicKey borrowAccountsLendingMarketAuthorityKey,
+                                                      final PublicKey borrowAccountsBorrowReserveKey,
+                                                      final PublicKey borrowAccountsBorrowReserveLiquidityMintKey,
+                                                      final PublicKey borrowAccountsReserveSourceLiquidityKey,
+                                                      final PublicKey borrowAccountsBorrowReserveLiquidityFeeReceiverKey,
+                                                      final PublicKey borrowAccountsUserDestinationLiquidityKey,
+                                                      final PublicKey borrowAccountsReferrerTokenStateKey,
+                                                      final PublicKey borrowAccountsTokenProgramKey,
+                                                      final PublicKey borrowAccountsInstructionSysvarAccountKey,
+                                                      final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                                      final PublicKey farmsAccountsReserveFarmStateKey,
+                                                      final PublicKey farmsProgramKey,
+                                                      final PublicKey eventAuthorityKey,
+                                                      final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(borrowAccountsPayerKey),
+      createWrite(borrowAccountsObligationKey),
+      createRead(borrowAccountsLendingMarketKey),
+      createRead(borrowAccountsLendingMarketAuthorityKey),
+      createWrite(borrowAccountsBorrowReserveKey),
+      createRead(borrowAccountsBorrowReserveLiquidityMintKey),
+      createWrite(borrowAccountsReserveSourceLiquidityKey),
+      createWrite(borrowAccountsBorrowReserveLiquidityFeeReceiverKey),
+      createWrite(borrowAccountsUserDestinationLiquidityKey),
+      createWrite(requireNonNullElse(borrowAccountsReferrerTokenStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(borrowAccountsTokenProgramKey),
+      createRead(borrowAccountsInstructionSysvarAccountKey),
+      createWrite(requireNonNullElse(farmsAccountsObligationFarmUserStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(farmsAccountsReserveFarmStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(farmsProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param borrowAccountsObligationKey The obligation with a BorrowOrder.
+  /// @param borrowAccountsLendingMarketKey The Self::obligation's market - needed for borrowing-related configuration.
+  /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
+  ///                                                the Self::reserve_source_liquidity.
+  /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
+  ///                                       
+  ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint.
+  /// @param borrowAccountsBorrowReserveLiquidityMintKey The mint of Self::borrow_reserve - needed to execute the transfer.
+  /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
+  /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
+  /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
+  ///                                                  
+  ///                                                  It must match BorrowOrder::filled_debt_destination, owner and mint.
+  ///                                                  
+  ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
+  /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
+  /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
+  public static Instruction fillBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
+                                            final PublicKey borrowAccountsPayerKey,
+                                            final PublicKey borrowAccountsObligationKey,
+                                            final PublicKey borrowAccountsLendingMarketKey,
+                                            final PublicKey borrowAccountsLendingMarketAuthorityKey,
+                                            final PublicKey borrowAccountsBorrowReserveKey,
+                                            final PublicKey borrowAccountsBorrowReserveLiquidityMintKey,
+                                            final PublicKey borrowAccountsReserveSourceLiquidityKey,
+                                            final PublicKey borrowAccountsBorrowReserveLiquidityFeeReceiverKey,
+                                            final PublicKey borrowAccountsUserDestinationLiquidityKey,
+                                            final PublicKey borrowAccountsReferrerTokenStateKey,
+                                            final PublicKey borrowAccountsTokenProgramKey,
+                                            final PublicKey borrowAccountsInstructionSysvarAccountKey,
+                                            final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                            final PublicKey farmsAccountsReserveFarmStateKey,
+                                            final PublicKey farmsProgramKey,
+                                            final PublicKey eventAuthorityKey,
+                                            final PublicKey programKey) {
+    final var keys = fillBorrowOrderKeys(
+      invokedKaminoLendingProgramMeta,
+      borrowAccountsPayerKey,
+      borrowAccountsObligationKey,
+      borrowAccountsLendingMarketKey,
+      borrowAccountsLendingMarketAuthorityKey,
+      borrowAccountsBorrowReserveKey,
+      borrowAccountsBorrowReserveLiquidityMintKey,
+      borrowAccountsReserveSourceLiquidityKey,
+      borrowAccountsBorrowReserveLiquidityFeeReceiverKey,
+      borrowAccountsUserDestinationLiquidityKey,
+      borrowAccountsReferrerTokenStateKey,
+      borrowAccountsTokenProgramKey,
+      borrowAccountsInstructionSysvarAccountKey,
+      farmsAccountsObligationFarmUserStateKey,
+      farmsAccountsReserveFarmStateKey,
+      farmsProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return fillBorrowOrder(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction fillBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
+                                            final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, FILL_BORROW_ORDER_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(140, 136, 214, 48, 87, 0, 120, 255);

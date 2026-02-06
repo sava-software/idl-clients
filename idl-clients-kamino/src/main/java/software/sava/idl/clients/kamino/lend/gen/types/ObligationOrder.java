@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// A single obligation order.
-/// See Obligation::orders.
+/// See Obligation::obligation_orders.
 ///
 /// @param conditionThresholdSf A threshold value used by the condition (scaled Fraction).
 ///                             The exact meaning depends on the specific Self::condition_type.
@@ -66,7 +66,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///                        Example: a value of `0` here denotes `DeleverageSingleDebtAmount` opportunity. Of course, to
 ///                        interpret this opportunity, we also need to take the Self::opportunity_parameter_sf into
 ///                        account.
-/// @param padding1 Internal padding.
+/// @param padding1 Alignment padding.
 ///                 The fields above take up 2+2+1+1 bytes = 48 bits, which means we need 80 bits = 10 bytes to
 ///                 align with `u128`s.
 /// @param padding2 End padding.

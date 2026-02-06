@@ -31,7 +31,12 @@ public enum UpdateLendingMarketMode implements RustEnum {
   UpdateImmutableFlag,
   UpdateObligationOrderCreationEnabled,
   UpdateProposerAuthority,
-  UpdatePriceTriggeredLiquidationDisabled;
+  UpdatePriceTriggeredLiquidationDisabled,
+  UpdateMatureReserveDebtLiquidationEnabled,
+  UpdateObligationBorrowDebtTermLiquidationEnabled,
+  UpdateBorrowOrderCreationEnabled,
+  UpdateBorrowOrderExecutionEnabled,
+  UpdateMinBorrowOrderFillValue;
 
   public static UpdateLendingMarketMode read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, UpdateLendingMarketMode.values(), _data, _offset);

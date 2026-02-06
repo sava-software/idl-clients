@@ -136,7 +136,18 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.InitialAdminDepositExecuted,
     KaminoLendingError.ReserveHasNotReceivedInitialDeposit,
     KaminoLendingError.CTokenUsageBlocked,
-    KaminoLendingError.CannotUseSameReserve {
+    KaminoLendingError.CannotUseSameReserve,
+    KaminoLendingError.TransactionIncludesRestrictedPrograms,
+    KaminoLendingError.BorrowOrderDebtLiquidityMintMismatch,
+    KaminoLendingError.BorrowOrderMaxBorrowRateExceeded,
+    KaminoLendingError.BorrowOrderMinDebtTermInsufficient,
+    KaminoLendingError.BorrowOrderFillTimeLimitExceeded,
+    KaminoLendingError.ReserveDebtMaturityReached,
+    KaminoLendingError.NonUpdatableOrderConfiguration,
+    KaminoLendingError.BorrowOrderExecutionDisabled,
+    KaminoLendingError.DebtReachedReserveDebtTerm,
+    KaminoLendingError.ExpectationNotMet,
+    KaminoLendingError.BorrowOrderFillValueTooSmall {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -274,6 +285,17 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6131 -> ReserveHasNotReceivedInitialDeposit.INSTANCE;
       case 6132 -> CTokenUsageBlocked.INSTANCE;
       case 6133 -> CannotUseSameReserve.INSTANCE;
+      case 6134 -> TransactionIncludesRestrictedPrograms.INSTANCE;
+      case 6135 -> BorrowOrderDebtLiquidityMintMismatch.INSTANCE;
+      case 6136 -> BorrowOrderMaxBorrowRateExceeded.INSTANCE;
+      case 6137 -> BorrowOrderMinDebtTermInsufficient.INSTANCE;
+      case 6138 -> BorrowOrderFillTimeLimitExceeded.INSTANCE;
+      case 6139 -> ReserveDebtMaturityReached.INSTANCE;
+      case 6140 -> NonUpdatableOrderConfiguration.INSTANCE;
+      case 6141 -> BorrowOrderExecutionDisabled.INSTANCE;
+      case 6142 -> DebtReachedReserveDebtTerm.INSTANCE;
+      case 6143 -> ExpectationNotMet.INSTANCE;
+      case 6144 -> BorrowOrderFillValueTooSmall.INSTANCE;
       default -> null;
     };
   }
@@ -1213,6 +1235,83 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final CannotUseSameReserve INSTANCE = new CannotUseSameReserve(
         6133, "Cannot call ix with same reserve"
+    );
+  }
+
+  record TransactionIncludesRestrictedPrograms(int code, String msg) implements KaminoLendingError {
+
+    public static final TransactionIncludesRestrictedPrograms INSTANCE = new TransactionIncludesRestrictedPrograms(
+        6134, "Transaction includes restricted programs"
+    );
+  }
+
+  record BorrowOrderDebtLiquidityMintMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderDebtLiquidityMintMismatch INSTANCE = new BorrowOrderDebtLiquidityMintMismatch(
+        6135, "There is no borrow order requesting debt in the given asset"
+    );
+  }
+
+  record BorrowOrderMaxBorrowRateExceeded(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderMaxBorrowRateExceeded INSTANCE = new BorrowOrderMaxBorrowRateExceeded(
+        6136, "Reserve used for fill exceeds the maximum borrow rate specified by the order"
+    );
+  }
+
+  record BorrowOrderMinDebtTermInsufficient(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderMinDebtTermInsufficient INSTANCE = new BorrowOrderMinDebtTermInsufficient(
+        6137, "Reserve used for fill defines a debt term shorter than specified by the order"
+    );
+  }
+
+  record BorrowOrderFillTimeLimitExceeded(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderFillTimeLimitExceeded INSTANCE = new BorrowOrderFillTimeLimitExceeded(
+        6138, "Borrow order can no longer be filled"
+    );
+  }
+
+  record ReserveDebtMaturityReached(int code, String msg) implements KaminoLendingError {
+
+    public static final ReserveDebtMaturityReached INSTANCE = new ReserveDebtMaturityReached(
+        6139, "Cannot borrow from a reserve that reached its debt maturity timestamp"
+    );
+  }
+
+  record NonUpdatableOrderConfiguration(int code, String msg) implements KaminoLendingError {
+
+    public static final NonUpdatableOrderConfiguration INSTANCE = new NonUpdatableOrderConfiguration(
+        6140, "Some piece of the order's configuration cannot be updated (the order should be cancelled and placed again)"
+    );
+  }
+
+  record BorrowOrderExecutionDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderExecutionDisabled INSTANCE = new BorrowOrderExecutionDisabled(
+        6141, "Execution of borrow orders is disabled"
+    );
+  }
+
+  record DebtReachedReserveDebtTerm(int code, String msg) implements KaminoLendingError {
+
+    public static final DebtReachedReserveDebtTerm INSTANCE = new DebtReachedReserveDebtTerm(
+        6142, "Cannot increase the debt that has reached its end of term configured by the reserve"
+    );
+  }
+
+  record ExpectationNotMet(int code, String msg) implements KaminoLendingError {
+
+    public static final ExpectationNotMet INSTANCE = new ExpectationNotMet(
+        6143, "The on-chain state does not meet expectation specified by the caller, so the operation must be aborted (to avoid race conditions)"
+    );
+  }
+
+  record BorrowOrderFillValueTooSmall(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderFillValueTooSmall INSTANCE = new BorrowOrderFillValueTooSmall(
+        6144, "Available liquidity could not satisfy the minimum required borrow order fill value"
     );
   }
 }
