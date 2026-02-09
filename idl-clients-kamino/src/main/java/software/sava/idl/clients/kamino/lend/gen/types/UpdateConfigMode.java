@@ -29,7 +29,7 @@ public enum UpdateConfigMode implements RustEnum {
   UpdateSwitchboardFeed,
   UpdateSwitchboardTwapFeed,
   UpdateBorrowRateCurve,
-  UpdateEntireReserveConfig,
+  DeprecatedUpdateEntireReserveConfig,
   UpdateDebtWithdrawalCap,
   UpdateDepositWithdrawalCap,
   DeprecatedUpdateDebtWithdrawalCapCurrentTotal,

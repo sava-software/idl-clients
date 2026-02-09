@@ -44,8 +44,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param autodeleverageEnabled Whether this reserve should be subject to auto-deleveraging after deposit or borrow limit is
 ///                              crossed.
 ///                              Besides this flag, the lending market's flag also needs to be enabled (logical `AND`).
-///                              **NOTE:** the manual "target LTV" deleveraging (enabled by the risk council for individual
-///                              obligations) is NOT affected by this flag.
+///                              **NOTE:** the manual "target LTV" deleveraging is NOT affected by this flag.
 /// @param proposerAuthorityLocked Boolean flag indicating whether the reserve is locked for the proposer authority.
 ///                                
 ///                                Once the proposer have finished preparing the reserve, it must be locked to prevent

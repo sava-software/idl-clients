@@ -11,7 +11,7 @@ public enum UpdateLendingMarketMode implements RustEnum {
   UpdateLiquidationMaxValue,
   DeprecatedUpdateGlobalUnhealthyBorrow,
   UpdateGlobalAllowedBorrow,
-  UpdateRiskCouncil,
+  UpdateEmergencyCouncil,
   UpdateMinFullLiquidationThreshold,
   UpdateInsolvencyRiskLtv,
   UpdateElevationGroup,

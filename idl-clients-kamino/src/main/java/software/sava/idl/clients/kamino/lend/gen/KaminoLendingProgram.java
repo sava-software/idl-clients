@@ -119,21 +119,21 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator UPDATE_LENDING_MARKET_DISCRIMINATOR = toDiscriminator(209, 157, 53, 210, 97, 180, 31, 45);
 
-  public static List<AccountMeta> updateLendingMarketKeys(final PublicKey lendingMarketOwnerKey,
+  public static List<AccountMeta> updateLendingMarketKeys(final PublicKey signerKey,
                                                           final PublicKey lendingMarketKey) {
     return List.of(
-      createReadOnlySigner(lendingMarketOwnerKey),
+      createReadOnlySigner(signerKey),
       createWrite(lendingMarketKey)
     );
   }
 
   public static Instruction updateLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta,
-                                                final PublicKey lendingMarketOwnerKey,
+                                                final PublicKey signerKey,
                                                 final PublicKey lendingMarketKey,
                                                 final long mode,
                                                 final byte[] value) {
     final var keys = updateLendingMarketKeys(
-      lendingMarketOwnerKey,
+      signerKey,
       lendingMarketKey
     );
     return updateLendingMarket(invokedKaminoLendingProgramMeta, keys, mode, value);
@@ -661,13 +661,13 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator SOCIALIZE_LOSS_DISCRIMINATOR = toDiscriminator(245, 75, 91, 0, 236, 97, 19, 3);
 
-  public static List<AccountMeta> socializeLossKeys(final PublicKey riskCouncilKey,
+  public static List<AccountMeta> socializeLossKeys(final PublicKey lendingMarketOwnerKey,
                                                     final PublicKey obligationKey,
                                                     final PublicKey lendingMarketKey,
                                                     final PublicKey reserveKey,
                                                     final PublicKey instructionSysvarAccountKey) {
     return List.of(
-      createReadOnlySigner(riskCouncilKey),
+      createReadOnlySigner(lendingMarketOwnerKey),
       createWrite(obligationKey),
       createRead(lendingMarketKey),
       createWrite(reserveKey),
@@ -676,14 +676,14 @@ public final class KaminoLendingProgram {
   }
 
   public static Instruction socializeLoss(final AccountMeta invokedKaminoLendingProgramMeta,
-                                          final PublicKey riskCouncilKey,
+                                          final PublicKey lendingMarketOwnerKey,
                                           final PublicKey obligationKey,
                                           final PublicKey lendingMarketKey,
                                           final PublicKey reserveKey,
                                           final PublicKey instructionSysvarAccountKey,
                                           final long liquidityAmount) {
     final var keys = socializeLossKeys(
-      riskCouncilKey,
+      lendingMarketOwnerKey,
       obligationKey,
       lendingMarketKey,
       reserveKey,
@@ -739,7 +739,7 @@ public final class KaminoLendingProgram {
   public static final Discriminator SOCIALIZE_LOSS_V_2_DISCRIMINATOR = toDiscriminator(238, 95, 98, 220, 187, 40, 204, 154);
 
   public static List<AccountMeta> socializeLossV2Keys(final AccountMeta invokedKaminoLendingProgramMeta,
-                                                      final PublicKey socializeLossAccountsRiskCouncilKey,
+                                                      final PublicKey socializeLossAccountsLendingMarketOwnerKey,
                                                       final PublicKey socializeLossAccountsObligationKey,
                                                       final PublicKey socializeLossAccountsLendingMarketKey,
                                                       final PublicKey socializeLossAccountsReserveKey,
@@ -749,7 +749,7 @@ public final class KaminoLendingProgram {
                                                       final PublicKey lendingMarketAuthorityKey,
                                                       final PublicKey farmsProgramKey) {
     return List.of(
-      createReadOnlySigner(socializeLossAccountsRiskCouncilKey),
+      createReadOnlySigner(socializeLossAccountsLendingMarketOwnerKey),
       createWrite(socializeLossAccountsObligationKey),
       createRead(socializeLossAccountsLendingMarketKey),
       createWrite(socializeLossAccountsReserveKey),
@@ -762,7 +762,7 @@ public final class KaminoLendingProgram {
   }
 
   public static Instruction socializeLossV2(final AccountMeta invokedKaminoLendingProgramMeta,
-                                            final PublicKey socializeLossAccountsRiskCouncilKey,
+                                            final PublicKey socializeLossAccountsLendingMarketOwnerKey,
                                             final PublicKey socializeLossAccountsObligationKey,
                                             final PublicKey socializeLossAccountsLendingMarketKey,
                                             final PublicKey socializeLossAccountsReserveKey,
@@ -774,7 +774,7 @@ public final class KaminoLendingProgram {
                                             final long liquidityAmount) {
     final var keys = socializeLossV2Keys(
       invokedKaminoLendingProgramMeta,
-      socializeLossAccountsRiskCouncilKey,
+      socializeLossAccountsLendingMarketOwnerKey,
       socializeLossAccountsObligationKey,
       socializeLossAccountsLendingMarketKey,
       socializeLossAccountsReserveKey,
@@ -833,23 +833,23 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator MARK_OBLIGATION_FOR_DELEVERAGING_DISCRIMINATOR = toDiscriminator(164, 35, 182, 19, 0, 116, 243, 127);
 
-  public static List<AccountMeta> markObligationForDeleveragingKeys(final PublicKey riskCouncilKey,
+  public static List<AccountMeta> markObligationForDeleveragingKeys(final PublicKey lendingMarketOwnerKey,
                                                                     final PublicKey obligationKey,
                                                                     final PublicKey lendingMarketKey) {
     return List.of(
-      createReadOnlySigner(riskCouncilKey),
+      createReadOnlySigner(lendingMarketOwnerKey),
       createWrite(obligationKey),
       createRead(lendingMarketKey)
     );
   }
 
   public static Instruction markObligationForDeleveraging(final AccountMeta invokedKaminoLendingProgramMeta,
-                                                          final PublicKey riskCouncilKey,
+                                                          final PublicKey lendingMarketOwnerKey,
                                                           final PublicKey obligationKey,
                                                           final PublicKey lendingMarketKey,
                                                           final int autodeleverageTargetLtvPct) {
     final var keys = markObligationForDeleveragingKeys(
-      riskCouncilKey,
+      lendingMarketOwnerKey,
       obligationKey,
       lendingMarketKey
     );

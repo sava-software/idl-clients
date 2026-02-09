@@ -39,11 +39,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param hasDebt Marked = 1 if borrows array is not empty, 0 = borrows empty
 /// @param referrer Wallet address of the referrer
 /// @param borrowingDisabled Marked = 1 if borrowing disabled, 0 = borrowing enabled
-/// @param autodeleverageTargetLtvPct A target LTV set by the risk council when marking this obligation for deleveraging.
+/// @param autodeleverageTargetLtvPct A target LTV set by the market owner when marking this obligation for deleveraging.
 ///                                   Only effective when `deleveraging_margin_call_started_slot != 0`.
 /// @param lowestReserveDepositMaxLtvPct The lowest max LTV found amongst the collateral deposits
 /// @param numOfObsoleteBorrowReserves The number of obsolete reserves the obligation has a borrow in
-/// @param autodeleverageMarginCallStartedTimestamp A timestamp at which the risk council most-recently marked this obligation for deleveraging.
+/// @param autodeleverageMarginCallStartedTimestamp A timestamp at which the market owner most-recently marked this obligation for deleveraging.
 ///                                                 Zero if not currently subject to deleveraging.
 /// @param obligationOrders Owner-defined, permissionlessly-executed repay orders.
 ///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).

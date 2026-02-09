@@ -41,7 +41,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param maxLiquidatableDebtMarketValueAtOnce Max allowed liquidation value in one ix call
 /// @param reserved0 DEPRECATED Global maximum unhealthy borrow value allowed for any obligation
 /// @param globalAllowedBorrowValue Global maximum allowed borrow value allowed for any obligation
-/// @param riskCouncil The address of the risk council, in charge of making parameter and risk decisions on behalf of the protocol
+/// @param emergencyCouncil The address of the emergency council, in charge of taking emergency actions on the market (e.g., enabling emergency mode)
 /// @param reserved1 DEPRECATED Reward points multiplier per obligation type
 /// @param elevationGroups Elevation groups are used to group together reserves that have the same risk parameters and can bump the ltv and liquidation threshold
 /// @param minNetValueInObligationSf Min net value accepted to be found in a position after any lending action in an obligation (scaled by quote currency decimals)
@@ -49,7 +49,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param name Market name, zero-padded.
 /// @param minValueSkipLiquidationBfChecks Minimum value to enforce highest borrow factor priority checks on the debt reserves on liquidation
 /// @param individualAutodeleverageMarginCallPeriodSecs Time (in seconds) that must pass before liquidation is allowed on an obligation that has
-///                                                     been individually marked for auto-deleveraging (by the risk council).
+///                                                     been individually marked for auto-deleveraging.
 /// @param minInitialDepositAmount Minimum amount of deposit at creation of a reserve to prevent artificial inflation
 ///                                Note: this amount cannot be recovered, the ctoken associated are never minted
 /// @param obligationOrderExecutionEnabled Whether the obligation orders should be evaluated during liquidations.
@@ -90,7 +90,7 @@ public record LendingMarket(PublicKey _address,
                             long maxLiquidatableDebtMarketValueAtOnce,
                             byte[] reserved0,
                             long globalAllowedBorrowValue,
-                            PublicKey riskCouncil,
+                            PublicKey emergencyCouncil,
                             byte[] reserved1,
                             ElevationGroup[] elevationGroups,
                             long[] elevationGroupPadding,
@@ -141,7 +141,7 @@ public record LendingMarket(PublicKey _address,
   public static final int MAX_LIQUIDATABLE_DEBT_MARKET_VALUE_AT_ONCE_OFFSET = 136;
   public static final int RESERVED_0_OFFSET = 144;
   public static final int GLOBAL_ALLOWED_BORROW_VALUE_OFFSET = 152;
-  public static final int RISK_COUNCIL_OFFSET = 160;
+  public static final int EMERGENCY_COUNCIL_OFFSET = 160;
   public static final int RESERVED_1_OFFSET = 192;
   public static final int ELEVATION_GROUPS_OFFSET = 200;
   public static final int ELEVATION_GROUP_PADDING_OFFSET = 2504;
@@ -231,8 +231,8 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(GLOBAL_ALLOWED_BORROW_VALUE_OFFSET, _data);
   }
 
-  public static Filter createRiskCouncilFilter(final PublicKey riskCouncil) {
-    return Filter.createMemCompFilter(RISK_COUNCIL_OFFSET, riskCouncil);
+  public static Filter createEmergencyCouncilFilter(final PublicKey emergencyCouncil) {
+    return Filter.createMemCompFilter(EMERGENCY_COUNCIL_OFFSET, emergencyCouncil);
   }
 
   public static Filter createMinNetValueInObligationSfFilter(final BigInteger minNetValueInObligationSf) {
@@ -359,7 +359,7 @@ public record LendingMarket(PublicKey _address,
     i += SerDeUtil.readArray(reserved0, _data, i);
     final var globalAllowedBorrowValue = getInt64LE(_data, i);
     i += 8;
-    final var riskCouncil = readPubKey(_data, i);
+    final var emergencyCouncil = readPubKey(_data, i);
     i += 32;
     final var reserved1 = new byte[8];
     i += SerDeUtil.readArray(reserved1, _data, i);
@@ -419,7 +419,7 @@ public record LendingMarket(PublicKey _address,
                              maxLiquidatableDebtMarketValueAtOnce,
                              reserved0,
                              globalAllowedBorrowValue,
-                             riskCouncil,
+                             emergencyCouncil,
                              reserved1,
                              elevationGroups,
                              elevationGroupPadding,
@@ -475,7 +475,7 @@ public record LendingMarket(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(reserved0, 8, _data, i);
     putInt64LE(_data, i, globalAllowedBorrowValue);
     i += 8;
-    riskCouncil.write(_data, i);
+    emergencyCouncil.write(_data, i);
     i += 32;
     i += SerDeUtil.writeArrayChecked(reserved1, 8, _data, i);
     i += SerDeUtil.writeArrayChecked(elevationGroups, 32, _data, i);
