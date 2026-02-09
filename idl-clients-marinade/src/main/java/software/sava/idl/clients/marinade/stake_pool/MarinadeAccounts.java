@@ -28,6 +28,66 @@ public interface MarinadeAccounts {
       "DwFYJNnhLmw19FBTrVaLWZ8SZJpxdPoSYVSJaio9tjbY"
   );
 
+  static MarinadeAccounts createAddressConstants(final PublicKey mSolTokenMint,
+                                                 final PublicKey mSolTokenMintAuthorityPDA,
+                                                 final PublicKey stakePoolProgram,
+                                                 final PublicKey stateAccount,
+                                                 final PublicKey reserveSolProgram,
+                                                 final PublicKey treasuryMSolAccount,
+                                                 final PublicKey mSolSolLPMint,
+                                                 final PublicKey lpAuthPDA,
+                                                 final PublicKey mSolLegAccount,
+                                                 final PublicKey mSolLegAuthority,
+                                                 final PublicKey solLegAccount,
+                                                 final PublicKey validatorListAccount) {
+    return new MarinadeAccountsRecord(
+        mSolTokenMint,
+        mSolTokenMintAuthorityPDA,
+        createWrite(mSolTokenMint),
+        stakePoolProgram,
+        createInvoked(stakePoolProgram),
+        stateAccount,
+        createWrite(stateAccount),
+        reserveSolProgram,
+        createWrite(reserveSolProgram),
+        treasuryMSolAccount,
+        mSolSolLPMint,
+        lpAuthPDA,
+        mSolLegAccount,
+        mSolLegAuthority,
+        solLegAccount,
+        validatorListAccount
+    );
+  }
+
+  static MarinadeAccounts createAddressConstants(final String mSolTokenMint,
+                                                 final String mSolTokenMintAuthorityPDA,
+                                                 final String stakePoolProgram,
+                                                 final String stateAccount,
+                                                 final String reserveSolProgram,
+                                                 final String treasuryMSolAccount,
+                                                 final String mSolSolLPMint,
+                                                 final String lpAuthPDA,
+                                                 final String mSolLegAccount,
+                                                 final String mSolLegAuthority,
+                                                 final String solLegAccount,
+                                                 final String validatorListAccount) {
+    return createAddressConstants(
+        fromBase58Encoded(mSolTokenMint),
+        fromBase58Encoded(mSolTokenMintAuthorityPDA),
+        fromBase58Encoded(stakePoolProgram),
+        fromBase58Encoded(stateAccount),
+        fromBase58Encoded(reserveSolProgram),
+        fromBase58Encoded(treasuryMSolAccount),
+        fromBase58Encoded(mSolSolLPMint),
+        fromBase58Encoded(lpAuthPDA),
+        fromBase58Encoded(mSolLegAccount),
+        fromBase58Encoded(mSolLegAuthority),
+        fromBase58Encoded(solLegAccount),
+        fromBase58Encoded(validatorListAccount)
+    );
+  }
+
   PublicKey mSolTokenMint();
 
   PublicKey mSolTokenMintAuthorityPDA();
@@ -38,9 +98,19 @@ public interface MarinadeAccounts {
 
   AccountMeta invokedMarinadeProgram();
 
-  PublicKey stateProgram();
+  PublicKey stateAccount();
 
-  AccountMeta writeStateProgram();
+  @Deprecated
+  default PublicKey stateProgram() {
+    return stateAccount();
+  }
+
+  AccountMeta writeStateAccount();
+
+  @Deprecated
+  default AccountMeta writeStateProgram() {
+    return writeStateAccount();
+  }
 
   // Treasury
 
@@ -64,68 +134,6 @@ public interface MarinadeAccounts {
 
   PublicKey validatorListAccount();
 
-  static MarinadeAccounts createAddressConstants(
-      final PublicKey mSolTokenMint,
-      final PublicKey mSolTokenMintAuthorityPDA,
-      final PublicKey stakePoolProgram,
-      final PublicKey stateProgram,
-      final PublicKey reserveSolProgram,
-      final PublicKey treasuryMSolAccount,
-      final PublicKey mSolSolLPMint,
-      final PublicKey lpAuthPDA,
-      final PublicKey mSolLegAccount,
-      final PublicKey mSolLegAuthority,
-      final PublicKey solLegAccount,
-      final PublicKey validatorListAccount) {
-    return new MarinadeAccountsRecord(
-        mSolTokenMint,
-        mSolTokenMintAuthorityPDA,
-        createWrite(mSolTokenMint),
-        stakePoolProgram,
-        createInvoked(stakePoolProgram),
-        stateProgram,
-        createWrite(stateProgram),
-        reserveSolProgram,
-        createWrite(reserveSolProgram),
-        treasuryMSolAccount,
-        mSolSolLPMint,
-        lpAuthPDA,
-        mSolLegAccount,
-        mSolLegAuthority,
-        solLegAccount,
-        validatorListAccount
-    );
-  }
-
-  static MarinadeAccounts createAddressConstants(
-      final String mSolTokenMint,
-      final String mSolTokenMintAuthorityPDA,
-      final String stakePoolProgram,
-      final String stateProgram,
-      final String reserveSolProgram,
-      final String treasuryMSolAccount,
-      final String mSolSolLPMint,
-      final String lpAuthPDA,
-      final String mSolLegAccount,
-      final String mSolLegAuthority,
-      final String solLegAccount,
-      final String validatorListAccount) {
-    return createAddressConstants(
-        fromBase58Encoded(mSolTokenMint),
-        fromBase58Encoded(mSolTokenMintAuthorityPDA),
-        fromBase58Encoded(stakePoolProgram),
-        fromBase58Encoded(stateProgram),
-        fromBase58Encoded(reserveSolProgram),
-        fromBase58Encoded(treasuryMSolAccount),
-        fromBase58Encoded(mSolSolLPMint),
-        fromBase58Encoded(lpAuthPDA),
-        fromBase58Encoded(mSolLegAccount),
-        fromBase58Encoded(mSolLegAuthority),
-        fromBase58Encoded(solLegAccount),
-        fromBase58Encoded(validatorListAccount)
-    );
-  }
-
   static ProgramDerivedAddress deriveReserveAuthority(final PublicKey program, final PublicKey state) {
     return PublicKey.findProgramAddress(List.of(
             state.toByteArray(),
@@ -135,7 +143,7 @@ public interface MarinadeAccounts {
   }
 
   default ProgramDerivedAddress deriveReserveAuthority() {
-    return deriveReserveAuthority(marinadeProgram(), stateProgram());
+    return deriveReserveAuthority(marinadeProgram(), stateAccount());
   }
 
   static ProgramDerivedAddress deriveStakeMintAuthority(final PublicKey program, final PublicKey state) {
@@ -147,7 +155,7 @@ public interface MarinadeAccounts {
   }
 
   default ProgramDerivedAddress deriveStakeMintAuthority() {
-    return deriveStakeMintAuthority(marinadeProgram(), stateProgram());
+    return deriveStakeMintAuthority(marinadeProgram(), stateAccount());
   }
 
   static ProgramDerivedAddress deriveStakeWithdrawAuthority(final PublicKey program, final PublicKey state) {
@@ -159,7 +167,7 @@ public interface MarinadeAccounts {
   }
 
   default ProgramDerivedAddress deriveStakeWithdrawAuthority() {
-    return deriveStakeWithdrawAuthority(marinadeProgram(), stateProgram());
+    return deriveStakeWithdrawAuthority(marinadeProgram(), stateAccount());
   }
 
   static ProgramDerivedAddress deriveStakeDepositAuthority(final PublicKey program, final PublicKey state) {
@@ -171,6 +179,6 @@ public interface MarinadeAccounts {
   }
 
   default ProgramDerivedAddress deriveStakeDepositAuthority() {
-    return deriveStakeDepositAuthority(marinadeProgram(), stateProgram());
+    return deriveStakeDepositAuthority(marinadeProgram(), stateAccount());
   }
 }
