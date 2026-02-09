@@ -1,7 +1,9 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
+import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
+import software.sava.idl.clients.kamino.scope.gen.types.OraclePrices;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 import software.sava.rpc.json.http.response.AccountInfo;
 
@@ -37,6 +39,20 @@ public interface ScopeReader {
     final var price = val < 0
         ? new BigDecimal(Long.toUnsignedString(val))
         : new BigDecimal(val);
-    return price.movePointRight(Math.toIntExact(scaledPrice.exp()));
+    return price.movePointLeft(Math.toIntExact(scaledPrice.exp()));
+  }
+
+  static BigDecimal scaleScopePrice(final byte[] oraclePricesData, final int index) {
+    int offset = OraclePrices.PRICES_OFFSET + (DatedPrice.BYTES * index);
+    final long val = ByteUtil.getInt64LE(oraclePricesData, offset);
+    if (val == 0) {
+      return BigDecimal.ZERO;
+    } else {
+      final var price = val < 0
+          ? new BigDecimal(Long.toUnsignedString(val))
+          : new BigDecimal(val);
+      final long exp = ByteUtil.getInt64LE(oraclePricesData, offset + Long.BYTES);
+      return price.movePointLeft(Math.toIntExact(exp));
+    }
   }
 }
