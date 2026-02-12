@@ -12,12 +12,11 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param refPrice reference price against which we check confidence within 5%
 public record OracleMappings(PublicKey _address,
                              Discriminator discriminator,
                              PublicKey[] priceInfoAccounts,
                              byte[] priceTypes,
-                             short[] twapSource,
+                             short[] twapSourceOrRefPriceToleranceBps,
                              TwapEnabledBitmask[] twapEnabledBitmask,
                              short[] refPrice,
                              byte[][] generic) implements SerDe {
@@ -25,7 +24,7 @@ public record OracleMappings(PublicKey _address,
   public static final int BYTES = 29704;
   public static final int PRICE_INFO_ACCOUNTS_LEN = 512;
   public static final int PRICE_TYPES_LEN = 512;
-  public static final int TWAP_SOURCE_LEN = 512;
+  public static final int TWAP_SOURCE_OR_REF_PRICE_TOLERANCE_BPS_LEN = 512;
   public static final int TWAP_ENABLED_BITMASK_LEN = 512;
   public static final int REF_PRICE_LEN = 512;
   public static final int GENERIC_LEN = 512;
@@ -36,7 +35,7 @@ public record OracleMappings(PublicKey _address,
 
   public static final int PRICE_INFO_ACCOUNTS_OFFSET = 8;
   public static final int PRICE_TYPES_OFFSET = 16392;
-  public static final int TWAP_SOURCE_OFFSET = 16904;
+  public static final int TWAP_SOURCE_OR_REF_PRICE_TOLERANCE_BPS_OFFSET = 16904;
   public static final int TWAP_ENABLED_BITMASK_OFFSET = 17928;
   public static final int REF_PRICE_OFFSET = 18440;
   public static final int GENERIC_OFFSET = 19464;
@@ -65,8 +64,8 @@ public record OracleMappings(PublicKey _address,
     i += SerDeUtil.readArray(priceInfoAccounts, _data, i);
     final var priceTypes = new byte[512];
     i += SerDeUtil.readArray(priceTypes, _data, i);
-    final var twapSource = new short[512];
-    i += SerDeUtil.readArray(twapSource, _data, i);
+    final var twapSourceOrRefPriceToleranceBps = new short[512];
+    i += SerDeUtil.readArray(twapSourceOrRefPriceToleranceBps, _data, i);
     final var twapEnabledBitmask = new TwapEnabledBitmask[512];
     i += SerDeUtil.readArray(twapEnabledBitmask, TwapEnabledBitmask::read, _data, i);
     final var refPrice = new short[512];
@@ -77,7 +76,7 @@ public record OracleMappings(PublicKey _address,
                               discriminator,
                               priceInfoAccounts,
                               priceTypes,
-                              twapSource,
+                              twapSourceOrRefPriceToleranceBps,
                               twapEnabledBitmask,
                               refPrice,
                               generic);
@@ -88,7 +87,7 @@ public record OracleMappings(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     i += SerDeUtil.writeArrayChecked(priceInfoAccounts, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(priceTypes, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(twapSource, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(twapSourceOrRefPriceToleranceBps, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(twapEnabledBitmask, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(refPrice, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(generic, 512, _data, i);

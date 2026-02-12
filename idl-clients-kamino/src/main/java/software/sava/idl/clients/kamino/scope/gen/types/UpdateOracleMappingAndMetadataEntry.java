@@ -136,12 +136,45 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
-  record MappingRefPrice(OptionalInt val) implements OptionalEnumInt16, UpdateOracleMappingAndMetadataEntry {
+  record MappingRefPrice(OptionalInt refPriceIndex, OptionalInt refPriceToleranceBps) implements UpdateOracleMappingAndMetadataEntry {
 
-    public static MappingRefPrice read(final byte[] _data, int i) {
-      final boolean absent = SerDeUtil.isAbsent(1, _data, i);
-      i += 1;
-      return new MappingRefPrice(absent ? OptionalInt.empty() : OptionalInt.of(getInt16LE(_data, i)));
+    public static final int REF_PRICE_INDEX_OFFSET = 1;
+
+    public static MappingRefPrice read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final OptionalInt refPriceIndex;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        refPriceIndex = OptionalInt.empty();
+        ++i;
+      } else {
+        ++i;
+        refPriceIndex = OptionalInt.of(getInt16LE(_data, i));
+        i += 2;
+      }
+      final OptionalInt refPriceToleranceBps;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        refPriceToleranceBps = OptionalInt.empty();
+      } else {
+        ++i;
+        refPriceToleranceBps = OptionalInt.of(getInt16LE(_data, i));
+      }
+      return new MappingRefPrice(refPriceIndex, refPriceToleranceBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += SerDeUtil.writeOptionalshort(1, refPriceIndex, _data, i);
+      i += SerDeUtil.writeOptionalshort(1, refPriceToleranceBps, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + (refPriceIndex == null || refPriceIndex.isEmpty() ? 1 : (1 + 2)) + (refPriceToleranceBps == null || refPriceToleranceBps.isEmpty() ? 1 : (1 + 2));
     }
 
     @Override

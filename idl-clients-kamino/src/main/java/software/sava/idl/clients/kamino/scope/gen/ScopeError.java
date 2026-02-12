@@ -65,7 +65,9 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.PythLazerExponentNotPresent,
     ScopeError.PythLazerUnexpectedExponent,
     ScopeError.InvalidConversionToEmaTypeForOracleType,
-    ScopeError.TwapEnabledBitmaskConversionFailure {
+    ScopeError.TwapEnabledBitmaskConversionFailure,
+    ScopeError.OperationNotSupported,
+    ScopeError.TwapSourceIndexNotSet {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -132,6 +134,8 @@ public sealed interface ScopeError extends ProgramError permits
       case 6060 -> PythLazerUnexpectedExponent.INSTANCE;
       case 6061 -> InvalidConversionToEmaTypeForOracleType.INSTANCE;
       case 6062 -> TwapEnabledBitmaskConversionFailure.INSTANCE;
+      case 6063 -> OperationNotSupported.INSTANCE;
+      case 6064 -> TwapSourceIndexNotSet.INSTANCE;
       default -> null;
     };
   }
@@ -574,6 +578,20 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final TwapEnabledBitmaskConversionFailure INSTANCE = new TwapEnabledBitmaskConversionFailure(
         6062, "Invalid TWAP enabled bitmask value"
+    );
+  }
+
+  record OperationNotSupported(int code, String msg) implements ScopeError {
+
+    public static final OperationNotSupported INSTANCE = new OperationNotSupported(
+        6063, "This operation is not supported"
+    );
+  }
+
+  record TwapSourceIndexNotSet(int code, String msg) implements ScopeError {
+
+    public static final TwapSourceIndexNotSet INSTANCE = new TwapSourceIndexNotSet(
+        6064, "TWAP source index not set"
     );
   }
 }
