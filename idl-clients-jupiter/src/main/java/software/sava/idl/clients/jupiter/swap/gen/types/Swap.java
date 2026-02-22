@@ -138,7 +138,9 @@ public sealed interface Swap extends RustEnum permits
   Swap.GoonFiV2,
   Swap.Scorch,
   Swap.VaultLiquidUnstake,
-  Swap.XOrca {
+  Swap.XOrca,
+  Swap.Quantum,
+  Swap.WhaleStreetV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -269,6 +271,8 @@ public sealed interface Swap extends RustEnum permits
       case 122 -> Scorch.read(_data, i);
       case 123 -> VaultLiquidUnstake.read(_data, i);
       case 124 -> XOrca.INSTANCE;
+      case 125 -> Quantum.read(_data, i);
+      case 126 -> WhaleStreetV2.read(_data, i);
       default -> null;
     };
   }
@@ -2065,6 +2069,63 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 124;
+    }
+  }
+
+  record Quantum(Side val) implements SerDeEnum, Swap {
+
+    public static Quantum read(final byte[] _data, final int _offset) {
+      return new Quantum(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 125;
+    }
+  }
+
+  record WhaleStreetV2(Side side,
+                       long authAmountIn,
+                       long auth) implements Swap {
+
+    public static final int BYTES = 17;
+
+    public static final int SIDE_OFFSET = 0;
+    public static final int AUTH_AMOUNT_IN_OFFSET = 1;
+    public static final int AUTH_OFFSET = 9;
+
+    public static WhaleStreetV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var side = Side.read(_data, i);
+      i += side.l();
+      final var authAmountIn = getInt64LE(_data, i);
+      i += 8;
+      final var auth = getInt64LE(_data, i);
+      return new WhaleStreetV2(side, authAmountIn, auth);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += side.write(_data, i);
+      putInt64LE(_data, i, authAmountIn);
+      i += 8;
+      putInt64LE(_data, i, auth);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 126;
     }
   }
 }
