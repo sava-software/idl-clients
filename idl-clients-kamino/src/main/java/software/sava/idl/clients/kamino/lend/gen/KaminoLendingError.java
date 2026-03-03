@@ -147,7 +147,15 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.BorrowOrderExecutionDisabled,
     KaminoLendingError.DebtReachedReserveDebtTerm,
     KaminoLendingError.ExpectationNotMet,
-    KaminoLendingError.BorrowOrderFillValueTooSmall {
+    KaminoLendingError.BorrowOrderFillValueTooSmall,
+    KaminoLendingError.WithdrawTicketIssuanceDisabled,
+    KaminoLendingError.WithdrawTicketRedemptionDisabled,
+    KaminoLendingError.WithdrawTicketStillValid,
+    KaminoLendingError.WithdrawTicketRequiresFullRedemption,
+    KaminoLendingError.UserTokenBalanceMismatch,
+    KaminoLendingError.WithdrawQueuedLiquidityValueTooSmall,
+    KaminoLendingError.InvalidTokenAccountState,
+    KaminoLendingError.WithdrawTicketInvalid {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -296,6 +304,14 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6142 -> DebtReachedReserveDebtTerm.INSTANCE;
       case 6143 -> ExpectationNotMet.INSTANCE;
       case 6144 -> BorrowOrderFillValueTooSmall.INSTANCE;
+      case 6145 -> WithdrawTicketIssuanceDisabled.INSTANCE;
+      case 6146 -> WithdrawTicketRedemptionDisabled.INSTANCE;
+      case 6147 -> WithdrawTicketStillValid.INSTANCE;
+      case 6148 -> WithdrawTicketRequiresFullRedemption.INSTANCE;
+      case 6149 -> UserTokenBalanceMismatch.INSTANCE;
+      case 6150 -> WithdrawQueuedLiquidityValueTooSmall.INSTANCE;
+      case 6151 -> InvalidTokenAccountState.INSTANCE;
+      case 6152 -> WithdrawTicketInvalid.INSTANCE;
       default -> null;
     };
   }
@@ -1312,6 +1328,62 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final BorrowOrderFillValueTooSmall INSTANCE = new BorrowOrderFillValueTooSmall(
         6144, "Available liquidity could not satisfy the minimum required borrow order fill value"
+    );
+  }
+
+  record WithdrawTicketIssuanceDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketIssuanceDisabled INSTANCE = new WithdrawTicketIssuanceDisabled(
+        6145, "Issuing new withdraw tickets is disabled by the market"
+    );
+  }
+
+  record WithdrawTicketRedemptionDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketRedemptionDisabled INSTANCE = new WithdrawTicketRedemptionDisabled(
+        6146, "Redeeming withdraw tickets is disabled by the market"
+    );
+  }
+
+  record WithdrawTicketStillValid(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketStillValid INSTANCE = new WithdrawTicketStillValid(
+        6147, "Recovering collateral is only available after the withdraw ticket has been marked invalid"
+    );
+  }
+
+  record WithdrawTicketRequiresFullRedemption(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketRequiresFullRedemption INSTANCE = new WithdrawTicketRequiresFullRedemption(
+        6148, "The withdraw ticket's current state requires that it is fully redeemed (e.g. due to owner ATA creation), but there is not enough liquidity"
+    );
+  }
+
+  record UserTokenBalanceMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final UserTokenBalanceMismatch INSTANCE = new UserTokenBalanceMismatch(
+        6149, "The user's token account has changed its balance in an unexpected way"
+    );
+  }
+
+  record WithdrawQueuedLiquidityValueTooSmall(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawQueuedLiquidityValueTooSmall INSTANCE = new WithdrawQueuedLiquidityValueTooSmall(
+        6150, "Available liquidity could not satisfy the minimum required ticketed withdrawal value"
+    );
+  }
+
+  record InvalidTokenAccountState(int code, String msg) implements KaminoLendingError {
+
+    public static final InvalidTokenAccountState INSTANCE = new InvalidTokenAccountState(
+        6151, "Token account is in a state preventing the handler's operation (e.g. frozen or delegate)"
+    );
+  }
+
+  record WithdrawTicketInvalid(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketInvalid INSTANCE = new WithdrawTicketInvalid(
+        6152, "Cannot use ticket that was already marked invalid"
     );
   }
 }

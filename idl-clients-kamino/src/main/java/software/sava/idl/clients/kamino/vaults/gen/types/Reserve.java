@@ -9,7 +9,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.lend.gen.types.LastUpdate;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveCollateral;
-import software.sava.idl.clients.kamino.lend.gen.types.ReserveLiquidity;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;

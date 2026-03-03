@@ -16,11 +16,6 @@ val idlClientModules = setOf(
   "idl-clients-squads",
 )
 
-val selectedModule: String? = providers
-  .gradleProperty("nmcp.publish.project")
-  .orElse(providers.environmentVariable("NMCP_PUBLISH_PROJECT"))
-  .orNull
-
 dependencies {
   for (module in idlClientModules) {
     nmcpAggregation(project(":$module"))

@@ -4461,6 +4461,409 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, FILL_BORROW_ORDER_DISCRIMINATOR);
   }
 
+  public static final Discriminator ENQUEUE_TO_WITHDRAW_DISCRIMINATOR = toDiscriminator(134, 113, 160, 207, 90, 75, 213, 219);
+
+  /// @param ownerKey The depositor holding ctokens.
+  /// @param lendingMarketAuthorityKey The market's authority, needed to initialize the Self::owner_queued_collateral_vault.
+  /// @param userSourceCollateralTaKey The source of collateral to be enqueued.
+  /// @param userDestinationLiquidityTaKey The account to which the liquidity should be finally transferred later (to be recorded in
+  ///                                      the ticket).
+  /// @param collateralTokenProgramKey The collateral's program - needed for invoking the transfer to the vault *and* (implicitly)
+  ///                                  for handling the `init_if_needed`.
+  /// @param withdrawTicketKey The new account to be initialized with the issued ticket's data.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (in which the collateral will be
+  ///                                      locked).
+  /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
+  public static List<AccountMeta> enqueueToWithdrawKeys(final PublicKey ownerKey,
+                                                        final PublicKey lendingMarketKey,
+                                                        final PublicKey lendingMarketAuthorityKey,
+                                                        final PublicKey reserveKey,
+                                                        final PublicKey userSourceCollateralTaKey,
+                                                        final PublicKey userDestinationLiquidityTaKey,
+                                                        final PublicKey reserveLiquidityMintKey,
+                                                        final PublicKey reserveCollateralMintKey,
+                                                        final PublicKey collateralTokenProgramKey,
+                                                        final PublicKey withdrawTicketKey,
+                                                        final PublicKey ownerQueuedCollateralVaultKey,
+                                                        final PublicKey systemProgramKey,
+                                                        final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createWritableSigner(ownerKey),
+      createRead(lendingMarketKey),
+      createRead(lendingMarketAuthorityKey),
+      createWrite(reserveKey),
+      createWrite(userSourceCollateralTaKey),
+      createRead(userDestinationLiquidityTaKey),
+      createRead(reserveLiquidityMintKey),
+      createRead(reserveCollateralMintKey),
+      createRead(collateralTokenProgramKey),
+      createWrite(withdrawTicketKey),
+      createWrite(ownerQueuedCollateralVaultKey),
+      createRead(systemProgramKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param ownerKey The depositor holding ctokens.
+  /// @param lendingMarketAuthorityKey The market's authority, needed to initialize the Self::owner_queued_collateral_vault.
+  /// @param userSourceCollateralTaKey The source of collateral to be enqueued.
+  /// @param userDestinationLiquidityTaKey The account to which the liquidity should be finally transferred later (to be recorded in
+  ///                                      the ticket).
+  /// @param collateralTokenProgramKey The collateral's program - needed for invoking the transfer to the vault *and* (implicitly)
+  ///                                  for handling the `init_if_needed`.
+  /// @param withdrawTicketKey The new account to be initialized with the issued ticket's data.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (in which the collateral will be
+  ///                                      locked).
+  /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
+  public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
+                                              final PublicKey ownerKey,
+                                              final PublicKey lendingMarketKey,
+                                              final PublicKey lendingMarketAuthorityKey,
+                                              final PublicKey reserveKey,
+                                              final PublicKey userSourceCollateralTaKey,
+                                              final PublicKey userDestinationLiquidityTaKey,
+                                              final PublicKey reserveLiquidityMintKey,
+                                              final PublicKey reserveCollateralMintKey,
+                                              final PublicKey collateralTokenProgramKey,
+                                              final PublicKey withdrawTicketKey,
+                                              final PublicKey ownerQueuedCollateralVaultKey,
+                                              final PublicKey systemProgramKey,
+                                              final PublicKey instructionSysvarAccountKey,
+                                              final long collateralAmount) {
+    final var keys = enqueueToWithdrawKeys(
+      ownerKey,
+      lendingMarketKey,
+      lendingMarketAuthorityKey,
+      reserveKey,
+      userSourceCollateralTaKey,
+      userDestinationLiquidityTaKey,
+      reserveLiquidityMintKey,
+      reserveCollateralMintKey,
+      collateralTokenProgramKey,
+      withdrawTicketKey,
+      ownerQueuedCollateralVaultKey,
+      systemProgramKey,
+      instructionSysvarAccountKey
+    );
+    return enqueueToWithdraw(invokedKaminoLendingProgramMeta, keys, collateralAmount);
+  }
+
+  public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final long collateralAmount) {
+    final byte[] _data = new byte[16];
+    int i = ENQUEUE_TO_WITHDRAW_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, collateralAmount);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+
+    public static EnqueueToWithdrawIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int COLLATERAL_AMOUNT_OFFSET = 8;
+
+    public static EnqueueToWithdrawIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var collateralAmount = getInt64LE(_data, i);
+      return new EnqueueToWithdrawIxData(discriminator, collateralAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, collateralAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator WITHDRAW_QUEUED_LIQUIDITY_DISCRIMINATOR = toDiscriminator(66, 149, 187, 201, 74, 191, 174, 120);
+
+  /// @param payerKey The executor of the permissionless tx (not necessarily the ticket owner).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for burning the collateral (from
+  ///                                  Self::owner_queued_collateral_vault) and transferring the liquidity (from
+  ///                                  Self::reserve_liquidity_supply).
+  /// @param reserveKey The reserve.
+  /// @param reserveLiquidityMintKey The liquidity mint, needed to invoke the transfer.
+  /// @param reserveCollateralMintKey The collateral mint, needed to burn (`mut`!) the queued collateral.
+  /// @param reserveLiquiditySupplyKey The liquidity supply vault (to withdraw the liquidity from).
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      burnt).
+  /// @param userDestinationLiquidityKey The token account to which the liquidity should be transferred (the one recorded in the
+  ///                                    ticket).
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param liquidityTokenProgramKey The program of Self::reserve_liquidity_mint, needed for transfer.
+  /// @param withdrawTicketKey The ticket's data itself.
+  ///                          
+  ///                          Note: in case of complete withdrawal, this account will be closed. In case of partial
+  ///                          withdrawal, its WithdrawTicket::queued_collateral_amount will simply be reduced, and the
+  ///                          ticket will maintain its position in the queue.
+  /// @param withdrawTicketOwnerKey The owner of the Self::withdraw_ticket; needed only to return the rent of the
+  ///                               WithdrawTicket account (if it is getting fully-consumed and closed here).
+  /// @param associatedTokenProgramKey The ATA program - needed for potential destination ATA creation.
+  /// @param systemProgramKey The System program - needed for potential destination ATA creation.
+  public static List<AccountMeta> withdrawQueuedLiquidityKeys(final PublicKey payerKey,
+                                                              final PublicKey lendingMarketKey,
+                                                              final PublicKey lendingMarketAuthorityKey,
+                                                              final PublicKey reserveKey,
+                                                              final PublicKey reserveLiquidityMintKey,
+                                                              final PublicKey reserveCollateralMintKey,
+                                                              final PublicKey reserveLiquiditySupplyKey,
+                                                              final PublicKey ownerQueuedCollateralVaultKey,
+                                                              final PublicKey userDestinationLiquidityKey,
+                                                              final PublicKey collateralTokenProgramKey,
+                                                              final PublicKey liquidityTokenProgramKey,
+                                                              final PublicKey withdrawTicketKey,
+                                                              final PublicKey withdrawTicketOwnerKey,
+                                                              final PublicKey associatedTokenProgramKey,
+                                                              final PublicKey systemProgramKey,
+                                                              final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createRead(lendingMarketKey),
+      createRead(lendingMarketAuthorityKey),
+      createWrite(reserveKey),
+      createRead(reserveLiquidityMintKey),
+      createWrite(reserveCollateralMintKey),
+      createWrite(reserveLiquiditySupplyKey),
+      createWrite(ownerQueuedCollateralVaultKey),
+      createWrite(userDestinationLiquidityKey),
+      createRead(collateralTokenProgramKey),
+      createRead(liquidityTokenProgramKey),
+      createWrite(withdrawTicketKey),
+      createWrite(withdrawTicketOwnerKey),
+      createRead(associatedTokenProgramKey),
+      createRead(systemProgramKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param payerKey The executor of the permissionless tx (not necessarily the ticket owner).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for burning the collateral (from
+  ///                                  Self::owner_queued_collateral_vault) and transferring the liquidity (from
+  ///                                  Self::reserve_liquidity_supply).
+  /// @param reserveKey The reserve.
+  /// @param reserveLiquidityMintKey The liquidity mint, needed to invoke the transfer.
+  /// @param reserveCollateralMintKey The collateral mint, needed to burn (`mut`!) the queued collateral.
+  /// @param reserveLiquiditySupplyKey The liquidity supply vault (to withdraw the liquidity from).
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      burnt).
+  /// @param userDestinationLiquidityKey The token account to which the liquidity should be transferred (the one recorded in the
+  ///                                    ticket).
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param liquidityTokenProgramKey The program of Self::reserve_liquidity_mint, needed for transfer.
+  /// @param withdrawTicketKey The ticket's data itself.
+  ///                          
+  ///                          Note: in case of complete withdrawal, this account will be closed. In case of partial
+  ///                          withdrawal, its WithdrawTicket::queued_collateral_amount will simply be reduced, and the
+  ///                          ticket will maintain its position in the queue.
+  /// @param withdrawTicketOwnerKey The owner of the Self::withdraw_ticket; needed only to return the rent of the
+  ///                               WithdrawTicket account (if it is getting fully-consumed and closed here).
+  /// @param associatedTokenProgramKey The ATA program - needed for potential destination ATA creation.
+  /// @param systemProgramKey The System program - needed for potential destination ATA creation.
+  public static Instruction withdrawQueuedLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                    final PublicKey payerKey,
+                                                    final PublicKey lendingMarketKey,
+                                                    final PublicKey lendingMarketAuthorityKey,
+                                                    final PublicKey reserveKey,
+                                                    final PublicKey reserveLiquidityMintKey,
+                                                    final PublicKey reserveCollateralMintKey,
+                                                    final PublicKey reserveLiquiditySupplyKey,
+                                                    final PublicKey ownerQueuedCollateralVaultKey,
+                                                    final PublicKey userDestinationLiquidityKey,
+                                                    final PublicKey collateralTokenProgramKey,
+                                                    final PublicKey liquidityTokenProgramKey,
+                                                    final PublicKey withdrawTicketKey,
+                                                    final PublicKey withdrawTicketOwnerKey,
+                                                    final PublicKey associatedTokenProgramKey,
+                                                    final PublicKey systemProgramKey,
+                                                    final PublicKey instructionSysvarAccountKey) {
+    final var keys = withdrawQueuedLiquidityKeys(
+      payerKey,
+      lendingMarketKey,
+      lendingMarketAuthorityKey,
+      reserveKey,
+      reserveLiquidityMintKey,
+      reserveCollateralMintKey,
+      reserveLiquiditySupplyKey,
+      ownerQueuedCollateralVaultKey,
+      userDestinationLiquidityKey,
+      collateralTokenProgramKey,
+      liquidityTokenProgramKey,
+      withdrawTicketKey,
+      withdrawTicketOwnerKey,
+      associatedTokenProgramKey,
+      systemProgramKey,
+      instructionSysvarAccountKey
+    );
+    return withdrawQueuedLiquidity(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction withdrawQueuedLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                    final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, WITHDRAW_QUEUED_LIQUIDITY_DISCRIMINATOR);
+  }
+
+  public static final Discriminator RECOVER_INVALID_TICKET_COLLATERAL_DISCRIMINATOR = toDiscriminator(28, 48, 176, 102, 159, 206, 210, 246);
+
+  /// @param payerKey The transaction executor.
+  ///                 
+  ///                 This instruction is, in principle, permissionless. However, only the ticket owner can use
+  ///                 arbitrary token account as destination for recovered collateral. Other signers can only
+  ///                 transfer the collateral to the ticket owner's ATA (see Self::user_source_collateral).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for transferring the collateral (from
+  ///                                  Self::owner_queued_collateral_vault).
+  /// @param reserveKey The reserve, needed only to validate the other accounts.
+  /// @param reserveCollateralMintKey The collateral mint, needed to invoke the transfer.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      recovered).
+  /// @param userSourceCollateralKey The ticket's owner token account to which the ticket-locked collateral should be returned.
+  ///                                
+  ///                                Only the ticket's owner can indicate an arbitrary token account here. Permissionless
+  ///                                executors must indicate the ticket's owner ATA.
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param withdrawTicketKey The ticket's account, necessarily marked as WithdrawTicket::invalid first (by the
+  ///                          `handler_withdraw_queued_liquidity`).
+  /// @param withdrawTicketOwnerKey The owner of the Self::withdraw_ticket; needed only to return the rent of the
+  ///                               WithdrawTicket account.
+  public static List<AccountMeta> recoverInvalidTicketCollateralKeys(final PublicKey payerKey,
+                                                                     final PublicKey lendingMarketKey,
+                                                                     final PublicKey lendingMarketAuthorityKey,
+                                                                     final PublicKey reserveKey,
+                                                                     final PublicKey reserveCollateralMintKey,
+                                                                     final PublicKey ownerQueuedCollateralVaultKey,
+                                                                     final PublicKey userSourceCollateralKey,
+                                                                     final PublicKey collateralTokenProgramKey,
+                                                                     final PublicKey withdrawTicketKey,
+                                                                     final PublicKey withdrawTicketOwnerKey,
+                                                                     final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createReadOnlySigner(payerKey),
+      createRead(lendingMarketKey),
+      createRead(lendingMarketAuthorityKey),
+      createRead(reserveKey),
+      createRead(reserveCollateralMintKey),
+      createWrite(ownerQueuedCollateralVaultKey),
+      createWrite(userSourceCollateralKey),
+      createRead(collateralTokenProgramKey),
+      createWrite(withdrawTicketKey),
+      createWrite(withdrawTicketOwnerKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param payerKey The transaction executor.
+  ///                 
+  ///                 This instruction is, in principle, permissionless. However, only the ticket owner can use
+  ///                 arbitrary token account as destination for recovered collateral. Other signers can only
+  ///                 transfer the collateral to the ticket owner's ATA (see Self::user_source_collateral).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for transferring the collateral (from
+  ///                                  Self::owner_queued_collateral_vault).
+  /// @param reserveKey The reserve, needed only to validate the other accounts.
+  /// @param reserveCollateralMintKey The collateral mint, needed to invoke the transfer.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      recovered).
+  /// @param userSourceCollateralKey The ticket's owner token account to which the ticket-locked collateral should be returned.
+  ///                                
+  ///                                Only the ticket's owner can indicate an arbitrary token account here. Permissionless
+  ///                                executors must indicate the ticket's owner ATA.
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param withdrawTicketKey The ticket's account, necessarily marked as WithdrawTicket::invalid first (by the
+  ///                          `handler_withdraw_queued_liquidity`).
+  /// @param withdrawTicketOwnerKey The owner of the Self::withdraw_ticket; needed only to return the rent of the
+  ///                               WithdrawTicket account.
+  public static Instruction recoverInvalidTicketCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                           final PublicKey payerKey,
+                                                           final PublicKey lendingMarketKey,
+                                                           final PublicKey lendingMarketAuthorityKey,
+                                                           final PublicKey reserveKey,
+                                                           final PublicKey reserveCollateralMintKey,
+                                                           final PublicKey ownerQueuedCollateralVaultKey,
+                                                           final PublicKey userSourceCollateralKey,
+                                                           final PublicKey collateralTokenProgramKey,
+                                                           final PublicKey withdrawTicketKey,
+                                                           final PublicKey withdrawTicketOwnerKey,
+                                                           final PublicKey instructionSysvarAccountKey,
+                                                           final long ticketSequenceNumber) {
+    final var keys = recoverInvalidTicketCollateralKeys(
+      payerKey,
+      lendingMarketKey,
+      lendingMarketAuthorityKey,
+      reserveKey,
+      reserveCollateralMintKey,
+      ownerQueuedCollateralVaultKey,
+      userSourceCollateralKey,
+      collateralTokenProgramKey,
+      withdrawTicketKey,
+      withdrawTicketOwnerKey,
+      instructionSysvarAccountKey
+    );
+    return recoverInvalidTicketCollateral(invokedKaminoLendingProgramMeta, keys, ticketSequenceNumber);
+  }
+
+  public static Instruction recoverInvalidTicketCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                           final List<AccountMeta> keys,
+                                                           final long ticketSequenceNumber) {
+    final byte[] _data = new byte[16];
+    int i = RECOVER_INVALID_TICKET_COLLATERAL_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, ticketSequenceNumber);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record RecoverInvalidTicketCollateralIxData(Discriminator discriminator, long ticketSequenceNumber) implements SerDe {  
+
+    public static RecoverInvalidTicketCollateralIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int TICKET_SEQUENCE_NUMBER_OFFSET = 8;
+
+    public static RecoverInvalidTicketCollateralIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var ticketSequenceNumber = getInt64LE(_data, i);
+      return new RecoverInvalidTicketCollateralIxData(discriminator, ticketSequenceNumber);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, ticketSequenceNumber);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator INIT_GLOBAL_CONFIG_DISCRIMINATOR = toDiscriminator(140, 136, 214, 48, 87, 0, 120, 255);
 
   public static List<AccountMeta> initGlobalConfigKeys(final PublicKey payerKey,

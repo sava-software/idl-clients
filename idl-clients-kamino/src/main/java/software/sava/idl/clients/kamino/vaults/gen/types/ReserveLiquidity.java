@@ -1,10 +1,11 @@
-package software.sava.idl.clients.kamino.lend.gen.types;
+package software.sava.idl.clients.kamino.vaults.gen.types;
 
 import java.math.BigInteger;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.kamino.lend.gen.types.BigFractionBytes;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
@@ -17,11 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param mintPubkey Reserve liquidity mint address
 /// @param supplyVault Reserve liquidity supply address
 /// @param feeVault Reserve liquidity fee collection address
-/// @param totalAvailableAmount Total reserve liquidity available.
-///                             
-///                             Note: not all of this liquidity can be freely used for any purpose. Production code should
-///                             use the specialized getters - see e.g. Reserve::total_available_liquidity_amount(),
-///                             Reserve::freely_available_liquidity_amount().
+/// @param availableAmount Reserve liquidity available
 /// @param borrowedAmountSf Reserve liquidity borrowed (scaled fraction)
 /// @param marketPriceSf Reserve liquidity market price in quote currency (scaled fraction)
 /// @param marketPriceLastUpdatedTs Unix timestamp of the market price (from the oracle)
@@ -39,7 +36,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record ReserveLiquidity(PublicKey mintPubkey,
                                PublicKey supplyVault,
                                PublicKey feeVault,
-                               long totalAvailableAmount,
+                               long availableAmount,
                                BigInteger borrowedAmountSf,
                                BigInteger marketPriceSf,
                                long marketPriceLastUpdatedTs,
@@ -62,7 +59,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
   public static final int MINT_PUBKEY_OFFSET = 0;
   public static final int SUPPLY_VAULT_OFFSET = 32;
   public static final int FEE_VAULT_OFFSET = 64;
-  public static final int TOTAL_AVAILABLE_AMOUNT_OFFSET = 96;
+  public static final int AVAILABLE_AMOUNT_OFFSET = 96;
   public static final int BORROWED_AMOUNT_SF_OFFSET = 104;
   public static final int MARKET_PRICE_SF_OFFSET = 120;
   public static final int MARKET_PRICE_LAST_UPDATED_TS_OFFSET = 136;
@@ -89,7 +86,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 32;
     final var feeVault = readPubKey(_data, i);
     i += 32;
-    final var totalAvailableAmount = getInt64LE(_data, i);
+    final var availableAmount = getInt64LE(_data, i);
     i += 8;
     final var borrowedAmountSf = getInt128LE(_data, i);
     i += 16;
@@ -122,7 +119,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     return new ReserveLiquidity(mintPubkey,
                                 supplyVault,
                                 feeVault,
-                                totalAvailableAmount,
+                                availableAmount,
                                 borrowedAmountSf,
                                 marketPriceSf,
                                 marketPriceLastUpdatedTs,
@@ -148,7 +145,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 32;
     feeVault.write(_data, i);
     i += 32;
-    putInt64LE(_data, i, totalAvailableAmount);
+    putInt64LE(_data, i, availableAmount);
     i += 8;
     putInt128LE(_data, i, borrowedAmountSf);
     i += 16;

@@ -23,6 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param config Reserve configuration values
 /// @param borrowedAmountsAgainstThisReserveInElevationGroups Amount of token borrowed in lamport of debt asset in the given
 ///                                                           elevation group when this reserve is part of the collaterals.
+/// @param withdrawQueue The tracker of ticket-based withdrawals.
 public record Reserve(PublicKey _address,
                       Discriminator discriminator,
                       long version,
@@ -38,6 +39,7 @@ public record Reserve(PublicKey _address,
                       long[] configPadding,
                       long borrowedAmountOutsideElevationGroup,
                       long[] borrowedAmountsAgainstThisReserveInElevationGroups,
+                      WithdrawQueue withdrawQueue,
                       long[] padding) implements SerDe {
 
   public static final int BYTES = 8624;
@@ -45,7 +47,7 @@ public record Reserve(PublicKey _address,
   public static final int RESERVE_COLLATERAL_PADDING_LEN = 150;
   public static final int CONFIG_PADDING_LEN = 114;
   public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_LEN = 32;
-  public static final int PADDING_LEN = 207;
+  public static final int PADDING_LEN = 204;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(43, 242, 204, 202, 26, 247, 59, 127);
@@ -64,7 +66,8 @@ public record Reserve(PublicKey _address,
   public static final int CONFIG_PADDING_OFFSET = 5792;
   public static final int BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUP_OFFSET = 6704;
   public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_OFFSET = 6712;
-  public static final int PADDING_OFFSET = 6968;
+  public static final int WITHDRAW_QUEUE_OFFSET = 6968;
+  public static final int PADDING_OFFSET = 6992;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -92,6 +95,10 @@ public record Reserve(PublicKey _address,
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, borrowedAmountOutsideElevationGroup);
     return Filter.createMemCompFilter(BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUP_OFFSET, _data);
+  }
+
+  public static Filter createWithdrawQueueFilter(final WithdrawQueue withdrawQueue) {
+    return Filter.createMemCompFilter(WITHDRAW_QUEUE_OFFSET, withdrawQueue.write());
   }
 
   public static Reserve read(final byte[] _data, final int _offset) {
@@ -140,7 +147,9 @@ public record Reserve(PublicKey _address,
     i += 8;
     final var borrowedAmountsAgainstThisReserveInElevationGroups = new long[32];
     i += SerDeUtil.readArray(borrowedAmountsAgainstThisReserveInElevationGroups, _data, i);
-    final var padding = new long[207];
+    final var withdrawQueue = WithdrawQueue.read(_data, i);
+    i += withdrawQueue.l();
+    final var padding = new long[204];
     SerDeUtil.readArray(padding, _data, i);
     return new Reserve(_address,
                        discriminator,
@@ -157,6 +166,7 @@ public record Reserve(PublicKey _address,
                        configPadding,
                        borrowedAmountOutsideElevationGroup,
                        borrowedAmountsAgainstThisReserveInElevationGroups,
+                       withdrawQueue,
                        padding);
   }
 
@@ -181,7 +191,8 @@ public record Reserve(PublicKey _address,
     putInt64LE(_data, i, borrowedAmountOutsideElevationGroup);
     i += 8;
     i += SerDeUtil.writeArrayChecked(borrowedAmountsAgainstThisReserveInElevationGroups, 32, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding, 207, _data, i);
+    i += withdrawQueue.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 204, _data, i);
     return i - _offset;
   }
 

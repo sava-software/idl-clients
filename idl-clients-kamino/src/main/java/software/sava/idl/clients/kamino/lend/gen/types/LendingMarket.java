@@ -37,7 +37,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                       Price is always refreshed if this set to 0.
 /// @param liquidationMaxDebtCloseFactorPct Percentage of the total borrowed value in an obligation available for liquidation
 /// @param insolvencyRiskUnhealthyLtvPct Minimum acceptable unhealthy LTV before max_debt_close_factor_pct becomes 100%
-/// @param minFullLiquidationValueThreshold Minimum liquidation value threshold triggering full liquidation for an obligation
+/// @param minFullLiquidationValueThreshold Minimum liquidation value threshold triggering full liquidation for an obligation, in full
+///                                         units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param maxLiquidatableDebtMarketValueAtOnce Max allowed liquidation value in one ix call
 /// @param reserved0 DEPRECATED Global maximum unhealthy borrow value allowed for any obligation
 /// @param globalAllowedBorrowValue Global maximum allowed borrow value allowed for any obligation
@@ -72,6 +73,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param proposerAuthority Authority that can propose creating of new reserves but cannot enable them.
 /// @param minBorrowOrderFillValue Minimum value that can be filled in a single `fill_borrow_order()` call, in full units of
 ///                                the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
+/// @param withdrawTicketIssuanceEnabled Whether any new withdraw tickets can be issued (i.e. whether new requests can enter the
+///                                      withdraw queue).
+/// @param withdrawTicketRedemptionEnabled Whether the existing withdraw tickets can be redeemed (i.e. whether the tickets can be used
+///                                        to transfer accumulated pending liquidity to destination accounts).
+/// @param minWithdrawQueuedLiquidityValue Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
+///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
                             long version,
@@ -110,6 +117,10 @@ public record LendingMarket(PublicKey _address,
                             int borrowOrderExecutionEnabled,
                             PublicKey proposerAuthority,
                             long minBorrowOrderFillValue,
+                            int withdrawTicketIssuanceEnabled,
+                            int withdrawTicketRedemptionEnabled,
+                            byte[] padding2,
+                            long minWithdrawQueuedLiquidityValue,
                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
@@ -119,7 +130,8 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_1_LEN = 164;
+  public static final int PADDING_2_LEN = 6;
+  public static final int PADDING_1_LEN = 162;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 114, 50, 98, 72, 157, 28, 120);
@@ -161,7 +173,11 @@ public record LendingMarket(PublicKey _address,
   public static final int BORROW_ORDER_EXECUTION_ENABLED_OFFSET = 3311;
   public static final int PROPOSER_AUTHORITY_OFFSET = 3312;
   public static final int MIN_BORROW_ORDER_FILL_VALUE_OFFSET = 3344;
-  public static final int PADDING_1_OFFSET = 3352;
+  public static final int WITHDRAW_TICKET_ISSUANCE_ENABLED_OFFSET = 3352;
+  public static final int WITHDRAW_TICKET_REDEMPTION_ENABLED_OFFSET = 3353;
+  public static final int PADDING_2_OFFSET = 3354;
+  public static final int MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET = 3360;
+  public static final int PADDING_1_OFFSET = 3368;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -307,6 +323,20 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(MIN_BORROW_ORDER_FILL_VALUE_OFFSET, _data);
   }
 
+  public static Filter createWithdrawTicketIssuanceEnabledFilter(final int withdrawTicketIssuanceEnabled) {
+    return Filter.createMemCompFilter(WITHDRAW_TICKET_ISSUANCE_ENABLED_OFFSET, new byte[]{(byte) withdrawTicketIssuanceEnabled});
+  }
+
+  public static Filter createWithdrawTicketRedemptionEnabledFilter(final int withdrawTicketRedemptionEnabled) {
+    return Filter.createMemCompFilter(WITHDRAW_TICKET_REDEMPTION_ENABLED_OFFSET, new byte[]{(byte) withdrawTicketRedemptionEnabled});
+  }
+
+  public static Filter createMinWithdrawQueuedLiquidityValueFilter(final long minWithdrawQueuedLiquidityValue) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, minWithdrawQueuedLiquidityValue);
+    return Filter.createMemCompFilter(MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET, _data);
+  }
+
   public static LendingMarket read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -399,7 +429,15 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     final var minBorrowOrderFillValue = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[164];
+    final var withdrawTicketIssuanceEnabled = _data[i] & 0xFF;
+    ++i;
+    final var withdrawTicketRedemptionEnabled = _data[i] & 0xFF;
+    ++i;
+    final var padding2 = new byte[6];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[162];
     SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
@@ -439,6 +477,10 @@ public record LendingMarket(PublicKey _address,
                              borrowOrderExecutionEnabled,
                              proposerAuthority,
                              minBorrowOrderFillValue,
+                             withdrawTicketIssuanceEnabled,
+                             withdrawTicketRedemptionEnabled,
+                             padding2,
+                             minWithdrawQueuedLiquidityValue,
                              padding1);
   }
 
@@ -511,7 +553,14 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, minBorrowOrderFillValue);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 164, _data, i);
+    _data[i] = (byte) withdrawTicketIssuanceEnabled;
+    ++i;
+    _data[i] = (byte) withdrawTicketRedemptionEnabled;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding2, 6, _data, i);
+    putInt64LE(_data, i, minWithdrawQueuedLiquidityValue);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 162, _data, i);
     return i - _offset;
   }
 
