@@ -4230,7 +4230,10 @@ public final class KaminoLendingProgram {
 
   /// @param ownerKey The Self::obligation's owner.
   /// @param obligationKey The obligation to set the BorrowOrder on.
-  /// @param lendingMarketKey The Self::obligation's market - needed only to validate the borrow orders' feature flag.
+  /// @param lendingMarketKey The Self::obligation's market - needed to validate feature flags and minimum order value.
+  /// @param reserveKey The reserve matching the Self::debt_liquidity_mint - needed for the minimum order value
+  ///                   check (and refreshed internally). On cancellation, this account is ignored (but still must
+  ///                   belong to the same market).
   /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
   ///                                 updates.
   ///                                 Ignored when cancelling the order.
@@ -4240,6 +4243,7 @@ public final class KaminoLendingProgram {
   public static List<AccountMeta> setBorrowOrderKeys(final PublicKey ownerKey,
                                                      final PublicKey obligationKey,
                                                      final PublicKey lendingMarketKey,
+                                                     final PublicKey reserveKey,
                                                      final PublicKey filledDebtDestinationKey,
                                                      final PublicKey debtLiquidityMintKey,
                                                      final PublicKey instructionSysvarAccountKey,
@@ -4249,6 +4253,7 @@ public final class KaminoLendingProgram {
       createReadOnlySigner(ownerKey),
       createWrite(obligationKey),
       createRead(lendingMarketKey),
+      createRead(reserveKey),
       createRead(filledDebtDestinationKey),
       createRead(debtLiquidityMintKey),
       createRead(instructionSysvarAccountKey),
@@ -4259,7 +4264,10 @@ public final class KaminoLendingProgram {
 
   /// @param ownerKey The Self::obligation's owner.
   /// @param obligationKey The obligation to set the BorrowOrder on.
-  /// @param lendingMarketKey The Self::obligation's market - needed only to validate the borrow orders' feature flag.
+  /// @param lendingMarketKey The Self::obligation's market - needed to validate feature flags and minimum order value.
+  /// @param reserveKey The reserve matching the Self::debt_liquidity_mint - needed for the minimum order value
+  ///                   check (and refreshed internally). On cancellation, this account is ignored (but still must
+  ///                   belong to the same market).
   /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
   ///                                 updates.
   ///                                 Ignored when cancelling the order.
@@ -4270,6 +4278,7 @@ public final class KaminoLendingProgram {
                                            final PublicKey ownerKey,
                                            final PublicKey obligationKey,
                                            final PublicKey lendingMarketKey,
+                                           final PublicKey reserveKey,
                                            final PublicKey filledDebtDestinationKey,
                                            final PublicKey debtLiquidityMintKey,
                                            final PublicKey instructionSysvarAccountKey,
@@ -4281,6 +4290,7 @@ public final class KaminoLendingProgram {
       ownerKey,
       obligationKey,
       lendingMarketKey,
+      reserveKey,
       filledDebtDestinationKey,
       debtLiquidityMintKey,
       instructionSysvarAccountKey,

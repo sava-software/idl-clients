@@ -155,7 +155,9 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.UserTokenBalanceMismatch,
     KaminoLendingError.WithdrawQueuedLiquidityValueTooSmall,
     KaminoLendingError.InvalidTokenAccountState,
-    KaminoLendingError.WithdrawTicketInvalid {
+    KaminoLendingError.WithdrawTicketInvalid,
+    KaminoLendingError.BorrowOrderValueTooSmall,
+    KaminoLendingError.WithdrawTicketValueTooSmall {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -312,6 +314,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6150 -> WithdrawQueuedLiquidityValueTooSmall.INSTANCE;
       case 6151 -> InvalidTokenAccountState.INSTANCE;
       case 6152 -> WithdrawTicketInvalid.INSTANCE;
+      case 6153 -> BorrowOrderValueTooSmall.INSTANCE;
+      case 6154 -> WithdrawTicketValueTooSmall.INSTANCE;
       default -> null;
     };
   }
@@ -1384,6 +1388,20 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final WithdrawTicketInvalid INSTANCE = new WithdrawTicketInvalid(
         6152, "Cannot use ticket that was already marked invalid"
+    );
+  }
+
+  record BorrowOrderValueTooSmall(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowOrderValueTooSmall INSTANCE = new BorrowOrderValueTooSmall(
+        6153, "Borrow order's value would be below the market-configured minimum"
+    );
+  }
+
+  record WithdrawTicketValueTooSmall(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketValueTooSmall INSTANCE = new WithdrawTicketValueTooSmall(
+        6154, "Withdraw ticket's value would be below the market-configured minimum"
     );
   }
 }
