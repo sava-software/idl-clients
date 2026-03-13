@@ -4,8 +4,10 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.lend.gen.types.ScopeConfiguration;
+import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Arrays;
+import java.util.List;
 
 record ScopeEntriesRecord(PublicKey pubKey, long slot, ScopeEntry[] scopeEntries) implements ScopeEntries {
 
@@ -34,6 +36,16 @@ record ScopeEntriesRecord(PublicKey pubKey, long slot, ScopeEntry[] scopeEntries
   @Override
   public int numEntries() {
     return scopeEntries.length;
+  }
+
+  @Override
+  public List<ScopeEntry> oracleEntries(final PublicKey oracle, final OracleType oracleType) {
+    return Arrays.stream(scopeEntries).filter(entry -> {
+      if (entry instanceof OracleEntry oracleEntry) {
+        return oracleEntry.oracleType() == oracleType && oracleEntry.oracle().equals(oracle);
+      }
+      return false;
+    }).toList();
   }
 
   private ScopeEntry[] parseChain(final short[] priceChain, final ScopeEntry[] scopeEntries) {

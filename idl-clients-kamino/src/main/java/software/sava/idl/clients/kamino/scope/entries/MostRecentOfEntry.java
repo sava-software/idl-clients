@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public record MostRecentOfEntry(int index,
-                                 ScopeEntry[] sources,
-                                 int maxDivergenceBps,
-                                 long sourcesMaxAgeS,
-                                 ScopeEntry refPrice) implements MostRecentOf {
+                                ScopeEntry[] sources,
+                                int maxDivergenceBps,
+                                long sourcesMaxAgeS,
+                                ScopeEntry refPrice) implements MostRecentOf {
 
   @Override
   public OracleType oracleType() {
@@ -19,7 +19,11 @@ public record MostRecentOfEntry(int index,
   @Override
   public boolean equals(final Object o) {
     if (o instanceof MostRecentOfEntry(
-        final int i, final ScopeEntry[] oSources, final int oMaxDivergenceBps, final long oSourcesMaxAgeS, final ScopeEntry oRefPrice
+        final int i,
+        final ScopeEntry[] oSources,
+        final int oMaxDivergenceBps,
+        final long oSourcesMaxAgeS,
+        final ScopeEntry oRefPrice
     )) {
       return index == i
           && sourcesMaxAgeS == oSourcesMaxAgeS

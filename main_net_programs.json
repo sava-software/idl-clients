@@ -91,6 +91,13 @@
       "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
     },
     {
+      "name": "Jupiter Stable Program",
+      "source": "idl-clients-jupiter",
+      "module": "jupiter",
+      "package": "jupiter.stable",
+      "program": "JUPUSDecMzAVgztLe6eGhwUBj1Pn3j9WAXwmtHmfbRr"
+    },
+    {
       "name": "Kamino Farms",
       "source": "idl-clients-kamino",
       "module": "kamino",

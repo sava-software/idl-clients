@@ -9,6 +9,9 @@ module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen;
   exports software.sava.idl.clients.jupiter.order_engine.gen;
+  exports software.sava.idl.clients.jupiter.stable.gen.events;
+  exports software.sava.idl.clients.jupiter.stable.gen.types;
+  exports software.sava.idl.clients.jupiter.stable.gen;
   exports software.sava.idl.clients.jupiter.swap.gen.events;
   exports software.sava.idl.clients.jupiter.swap.gen.types;
   exports software.sava.idl.clients.jupiter.swap.gen;
