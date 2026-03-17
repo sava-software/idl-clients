@@ -28,6 +28,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param marketValueSf Liquidity market value in quote currency (scaled fraction)
 /// @param borrowFactorAdjustedMarketValueSf Risk adjusted liquidity market value in quote currency - DEBUG ONLY - use market_value instead
 /// @param borrowedAmountOutsideElevationGroups Amount of liquidity borrowed outside of an elevation group
+/// @param fixedTermBorrowRolloverConfig The user's auto-rollover opt-ins - only effective when this borrow is fixed-term (i.e. its
+///                                      reserve has a non-zero ReserveConfig::debt_term_seconds).
 public record ObligationLiquidity(PublicKey borrowReserve,
                                   BigFractionBytes cumulativeBorrowRateBsf,
                                   long firstBorrowedAtTimestamp,
@@ -35,10 +37,11 @@ public record ObligationLiquidity(PublicKey borrowReserve,
                                   BigInteger marketValueSf,
                                   BigInteger borrowFactorAdjustedMarketValueSf,
                                   long borrowedAmountOutsideElevationGroups,
+                                  FixedTermBorrowRolloverConfig fixedTermBorrowRolloverConfig,
                                   long[] padding2) implements SerDe {
 
   public static final int BYTES = 200;
-  public static final int PADDING_2_LEN = 7;
+  public static final int PADDING_2_LEN = 5;
 
   public static final int BORROW_RESERVE_OFFSET = 0;
   public static final int CUMULATIVE_BORROW_RATE_BSF_OFFSET = 32;
@@ -47,7 +50,8 @@ public record ObligationLiquidity(PublicKey borrowReserve,
   public static final int MARKET_VALUE_SF_OFFSET = 104;
   public static final int BORROW_FACTOR_ADJUSTED_MARKET_VALUE_SF_OFFSET = 120;
   public static final int BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUPS_OFFSET = 136;
-  public static final int PADDING_2_OFFSET = 144;
+  public static final int FIXED_TERM_BORROW_ROLLOVER_CONFIG_OFFSET = 144;
+  public static final int PADDING_2_OFFSET = 160;
 
   public static ObligationLiquidity read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -68,7 +72,9 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     i += 16;
     final var borrowedAmountOutsideElevationGroups = getInt64LE(_data, i);
     i += 8;
-    final var padding2 = new long[7];
+    final var fixedTermBorrowRolloverConfig = FixedTermBorrowRolloverConfig.read(_data, i);
+    i += fixedTermBorrowRolloverConfig.l();
+    final var padding2 = new long[5];
     SerDeUtil.readArray(padding2, _data, i);
     return new ObligationLiquidity(borrowReserve,
                                    cumulativeBorrowRateBsf,
@@ -77,6 +83,7 @@ public record ObligationLiquidity(PublicKey borrowReserve,
                                    marketValueSf,
                                    borrowFactorAdjustedMarketValueSf,
                                    borrowedAmountOutsideElevationGroups,
+                                   fixedTermBorrowRolloverConfig,
                                    padding2);
   }
 
@@ -96,7 +103,8 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     i += 16;
     putInt64LE(_data, i, borrowedAmountOutsideElevationGroups);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding2, 7, _data, i);
+    i += fixedTermBorrowRolloverConfig.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }
 

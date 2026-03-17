@@ -48,7 +48,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                
 ///                An invalid ticket cannot be made valid again, and can only be passed to the
 ///                `recover_invalid_ticket_collateral` handler.
+/// @param progressCallbackType One of the valid ProgressCallbackType representations.
 /// @param alignmentPadding Inner padding, for alignment.
+/// @param progressCallbackCustomAccounts The (optional) accounts to be used by Self::progress_callback_types.
 /// @param endPadding Trailing padding, for future developments.
 public record WithdrawTicket(PublicKey _address,
                              Discriminator discriminator,
@@ -59,12 +61,15 @@ public record WithdrawTicket(PublicKey _address,
                              long queuedCollateralAmount,
                              long createdAtTimestamp,
                              int invalid,
+                             int progressCallbackType,
                              byte[] alignmentPadding,
+                             PublicKey[] progressCallbackCustomAccounts,
                              long[] endPadding) implements SerDe {
 
   public static final int BYTES = 520;
-  public static final int ALIGNMENT_PADDING_LEN = 7;
-  public static final int END_PADDING_LEN = 48;
+  public static final int ALIGNMENT_PADDING_LEN = 6;
+  public static final int PROGRESS_CALLBACK_CUSTOM_ACCOUNTS_LEN = 2;
+  public static final int END_PADDING_LEN = 40;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(237, 23, 164, 58, 53, 248, 240, 94);
@@ -77,8 +82,10 @@ public record WithdrawTicket(PublicKey _address,
   public static final int QUEUED_COLLATERAL_AMOUNT_OFFSET = 112;
   public static final int CREATED_AT_TIMESTAMP_OFFSET = 120;
   public static final int INVALID_OFFSET = 128;
-  public static final int ALIGNMENT_PADDING_OFFSET = 129;
-  public static final int END_PADDING_OFFSET = 136;
+  public static final int PROGRESS_CALLBACK_TYPE_OFFSET = 129;
+  public static final int ALIGNMENT_PADDING_OFFSET = 130;
+  public static final int PROGRESS_CALLBACK_CUSTOM_ACCOUNTS_OFFSET = 136;
+  public static final int END_PADDING_OFFSET = 200;
 
   public static Filter createSequenceNumberFilter(final long sequenceNumber) {
     final byte[] _data = new byte[8];
@@ -112,6 +119,10 @@ public record WithdrawTicket(PublicKey _address,
 
   public static Filter createInvalidFilter(final int invalid) {
     return Filter.createMemCompFilter(INVALID_OFFSET, new byte[]{(byte) invalid});
+  }
+
+  public static Filter createProgressCallbackTypeFilter(final int progressCallbackType) {
+    return Filter.createMemCompFilter(PROGRESS_CALLBACK_TYPE_OFFSET, new byte[]{(byte) progressCallbackType});
   }
 
   public static WithdrawTicket read(final byte[] _data, final int _offset) {
@@ -148,9 +159,13 @@ public record WithdrawTicket(PublicKey _address,
     i += 8;
     final var invalid = _data[i] & 0xFF;
     ++i;
-    final var alignmentPadding = new byte[7];
+    final var progressCallbackType = _data[i] & 0xFF;
+    ++i;
+    final var alignmentPadding = new byte[6];
     i += SerDeUtil.readArray(alignmentPadding, _data, i);
-    final var endPadding = new long[48];
+    final var progressCallbackCustomAccounts = new PublicKey[2];
+    i += SerDeUtil.readArray(progressCallbackCustomAccounts, _data, i);
+    final var endPadding = new long[40];
     SerDeUtil.readArray(endPadding, _data, i);
     return new WithdrawTicket(_address,
                               discriminator,
@@ -161,7 +176,9 @@ public record WithdrawTicket(PublicKey _address,
                               queuedCollateralAmount,
                               createdAtTimestamp,
                               invalid,
+                              progressCallbackType,
                               alignmentPadding,
+                              progressCallbackCustomAccounts,
                               endPadding);
   }
 
@@ -182,8 +199,11 @@ public record WithdrawTicket(PublicKey _address,
     i += 8;
     _data[i] = (byte) invalid;
     ++i;
-    i += SerDeUtil.writeArrayChecked(alignmentPadding, 7, _data, i);
-    i += SerDeUtil.writeArrayChecked(endPadding, 48, _data, i);
+    _data[i] = (byte) progressCallbackType;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(alignmentPadding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(progressCallbackCustomAccounts, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(endPadding, 40, _data, i);
     return i - _offset;
   }
 

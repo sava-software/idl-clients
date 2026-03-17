@@ -15,6 +15,7 @@ import software.sava.idl.clients.kamino.lend.gen.types.BorrowOrderConfigArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.FeeCalculation;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
+import software.sava.idl.clients.kamino.lend.gen.types.ProgressCallbackType;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveFarmKind;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveStatus;
 import software.sava.idl.clients.kamino.lend.gen.types.UpdateConfigMode;
@@ -4484,7 +4485,24 @@ public final class KaminoLendingProgram {
   /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (in which the collateral will be
   ///                                      locked).
   /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
-  public static List<AccountMeta> enqueueToWithdrawKeys(final PublicKey ownerKey,
+  /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the optional "ticket
+  ///                                          progress callback" is configured for this ticket.
+  ///                                          
+  ///                                          The expected custom accounts are validated based on the `progress_callback_type` instruction
+  ///                                          argument. The currently supported ones are:
+  ///                                          - for ProgressCallbackType::None no custom accounts are expected (this is the default
+  ///                                          behavior, when the instruction data is zeroed or absent).
+  ///                                          - for ProgressCallbackType::KlendQueueAccountingHandlerOnKvault, only the `_0` custom
+  ///                                          account is required:
+  ///                                          - the `_0` custom account must represent the `VaultState` which disinvests from the
+  ///                                          reserve (readonly; needed to be later passed as an input to the Kvault's handler);
+  ///                                          - the `_1` custom account is ignored;
+  ///                                          - the `owner` account (i.e. the signer) must be a Kvault-owned PDA base authority
+  ///                                          associated with the vault indicated by `_0` (needed to prove that Kvault is CPI'ing this
+  ///                                          handler).
+  /// @param progressCallbackCustomAccount1Key The second possible account (see the `progress_callback_custom_account_0` above).
+  public static List<AccountMeta> enqueueToWithdrawKeys(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                        final PublicKey ownerKey,
                                                         final PublicKey lendingMarketKey,
                                                         final PublicKey lendingMarketAuthorityKey,
                                                         final PublicKey reserveKey,
@@ -4496,6 +4514,8 @@ public final class KaminoLendingProgram {
                                                         final PublicKey withdrawTicketKey,
                                                         final PublicKey ownerQueuedCollateralVaultKey,
                                                         final PublicKey systemProgramKey,
+                                                        final PublicKey progressCallbackCustomAccount0Key,
+                                                        final PublicKey progressCallbackCustomAccount1Key,
                                                         final PublicKey instructionSysvarAccountKey) {
     return List.of(
       createWritableSigner(ownerKey),
@@ -4510,6 +4530,8 @@ public final class KaminoLendingProgram {
       createWrite(withdrawTicketKey),
       createWrite(ownerQueuedCollateralVaultKey),
       createRead(systemProgramKey),
+      createRead(requireNonNullElse(progressCallbackCustomAccount0Key, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(requireNonNullElse(progressCallbackCustomAccount1Key, invokedKaminoLendingProgramMeta.publicKey())),
       createRead(instructionSysvarAccountKey)
     );
   }
@@ -4525,6 +4547,22 @@ public final class KaminoLendingProgram {
   /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (in which the collateral will be
   ///                                      locked).
   /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
+  /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the optional "ticket
+  ///                                          progress callback" is configured for this ticket.
+  ///                                          
+  ///                                          The expected custom accounts are validated based on the `progress_callback_type` instruction
+  ///                                          argument. The currently supported ones are:
+  ///                                          - for ProgressCallbackType::None no custom accounts are expected (this is the default
+  ///                                          behavior, when the instruction data is zeroed or absent).
+  ///                                          - for ProgressCallbackType::KlendQueueAccountingHandlerOnKvault, only the `_0` custom
+  ///                                          account is required:
+  ///                                          - the `_0` custom account must represent the `VaultState` which disinvests from the
+  ///                                          reserve (readonly; needed to be later passed as an input to the Kvault's handler);
+  ///                                          - the `_1` custom account is ignored;
+  ///                                          - the `owner` account (i.e. the signer) must be a Kvault-owned PDA base authority
+  ///                                          associated with the vault indicated by `_0` (needed to prove that Kvault is CPI'ing this
+  ///                                          handler).
+  /// @param progressCallbackCustomAccount1Key The second possible account (see the `progress_callback_custom_account_0` above).
   public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final PublicKey ownerKey,
                                               final PublicKey lendingMarketKey,
@@ -4538,9 +4576,13 @@ public final class KaminoLendingProgram {
                                               final PublicKey withdrawTicketKey,
                                               final PublicKey ownerQueuedCollateralVaultKey,
                                               final PublicKey systemProgramKey,
+                                              final PublicKey progressCallbackCustomAccount0Key,
+                                              final PublicKey progressCallbackCustomAccount1Key,
                                               final PublicKey instructionSysvarAccountKey,
-                                              final long collateralAmount) {
+                                              final long collateralAmount,
+                                              final ProgressCallbackType progressCallbackType) {
     final var keys = enqueueToWithdrawKeys(
+      invokedKaminoLendingProgramMeta,
       ownerKey,
       lendingMarketKey,
       lendingMarketAuthorityKey,
@@ -4553,30 +4595,36 @@ public final class KaminoLendingProgram {
       withdrawTicketKey,
       ownerQueuedCollateralVaultKey,
       systemProgramKey,
+      progressCallbackCustomAccount0Key,
+      progressCallbackCustomAccount1Key,
       instructionSysvarAccountKey
     );
-    return enqueueToWithdraw(invokedKaminoLendingProgramMeta, keys, collateralAmount);
+    return enqueueToWithdraw(invokedKaminoLendingProgramMeta, keys, collateralAmount, progressCallbackType);
   }
 
   public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final List<AccountMeta> keys,
-                                              final long collateralAmount) {
-    final byte[] _data = new byte[16];
+                                              final long collateralAmount,
+                                              final ProgressCallbackType progressCallbackType) {
+    final byte[] _data = new byte[16 + progressCallbackType.l()];
     int i = ENQUEUE_TO_WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, collateralAmount);
+    i += 8;
+    progressCallbackType.write(_data, i);
 
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount, ProgressCallbackType progressCallbackType) implements SerDe {  
 
     public static EnqueueToWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 17;
 
     public static final int COLLATERAL_AMOUNT_OFFSET = 8;
+    public static final int PROGRESS_CALLBACK_TYPE_OFFSET = 16;
 
     public static EnqueueToWithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4585,7 +4633,9 @@ public final class KaminoLendingProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var collateralAmount = getInt64LE(_data, i);
-      return new EnqueueToWithdrawIxData(discriminator, collateralAmount);
+      i += 8;
+      final var progressCallbackType = ProgressCallbackType.read(_data, i);
+      return new EnqueueToWithdrawIxData(discriminator, collateralAmount, progressCallbackType);
     }
 
     @Override
@@ -4593,6 +4643,7 @@ public final class KaminoLendingProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, collateralAmount);
       i += 8;
+      i += progressCallbackType.write(_data, i);
       return i - _offset;
     }
 
@@ -4628,7 +4679,14 @@ public final class KaminoLendingProgram {
   ///                               WithdrawTicket account (if it is getting fully-consumed and closed here).
   /// @param associatedTokenProgramKey The ATA program - needed for potential destination ATA creation.
   /// @param systemProgramKey The System program - needed for potential destination ATA creation.
-  public static List<AccountMeta> withdrawQueuedLiquidityKeys(final PublicKey payerKey,
+  /// @param progressCallbackProgramKey The progress callback program (if configured by the withdraw ticket).
+  /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the withdraw ticket
+  ///                                          defines a callback.
+  ///                                          Please note that the constraints defined here do not mention `mut`, but a specific
+  ///                                          WithdrawTicket::progress_callback_type may require it.
+  /// @param progressCallbackCustomAccount1Key The second possibly-required account (see the `progress_callback_custom_account_0` above).
+  public static List<AccountMeta> withdrawQueuedLiquidityKeys(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                              final PublicKey payerKey,
                                                               final PublicKey lendingMarketKey,
                                                               final PublicKey lendingMarketAuthorityKey,
                                                               final PublicKey reserveKey,
@@ -4643,6 +4701,9 @@ public final class KaminoLendingProgram {
                                                               final PublicKey withdrawTicketOwnerKey,
                                                               final PublicKey associatedTokenProgramKey,
                                                               final PublicKey systemProgramKey,
+                                                              final PublicKey progressCallbackProgramKey,
+                                                              final PublicKey progressCallbackCustomAccount0Key,
+                                                              final PublicKey progressCallbackCustomAccount1Key,
                                                               final PublicKey instructionSysvarAccountKey) {
     return List.of(
       createWritableSigner(payerKey),
@@ -4660,6 +4721,9 @@ public final class KaminoLendingProgram {
       createWrite(withdrawTicketOwnerKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(requireNonNullElse(progressCallbackProgramKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(requireNonNullElse(progressCallbackCustomAccount0Key, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(requireNonNullElse(progressCallbackCustomAccount1Key, invokedKaminoLendingProgramMeta.publicKey())),
       createRead(instructionSysvarAccountKey)
     );
   }
@@ -4688,6 +4752,12 @@ public final class KaminoLendingProgram {
   ///                               WithdrawTicket account (if it is getting fully-consumed and closed here).
   /// @param associatedTokenProgramKey The ATA program - needed for potential destination ATA creation.
   /// @param systemProgramKey The System program - needed for potential destination ATA creation.
+  /// @param progressCallbackProgramKey The progress callback program (if configured by the withdraw ticket).
+  /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the withdraw ticket
+  ///                                          defines a callback.
+  ///                                          Please note that the constraints defined here do not mention `mut`, but a specific
+  ///                                          WithdrawTicket::progress_callback_type may require it.
+  /// @param progressCallbackCustomAccount1Key The second possibly-required account (see the `progress_callback_custom_account_0` above).
   public static Instruction withdrawQueuedLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final PublicKey payerKey,
                                                     final PublicKey lendingMarketKey,
@@ -4704,8 +4774,12 @@ public final class KaminoLendingProgram {
                                                     final PublicKey withdrawTicketOwnerKey,
                                                     final PublicKey associatedTokenProgramKey,
                                                     final PublicKey systemProgramKey,
+                                                    final PublicKey progressCallbackProgramKey,
+                                                    final PublicKey progressCallbackCustomAccount0Key,
+                                                    final PublicKey progressCallbackCustomAccount1Key,
                                                     final PublicKey instructionSysvarAccountKey) {
     final var keys = withdrawQueuedLiquidityKeys(
+      invokedKaminoLendingProgramMeta,
       payerKey,
       lendingMarketKey,
       lendingMarketAuthorityKey,
@@ -4721,6 +4795,9 @@ public final class KaminoLendingProgram {
       withdrawTicketOwnerKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      progressCallbackProgramKey,
+      progressCallbackCustomAccount0Key,
+      progressCallbackCustomAccount1Key,
       instructionSysvarAccountKey
     );
     return withdrawQueuedLiquidity(invokedKaminoLendingProgramMeta, keys);

@@ -24,7 +24,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param minDebtTermSeconds The minimum allowed debt term that the obligation owner agrees to.
 ///                           The reserves used to fill this order *cannot* define their debt term *lower* than this.
 ///                           
-///                           If zeroed, then only indefinite-term reserves may be used.
+///                           If zeroed, then only open-term reserves may be used.
 /// @param fillableUntilTimestamp The time until which the borrow order can still be filled.
 /// @param placedAtTimestamp The time at which this order was placed.
 ///                          Currently, this is only a piece of metadata.

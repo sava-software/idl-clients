@@ -157,7 +157,9 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.InvalidTokenAccountState,
     KaminoLendingError.WithdrawTicketInvalid,
     KaminoLendingError.BorrowOrderValueTooSmall,
-    KaminoLendingError.WithdrawTicketValueTooSmall {
+    KaminoLendingError.WithdrawTicketValueTooSmall,
+    KaminoLendingError.InvalidWithdrawTicketProgressCallbackConfig,
+    KaminoLendingError.WithdrawTicketProgressCallbackAccountsMissing {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -316,6 +318,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6152 -> WithdrawTicketInvalid.INSTANCE;
       case 6153 -> BorrowOrderValueTooSmall.INSTANCE;
       case 6154 -> WithdrawTicketValueTooSmall.INSTANCE;
+      case 6155 -> InvalidWithdrawTicketProgressCallbackConfig.INSTANCE;
+      case 6156 -> WithdrawTicketProgressCallbackAccountsMissing.INSTANCE;
       default -> null;
     };
   }
@@ -1402,6 +1406,20 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final WithdrawTicketValueTooSmall INSTANCE = new WithdrawTicketValueTooSmall(
         6154, "Withdraw ticket's value would be below the market-configured minimum"
+    );
+  }
+
+  record InvalidWithdrawTicketProgressCallbackConfig(int code, String msg) implements KaminoLendingError {
+
+    public static final InvalidWithdrawTicketProgressCallbackConfig INSTANCE = new InvalidWithdrawTicketProgressCallbackConfig(
+        6155, "Invalid configuration or required custom accounts for the requested withdraw ticket callback type"
+    );
+  }
+
+  record WithdrawTicketProgressCallbackAccountsMissing(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketProgressCallbackAccountsMissing INSTANCE = new WithdrawTicketProgressCallbackAccountsMissing(
+        6156, "One or more accounts required by the ticket's configured progress callback are missing"
     );
   }
 }
