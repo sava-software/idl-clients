@@ -140,7 +140,22 @@ public sealed interface Swap extends RustEnum permits
   Swap.VaultLiquidUnstake,
   Swap.XOrca,
   Swap.Quantum,
-  Swap.WhaleStreetV2 {
+  Swap.WhaleStreetV2,
+  Swap.Riptide,
+  Swap.RunnerRodeo,
+  Swap.TaurusFi,
+  Swap.Omnipair,
+  Swap.MSwap,
+  Swap.Hylo,
+  Swap.VoltrDeposit,
+  Swap.VoltrWithdraw,
+  Swap.SanctumSV2,
+  Swap.LemmingsFi,
+  Swap.ScaleVmmBuy,
+  Swap.ScaleVmmSell,
+  Swap.ScaleAmmBuy,
+  Swap.ScaleAmmSell,
+  Swap.BisonFiV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -273,6 +288,21 @@ public sealed interface Swap extends RustEnum permits
       case 124 -> XOrca.INSTANCE;
       case 125 -> Quantum.read(_data, i);
       case 126 -> WhaleStreetV2.read(_data, i);
+      case 127 -> Riptide.read(_data, i);
+      case 128 -> RunnerRodeo.INSTANCE;
+      case 129 -> TaurusFi.read(_data, i);
+      case 130 -> Omnipair.INSTANCE;
+      case 131 -> MSwap.INSTANCE;
+      case 132 -> Hylo.read(_data, i);
+      case 133 -> VoltrDeposit.INSTANCE;
+      case 134 -> VoltrWithdraw.INSTANCE;
+      case 135 -> SanctumSV2.read(_data, i);
+      case 136 -> LemmingsFi.read(_data, i);
+      case 137 -> ScaleVmmBuy.INSTANCE;
+      case 138 -> ScaleVmmSell.INSTANCE;
+      case 139 -> ScaleAmmBuy.INSTANCE;
+      case 140 -> ScaleAmmSell.INSTANCE;
+      case 141 -> BisonFiV2.read(_data, i);
       default -> null;
     };
   }
@@ -2126,6 +2156,223 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 126;
+    }
+  }
+
+  record Riptide(boolean val) implements EnumBool, Swap {
+
+    public static final Riptide TRUE = new Riptide(true);
+    public static final Riptide FALSE = new Riptide(false);
+
+    public static Riptide read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Riptide.TRUE : Riptide.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 127;
+    }
+  }
+
+  record RunnerRodeo() implements EnumNone, Swap {
+
+    public static final RunnerRodeo INSTANCE = new RunnerRodeo();
+
+    @Override
+    public int ordinal() {
+      return 128;
+    }
+  }
+
+  record TaurusFi(boolean val) implements EnumBool, Swap {
+
+    public static final TaurusFi TRUE = new TaurusFi(true);
+    public static final TaurusFi FALSE = new TaurusFi(false);
+
+    public static TaurusFi read(final byte[] _data, int i) {
+      return _data[i] == 1 ? TaurusFi.TRUE : TaurusFi.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 129;
+    }
+  }
+
+  record Omnipair() implements EnumNone, Swap {
+
+    public static final Omnipair INSTANCE = new Omnipair();
+
+    @Override
+    public int ordinal() {
+      return 130;
+    }
+  }
+
+  record MSwap() implements EnumNone, Swap {
+
+    public static final MSwap INSTANCE = new MSwap();
+
+    @Override
+    public int ordinal() {
+      return 131;
+    }
+  }
+
+  record Hylo(HyloSwapType val) implements SerDeEnum, Swap {
+
+    public static Hylo read(final byte[] _data, final int _offset) {
+      return new Hylo(HyloSwapType.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 132;
+    }
+  }
+
+  record VoltrDeposit() implements EnumNone, Swap {
+
+    public static final VoltrDeposit INSTANCE = new VoltrDeposit();
+
+    @Override
+    public int ordinal() {
+      return 133;
+    }
+  }
+
+  record VoltrWithdraw() implements EnumNone, Swap {
+
+    public static final VoltrWithdraw INSTANCE = new VoltrWithdraw();
+
+    @Override
+    public int ordinal() {
+      return 134;
+    }
+  }
+
+  record SanctumSV2(int srcLstValueCalcAccs,
+                    int dstLstValueCalcAccs,
+                    int srcLstIndex,
+                    int dstLstIndex) implements Swap {
+
+    public static final int BYTES = 10;
+
+    public static final int SRC_LST_VALUE_CALC_ACCS_OFFSET = 0;
+    public static final int DST_LST_VALUE_CALC_ACCS_OFFSET = 1;
+    public static final int SRC_LST_INDEX_OFFSET = 2;
+    public static final int DST_LST_INDEX_OFFSET = 6;
+
+    public static SanctumSV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var srcLstValueCalcAccs = _data[i] & 0xFF;
+      ++i;
+      final var dstLstValueCalcAccs = _data[i] & 0xFF;
+      ++i;
+      final var srcLstIndex = getInt32LE(_data, i);
+      i += 4;
+      final var dstLstIndex = getInt32LE(_data, i);
+      return new SanctumSV2(srcLstValueCalcAccs,
+                            dstLstValueCalcAccs,
+                            srcLstIndex,
+                            dstLstIndex);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) srcLstValueCalcAccs;
+      ++i;
+      _data[i] = (byte) dstLstValueCalcAccs;
+      ++i;
+      putInt32LE(_data, i, srcLstIndex);
+      i += 4;
+      putInt32LE(_data, i, dstLstIndex);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 135;
+    }
+  }
+
+  record LemmingsFi(boolean val) implements EnumBool, Swap {
+
+    public static final LemmingsFi TRUE = new LemmingsFi(true);
+    public static final LemmingsFi FALSE = new LemmingsFi(false);
+
+    public static LemmingsFi read(final byte[] _data, int i) {
+      return _data[i] == 1 ? LemmingsFi.TRUE : LemmingsFi.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 136;
+    }
+  }
+
+  record ScaleVmmBuy() implements EnumNone, Swap {
+
+    public static final ScaleVmmBuy INSTANCE = new ScaleVmmBuy();
+
+    @Override
+    public int ordinal() {
+      return 137;
+    }
+  }
+
+  record ScaleVmmSell() implements EnumNone, Swap {
+
+    public static final ScaleVmmSell INSTANCE = new ScaleVmmSell();
+
+    @Override
+    public int ordinal() {
+      return 138;
+    }
+  }
+
+  record ScaleAmmBuy() implements EnumNone, Swap {
+
+    public static final ScaleAmmBuy INSTANCE = new ScaleAmmBuy();
+
+    @Override
+    public int ordinal() {
+      return 139;
+    }
+  }
+
+  record ScaleAmmSell() implements EnumNone, Swap {
+
+    public static final ScaleAmmSell INSTANCE = new ScaleAmmSell();
+
+    @Override
+    public int ordinal() {
+      return 140;
+    }
+  }
+
+  record BisonFiV2(boolean val) implements EnumBool, Swap {
+
+    public static final BisonFiV2 TRUE = new BisonFiV2(true);
+    public static final BisonFiV2 FALSE = new BisonFiV2(false);
+
+    public static BisonFiV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiV2.TRUE : BisonFiV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 141;
     }
   }
 }

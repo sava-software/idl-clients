@@ -382,6 +382,39 @@ public final class JupiterProgram {
     }
   }
 
+  public static final Discriminator CLOSE_WSOL_TOKEN_ACCOUNT_DISCRIMINATOR = toDiscriminator(203, 129, 103, 133, 197, 125, 107, 86);
+
+  public static List<AccountMeta> closeWsolTokenAccountKeys(final SolanaAccounts solanaAccounts,
+                                                            final PublicKey tokenAccountKey,
+                                                            final PublicKey userKey,
+                                                            final PublicKey tokenProgramKey) {
+    return List.of(
+      createWrite(tokenAccountKey),
+      createWritableSigner(userKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction closeWsolTokenAccount(final AccountMeta invokedJupiterProgramMeta,
+                                                  final SolanaAccounts solanaAccounts,
+                                                  final PublicKey tokenAccountKey,
+                                                  final PublicKey userKey,
+                                                  final PublicKey tokenProgramKey) {
+    final var keys = closeWsolTokenAccountKeys(
+      solanaAccounts,
+      tokenAccountKey,
+      userKey,
+      tokenProgramKey
+    );
+    return closeWsolTokenAccount(invokedJupiterProgramMeta, keys);
+  }
+
+  public static Instruction closeWsolTokenAccount(final AccountMeta invokedJupiterProgramMeta,
+                                                  final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedJupiterProgramMeta, keys, CLOSE_WSOL_TOKEN_ACCOUNT_DISCRIMINATOR);
+  }
+
   public static final Discriminator EXACT_OUT_ROUTE_DISCRIMINATOR = toDiscriminator(208, 51, 239, 151, 123, 43, 237, 92);
 
   public static List<AccountMeta> exactOutRouteKeys(final AccountMeta invokedJupiterProgramMeta,
