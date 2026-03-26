@@ -159,7 +159,20 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.BorrowOrderValueTooSmall,
     KaminoLendingError.WithdrawTicketValueTooSmall,
     KaminoLendingError.InvalidWithdrawTicketProgressCallbackConfig,
-    KaminoLendingError.WithdrawTicketProgressCallbackAccountsMissing {
+    KaminoLendingError.WithdrawTicketProgressCallbackAccountsMissing,
+    KaminoLendingError.BorrowRolloverConfigurationDisabled,
+    KaminoLendingError.InvalidObligationConfigUpdateSubject,
+    KaminoLendingError.BorrowRolloverLiquidityMintMismatch,
+    KaminoLendingError.ObligationBorrowRolloverNotApplicable,
+    KaminoLendingError.ObligationBorrowOutsideRolloverWindow,
+    KaminoLendingError.ObligationBorrowRolloverNotEnabledByOwner,
+    KaminoLendingError.ObligationBorrowRolloverTargetReserveMismatch,
+    KaminoLendingError.BorrowRolloverExecutionDisabled,
+    KaminoLendingError.ObligationAccountingMismatch,
+    KaminoLendingError.PartialRolloverValueTooSmall,
+    KaminoLendingError.ObligationBorrowRolloverConfigMismatch,
+    KaminoLendingError.ObligationBorrowRolloverMustProlongDebtTerm,
+    KaminoLendingError.RolloverNotSupportedInElevationGroup {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -320,6 +333,19 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6154 -> WithdrawTicketValueTooSmall.INSTANCE;
       case 6155 -> InvalidWithdrawTicketProgressCallbackConfig.INSTANCE;
       case 6156 -> WithdrawTicketProgressCallbackAccountsMissing.INSTANCE;
+      case 6157 -> BorrowRolloverConfigurationDisabled.INSTANCE;
+      case 6158 -> InvalidObligationConfigUpdateSubject.INSTANCE;
+      case 6159 -> BorrowRolloverLiquidityMintMismatch.INSTANCE;
+      case 6160 -> ObligationBorrowRolloverNotApplicable.INSTANCE;
+      case 6161 -> ObligationBorrowOutsideRolloverWindow.INSTANCE;
+      case 6162 -> ObligationBorrowRolloverNotEnabledByOwner.INSTANCE;
+      case 6163 -> ObligationBorrowRolloverTargetReserveMismatch.INSTANCE;
+      case 6164 -> BorrowRolloverExecutionDisabled.INSTANCE;
+      case 6165 -> ObligationAccountingMismatch.INSTANCE;
+      case 6166 -> PartialRolloverValueTooSmall.INSTANCE;
+      case 6167 -> ObligationBorrowRolloverConfigMismatch.INSTANCE;
+      case 6168 -> ObligationBorrowRolloverMustProlongDebtTerm.INSTANCE;
+      case 6169 -> RolloverNotSupportedInElevationGroup.INSTANCE;
       default -> null;
     };
   }
@@ -1420,6 +1446,97 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final WithdrawTicketProgressCallbackAccountsMissing INSTANCE = new WithdrawTicketProgressCallbackAccountsMissing(
         6156, "One or more accounts required by the ticket's configured progress callback are missing"
+    );
+  }
+
+  record BorrowRolloverConfigurationDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowRolloverConfigurationDisabled INSTANCE = new BorrowRolloverConfigurationDisabled(
+        6157, "Configuring auto-rollover on loans is disabled by market owner"
+    );
+  }
+
+  record InvalidObligationConfigUpdateSubject(int code, String msg) implements KaminoLendingError {
+
+    public static final InvalidObligationConfigUpdateSubject INSTANCE = new InvalidObligationConfigUpdateSubject(
+        6158, "Invalid specification of the Obligation's part to be configured"
+    );
+  }
+
+  record BorrowRolloverLiquidityMintMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowRolloverLiquidityMintMismatch INSTANCE = new BorrowRolloverLiquidityMintMismatch(
+        6159, "Auto-rollover must use a target reserve of the same token"
+    );
+  }
+
+  record ObligationBorrowRolloverNotApplicable(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowRolloverNotApplicable INSTANCE = new ObligationBorrowRolloverNotApplicable(
+        6160, "The given borrow is not fixed-term and does not require rolling over"
+    );
+  }
+
+  record ObligationBorrowOutsideRolloverWindow(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowOutsideRolloverWindow INSTANCE = new ObligationBorrowOutsideRolloverWindow(
+        6161, "The given borrow is outside the corresponding market-configured rollover window"
+    );
+  }
+
+  record ObligationBorrowRolloverNotEnabledByOwner(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowRolloverNotEnabledByOwner INSTANCE = new ObligationBorrowRolloverNotEnabledByOwner(
+        6162, "Obligation's owner did not opt-in for auto-rollover of the given borrow"
+    );
+  }
+
+  record ObligationBorrowRolloverTargetReserveMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowRolloverTargetReserveMismatch INSTANCE = new ObligationBorrowRolloverTargetReserveMismatch(
+        6163, "Obligation's owner did not allow to roll over into terms offered by the given reserve"
+    );
+  }
+
+  record BorrowRolloverExecutionDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final BorrowRolloverExecutionDisabled INSTANCE = new BorrowRolloverExecutionDisabled(
+        6164, "Executing auto-rollover is disabled by market owner"
+    );
+  }
+
+  record ObligationAccountingMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationAccountingMismatch INSTANCE = new ObligationAccountingMismatch(
+        6165, "Obligation internal state accounting has been unexpectedly modified"
+    );
+  }
+
+  record PartialRolloverValueTooSmall(int code, String msg) implements KaminoLendingError {
+
+    public static final PartialRolloverValueTooSmall INSTANCE = new PartialRolloverValueTooSmall(
+        6166, "Partial rollover amount is below the market-configured minimum value"
+    );
+  }
+
+  record ObligationBorrowRolloverConfigMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowRolloverConfigMismatch INSTANCE = new ObligationBorrowRolloverConfigMismatch(
+        6167, "Pre-existing rollover configuration of the loan cannot be overwritten by the operation"
+    );
+  }
+
+  record ObligationBorrowRolloverMustProlongDebtTerm(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationBorrowRolloverMustProlongDebtTerm INSTANCE = new ObligationBorrowRolloverMustProlongDebtTerm(
+        6168, "Rollover into existing borrow must prolong the remaining debt term"
+    );
+  }
+
+  record RolloverNotSupportedInElevationGroup(int code, String msg) implements KaminoLendingError {
+
+    public static final RolloverNotSupportedInElevationGroup INSTANCE = new RolloverNotSupportedInElevationGroup(
+        6169, "Rollover is not supported for obligations in an elevation group"
     );
   }
 }

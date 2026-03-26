@@ -69,7 +69,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                        Inactive when zeroed (i.e. funds can be borrowed indefinitely).
 ///                        
 ///                        Note: this feature is independent of Self::debt_maturity_timestamp - the liquidation
-///                        mechanism is based on the ObligationLiquidity::first_borrowed_at_timestamp.
+///                        mechanism is based on the ObligationLiquidity::last_borrowed_at_timestamp.
 public record ReserveConfig(int status,
                             int paddingDeprecatedAssetTier,
                             int hostFixedInterestRateBps,

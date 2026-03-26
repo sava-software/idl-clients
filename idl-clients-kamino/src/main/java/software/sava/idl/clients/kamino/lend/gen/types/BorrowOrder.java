@@ -43,6 +43,23 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///               Self::remaining_debt_amount-based definition as the single source of truth). However, it
 ///               is useful for off-chain bots (order-searchers) to efficiently list (i.e. `memcmp` filter)
 ///               just the obligations that have active borrow orders.
+/// @param enableAutoRolloverOnFilledBorrows When `1`, all Obligation::borrows that get filled by this order will have their
+///                                          FixedTermBorrowRolloverConfig::auto_rollover_enabled flag set.
+///                                          
+///                                          Additionally, their rollover customizations:
+///                                          - will exactly match this order's constraints regarding Self::min_debt_term_seconds and
+///                                          Self::max_borrow_rate_bps;
+///                                          - will use the FixedTermBorrowRolloverConfig::open_term_allowed fallback.
+///                                          
+///                                          See BorrowOrder::get_rollover_config_for_filled_borrow().
+///                                          
+///                                          Clarification note: when `0`, this setting has no effect on any borrow (i.e. if an existing
+///                                          borrow was independently marked for auto-rollover, it will *not* be unmarked when filled by
+///                                          this order).
+///                                          
+///                                          Feature flag note: when LendingMarket::obligation_borrow_rollover_configuration_enabled is
+///                                          disabled, this setting has no effect on any borrow (i.e. the fill will be successful, but
+///                                          the borrow will not be marked for auto-rollover.
 /// @param padding1 Alignment padding.
 /// @param endPadding End padding.
 public record BorrowOrder(PublicKey debtLiquidityMint,
@@ -55,11 +72,12 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
                           long requestedDebtAmount,
                           int maxBorrowRateBps,
                           int active,
+                          int enableAutoRolloverOnFilledBorrows,
                           byte[] padding1,
                           long[] endPadding) implements SerDe {
 
   public static final int BYTES = 160;
-  public static final int PADDING_1_LEN = 3;
+  public static final int PADDING_1_LEN = 2;
   public static final int END_PADDING_LEN = 5;
 
   public static final int DEBT_LIQUIDITY_MINT_OFFSET = 0;
@@ -72,7 +90,8 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
   public static final int REQUESTED_DEBT_AMOUNT_OFFSET = 104;
   public static final int MAX_BORROW_RATE_BPS_OFFSET = 112;
   public static final int ACTIVE_OFFSET = 116;
-  public static final int PADDING_1_OFFSET = 117;
+  public static final int ENABLE_AUTO_ROLLOVER_ON_FILLED_BORROWS_OFFSET = 117;
+  public static final int PADDING_1_OFFSET = 118;
   public static final int END_PADDING_OFFSET = 120;
 
   public static BorrowOrder read(final byte[] _data, final int _offset) {
@@ -100,7 +119,9 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
     i += 4;
     final var active = _data[i] & 0xFF;
     ++i;
-    final var padding1 = new byte[3];
+    final var enableAutoRolloverOnFilledBorrows = _data[i] & 0xFF;
+    ++i;
+    final var padding1 = new byte[2];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var endPadding = new long[5];
     SerDeUtil.readArray(endPadding, _data, i);
@@ -114,6 +135,7 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
                            requestedDebtAmount,
                            maxBorrowRateBps,
                            active,
+                           enableAutoRolloverOnFilledBorrows,
                            padding1,
                            endPadding);
   }
@@ -141,7 +163,9 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
     i += 4;
     _data[i] = (byte) active;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding1, 3, _data, i);
+    _data[i] = (byte) enableAutoRolloverOnFilledBorrows;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding1, 2, _data, i);
     i += SerDeUtil.writeArrayChecked(endPadding, 5, _data, i);
     return i - _offset;
   }

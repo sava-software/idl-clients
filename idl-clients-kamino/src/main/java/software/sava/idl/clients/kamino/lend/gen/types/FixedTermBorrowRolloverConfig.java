@@ -8,47 +8,71 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Settings driving the auto-rollover of an ObligationLiquidity that uses a fixed-term Reserve
-/// and approaches the end of its ReserveConfig::debt_term_seconds.
+/// Settings driving the auto-rollover (or migration) of an ObligationLiquidity's borrow.
 /// 
-/// By its nature (not a special case), the zeroed struct mean "no auto-rollover".
+/// This covers three flavors:
+/// - *fixed-to-fixed*: a fixed-term borrow rolling into another fixed-term reserve,
+/// - *fixed-to-open*: a fixed-term borrow rolling into an open-term reserve,
+/// - *open-to-fixed*: an open-term borrow migrating into a fixed-term reserve.
+/// 
+/// By its nature (not a special case), the zeroed struct means "no auto-rollover/migration".
 ///
-/// @param autoRolloverEnabled Whether the borrow can be permissionlessly prolonged under the following *joint* conditions:
+/// @param autoRolloverEnabled Whether this *fixed-term* borrow can be permissionlessly prolonged. The funds used to roll
+///                            over can come:
+///                            - either from a *fixed-term* reserve (same or a different one):
+///                            - This can only happen within LendingMarket::fixed_term_rollover_window_duration_seconds.
+///                            - The target reserve must meet all the criteria defined in this config (see
+///                            Self::max_borrow_rate_bps and Self::min_debt_term_seconds).
+///                            - Note: not possible when Self::min_debt_term_seconds is `0` (open-term only).
+///                            - or from an *open-term* reserve:
+///                            - This can only happen within LendingMarket::open_term_rollover_window_duration_seconds.
+///                            - The user must explicitly set Self::open_term_allowed here.
 ///                            
-///                            The reserve used to re-borrow the liquidity must have:
-///                            A) the exact same maximum borrow rate as the current one,
-///                            B) the exact same debt term as the current one,
-///                            C) sufficient available liquidity (including no withdraw tickets waiting in its queue).
-///                            
-///                            The time left until the current debt term expires must be:
-///                            D) less than LendingMarket::fixed_rollover_window_duration_seconds.
-///                            
-///                            Note: the other settings are only effective when this one is `1`.
-/// @param openTermAllowed When `1`, partially lifts the condition *B* from Self::auto_rollover_enabled: additionally
-///                        allows to use a variable (indefinite) debt term if less than
-///                        LendingMarket::variable_rollover_window_duration_seconds is left until expiration.
+///                            This setting is not effective when the borrow is currently using an *open-term* reserve.
+/// @param openTermAllowed When `1`, then Self::auto_rollover_enabled is allowed to roll this borrow over into any
+///                        open-term reserve.
 ///                        
-///                        Note: typically this flag should be used together with Self::max_borrow_rate_bps set to
-///                        `u32::MAX` (to denote a variable-rate reserve).
+///                        Please note that if such rollover actually happens, then Self::max_borrow_rate_bps
+///                        condition does not apply - technically, it could be evaluated, but open-term reserves
+///                        typically use float-rate (utilization-driven borrow rate curve) which has very high maximum
+///                        (when at 100% utilization) that would not meet any practical criteria here.
+/// @param migrationToFixedEnabled Whether this *open-term* borrow can be permissionlessly migrated into a fixed-term reserve:
+///                                - This can happen at any moment (as soon as liquidity becomes available).
+///                                - The target fixed-term reserve must meet all the criteria defined in this config (see
+///                                Self::max_borrow_rate_bps and Self::min_debt_term_seconds).
+///                                
+///                                This setting is not effective when the borrow is currently using a *fixed-term* reserve.
+///                                
+///                                Cannot be enabled when Self::min_debt_term_seconds is `0` (open-term only), because
+///                                migrating into a fixed-term reserve contradicts the open-term-only intent.
 /// @param alignmentPadding Internal alignment padding (free to reuse).
-/// @param maxBorrowRateBps A customization setting that can lift the condition *A* from Self::auto_rollover_enabled:
-///                         when not zeroed, the rollover may use a reserve with a maximum borrow rate equal or lower
-///                         than the given one.
-/// @param minDebtTermSeconds A customization setting that can lift the condition *B* from Self::auto_rollover_enabled:
-///                           when not zeroed, the rollover may use a reserve with a *fixed* debt term equal or longer
-///                           than the given one.
+/// @param maxBorrowRateBps A maximum allowed borrow rate of a reserve that can be used for a rollover/migration.
+///                         
+///                         Note: this must be set (i.e. non-zero) when enabling any rollover/migration flavor, but is
+///                         of course not effective when rollover/migration is not enabled.
+/// @param minDebtTermSeconds A minimum debt term (in seconds) of a fixed-term reserve that can be used for a
+///                           rollover/migration.
+///                           
+///                           When `0`, the owner only accepts open-term reserves as rollover targets — i.e. rolling over
+///                           (or migrating) into a fixed-term reserve is not allowed. This is consistent with the
+///                           semantics of BorrowOrder::min_debt_term_seconds.
+///                           
+///                           This means that `0` is incompatible with Self::migration_to_fixed_enabled (which requires
+///                           a fixed-term target) — this combination is rejected at configuration time.
 public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
                                             int openTermAllowed,
+                                            int migrationToFixedEnabled,
                                             byte[] alignmentPadding,
                                             int maxBorrowRateBps,
                                             long minDebtTermSeconds) implements SerDe {
 
   public static final int BYTES = 16;
-  public static final int ALIGNMENT_PADDING_LEN = 2;
+  public static final int ALIGNMENT_PADDING_LEN = 1;
 
   public static final int AUTO_ROLLOVER_ENABLED_OFFSET = 0;
   public static final int OPEN_TERM_ALLOWED_OFFSET = 1;
-  public static final int ALIGNMENT_PADDING_OFFSET = 2;
+  public static final int MIGRATION_TO_FIXED_ENABLED_OFFSET = 2;
+  public static final int ALIGNMENT_PADDING_OFFSET = 3;
   public static final int MAX_BORROW_RATE_BPS_OFFSET = 4;
   public static final int MIN_DEBT_TERM_SECONDS_OFFSET = 8;
 
@@ -61,13 +85,16 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     ++i;
     final var openTermAllowed = _data[i] & 0xFF;
     ++i;
-    final var alignmentPadding = new byte[2];
+    final var migrationToFixedEnabled = _data[i] & 0xFF;
+    ++i;
+    final var alignmentPadding = new byte[1];
     i += SerDeUtil.readArray(alignmentPadding, _data, i);
     final var maxBorrowRateBps = getInt32LE(_data, i);
     i += 4;
     final var minDebtTermSeconds = getInt64LE(_data, i);
     return new FixedTermBorrowRolloverConfig(autoRolloverEnabled,
                                              openTermAllowed,
+                                             migrationToFixedEnabled,
                                              alignmentPadding,
                                              maxBorrowRateBps,
                                              minDebtTermSeconds);
@@ -80,7 +107,9 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     ++i;
     _data[i] = (byte) openTermAllowed;
     ++i;
-    i += SerDeUtil.writeArrayChecked(alignmentPadding, 2, _data, i);
+    _data[i] = (byte) migrationToFixedEnabled;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(alignmentPadding, 1, _data, i);
     putInt32LE(_data, i, maxBorrowRateBps);
     i += 4;
     putInt64LE(_data, i, minDebtTermSeconds);

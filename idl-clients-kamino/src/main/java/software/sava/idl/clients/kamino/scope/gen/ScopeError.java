@@ -67,7 +67,8 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.InvalidConversionToEmaTypeForOracleType,
     ScopeError.TwapEnabledBitmaskConversionFailure,
     ScopeError.OperationNotSupported,
-    ScopeError.TwapSourceIndexNotSet {
+    ScopeError.TwapSourceIndexNotSet,
+    ScopeError.PythLazerFeedUpdateTimestampNotPresent {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -136,6 +137,7 @@ public sealed interface ScopeError extends ProgramError permits
       case 6062 -> TwapEnabledBitmaskConversionFailure.INSTANCE;
       case 6063 -> OperationNotSupported.INSTANCE;
       case 6064 -> TwapSourceIndexNotSet.INSTANCE;
+      case 6065 -> PythLazerFeedUpdateTimestampNotPresent.INSTANCE;
       default -> null;
     };
   }
@@ -592,6 +594,13 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final TwapSourceIndexNotSet INSTANCE = new TwapSourceIndexNotSet(
         6064, "TWAP source index not set"
+    );
+  }
+
+  record PythLazerFeedUpdateTimestampNotPresent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerFeedUpdateTimestampNotPresent INSTANCE = new PythLazerFeedUpdateTimestampNotPresent(
+        6065, "Property fields in the feed of the PythLazer payload do not contain a feed update timestamp"
     );
   }
 }

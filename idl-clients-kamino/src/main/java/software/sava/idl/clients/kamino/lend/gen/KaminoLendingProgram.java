@@ -22,6 +22,7 @@ import software.sava.idl.clients.kamino.lend.gen.types.UpdateConfigMode;
 import software.sava.idl.clients.kamino.lend.gen.types.UpdateGlobalConfigMode;
 import software.sava.idl.clients.kamino.lend.gen.types.UpdateLendingMarketConfigValue;
 import software.sava.idl.clients.kamino.lend.gen.types.UpdateLendingMarketMode;
+import software.sava.idl.clients.kamino.lend.gen.types.UpdateObligationConfigMode;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -4233,8 +4234,7 @@ public final class KaminoLendingProgram {
   /// @param obligationKey The obligation to set the BorrowOrder on.
   /// @param lendingMarketKey The Self::obligation's market - needed to validate feature flags and minimum order value.
   /// @param reserveKey The reserve matching the Self::debt_liquidity_mint - needed for the minimum order value
-  ///                   check (and refreshed internally). On cancellation, this account is ignored (but still must
-  ///                   belong to the same market).
+  ///                   check. On cancellation, this account is ignored (but still must belong to the same market).
   /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
   ///                                 updates.
   ///                                 Ignored when cancelling the order.
@@ -4267,8 +4267,7 @@ public final class KaminoLendingProgram {
   /// @param obligationKey The obligation to set the BorrowOrder on.
   /// @param lendingMarketKey The Self::obligation's market - needed to validate feature flags and minimum order value.
   /// @param reserveKey The reserve matching the Self::debt_liquidity_mint - needed for the minimum order value
-  ///                   check (and refreshed internally). On cancellation, this account is ignored (but still must
-  ///                   belong to the same market).
+  ///                   check. On cancellation, this account is ignored (but still must belong to the same market).
   /// @param filledDebtDestinationKey The BorrowOrder::filled_debt_destination to set on order creation. Not editable on order
   ///                                 updates.
   ///                                 Ignored when cancelling the order.
@@ -4319,10 +4318,10 @@ public final class KaminoLendingProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 44;
+    public static final int BYTES = 45;
 
     public static final int ORDER_CONFIG_OFFSET = 8;
-    public static final int MIN_EXPECTED_CURRENT_REMAINING_DEBT_AMOUNT_OFFSET = 36;
+    public static final int MIN_EXPECTED_CURRENT_REMAINING_DEBT_AMOUNT_OFFSET = 37;
 
     public static SetBorrowOrderIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4349,6 +4348,212 @@ public final class KaminoLendingProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator UPDATE_OBLIGATION_CONFIG_DISCRIMINATOR = toDiscriminator(82, 152, 213, 69, 250, 0, 157, 188);
+
+  /// @param ownerKey Obligation's owner (signer - only the owner can modify the obligation's configuration).
+  /// @param obligationKey The obligation to update.
+  /// @param borrowReserveKey The reserve of a selected one among the Obligation::borrows.
+  ///                         
+  ///                         Required only if the config update affects a single borrow (for validating its new config).
+  /// @param depositReserveKey The reserve of a selected one among the Obligation::deposits.
+  ///                          
+  ///                          Required only if the config update affects a single deposit (for validating its new config).
+  /// @param lendingMarketKey The lending market (for validating the obligation's new config).
+  public static List<AccountMeta> updateObligationConfigKeys(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                             final PublicKey ownerKey,
+                                                             final PublicKey obligationKey,
+                                                             final PublicKey borrowReserveKey,
+                                                             final PublicKey depositReserveKey,
+                                                             final PublicKey lendingMarketKey) {
+    return List.of(
+      createReadOnlySigner(ownerKey),
+      createWrite(obligationKey),
+      createRead(requireNonNullElse(borrowReserveKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(requireNonNullElse(depositReserveKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(lendingMarketKey)
+    );
+  }
+
+  /// @param ownerKey Obligation's owner (signer - only the owner can modify the obligation's configuration).
+  /// @param obligationKey The obligation to update.
+  /// @param borrowReserveKey The reserve of a selected one among the Obligation::borrows.
+  ///                         
+  ///                         Required only if the config update affects a single borrow (for validating its new config).
+  /// @param depositReserveKey The reserve of a selected one among the Obligation::deposits.
+  ///                          
+  ///                          Required only if the config update affects a single deposit (for validating its new config).
+  /// @param lendingMarketKey The lending market (for validating the obligation's new config).
+  public static Instruction updateObligationConfig(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                   final PublicKey ownerKey,
+                                                   final PublicKey obligationKey,
+                                                   final PublicKey borrowReserveKey,
+                                                   final PublicKey depositReserveKey,
+                                                   final PublicKey lendingMarketKey,
+                                                   final UpdateObligationConfigMode mode,
+                                                   final byte[] value) {
+    final var keys = updateObligationConfigKeys(
+      invokedKaminoLendingProgramMeta,
+      ownerKey,
+      obligationKey,
+      borrowReserveKey,
+      depositReserveKey,
+      lendingMarketKey
+    );
+    return updateObligationConfig(invokedKaminoLendingProgramMeta, keys, mode, value);
+  }
+
+  public static Instruction updateObligationConfig(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                   final List<AccountMeta> keys,
+                                                   final UpdateObligationConfigMode mode,
+                                                   final byte[] value) {
+    final byte[] _data = new byte[8 + mode.l() + SerDeUtil.lenVector(4, value)];
+    int i = UPDATE_OBLIGATION_CONFIG_DISCRIMINATOR.write(_data, 0);
+    i += mode.write(_data, i);
+    SerDeUtil.writeVector(4, value, _data, i);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record UpdateObligationConfigIxData(Discriminator discriminator, UpdateObligationConfigMode mode, byte[] value) implements SerDe {  
+
+    public static UpdateObligationConfigIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int MODE_OFFSET = 8;
+    public static final int VALUE_OFFSET = 9;
+
+    public static UpdateObligationConfigIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var mode = UpdateObligationConfigMode.read(_data, i);
+      i += mode.l();
+      final var value = SerDeUtil.readbyteVector(4, _data, i);
+      return new UpdateObligationConfigIxData(discriminator, mode, value);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += mode.write(_data, i);
+      i += SerDeUtil.writeVector(4, value, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + mode.l() + SerDeUtil.lenVector(4, value);
+    }
+  }
+
+  public static final Discriminator ROLLOVER_FIXED_TERM_BORROW_DISCRIMINATOR = toDiscriminator(85, 30, 155, 225, 224, 186, 141, 148);
+
+  /// @param rolloverAccountsObligationKey The obligation with a borrow to be rolled over (or migrated).
+  /// @param rolloverAccountsLendingMarketKey The Self::obligation's market, needed for validations against the market-wide
+  ///                                         configuration.
+  /// @param rolloverAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
+  ///                                                  the Self::reserve_source_liquidity.
+  /// @param rolloverAccountsSourceBorrowReserveKey The reserve used by the existing Self::obligation's borrow that needs to rollover from.
+  /// @param rolloverAccountsTargetBorrowReserveKey The reserve to rollover the borrow into - possibly (but not necessarily) the same as
+  ///                                               Self::source_borrow_reserve's (but definitely of the same liquidity mint).
+  /// @param rolloverAccountsLiquidityMintKey The mint of Self::source_borrow_reserve and Self::target_borrow_reserve, needed to
+  ///                                         transfer funds between them.
+  /// @param rolloverAccountsSourceBorrowReserveLiquidityKey The vault of Self::source_borrow_reserve, from which the funds are transferred.
+  /// @param rolloverAccountsTargetBorrowReserveLiquidityKey The vault of Self::target_borrow_reserve, from which the funds are transferred.
+  /// @param rolloverAccountsTokenProgramKey The token program of Self::liquidity_mint - needed to execute the transfer.
+  public static List<AccountMeta> rolloverFixedTermBorrowKeys(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                              final PublicKey rolloverAccountsPayerKey,
+                                                              final PublicKey rolloverAccountsObligationKey,
+                                                              final PublicKey rolloverAccountsLendingMarketKey,
+                                                              final PublicKey rolloverAccountsLendingMarketAuthorityKey,
+                                                              final PublicKey rolloverAccountsSourceBorrowReserveKey,
+                                                              final PublicKey rolloverAccountsTargetBorrowReserveKey,
+                                                              final PublicKey rolloverAccountsLiquidityMintKey,
+                                                              final PublicKey rolloverAccountsSourceBorrowReserveLiquidityKey,
+                                                              final PublicKey rolloverAccountsTargetBorrowReserveLiquidityKey,
+                                                              final PublicKey rolloverAccountsTokenProgramKey,
+                                                              final PublicKey sourceFarmsAccountsObligationFarmUserStateKey,
+                                                              final PublicKey sourceFarmsAccountsReserveFarmStateKey,
+                                                              final PublicKey targetFarmsAccountsObligationFarmUserStateKey,
+                                                              final PublicKey targetFarmsAccountsReserveFarmStateKey,
+                                                              final PublicKey farmsProgramKey) {
+    return List.of(
+      createReadOnlySigner(rolloverAccountsPayerKey),
+      createWrite(rolloverAccountsObligationKey),
+      createRead(rolloverAccountsLendingMarketKey),
+      createRead(rolloverAccountsLendingMarketAuthorityKey),
+      createWrite(rolloverAccountsSourceBorrowReserveKey),
+      createWrite(rolloverAccountsTargetBorrowReserveKey),
+      createRead(rolloverAccountsLiquidityMintKey),
+      createWrite(rolloverAccountsSourceBorrowReserveLiquidityKey),
+      createWrite(rolloverAccountsTargetBorrowReserveLiquidityKey),
+      createRead(rolloverAccountsTokenProgramKey),
+      createWrite(requireNonNullElse(sourceFarmsAccountsObligationFarmUserStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(sourceFarmsAccountsReserveFarmStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(targetFarmsAccountsObligationFarmUserStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(targetFarmsAccountsReserveFarmStateKey, invokedKaminoLendingProgramMeta.publicKey())),
+      createRead(farmsProgramKey)
+    );
+  }
+
+  /// @param rolloverAccountsObligationKey The obligation with a borrow to be rolled over (or migrated).
+  /// @param rolloverAccountsLendingMarketKey The Self::obligation's market, needed for validations against the market-wide
+  ///                                         configuration.
+  /// @param rolloverAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
+  ///                                                  the Self::reserve_source_liquidity.
+  /// @param rolloverAccountsSourceBorrowReserveKey The reserve used by the existing Self::obligation's borrow that needs to rollover from.
+  /// @param rolloverAccountsTargetBorrowReserveKey The reserve to rollover the borrow into - possibly (but not necessarily) the same as
+  ///                                               Self::source_borrow_reserve's (but definitely of the same liquidity mint).
+  /// @param rolloverAccountsLiquidityMintKey The mint of Self::source_borrow_reserve and Self::target_borrow_reserve, needed to
+  ///                                         transfer funds between them.
+  /// @param rolloverAccountsSourceBorrowReserveLiquidityKey The vault of Self::source_borrow_reserve, from which the funds are transferred.
+  /// @param rolloverAccountsTargetBorrowReserveLiquidityKey The vault of Self::target_borrow_reserve, from which the funds are transferred.
+  /// @param rolloverAccountsTokenProgramKey The token program of Self::liquidity_mint - needed to execute the transfer.
+  public static Instruction rolloverFixedTermBorrow(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                    final PublicKey rolloverAccountsPayerKey,
+                                                    final PublicKey rolloverAccountsObligationKey,
+                                                    final PublicKey rolloverAccountsLendingMarketKey,
+                                                    final PublicKey rolloverAccountsLendingMarketAuthorityKey,
+                                                    final PublicKey rolloverAccountsSourceBorrowReserveKey,
+                                                    final PublicKey rolloverAccountsTargetBorrowReserveKey,
+                                                    final PublicKey rolloverAccountsLiquidityMintKey,
+                                                    final PublicKey rolloverAccountsSourceBorrowReserveLiquidityKey,
+                                                    final PublicKey rolloverAccountsTargetBorrowReserveLiquidityKey,
+                                                    final PublicKey rolloverAccountsTokenProgramKey,
+                                                    final PublicKey sourceFarmsAccountsObligationFarmUserStateKey,
+                                                    final PublicKey sourceFarmsAccountsReserveFarmStateKey,
+                                                    final PublicKey targetFarmsAccountsObligationFarmUserStateKey,
+                                                    final PublicKey targetFarmsAccountsReserveFarmStateKey,
+                                                    final PublicKey farmsProgramKey) {
+    final var keys = rolloverFixedTermBorrowKeys(
+      invokedKaminoLendingProgramMeta,
+      rolloverAccountsPayerKey,
+      rolloverAccountsObligationKey,
+      rolloverAccountsLendingMarketKey,
+      rolloverAccountsLendingMarketAuthorityKey,
+      rolloverAccountsSourceBorrowReserveKey,
+      rolloverAccountsTargetBorrowReserveKey,
+      rolloverAccountsLiquidityMintKey,
+      rolloverAccountsSourceBorrowReserveLiquidityKey,
+      rolloverAccountsTargetBorrowReserveLiquidityKey,
+      rolloverAccountsTokenProgramKey,
+      sourceFarmsAccountsObligationFarmUserStateKey,
+      sourceFarmsAccountsReserveFarmStateKey,
+      targetFarmsAccountsObligationFarmUserStateKey,
+      targetFarmsAccountsReserveFarmStateKey,
+      farmsProgramKey
+    );
+    return rolloverFixedTermBorrow(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction rolloverFixedTermBorrow(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                    final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, ROLLOVER_FIXED_TERM_BORROW_DISCRIMINATOR);
   }
 
   public static final Discriminator FILL_BORROW_ORDER_DISCRIMINATOR = toDiscriminator(102, 4, 167, 76, 131, 170, 93, 19);

@@ -77,29 +77,59 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                      withdraw queue).
 /// @param withdrawTicketRedemptionEnabled Whether the existing withdraw tickets can be redeemed (i.e. whether the tickets can be used
 ///                                        to transfer accumulated pending liquidity to destination accounts).
-/// @param obligationBorrowRolloverConfigurationEnabled Whether the owners can enable the "fixed term borrow rollover" on their obligations.
+/// @param obligationBorrowRolloverConfigurationEnabled Whether the owners can enable the borrow rollover/migration on their obligations.
 ///                                                     
-///                                                     *Note 1:* the actual execution of (different kinds of) rollovers can be disabled by zeroing
-///                                                     Self::fixed_rollover_window_duration_seconds and
-///                                                     Self::variable_rollover_window_duration_seconds.
+///                                                     *Note 1:* the actual execution of (different kinds of) rollovers are enabled/disabled by:
+///                                                     - Self::fixed_term_rollover_window_duration_seconds,
+///                                                     - Self::open_term_rollover_window_duration_seconds,
+///                                                     - Self::obligation_borrow_migration_to_fixed_execution_enabled.
 ///                                                     
 ///                                                     *Note 2:* when this configuration is disabled, the obligation owners can still disable their
 ///                                                     rollover (i.e. set the obligation's flags to zeroes).
+/// @param obligationBorrowMigrationToFixedExecutionEnabled Whether the actual execution of a "migration to fixed" rollover flavor is allowed.
+///                                                         
+///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
 /// @param minWithdrawQueuedLiquidityValue Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
-/// @param fixedRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
-///                                           auto-rollover into another *fixed* rate/term can happen.
-///                                           
-///                                           When zeroed, this rollover mode is effectively disabled.
-///                                           
-///                                           See FixedTermBorrowRolloverConfig.
-/// @param variableRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
+/// @param fixedTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
+///                                               auto-rollover into another *fixed* rate/term can happen.
+///                                               
+///                                               When zeroed, this rollover mode is effectively disabled.
+///                                               Can only be enabled when Self::min_partial_rollover_value is configured.
+///                                               
+///                                               See FixedTermBorrowRolloverConfig.
+/// @param openTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
 ///                                              auto-rollover into a *variable* (indefinite) rate/term can happen.
 ///                                              
 ///                                              When zeroed, this rollover mode is effectively disabled.
+///                                              Can only be enabled when Self::min_partial_rollover_value is configured.
 ///                                              
-///                                              This will typically be shorter than Self::fixed_rollover_window_duration_seconds, acting
-///                                              as a fallback if a fixed reserve liquidity remains unavailable for considerable time.
+///                                              This will typically be shorter than Self::fixed_term_rollover_window_duration_seconds,
+///                                              acting as a fallback if a fixed reserve liquidity remains unavailable for considerable time.
+/// @param minPartialRolloverValue Minimum dollar value for a partial rollover into a different reserve.
+///                                When the achievable rollover amount is below this threshold (and it's not a full rollover),
+///                                the rollover is rejected.
+///                                
+///                                In full units of the quote currency (e.g. `2` means "$2").
+/// @param termBasedFullLiquidationDurationSecs The time that must pass before an entire expired debt becomes liquidatable.
+///                                             
+///                                             For example:
+///                                             Let's assume this duration is configured as 100 seconds; then:
+///                                             - right after fixed-term debt expiration, effectively no debt can be liquidated.
+///                                             - 30 seconds after expiration, we allow to 30% of the expired debt to be liquidated
+///                                             - to be specific: at this point in time, we "protect" from liquidation 70% of the
+///                                             ObligationLiquidity::borrowed_amount_at_expiration (regardless of how much interest
+///                                             was accrued or how much debt was repaid while expired).
+///                                             - 100 seconds after expiration we allow the entire debt to be liquidated.
+///                                             
+///                                             Only effective when Self::obligation_borrow_debt_term_liquidation_enabled.
+///                                             
+///                                             Motivation note: this throttling feature gives an opportunity to execute a configured
+///                                             auto-rollover (after a partial liquidation brings the debt size down so that there is enough
+///                                             available liquidity in some compatible reserve).
+///                                             
+///                                             When zeroed, an entire expired debt can be liquidated right after expiration (i.e. no
+///                                             throttling).
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
                             long version,
@@ -141,10 +171,13 @@ public record LendingMarket(PublicKey _address,
                             int withdrawTicketIssuanceEnabled,
                             int withdrawTicketRedemptionEnabled,
                             int obligationBorrowRolloverConfigurationEnabled,
+                            int obligationBorrowMigrationToFixedExecutionEnabled,
                             byte[] padding2,
                             long minWithdrawQueuedLiquidityValue,
-                            long fixedRolloverWindowDurationSeconds,
-                            long variableRolloverWindowDurationSeconds,
+                            long fixedTermRolloverWindowDurationSeconds,
+                            long openTermRolloverWindowDurationSeconds,
+                            long minPartialRolloverValue,
+                            long termBasedFullLiquidationDurationSecs,
                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
@@ -154,8 +187,8 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_2_LEN = 5;
-  public static final int PADDING_1_LEN = 160;
+  public static final int PADDING_2_LEN = 4;
+  public static final int PADDING_1_LEN = 158;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 114, 50, 98, 72, 157, 28, 120);
@@ -200,11 +233,14 @@ public record LendingMarket(PublicKey _address,
   public static final int WITHDRAW_TICKET_ISSUANCE_ENABLED_OFFSET = 3352;
   public static final int WITHDRAW_TICKET_REDEMPTION_ENABLED_OFFSET = 3353;
   public static final int OBLIGATION_BORROW_ROLLOVER_CONFIGURATION_ENABLED_OFFSET = 3354;
-  public static final int PADDING_2_OFFSET = 3355;
+  public static final int OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET = 3355;
+  public static final int PADDING_2_OFFSET = 3356;
   public static final int MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET = 3360;
-  public static final int FIXED_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3368;
-  public static final int VARIABLE_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3376;
-  public static final int PADDING_1_OFFSET = 3384;
+  public static final int FIXED_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3368;
+  public static final int OPEN_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3376;
+  public static final int MIN_PARTIAL_ROLLOVER_VALUE_OFFSET = 3384;
+  public static final int TERM_BASED_FULL_LIQUIDATION_DURATION_SECS_OFFSET = 3392;
+  public static final int PADDING_1_OFFSET = 3400;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -362,22 +398,38 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(OBLIGATION_BORROW_ROLLOVER_CONFIGURATION_ENABLED_OFFSET, new byte[]{(byte) obligationBorrowRolloverConfigurationEnabled});
   }
 
+  public static Filter createObligationBorrowMigrationToFixedExecutionEnabledFilter(final int obligationBorrowMigrationToFixedExecutionEnabled) {
+    return Filter.createMemCompFilter(OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET, new byte[]{(byte) obligationBorrowMigrationToFixedExecutionEnabled});
+  }
+
   public static Filter createMinWithdrawQueuedLiquidityValueFilter(final long minWithdrawQueuedLiquidityValue) {
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, minWithdrawQueuedLiquidityValue);
     return Filter.createMemCompFilter(MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET, _data);
   }
 
-  public static Filter createFixedRolloverWindowDurationSecondsFilter(final long fixedRolloverWindowDurationSeconds) {
+  public static Filter createFixedTermRolloverWindowDurationSecondsFilter(final long fixedTermRolloverWindowDurationSeconds) {
     final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, fixedRolloverWindowDurationSeconds);
-    return Filter.createMemCompFilter(FIXED_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET, _data);
+    putInt64LE(_data, 0, fixedTermRolloverWindowDurationSeconds);
+    return Filter.createMemCompFilter(FIXED_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET, _data);
   }
 
-  public static Filter createVariableRolloverWindowDurationSecondsFilter(final long variableRolloverWindowDurationSeconds) {
+  public static Filter createOpenTermRolloverWindowDurationSecondsFilter(final long openTermRolloverWindowDurationSeconds) {
     final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, variableRolloverWindowDurationSeconds);
-    return Filter.createMemCompFilter(VARIABLE_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET, _data);
+    putInt64LE(_data, 0, openTermRolloverWindowDurationSeconds);
+    return Filter.createMemCompFilter(OPEN_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET, _data);
+  }
+
+  public static Filter createMinPartialRolloverValueFilter(final long minPartialRolloverValue) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, minPartialRolloverValue);
+    return Filter.createMemCompFilter(MIN_PARTIAL_ROLLOVER_VALUE_OFFSET, _data);
+  }
+
+  public static Filter createTermBasedFullLiquidationDurationSecsFilter(final long termBasedFullLiquidationDurationSecs) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, termBasedFullLiquidationDurationSecs);
+    return Filter.createMemCompFilter(TERM_BASED_FULL_LIQUIDATION_DURATION_SECS_OFFSET, _data);
   }
 
   public static LendingMarket read(final byte[] _data, final int _offset) {
@@ -478,15 +530,21 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var obligationBorrowRolloverConfigurationEnabled = _data[i] & 0xFF;
     ++i;
-    final var padding2 = new byte[5];
+    final var obligationBorrowMigrationToFixedExecutionEnabled = _data[i] & 0xFF;
+    ++i;
+    final var padding2 = new byte[4];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
     i += 8;
-    final var fixedRolloverWindowDurationSeconds = getInt64LE(_data, i);
+    final var fixedTermRolloverWindowDurationSeconds = getInt64LE(_data, i);
     i += 8;
-    final var variableRolloverWindowDurationSeconds = getInt64LE(_data, i);
+    final var openTermRolloverWindowDurationSeconds = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[160];
+    final var minPartialRolloverValue = getInt64LE(_data, i);
+    i += 8;
+    final var termBasedFullLiquidationDurationSecs = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[158];
     SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
@@ -529,10 +587,13 @@ public record LendingMarket(PublicKey _address,
                              withdrawTicketIssuanceEnabled,
                              withdrawTicketRedemptionEnabled,
                              obligationBorrowRolloverConfigurationEnabled,
+                             obligationBorrowMigrationToFixedExecutionEnabled,
                              padding2,
                              minWithdrawQueuedLiquidityValue,
-                             fixedRolloverWindowDurationSeconds,
-                             variableRolloverWindowDurationSeconds,
+                             fixedTermRolloverWindowDurationSeconds,
+                             openTermRolloverWindowDurationSeconds,
+                             minPartialRolloverValue,
+                             termBasedFullLiquidationDurationSecs,
                              padding1);
   }
 
@@ -611,14 +672,20 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) obligationBorrowRolloverConfigurationEnabled;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 5, _data, i);
+    _data[i] = (byte) obligationBorrowMigrationToFixedExecutionEnabled;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding2, 4, _data, i);
     putInt64LE(_data, i, minWithdrawQueuedLiquidityValue);
     i += 8;
-    putInt64LE(_data, i, fixedRolloverWindowDurationSeconds);
+    putInt64LE(_data, i, fixedTermRolloverWindowDurationSeconds);
     i += 8;
-    putInt64LE(_data, i, variableRolloverWindowDurationSeconds);
+    putInt64LE(_data, i, openTermRolloverWindowDurationSeconds);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 160, _data, i);
+    putInt64LE(_data, i, minPartialRolloverValue);
+    i += 8;
+    putInt64LE(_data, i, termBasedFullLiquidationDurationSecs);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 158, _data, i);
     return i - _offset;
   }
 

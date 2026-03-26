@@ -12,14 +12,16 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record BorrowOrderConfigArgs(long remainingDebtAmount,
                                     int maxBorrowRateBps,
                                     long minDebtTermSeconds,
-                                    long fillableUntilTimestamp) implements SerDe {
+                                    long fillableUntilTimestamp,
+                                    boolean enableAutoRolloverOnFilledBorrows) implements SerDe {
 
-  public static final int BYTES = 28;
+  public static final int BYTES = 29;
 
   public static final int REMAINING_DEBT_AMOUNT_OFFSET = 0;
   public static final int MAX_BORROW_RATE_BPS_OFFSET = 8;
   public static final int MIN_DEBT_TERM_SECONDS_OFFSET = 12;
   public static final int FILLABLE_UNTIL_TIMESTAMP_OFFSET = 20;
+  public static final int ENABLE_AUTO_ROLLOVER_ON_FILLED_BORROWS_OFFSET = 28;
 
   public static BorrowOrderConfigArgs read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -33,10 +35,13 @@ public record BorrowOrderConfigArgs(long remainingDebtAmount,
     final var minDebtTermSeconds = getInt64LE(_data, i);
     i += 8;
     final var fillableUntilTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var enableAutoRolloverOnFilledBorrows = _data[i] == 1;
     return new BorrowOrderConfigArgs(remainingDebtAmount,
                                      maxBorrowRateBps,
                                      minDebtTermSeconds,
-                                     fillableUntilTimestamp);
+                                     fillableUntilTimestamp,
+                                     enableAutoRolloverOnFilledBorrows);
   }
 
   @Override
@@ -50,6 +55,8 @@ public record BorrowOrderConfigArgs(long remainingDebtAmount,
     i += 8;
     putInt64LE(_data, i, fillableUntilTimestamp);
     i += 8;
+    _data[i] = (byte) (enableAutoRolloverOnFilledBorrows ? 1 : 0);
+    ++i;
     return i - _offset;
   }
 
