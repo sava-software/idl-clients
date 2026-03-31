@@ -2,8 +2,10 @@ package software.sava.idl.clients.spl.token.gen;
 
 import java.lang.String;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalLong;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
@@ -1856,10 +1858,14 @@ public final class TokenProgram {
   /// account, and needs to have its token `amount` field updated.
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
-  public static List<AccountMeta> syncNativeKeys(final PublicKey accountKey) {
-    return List.of(
-      createWrite(accountKey)
-    );
+  public static List<AccountMeta> syncNativeKeys(final SolanaAccounts solanaAccounts,
+                                                 final PublicKey accountKey) {
+    final var keys = new ArrayList<AccountMeta>(2);
+    keys.add(createWrite(accountKey));
+    if (solanaAccounts.rentSysVar() != null) {
+      keys.add(createRead(solanaAccounts.rentSysVar()));
+    }
+    return keys;
   }
 
   /// Given a wrapped / native token account (a token account containing SOL)
@@ -1870,8 +1876,10 @@ public final class TokenProgram {
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
   public static Instruction syncNative(final AccountMeta invokedTokenProgramMeta,
+                                       final SolanaAccounts solanaAccounts,
                                        final PublicKey accountKey) {
     final var keys = syncNativeKeys(
+      solanaAccounts,
       accountKey
     );
     return syncNative(invokedTokenProgramMeta, keys);
@@ -2599,6 +2607,192 @@ public final class TokenProgram {
     @Override
     public int l() {
       return 1 + _uiAmount.length;
+    }
+  }
+
+  public static final Discriminator WITHDRAW_EXCESS_LAMPORTS_DISCRIMINATOR = toDiscriminator(38);
+
+  /// Rescue SOL sent to any TokenProgram-owned account
+  /// by sending them to any other account, leaving behind only
+  /// lamports for rent exemption.
+  ///
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
+  public static List<AccountMeta> withdrawExcessLamportsKeys(final PublicKey sourceKey,
+                                                             final PublicKey destinationKey,
+                                                             final PublicKey authorityKey) {
+    return List.of(
+      createWrite(sourceKey),
+      createWrite(destinationKey),
+      createReadOnlySigner(authorityKey)
+    );
+  }
+
+  /// Rescue SOL sent to any TokenProgram-owned account
+  /// by sending them to any other account, leaving behind only
+  /// lamports for rent exemption.
+  ///
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
+  public static Instruction withdrawExcessLamports(final AccountMeta invokedTokenProgramMeta,
+                                                   final PublicKey sourceKey,
+                                                   final PublicKey destinationKey,
+                                                   final PublicKey authorityKey) {
+    final var keys = withdrawExcessLamportsKeys(
+      sourceKey,
+      destinationKey,
+      authorityKey
+    );
+    return withdrawExcessLamports(invokedTokenProgramMeta, keys);
+  }
+
+  /// Rescue SOL sent to any TokenProgram-owned account
+  /// by sending them to any other account, leaving behind only
+  /// lamports for rent exemption.
+  ///
+  public static Instruction withdrawExcessLamports(final AccountMeta invokedTokenProgramMeta,
+                                                   final List<AccountMeta> keys) {
+    final byte[] _data = new byte[1];
+    WITHDRAW_EXCESS_LAMPORTS_DISCRIMINATOR.write(_data, 0);
+
+    return Instruction.createInstruction(invokedTokenProgramMeta, keys, _data);
+  }
+
+  /// Rescue SOL sent to any TokenProgram-owned account
+  /// by sending them to any other account, leaving behind only
+  /// lamports for rent exemption.
+  ///
+  public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {  
+
+    public static WithdrawExcessLamportsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 1;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+
+    public static WithdrawExcessLamportsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = _data[_offset] & 0xFF;
+      return new WithdrawExcessLamportsIxData(discriminator);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UNWRAP_LAMPORTS_DISCRIMINATOR = toDiscriminator(45);
+
+  /// Transfer lamports from a native SOL account to a destination account.
+  ///
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
+  public static List<AccountMeta> UnwrapLamportsKeys(final PublicKey sourceKey,
+                                                     final PublicKey destinationKey,
+                                                     final PublicKey authorityKey) {
+    return List.of(
+      createWrite(sourceKey),
+      createWrite(destinationKey),
+      createReadOnlySigner(authorityKey)
+    );
+  }
+
+  /// Transfer lamports from a native SOL account to a destination account.
+  ///
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
+  /// @param amount Optional amount of lamports to transfer.
+  ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
+  public static Instruction UnwrapLamports(final AccountMeta invokedTokenProgramMeta,
+                                           final PublicKey sourceKey,
+                                           final PublicKey destinationKey,
+                                           final PublicKey authorityKey,
+                                           final OptionalLong amount) {
+    final var keys = UnwrapLamportsKeys(
+      sourceKey,
+      destinationKey,
+      authorityKey
+    );
+    return UnwrapLamports(invokedTokenProgramMeta, keys, amount);
+  }
+
+  /// Transfer lamports from a native SOL account to a destination account.
+  ///
+  /// @param amount Optional amount of lamports to transfer.
+  ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
+  public static Instruction UnwrapLamports(final AccountMeta invokedTokenProgramMeta,
+                                           final List<AccountMeta> keys,
+                                           final OptionalLong amount) {
+    final byte[] _data = new byte[
+    1
+    + (amount == null || amount.isEmpty() ? 1 : 9)
+    ];
+    int i = UNWRAP_LAMPORTS_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeOptional(1, amount, _data, i);
+
+    return Instruction.createInstruction(invokedTokenProgramMeta, keys, _data);
+  }
+
+  /// Transfer lamports from a native SOL account to a destination account.
+  ///
+  /// @param amount Optional amount of lamports to transfer.
+  ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
+  public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {  
+
+    public static UnwrapLamportsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int AMOUNT_OFFSET = 2;
+
+    public static UnwrapLamportsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final OptionalLong amount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        amount = OptionalLong.empty();
+      } else {
+        ++i;
+        amount = OptionalLong.of(getInt64LE(_data, i));
+      }
+      return new UnwrapLamportsIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      i += SerDeUtil.writeOptional(1, amount, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + (amount == null || amount.isEmpty() ? 1 : (1 + 8));
     }
   }
 
