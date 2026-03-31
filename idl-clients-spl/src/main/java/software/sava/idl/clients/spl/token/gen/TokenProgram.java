@@ -1862,7 +1862,7 @@ public final class TokenProgram {
                                                  final PublicKey accountKey) {
     final var keys = new ArrayList<AccountMeta>(2);
     keys.add(createWrite(accountKey));
-    if (solanaAccounts.rentSysVar() != null) {
+    if (solanaAccounts != null && solanaAccounts.rentSysVar() != null) {
       keys.add(createRead(solanaAccounts.rentSysVar()));
     }
     return keys;

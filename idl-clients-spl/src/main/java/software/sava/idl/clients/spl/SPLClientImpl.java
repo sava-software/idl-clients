@@ -24,7 +24,7 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
 
   @Override
   public Instruction syncNative(final PublicKey tokenAccount) {
-    return TokenProgram.syncNative(solanaAccounts.invokedTokenProgram(), tokenAccount);
+    return TokenProgram.syncNative(solanaAccounts.invokedTokenProgram(), null, tokenAccount);
   }
 
   @Override
