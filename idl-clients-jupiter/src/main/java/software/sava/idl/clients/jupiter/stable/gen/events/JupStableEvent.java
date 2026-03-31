@@ -4,13 +4,19 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 public sealed interface JupStableEvent extends SerDe permits
     MintV0Event,
-    RedeemV0Event {
+    MintV1Event,
+    RedeemV0Event,
+    RedeemV1Event {
 
   static JupStableEvent read(final byte[] _data, final int _offset) {
     if (MintV0Event.DISCRIMINATOR.equals(_data, _offset)) {
       return MintV0Event.read(_data, _offset);
+    } else if (MintV1Event.DISCRIMINATOR.equals(_data, _offset)) {
+      return MintV1Event.read(_data, _offset);
     } else if (RedeemV0Event.DISCRIMINATOR.equals(_data, _offset)) {
       return RedeemV0Event.read(_data, _offset);
+    } else if (RedeemV1Event.DISCRIMINATOR.equals(_data, _offset)) {
+      return RedeemV1Event.read(_data, _offset);
     } else {
       return null;
     }

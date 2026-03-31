@@ -244,22 +244,6 @@
       "program": "11111111111111111111111111111111",
       "idlType": "codama",
       "idlURL": "https://raw.githubusercontent.com/solana-program/system/refs/heads/main/program/idl.json"
-    },
-    {
-      "name": "Token",
-      "source": "idl-clients-spl",
-      "module": "spl",
-      "package": "spl.token",
-      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
-      "idlType": "codama",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/program/idl.json",
-      "additionalPrograms": [
-        {
-          "name": "Associated Token",
-          "package": "spl.associated_token",
-          "program": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
-        }
-      ]
     }
   ]
 }

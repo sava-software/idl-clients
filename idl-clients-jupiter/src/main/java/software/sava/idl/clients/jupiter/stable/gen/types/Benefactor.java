@@ -26,6 +26,7 @@ public record Benefactor(PublicKey _address,
                          PeriodLimit[] periodLimits,
                          byte[] totalMinted,
                          byte[] totalRedeemed,
+                         FeeOverride[] feeOverrides,
                          byte[] reserved) implements SerDe {
 
   public static final int BYTES = 536;
@@ -34,7 +35,8 @@ public record Benefactor(PublicKey _address,
   public static final int PERIOD_LIMITS_LEN = 4;
   public static final int TOTAL_MINTED_LEN = 16;
   public static final int TOTAL_REDEEMED_LEN = 16;
-  public static final int RESERVED_LEN = 256;
+  public static final int FEE_OVERRIDES_LEN = 4;
+  public static final int RESERVED_LEN = 96;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(98, 159, 41, 233, 19, 232, 104, 12);
@@ -49,7 +51,8 @@ public record Benefactor(PublicKey _address,
   public static final int PERIOD_LIMITS_OFFSET = 56;
   public static final int TOTAL_MINTED_OFFSET = 248;
   public static final int TOTAL_REDEEMED_OFFSET = 264;
-  public static final int RESERVED_OFFSET = 280;
+  public static final int FEE_OVERRIDES_OFFSET = 280;
+  public static final int RESERVED_OFFSET = 440;
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
     return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
@@ -109,7 +112,9 @@ public record Benefactor(PublicKey _address,
     i += SerDeUtil.readArray(totalMinted, _data, i);
     final var totalRedeemed = new byte[16];
     i += SerDeUtil.readArray(totalRedeemed, _data, i);
-    final var reserved = new byte[256];
+    final var feeOverrides = new FeeOverride[4];
+    i += SerDeUtil.readArray(feeOverrides, FeeOverride::read, _data, i);
+    final var reserved = new byte[96];
     SerDeUtil.readArray(reserved, _data, i);
     return new Benefactor(_address,
                           discriminator,
@@ -122,6 +127,7 @@ public record Benefactor(PublicKey _address,
                           periodLimits,
                           totalMinted,
                           totalRedeemed,
+                          feeOverrides,
                           reserved);
   }
 
@@ -140,7 +146,8 @@ public record Benefactor(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(periodLimits, 4, _data, i);
     i += SerDeUtil.writeArrayChecked(totalMinted, 16, _data, i);
     i += SerDeUtil.writeArrayChecked(totalRedeemed, 16, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved, 256, _data, i);
+    i += SerDeUtil.writeArrayChecked(feeOverrides, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 96, _data, i);
     return i - _offset;
   }
 

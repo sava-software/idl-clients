@@ -1,7 +1,9 @@
 package software.sava.idl.clients.jupiter.stable.gen.types;
 
+import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.RustEnum;
 
+import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
@@ -12,7 +14,9 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
   BenefactorManagementAction.SetStatus,
   BenefactorManagementAction.UpdateFeeRates,
   BenefactorManagementAction.UpdatePeriodLimit,
-  BenefactorManagementAction.ResetPeriodLimit {
+  BenefactorManagementAction.ResetPeriodLimit,
+  BenefactorManagementAction.UpdateFeeOverride,
+  BenefactorManagementAction.DeleteFeeOverride {
 
   static BenefactorManagementAction read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -23,6 +27,8 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
       case 2 -> UpdateFeeRates.read(_data, i);
       case 3 -> UpdatePeriodLimit.read(_data, i);
       case 4 -> ResetPeriodLimit.read(_data, i);
+      case 5 -> UpdateFeeOverride.read(_data, i);
+      case 6 -> DeleteFeeOverride.read(_data, i);
       default -> null;
     };
   }
@@ -152,6 +158,73 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     @Override
     public int ordinal() {
       return 4;
+    }
+  }
+
+  record UpdateFeeOverride(int index,
+                           PublicKey mint,
+                           int mintFeeRate,
+                           int redeemFeeRate) implements BenefactorManagementAction {
+
+    public static final int BYTES = 37;
+
+    public static final int INDEX_OFFSET = 0;
+    public static final int MINT_OFFSET = 1;
+    public static final int MINT_FEE_RATE_OFFSET = 33;
+    public static final int REDEEM_FEE_RATE_OFFSET = 35;
+
+    public static UpdateFeeOverride read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var index = _data[i] & 0xFF;
+      ++i;
+      final var mint = readPubKey(_data, i);
+      i += 32;
+      final var mintFeeRate = getInt16LE(_data, i);
+      i += 2;
+      final var redeemFeeRate = getInt16LE(_data, i);
+      return new UpdateFeeOverride(index,
+                                   mint,
+                                   mintFeeRate,
+                                   redeemFeeRate);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) index;
+      ++i;
+      mint.write(_data, i);
+      i += 32;
+      putInt16LE(_data, i, mintFeeRate);
+      i += 2;
+      putInt16LE(_data, i, redeemFeeRate);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 5;
+    }
+  }
+
+  record DeleteFeeOverride(int val) implements EnumInt8, BenefactorManagementAction {
+
+    public static DeleteFeeOverride read(final byte[] _data, int i) {
+      return new DeleteFeeOverride(_data[i] & 0xFF);
+    }
+
+    @Override
+    public int ordinal() {
+      return 6;
     }
   }
 }
