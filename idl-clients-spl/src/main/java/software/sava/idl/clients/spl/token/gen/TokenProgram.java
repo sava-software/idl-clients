@@ -2703,7 +2703,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account owner or its multisignature account.
-  public static List<AccountMeta> UnwrapLamportsKeys(final PublicKey sourceKey,
+  public static List<AccountMeta> unwrapLamportsKeys(final PublicKey sourceKey,
                                                      final PublicKey destinationKey,
                                                      final PublicKey authorityKey) {
     return List.of(
@@ -2720,24 +2720,24 @@ public final class TokenProgram {
   /// @param authorityKey The source account owner or its multisignature account.
   /// @param amount Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
-  public static Instruction UnwrapLamports(final AccountMeta invokedTokenProgramMeta,
+  public static Instruction unwrapLamports(final AccountMeta invokedTokenProgramMeta,
                                            final PublicKey sourceKey,
                                            final PublicKey destinationKey,
                                            final PublicKey authorityKey,
                                            final OptionalLong amount) {
-    final var keys = UnwrapLamportsKeys(
+    final var keys = unwrapLamportsKeys(
       sourceKey,
       destinationKey,
       authorityKey
     );
-    return UnwrapLamports(invokedTokenProgramMeta, keys, amount);
+    return unwrapLamports(invokedTokenProgramMeta, keys, amount);
   }
 
   /// Transfer lamports from a native SOL account to a destination account.
   ///
   /// @param amount Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
-  public static Instruction UnwrapLamports(final AccountMeta invokedTokenProgramMeta,
+  public static Instruction unwrapLamports(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OptionalLong amount) {
     final byte[] _data = new byte[
