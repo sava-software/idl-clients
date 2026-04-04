@@ -84,14 +84,77 @@ configuration.
 }
 ```
 
-The `updateTokenMetadataField` instruction is also excluded from generation.
+The `updateTokenMetadataField` instruction and `TokenMetadataField` type are excluded from generation because the field type
+is an enum with a tuple variant (`Key(String)`) which requires special handling. A manual implementation is provided in
+`Token2022Instructions`.
 
 ```json
 {
-  "ignoreInstructions": [
-    "updateTokenMetadataField"
-  ]
+  "ignoreInstructions": ["updateTokenMetadataField"],
+  "excludeTypes": ["TokenMetadataField"]
 }
+```
+
+### updateTokenMetadataField (Token2022Instructions)
+
+The `updateTokenMetadataField` instruction is manually implemented in `Token2022Instructions` since it is excluded from
+code generation. It supports updating the standard fields (name, symbol, URI) as well as custom key-value pairs.
+
+```java
+import software.sava.idl.clients.spl.token_2022.Token2022Instructions;
+import software.sava.idl.clients.spl.token_2022.Token2022Instructions.TokenMetadataField;
+
+// Update the name field
+Instruction ix = Token2022Instructions.updateTokenMetadataName(
+    invokedToken2022ProgramMeta,
+    metadataKey,
+    updateAuthorityKey,
+    "New Token Name"
+);
+
+// Update the symbol field
+Instruction ix = Token2022Instructions.updateTokenMetadataSymbol(
+    invokedToken2022ProgramMeta,
+    metadataKey,
+    updateAuthorityKey,
+    "NTK"
+);
+
+// Update the URI field
+Instruction ix = Token2022Instructions.updateTokenMetadataUri(
+    invokedToken2022ProgramMeta,
+    metadataKey,
+    updateAuthorityKey,
+    "https://example.com/new-metadata.json"
+);
+
+// Update a custom key-value pair
+Instruction ix = Token2022Instructions.updateTokenMetadataCustomField(
+    invokedToken2022ProgramMeta,
+    metadataKey,
+    updateAuthorityKey,
+    "website",
+    "https://example.com"
+);
+
+// Or use the general method with explicit field type
+Instruction ix = Token2022Instructions.updateTokenMetadataField(
+    invokedToken2022ProgramMeta,
+    metadataKey,
+    updateAuthorityKey,
+    TokenMetadataField.Key,
+    "description",
+    "A great token"
+);
+```
+
+Parsing instruction data is also supported:
+
+```java
+var parsed = Token2022Instructions.UpdateTokenMetadataFieldIxData.read(instruction);
+TokenMetadataField field = parsed.field();
+String value = parsed.value();
+String key = parsed.key(); // non-null only when field == Key
 ```
 
 ### Building Instructions
@@ -202,5 +265,6 @@ Instruction ix = Token2022Program.initializeTokenMetadataInstruction(
 | Token 2022 token accounts                  | **sava-core** (`Token2022Account`)       |
 | Reading token extension data               | **sava-core** (extension types)          |
 | Building instructions                      | **idl-clients-spl** (`Token2022Program`) |
+| `updateTokenMetadataField` instruction     | **idl-clients-spl** (`Token2022Instructions`) |
 | Parsing instruction data from transactions | **idl-clients-spl** (`IxData.read()`)    |
 | Handling program errors                    | **idl-clients-spl** (`Token2022Error`)   |

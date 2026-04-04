@@ -8,6 +8,7 @@ module software.sava.idl.clients.spl {
   exports software.sava.idl.clients.spl.token.gen;
   exports software.sava.idl.clients.spl.token_2022.gen.types;
   exports software.sava.idl.clients.spl.token_2022.gen;
+  exports software.sava.idl.clients.spl.token_2022;
   exports software.sava.idl.clients.spl;
   requires java.net.http;
   requires software.sava.solana_programs;
