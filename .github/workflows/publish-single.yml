@@ -32,7 +32,7 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Checkout IDL Source Generator
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6.0.2
         with:
           repository: sava-software/idl-src-gen
           token: ${{ secrets.READ_SAVA_SRC_GEN }}
@@ -43,7 +43,7 @@ jobs:
           ./idl-src-gen/genSrc.sh --config="../main_net_programs.json" --rpc="${{ secrets.RPC_URL }}"
           ./gradlew --stacktrace -PjavaVersion=${{ steps.setup.outputs.java-version }} check
         env:
-          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ env.GITHUB_ACTOR }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Maven Central
@@ -53,7 +53,7 @@ jobs:
           GPG_PUBLISH_PHRASE: ${{ secrets.GPG_PUBLISH_PHRASE }}
           MAVEN_CENTRAL_TOKEN: ${{ secrets.MAVEN_CENTRAL_TOKEN }}
           MAVEN_CENTRAL_SECRET: ${{ secrets.MAVEN_CENTRAL_SECRET }}
-          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ env.GITHUB_ACTOR }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Github Packages
@@ -61,5 +61,5 @@ jobs:
         env:
           GPG_PUBLISH_SECRET: ${{ secrets.GPG_PUBLISH_SECRET }}
           GPG_PUBLISH_PHRASE: ${{ secrets.GPG_PUBLISH_PHRASE }}
-          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ env.GITHUB_ACTOR }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
           ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
