@@ -71,6 +71,47 @@ final class Token2022ProgramTests {
   }
 
   @Test
+  void createMintWithInitializingMetadata() {
+    // devnet 3b7rYDCdxymqBXR3FLFgUtUoQyoYGg2ZF2bbKviuSQToSWyZeJmfb2wpjpTsZRf8FCWVMtuNetTAz2EAvmRSZLUi
+
+    final var name = "SimpleTestCoin";
+    final var symbol = "STC";
+    final var uri = "https://example.com/metadata.json";
+    final var mintAccount = PublicKey.fromBase58Encoded("88WLQK58mbqNjaUBxYjEvhvdsWGQde4s1EqyagvEng2f");
+    final var metadataAccount = PublicKey.fromBase58Encoded("88WLQK58mbqNjaUBxYjEvhvdsWGQde4s1EqyagvEng2f");
+    final var authority = PublicKey.fromBase58Encoded("CvUqgjP892h66aYPC9E8gKTXnTebY8qaU5ehGrgEQSwV");
+    final var updateAuthority = PublicKey.fromBase58Encoded("CvUqgjP892h66aYPC9E8gKTXnTebY8qaU5ehGrgEQSwV");
+
+    final byte[] expectedData = Base64.getDecoder().decode(
+        "0uEeoli4TY0OAAAAU2ltcGxlVGVzdENvaW4DAAAAU1RDIQAAAGh0dHBzOi8vZXhhbXBsZS5jb20vbWV0YWRhdGEuanNvbg=="
+    );
+
+    final var solAccounts = SolanaAccounts.MAIN_NET;
+
+    final var initializeTokenMetadataIx = Token2022Program.initializeTokenMetadata(
+        solAccounts.invokedToken2022Program(),
+        metadataAccount,
+        updateAuthority,
+        mintAccount,
+        authority,
+        name,
+        symbol,
+        uri
+    );
+
+    assertEquals(solAccounts.invokedToken2022Program(), initializeTokenMetadataIx.programId());
+
+    final var accounts = initializeTokenMetadataIx.accounts();
+    assertEquals(4, accounts.size());
+    assertEquals(AccountMeta.createWrite(metadataAccount), accounts.getFirst());
+    assertEquals(AccountMeta.createRead(updateAuthority), accounts.get(1));
+    assertEquals(AccountMeta.createRead(mintAccount), accounts.get(2));
+    assertEquals(AccountMeta.createReadOnlySigner(authority), accounts.getLast());
+
+    assertArrayEquals(expectedData, initializeTokenMetadataIx.data());
+  }
+
+  @Test
   void updateTransferHookAccount() {
     // devnet THZ3HTPAQZaEj6ggHSaLSxSS5CeGYp88VDa6NyXxY7pV9khHk1xJk1yHqP4jWByHjBUz34UuWLPffWQfeCzjNyi
 
