@@ -13,26 +13,6 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Reserve liquidity
-///
-/// @param mintPubkey Reserve liquidity mint address
-/// @param supplyVault Reserve liquidity supply address
-/// @param feeVault Reserve liquidity fee collection address
-/// @param availableAmount Reserve liquidity available
-/// @param borrowedAmountSf Reserve liquidity borrowed (scaled fraction)
-/// @param marketPriceSf Reserve liquidity market price in quote currency (scaled fraction)
-/// @param marketPriceLastUpdatedTs Unix timestamp of the market price (from the oracle)
-/// @param mintDecimals Reserve liquidity mint decimals
-/// @param depositLimitCrossedTimestamp Timestamp when the last refresh reserve detected that the liquidity amount is above the deposit cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
-///                                     If the threshold is not crossed, then the timestamp is set to 0
-/// @param borrowLimitCrossedTimestamp Timestamp when the last refresh reserve detected that the borrowed amount is above the borrow cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
-///                                    If the threshold is not crossed, then the timestamp is set to 0
-/// @param cumulativeBorrowRateBsf Reserve liquidity cumulative borrow rate (scaled fraction)
-/// @param accumulatedProtocolFeesSf Reserve cumulative protocol fees (scaled fraction)
-/// @param accumulatedReferrerFeesSf Reserve cumulative referrer fees (scaled fraction)
-/// @param pendingReferrerFeesSf Reserve pending referrer fees, to be claimed in refresh_obligation by referrer or protocol (scaled fraction)
-/// @param absoluteReferralRateSf Reserve referrer fee absolute rate calculated at each refresh_reserve operation (scaled fraction)
-/// @param tokenProgram Token program of the liquidity mint
 public record ReserveLiquidity(PublicKey mintPubkey,
                                PublicKey supplyVault,
                                PublicKey feeVault,

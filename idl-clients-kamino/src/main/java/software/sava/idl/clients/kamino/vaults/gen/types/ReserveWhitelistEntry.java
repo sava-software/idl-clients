@@ -13,11 +13,6 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param tokenMint The token mint is stored to solve the problem of finding all the whitelisted reserves for a particular token mint:
-///                  when storing the token mint inside the PDA, finding all the whitelisted reserves becomes a `getProgramAccounts` with
-///                  a filter on discriminator + the mint field
-///                  The reserve pubkey, as seed of the reserve whitelist PDA account, it stored so you can link back the PDA to its seeds
-///                  (for instance, in the operation above we easily find the reserve corresponding to the PDA)
 public record ReserveWhitelistEntry(PublicKey _address,
                                     Discriminator discriminator,
                                     PublicKey tokenMint,

@@ -7,8 +7,6 @@ import software.sava.core.programs.Discriminator;
 import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.kamino.lend.gen.types.LastUpdate;
-import software.sava.idl.clients.kamino.lend.gen.types.ReserveCollateral;
 import software.sava.rpc.json.http.response.AccountInfo;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -17,14 +15,6 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param version Version of the reserve
-/// @param lastUpdate Last slot when supply and rates updated
-/// @param lendingMarket Lending market address
-/// @param liquidity Reserve liquidity
-/// @param collateral Reserve collateral
-/// @param config Reserve configuration values
-/// @param borrowedAmountsAgainstThisReserveInElevationGroups Amount of token borrowed in lamport of debt asset in the given
-///                                                           elevation group when this reserve is part of the collaterals.
 public record Reserve(PublicKey _address,
                       Discriminator discriminator,
                       long version,

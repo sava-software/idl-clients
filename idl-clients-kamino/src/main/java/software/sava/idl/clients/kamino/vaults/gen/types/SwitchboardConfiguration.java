@@ -1,0 +1,40 @@
+package software.sava.idl.clients.kamino.vaults.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+
+public record SwitchboardConfiguration(PublicKey priceAggregator, PublicKey twapAggregator) implements SerDe {
+
+  public static final int BYTES = 64;
+
+  public static final int PRICE_AGGREGATOR_OFFSET = 0;
+  public static final int TWAP_AGGREGATOR_OFFSET = 32;
+
+  public static SwitchboardConfiguration read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var priceAggregator = readPubKey(_data, i);
+    i += 32;
+    final var twapAggregator = readPubKey(_data, i);
+    return new SwitchboardConfiguration(priceAggregator, twapAggregator);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    priceAggregator.write(_data, i);
+    i += 32;
+    twapAggregator.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

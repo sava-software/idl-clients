@@ -3,67 +3,12 @@ package software.sava.idl.clients.kamino.vaults.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.kamino.lend.gen.types.BorrowRateCurve;
-import software.sava.idl.clients.kamino.lend.gen.types.ReserveFees;
-import software.sava.idl.clients.kamino.lend.gen.types.TokenInfo;
-import software.sava.idl.clients.kamino.lend.gen.types.WithdrawalCaps;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Reserve configuration values
-///
-/// @param status Status of the reserve Active/Obsolete/Hidden
-/// @param assetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
-/// @param hostFixedInterestRateBps Flat rate that goes to the host
-/// @param minDeleveragingBonusBps Starting bonus for deleveraging-related liquidations, in bps.
-/// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
-///                         Blocks usage of ctokens (minting or withdrawing from obligation)
-///                         Effectively blocks deposit_reserve_liquidity and withdraw_obligation_collateral
-/// @param reserved1 Past reserved space - feel free to reuse.
-/// @param protocolOrderExecutionFeePct Cut of the order execution bonus that the protocol receives, as a percentage
-/// @param protocolTakeRatePct Protocol take rate is the amount borrowed interest protocol receives, as a percentage
-/// @param protocolLiquidationFeePct Cut of the liquidation bonus that the protocol receives, as a percentage
-/// @param loanToValuePct Target ratio of the value of borrows to deposits, as a percentage
-///                       0 if use as collateral is disabled
-/// @param liquidationThresholdPct Loan to value ratio at which an obligation can be liquidated, as percentage
-/// @param minLiquidationBonusBps Minimum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
-/// @param maxLiquidationBonusBps Maximum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
-/// @param badDebtLiquidationBonusBps Bad debt liquidation bonus for an undercollateralized obligation, as bps
-/// @param deleveragingMarginCallPeriodSecs Time in seconds that must pass before redemptions are enabled after the deposit limit is
-///                                         crossed.
-///                                         Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
-/// @param deleveragingThresholdDecreaseBpsPerDay The rate at which the deleveraging threshold decreases, in bps per day.
-///                                               Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
-/// @param fees Program owner fees assessed, separate from gains due to interest accrual
-/// @param borrowRateCurve Borrow rate curve based on utilization
-/// @param borrowFactorPct Borrow factor in percentage - used for risk adjustment
-/// @param depositLimit Maximum deposit limit of liquidity in native units, u64::MAX for inf
-/// @param borrowLimit Maximum amount borrowed, u64::MAX for inf, 0 to disable borrows (protected deposits)
-/// @param tokenInfo Token id from TokenInfos struct
-/// @param depositWithdrawalCap Deposit withdrawal caps - deposit & redeem
-/// @param debtWithdrawalCap Debt withdrawal caps - borrow & repay
-/// @param utilizationLimitBlockBorrowingAbovePct Utilization (in percentage) above which borrowing is blocked. 0 to disable.
-/// @param autodeleverageEnabled Whether this reserve should be subject to auto-deleveraging after deposit or borrow limit is
-///                              crossed.
-///                              Besides this flag, the lending market's flag also needs to be enabled (logical `AND`).
-///                              **NOTE:** the manual "target LTV" deleveraging (enabled by the risk council for individual
-///                              obligations) is NOT affected by this flag.
-/// @param proposerAuthorityLocked Boolean flag indicating whether the reserve is locked for the proposer authority.
-///                                
-///                                Once the proposer have finished preparing the reserve, it must be locked to prevent
-///                                further changes to the reserve configuration allowing review and voting on the proposal
-///                                without alteration during the voting period.
-/// @param borrowLimitOutsideElevationGroup Maximum amount liquidity of this reserve borrowed outside all elevation groups
-///                                         - u64::MAX for inf
-///                                         - 0 to disable borrows outside elevation groups
-/// @param borrowLimitAgainstThisCollateralInElevationGroup Defines the maximum amount (in lamports of elevation group debt asset)
-///                                                         that can be borrowed when this reserve is used as collateral.
-///                                                         - u64::MAX for inf
-///                                                         - 0 to disable borrows in this elevation group (expected value for the debt asset)
-/// @param deleveragingBonusIncreaseBpsPerDay The rate at which the deleveraging-related liquidation bonus increases, in bps per day.
-///                                           Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
 public record ReserveConfig(int status,
                             int assetTier,
                             int hostFixedInterestRateBps,

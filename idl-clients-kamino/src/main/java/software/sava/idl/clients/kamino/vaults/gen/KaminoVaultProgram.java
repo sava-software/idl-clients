@@ -446,7 +446,7 @@ public final class KaminoVaultProgram {
                                                final PublicKey eventAuthorityKey,
                                                final PublicKey programKey) {
     return List.of(
-      createWritableSigner(withdrawFromAvailableUserKey),
+      createReadOnlySigner(withdrawFromAvailableUserKey),
       createWrite(withdrawFromAvailableVaultStateKey),
       createRead(withdrawFromAvailableGlobalConfigKey),
       createWrite(withdrawFromAvailableTokenVaultKey),
@@ -603,7 +603,7 @@ public final class KaminoVaultProgram {
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey) {
     return List.of(
-      createWritableSigner(withdrawFromAvailableUserKey),
+      createReadOnlySigner(withdrawFromAvailableUserKey),
       createWrite(withdrawFromAvailableVaultStateKey),
       createRead(withdrawFromAvailableGlobalConfigKey),
       createWrite(withdrawFromAvailableTokenVaultKey),
@@ -1332,7 +1332,7 @@ public final class KaminoVaultProgram {
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
     return List.of(
-      createWritableSigner(userKey),
+      createReadOnlySigner(userKey),
       createWrite(vaultStateKey),
       createRead(globalConfigKey),
       createWrite(tokenVaultKey),
@@ -1652,6 +1652,123 @@ public final class KaminoVaultProgram {
     @Override
     public int l() {
       return 8 + update.l();
+    }
+  }
+
+  public static final Discriminator REDEEM_IN_KIND_DISCRIMINATOR = toDiscriminator(102, 58, 189, 252, 192, 219, 140, 89);
+
+  public static List<AccountMeta> redeemInKindKeys(final PublicKey userKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey globalConfigKey,
+                                                   final PublicKey baseVaultAuthorityKey,
+                                                   final PublicKey reserveKey,
+                                                   final PublicKey ctokenVaultKey,
+                                                   final PublicKey userCtokenTaKey,
+                                                   final PublicKey ctokenMintKey,
+                                                   final PublicKey userSharesTaKey,
+                                                   final PublicKey sharesMintKey,
+                                                   final PublicKey reserveCollateralTokenProgramKey,
+                                                   final PublicKey sharesTokenProgramKey,
+                                                   final PublicKey klendProgramKey,
+                                                   final PublicKey eventAuthorityKey,
+                                                   final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(userKey),
+      createWrite(vaultStateKey),
+      createRead(globalConfigKey),
+      createRead(baseVaultAuthorityKey),
+      createWrite(reserveKey),
+      createWrite(ctokenVaultKey),
+      createWrite(userCtokenTaKey),
+      createWrite(ctokenMintKey),
+      createWrite(userSharesTaKey),
+      createWrite(sharesMintKey),
+      createRead(reserveCollateralTokenProgramKey),
+      createRead(sharesTokenProgramKey),
+      createRead(klendProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction redeemInKind(final AccountMeta invokedKaminoVaultProgramMeta,
+                                         final PublicKey userKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey globalConfigKey,
+                                         final PublicKey baseVaultAuthorityKey,
+                                         final PublicKey reserveKey,
+                                         final PublicKey ctokenVaultKey,
+                                         final PublicKey userCtokenTaKey,
+                                         final PublicKey ctokenMintKey,
+                                         final PublicKey userSharesTaKey,
+                                         final PublicKey sharesMintKey,
+                                         final PublicKey reserveCollateralTokenProgramKey,
+                                         final PublicKey sharesTokenProgramKey,
+                                         final PublicKey klendProgramKey,
+                                         final PublicKey eventAuthorityKey,
+                                         final PublicKey programKey,
+                                         final long sharesAmount) {
+    final var keys = redeemInKindKeys(
+      userKey,
+      vaultStateKey,
+      globalConfigKey,
+      baseVaultAuthorityKey,
+      reserveKey,
+      ctokenVaultKey,
+      userCtokenTaKey,
+      ctokenMintKey,
+      userSharesTaKey,
+      sharesMintKey,
+      reserveCollateralTokenProgramKey,
+      sharesTokenProgramKey,
+      klendProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return redeemInKind(invokedKaminoVaultProgramMeta, keys, sharesAmount);
+  }
+
+  public static Instruction redeemInKind(final AccountMeta invokedKaminoVaultProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final long sharesAmount) {
+    final byte[] _data = new byte[16];
+    int i = REDEEM_IN_KIND_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, sharesAmount);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  public record RedeemInKindIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
+
+    public static RedeemInKindIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int SHARES_AMOUNT_OFFSET = 8;
+
+    public static RedeemInKindIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var sharesAmount = getInt64LE(_data, i);
+      return new RedeemInKindIxData(discriminator, sharesAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, sharesAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
     }
   }
 

@@ -38,10 +38,10 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.InvalidGenericData,
     ScopeError.NoChainlinkReportData,
     ScopeError.InvalidChainlinkReportData,
-    ScopeError.MostRecentOfInvalidSourceIndices,
+    ScopeError.OracleConfigInvalidSourceIndices,
     ScopeError.MostRecentOfInvalidMaxDivergence,
-    ScopeError.MostRecentOfInvalidMaxAge,
-    ScopeError.MostRecentOfMaxAgeViolated,
+    ScopeError.CompositeOracleInvalidMaxAge,
+    ScopeError.CompositeOracleMaxAgeViolated,
     ScopeError.MostRecentOfMaxDivergenceBpsViolated,
     ScopeError.PythLazerVerifyIxFailed,
     ScopeError.PythLazerInvalidFeedID,
@@ -68,7 +68,11 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.TwapEnabledBitmaskConversionFailure,
     ScopeError.OperationNotSupported,
     ScopeError.TwapSourceIndexNotSet,
-    ScopeError.PythLazerFeedUpdateTimestampNotPresent {
+    ScopeError.PythLazerFeedUpdateTimestampNotPresent,
+    ScopeError.PriceFrozen,
+    ScopeError.PriceAlreadyFrozen,
+    ScopeError.PriceNotFrozen,
+    ScopeError.UnauthorizedFreeze {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -107,10 +111,10 @@ public sealed interface ScopeError extends ProgramError permits
       case 6032 -> InvalidGenericData.INSTANCE;
       case 6033 -> NoChainlinkReportData.INSTANCE;
       case 6034 -> InvalidChainlinkReportData.INSTANCE;
-      case 6035 -> MostRecentOfInvalidSourceIndices.INSTANCE;
+      case 6035 -> OracleConfigInvalidSourceIndices.INSTANCE;
       case 6036 -> MostRecentOfInvalidMaxDivergence.INSTANCE;
-      case 6037 -> MostRecentOfInvalidMaxAge.INSTANCE;
-      case 6038 -> MostRecentOfMaxAgeViolated.INSTANCE;
+      case 6037 -> CompositeOracleInvalidMaxAge.INSTANCE;
+      case 6038 -> CompositeOracleMaxAgeViolated.INSTANCE;
       case 6039 -> MostRecentOfMaxDivergenceBpsViolated.INSTANCE;
       case 6040 -> PythLazerVerifyIxFailed.INSTANCE;
       case 6041 -> PythLazerInvalidFeedID.INSTANCE;
@@ -138,6 +142,10 @@ public sealed interface ScopeError extends ProgramError permits
       case 6063 -> OperationNotSupported.INSTANCE;
       case 6064 -> TwapSourceIndexNotSet.INSTANCE;
       case 6065 -> PythLazerFeedUpdateTimestampNotPresent.INSTANCE;
+      case 6066 -> PriceFrozen.INSTANCE;
+      case 6067 -> PriceAlreadyFrozen.INSTANCE;
+      case 6068 -> PriceNotFrozen.INSTANCE;
+      case 6069 -> UnauthorizedFreeze.INSTANCE;
       default -> null;
     };
   }
@@ -387,10 +395,10 @@ public sealed interface ScopeError extends ProgramError permits
     );
   }
 
-  record MostRecentOfInvalidSourceIndices(int code, String msg) implements ScopeError {
+  record OracleConfigInvalidSourceIndices(int code, String msg) implements ScopeError {
 
-    public static final MostRecentOfInvalidSourceIndices INSTANCE = new MostRecentOfInvalidSourceIndices(
-        6035, "MostRecentOf config must contain at least one valid source index"
+    public static final OracleConfigInvalidSourceIndices INSTANCE = new OracleConfigInvalidSourceIndices(
+        6035, "Oracle config must contain at least one valid source index"
     );
   }
 
@@ -401,17 +409,17 @@ public sealed interface ScopeError extends ProgramError permits
     );
   }
 
-  record MostRecentOfInvalidMaxAge(int code, String msg) implements ScopeError {
+  record CompositeOracleInvalidMaxAge(int code, String msg) implements ScopeError {
 
-    public static final MostRecentOfInvalidMaxAge INSTANCE = new MostRecentOfInvalidMaxAge(
-        6037, "Invalid max age (s) for MostRecentOf oracle"
+    public static final CompositeOracleInvalidMaxAge INSTANCE = new CompositeOracleInvalidMaxAge(
+        6037, "Invalid max age (s) for composite oracle"
     );
   }
 
-  record MostRecentOfMaxAgeViolated(int code, String msg) implements ScopeError {
+  record CompositeOracleMaxAgeViolated(int code, String msg) implements ScopeError {
 
-    public static final MostRecentOfMaxAgeViolated INSTANCE = new MostRecentOfMaxAgeViolated(
-        6038, "Max age diff constraint violated for MostRecentOf oracle"
+    public static final CompositeOracleMaxAgeViolated INSTANCE = new CompositeOracleMaxAgeViolated(
+        6038, "Max age constraint violated for composite oracle"
     );
   }
 
@@ -601,6 +609,34 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final PythLazerFeedUpdateTimestampNotPresent INSTANCE = new PythLazerFeedUpdateTimestampNotPresent(
         6065, "Property fields in the feed of the PythLazer payload do not contain a feed update timestamp"
+    );
+  }
+
+  record PriceFrozen(int code, String msg) implements ScopeError {
+
+    public static final PriceFrozen INSTANCE = new PriceFrozen(
+        6066, "Cannot update a frozen price entry"
+    );
+  }
+
+  record PriceAlreadyFrozen(int code, String msg) implements ScopeError {
+
+    public static final PriceAlreadyFrozen INSTANCE = new PriceAlreadyFrozen(
+        6067, "Price entry is already frozen"
+    );
+  }
+
+  record PriceNotFrozen(int code, String msg) implements ScopeError {
+
+    public static final PriceNotFrozen INSTANCE = new PriceNotFrozen(
+        6068, "Price entry is not frozen"
+    );
+  }
+
+  record UnauthorizedFreeze(int code, String msg) implements ScopeError {
+
+    public static final UnauthorizedFreeze INSTANCE = new UnauthorizedFreeze(
+        6069, "Signer is not authorized to freeze/unfreeze"
     );
   }
 }

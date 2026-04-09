@@ -151,7 +151,7 @@
         },
         {
           "refProgram": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
-          "srcMismatch": "WARN_KEEP_REF",
+          "srcMismatch": "KEEP_LOCAL",
           "matchOnTypeName": true,
           "excludeTypes": [
             "GlobalConfig",

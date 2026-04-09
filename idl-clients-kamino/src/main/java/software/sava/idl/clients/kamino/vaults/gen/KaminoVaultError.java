@@ -58,7 +58,8 @@ public sealed interface KaminoVaultError extends ProgramError permits
     KaminoVaultError.WithdrawalFeeBPSGreaterThanMaxAllowed,
     KaminoVaultError.WithdrawalFeeLamportsGreaterThanMaxAllowed,
     KaminoVaultError.ReserveNotWhitelisted,
-    KaminoVaultError.InvalidBoolLikeValue {
+    KaminoVaultError.InvalidBoolLikeValue,
+    KaminoVaultError.AUMDecreasedMoreThanExpected {
 
   static KaminoVaultError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -118,6 +119,7 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7053 -> WithdrawalFeeLamportsGreaterThanMaxAllowed.INSTANCE;
       case 7054 -> ReserveNotWhitelisted.INSTANCE;
       case 7055 -> InvalidBoolLikeValue.INSTANCE;
+      case 7056 -> AUMDecreasedMoreThanExpected.INSTANCE;
       default -> null;
     };
   }
@@ -511,6 +513,13 @@ public sealed interface KaminoVaultError extends ProgramError permits
 
     public static final InvalidBoolLikeValue INSTANCE = new InvalidBoolLikeValue(
         7055, "Invalid bool-like value passed in (should be 0 or 1)"
+    );
+  }
+
+  record AUMDecreasedMoreThanExpected(int code, String msg) implements KaminoVaultError {
+
+    public static final AUMDecreasedMoreThanExpected INSTANCE = new AUMDecreasedMoreThanExpected(
+        7056, "AUM decreased more than expected during redeem in kind"
     );
   }
 }

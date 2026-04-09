@@ -61,14 +61,14 @@ public record VaultState(PublicKey _address,
                          PublicKey firstLossCapitalFarm,
                          int allowAllocationsInWhitelistedReservesOnly,
                          int allowInvestInWhitelistedReservesOnly,
-                         byte[] padding4,
+                         byte[] padding2,
                          BigInteger[] padding3) implements SerDe {
 
   public static final int BYTES = 62552;
   public static final int VAULT_ALLOCATION_STRATEGY_LEN = 25;
   public static final int PADDING_1_LEN = 256;
   public static final int NAME_LEN = 40;
-  public static final int PADDING_4_LEN = 14;
+  public static final int PADDING_2_LEN = 14;
   public static final int PADDING_3_LEN = 238;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -115,7 +115,7 @@ public record VaultState(PublicKey _address,
   public static final int FIRST_LOSS_CAPITAL_FARM_OFFSET = 58696;
   public static final int ALLOW_ALLOCATIONS_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58728;
   public static final int ALLOW_INVEST_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58729;
-  public static final int PADDING_4_OFFSET = 58730;
+  public static final int PADDING_2_OFFSET = 58730;
   public static final int PADDING_3_OFFSET = 58744;
 
   public static Filter createVaultAdminAuthorityFilter(final PublicKey vaultAdminAuthority) {
@@ -414,8 +414,8 @@ public record VaultState(PublicKey _address,
     ++i;
     final var allowInvestInWhitelistedReservesOnly = _data[i] & 0xFF;
     ++i;
-    final var padding4 = new byte[14];
-    i += SerDeUtil.readArray(padding4, _data, i);
+    final var padding2 = new byte[14];
+    i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new BigInteger[238];
     SerDeUtil.read128Array(padding3, _data, i);
     return new VaultState(_address,
@@ -460,7 +460,7 @@ public record VaultState(PublicKey _address,
                           firstLossCapitalFarm,
                           allowAllocationsInWhitelistedReservesOnly,
                           allowInvestInWhitelistedReservesOnly,
-                          padding4,
+                          padding2,
                           padding3);
   }
 
@@ -544,7 +544,7 @@ public record VaultState(PublicKey _address,
     ++i;
     _data[i] = (byte) allowInvestInWhitelistedReservesOnly;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding4, 14, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 14, _data, i);
     i += SerDeUtil.write128ArrayChecked(padding3, 238, _data, i);
     return i - _offset;
   }

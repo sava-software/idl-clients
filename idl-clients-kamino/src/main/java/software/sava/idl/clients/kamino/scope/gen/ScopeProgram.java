@@ -988,6 +988,187 @@ public final class ScopeProgram {
     }
   }
 
+  public static final Discriminator FREEZE_PRICE_DISCRIMINATOR = toDiscriminator(82, 182, 166, 239, 171, 188, 133, 14);
+
+  public static List<AccountMeta> freezePriceKeys(final PublicKey authorityKey,
+                                                  final PublicKey configurationKey,
+                                                  final PublicKey oracleMappingsKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(configurationKey),
+      createWrite(oracleMappingsKey)
+    );
+  }
+
+  public static Instruction freezePrice(final AccountMeta invokedScopeProgramMeta,
+                                        final PublicKey authorityKey,
+                                        final PublicKey configurationKey,
+                                        final PublicKey oracleMappingsKey,
+                                        final int token,
+                                        final String feedName,
+                                        final boolean freeze) {
+    final var keys = freezePriceKeys(
+      authorityKey,
+      configurationKey,
+      oracleMappingsKey
+    );
+    return freezePrice(
+      invokedScopeProgramMeta,
+      keys,
+      token,
+      feedName,
+      freeze
+    );
+  }
+
+  public static Instruction freezePrice(final AccountMeta invokedScopeProgramMeta,
+                                        final List<AccountMeta> keys,
+                                        final int token,
+                                        final String feedName,
+                                        final boolean freeze) {
+    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _data = new byte[15 + _feedName.length];
+    int i = FREEZE_PRICE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, token);
+    i += 2;
+    i += SerDeUtil.writeVector(4, _feedName, _data, i);
+    _data[i] = (byte) (freeze ? 1 : 0);
+
+    return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
+  }
+
+  public record FreezePriceIxData(Discriminator discriminator,
+                                  int token,
+                                  String feedName, byte[] _feedName,
+                                  boolean freeze) implements SerDe {  
+
+    public static FreezePriceIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int TOKEN_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 10;
+
+    public static FreezePriceIxData createRecord(final Discriminator discriminator,
+                                                 final int token,
+                                                 final String feedName,
+                                                 final boolean freeze) {
+      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8), freeze);
+    }
+
+    public static FreezePriceIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var token = getInt16LE(_data, i);
+      i += 2;
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      i += _feedName.length;
+      final var freeze = _data[i] == 1;
+      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8), freeze);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, token);
+      i += 2;
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
+      _data[i] = (byte) (freeze ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 2 + _feedName.length + 1;
+    }
+  }
+
+  public static final Discriminator SET_EMERGENCY_COUNCIL_DISCRIMINATOR = toDiscriminator(182, 76, 39, 172, 127, 44, 38, 203);
+
+  public static List<AccountMeta> setEmergencyCouncilKeys(final PublicKey adminKey,
+                                                          final PublicKey configurationKey) {
+    return List.of(
+      createReadOnlySigner(adminKey),
+      createWrite(configurationKey)
+    );
+  }
+
+  public static Instruction setEmergencyCouncil(final AccountMeta invokedScopeProgramMeta,
+                                                final PublicKey adminKey,
+                                                final PublicKey configurationKey,
+                                                final PublicKey newEmergencyCouncil,
+                                                final String feedName) {
+    final var keys = setEmergencyCouncilKeys(
+      adminKey,
+      configurationKey
+    );
+    return setEmergencyCouncil(invokedScopeProgramMeta, keys, newEmergencyCouncil, feedName);
+  }
+
+  public static Instruction setEmergencyCouncil(final AccountMeta invokedScopeProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final PublicKey newEmergencyCouncil,
+                                                final String feedName) {
+    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _data = new byte[44 + _feedName.length];
+    int i = SET_EMERGENCY_COUNCIL_DISCRIMINATOR.write(_data, 0);
+    newEmergencyCouncil.write(_data, i);
+    i += 32;
+    SerDeUtil.writeVector(4, _feedName, _data, i);
+
+    return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
+  }
+
+  public record SetEmergencyCouncilIxData(Discriminator discriminator, PublicKey newEmergencyCouncil, String feedName, byte[] _feedName) implements SerDe {  
+
+    public static SetEmergencyCouncilIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int NEW_EMERGENCY_COUNCIL_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 40;
+
+    public static SetEmergencyCouncilIxData createRecord(final Discriminator discriminator, final PublicKey newEmergencyCouncil, final String feedName) {
+      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+    }
+
+    public static SetEmergencyCouncilIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newEmergencyCouncil = readPubKey(_data, i);
+      i += 32;
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newEmergencyCouncil.write(_data, i);
+      i += 32;
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 32 + _feedName.length;
+    }
+  }
+
   private ScopeProgram() {
   }
 }

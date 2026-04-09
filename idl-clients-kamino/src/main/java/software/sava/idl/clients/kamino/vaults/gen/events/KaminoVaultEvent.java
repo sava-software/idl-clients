@@ -5,6 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 public sealed interface KaminoVaultEvent extends SerDe permits
     DepositResultEvent,
     DepositUserAtaBalanceEvent,
+    RedeemInKindResultEvent,
     SharesToWithdrawEvent,
     WithdrawResultEvent {
 
@@ -13,6 +14,8 @@ public sealed interface KaminoVaultEvent extends SerDe permits
       return DepositResultEvent.read(_data, _offset);
     } else if (DepositUserAtaBalanceEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return DepositUserAtaBalanceEvent.read(_data, _offset);
+    } else if (RedeemInKindResultEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return RedeemInKindResultEvent.read(_data, _offset);
     } else if (SharesToWithdrawEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return SharesToWithdrawEvent.read(_data, _offset);
     } else if (WithdrawResultEvent.DISCRIMINATOR.equals(_data, _offset)) {
