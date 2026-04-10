@@ -79,6 +79,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
       case CappedFloored -> {
+        validateNoEmaTypes(oracleType, emaTypes);
         final var cappedFlooredData = CappedFlooredData.read(generic[i], 0);
         final var sourceEntry = entry(cappedFlooredData.sourceEntry());
         final var capEntry = entry(cappedFlooredData.capEntry());
@@ -86,6 +87,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         yield new CappedFloored(i, sourceEntry, capEntry, floorEntry);
       }
       case CappedMostRecentOf -> {
+        validateNoEmaTypes(oracleType, emaTypes);
         final var cappedMostRecentOf = CappedMostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(cappedMostRecentOf.sourceEntries());
         final var capEntry = entry(cappedMostRecentOf.capEntry());
@@ -106,10 +108,12 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case ChainlinkExchangeRate -> new ChainlinkExchangeRate(i, priceAccount, emaTypes);
       case ChainlinkNAV -> new ChainlinkNAV(i, priceAccount, emaTypes);
       case DiscountToMaturity -> {
+        validateNoEmaTypes(oracleType, emaTypes);
         final var dtm = DiscountToMaturityData.read(generic[i], 0);
         yield new DiscountToMaturity(i, dtm.discountPerYearBps(), dtm.maturityTimestamp());
       }
       case FixedPrice -> {
+        validateNoEmaTypes(oracleType, emaTypes);
         final var price = Price.read(generic[i], 0);
         yield software.sava.idl.clients.kamino.scope.entries.FixedPrice.createEntry(i, price.value(), Math.toIntExact(price.exp()));
       }
@@ -120,11 +124,18 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case MeteoraDlmmAtoB -> new MeteoraDlmmAtoB(i, priceAccount, emaTypes);
       case MeteoraDlmmBtoA -> new MeteoraDlmmBtoA(i, priceAccount, emaTypes);
       case MostRecentOf -> {
+        validateNoEmaTypes(oracleType, emaTypes);
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(mostRecentOf.sourceEntries());
         yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
       }
       case MsolStake -> new MsolStake(i, priceAccount, emaTypes);
+      case MultiplicationChain -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        final var data = MultiplicationChainData.read(generic[i], 0);
+        final var sources = parseEntries(data.sourceEntries());
+        yield new MultiplicationChain(i, sources, data.sourcesMaxAgeS());
+      }
       case OrcaWhirlpoolAtoB -> new OrcaWhirlpoolAtoB(i, priceAccount, emaTypes);
       case OrcaWhirlpoolBtoA -> new OrcaWhirlpoolBtoA(i, priceAccount, emaTypes);
       case PythLazer -> {
@@ -144,20 +155,59 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
       case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
       case RedStone -> new RedStone(i, priceAccount, emaTypes);
-      case ScopeTwap1h -> new ScopeTwap(i, ScopeTwap1h, entry(twapSource[i]));
-      case ScopeTwap8h -> new ScopeTwap(i, ScopeTwap8h, entry(twapSource[i]));
-      case ScopeTwap24h -> new ScopeTwap(i, ScopeTwap24h, entry(twapSource[i]));
+      case ScopeTwap1h -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new ScopeTwap(i, ScopeTwap1h, entry(twapSource[i]));
+      }
+      case ScopeTwap8h -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new ScopeTwap(i, ScopeTwap8h, entry(twapSource[i]));
+      }
+      case ScopeTwap24h -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new ScopeTwap(i, ScopeTwap24h, entry(twapSource[i]));
+      }
       case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice);
-      case SplStake -> new SplStake(i, priceAccount, emaTypes);
+      case SplBalance -> {
+        validateNoRefPrice(oracleType, refPrice);
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new SplBalance(i, priceAccount);
+      }
+      case SplStake -> {
+        validateNoRefPrice(oracleType, refPrice);
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new SplStake(i, priceAccount);
+      }
+      case StakedSolBalance -> {
+        validateNoRefPrice(oracleType, refPrice);
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new StakedSolBalance(i, priceAccount);
+      }
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
-      case Unused -> new Unused(i);
+      case Unused -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new Unused(i);
+      }
       default -> {
         if (oracleType.name().startsWith("Deprecated")) {
+          validateNoEmaTypes(oracleType, emaTypes);
           yield new Deprecated(i, oracleType);
         } else {
           yield new NotYetSupported(i, priceAccount, oracleType, entry(twapSource[i]), emaTypes, refPrice, generic[i]);
         }
       }
     };
+  }
+
+  private static void validateNoRefPrice(final OracleType oracleType, final ScopeEntry refPrice) {
+    if (refPrice != null) {
+      throw new IllegalStateException("Unexpected ref price: " + refPrice + " for oracle type: " + oracleType);
+    }
+  }
+
+  private static void validateNoEmaTypes(final OracleType oracleType, final Set<EmaType> emaTypes) {
+    if (emaTypes != null && !emaTypes.isEmpty()) {
+      throw new IllegalStateException("Unexpected EMA types: " + emaTypes + " for oracle type:" + oracleType);
+    }
   }
 }

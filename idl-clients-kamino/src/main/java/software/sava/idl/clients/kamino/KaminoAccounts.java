@@ -22,7 +22,7 @@ public interface KaminoAccounts {
   PublicKey NULL_KEY = PublicKey.fromBase58Encoded("nu11111111111111111111111111111111111111111");
 
   static boolean isNullKey(final PublicKey key) {
-    return key.equals(PublicKey.NONE) || key.equals(NULL_KEY);
+    return key == null || key.equals(PublicKey.NONE) || key.equals(NULL_KEY);
   }
 
   // https://github.com/Kamino-Finance/klend-sdk/blob/master/examples/utils/constants.ts

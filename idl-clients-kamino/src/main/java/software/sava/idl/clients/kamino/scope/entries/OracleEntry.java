@@ -24,7 +24,6 @@ public sealed interface OracleEntry extends ScopeEntry permits
     RaydiumAmmV3BtoA,
     RedStone,
     ReferencesEntry,
-    SplStake,
     SwitchboardOnDemand {
 
   ///  Also known as a price account.
