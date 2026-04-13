@@ -16,6 +16,7 @@ import software.sava.idl.clients.kamino.lend.gen.types.FeeCalculation;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
 import software.sava.idl.clients.kamino.lend.gen.types.ProgressCallbackType;
+import software.sava.idl.clients.kamino.lend.gen.types.ReserveConfigCustomizationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveFarmKind;
 import software.sava.idl.clients.kamino.lend.gen.types.ReserveStatus;
 import software.sava.idl.clients.kamino.lend.gen.types.UpdateConfigMode;
@@ -290,6 +291,88 @@ public final class KaminoLendingProgram {
   public static Instruction initReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                         final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, INIT_RESERVE_DISCRIMINATOR);
+  }
+
+  public static final Discriminator CLONE_RESERVE_CONFIG_DISCRIMINATOR = toDiscriminator(244, 5, 198, 113, 17, 10, 71, 33);
+
+  /// @param targetLendingMarketKey The lending market of the Self::target_reserve.
+  ///                               
+  ///                               The Self::source_reserve can come from a different market.
+  /// @param sourceReserveKey The reserve to be used as source for the configuration clone.
+  /// @param targetReserveKey The reserve to have its configuration replaced by a clone.
+  public static List<AccountMeta> cloneReserveConfigKeys(final PublicKey signerKey,
+                                                         final PublicKey targetLendingMarketKey,
+                                                         final PublicKey sourceReserveKey,
+                                                         final PublicKey targetReserveKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createRead(targetLendingMarketKey),
+      createRead(sourceReserveKey),
+      createWrite(targetReserveKey)
+    );
+  }
+
+  /// @param targetLendingMarketKey The lending market of the Self::target_reserve.
+  ///                               
+  ///                               The Self::source_reserve can come from a different market.
+  /// @param sourceReserveKey The reserve to be used as source for the configuration clone.
+  /// @param targetReserveKey The reserve to have its configuration replaced by a clone.
+  public static Instruction cloneReserveConfig(final AccountMeta invokedKaminoLendingProgramMeta,
+                                               final PublicKey signerKey,
+                                               final PublicKey targetLendingMarketKey,
+                                               final PublicKey sourceReserveKey,
+                                               final PublicKey targetReserveKey,
+                                               final ReserveConfigCustomizationArgs customizations) {
+    final var keys = cloneReserveConfigKeys(
+      signerKey,
+      targetLendingMarketKey,
+      sourceReserveKey,
+      targetReserveKey
+    );
+    return cloneReserveConfig(invokedKaminoLendingProgramMeta, keys, customizations);
+  }
+
+  public static Instruction cloneReserveConfig(final AccountMeta invokedKaminoLendingProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final ReserveConfigCustomizationArgs customizations) {
+    final byte[] _data = new byte[8 + customizations.l()];
+    int i = CLONE_RESERVE_CONFIG_DISCRIMINATOR.write(_data, 0);
+    customizations.write(_data, i);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record CloneReserveConfigIxData(Discriminator discriminator, ReserveConfigCustomizationArgs customizations) implements SerDe {  
+
+    public static CloneReserveConfigIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 23;
+
+    public static final int CUSTOMIZATIONS_OFFSET = 8;
+
+    public static CloneReserveConfigIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var customizations = ReserveConfigCustomizationArgs.read(_data, i);
+      return new CloneReserveConfigIxData(discriminator, customizations);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += customizations.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
   }
 
   public static final Discriminator INIT_FARMS_FOR_RESERVE_DISCRIMINATOR = toDiscriminator(218, 6, 62, 233, 1, 33, 232, 82);
@@ -5146,6 +5229,130 @@ public final class KaminoLendingProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, ticketSequenceNumber);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CANCEL_WITHDRAW_TICKET_DISCRIMINATOR = toDiscriminator(180, 83, 122, 44, 120, 211, 47, 22);
+
+  /// @param ownerKey The ticket owner (i.e. the only allowed to cancel their ticket).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for transferring the collateral (from
+  ///                                  Self::owner_queued_collateral_vault).
+  /// @param reserveKey The reserve.
+  /// @param reserveCollateralMintKey The collateral mint, needed to invoke the transfer.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      transferred back to the owner).
+  /// @param userDestinationCollateralKey Destination for returned ctokens (owner's token account).
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param withdrawTicketKey Ticket to cancel - remains as tombstone until queue processes it.
+  public static List<AccountMeta> cancelWithdrawTicketKeys(final PublicKey ownerKey,
+                                                           final PublicKey lendingMarketKey,
+                                                           final PublicKey lendingMarketAuthorityKey,
+                                                           final PublicKey reserveKey,
+                                                           final PublicKey reserveCollateralMintKey,
+                                                           final PublicKey ownerQueuedCollateralVaultKey,
+                                                           final PublicKey userDestinationCollateralKey,
+                                                           final PublicKey collateralTokenProgramKey,
+                                                           final PublicKey withdrawTicketKey) {
+    return List.of(
+      createReadOnlySigner(ownerKey),
+      createRead(lendingMarketKey),
+      createRead(lendingMarketAuthorityKey),
+      createWrite(reserveKey),
+      createRead(reserveCollateralMintKey),
+      createWrite(ownerQueuedCollateralVaultKey),
+      createWrite(userDestinationCollateralKey),
+      createRead(collateralTokenProgramKey),
+      createWrite(withdrawTicketKey)
+    );
+  }
+
+  /// @param ownerKey The ticket owner (i.e. the only allowed to cancel their ticket).
+  /// @param lendingMarketKey The lending market.
+  /// @param lendingMarketAuthorityKey The market's authority, needed for transferring the collateral (from
+  ///                                  Self::owner_queued_collateral_vault).
+  /// @param reserveKey The reserve.
+  /// @param reserveCollateralMintKey The collateral mint, needed to invoke the transfer.
+  /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
+  ///                                      transferred back to the owner).
+  /// @param userDestinationCollateralKey Destination for returned ctokens (owner's token account).
+  /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
+  /// @param withdrawTicketKey Ticket to cancel - remains as tombstone until queue processes it.
+  public static Instruction cancelWithdrawTicket(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                 final PublicKey ownerKey,
+                                                 final PublicKey lendingMarketKey,
+                                                 final PublicKey lendingMarketAuthorityKey,
+                                                 final PublicKey reserveKey,
+                                                 final PublicKey reserveCollateralMintKey,
+                                                 final PublicKey ownerQueuedCollateralVaultKey,
+                                                 final PublicKey userDestinationCollateralKey,
+                                                 final PublicKey collateralTokenProgramKey,
+                                                 final PublicKey withdrawTicketKey,
+                                                 final long ticketSequenceNumber,
+                                                 final long collateralAmountToCancel) {
+    final var keys = cancelWithdrawTicketKeys(
+      ownerKey,
+      lendingMarketKey,
+      lendingMarketAuthorityKey,
+      reserveKey,
+      reserveCollateralMintKey,
+      ownerQueuedCollateralVaultKey,
+      userDestinationCollateralKey,
+      collateralTokenProgramKey,
+      withdrawTicketKey
+    );
+    return cancelWithdrawTicket(invokedKaminoLendingProgramMeta, keys, ticketSequenceNumber, collateralAmountToCancel);
+  }
+
+  public static Instruction cancelWithdrawTicket(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final long ticketSequenceNumber,
+                                                 final long collateralAmountToCancel) {
+    final byte[] _data = new byte[24];
+    int i = CANCEL_WITHDRAW_TICKET_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, ticketSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, collateralAmountToCancel);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record CancelWithdrawTicketIxData(Discriminator discriminator, long ticketSequenceNumber, long collateralAmountToCancel) implements SerDe {  
+
+    public static CancelWithdrawTicketIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 24;
+
+    public static final int TICKET_SEQUENCE_NUMBER_OFFSET = 8;
+    public static final int COLLATERAL_AMOUNT_TO_CANCEL_OFFSET = 16;
+
+    public static CancelWithdrawTicketIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var ticketSequenceNumber = getInt64LE(_data, i);
+      i += 8;
+      final var collateralAmountToCancel = getInt64LE(_data, i);
+      return new CancelWithdrawTicketIxData(discriminator, ticketSequenceNumber, collateralAmountToCancel);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, ticketSequenceNumber);
+      i += 8;
+      putInt64LE(_data, i, collateralAmountToCancel);
       i += 8;
       return i - _offset;
     }

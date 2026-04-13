@@ -172,7 +172,12 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.PartialRolloverValueTooSmall,
     KaminoLendingError.ObligationBorrowRolloverConfigMismatch,
     KaminoLendingError.ObligationBorrowRolloverMustProlongDebtTerm,
-    KaminoLendingError.RolloverNotSupportedInElevationGroup {
+    KaminoLendingError.RolloverNotSupportedInElevationGroup,
+    KaminoLendingError.WithdrawTicketCancellationDisabled,
+    KaminoLendingError.WithdrawTicketFullyCancelled,
+    KaminoLendingError.CloneSourceReserveDisabled,
+    KaminoLendingError.CloneTargetReserveAlreadyInUse,
+    KaminoLendingError.ClonedReserveLiquidityMintMismatch {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -346,6 +351,11 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6167 -> ObligationBorrowRolloverConfigMismatch.INSTANCE;
       case 6168 -> ObligationBorrowRolloverMustProlongDebtTerm.INSTANCE;
       case 6169 -> RolloverNotSupportedInElevationGroup.INSTANCE;
+      case 6170 -> WithdrawTicketCancellationDisabled.INSTANCE;
+      case 6171 -> WithdrawTicketFullyCancelled.INSTANCE;
+      case 6172 -> CloneSourceReserveDisabled.INSTANCE;
+      case 6173 -> CloneTargetReserveAlreadyInUse.INSTANCE;
+      case 6174 -> ClonedReserveLiquidityMintMismatch.INSTANCE;
       default -> null;
     };
   }
@@ -1537,6 +1547,41 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final RolloverNotSupportedInElevationGroup INSTANCE = new RolloverNotSupportedInElevationGroup(
         6169, "Rollover is not supported for obligations in an elevation group"
+    );
+  }
+
+  record WithdrawTicketCancellationDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketCancellationDisabled INSTANCE = new WithdrawTicketCancellationDisabled(
+        6170, "Cancelling withdraw tickets is disabled by the market"
+    );
+  }
+
+  record WithdrawTicketFullyCancelled(int code, String msg) implements KaminoLendingError {
+
+    public static final WithdrawTicketFullyCancelled INSTANCE = new WithdrawTicketFullyCancelled(
+        6171, "Cannot use ticket that was already fully-cancelled"
+    );
+  }
+
+  record CloneSourceReserveDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final CloneSourceReserveDisabled INSTANCE = new CloneSourceReserveDisabled(
+        6172, "Cannot clone config from a reserve that is disabled"
+    );
+  }
+
+  record CloneTargetReserveAlreadyInUse(int code, String msg) implements KaminoLendingError {
+
+    public static final CloneTargetReserveAlreadyInUse INSTANCE = new CloneTargetReserveAlreadyInUse(
+        6173, "Cannot clone config into a reserve that has been in use"
+    );
+  }
+
+  record ClonedReserveLiquidityMintMismatch(int code, String msg) implements KaminoLendingError {
+
+    public static final ClonedReserveLiquidityMintMismatch INSTANCE = new ClonedReserveLiquidityMintMismatch(
+        6174, "Cannot clone config between reserves of different mints"
     );
   }
 }

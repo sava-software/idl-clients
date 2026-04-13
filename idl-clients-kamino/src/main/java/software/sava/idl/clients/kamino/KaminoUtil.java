@@ -11,27 +11,27 @@ public final class KaminoUtil {
   private static final int FRACTIONS = 60;
   private static final BigDecimal MULTIPLIER = BigDecimal.TWO.pow(FRACTIONS);
 
-  public static BigDecimal toDecimal(final BigInteger valueSf) {
-    return toDecimal(new BigDecimal(valueSf));
+  public static BigDecimal fromSf(final BigInteger valueSf) {
+    return fromSf(new BigDecimal(valueSf));
   }
 
-  public static BigDecimal toDecimal(final BigInteger valueSf, final MathContext mathContext) {
-    return toDecimal(new BigDecimal(valueSf), mathContext);
+  public static BigDecimal fromSf(final BigInteger valueSf, final MathContext mathContext) {
+    return fromSf(new BigDecimal(valueSf), mathContext);
   }
 
-  public static BigDecimal toDecimal(final BigInteger valueSf, final int scale, final RoundingMode roundingMode) {
-    return toDecimal(new BigDecimal(valueSf), scale, roundingMode);
+  public static BigDecimal fromSf(final BigInteger valueSf, final int scale, final RoundingMode roundingMode) {
+    return fromSf(new BigDecimal(valueSf), scale, roundingMode);
   }
 
-  public static BigDecimal toDecimal(final BigDecimal valueSf) {
+  public static BigDecimal fromSf(final BigDecimal valueSf) {
     return valueSf.divide(MULTIPLIER, PRECISION).stripTrailingZeros();
   }
 
-  public static BigDecimal toDecimal(final BigDecimal valueSf, final MathContext mathContext) {
+  public static BigDecimal fromSf(final BigDecimal valueSf, final MathContext mathContext) {
     return valueSf.divide(MULTIPLIER, mathContext).stripTrailingZeros();
   }
 
-  public static BigDecimal toDecimal(final BigDecimal valueSf, final int scale, final RoundingMode roundingMode) {
+  public static BigDecimal fromSf(final BigDecimal valueSf, final int scale, final RoundingMode roundingMode) {
     return valueSf.divide(MULTIPLIER, scale, roundingMode).stripTrailingZeros();
   }
 

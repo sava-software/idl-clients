@@ -89,6 +89,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param obligationBorrowMigrationToFixedExecutionEnabled Whether the actual execution of a "migration to fixed" rollover flavor is allowed.
 ///                                                         
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
+/// @param withdrawTicketCancellationEnabled Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
+///                                          queued collateral vault back to their wallet).
 /// @param minWithdrawQueuedLiquidityValue Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param fixedTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
@@ -172,6 +174,7 @@ public record LendingMarket(PublicKey _address,
                             int withdrawTicketRedemptionEnabled,
                             int obligationBorrowRolloverConfigurationEnabled,
                             int obligationBorrowMigrationToFixedExecutionEnabled,
+                            int withdrawTicketCancellationEnabled,
                             byte[] padding2,
                             long minWithdrawQueuedLiquidityValue,
                             long fixedTermRolloverWindowDurationSeconds,
@@ -187,7 +190,7 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_2_LEN = 4;
+  public static final int PADDING_2_LEN = 3;
   public static final int PADDING_1_LEN = 158;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -234,7 +237,8 @@ public record LendingMarket(PublicKey _address,
   public static final int WITHDRAW_TICKET_REDEMPTION_ENABLED_OFFSET = 3353;
   public static final int OBLIGATION_BORROW_ROLLOVER_CONFIGURATION_ENABLED_OFFSET = 3354;
   public static final int OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET = 3355;
-  public static final int PADDING_2_OFFSET = 3356;
+  public static final int WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET = 3356;
+  public static final int PADDING_2_OFFSET = 3357;
   public static final int MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET = 3360;
   public static final int FIXED_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3368;
   public static final int OPEN_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3376;
@@ -402,6 +406,10 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET, new byte[]{(byte) obligationBorrowMigrationToFixedExecutionEnabled});
   }
 
+  public static Filter createWithdrawTicketCancellationEnabledFilter(final int withdrawTicketCancellationEnabled) {
+    return Filter.createMemCompFilter(WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET, new byte[]{(byte) withdrawTicketCancellationEnabled});
+  }
+
   public static Filter createMinWithdrawQueuedLiquidityValueFilter(final long minWithdrawQueuedLiquidityValue) {
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, minWithdrawQueuedLiquidityValue);
@@ -532,7 +540,9 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var obligationBorrowMigrationToFixedExecutionEnabled = _data[i] & 0xFF;
     ++i;
-    final var padding2 = new byte[4];
+    final var withdrawTicketCancellationEnabled = _data[i] & 0xFF;
+    ++i;
+    final var padding2 = new byte[3];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
     i += 8;
@@ -588,6 +598,7 @@ public record LendingMarket(PublicKey _address,
                              withdrawTicketRedemptionEnabled,
                              obligationBorrowRolloverConfigurationEnabled,
                              obligationBorrowMigrationToFixedExecutionEnabled,
+                             withdrawTicketCancellationEnabled,
                              padding2,
                              minWithdrawQueuedLiquidityValue,
                              fixedTermRolloverWindowDurationSeconds,
@@ -674,7 +685,9 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) obligationBorrowMigrationToFixedExecutionEnabled;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 4, _data, i);
+    _data[i] = (byte) withdrawTicketCancellationEnabled;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding2, 3, _data, i);
     putInt64LE(_data, i, minWithdrawQueuedLiquidityValue);
     i += 8;
     putInt64LE(_data, i, fixedTermRolloverWindowDurationSeconds);

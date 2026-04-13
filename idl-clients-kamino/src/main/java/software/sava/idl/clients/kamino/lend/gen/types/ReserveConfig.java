@@ -17,6 +17,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
 ///                         Blocks usage of ctokens (minting or withdrawing from obligation)
 ///                         Effectively blocks deposit_reserve_liquidity and withdraw_obligation_collateral
+/// @param earlyRepayRemainingInterestPct The percentage of remaining interest over the debt term that is charged as early repay penalty.
+///                                       Only meaningful when `debt_term_seconds > 0`.
 /// @param reserved1 Past reserved space - feel free to reuse.
 /// @param protocolOrderExecutionFeePct Cut of the order execution bonus that the protocol receives, as a percentage
 /// @param protocolTakeRatePct Protocol take rate is the amount borrowed interest protocol receives, as a percentage
@@ -75,6 +77,7 @@ public record ReserveConfig(int status,
                             int hostFixedInterestRateBps,
                             int minDeleveragingBonusBps,
                             int blockCtokenUsage,
+                            int earlyRepayRemainingInterestPct,
                             byte[] reserved1,
                             int protocolOrderExecutionFeePct,
                             int protocolTakeRatePct,
@@ -106,7 +109,7 @@ public record ReserveConfig(int status,
                             long debtTermSeconds) implements SerDe {
 
   public static final int BYTES = 936;
-  public static final int RESERVED_1_LEN = 6;
+  public static final int RESERVED_1_LEN = 5;
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
 
@@ -115,7 +118,8 @@ public record ReserveConfig(int status,
   public static final int HOST_FIXED_INTEREST_RATE_BPS_OFFSET = 2;
   public static final int MIN_DELEVERAGING_BONUS_BPS_OFFSET = 4;
   public static final int BLOCK_CTOKEN_USAGE_OFFSET = 6;
-  public static final int RESERVED_1_OFFSET = 7;
+  public static final int EARLY_REPAY_REMAINING_INTEREST_PCT_OFFSET = 7;
+  public static final int RESERVED_1_OFFSET = 8;
   public static final int PROTOCOL_ORDER_EXECUTION_FEE_PCT_OFFSET = 13;
   public static final int PROTOCOL_TAKE_RATE_PCT_OFFSET = 14;
   public static final int PROTOCOL_LIQUIDATION_FEE_PCT_OFFSET = 15;
@@ -160,7 +164,9 @@ public record ReserveConfig(int status,
     i += 2;
     final var blockCtokenUsage = _data[i] & 0xFF;
     ++i;
-    final var reserved1 = new byte[6];
+    final var earlyRepayRemainingInterestPct = _data[i] & 0xFF;
+    ++i;
+    final var reserved1 = new byte[5];
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var protocolOrderExecutionFeePct = _data[i] & 0xFF;
     ++i;
@@ -222,6 +228,7 @@ public record ReserveConfig(int status,
                              hostFixedInterestRateBps,
                              minDeleveragingBonusBps,
                              blockCtokenUsage,
+                             earlyRepayRemainingInterestPct,
                              reserved1,
                              protocolOrderExecutionFeePct,
                              protocolTakeRatePct,
@@ -266,7 +273,9 @@ public record ReserveConfig(int status,
     i += 2;
     _data[i] = (byte) blockCtokenUsage;
     ++i;
-    i += SerDeUtil.writeArrayChecked(reserved1, 6, _data, i);
+    _data[i] = (byte) earlyRepayRemainingInterestPct;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(reserved1, 5, _data, i);
     _data[i] = (byte) protocolOrderExecutionFeePct;
     ++i;
     _data[i] = (byte) protocolTakeRatePct;
