@@ -177,7 +177,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.WithdrawTicketFullyCancelled,
     KaminoLendingError.CloneSourceReserveDisabled,
     KaminoLendingError.CloneTargetReserveAlreadyInUse,
-    KaminoLendingError.ClonedReserveLiquidityMintMismatch {
+    KaminoLendingError.ClonedReserveLiquidityMintMismatch,
+    KaminoLendingError.ReserveEmergencyMode {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -356,6 +357,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6172 -> CloneSourceReserveDisabled.INSTANCE;
       case 6173 -> CloneTargetReserveAlreadyInUse.INSTANCE;
       case 6174 -> ClonedReserveLiquidityMintMismatch.INSTANCE;
+      case 6175 -> ReserveEmergencyMode.INSTANCE;
       default -> null;
     };
   }
@@ -1582,6 +1584,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final ClonedReserveLiquidityMintMismatch INSTANCE = new ClonedReserveLiquidityMintMismatch(
         6174, "Cannot clone config between reserves of different mints"
+    );
+  }
+
+  record ReserveEmergencyMode(int code, String msg) implements KaminoLendingError {
+
+    public static final ReserveEmergencyMode INSTANCE = new ReserveEmergencyMode(
+        6175, "Reserve emergency mode is enabled"
     );
   }
 }

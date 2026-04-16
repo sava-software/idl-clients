@@ -7,6 +7,7 @@ public sealed interface JupiterEvent extends SerDe permits
     SwapEvent,
     SwapsEvent,
     CandidateSwapResults,
+    CandidateSwapQuoteError,
     BestSwapOutAmountViolation {
 
   static JupiterEvent read(final byte[] _data, final int _offset) {
@@ -18,6 +19,8 @@ public sealed interface JupiterEvent extends SerDe permits
       return SwapsEvent.read(_data, _offset);
     } else if (CandidateSwapResults.DISCRIMINATOR.equals(_data, _offset)) {
       return CandidateSwapResults.read(_data, _offset);
+    } else if (CandidateSwapQuoteError.DISCRIMINATOR.equals(_data, _offset)) {
+      return CandidateSwapQuoteError.read(_data, _offset);
     } else if (BestSwapOutAmountViolation.DISCRIMINATOR.equals(_data, _offset)) {
       return BestSwapOutAmountViolation.read(_data, _offset);
     } else {

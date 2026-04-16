@@ -155,7 +155,12 @@ public sealed interface Swap extends RustEnum permits
   Swap.ScaleVmmSell,
   Swap.ScaleAmmBuy,
   Swap.ScaleAmmSell,
-  Swap.BisonFiV2 {
+  Swap.BisonFiV2,
+  Swap.Trends,
+  Swap.HumaDeposit,
+  Swap.HumaInstantWithdraw,
+  Swap.Kipseli,
+  Swap.DynamicV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -303,6 +308,11 @@ public sealed interface Swap extends RustEnum permits
       case 139 -> ScaleAmmBuy.INSTANCE;
       case 140 -> ScaleAmmSell.INSTANCE;
       case 141 -> BisonFiV2.read(_data, i);
+      case 142 -> Trends.INSTANCE;
+      case 143 -> HumaDeposit.INSTANCE;
+      case 144 -> HumaInstantWithdraw.INSTANCE;
+      case 145 -> Kipseli.read(_data, i);
+      case 146 -> DynamicV2.read(_data, i);
       default -> null;
     };
   }
@@ -2373,6 +2383,92 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 141;
+    }
+  }
+
+  record Trends() implements EnumNone, Swap {
+
+    public static final Trends INSTANCE = new Trends();
+
+    @Override
+    public int ordinal() {
+      return 142;
+    }
+  }
+
+  record HumaDeposit() implements EnumNone, Swap {
+
+    public static final HumaDeposit INSTANCE = new HumaDeposit();
+
+    @Override
+    public int ordinal() {
+      return 143;
+    }
+  }
+
+  record HumaInstantWithdraw() implements EnumNone, Swap {
+
+    public static final HumaInstantWithdraw INSTANCE = new HumaInstantWithdraw();
+
+    @Override
+    public int ordinal() {
+      return 144;
+    }
+  }
+
+  record Kipseli(boolean val) implements EnumBool, Swap {
+
+    public static final Kipseli TRUE = new Kipseli(true);
+    public static final Kipseli FALSE = new Kipseli(false);
+
+    public static Kipseli read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Kipseli.TRUE : Kipseli.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 145;
+    }
+  }
+
+  record DynamicV2(CandidateSwapWithBps[] candidateSwaps,
+                   int maxSplitQuoteCalls,
+                   int maxSplitCandidates) implements Swap {
+
+    public static final int CANDIDATE_SWAPS_OFFSET = 0;
+
+    public static DynamicV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var candidateSwaps = SerDeUtil.readVector(4, CandidateSwapWithBps.class, CandidateSwapWithBps::read, _data, i);
+      i += SerDeUtil.lenVector(4, candidateSwaps);
+      final var maxSplitQuoteCalls = _data[i] & 0xFF;
+      ++i;
+      final var maxSplitCandidates = _data[i] & 0xFF;
+      return new DynamicV2(candidateSwaps, maxSplitQuoteCalls, maxSplitCandidates);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += SerDeUtil.writeVector(4, candidateSwaps, _data, i);
+      _data[i] = (byte) maxSplitQuoteCalls;
+      ++i;
+      _data[i] = (byte) maxSplitCandidates;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + SerDeUtil.lenVector(4, candidateSwaps) + 1 + 1;
+    }
+
+    @Override
+    public int ordinal() {
+      return 146;
     }
   }
 }

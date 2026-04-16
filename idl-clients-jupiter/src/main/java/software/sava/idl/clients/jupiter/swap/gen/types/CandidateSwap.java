@@ -8,7 +8,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.HumidiFi,
   CandidateSwap.TesseraV,
-  CandidateSwap.HumidiFiV2 {
+  CandidateSwap.HumidiFiV2,
+  CandidateSwap.RaydiumV2,
+  CandidateSwap.RaydiumClmm,
+  CandidateSwap.Whirlpool,
+  CandidateSwap.ZeroFi,
+  CandidateSwap.BisonFiV2,
+  CandidateSwap.GoonFiV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -17,6 +23,12 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 0 -> HumidiFi.read(_data, i);
       case 1 -> TesseraV.read(_data, i);
       case 2 -> HumidiFiV2.read(_data, i);
+      case 3 -> RaydiumV2.INSTANCE;
+      case 4 -> RaydiumClmm.INSTANCE;
+      case 5 -> Whirlpool.read(_data, i);
+      case 6 -> ZeroFi.INSTANCE;
+      case 7 -> BisonFiV2.read(_data, i);
+      case 8 -> GoonFiV2.read(_data, i);
       default -> null;
     };
   }
@@ -108,6 +120,81 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 2;
+    }
+  }
+
+  record RaydiumV2() implements EnumNone, CandidateSwap {
+
+    public static final RaydiumV2 INSTANCE = new RaydiumV2();
+
+    @Override
+    public int ordinal() {
+      return 3;
+    }
+  }
+
+  record RaydiumClmm() implements EnumNone, CandidateSwap {
+
+    public static final RaydiumClmm INSTANCE = new RaydiumClmm();
+
+    @Override
+    public int ordinal() {
+      return 4;
+    }
+  }
+
+  record Whirlpool(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final Whirlpool TRUE = new Whirlpool(true);
+    public static final Whirlpool FALSE = new Whirlpool(false);
+
+    public static Whirlpool read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Whirlpool.TRUE : Whirlpool.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 5;
+    }
+  }
+
+  record ZeroFi() implements EnumNone, CandidateSwap {
+
+    public static final ZeroFi INSTANCE = new ZeroFi();
+
+    @Override
+    public int ordinal() {
+      return 6;
+    }
+  }
+
+  record BisonFiV2(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final BisonFiV2 TRUE = new BisonFiV2(true);
+    public static final BisonFiV2 FALSE = new BisonFiV2(false);
+
+    public static BisonFiV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? BisonFiV2.TRUE : BisonFiV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 7;
+    }
+  }
+
+  record GoonFiV2(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final GoonFiV2 TRUE = new GoonFiV2(true);
+    public static final GoonFiV2 FALSE = new GoonFiV2(false);
+
+    public static GoonFiV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV2.TRUE : GoonFiV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 8;
     }
   }
 }
