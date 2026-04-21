@@ -23,6 +23,23 @@ public final class SerDeUtil {
     return bytes;
   }
 
+  public static String fixedLengthString(final byte[] data) {
+    return fixedLengthString(data, 0, data.length);
+  }
+
+  public static String fixedLengthString(final byte[] data, final int from, final int to) {
+    int i = to - 1;
+    while (i >= from && (Character.isISOControl(data[i]) || Character.isWhitespace(data[i]))) {
+      --i;
+    }
+    if (i < from) {
+      return null;
+    } else {
+      final var str = new String(data, from, (i - from) + 1);
+      return str.isBlank() ? null : str;
+    }
+  }
+
   public static int val(final int prefixBytes, final byte[] data, final int offset) {
     return switch (prefixBytes) {
       case 1 -> data[offset] & 0xFF;

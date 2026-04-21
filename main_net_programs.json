@@ -162,6 +162,13 @@
       ]
     },
     {
+      "name": "Loopscale",
+      "source": "idl-clients-loopscale",
+      "module": "loopscale",
+      "package": "loopscale",
+      "program": "1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"
+    },
+    {
       "name": "Marinade Stake Pool",
       "source": "idl-clients-marinade",
       "module": "marinade",
