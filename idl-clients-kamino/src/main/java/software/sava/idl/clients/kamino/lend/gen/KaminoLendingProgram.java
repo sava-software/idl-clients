@@ -4760,6 +4760,178 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, FILL_BORROW_ORDER_DISCRIMINATOR);
   }
 
+  public static final Discriminator INITIATE_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR = toDiscriminator(127, 42, 81, 218, 147, 171, 76, 153);
+
+  /// @param ownerKey Current owner must sign this transaction
+  public static List<AccountMeta> initiateObligationOwnershipTransferKeys(final PublicKey ownerKey,
+                                                                          final PublicKey obligationKey,
+                                                                          final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createReadOnlySigner(ownerKey),
+      createWrite(obligationKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param ownerKey Current owner must sign this transaction
+  public static Instruction initiateObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                                final PublicKey ownerKey,
+                                                                final PublicKey obligationKey,
+                                                                final PublicKey instructionSysvarAccountKey,
+                                                                final PublicKey newOwner) {
+    final var keys = initiateObligationOwnershipTransferKeys(
+      ownerKey,
+      obligationKey,
+      instructionSysvarAccountKey
+    );
+    return initiateObligationOwnershipTransfer(invokedKaminoLendingProgramMeta, keys, newOwner);
+  }
+
+  public static Instruction initiateObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                                final List<AccountMeta> keys,
+                                                                final PublicKey newOwner) {
+    final byte[] _data = new byte[40];
+    int i = INITIATE_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR.write(_data, 0);
+    newOwner.write(_data, i);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record InitiateObligationOwnershipTransferIxData(Discriminator discriminator, PublicKey newOwner) implements SerDe {  
+
+    public static InitiateObligationOwnershipTransferIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int NEW_OWNER_OFFSET = 8;
+
+    public static InitiateObligationOwnershipTransferIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newOwner = readPubKey(_data, i);
+      return new InitiateObligationOwnershipTransferIxData(discriminator, newOwner);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newOwner.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator APPROVE_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR = toDiscriminator(61, 227, 231, 46, 196, 124, 60, 161);
+
+  /// @param globalAdminKey Global admin must sign this transaction
+  /// @param pendingOwnerKey The pending owner that will receive ownership after acceptance.
+  ///                        Must match the pending_owner stored in the obligation.
+  public static List<AccountMeta> approveObligationOwnershipTransferKeys(final PublicKey globalAdminKey,
+                                                                         final PublicKey globalConfigKey,
+                                                                         final PublicKey obligationKey,
+                                                                         final PublicKey pendingOwnerKey) {
+    return List.of(
+      createReadOnlySigner(globalAdminKey),
+      createRead(globalConfigKey),
+      createWrite(obligationKey),
+      createRead(pendingOwnerKey)
+    );
+  }
+
+  /// @param globalAdminKey Global admin must sign this transaction
+  /// @param pendingOwnerKey The pending owner that will receive ownership after acceptance.
+  ///                        Must match the pending_owner stored in the obligation.
+  public static Instruction approveObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                               final PublicKey globalAdminKey,
+                                                               final PublicKey globalConfigKey,
+                                                               final PublicKey obligationKey,
+                                                               final PublicKey pendingOwnerKey) {
+    final var keys = approveObligationOwnershipTransferKeys(
+      globalAdminKey,
+      globalConfigKey,
+      obligationKey,
+      pendingOwnerKey
+    );
+    return approveObligationOwnershipTransfer(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction approveObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                               final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, APPROVE_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR);
+  }
+
+  public static final Discriminator ACCEPT_OBLIGATION_OWNERSHIP_DISCRIMINATOR = toDiscriminator(249, 130, 70, 176, 151, 187, 239, 6);
+
+  /// @param pendingOwnerKey Pending owner must sign this transaction
+  public static List<AccountMeta> acceptObligationOwnershipKeys(final PublicKey pendingOwnerKey,
+                                                                final PublicKey obligationKey,
+                                                                final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createReadOnlySigner(pendingOwnerKey),
+      createWrite(obligationKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param pendingOwnerKey Pending owner must sign this transaction
+  public static Instruction acceptObligationOwnership(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                      final PublicKey pendingOwnerKey,
+                                                      final PublicKey obligationKey,
+                                                      final PublicKey instructionSysvarAccountKey) {
+    final var keys = acceptObligationOwnershipKeys(
+      pendingOwnerKey,
+      obligationKey,
+      instructionSysvarAccountKey
+    );
+    return acceptObligationOwnership(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction acceptObligationOwnership(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                      final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, ACCEPT_OBLIGATION_OWNERSHIP_DISCRIMINATOR);
+  }
+
+  public static final Discriminator ABORT_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR = toDiscriminator(103, 217, 83, 65, 164, 5, 195, 227);
+
+  /// @param ownerKey Current owner must sign this transaction
+  public static List<AccountMeta> abortObligationOwnershipTransferKeys(final PublicKey ownerKey,
+                                                                       final PublicKey obligationKey,
+                                                                       final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createReadOnlySigner(ownerKey),
+      createWrite(obligationKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// @param ownerKey Current owner must sign this transaction
+  public static Instruction abortObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                             final PublicKey ownerKey,
+                                                             final PublicKey obligationKey,
+                                                             final PublicKey instructionSysvarAccountKey) {
+    final var keys = abortObligationOwnershipTransferKeys(
+      ownerKey,
+      obligationKey,
+      instructionSysvarAccountKey
+    );
+    return abortObligationOwnershipTransfer(invokedKaminoLendingProgramMeta, keys);
+  }
+
+  public static Instruction abortObligationOwnershipTransfer(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                             final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, ABORT_OBLIGATION_OWNERSHIP_TRANSFER_DISCRIMINATOR);
+  }
+
   public static final Discriminator ENQUEUE_TO_WITHDRAW_DISCRIMINATOR = toDiscriminator(134, 113, 160, 207, 90, 75, 213, 219);
 
   /// @param ownerKey The depositor holding ctokens.

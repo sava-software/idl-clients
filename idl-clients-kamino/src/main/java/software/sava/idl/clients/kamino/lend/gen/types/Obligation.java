@@ -43,12 +43,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                   Only effective when `deleveraging_margin_call_started_slot != 0`.
 /// @param lowestReserveDepositMaxLtvPct The lowest max LTV found amongst the collateral deposits
 /// @param numOfObsoleteBorrowReserves The number of obsolete reserves the obligation has a borrow in
+/// @param ownershipTransferState State of ownership transfer, see OwnershipTransferState
 /// @param autodeleverageMarginCallStartedTimestamp A timestamp at which the market owner most-recently marked this obligation for deleveraging.
 ///                                                 Zero if not currently subject to deleveraging.
 /// @param obligationOrders Owner-defined, permissionlessly-executed repay orders.
 ///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
 /// @param borrowOrder Owner-defined, permissionlessly-executed borrow order applicable to this obligation.
 ///                    Non-zeroed only on a newly-initialized fixed-rate, fixed-term obligation.
+/// @param pendingOwner Pending owner during ownership transfer process.
+///                     Pubkey::default() means no pending owner (similar to Option::None)
 public record Obligation(PublicKey _address,
                          Discriminator discriminator,
                          long tag,
@@ -72,20 +75,22 @@ public record Obligation(PublicKey _address,
                          int autodeleverageTargetLtvPct,
                          int lowestReserveDepositMaxLtvPct,
                          int numOfObsoleteBorrowReserves,
+                         int ownershipTransferState,
                          byte[] reserved,
                          long highestBorrowFactorPct,
                          long autodeleverageMarginCallStartedTimestamp,
                          ObligationOrder[] obligationOrders,
                          BorrowOrder borrowOrder,
+                         PublicKey pendingOwner,
                          long[] padding3) implements SerDe {
 
   public static final int BYTES = 3344;
   public static final int DEPOSITS_LEN = 8;
   public static final int BORROWS_LEN = 5;
   public static final int PADDING_DEPRECATED_ASSET_TIERS_LEN = 13;
-  public static final int RESERVED_LEN = 4;
+  public static final int RESERVED_LEN = 3;
   public static final int OBLIGATION_ORDERS_LEN = 2;
-  public static final int PADDING_3_LEN = 73;
+  public static final int PADDING_3_LEN = 69;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(168, 206, 141, 106, 88, 76, 172, 167);
@@ -112,12 +117,14 @@ public record Obligation(PublicKey _address,
   public static final int AUTODELEVERAGE_TARGET_LTV_PCT_OFFSET = 2321;
   public static final int LOWEST_RESERVE_DEPOSIT_MAX_LTV_PCT_OFFSET = 2322;
   public static final int NUM_OF_OBSOLETE_BORROW_RESERVES_OFFSET = 2323;
-  public static final int RESERVED_OFFSET = 2324;
+  public static final int OWNERSHIP_TRANSFER_STATE_OFFSET = 2324;
+  public static final int RESERVED_OFFSET = 2325;
   public static final int HIGHEST_BORROW_FACTOR_PCT_OFFSET = 2328;
   public static final int AUTODELEVERAGE_MARGIN_CALL_STARTED_TIMESTAMP_OFFSET = 2336;
   public static final int OBLIGATION_ORDERS_OFFSET = 2344;
   public static final int BORROW_ORDER_OFFSET = 2600;
-  public static final int PADDING_3_OFFSET = 2760;
+  public static final int PENDING_OWNER_OFFSET = 2760;
+  public static final int PADDING_3_OFFSET = 2792;
 
   public static Filter createTagFilter(final long tag) {
     final byte[] _data = new byte[8];
@@ -205,6 +212,10 @@ public record Obligation(PublicKey _address,
     return Filter.createMemCompFilter(NUM_OF_OBSOLETE_BORROW_RESERVES_OFFSET, new byte[]{(byte) numOfObsoleteBorrowReserves});
   }
 
+  public static Filter createOwnershipTransferStateFilter(final int ownershipTransferState) {
+    return Filter.createMemCompFilter(OWNERSHIP_TRANSFER_STATE_OFFSET, new byte[]{(byte) ownershipTransferState});
+  }
+
   public static Filter createHighestBorrowFactorPctFilter(final long highestBorrowFactorPct) {
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, highestBorrowFactorPct);
@@ -215,6 +226,10 @@ public record Obligation(PublicKey _address,
     final byte[] _data = new byte[8];
     putInt64LE(_data, 0, autodeleverageMarginCallStartedTimestamp);
     return Filter.createMemCompFilter(AUTODELEVERAGE_MARGIN_CALL_STARTED_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createPendingOwnerFilter(final PublicKey pendingOwner) {
+    return Filter.createMemCompFilter(PENDING_OWNER_OFFSET, pendingOwner);
   }
 
   public static Obligation read(final byte[] _data, final int _offset) {
@@ -279,7 +294,9 @@ public record Obligation(PublicKey _address,
     ++i;
     final var numOfObsoleteBorrowReserves = _data[i] & 0xFF;
     ++i;
-    final var reserved = new byte[4];
+    final var ownershipTransferState = _data[i] & 0xFF;
+    ++i;
+    final var reserved = new byte[3];
     i += SerDeUtil.readArray(reserved, _data, i);
     final var highestBorrowFactorPct = getInt64LE(_data, i);
     i += 8;
@@ -289,7 +306,9 @@ public record Obligation(PublicKey _address,
     i += SerDeUtil.readArray(obligationOrders, ObligationOrder::read, _data, i);
     final var borrowOrder = BorrowOrder.read(_data, i);
     i += borrowOrder.l();
-    final var padding3 = new long[73];
+    final var pendingOwner = readPubKey(_data, i);
+    i += 32;
+    final var padding3 = new long[69];
     SerDeUtil.readArray(padding3, _data, i);
     return new Obligation(_address,
                           discriminator,
@@ -314,11 +333,13 @@ public record Obligation(PublicKey _address,
                           autodeleverageTargetLtvPct,
                           lowestReserveDepositMaxLtvPct,
                           numOfObsoleteBorrowReserves,
+                          ownershipTransferState,
                           reserved,
                           highestBorrowFactorPct,
                           autodeleverageMarginCallStartedTimestamp,
                           obligationOrders,
                           borrowOrder,
+                          pendingOwner,
                           padding3);
   }
 
@@ -363,14 +384,18 @@ public record Obligation(PublicKey _address,
     ++i;
     _data[i] = (byte) numOfObsoleteBorrowReserves;
     ++i;
-    i += SerDeUtil.writeArrayChecked(reserved, 4, _data, i);
+    _data[i] = (byte) ownershipTransferState;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(reserved, 3, _data, i);
     putInt64LE(_data, i, highestBorrowFactorPct);
     i += 8;
     putInt64LE(_data, i, autodeleverageMarginCallStartedTimestamp);
     i += 8;
     i += SerDeUtil.writeArrayChecked(obligationOrders, 2, _data, i);
     i += borrowOrder.write(_data, i);
-    i += SerDeUtil.writeArrayChecked(padding3, 73, _data, i);
+    pendingOwner.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(padding3, 69, _data, i);
     return i - _offset;
   }
 

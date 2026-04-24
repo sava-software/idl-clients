@@ -178,7 +178,14 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.CloneSourceReserveDisabled,
     KaminoLendingError.CloneTargetReserveAlreadyInUse,
     KaminoLendingError.ClonedReserveLiquidityMintMismatch,
-    KaminoLendingError.ReserveEmergencyMode {
+    KaminoLendingError.ReserveEmergencyMode,
+    KaminoLendingError.ObligationOwnershipTransferInProgress,
+    KaminoLendingError.ObligationOwnershipTransferNotInitiated,
+    KaminoLendingError.ObligationPendingOwnerNotSet,
+    KaminoLendingError.ObligationInvalidPendingOwner,
+    KaminoLendingError.ObligationOwnershipTransferNotApproved,
+    KaminoLendingError.ObligationHasActiveBorrowOrders,
+    KaminoLendingError.OnlyComputeBudgetCompanionIxsAllowed {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -358,6 +365,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6173 -> CloneTargetReserveAlreadyInUse.INSTANCE;
       case 6174 -> ClonedReserveLiquidityMintMismatch.INSTANCE;
       case 6175 -> ReserveEmergencyMode.INSTANCE;
+      case 6176 -> ObligationOwnershipTransferInProgress.INSTANCE;
+      case 6177 -> ObligationOwnershipTransferNotInitiated.INSTANCE;
+      case 6178 -> ObligationPendingOwnerNotSet.INSTANCE;
+      case 6179 -> ObligationInvalidPendingOwner.INSTANCE;
+      case 6180 -> ObligationOwnershipTransferNotApproved.INSTANCE;
+      case 6181 -> ObligationHasActiveBorrowOrders.INSTANCE;
+      case 6182 -> OnlyComputeBudgetCompanionIxsAllowed.INSTANCE;
       default -> null;
     };
   }
@@ -1591,6 +1605,55 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final ReserveEmergencyMode INSTANCE = new ReserveEmergencyMode(
         6175, "Reserve emergency mode is enabled"
+    );
+  }
+
+  record ObligationOwnershipTransferInProgress(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationOwnershipTransferInProgress INSTANCE = new ObligationOwnershipTransferInProgress(
+        6176, "Obligation ownership transfer is in progress"
+    );
+  }
+
+  record ObligationOwnershipTransferNotInitiated(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationOwnershipTransferNotInitiated INSTANCE = new ObligationOwnershipTransferNotInitiated(
+        6177, "Obligation ownership transfer is not in initiated state"
+    );
+  }
+
+  record ObligationPendingOwnerNotSet(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationPendingOwnerNotSet INSTANCE = new ObligationPendingOwnerNotSet(
+        6178, "Obligation pending owner not set"
+    );
+  }
+
+  record ObligationInvalidPendingOwner(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationInvalidPendingOwner INSTANCE = new ObligationInvalidPendingOwner(
+        6179, "Invalid pending owner address"
+    );
+  }
+
+  record ObligationOwnershipTransferNotApproved(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationOwnershipTransferNotApproved INSTANCE = new ObligationOwnershipTransferNotApproved(
+        6180, "Obligation ownership transfer not approved by admin"
+    );
+  }
+
+  record ObligationHasActiveBorrowOrders(int code, String msg) implements KaminoLendingError {
+
+    public static final ObligationHasActiveBorrowOrders INSTANCE = new ObligationHasActiveBorrowOrders(
+        6181, "Obligation has active borrow orders"
+    );
+  }
+
+  record OnlyComputeBudgetCompanionIxsAllowed(int code, String msg) implements KaminoLendingError {
+
+    public static final OnlyComputeBudgetCompanionIxsAllowed INSTANCE = new OnlyComputeBudgetCompanionIxsAllowed(
+        6182, "Only ComputeBudget instructions may accompany this instruction"
     );
   }
 }
