@@ -5,7 +5,7 @@ plugins {
 val idlClientModules = setOf(
   "idl-clients-cctp",
   "idl-clients-core",
-//  "idl-clients-drift",
+  "idl-clients-drift",
   "idl-clients-jupiter",
   "idl-clients-kamino",
   "idl-clients-loopscale",
