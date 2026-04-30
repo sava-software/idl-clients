@@ -23,7 +23,8 @@ public enum VaultConfigField implements RustEnum {
   WithdrawalPenaltyBps,
   FirstLossCapitalFarm,
   AllowAllocationsInWhitelistedReservesOnly,
-  AllowInvestInWhitelistedReservesOnly;
+  AllowInvestInWhitelistedReservesOnly,
+  RewardPerSecond;
 
   public static VaultConfigField read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, VaultConfigField.values(), _data, _offset);

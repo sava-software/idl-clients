@@ -1,6 +1,7 @@
 package software.sava.idl.clients.jupiter.swap.gen.types;
 
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -14,7 +15,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.Whirlpool,
   CandidateSwap.ZeroFi,
   CandidateSwap.BisonFiV2,
-  CandidateSwap.GoonFiV2 {
+  CandidateSwap.GoonFiV2,
+  CandidateSwap.WhirlpoolV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -29,6 +31,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 6 -> ZeroFi.INSTANCE;
       case 7 -> BisonFiV2.read(_data, i);
       case 8 -> GoonFiV2.read(_data, i);
+      case 9 -> WhirlpoolV2.read(_data, i);
       default -> null;
     };
   }
@@ -195,6 +198,48 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 8;
+    }
+  }
+
+  record WhirlpoolV2(boolean aToB, RemainingAccountsInfo remainingAccountsInfo) implements CandidateSwap {
+
+    public static final int A_TO_B_OFFSET = 0;
+    public static final int REMAINING_ACCOUNTS_INFO_OFFSET = 2;
+
+    public static WhirlpoolV2 read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var aToB = _data[i] == 1;
+      ++i;
+      final RemainingAccountsInfo remainingAccountsInfo;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        remainingAccountsInfo = null;
+      } else {
+        ++i;
+        remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
+      }
+      return new WhirlpoolV2(aToB, remainingAccountsInfo);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) (aToB ? 1 : 0);
+      ++i;
+      i += SerDeUtil.writeOptional(1, remainingAccountsInfo, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
+    }
+
+    @Override
+    public int ordinal() {
+      return 9;
     }
   }
 }

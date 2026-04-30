@@ -62,6 +62,7 @@ public record VaultState(PublicKey _address,
                          int allowAllocationsInWhitelistedReservesOnly,
                          int allowInvestInWhitelistedReservesOnly,
                          byte[] padding2,
+                         VaultRewardInfo rewardInfo,
                          BigInteger[] padding3) implements SerDe {
 
   public static final int BYTES = 62552;
@@ -69,7 +70,7 @@ public record VaultState(PublicKey _address,
   public static final int PADDING_1_LEN = 256;
   public static final int NAME_LEN = 40;
   public static final int PADDING_2_LEN = 14;
-  public static final int PADDING_3_LEN = 238;
+  public static final int PADDING_3_LEN = 232;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(228, 196, 82, 165, 98, 210, 235, 152);
@@ -116,7 +117,8 @@ public record VaultState(PublicKey _address,
   public static final int ALLOW_ALLOCATIONS_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58728;
   public static final int ALLOW_INVEST_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58729;
   public static final int PADDING_2_OFFSET = 58730;
-  public static final int PADDING_3_OFFSET = 58744;
+  public static final int REWARD_INFO_OFFSET = 58744;
+  public static final int PADDING_3_OFFSET = 58840;
 
   public static Filter createVaultAdminAuthorityFilter(final PublicKey vaultAdminAuthority) {
     return Filter.createMemCompFilter(VAULT_ADMIN_AUTHORITY_OFFSET, vaultAdminAuthority);
@@ -314,6 +316,10 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(ALLOW_INVEST_IN_WHITELISTED_RESERVES_ONLY_OFFSET, new byte[]{(byte) allowInvestInWhitelistedReservesOnly});
   }
 
+  public static Filter createRewardInfoFilter(final VaultRewardInfo rewardInfo) {
+    return Filter.createMemCompFilter(REWARD_INFO_OFFSET, rewardInfo.write());
+  }
+
   public static VaultState read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -416,7 +422,9 @@ public record VaultState(PublicKey _address,
     ++i;
     final var padding2 = new byte[14];
     i += SerDeUtil.readArray(padding2, _data, i);
-    final var padding3 = new BigInteger[238];
+    final var rewardInfo = VaultRewardInfo.read(_data, i);
+    i += rewardInfo.l();
+    final var padding3 = new BigInteger[232];
     SerDeUtil.read128Array(padding3, _data, i);
     return new VaultState(_address,
                           discriminator,
@@ -461,6 +469,7 @@ public record VaultState(PublicKey _address,
                           allowAllocationsInWhitelistedReservesOnly,
                           allowInvestInWhitelistedReservesOnly,
                           padding2,
+                          rewardInfo,
                           padding3);
   }
 
@@ -545,7 +554,8 @@ public record VaultState(PublicKey _address,
     _data[i] = (byte) allowInvestInWhitelistedReservesOnly;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding2, 14, _data, i);
-    i += SerDeUtil.write128ArrayChecked(padding3, 238, _data, i);
+    i += rewardInfo.write(_data, i);
+    i += SerDeUtil.write128ArrayChecked(padding3, 232, _data, i);
     return i - _offset;
   }
 

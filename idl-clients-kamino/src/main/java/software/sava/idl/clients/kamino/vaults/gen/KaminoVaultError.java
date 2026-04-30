@@ -59,7 +59,12 @@ public sealed interface KaminoVaultError extends ProgramError permits
     KaminoVaultError.WithdrawalFeeLamportsGreaterThanMaxAllowed,
     KaminoVaultError.ReserveNotWhitelisted,
     KaminoVaultError.InvalidBoolLikeValue,
-    KaminoVaultError.AUMDecreasedMoreThanExpected {
+    KaminoVaultError.AUMDecreasedMoreThanExpected,
+    KaminoVaultError.RewardTopupAmountZero,
+    KaminoVaultError.RewardTopupAmountNotExpected,
+    KaminoVaultError.RewardWithdrawAmountZero,
+    KaminoVaultError.RewardWithdrawAmountNotExpected,
+    KaminoVaultError.RewardsStaleForFeeUpdate {
 
   static KaminoVaultError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -120,6 +125,11 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7054 -> ReserveNotWhitelisted.INSTANCE;
       case 7055 -> InvalidBoolLikeValue.INSTANCE;
       case 7056 -> AUMDecreasedMoreThanExpected.INSTANCE;
+      case 7057 -> RewardTopupAmountZero.INSTANCE;
+      case 7058 -> RewardTopupAmountNotExpected.INSTANCE;
+      case 7059 -> RewardWithdrawAmountZero.INSTANCE;
+      case 7060 -> RewardWithdrawAmountNotExpected.INSTANCE;
+      case 7061 -> RewardsStaleForFeeUpdate.INSTANCE;
       default -> null;
     };
   }
@@ -520,6 +530,41 @@ public sealed interface KaminoVaultError extends ProgramError permits
 
     public static final AUMDecreasedMoreThanExpected INSTANCE = new AUMDecreasedMoreThanExpected(
         7056, "AUM decreased more than expected during redeem in kind"
+    );
+  }
+
+  record RewardTopupAmountZero(int code, String msg) implements KaminoVaultError {
+
+    public static final RewardTopupAmountZero INSTANCE = new RewardTopupAmountZero(
+        7057, "Reward topup amount is zero"
+    );
+  }
+
+  record RewardTopupAmountNotExpected(int code, String msg) implements KaminoVaultError {
+
+    public static final RewardTopupAmountNotExpected INSTANCE = new RewardTopupAmountNotExpected(
+        7058, "Reward topup is not as expected after transfer"
+    );
+  }
+
+  record RewardWithdrawAmountZero(int code, String msg) implements KaminoVaultError {
+
+    public static final RewardWithdrawAmountZero INSTANCE = new RewardWithdrawAmountZero(
+        7059, "Reward withdraw amount is zero"
+    );
+  }
+
+  record RewardWithdrawAmountNotExpected(int code, String msg) implements KaminoVaultError {
+
+    public static final RewardWithdrawAmountNotExpected INSTANCE = new RewardWithdrawAmountNotExpected(
+        7060, "Reward withdraw is not as expected after transfer"
+    );
+  }
+
+  record RewardsStaleForFeeUpdate(int code, String msg) implements KaminoVaultError {
+
+    public static final RewardsStaleForFeeUpdate INSTANCE = new RewardsStaleForFeeUpdate(
+        7061, "Rewards are stale - must be refreshed before updating fees"
     );
   }
 }

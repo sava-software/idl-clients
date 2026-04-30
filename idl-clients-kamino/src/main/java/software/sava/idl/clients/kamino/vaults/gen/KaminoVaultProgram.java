@@ -1655,6 +1655,172 @@ public final class KaminoVaultProgram {
     }
   }
 
+  public static final Discriminator TOPUP_REWARDS_DISCRIMINATOR = toDiscriminator(127, 147, 49, 137, 58, 137, 103, 56);
+
+  public static List<AccountMeta> topupRewardsKeys(final PublicKey payerKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey tokenMintKey,
+                                                   final PublicKey tokenVaultKey,
+                                                   final PublicKey payerTokenTaKey,
+                                                   final PublicKey tokenProgramKey) {
+    return List.of(
+      createReadOnlySigner(payerKey),
+      createWrite(vaultStateKey),
+      createRead(tokenMintKey),
+      createWrite(tokenVaultKey),
+      createWrite(payerTokenTaKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction topupRewards(final AccountMeta invokedKaminoVaultProgramMeta,
+                                         final PublicKey payerKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey tokenMintKey,
+                                         final PublicKey tokenVaultKey,
+                                         final PublicKey payerTokenTaKey,
+                                         final PublicKey tokenProgramKey,
+                                         final long amount) {
+    final var keys = topupRewardsKeys(
+      payerKey,
+      vaultStateKey,
+      tokenMintKey,
+      tokenVaultKey,
+      payerTokenTaKey,
+      tokenProgramKey
+    );
+    return topupRewards(invokedKaminoVaultProgramMeta, keys, amount);
+  }
+
+  public static Instruction topupRewards(final AccountMeta invokedKaminoVaultProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final long amount) {
+    final byte[] _data = new byte[16];
+    int i = TOPUP_REWARDS_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  public record TopupRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+
+    public static TopupRewardsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
+
+    public static TopupRewardsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      return new TopupRewardsIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator WITHDRAW_REWARDS_DISCRIMINATOR = toDiscriminator(10, 214, 219, 139, 205, 22, 251, 21);
+
+  public static List<AccountMeta> withdrawRewardsKeys(final PublicKey vaultAdminAuthorityKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey tokenMintKey,
+                                                      final PublicKey tokenVaultKey,
+                                                      final PublicKey baseVaultAuthorityKey,
+                                                      final PublicKey withdrawTokenAccountKey,
+                                                      final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(vaultAdminAuthorityKey),
+      createWrite(vaultStateKey),
+      createRead(tokenMintKey),
+      createWrite(tokenVaultKey),
+      createRead(baseVaultAuthorityKey),
+      createWrite(withdrawTokenAccountKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction withdrawRewards(final AccountMeta invokedKaminoVaultProgramMeta,
+                                            final PublicKey vaultAdminAuthorityKey,
+                                            final PublicKey vaultStateKey,
+                                            final PublicKey tokenMintKey,
+                                            final PublicKey tokenVaultKey,
+                                            final PublicKey baseVaultAuthorityKey,
+                                            final PublicKey withdrawTokenAccountKey,
+                                            final PublicKey tokenProgramKey,
+                                            final long amount) {
+    final var keys = withdrawRewardsKeys(
+      vaultAdminAuthorityKey,
+      vaultStateKey,
+      tokenMintKey,
+      tokenVaultKey,
+      baseVaultAuthorityKey,
+      withdrawTokenAccountKey,
+      tokenProgramKey
+    );
+    return withdrawRewards(invokedKaminoVaultProgramMeta, keys, amount);
+  }
+
+  public static Instruction withdrawRewards(final AccountMeta invokedKaminoVaultProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final long amount) {
+    final byte[] _data = new byte[16];
+    int i = WITHDRAW_REWARDS_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  public record WithdrawRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+
+    public static WithdrawRewardsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
+
+    public static WithdrawRewardsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      return new WithdrawRewardsIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator REDEEM_IN_KIND_DISCRIMINATOR = toDiscriminator(102, 58, 189, 252, 192, 219, 140, 89);
 
   public static List<AccountMeta> redeemInKindKeys(final PublicKey userKey,

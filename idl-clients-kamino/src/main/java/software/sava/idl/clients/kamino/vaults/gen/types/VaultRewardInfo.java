@@ -1,0 +1,66 @@
+package software.sava.idl.clients.kamino.vaults.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// @param rewardsAvailable Rewards available to distribute (topped up but not yet moved to vault.token_available)
+public record VaultRewardInfo(long rewardPerSecond,
+                              long lastIssuanceTs,
+                              long rewardsAvailable,
+                              long cumulativeRewardsDistributedAnalytics,
+                              long[] padding) implements SerDe {
+
+  public static final int BYTES = 96;
+  public static final int PADDING_LEN = 8;
+
+  public static final int REWARD_PER_SECOND_OFFSET = 0;
+  public static final int LAST_ISSUANCE_TS_OFFSET = 8;
+  public static final int REWARDS_AVAILABLE_OFFSET = 16;
+  public static final int CUMULATIVE_REWARDS_DISTRIBUTED_ANALYTICS_OFFSET = 24;
+  public static final int PADDING_OFFSET = 32;
+
+  public static VaultRewardInfo read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var rewardPerSecond = getInt64LE(_data, i);
+    i += 8;
+    final var lastIssuanceTs = getInt64LE(_data, i);
+    i += 8;
+    final var rewardsAvailable = getInt64LE(_data, i);
+    i += 8;
+    final var cumulativeRewardsDistributedAnalytics = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new long[8];
+    SerDeUtil.readArray(padding, _data, i);
+    return new VaultRewardInfo(rewardPerSecond,
+                               lastIssuanceTs,
+                               rewardsAvailable,
+                               cumulativeRewardsDistributedAnalytics,
+                               padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, rewardPerSecond);
+    i += 8;
+    putInt64LE(_data, i, lastIssuanceTs);
+    i += 8;
+    putInt64LE(_data, i, rewardsAvailable);
+    i += 8;
+    putInt64LE(_data, i, cumulativeRewardsDistributedAnalytics);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

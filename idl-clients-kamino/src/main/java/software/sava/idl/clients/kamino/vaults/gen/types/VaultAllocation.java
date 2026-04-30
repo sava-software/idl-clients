@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param tokenAllocationCap Maximum token invested in this reserve
 public record VaultAllocation(PublicKey reserve,
                               PublicKey ctokenVault,
                               long targetAllocationWeight,
