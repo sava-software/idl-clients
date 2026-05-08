@@ -174,7 +174,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         yield new SplBalance(i, priceAccount);
       }
       case SplStake -> {
-        validateNoRefPrice(oracleType, refPrice);
+//        validateNoRefPrice(oracleType, refPrice);
         validateNoEmaTypes(oracleType, emaTypes);
         yield new SplStake(i, priceAccount);
       }

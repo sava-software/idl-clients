@@ -16,6 +16,7 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.ZeroFi,
   CandidateSwap.BisonFiV2,
   CandidateSwap.GoonFiV2,
+  CandidateSwap.GoonFiV3,
   CandidateSwap.WhirlpoolV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
@@ -31,7 +32,8 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 6 -> ZeroFi.INSTANCE;
       case 7 -> BisonFiV2.read(_data, i);
       case 8 -> GoonFiV2.read(_data, i);
-      case 9 -> WhirlpoolV2.read(_data, i);
+      case 9 -> GoonFiV3.read(_data, i);
+      case 10 -> WhirlpoolV2.read(_data, i);
       default -> null;
     };
   }
@@ -201,6 +203,21 @@ public sealed interface CandidateSwap extends RustEnum permits
     }
   }
 
+  record GoonFiV3(boolean val) implements EnumBool, CandidateSwap {
+
+    public static final GoonFiV3 TRUE = new GoonFiV3(true);
+    public static final GoonFiV3 FALSE = new GoonFiV3(false);
+
+    public static GoonFiV3 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV3.TRUE : GoonFiV3.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 9;
+    }
+  }
+
   record WhirlpoolV2(boolean aToB, RemainingAccountsInfo remainingAccountsInfo) implements CandidateSwap {
 
     public static final int A_TO_B_OFFSET = 0;
@@ -239,7 +256,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int ordinal() {
-      return 9;
+      return 10;
     }
   }
 }

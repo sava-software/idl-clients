@@ -160,7 +160,12 @@ public sealed interface Swap extends RustEnum permits
   Swap.HumaDeposit,
   Swap.HumaInstantWithdraw,
   Swap.Kipseli,
-  Swap.DynamicV2 {
+  Swap.DynamicV2,
+  Swap.PumpSwapBuyV3WithCashbackClaim,
+  Swap.PumpSwapSellV3WithCashbackClaim,
+  Swap.PumpWrappedBuyV4WithCashbackClaim,
+  Swap.PumpWrappedSellV4WithCashbackClaim,
+  Swap.GoonFiV3 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -313,6 +318,11 @@ public sealed interface Swap extends RustEnum permits
       case 144 -> HumaInstantWithdraw.INSTANCE;
       case 145 -> Kipseli.read(_data, i);
       case 146 -> DynamicV2.read(_data, i);
+      case 147 -> PumpSwapBuyV3WithCashbackClaim.INSTANCE;
+      case 148 -> PumpSwapSellV3WithCashbackClaim.INSTANCE;
+      case 149 -> PumpWrappedBuyV4WithCashbackClaim.INSTANCE;
+      case 150 -> PumpWrappedSellV4WithCashbackClaim.INSTANCE;
+      case 151 -> GoonFiV3.read(_data, i);
       default -> null;
     };
   }
@@ -2469,6 +2479,61 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 146;
+    }
+  }
+
+  record PumpSwapBuyV3WithCashbackClaim() implements EnumNone, Swap {
+
+    public static final PumpSwapBuyV3WithCashbackClaim INSTANCE = new PumpSwapBuyV3WithCashbackClaim();
+
+    @Override
+    public int ordinal() {
+      return 147;
+    }
+  }
+
+  record PumpSwapSellV3WithCashbackClaim() implements EnumNone, Swap {
+
+    public static final PumpSwapSellV3WithCashbackClaim INSTANCE = new PumpSwapSellV3WithCashbackClaim();
+
+    @Override
+    public int ordinal() {
+      return 148;
+    }
+  }
+
+  record PumpWrappedBuyV4WithCashbackClaim() implements EnumNone, Swap {
+
+    public static final PumpWrappedBuyV4WithCashbackClaim INSTANCE = new PumpWrappedBuyV4WithCashbackClaim();
+
+    @Override
+    public int ordinal() {
+      return 149;
+    }
+  }
+
+  record PumpWrappedSellV4WithCashbackClaim() implements EnumNone, Swap {
+
+    public static final PumpWrappedSellV4WithCashbackClaim INSTANCE = new PumpWrappedSellV4WithCashbackClaim();
+
+    @Override
+    public int ordinal() {
+      return 150;
+    }
+  }
+
+  record GoonFiV3(boolean val) implements EnumBool, Swap {
+
+    public static final GoonFiV3 TRUE = new GoonFiV3(true);
+    public static final GoonFiV3 FALSE = new GoonFiV3(false);
+
+    public static GoonFiV3 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? GoonFiV3.TRUE : GoonFiV3.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 151;
     }
   }
 }
