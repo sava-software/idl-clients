@@ -132,6 +132,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                             
 ///                                             When zeroed, an entire expired debt can be liquidated right after expiration (i.e. no
 ///                                             throttling).
+/// @param permissioningAuthority If not NULL, operations encoded in permissioned_ops require a signature from this authority
+/// @param permissionedOps Bitmap of operations that require permissioning authority signature
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
                             long version,
@@ -181,6 +183,8 @@ public record LendingMarket(PublicKey _address,
                             long openTermRolloverWindowDurationSeconds,
                             long minPartialRolloverValue,
                             long termBasedFullLiquidationDurationSecs,
+                            PublicKey permissioningAuthority,
+                            long permissionedOps,
                             long[] padding1) implements SerDe {
 
   public static final int BYTES = 4664;
@@ -191,7 +195,7 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
   public static final int PADDING_2_LEN = 3;
-  public static final int PADDING_1_LEN = 158;
+  public static final int PADDING_1_LEN = 153;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(246, 114, 50, 98, 72, 157, 28, 120);
@@ -244,7 +248,9 @@ public record LendingMarket(PublicKey _address,
   public static final int OPEN_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3376;
   public static final int MIN_PARTIAL_ROLLOVER_VALUE_OFFSET = 3384;
   public static final int TERM_BASED_FULL_LIQUIDATION_DURATION_SECS_OFFSET = 3392;
-  public static final int PADDING_1_OFFSET = 3400;
+  public static final int PERMISSIONING_AUTHORITY_OFFSET = 3400;
+  public static final int PERMISSIONED_OPS_OFFSET = 3432;
+  public static final int PADDING_1_OFFSET = 3440;
 
   public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[8];
@@ -440,6 +446,16 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(TERM_BASED_FULL_LIQUIDATION_DURATION_SECS_OFFSET, _data);
   }
 
+  public static Filter createPermissioningAuthorityFilter(final PublicKey permissioningAuthority) {
+    return Filter.createMemCompFilter(PERMISSIONING_AUTHORITY_OFFSET, permissioningAuthority);
+  }
+
+  public static Filter createPermissionedOpsFilter(final long permissionedOps) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, permissionedOps);
+    return Filter.createMemCompFilter(PERMISSIONED_OPS_OFFSET, _data);
+  }
+
   public static LendingMarket read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -554,7 +570,11 @@ public record LendingMarket(PublicKey _address,
     i += 8;
     final var termBasedFullLiquidationDurationSecs = getInt64LE(_data, i);
     i += 8;
-    final var padding1 = new long[158];
+    final var permissioningAuthority = readPubKey(_data, i);
+    i += 32;
+    final var permissionedOps = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[153];
     SerDeUtil.readArray(padding1, _data, i);
     return new LendingMarket(_address,
                              discriminator,
@@ -605,6 +625,8 @@ public record LendingMarket(PublicKey _address,
                              openTermRolloverWindowDurationSeconds,
                              minPartialRolloverValue,
                              termBasedFullLiquidationDurationSecs,
+                             permissioningAuthority,
+                             permissionedOps,
                              padding1);
   }
 
@@ -698,7 +720,11 @@ public record LendingMarket(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, termBasedFullLiquidationDurationSecs);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding1, 158, _data, i);
+    permissioningAuthority.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, permissionedOps);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 153, _data, i);
     return i - _offset;
   }
 

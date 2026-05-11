@@ -46,7 +46,9 @@ public enum UpdateLendingMarketMode implements RustEnum {
   UpdateTermBasedFullLiquidationDurationSecs,
   UpdateObligationBorrowMigrationToFixedExecutionEnabled,
   UpdateMinPartialRolloverValue,
-  UpdateWithdrawTicketCancellationEnabled;
+  UpdateWithdrawTicketCancellationEnabled,
+  UpdatePermissioningAuthority,
+  UpdatePermissionedOps;
 
   public static UpdateLendingMarketMode read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, UpdateLendingMarketMode.values(), _data, _offset);

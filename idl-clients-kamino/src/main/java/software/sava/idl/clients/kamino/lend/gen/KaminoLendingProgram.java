@@ -1478,6 +1478,9 @@ public final class KaminoLendingProgram {
 
   public static final Discriminator REFRESH_OBLIGATION_FARMS_FOR_RESERVE_DISCRIMINATOR = toDiscriminator(140, 144, 253, 21, 10, 74, 248, 3);
 
+  /// @param baseAccountsReserveFarmStateKey `obligation_farm_user_state`'s own `farm_state` field, in the handler.
+  ///                                        (Cannot live as an Anchor constraint because the handler is also reached
+  ///                                        via `cpi_refresh_farms` from v2 host instructions, which bypass Anchor.)
   public static List<AccountMeta> refreshObligationFarmsForReserveKeys(final PublicKey crankKey,
                                                                        final PublicKey baseAccountsObligationKey,
                                                                        final PublicKey baseAccountsLendingMarketAuthorityKey,
@@ -1502,6 +1505,9 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param baseAccountsReserveFarmStateKey `obligation_farm_user_state`'s own `farm_state` field, in the handler.
+  ///                                        (Cannot live as an Anchor constraint because the handler is also reached
+  ///                                        via `cpi_refresh_farms` from v2 host instructions, which bypass Anchor.)
   public static Instruction refreshObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                              final PublicKey crankKey,
                                                              final PublicKey baseAccountsObligationKey,

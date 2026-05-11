@@ -180,12 +180,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.ClonedReserveLiquidityMintMismatch,
     KaminoLendingError.ReserveEmergencyMode,
     KaminoLendingError.ObligationOwnershipTransferInProgress,
-    KaminoLendingError.ObligationOwnershipTransferNotInitiated,
+    KaminoLendingError.ObligationOwnershipTransferNotInInitiatedState,
     KaminoLendingError.ObligationPendingOwnerNotSet,
     KaminoLendingError.ObligationInvalidPendingOwner,
     KaminoLendingError.ObligationOwnershipTransferNotApproved,
     KaminoLendingError.ObligationHasActiveBorrowOrders,
-    KaminoLendingError.OnlyComputeBudgetCompanionIxsAllowed {
+    KaminoLendingError.OnlyComputeBudgetCompanionIxsAllowed,
+    KaminoLendingError.MissingPermissioner {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -366,12 +367,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6174 -> ClonedReserveLiquidityMintMismatch.INSTANCE;
       case 6175 -> ReserveEmergencyMode.INSTANCE;
       case 6176 -> ObligationOwnershipTransferInProgress.INSTANCE;
-      case 6177 -> ObligationOwnershipTransferNotInitiated.INSTANCE;
+      case 6177 -> ObligationOwnershipTransferNotInInitiatedState.INSTANCE;
       case 6178 -> ObligationPendingOwnerNotSet.INSTANCE;
       case 6179 -> ObligationInvalidPendingOwner.INSTANCE;
       case 6180 -> ObligationOwnershipTransferNotApproved.INSTANCE;
       case 6181 -> ObligationHasActiveBorrowOrders.INSTANCE;
       case 6182 -> OnlyComputeBudgetCompanionIxsAllowed.INSTANCE;
+      case 6183 -> MissingPermissioner.INSTANCE;
       default -> null;
     };
   }
@@ -1615,9 +1617,9 @@ public sealed interface KaminoLendingError extends ProgramError permits
     );
   }
 
-  record ObligationOwnershipTransferNotInitiated(int code, String msg) implements KaminoLendingError {
+  record ObligationOwnershipTransferNotInInitiatedState(int code, String msg) implements KaminoLendingError {
 
-    public static final ObligationOwnershipTransferNotInitiated INSTANCE = new ObligationOwnershipTransferNotInitiated(
+    public static final ObligationOwnershipTransferNotInInitiatedState INSTANCE = new ObligationOwnershipTransferNotInInitiatedState(
         6177, "Obligation ownership transfer is not in initiated state"
     );
   }
@@ -1654,6 +1656,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final OnlyComputeBudgetCompanionIxsAllowed INSTANCE = new OnlyComputeBudgetCompanionIxsAllowed(
         6182, "Only ComputeBudget instructions may accompany this instruction"
+    );
+  }
+
+  record MissingPermissioner(int code, String msg) implements KaminoLendingError {
+
+    public static final MissingPermissioner INSTANCE = new MissingPermissioner(
+        6183, "Required permissioning account is missing"
     );
   }
 }
