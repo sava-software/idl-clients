@@ -744,6 +744,97 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, SEED_DEPOSIT_ON_INIT_RESERVE_DISCRIMINATOR);
   }
 
+  public static final Discriminator TOPUP_RESERVE_REWARDS_DISCRIMINATOR = toDiscriminator(63, 255, 130, 211, 110, 216, 88, 173);
+
+  /// Sponsor a reserve's rewards distribution by topping up its `rewards_amount_available` budget.
+  ///
+  public static List<AccountMeta> topupReserveRewardsKeys(final PublicKey signerKey,
+                                                          final PublicKey lendingMarketKey,
+                                                          final PublicKey reserveKey,
+                                                          final PublicKey reserveLiquidityMintKey,
+                                                          final PublicKey reserveLiquiditySupplyKey,
+                                                          final PublicKey sourceLiquidityKey,
+                                                          final PublicKey liquidityTokenProgramKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createRead(lendingMarketKey),
+      createWrite(reserveKey),
+      createRead(reserveLiquidityMintKey),
+      createWrite(reserveLiquiditySupplyKey),
+      createWrite(sourceLiquidityKey),
+      createRead(liquidityTokenProgramKey)
+    );
+  }
+
+  /// Sponsor a reserve's rewards distribution by topping up its `rewards_amount_available` budget.
+  ///
+  public static Instruction topupReserveRewards(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                final PublicKey signerKey,
+                                                final PublicKey lendingMarketKey,
+                                                final PublicKey reserveKey,
+                                                final PublicKey reserveLiquidityMintKey,
+                                                final PublicKey reserveLiquiditySupplyKey,
+                                                final PublicKey sourceLiquidityKey,
+                                                final PublicKey liquidityTokenProgramKey,
+                                                final long amount) {
+    final var keys = topupReserveRewardsKeys(
+      signerKey,
+      lendingMarketKey,
+      reserveKey,
+      reserveLiquidityMintKey,
+      reserveLiquiditySupplyKey,
+      sourceLiquidityKey,
+      liquidityTokenProgramKey
+    );
+    return topupReserveRewards(invokedKaminoLendingProgramMeta, keys, amount);
+  }
+
+  /// Sponsor a reserve's rewards distribution by topping up its `rewards_amount_available` budget.
+  ///
+  public static Instruction topupReserveRewards(final AccountMeta invokedKaminoLendingProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long amount) {
+    final byte[] _data = new byte[16];
+    int i = TOPUP_RESERVE_REWARDS_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+
+    return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
+  }
+
+  public record TopupReserveRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+
+    public static TopupReserveRewardsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
+
+    public static TopupReserveRewardsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      return new TopupReserveRewardsIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator SOCIALIZE_LOSS_DISCRIMINATOR = toDiscriminator(245, 75, 91, 0, 236, 97, 19, 3);
 
   public static List<AccountMeta> socializeLossKeys(final PublicKey lendingMarketOwnerKey,

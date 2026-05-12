@@ -186,7 +186,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.ObligationOwnershipTransferNotApproved,
     KaminoLendingError.ObligationHasActiveBorrowOrders,
     KaminoLendingError.OnlyComputeBudgetCompanionIxsAllowed,
-    KaminoLendingError.MissingPermissioner {
+    KaminoLendingError.MissingPermissioner,
+    KaminoLendingError.ReserveRewardsDisabled {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -374,6 +375,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6181 -> ObligationHasActiveBorrowOrders.INSTANCE;
       case 6182 -> OnlyComputeBudgetCompanionIxsAllowed.INSTANCE;
       case 6183 -> MissingPermissioner.INSTANCE;
+      case 6184 -> ReserveRewardsDisabled.INSTANCE;
       default -> null;
     };
   }
@@ -1663,6 +1665,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final MissingPermissioner INSTANCE = new MissingPermissioner(
         6183, "Required permissioning account is missing"
+    );
+  }
+
+  record ReserveRewardsDisabled(int code, String msg) implements KaminoLendingError {
+
+    public static final ReserveRewardsDisabled INSTANCE = new ReserveRewardsDisabled(
+        6184, "Reserve rewards are disabled on this market (reserve_rewards_max_apr_pct is 0)"
     );
   }
 }

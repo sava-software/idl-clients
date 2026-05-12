@@ -45,7 +45,7 @@ public record Reserve(PublicKey _address,
   public static final int BYTES = 8624;
   public static final int RESERVE_LIQUIDITY_PADDING_LEN = 150;
   public static final int RESERVE_COLLATERAL_PADDING_LEN = 150;
-  public static final int CONFIG_PADDING_LEN = 114;
+  public static final int CONFIG_PADDING_LEN = 113;
   public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_LEN = 32;
   public static final int PADDING_LEN = 204;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -63,7 +63,7 @@ public record Reserve(PublicKey _address,
   public static final int COLLATERAL_OFFSET = 2560;
   public static final int RESERVE_COLLATERAL_PADDING_OFFSET = 3656;
   public static final int CONFIG_OFFSET = 4856;
-  public static final int CONFIG_PADDING_OFFSET = 5792;
+  public static final int CONFIG_PADDING_OFFSET = 5800;
   public static final int BORROWED_AMOUNT_OUTSIDE_ELEVATION_GROUP_OFFSET = 6704;
   public static final int BORROWED_AMOUNTS_AGAINST_THIS_RESERVE_IN_ELEVATION_GROUPS_OFFSET = 6712;
   public static final int WITHDRAW_QUEUE_OFFSET = 6968;
@@ -141,7 +141,7 @@ public record Reserve(PublicKey _address,
     i += SerDeUtil.readArray(reserveCollateralPadding, _data, i);
     final var config = ReserveConfig.read(_data, i);
     i += config.l();
-    final var configPadding = new long[114];
+    final var configPadding = new long[113];
     i += SerDeUtil.readArray(configPadding, _data, i);
     final var borrowedAmountOutsideElevationGroup = getInt64LE(_data, i);
     i += 8;
@@ -187,7 +187,7 @@ public record Reserve(PublicKey _address,
     i += collateral.write(_data, i);
     i += SerDeUtil.writeArrayChecked(reserveCollateralPadding, 150, _data, i);
     i += config.write(_data, i);
-    i += SerDeUtil.writeArrayChecked(configPadding, 114, _data, i);
+    i += SerDeUtil.writeArrayChecked(configPadding, 113, _data, i);
     putInt64LE(_data, i, borrowedAmountOutsideElevationGroup);
     i += 8;
     i += SerDeUtil.writeArrayChecked(borrowedAmountsAgainstThisReserveInElevationGroups, 32, _data, i);
