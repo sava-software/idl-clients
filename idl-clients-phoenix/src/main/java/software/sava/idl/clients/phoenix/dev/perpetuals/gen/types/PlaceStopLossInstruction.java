@@ -1,0 +1,67 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record PlaceStopLossInstruction(long triggerPrice,
+                                       long executionPrice,
+                                       long tradeSize,
+                                       Side tradeSide,
+                                       Direction executionDirection,
+                                       StopLossOrderKind orderKind) implements SerDe {
+
+  public static final int BYTES = 27;
+
+  public static final int TRIGGER_PRICE_OFFSET = 0;
+  public static final int EXECUTION_PRICE_OFFSET = 8;
+  public static final int TRADE_SIZE_OFFSET = 16;
+  public static final int TRADE_SIDE_OFFSET = 24;
+  public static final int EXECUTION_DIRECTION_OFFSET = 25;
+  public static final int ORDER_KIND_OFFSET = 26;
+
+  public static PlaceStopLossInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var triggerPrice = getInt64LE(_data, i);
+    i += 8;
+    final var executionPrice = getInt64LE(_data, i);
+    i += 8;
+    final var tradeSize = getInt64LE(_data, i);
+    i += 8;
+    final var tradeSide = Side.read(_data, i);
+    i += tradeSide.l();
+    final var executionDirection = Direction.read(_data, i);
+    i += executionDirection.l();
+    final var orderKind = StopLossOrderKind.read(_data, i);
+    return new PlaceStopLossInstruction(triggerPrice,
+                                        executionPrice,
+                                        tradeSize,
+                                        tradeSide,
+                                        executionDirection,
+                                        orderKind);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, triggerPrice);
+    i += 8;
+    putInt64LE(_data, i, executionPrice);
+    i += 8;
+    putInt64LE(_data, i, tradeSize);
+    i += 8;
+    i += tradeSide.write(_data, i);
+    i += executionDirection.write(_data, i);
+    i += orderKind.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

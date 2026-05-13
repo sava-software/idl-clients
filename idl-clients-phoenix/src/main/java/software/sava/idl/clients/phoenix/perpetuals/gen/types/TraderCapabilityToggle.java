@@ -1,0 +1,36 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record TraderCapabilityToggle(TraderCapabilityToggleTarget target, boolean enable) implements SerDe {
+
+  public static final int BYTES = 2;
+
+  public static final int TARGET_OFFSET = 0;
+  public static final int ENABLE_OFFSET = 1;
+
+  public static TraderCapabilityToggle read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var target = TraderCapabilityToggleTarget.read(_data, i);
+    i += target.l();
+    final var enable = _data[i] == 1;
+    return new TraderCapabilityToggle(target, enable);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += target.write(_data, i);
+    _data[i] = (byte) (enable ? 1 : 0);
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,30 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record CancelStopLossInstruction(Direction executionDirection) implements SerDe {
+
+  public static final int BYTES = 1;
+
+  public static final int EXECUTION_DIRECTION_OFFSET = 0;
+
+  public static CancelStopLossInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var executionDirection = Direction.read(_data, _offset);
+    return new CancelStopLossInstruction(executionDirection);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += executionDirection.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

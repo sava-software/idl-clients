@@ -1,0 +1,30 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Serialized parameters for Phoenix order placement instructions.
+///
+public record OrderPacket(OrderPacketKind kind) implements SerDe {
+
+  public static final int KIND_OFFSET = 0;
+
+  public static OrderPacket read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var kind = OrderPacketKind.read(_data, _offset);
+    return new OrderPacket(kind);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += kind.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return kind.l();
+  }
+}

@@ -1,0 +1,41 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// Transfer payload describing how many base lots of an asset should move from the liquidatee to the liquidator.
+///
+public record TransferRequest(long assetId, BaseLots amount) implements SerDe {
+
+  public static final int BYTES = 16;
+
+  public static final int ASSET_ID_OFFSET = 0;
+  public static final int AMOUNT_OFFSET = 8;
+
+  public static TransferRequest read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var assetId = getInt64LE(_data, i);
+    i += 8;
+    final var amount = BaseLots.read(_data, i);
+    return new TransferRequest(assetId, amount);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, assetId);
+    i += 8;
+    i += amount.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

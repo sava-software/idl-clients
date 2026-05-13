@@ -1,0 +1,29 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+public record TraderCapabilityUpdate(TraderCapabilityToggle[] toggles) implements SerDe {
+
+  public static final int TOGGLES_OFFSET = 0;
+
+  public static TraderCapabilityUpdate read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var toggles = SerDeUtil.readVector(4, TraderCapabilityToggle.class, TraderCapabilityToggle::read, _data, _offset);
+    return new TraderCapabilityUpdate(toggles);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeVector(4, toggles, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return SerDeUtil.lenVector(4, toggles);
+  }
+}

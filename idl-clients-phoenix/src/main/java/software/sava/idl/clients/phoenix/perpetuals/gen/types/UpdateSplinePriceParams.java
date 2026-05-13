@@ -1,0 +1,55 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// Parameters for updating a spline's mid-price.
+///
+public record UpdateSplinePriceParams(long newMidPrice,
+                                      OptionalLong userUpdateSlot,
+                                      boolean refreshRegions) implements SerDe {
+
+  public static final int NEW_MID_PRICE_OFFSET = 0;
+  public static final int USER_UPDATE_SLOT_OFFSET = 9;
+
+  public static UpdateSplinePriceParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var newMidPrice = getInt64LE(_data, i);
+    i += 8;
+    final OptionalLong userUpdateSlot;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      userUpdateSlot = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      userUpdateSlot = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final var refreshRegions = _data[i] == 1;
+    return new UpdateSplinePriceParams(newMidPrice, userUpdateSlot, refreshRegions);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, newMidPrice);
+    i += 8;
+    i += SerDeUtil.writeOptional(1, userUpdateSlot, _data, i);
+    _data[i] = (byte) (refreshRegions ? 1 : 0);
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + (userUpdateSlot == null || userUpdateSlot.isEmpty() ? 1 : (1 + 8)) + 1;
+  }
+}

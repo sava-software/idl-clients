@@ -1,0 +1,36 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+
+/// Pointer hint into the orderbook linked list; zero represents a null pointer.
+///
+public record NodePointer(int value) implements SerDe {
+
+  public static final int BYTES = 4;
+
+  public static final int VALUE_OFFSET = 0;
+
+  public static NodePointer read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var value = getInt32LE(_data, _offset);
+    return new NodePointer(value);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt32LE(_data, i, value);
+    i += 4;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

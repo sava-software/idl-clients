@@ -1,0 +1,35 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+/// Fixed-width (16 byte) asset symbol stored as UTF-8 with trailing zero padding.
+///
+public record Symbol(byte[] symbolBytes) implements SerDe {
+
+  public static final int BYTES = 16;
+  public static final int SYMBOL_BYTES_LEN = 16;
+
+  public static final int SYMBOL_BYTES_OFFSET = 0;
+
+  public static Symbol read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var symbolBytes = new byte[16];
+    SerDeUtil.readArray(symbolBytes, _data, _offset);
+    return new Symbol(symbolBytes);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeArrayChecked(symbolBytes, 16, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,360 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record GlobalConfiguration(PublicKey _address,
+                                  Discriminator discriminator,
+                                  long discriminant,
+                                  PublicKey accountKey,
+                                  PublicKey rootAuthority,
+                                  PublicKey riskAuthority,
+                                  PublicKey marketAuthority,
+                                  PublicKey oracleAuthority,
+                                  PublicKey successorAuthority,
+                                  PublicKey adlAuthority,
+                                  PublicKey cancelAuthority,
+                                  PublicKey backstopAuthority,
+                                  PublicKey canonicalTokenMintKey,
+                                  PublicKey globalVaultKey,
+                                  PublicKey perpAssetMapKey,
+                                  PublicKey globalTraderIndexHeaderKey,
+                                  PublicKey activeTraderBufferHeaderKey,
+                                  QuoteLots totalQuoteLotFees,
+                                  QuoteLots unclaimedQuoteLotFees,
+                                  PublicKey withdrawQueueKey,
+                                  int exchangeStatus,
+                                  int quoteDecimals,
+                                  int withdrawalMarginFactorBps,
+                                  byte[] padding0,
+                                  long[] padding1,
+                                  long[] padding2,
+                                  long[] padding3,
+                                  long[] padding4,
+                                  long[] padding5,
+                                  long[] padding6,
+                                  long[] padding7,
+                                  long[] padding8) implements SerDe {
+
+  public static final int BYTES = 2568;
+  public static final int PADDING_0_LEN = 4;
+  public static final int PADDING_1_LEN = 32;
+  public static final int PADDING_2_LEN = 32;
+  public static final int PADDING_3_LEN = 32;
+  public static final int PADDING_4_LEN = 32;
+  public static final int PADDING_5_LEN = 32;
+  public static final int PADDING_6_LEN = 32;
+  public static final int PADDING_7_LEN = 32;
+  public static final int PADDING_8_LEN = 32;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 146, 212, 210, 47, 136, 111, 20);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int DISCRIMINANT_OFFSET = 8;
+  public static final int ACCOUNT_KEY_OFFSET = 16;
+  public static final int ROOT_AUTHORITY_OFFSET = 48;
+  public static final int RISK_AUTHORITY_OFFSET = 80;
+  public static final int MARKET_AUTHORITY_OFFSET = 112;
+  public static final int ORACLE_AUTHORITY_OFFSET = 144;
+  public static final int SUCCESSOR_AUTHORITY_OFFSET = 176;
+  public static final int ADL_AUTHORITY_OFFSET = 208;
+  public static final int CANCEL_AUTHORITY_OFFSET = 240;
+  public static final int BACKSTOP_AUTHORITY_OFFSET = 272;
+  public static final int CANONICAL_TOKEN_MINT_KEY_OFFSET = 304;
+  public static final int GLOBAL_VAULT_KEY_OFFSET = 336;
+  public static final int PERP_ASSET_MAP_KEY_OFFSET = 368;
+  public static final int GLOBAL_TRADER_INDEX_HEADER_KEY_OFFSET = 400;
+  public static final int ACTIVE_TRADER_BUFFER_HEADER_KEY_OFFSET = 432;
+  public static final int TOTAL_QUOTE_LOT_FEES_OFFSET = 464;
+  public static final int UNCLAIMED_QUOTE_LOT_FEES_OFFSET = 472;
+  public static final int WITHDRAW_QUEUE_KEY_OFFSET = 480;
+  public static final int EXCHANGE_STATUS_OFFSET = 512;
+  public static final int QUOTE_DECIMALS_OFFSET = 513;
+  public static final int WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET = 514;
+  public static final int PADDING_0_OFFSET = 516;
+  public static final int PADDING_1_OFFSET = 520;
+  public static final int PADDING_2_OFFSET = 776;
+  public static final int PADDING_3_OFFSET = 1032;
+  public static final int PADDING_4_OFFSET = 1288;
+  public static final int PADDING_5_OFFSET = 1544;
+  public static final int PADDING_6_OFFSET = 1800;
+  public static final int PADDING_7_OFFSET = 2056;
+  public static final int PADDING_8_OFFSET = 2312;
+
+  public static Filter createDiscriminantFilter(final long discriminant) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, discriminant);
+    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
+  }
+
+  public static Filter createAccountKeyFilter(final PublicKey accountKey) {
+    return Filter.createMemCompFilter(ACCOUNT_KEY_OFFSET, accountKey);
+  }
+
+  public static Filter createRootAuthorityFilter(final PublicKey rootAuthority) {
+    return Filter.createMemCompFilter(ROOT_AUTHORITY_OFFSET, rootAuthority);
+  }
+
+  public static Filter createRiskAuthorityFilter(final PublicKey riskAuthority) {
+    return Filter.createMemCompFilter(RISK_AUTHORITY_OFFSET, riskAuthority);
+  }
+
+  public static Filter createMarketAuthorityFilter(final PublicKey marketAuthority) {
+    return Filter.createMemCompFilter(MARKET_AUTHORITY_OFFSET, marketAuthority);
+  }
+
+  public static Filter createOracleAuthorityFilter(final PublicKey oracleAuthority) {
+    return Filter.createMemCompFilter(ORACLE_AUTHORITY_OFFSET, oracleAuthority);
+  }
+
+  public static Filter createSuccessorAuthorityFilter(final PublicKey successorAuthority) {
+    return Filter.createMemCompFilter(SUCCESSOR_AUTHORITY_OFFSET, successorAuthority);
+  }
+
+  public static Filter createAdlAuthorityFilter(final PublicKey adlAuthority) {
+    return Filter.createMemCompFilter(ADL_AUTHORITY_OFFSET, adlAuthority);
+  }
+
+  public static Filter createCancelAuthorityFilter(final PublicKey cancelAuthority) {
+    return Filter.createMemCompFilter(CANCEL_AUTHORITY_OFFSET, cancelAuthority);
+  }
+
+  public static Filter createBackstopAuthorityFilter(final PublicKey backstopAuthority) {
+    return Filter.createMemCompFilter(BACKSTOP_AUTHORITY_OFFSET, backstopAuthority);
+  }
+
+  public static Filter createCanonicalTokenMintKeyFilter(final PublicKey canonicalTokenMintKey) {
+    return Filter.createMemCompFilter(CANONICAL_TOKEN_MINT_KEY_OFFSET, canonicalTokenMintKey);
+  }
+
+  public static Filter createGlobalVaultKeyFilter(final PublicKey globalVaultKey) {
+    return Filter.createMemCompFilter(GLOBAL_VAULT_KEY_OFFSET, globalVaultKey);
+  }
+
+  public static Filter createPerpAssetMapKeyFilter(final PublicKey perpAssetMapKey) {
+    return Filter.createMemCompFilter(PERP_ASSET_MAP_KEY_OFFSET, perpAssetMapKey);
+  }
+
+  public static Filter createGlobalTraderIndexHeaderKeyFilter(final PublicKey globalTraderIndexHeaderKey) {
+    return Filter.createMemCompFilter(GLOBAL_TRADER_INDEX_HEADER_KEY_OFFSET, globalTraderIndexHeaderKey);
+  }
+
+  public static Filter createActiveTraderBufferHeaderKeyFilter(final PublicKey activeTraderBufferHeaderKey) {
+    return Filter.createMemCompFilter(ACTIVE_TRADER_BUFFER_HEADER_KEY_OFFSET, activeTraderBufferHeaderKey);
+  }
+
+  public static Filter createTotalQuoteLotFeesFilter(final QuoteLots totalQuoteLotFees) {
+    return Filter.createMemCompFilter(TOTAL_QUOTE_LOT_FEES_OFFSET, totalQuoteLotFees.write());
+  }
+
+  public static Filter createUnclaimedQuoteLotFeesFilter(final QuoteLots unclaimedQuoteLotFees) {
+    return Filter.createMemCompFilter(UNCLAIMED_QUOTE_LOT_FEES_OFFSET, unclaimedQuoteLotFees.write());
+  }
+
+  public static Filter createWithdrawQueueKeyFilter(final PublicKey withdrawQueueKey) {
+    return Filter.createMemCompFilter(WITHDRAW_QUEUE_KEY_OFFSET, withdrawQueueKey);
+  }
+
+  public static Filter createExchangeStatusFilter(final int exchangeStatus) {
+    return Filter.createMemCompFilter(EXCHANGE_STATUS_OFFSET, new byte[]{(byte) exchangeStatus});
+  }
+
+  public static Filter createQuoteDecimalsFilter(final int quoteDecimals) {
+    return Filter.createMemCompFilter(QUOTE_DECIMALS_OFFSET, new byte[]{(byte) quoteDecimals});
+  }
+
+  public static Filter createWithdrawalMarginFactorBpsFilter(final int withdrawalMarginFactorBps) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, withdrawalMarginFactorBps);
+    return Filter.createMemCompFilter(WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET, _data);
+  }
+
+  public static GlobalConfiguration read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static GlobalConfiguration read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static GlobalConfiguration read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], GlobalConfiguration> FACTORY = GlobalConfiguration::read;
+
+  public static GlobalConfiguration read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var discriminant = getInt64LE(_data, i);
+    i += 8;
+    final var accountKey = readPubKey(_data, i);
+    i += 32;
+    final var rootAuthority = readPubKey(_data, i);
+    i += 32;
+    final var riskAuthority = readPubKey(_data, i);
+    i += 32;
+    final var marketAuthority = readPubKey(_data, i);
+    i += 32;
+    final var oracleAuthority = readPubKey(_data, i);
+    i += 32;
+    final var successorAuthority = readPubKey(_data, i);
+    i += 32;
+    final var adlAuthority = readPubKey(_data, i);
+    i += 32;
+    final var cancelAuthority = readPubKey(_data, i);
+    i += 32;
+    final var backstopAuthority = readPubKey(_data, i);
+    i += 32;
+    final var canonicalTokenMintKey = readPubKey(_data, i);
+    i += 32;
+    final var globalVaultKey = readPubKey(_data, i);
+    i += 32;
+    final var perpAssetMapKey = readPubKey(_data, i);
+    i += 32;
+    final var globalTraderIndexHeaderKey = readPubKey(_data, i);
+    i += 32;
+    final var activeTraderBufferHeaderKey = readPubKey(_data, i);
+    i += 32;
+    final var totalQuoteLotFees = QuoteLots.read(_data, i);
+    i += totalQuoteLotFees.l();
+    final var unclaimedQuoteLotFees = QuoteLots.read(_data, i);
+    i += unclaimedQuoteLotFees.l();
+    final var withdrawQueueKey = readPubKey(_data, i);
+    i += 32;
+    final var exchangeStatus = _data[i] & 0xFF;
+    ++i;
+    final var quoteDecimals = _data[i] & 0xFF;
+    ++i;
+    final var withdrawalMarginFactorBps = getInt16LE(_data, i);
+    i += 2;
+    final var padding0 = new byte[4];
+    i += SerDeUtil.readArray(padding0, _data, i);
+    final var padding1 = new long[32];
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var padding2 = new long[32];
+    i += SerDeUtil.readArray(padding2, _data, i);
+    final var padding3 = new long[32];
+    i += SerDeUtil.readArray(padding3, _data, i);
+    final var padding4 = new long[32];
+    i += SerDeUtil.readArray(padding4, _data, i);
+    final var padding5 = new long[32];
+    i += SerDeUtil.readArray(padding5, _data, i);
+    final var padding6 = new long[32];
+    i += SerDeUtil.readArray(padding6, _data, i);
+    final var padding7 = new long[32];
+    i += SerDeUtil.readArray(padding7, _data, i);
+    final var padding8 = new long[32];
+    SerDeUtil.readArray(padding8, _data, i);
+    return new GlobalConfiguration(_address,
+                                   discriminator,
+                                   discriminant,
+                                   accountKey,
+                                   rootAuthority,
+                                   riskAuthority,
+                                   marketAuthority,
+                                   oracleAuthority,
+                                   successorAuthority,
+                                   adlAuthority,
+                                   cancelAuthority,
+                                   backstopAuthority,
+                                   canonicalTokenMintKey,
+                                   globalVaultKey,
+                                   perpAssetMapKey,
+                                   globalTraderIndexHeaderKey,
+                                   activeTraderBufferHeaderKey,
+                                   totalQuoteLotFees,
+                                   unclaimedQuoteLotFees,
+                                   withdrawQueueKey,
+                                   exchangeStatus,
+                                   quoteDecimals,
+                                   withdrawalMarginFactorBps,
+                                   padding0,
+                                   padding1,
+                                   padding2,
+                                   padding3,
+                                   padding4,
+                                   padding5,
+                                   padding6,
+                                   padding7,
+                                   padding8);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, discriminant);
+    i += 8;
+    accountKey.write(_data, i);
+    i += 32;
+    rootAuthority.write(_data, i);
+    i += 32;
+    riskAuthority.write(_data, i);
+    i += 32;
+    marketAuthority.write(_data, i);
+    i += 32;
+    oracleAuthority.write(_data, i);
+    i += 32;
+    successorAuthority.write(_data, i);
+    i += 32;
+    adlAuthority.write(_data, i);
+    i += 32;
+    cancelAuthority.write(_data, i);
+    i += 32;
+    backstopAuthority.write(_data, i);
+    i += 32;
+    canonicalTokenMintKey.write(_data, i);
+    i += 32;
+    globalVaultKey.write(_data, i);
+    i += 32;
+    perpAssetMapKey.write(_data, i);
+    i += 32;
+    globalTraderIndexHeaderKey.write(_data, i);
+    i += 32;
+    activeTraderBufferHeaderKey.write(_data, i);
+    i += 32;
+    i += totalQuoteLotFees.write(_data, i);
+    i += unclaimedQuoteLotFees.write(_data, i);
+    withdrawQueueKey.write(_data, i);
+    i += 32;
+    _data[i] = (byte) exchangeStatus;
+    ++i;
+    _data[i] = (byte) quoteDecimals;
+    ++i;
+    putInt16LE(_data, i, withdrawalMarginFactorBps);
+    i += 2;
+    i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding4, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding5, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding6, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding7, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding8, 32, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

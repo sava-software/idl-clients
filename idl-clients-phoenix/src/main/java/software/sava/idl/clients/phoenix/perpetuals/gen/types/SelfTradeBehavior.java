@@ -1,0 +1,16 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+/// Policy for handling matches against the submitting trader's resting orders.
+public enum SelfTradeBehavior implements RustEnum {
+
+  Abort,
+  CancelProvide,
+  DecrementTake;
+
+  public static SelfTradeBehavior read(final byte[] _data, final int _offset) {
+    return SerDeUtil.read(1, SelfTradeBehavior.values(), _data, _offset);
+  }
+}

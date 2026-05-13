@@ -1,0 +1,37 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Identifies a resting order along with an optional hint into the orderbook.
+///
+public record CancelId(NodePointer nodePointer, FIFOOrderId orderId) implements SerDe {
+
+  public static final int BYTES = 20;
+
+  public static final int NODE_POINTER_OFFSET = 0;
+  public static final int ORDER_ID_OFFSET = 4;
+
+  public static CancelId read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var nodePointer = NodePointer.read(_data, i);
+    i += nodePointer.l();
+    final var orderId = FIFOOrderId.read(_data, i);
+    return new CancelId(nodePointer, orderId);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += nodePointer.write(_data, i);
+    i += orderId.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

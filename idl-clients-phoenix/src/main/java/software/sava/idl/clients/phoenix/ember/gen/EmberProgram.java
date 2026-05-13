@@ -1,0 +1,296 @@
+package software.sava.idl.clients.phoenix.ember.gen;
+
+import java.util.List;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
+import software.sava.idl.clients.phoenix.ember.gen.types.WithdrawParams;
+
+import static software.sava.core.accounts.meta.AccountMeta.createRead;
+import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
+import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public final class EmberProgram {
+
+  public static final Discriminator INIT_DISCRIMINATOR = toDiscriminator(220, 59, 207, 236, 108, 250, 47, 100);
+
+  /// @param payerKey Fee payer account
+  /// @param authorityKey The state authority for admin actions
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  /// @param systemProgramKey System program account
+  public static List<AccountMeta> initKeys(final PublicKey payerKey,
+                                           final PublicKey authorityKey,
+                                           final PublicKey stateKey,
+                                           final PublicKey inputMintKey,
+                                           final PublicKey outputMintKey,
+                                           final PublicKey vaultKey,
+                                           final PublicKey tokenProgramKey,
+                                           final PublicKey systemProgramKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createRead(authorityKey),
+      createWrite(stateKey),
+      createRead(inputMintKey),
+      createWrite(outputMintKey),
+      createWrite(vaultKey),
+      createRead(tokenProgramKey),
+      createRead(systemProgramKey)
+    );
+  }
+
+  /// @param payerKey Fee payer account
+  /// @param authorityKey The state authority for admin actions
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  /// @param systemProgramKey System program account
+  public static Instruction init(final AccountMeta invokedEmberProgramMeta,
+                                 final PublicKey payerKey,
+                                 final PublicKey authorityKey,
+                                 final PublicKey stateKey,
+                                 final PublicKey inputMintKey,
+                                 final PublicKey outputMintKey,
+                                 final PublicKey vaultKey,
+                                 final PublicKey tokenProgramKey,
+                                 final PublicKey systemProgramKey) {
+    final var keys = initKeys(
+      payerKey,
+      authorityKey,
+      stateKey,
+      inputMintKey,
+      outputMintKey,
+      vaultKey,
+      tokenProgramKey,
+      systemProgramKey
+    );
+    return init(invokedEmberProgramMeta, keys);
+  }
+
+  public static Instruction init(final AccountMeta invokedEmberProgramMeta,
+                                 final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedEmberProgramMeta, keys, INIT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator DEPOSIT_DISCRIMINATOR = toDiscriminator(242, 35, 198, 137, 82, 225, 242, 182);
+
+  /// @param ownerKey The token owner
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param inputTokenAccountKey The input token account owned by the owner
+  /// @param outputTokenAccountKey The output token account owned by the owner
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  public static List<AccountMeta> depositKeys(final PublicKey ownerKey,
+                                              final PublicKey stateKey,
+                                              final PublicKey inputMintKey,
+                                              final PublicKey outputMintKey,
+                                              final PublicKey inputTokenAccountKey,
+                                              final PublicKey outputTokenAccountKey,
+                                              final PublicKey vaultKey,
+                                              final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(ownerKey),
+      createWrite(stateKey),
+      createRead(inputMintKey),
+      createWrite(outputMintKey),
+      createWrite(inputTokenAccountKey),
+      createWrite(outputTokenAccountKey),
+      createWrite(vaultKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  /// @param ownerKey The token owner
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param inputTokenAccountKey The input token account owned by the owner
+  /// @param outputTokenAccountKey The output token account owned by the owner
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  public static Instruction deposit(final AccountMeta invokedEmberProgramMeta,
+                                    final PublicKey ownerKey,
+                                    final PublicKey stateKey,
+                                    final PublicKey inputMintKey,
+                                    final PublicKey outputMintKey,
+                                    final PublicKey inputTokenAccountKey,
+                                    final PublicKey outputTokenAccountKey,
+                                    final PublicKey vaultKey,
+                                    final PublicKey tokenProgramKey,
+                                    final DepositParams depositParams) {
+    final var keys = depositKeys(
+      ownerKey,
+      stateKey,
+      inputMintKey,
+      outputMintKey,
+      inputTokenAccountKey,
+      outputTokenAccountKey,
+      vaultKey,
+      tokenProgramKey
+    );
+    return deposit(invokedEmberProgramMeta, keys, depositParams);
+  }
+
+  public static Instruction deposit(final AccountMeta invokedEmberProgramMeta,
+                                    final List<AccountMeta> keys,
+                                    final DepositParams depositParams) {
+    final byte[] _data = new byte[8 + depositParams.l()];
+    int i = DEPOSIT_DISCRIMINATOR.write(_data, 0);
+    depositParams.write(_data, i);
+
+    return Instruction.createInstruction(invokedEmberProgramMeta, keys, _data);
+  }
+
+  public record DepositIxData(Discriminator discriminator, DepositParams depositParams) implements SerDe {  
+
+    public static DepositIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int DEPOSIT_PARAMS_OFFSET = 8;
+
+    public static DepositIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var depositParams = DepositParams.read(_data, i);
+      return new DepositIxData(discriminator, depositParams);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += depositParams.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 18, 70, 156, 148, 109, 161, 34);
+
+  /// @param ownerKey The token owner
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param inputTokenAccountKey The input token account owned by the owner
+  /// @param outputTokenAccountKey The output token account owned by the owner
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  public static List<AccountMeta> withdrawKeys(final PublicKey ownerKey,
+                                               final PublicKey stateKey,
+                                               final PublicKey inputMintKey,
+                                               final PublicKey outputMintKey,
+                                               final PublicKey inputTokenAccountKey,
+                                               final PublicKey outputTokenAccountKey,
+                                               final PublicKey vaultKey,
+                                               final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(ownerKey),
+      createWrite(stateKey),
+      createRead(inputMintKey),
+      createWrite(outputMintKey),
+      createWrite(inputTokenAccountKey),
+      createWrite(outputTokenAccountKey),
+      createWrite(vaultKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  /// @param ownerKey The token owner
+  /// @param stateKey The state account for the token wrapper
+  /// @param inputMintKey The input mint for the token wrapper
+  /// @param outputMintKey The output mint for the token wrapper
+  /// @param inputTokenAccountKey The input token account owned by the owner
+  /// @param outputTokenAccountKey The output token account owned by the owner
+  /// @param vaultKey The vault account for the token wrapper input mint
+  /// @param tokenProgramKey Token program account
+  public static Instruction withdraw(final AccountMeta invokedEmberProgramMeta,
+                                     final PublicKey ownerKey,
+                                     final PublicKey stateKey,
+                                     final PublicKey inputMintKey,
+                                     final PublicKey outputMintKey,
+                                     final PublicKey inputTokenAccountKey,
+                                     final PublicKey outputTokenAccountKey,
+                                     final PublicKey vaultKey,
+                                     final PublicKey tokenProgramKey,
+                                     final WithdrawParams withdrawParams) {
+    final var keys = withdrawKeys(
+      ownerKey,
+      stateKey,
+      inputMintKey,
+      outputMintKey,
+      inputTokenAccountKey,
+      outputTokenAccountKey,
+      vaultKey,
+      tokenProgramKey
+    );
+    return withdraw(invokedEmberProgramMeta, keys, withdrawParams);
+  }
+
+  public static Instruction withdraw(final AccountMeta invokedEmberProgramMeta,
+                                     final List<AccountMeta> keys,
+                                     final WithdrawParams withdrawParams) {
+    final byte[] _data = new byte[8 + withdrawParams.l()];
+    int i = WITHDRAW_DISCRIMINATOR.write(_data, 0);
+    withdrawParams.write(_data, i);
+
+    return Instruction.createInstruction(invokedEmberProgramMeta, keys, _data);
+  }
+
+  public record WithdrawIxData(Discriminator discriminator, WithdrawParams withdrawParams) implements SerDe {  
+
+    public static WithdrawIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int WITHDRAW_PARAMS_OFFSET = 8;
+
+    public static WithdrawIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var withdrawParams = WithdrawParams.read(_data, i);
+      return new WithdrawIxData(discriminator, withdrawParams);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += withdrawParams.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  private EmberProgram() {
+  }
+}

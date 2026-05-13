@@ -1,0 +1,66 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// Parameters for closing matched positions between at-loss and in-profit traders.
+///
+public record ClosePositionsParams(long assetId,
+                                   BaseLots amount,
+                                   QuoteLots atLossCloseValue,
+                                   QuoteLots inProfitCloseValue) implements SerDe {
+
+  public static final int ASSET_ID_OFFSET = 0;
+  public static final int AMOUNT_OFFSET = 8;
+  public static final int AT_LOSS_CLOSE_VALUE_OFFSET = 17;
+
+  public static ClosePositionsParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var assetId = getInt64LE(_data, i);
+    i += 8;
+    final var amount = BaseLots.read(_data, i);
+    i += amount.l();
+    final QuoteLots atLossCloseValue;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      atLossCloseValue = null;
+      ++i;
+    } else {
+      ++i;
+      atLossCloseValue = QuoteLots.read(_data, i);
+      i += atLossCloseValue.l();
+    }
+    final QuoteLots inProfitCloseValue;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      inProfitCloseValue = null;
+    } else {
+      ++i;
+      inProfitCloseValue = QuoteLots.read(_data, i);
+    }
+    return new ClosePositionsParams(assetId,
+                                    amount,
+                                    atLossCloseValue,
+                                    inProfitCloseValue);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, assetId);
+    i += 8;
+    i += amount.write(_data, i);
+    i += SerDeUtil.writeOptional(1, atLossCloseValue, _data, i);
+    i += SerDeUtil.writeOptional(1, inProfitCloseValue, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + amount.l() + (atLossCloseValue == null ? 1 : (1 + atLossCloseValue.l())) + (inProfitCloseValue == null ? 1 : (1 + inProfitCloseValue.l()));
+  }
+}

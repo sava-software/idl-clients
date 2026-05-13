@@ -192,6 +192,33 @@
       "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
     },
     {
+      "name": "Phoenix Ember",
+      "source": "idl-clients-phoenix",
+      "module": "phoenix",
+      "package": "phoenix.ember",
+      "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
+    },
+    {
+      "name": "Phoenix Perpetuals",
+      "source": "idl-clients-phoenix",
+      "module": "phoenix",
+      "package": "phoenix.perpetuals",
+      "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
+    },
+    {
+      "name": "Phoenix Perpetuals Dev",
+      "source": "idl-clients-phoenix",
+      "module": "phoenix",
+      "package": "phoenix.dev.perpetuals",
+      "program": "phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
+    },
+    {
       "name": "Pyth Lazer",
       "source": "idl-clients-oracles",
       "module": "oracles",

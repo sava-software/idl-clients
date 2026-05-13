@@ -1,0 +1,779 @@
+{
+  "version": "0.1.0",
+  "address": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
+  "metadata": {
+    "name": "Ember",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Phoenix Ember: a token wrapper program",
+    "address": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy"
+  },
+  "instructions": [
+    {
+      "name": "Init",
+      "discriminator": [
+        220,
+        59,
+        207,
+        236,
+        108,
+        250,
+        47,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "docs": [
+            "Fee payer account"
+          ]
+        },
+        {
+          "name": "authority",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "The state authority for admin actions"
+          ]
+        },
+        {
+          "name": "state",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The state account for the token wrapper"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "inputMint",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "The input mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "outputMint",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The output mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The vault account for the token wrapper input mint"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "tokenProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Token program account"
+          ]
+        },
+        {
+          "name": "systemProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "System program account"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "Deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "docs": [
+            "The token owner"
+          ]
+        },
+        {
+          "name": "state",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The state account for the token wrapper"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "inputMint",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "The input mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "outputMint",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The output mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "inputTokenAccount",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The input token account owned by the owner"
+          ]
+        },
+        {
+          "name": "outputTokenAccount",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The output token account owned by the owner"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The vault account for the token wrapper input mint"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "tokenProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Token program account"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "depositParams",
+          "type": {
+            "defined": {
+              "name": "DepositParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "docs": [
+            "The token owner"
+          ]
+        },
+        {
+          "name": "state",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The state account for the token wrapper"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "inputMint",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "The input mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "outputMint",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The output mint for the token wrapper"
+          ]
+        },
+        {
+          "name": "inputTokenAccount",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The input token account owned by the owner"
+          ]
+        },
+        {
+          "name": "outputTokenAccount",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The output token account owned by the owner"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "signer": false,
+          "docs": [
+            "The vault account for the token wrapper input mint"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                198,
+                83,
+                29,
+                115,
+                0,
+                180,
+                85,
+                12,
+                224,
+                1,
+                166,
+                20,
+                58,
+                234,
+                43,
+                8,
+                63,
+                30,
+                176,
+                113,
+                184,
+                86,
+                125,
+                118,
+                14,
+                204,
+                18,
+                87,
+                3,
+                196,
+                103,
+                200
+              ]
+            }
+          }
+        },
+        {
+          "name": "tokenProgram",
+          "writable": false,
+          "signer": false,
+          "docs": [
+            "Token program account"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "withdrawParams",
+          "type": {
+            "defined": {
+              "name": "WithdrawParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "EmberState",
+      "discriminator": [
+        0,
+        208,
+        11,
+        177,
+        63,
+        157,
+        55,
+        98
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "DepositParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EmberState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "discriminant",
+            "type": "u64"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "inputMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "outputMint",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6001,
+      "name": "StateNotInitialized",
+      "msg": "State account not initialized"
+    },
+    {
+      "code": 6002,
+      "name": "StatePdaMismatch",
+      "msg": "State account PDA mismatch"
+    },
+    {
+      "code": 6003,
+      "name": "StateAlreadyInitialized",
+      "msg": "State account already initialized"
+    },
+    {
+      "code": 6004,
+      "name": "StateDataMismatch",
+      "msg": "State account data mismatch"
+    },
+    {
+      "code": 6010,
+      "name": "InputMintMismatch",
+      "msg": "Input mint mismatch"
+    },
+    {
+      "code": 6011,
+      "name": "OutputMintMismatch",
+      "msg": "Output mint mismatch"
+    },
+    {
+      "code": 6012,
+      "name": "InputMintDataLengthMismatch",
+      "msg": "Input mint data length mismatch"
+    },
+    {
+      "code": 6013,
+      "name": "OutputMintDataLengthMismatch",
+      "msg": "Output mint data length mismatch"
+    },
+    {
+      "code": 6014,
+      "name": "OutputMintMissingAuthority",
+      "msg": "Output mint must have a mint authority"
+    },
+    {
+      "code": 6015,
+      "name": "OutputMintAuthorityMismatch",
+      "msg": "Output mint must be owned by the State account"
+    },
+    {
+      "code": 6016,
+      "name": "OutputMintAlreadyInitialized",
+      "msg": "Output mint account already initialized"
+    },
+    {
+      "code": 6020,
+      "name": "InputTokenAccountNotInitialized",
+      "msg": "Input token account not initialized"
+    },
+    {
+      "code": 6021,
+      "name": "OutputTokenAccountNotInitialized",
+      "msg": "Output token account not initialized"
+    },
+    {
+      "code": 6022,
+      "name": "InputTokenAccountMintMismatch",
+      "msg": "Input token account mint mismatch"
+    },
+    {
+      "code": 6023,
+      "name": "OutputTokenAccountMintMismatch",
+      "msg": "Output token account mint mismatch"
+    },
+    {
+      "code": 6024,
+      "name": "InputTokenAccountOwnerMismatch",
+      "msg": "Input token account owner mismatch"
+    },
+    {
+      "code": 6025,
+      "name": "OutputTokenAccountOwnerMismatch",
+      "msg": "Output token account owner mismatch"
+    },
+    {
+      "code": 6026,
+      "name": "InputTokenAccountDataLengthMismatch",
+      "msg": "Input token account data length mismatch"
+    },
+    {
+      "code": 6027,
+      "name": "OutputTokenAccountDataLengthMismatch",
+      "msg": "Output token account data length mismatch"
+    },
+    {
+      "code": 6028,
+      "name": "InsufficientBalance",
+      "msg": "Insufficient balance. Expected: {0}, Actual: {1}"
+    },
+    {
+      "code": 6030,
+      "name": "VaultPdaMismatch",
+      "msg": "Vault account PDA mismatch"
+    },
+    {
+      "code": 6031,
+      "name": "VaultAlreadyInitialized",
+      "msg": "Vault account already initialized"
+    },
+    {
+      "code": 6032,
+      "name": "VaultDataLengthMismatch",
+      "msg": "Vault account data length mismatch"
+    },
+    {
+      "code": 6033,
+      "name": "VaultMintMismatch",
+      "msg": "Vault account mint mismatch. Expected the vault mint to be the input mint"
+    },
+    {
+      "code": 6034,
+      "name": "VaultOwnerMismatch",
+      "msg": "Vault account owner mismatch. Expected to be owned by the State account"
+    },
+    {
+      "code": 6035,
+      "name": "VaultNotInitialized",
+      "msg": "Vault token account not initialized"
+    }
+  ]
+}

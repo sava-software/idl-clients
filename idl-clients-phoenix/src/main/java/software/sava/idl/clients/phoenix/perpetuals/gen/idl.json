@@ -1,0 +1,4839 @@
+{
+  "version": "0.1.0",
+  "address": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+  "metadata": {
+    "name": "Eternal",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Phoenix Eternal: a perpetual futures exchange",
+    "address": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih"
+  },
+  "instructions": [
+    {
+      "name": "PlaceMarketOrder",
+      "docs": [
+        "Places an immediate-or-cancel order that consumes resting liquidity on the specified market."
+      ],
+      "discriminator": [90, 118, 192, 252, 192, 99, 39, 145],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority placing the market order."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "orderPacket",
+          "type": {
+            "defined": {
+              "name": "OrderPacket"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PlaceLimitOrder",
+      "docs": [
+        "Places a limit order that may rest on the orderbook or take liquidity depending on matching conditions."
+      ],
+      "discriminator": [108, 176, 33, 186, 146, 229, 1, 197],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority placing the limit order."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "orderPacket",
+          "type": {
+            "defined": {
+              "name": "OrderPacket"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PlaceMultiLimitOrder",
+      "docs": [
+        "Places multiple post-only limit orders in a single transaction, allowing batch order placement for market making."
+      ],
+      "discriminator": [236, 208, 221, 172, 141, 226, 129, 84],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority placing the batch of limit orders."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA holding balances and open positions."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "orderPacket",
+          "type": {
+            "defined": {
+              "name": "MultipleOrderPacket"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CancelOrdersById",
+      "docs": [
+        "Cancels a specific set of resting orders identified by their FIFO order ids."
+      ],
+      "discriminator": [234, 204, 126, 94, 222, 22, 141, 24],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority requesting the cancellation."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": [
+            "Market orderbook account containing the resting orders to cancel."
+          ]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "orderIds",
+          "type": {
+            "defined": {
+              "name": "OrderIds"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CancelUpTo",
+      "docs": [
+        "Cancels resting orders on the specified side up to an optional order or price threshold."
+      ],
+      "discriminator": [26, 209, 244, 253, 59, 175, 227, 54],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority requesting the cancellation."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": [
+            "Market orderbook account containing the resting orders to cancel."
+          ]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CancelUpToInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CancelAll",
+      "docs": [
+        "Cancels every resting order owned by the connected trader on the specified market."
+      ],
+      "discriminator": [98, 191, 75, 220, 115, 40, 71, 237],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and cross trading is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader authority requesting the cancellation."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": [
+            "Market orderbook account containing the resting orders to cancel."
+          ]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "UpdateOraclePrices",
+      "docs": [
+        "Updates oracle-provided spot and perp prices for one or more perpetual markets."
+      ],
+      "discriminator": [31, 180, 61, 161, 248, 128, 43, 94],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Global configuration PDA; provides oracle authority and quote decimals for conversions."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": [
+            "Wallet authorised to submit oracle price updates (root oracle or delegated user)."
+          ]
+        },
+        {
+          "name": "permissionAccount",
+          "writable": true,
+          "docs": [
+            "Permission account recording oracle capabilities and remaining allowances."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perpetual asset map storing mark price state and oracle metadata."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateOraclePricesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpdateOraclePricesWithOrdering",
+      "docs": [
+        "Updates oracle prices with an explicit timestamp for deterministic ordering and optional timestamp reset."
+      ],
+      "discriminator": [164, 0, 14, 250, 58, 198, 25, 24],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Global configuration PDA; provides oracle authority and quote decimals for conversions."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": [
+            "Wallet authorised to submit oracle price updates (root oracle or delegated user)."
+          ]
+        },
+        {
+          "name": "permissionAccount",
+          "writable": true,
+          "docs": [
+            "Permission account recording oracle capabilities and remaining allowances."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perpetual asset map storing mark price state and oracle metadata."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateOraclePricesWithOrderingParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpdateSplinePrice",
+      "docs": [
+        "Updates the mid-price for a spline market-making program on the specified market."
+      ],
+      "discriminator": [45, 155, 200, 52, 37, 214, 187, 140],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "signerAccount",
+          "signer": true,
+          "docs": [
+            "Authority of the spline trader account authorised to update the spline price."
+          ]
+        },
+        {
+          "name": "traderAccount",
+          "docs": ["Spline trader account whose price is being updated."]
+        },
+        {
+          "name": "splineAccount",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA containing the spline configuration and pricing data."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateSplinePriceParamsWithOrdering"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "DepositFunds",
+      "docs": [
+        "Deposits collateral tokens from a trader's token account into the global vault, crediting the trader's account."
+      ],
+      "discriminator": [202, 39, 52, 211, 53, 20, 250, 88],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Authority of the trader account making the deposit."]
+        },
+        {
+          "name": "traderTokenAccount",
+          "writable": true,
+          "docs": ["Trader's token account from which funds are transferred."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA that receives the collateral credit."]
+        },
+        {
+          "name": "globalVault",
+          "writable": true,
+          "docs": [
+            "Global vault token account that receives the deposited tokens."
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "docs": ["SPL Token program for executing the transfer."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DepositFundsInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RegisterTrader",
+      "docs": [
+        "Registers a new trader account with the specified configuration and position capacity."
+      ],
+      "discriminator": [75, 243, 224, 167, 1, 5, 51, 32],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Global configuration PDA that validates the trader registration."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "docs": [
+            "Account paying for the trader account creation and rent exemption."
+          ]
+        },
+        {
+          "name": "traderWallet",
+          "docs": [
+            "Authority that will control the trader account; used to derive the trader PDA."
+          ]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA to be created; derived from [\"trader\", trader_wallet, [trader_pda_index, trader_subaccount_index]]."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [116, 114, 97, 100, 101, 114]
+              },
+              {
+                "kind": "account",
+                "path": "traderWallet"
+              },
+              {
+                "kind": "arg",
+                "path": "params.traderPdaIndex"
+              },
+              {
+                "kind": "arg",
+                "path": "params.traderSubaccountIndex"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "docs": ["System program for creating the trader account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RegisterTraderParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "LiquidateViaMarketOrder",
+      "docs": [
+        "Liquidates a trader's position by executing an immediate-or-cancel market order to reduce their exposure."
+      ],
+      "discriminator": [251, 241, 184, 108, 70, 70, 127, 198],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA; enforces the market is registered and liquidation is enabled."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "liquidatorWallet",
+          "signer": true,
+          "docs": ["Liquidator authority executing the liquidation."]
+        },
+        {
+          "name": "liquidatedTrader",
+          "writable": true,
+          "docs": [
+            "Trader account being liquidated (must be in liquidatable state)."
+          ]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA (\"trader\" account) holding balances and open positions."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits and funding parameters for the market."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LiquidationParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "LiquidationTransfer",
+      "docs": [
+        "Transfers positions directly between a liquidator and liquidatee once the liquidatee is flagged as unhealthy."
+      ],
+      "discriminator": [57, 218, 215, 68, 174, 23, 204, 127],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that owns the global trader index, active trader buffer, and collateral controls."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map governing risk limits, pricing, and funding parameters for every listed market."
+          ]
+        },
+        {
+          "name": "liquidator",
+          "signer": true,
+          "docs": [
+            "Authority of the liquidator who receives transferred positions."
+          ]
+        },
+        {
+          "name": "liquidatorAccount",
+          "writable": true,
+          "docs": [
+            "Liquidator trader account whose balances are credited as transfers are applied."
+          ]
+        },
+        {
+          "name": "liquidateeAccount",
+          "writable": true,
+          "docs": [
+            "Liquidatee trader account whose unhealthy positions are reduced."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "LiquidationTransferParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CloseMatchedPositions",
+      "docs": [
+        "Closes offsetting positions between an at-loss trader and an in-profit trader during ADL."
+      ],
+      "discriminator": [112, 174, 32, 120, 93, 113, 10, 161],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Global configuration PDA that authorizes ADL operations and tracks trader index PDAs."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": [
+            "Perp asset map account containing risk parameters used to validate the ADL transfer."
+          ]
+        },
+        {
+          "name": "caller",
+          "signer": true,
+          "docs": ["ADL authority invoking the matched close instruction."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "atLossAccount",
+          "writable": true,
+          "docs": [
+            "Trader account currently at a loss whose matched exposure will be closed."
+          ]
+        },
+        {
+          "name": "inProfitAccount",
+          "writable": true,
+          "docs": [
+            "Trader account with offsetting profitable exposure to receive the transfer."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ClosePositionsParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Log",
+      "docs": [
+        "Internal instruction used by the Phoenix log authority to emit events on-chain.",
+        "This instruction is called via CPI and should not be invoked directly."
+      ],
+      "discriminator": [141, 230, 214, 242, 9, 209, 207, 170],
+      "accounts": [
+        {
+          "name": "phoenixLogAuthority",
+          "docs": ["Phoenix log authority PDA that must sign via CPI."],
+          "signer": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "header",
+          "docs": ["Log header containing batch index and event count."],
+          "type": {
+            "defined": {
+              "name": "LogHeader"
+            }
+          }
+        },
+        {
+          "name": "events",
+          "docs": ["Serialized event data (variable length)."],
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "WithdrawFunds",
+      "docs": [
+        "Withdraws collateral tokens from the global vault to a trader's token account, debiting the trader's account balance."
+      ],
+      "discriminator": [241, 36, 29, 111, 208, 31, 104, 217],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Authority of the trader account initiating the withdrawal."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA from which collateral is debited."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map for margin and risk checks."]
+        },
+        {
+          "name": "globalVault",
+          "writable": true,
+          "docs": [
+            "Global vault token account from which tokens are withdrawn."
+          ]
+        },
+        {
+          "name": "destinationTokenAccount",
+          "writable": true,
+          "docs": [
+            "Trader's destination token account to receive the withdrawn tokens."
+          ]
+        },
+        {
+          "name": "tokenProgram",
+          "docs": ["SPL Token program for executing the transfer."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "withdrawQueue",
+          "writable": true,
+          "docs": ["Withdraw queue PDA tracking pending withdrawal requests."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "WithdrawFundsInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpdateSplineParameters",
+      "docs": [
+        "Updates spline curve parameters for automated market making on bid and ask sides."
+      ],
+      "discriminator": [241, 91, 139, 170, 18, 41, 203, 22],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "signerAccount",
+          "signer": true,
+          "docs": ["Authority authorized to update spline parameters."]
+        },
+        {
+          "name": "traderAccount",
+          "docs": ["Trader account associated with the spline."]
+        },
+        {
+          "name": "splineAccount",
+          "writable": true,
+          "docs": [
+            "Spline collection account holding bid and ask curve parameters."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateSplineParametersParamsWithOrdering"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "PlaceStopLoss",
+      "docs": [
+        "Places a stop-loss order that triggers when the market price reaches the specified trigger price."
+      ],
+      "discriminator": [236, 46, 164, 66, 235, 92, 162, 137],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "docs": ["Payer for creating the stop loss account."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader account PDA that holds position and order state."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map tracking positions and risk metrics."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader wallet authority."]
+        },
+        {
+          "name": "stopLossAccount",
+          "writable": true,
+          "docs": ["Stop loss account PDA to be created or updated."]
+        },
+        {
+          "name": "systemProgram",
+          "docs": ["System program for creating the stop loss account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "PlaceStopLossInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ExecuteStopLoss",
+      "docs": [
+        "Executes a stop-loss order when the trigger conditions are met."
+      ],
+      "discriminator": [38, 122, 90, 90, 182, 241, 7, 4],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "signer",
+          "signer": true,
+          "docs": ["Signer authorized to execute stop loss orders."]
+        },
+        {
+          "name": "permissionAccount",
+          "writable": true,
+          "docs": ["Permission account verifying execution authority."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader account PDA that holds position and order state."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map tracking positions and risk metrics."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "funder",
+          "writable": true,
+          "docs": ["Account to receive rent from closed stop loss account."]
+        },
+        {
+          "name": "stopLossAccount",
+          "writable": true,
+          "docs": ["Stop loss account to execute and close."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ExecuteStopLossInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CancelStopLoss",
+      "docs": [
+        "Cancels a pending stop-loss order and closes the stop loss account."
+      ],
+      "discriminator": [120, 201, 10, 102, 12, 9, 111, 126],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "funder",
+          "writable": true,
+          "docs": ["Account to receive rent from closed stop loss account."]
+        },
+        {
+          "name": "traderAccount",
+          "docs": ["Trader account associated with the stop loss order."]
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader wallet authority."]
+        },
+        {
+          "name": "stopLossAccount",
+          "writable": true,
+          "docs": ["Stop loss account to cancel and close."]
+        },
+        {
+          "name": "systemProgram",
+          "docs": ["System program for closing the account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CancelStopLossInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ForceCancelAll",
+      "docs": [
+        "Force cancels all open orders for a trader account. Requires authority authorization."
+      ],
+      "discriminator": [201, 0, 188, 127, 41, 55, 80, 48],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": ["Authority authorized to force cancel orders."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader account PDA that holds position and order state."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map tracking positions and risk metrics."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "ForceCancelRiskIncreasing",
+      "docs": [
+        "Force cancels risk-increasing orders for a trader to reduce margin exposure."
+      ],
+      "discriminator": [41, 55, 217, 35, 92, 72, 42, 238],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": [
+            "Global configuration PDA that tracks vault and system parameters."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader account PDA that holds position and order state."]
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map tracking positions and risk metrics."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ForceCancelRiskIncreasingParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UpdateTraderState",
+      "docs": [
+        "Settles funding for a trader and evicts them from the active trader buffer when they no longer have resting orders."
+      ],
+      "discriminator": [249, 139, 82, 44, 126, 66, 133, 220],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": [
+            "Read-only global configuration PDA used to verify the perp asset map and buffer keys."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": [
+            "Trader state PDA whose funding snapshot and active status are updated."
+          ]
+        },
+        {
+          "name": "perpAssetMap",
+          "docs": [
+            "Perp asset map providing funding parameters for settlement."
+          ]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "ConsumeWithdrawQueue",
+      "docs": ["Processes pending withdrawals from the withdraw queue."],
+      "discriminator": [228, 40, 211, 139, 39, 212, 116, 113],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map account."]
+        },
+        {
+          "name": "globalVault",
+          "writable": true,
+          "docs": ["Global vault token account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "withdrawQueue",
+          "writable": true,
+          "docs": ["Withdraw queue account."]
+        },
+        {
+          "name": "tokenProgram",
+          "docs": ["SPL Token program."]
+        },
+        {
+          "name": "traderWallet",
+          "docs": ["Trader wallet receiving the withdrawal."]
+        },
+        {
+          "name": "destinationTokenAccount",
+          "writable": true,
+          "docs": ["Destination token account for withdrawn funds."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA."]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "CreatePermission",
+      "docs": [
+        "Creates a new permission account PDA for delegating authority."
+      ],
+      "discriminator": [190, 182, 26, 164, 156, 221, 8, 0],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "docs": ["Payer for account creation rent."]
+        },
+        {
+          "name": "permission",
+          "writable": true,
+          "docs": ["Permission account PDA to create."]
+        },
+        {
+          "name": "authority",
+          "docs": ["Authority granting the permission."]
+        },
+        {
+          "name": "user",
+          "docs": ["User receiving the permission."]
+        },
+        {
+          "name": "systemProgram",
+          "docs": ["System program."],
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "DelegateTrader",
+      "docs": [
+        "Delegates position authority of a trader account to another address."
+      ],
+      "discriminator": [3, 164, 192, 106, 119, 91, 122, 224],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Current trader authority."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA to delegate."]
+        },
+        {
+          "name": "newPositionAuthority",
+          "docs": ["New position authority address."]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "RevokePermission",
+      "docs": ["Revokes permission flags from a permission account."],
+      "discriminator": [116, 82, 33, 181, 121, 144, 249, 227],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": ["Root authority revoking the permission."]
+        },
+        {
+          "name": "maybePermissionAccount",
+          "writable": true,
+          "docs": ["Optional permission account for delegation."]
+        },
+        {
+          "name": "targetPermission",
+          "writable": true,
+          "docs": ["Permission account to revoke flags from."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "RevokePermissionParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SetPermission",
+      "docs": ["Sets permission flags on a permission account."],
+      "discriminator": [70, 126, 41, 194, 245, 189, 128, 8],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "permission",
+          "writable": true,
+          "docs": ["Permission account to modify."]
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": ["Authority owning the permission."]
+        },
+        {
+          "name": "user",
+          "docs": ["User the permission applies to."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SetPermissionInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SetTraderCapabilitiesDelegated",
+      "docs": ["Sets trader capability flags via a delegated permission."],
+      "discriminator": [207, 170, 17, 21, 53, 35, 88, 151],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": ["Authority with trader onboarding delegation."]
+        },
+        {
+          "name": "maybePermissionAccount",
+          "writable": true,
+          "docs": ["Permission account for delegation validation."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TraderCapabilityUpdate"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SetTraderCapability",
+      "docs": ["Sets trader capability flags via risk authority."],
+      "discriminator": [191, 72, 45, 190, 214, 250, 182, 213],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "docs": ["Risk authority."]
+        },
+        {
+          "name": "maybePermissionAccount",
+          "writable": true,
+          "docs": ["Permission account for delegation validation."]
+        },
+        {
+          "name": "traderAccount",
+          "writable": true,
+          "docs": ["Trader state PDA."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TraderCapabilityUpdate"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SyncParentToChild",
+      "docs": [
+        "Syncs capabilities from a parent trader account to a child (isolated margin) account."
+      ],
+      "discriminator": [175, 137, 217, 11, 235, 39, 150, 19],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "docs": ["Trader wallet owning both accounts."]
+        },
+        {
+          "name": "parentTraderAccount",
+          "docs": ["Parent (cross margin) trader account."]
+        },
+        {
+          "name": "childTraderAccount",
+          "writable": true,
+          "docs": ["Child (isolated margin) trader account to sync."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "SyncTraderCapabilities",
+      "docs": [
+        "Syncs capability flags from a parent trader account to a frozen child account."
+      ],
+      "discriminator": [154, 64, 87, 130, 130, 34, 138, 0],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "docs": ["Trader wallet owning both accounts."]
+        },
+        {
+          "name": "parentTraderAccount",
+          "docs": ["Parent (cross margin) trader account."]
+        },
+        {
+          "name": "childTraderAccount",
+          "writable": true,
+          "docs": ["Child trader account to sync capabilities to."]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "TransferCollateral",
+      "docs": [
+        "Transfers collateral between two trader accounts owned by the same wallet."
+      ],
+      "discriminator": [157, 163, 63, 27, 242, 72, 251, 97],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "signer": true,
+          "docs": ["Trader wallet owning both accounts."]
+        },
+        {
+          "name": "srcTraderAccount",
+          "writable": true,
+          "docs": ["Source trader account."]
+        },
+        {
+          "name": "dstTraderAccount",
+          "writable": true,
+          "docs": ["Destination trader account."]
+        },
+        {
+          "name": "perpAssetMap",
+          "docs": ["Perp asset map for margin calculations."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TransferCollateralInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "TransferCollateralChildToParent",
+      "docs": [
+        "Transfers collateral from a child (isolated margin) account to its parent (cross margin) account."
+      ],
+      "discriminator": [51, 100, 177, 115, 139, 135, 247, 139],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "traderWallet",
+          "docs": ["Trader wallet owning both accounts."]
+        },
+        {
+          "name": "childTraderAccount",
+          "writable": true,
+          "docs": ["Child (isolated margin) trader account."]
+        },
+        {
+          "name": "parentTraderAccount",
+          "writable": true,
+          "docs": ["Parent (cross margin) trader account."]
+        },
+        {
+          "name": "perpAssetMap",
+          "docs": ["Perp asset map for margin calculations."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "TransferCollateralChildToParentInstruction"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "UncrossCrank",
+      "docs": ["Cranks the orderbook to uncross any crossed orders."],
+      "discriminator": [196, 121, 94, 253, 139, 42, 252, 147],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map account."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": ["Spline collection account."]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UncrossCrankParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ClearExpiredOrders",
+      "docs": [
+        "Clears expired orders from the orderbook as a maintenance crank operation."
+      ],
+      "discriminator": [128, 95, 102, 169, 146, 205, 248, 94],
+      "accounts": [
+        {
+          "name": "phoenixProgram",
+          "docs": [
+            "Phoenix Eternal program id; logged to assert the correct executable is invoked."
+          ]
+        },
+        {
+          "name": "phoenixLogAuthority",
+          "docs": [
+            "Phoenix log authority PDA used for emitting on-chain market events."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [108, 111, 103]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "globalConfiguration",
+          "writable": true,
+          "docs": ["Global configuration PDA."],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [103, 108, 111, 98, 97, 108]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                206, 112, 214, 251, 86, 142, 67, 235, 252, 150, 74, 144, 21,
+                108, 59, 233, 86, 59, 8, 23, 6, 124, 171, 105, 78, 188, 131,
+                239, 221, 179, 126, 134
+              ]
+            }
+          }
+        },
+        {
+          "name": "perpAssetMap",
+          "writable": true,
+          "docs": ["Perp asset map tracking positions and risk metrics."]
+        },
+        {
+          "name": "globalTraderIndex",
+          "writable": true,
+          "docs": ["Global trader index account."]
+        },
+        {
+          "name": "activeTraderBuffer",
+          "writable": true,
+          "docs": ["Active trader buffer account."]
+        },
+        {
+          "name": "orderbook",
+          "writable": true,
+          "docs": ["Market orderbook account that stores resting liquidity."]
+        },
+        {
+          "name": "splines",
+          "writable": true,
+          "docs": [
+            "Spline collection PDA that tracks market-making programs for this market."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ClearExpiredOrdersParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "OrderPacket",
+      "docs": [
+        "Serialized parameters for Phoenix order placement instructions."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "kind",
+            "type": {
+              "defined": {
+                "name": "OrderPacketKind"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderPacketKind",
+      "docs": [
+        "Supported order variants accepted by the Phoenix matching engine."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PostOnly",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "defined": {
+                    "name": "Ticks"
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "slide",
+                "type": "bool"
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "Limit",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "defined": {
+                    "name": "Ticks"
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "selfTradeBehavior",
+                "type": {
+                  "defined": {
+                    "name": "SelfTradeBehavior"
+                  }
+                }
+              },
+              {
+                "name": "matchLimit",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          },
+          {
+            "name": "ImmediateOrCancel",
+            "fields": [
+              {
+                "name": "side",
+                "type": {
+                  "defined": {
+                    "name": "Side"
+                  }
+                }
+              },
+              {
+                "name": "priceInTicks",
+                "type": {
+                  "option": {
+                    "defined": {
+                      "name": "Ticks"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "numBaseLots",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "numQuoteLots",
+                "type": {
+                  "option": {
+                    "defined": {
+                      "name": "QuoteLots"
+                    }
+                  }
+                }
+              },
+              {
+                "name": "minBaseLotsToFill",
+                "type": {
+                  "defined": {
+                    "name": "BaseLots"
+                  }
+                }
+              },
+              {
+                "name": "minQuoteLotsToFill",
+                "type": {
+                  "defined": {
+                    "name": "QuoteLots"
+                  }
+                }
+              },
+              {
+                "name": "selfTradeBehavior",
+                "type": {
+                  "defined": {
+                    "name": "SelfTradeBehavior"
+                  }
+                }
+              },
+              {
+                "name": "matchLimit",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "clientOrderId",
+                "type": {
+                  "array": ["u8", 16]
+                }
+              },
+              {
+                "name": "lastValidSlot",
+                "type": {
+                  "option": "u64"
+                }
+              },
+              {
+                "name": "orderFlags",
+                "type": {
+                  "defined": {
+                    "name": "OrderFlags"
+                  }
+                }
+              },
+              {
+                "name": "cancelExisting",
+                "type": "bool"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Side",
+      "docs": ["Trading direction for an order."],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Bid"
+          },
+          {
+            "name": "Ask"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SelfTradeBehavior",
+      "docs": [
+        "Policy for handling matches against the submitting trader's resting orders."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Abort"
+          },
+          {
+            "name": "CancelProvide"
+          },
+          {
+            "name": "DecrementTake"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BaseLots",
+      "docs": ["Quantity wrapper representing discrete base lots."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "QuoteLots",
+      "docs": ["Quantity wrapper representing discrete quote lots."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ticks",
+      "docs": ["Discrete price unit measured in quote lots per base lot."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BaseLotsPerTick",
+      "docs": ["Density of liquidity per tick for spline market making."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "inner",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderFlags",
+      "docs": [
+        "Bitmask flags applied to an order (currently only the reduce-only bit is used)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "flags",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OrderIds",
+      "docs": [
+        "Collection of cancel identifiers used to target specific resting orders."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "orderIds",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "CancelId"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CancelUpToInstruction",
+      "docs": ["Parameters controlling cancel-up-to behaviour."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "side",
+            "type": {
+              "defined": {
+                "name": "Side"
+              }
+            }
+          },
+          {
+            "name": "numOrdersToCancel",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "tickLimit",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CancelId",
+      "docs": [
+        "Identifies a resting order along with an optional hint into the orderbook."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "nodePointer",
+            "type": {
+              "defined": {
+                "name": "NodePointer"
+              }
+            }
+          },
+          {
+            "name": "orderId",
+            "type": {
+              "defined": {
+                "name": "FIFOOrderId"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FIFOOrderId",
+      "docs": [
+        "Stable identifier for a resting order composed of price ticks and sequence number."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "priceInTicks",
+            "type": {
+              "defined": {
+                "name": "Ticks"
+              }
+            }
+          },
+          {
+            "name": "orderSequenceNumber",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "NodePointer",
+      "docs": [
+        "Pointer hint into the orderbook linked list; zero represents a null pointer."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Symbol",
+      "docs": [
+        "Fixed-width (16 byte) asset symbol stored as UTF-8 with trailing zero padding."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "symbolBytes",
+            "type": {
+              "array": ["u8", 16]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Price",
+      "docs": [
+        "Price representation composed of a mantissa (`value`) and decimal exponent (`expo`)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u64"
+          },
+          {
+            "name": "expo",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePriceUpdate",
+      "docs": [
+        "Single oracle price update targeting a specific perpetual asset."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "perpAssetId",
+            "type": {
+              "defined": {
+                "name": "Symbol"
+              }
+            }
+          },
+          {
+            "name": "newExchangePerpPrice",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "Price"
+                }
+              }
+            }
+          },
+          {
+            "name": "newExchangeSpotPrice",
+            "type": {
+              "defined": {
+                "name": "Price"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateOraclePricesParams",
+      "docs": [
+        "Oracle instruction payload containing one or more price updates."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updates",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "OraclePriceUpdate"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateOraclePricesWithOrderingParams",
+      "docs": [
+        "Oracle instruction payload including timestamp ordering controls for price updates."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "updateTimestamp",
+            "type": "u64"
+          },
+          {
+            "name": "updates",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "OraclePriceUpdate"
+                }
+              }
+            }
+          },
+          {
+            "name": "shouldResetTimestamp",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSplinePriceParams",
+      "docs": ["Parameters for updating a spline's mid-price."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newMidPrice",
+            "type": "u64"
+          },
+          {
+            "name": "userUpdateSlot",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "refreshRegions",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSplinePriceParamsWithOrdering",
+      "docs": [
+        "Parameters for updating a spline's mid-price with anti-reordering controls."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "newMidPrice",
+            "type": "u64"
+          },
+          {
+            "name": "userUpdateSlot",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "refreshRegions",
+            "type": "bool"
+          },
+          {
+            "name": "userSequenceNumber",
+            "type": "u64"
+          },
+          {
+            "name": "clientOrderId",
+            "type": {
+              "array": ["u8", 16]
+            }
+          },
+          {
+            "name": "overrideSequenceNumber",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositFundsInstruction",
+      "docs": ["Parameters for depositing collateral into the global vault."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegisterTraderParams",
+      "docs": ["Parameters for registering a new trader account."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxPositions",
+            "type": "u64"
+          },
+          {
+            "name": "traderPdaIndex",
+            "type": "u8"
+          },
+          {
+            "name": "traderSubaccountIndex",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationParams",
+      "docs": [
+        "Parameters for liquidating a trader's position via market order."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "assetMint",
+            "type": "pubkey"
+          },
+          {
+            "name": "liquidationSize",
+            "type": {
+              "defined": {
+                "name": "BaseLots"
+              }
+            }
+          },
+          {
+            "name": "liquidationPrice",
+            "type": {
+              "defined": {
+                "name": "Ticks"
+              }
+            }
+          },
+          {
+            "name": "fillOrKill",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferRequest",
+      "docs": [
+        "Transfer payload describing how many base lots of an asset should move from the liquidatee to the liquidator."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "assetId",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "BaseLots"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiquidationTransferParams",
+      "docs": ["Parameters controlling liquidation transfers between traders."],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "transferRequests",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TransferRequest"
+                }
+              }
+            }
+          },
+          {
+            "name": "executeAllTransfers",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClosePositionsParams",
+      "docs": [
+        "Parameters for closing matched positions between at-loss and in-profit traders."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "assetId",
+            "type": "u64"
+          },
+          {
+            "name": "amount",
+            "type": {
+              "defined": {
+                "name": "BaseLots"
+              }
+            }
+          },
+          {
+            "name": "atLossCloseValue",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "QuoteLots"
+                }
+              }
+            }
+          },
+          {
+            "name": "inProfitCloseValue",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "QuoteLots"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MultipleOrderPacket",
+      "docs": [
+        "Batch order packet for placing multiple post-only limit orders in a single transaction."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bids",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "CondensedOrder"
+                }
+              }
+            }
+          },
+          {
+            "name": "asks",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "CondensedOrder"
+                }
+              }
+            }
+          },
+          {
+            "name": "clientOrderId",
+            "type": {
+              "option": {
+                "array": ["u8", 16]
+              }
+            }
+          },
+          {
+            "name": "slide",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CondensedOrder",
+      "docs": [
+        "Condensed order representation for batch order placement (price, size, and optional TiF)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "priceInTicks",
+            "type": "u64"
+          },
+          {
+            "name": "sizeInBaseLots",
+            "type": "u64"
+          },
+          {
+            "name": "lastValidSlot",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawFundsInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64",
+            "docs": ["Amount in quote lots to withdraw."]
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSplineParametersParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bidRegions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TickRegionParams"
+                }
+              }
+            }
+          },
+          {
+            "name": "askRegions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TickRegionParams"
+                }
+              }
+            }
+          },
+          {
+            "name": "refreshRegions",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateSplineParametersParamsWithOrdering",
+      "docs": [
+        "Parameters for updating spline regions with anti-reordering controls."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bidRegions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TickRegionParams"
+                }
+              }
+            }
+          },
+          {
+            "name": "askRegions",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TickRegionParams"
+                }
+              }
+            }
+          },
+          {
+            "name": "refreshRegions",
+            "type": "bool"
+          },
+          {
+            "name": "userSequenceNumber",
+            "type": "u64"
+          },
+          {
+            "name": "clientOrderId",
+            "type": {
+              "array": ["u8", 16]
+            }
+          },
+          {
+            "name": "overrideSequenceNumber",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TickRegionParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "startOffset",
+            "type": {
+              "defined": {
+                "name": "Ticks"
+              }
+            }
+          },
+          {
+            "name": "endOffset",
+            "type": {
+              "defined": {
+                "name": "Ticks"
+              }
+            }
+          },
+          {
+            "name": "density",
+            "type": {
+              "defined": {
+                "name": "BaseLotsPerTick"
+              }
+            }
+          },
+          {
+            "name": "lifespan",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PlaceStopLossInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "triggerPrice",
+            "type": "u64"
+          },
+          {
+            "name": "executionPrice",
+            "type": "u64"
+          },
+          {
+            "name": "tradeSize",
+            "type": "u64"
+          },
+          {
+            "name": "tradeSide",
+            "type": {
+              "defined": {
+                "name": "Side"
+              }
+            }
+          },
+          {
+            "name": "executionDirection",
+            "type": {
+              "defined": {
+                "name": "Direction"
+              }
+            }
+          },
+          {
+            "name": "orderKind",
+            "type": {
+              "defined": {
+                "name": "StopLossOrderKind"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExecuteStopLossInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "executionDirection",
+            "type": {
+              "defined": {
+                "name": "Direction"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CancelStopLossInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "executionDirection",
+            "type": {
+              "defined": {
+                "name": "Direction"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ForceCancelRiskIncreasingParams",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "Direction",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "GreaterThan"
+          },
+          {
+            "name": "LessThan"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StopLossOrderKind",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "IOC"
+          },
+          {
+            "name": "Limit"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LogHeader",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "logBatchIndex",
+            "type": "u32",
+            "docs": ["Index of this log batch for tracking event sequences."]
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalConfiguration",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "discriminant",
+            "type": "u64"
+          },
+          {
+            "name": "accountKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "rootAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "riskAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "marketAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracleAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "successorAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "adlAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "cancelAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "backstopAuthority",
+            "type": "pubkey"
+          },
+          {
+            "name": "canonicalTokenMintKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "globalVaultKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "perpAssetMapKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "globalTraderIndexHeaderKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "activeTraderBufferHeaderKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "totalQuoteLotFees",
+            "type": {
+              "defined": {
+                "name": "QuoteLots"
+              }
+            }
+          },
+          {
+            "name": "unclaimedQuoteLotFees",
+            "type": {
+              "defined": {
+                "name": "QuoteLots"
+              }
+            }
+          },
+          {
+            "name": "withdrawQueueKey",
+            "type": "pubkey"
+          },
+          {
+            "name": "exchangeStatus",
+            "type": "u8"
+          },
+          {
+            "name": "quoteDecimals",
+            "type": "u8"
+          },
+          {
+            "name": "withdrawalMarginFactorBps",
+            "type": "u16"
+          },
+          {
+            "name": "padding0",
+            "type": {
+              "array": ["u8", 4]
+            }
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding3",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding4",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding5",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding6",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding7",
+            "type": {
+              "array": ["u64", 32]
+            }
+          },
+          {
+            "name": "padding8",
+            "type": {
+              "array": ["u64", 32]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "RevokePermissionParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "permissionFlagsToRevoke",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SetPermissionInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "permission",
+            "type": "u64"
+          },
+          {
+            "name": "expiresAtTimestamp",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "allowedSignerActions",
+            "type": {
+              "option": "i64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TraderCapabilityToggleTarget",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PlaceLimitOrder"
+          },
+          {
+            "name": "PlaceMarketOrder"
+          },
+          {
+            "name": "RiskIncreasingTrade"
+          },
+          {
+            "name": "RiskReducingTrade"
+          },
+          {
+            "name": "DepositCollateral"
+          },
+          {
+            "name": "WithdrawCollateral"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TraderCapabilityToggle",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "target",
+            "type": {
+              "defined": {
+                "name": "TraderCapabilityToggleTarget"
+              }
+            }
+          },
+          {
+            "name": "enable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TraderCapabilityUpdate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "toggles",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TraderCapabilityToggle"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferCollateralInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferCollateralChildToParentInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UncrossCrankParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "matchLimit",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClearExpiredOrdersParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxOrdersPerSide",
+            "type": {
+              "option": "u64"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "accounts": [
+    {
+      "name": "GlobalConfiguration",
+      "discriminator": [37, 146, 212, 210, 47, 136, 111, 20]
+    }
+  ],
+  "events": [],
+  "errors": []
+}

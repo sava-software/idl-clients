@@ -1,0 +1,38 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+
+public record ClearExpiredOrdersParams(OptionalLong maxOrdersPerSide) implements SerDe {
+
+  public static final int MAX_ORDERS_PER_SIDE_OFFSET = 1;
+
+  public static ClearExpiredOrdersParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final OptionalLong maxOrdersPerSide;
+    if (SerDeUtil.isAbsent(1, _data, _offset)) {
+      maxOrdersPerSide = OptionalLong.empty();
+    } else {
+      maxOrdersPerSide = OptionalLong.of(getInt64LE(_data, _offset + 1));
+    }
+    return new ClearExpiredOrdersParams(maxOrdersPerSide);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeOptional(1, maxOrdersPerSide, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return (maxOrdersPerSide == null || maxOrdersPerSide.isEmpty() ? 1 : (1 + 8));
+  }
+}
