@@ -1,0 +1,44 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record BundleCreatorAccountChanged(Discriminator discriminator, PublicKey creator, boolean allowed) implements NtbundleEvent {
+
+  public static final int BYTES = 41;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(82, 51, 169, 242, 101, 205, 39, 52);
+
+  public static final int CREATOR_OFFSET = 8;
+  public static final int ALLOWED_OFFSET = 40;
+
+  public static BundleCreatorAccountChanged read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var creator = readPubKey(_data, i);
+    i += 32;
+    final var allowed = _data[i] == 1;
+    return new BundleCreatorAccountChanged(discriminator, creator, allowed);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    creator.write(_data, i);
+    i += 32;
+    _data[i] = (byte) (allowed ? 1 : 0);
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

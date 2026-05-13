@@ -1,0 +1,52 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record WithdrawalRedemptionScheduleSet(Discriminator discriminator,
+                                              long withdrawalRedemptionRequestCutoffTs,
+                                              long withdrawalRedemptionUnlockCurrentCycleTs,
+                                              long withdrawalRedemptionUnlockNextCycleTs) implements NtbundleEvent {
+
+  public static final int BYTES = 32;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(245, 195, 40, 76, 237, 247, 150, 107);
+
+  public static final int WITHDRAWAL_REDEMPTION_REQUEST_CUTOFF_TS_OFFSET = 8;
+  public static final int WITHDRAWAL_REDEMPTION_UNLOCK_CURRENT_CYCLE_TS_OFFSET = 16;
+  public static final int WITHDRAWAL_REDEMPTION_UNLOCK_NEXT_CYCLE_TS_OFFSET = 24;
+
+  public static WithdrawalRedemptionScheduleSet read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var withdrawalRedemptionRequestCutoffTs = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalRedemptionUnlockCurrentCycleTs = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalRedemptionUnlockNextCycleTs = getInt64LE(_data, i);
+    return new WithdrawalRedemptionScheduleSet(discriminator, withdrawalRedemptionRequestCutoffTs, withdrawalRedemptionUnlockCurrentCycleTs, withdrawalRedemptionUnlockNextCycleTs);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

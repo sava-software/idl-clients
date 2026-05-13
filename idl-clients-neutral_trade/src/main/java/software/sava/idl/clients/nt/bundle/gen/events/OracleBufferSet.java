@@ -1,0 +1,39 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record OracleBufferSet(Discriminator discriminator, long oracleBuffer) implements NtbundleEvent {
+
+  public static final int BYTES = 16;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(188, 151, 124, 251, 253, 205, 187, 32);
+
+  public static final int ORACLE_BUFFER_OFFSET = 8;
+
+  public static OracleBufferSet read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var oracleBuffer = getInt64LE(_data, i);
+    return new OracleBufferSet(discriminator, oracleBuffer);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, oracleBuffer);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

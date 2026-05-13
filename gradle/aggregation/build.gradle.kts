@@ -12,7 +12,9 @@ val idlClientModules = setOf(
   "idl-clients-marinade",
   "idl-clients-metaplex",
   "idl-clients-meteora",
+  "idl-clients-neutral_trade",
   "idl-clients-oracles",
+  "idl-clients-phoenix",
   "idl-clients-spl",
   "idl-clients-squads",
 )

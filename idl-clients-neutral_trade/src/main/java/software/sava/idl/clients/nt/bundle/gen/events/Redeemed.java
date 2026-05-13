@@ -1,0 +1,124 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Redeemed(Discriminator discriminator,
+                       PublicKey from,
+                       PublicKey to,
+                       long netAmount,
+                       long feeAmount,
+                       long timestamp,
+                       PublicKey bundleAccountKey,
+                       long grossAmount,
+                       BigInteger sharePrice,
+                       BigInteger userSharesBefore,
+                       BigInteger userSharesAfter,
+                       BigInteger totalSharesBefore,
+                       BigInteger totalSharesAfter) implements NtbundleEvent {
+
+  public static final int BYTES = 216;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(14, 29, 183, 71, 31, 165, 107, 38);
+
+  public static final int FROM_OFFSET = 8;
+  public static final int TO_OFFSET = 40;
+  public static final int NET_AMOUNT_OFFSET = 72;
+  public static final int FEE_AMOUNT_OFFSET = 80;
+  public static final int TIMESTAMP_OFFSET = 88;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 96;
+  public static final int GROSS_AMOUNT_OFFSET = 128;
+  public static final int SHARE_PRICE_OFFSET = 136;
+  public static final int USER_SHARES_BEFORE_OFFSET = 152;
+  public static final int USER_SHARES_AFTER_OFFSET = 168;
+  public static final int TOTAL_SHARES_BEFORE_OFFSET = 184;
+  public static final int TOTAL_SHARES_AFTER_OFFSET = 200;
+
+  public static Redeemed read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var from = readPubKey(_data, i);
+    i += 32;
+    final var to = readPubKey(_data, i);
+    i += 32;
+    final var netAmount = getInt64LE(_data, i);
+    i += 8;
+    final var feeAmount = getInt64LE(_data, i);
+    i += 8;
+    final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final var bundleAccountKey = readPubKey(_data, i);
+    i += 32;
+    final var grossAmount = getInt64LE(_data, i);
+    i += 8;
+    final var sharePrice = getInt128LE(_data, i);
+    i += 16;
+    final var userSharesBefore = getInt128LE(_data, i);
+    i += 16;
+    final var userSharesAfter = getInt128LE(_data, i);
+    i += 16;
+    final var totalSharesBefore = getInt128LE(_data, i);
+    i += 16;
+    final var totalSharesAfter = getInt128LE(_data, i);
+    return new Redeemed(discriminator,
+                        from,
+                        to,
+                        netAmount,
+                        feeAmount,
+                        timestamp,
+                        bundleAccountKey,
+                        grossAmount,
+                        sharePrice,
+                        userSharesBefore,
+                        userSharesAfter,
+                        totalSharesBefore,
+                        totalSharesAfter);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    from.write(_data, i);
+    i += 32;
+    to.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, netAmount);
+    i += 8;
+    putInt64LE(_data, i, feeAmount);
+    i += 8;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, grossAmount);
+    i += 8;
+    putInt128LE(_data, i, sharePrice);
+    i += 16;
+    putInt128LE(_data, i, userSharesBefore);
+    i += 16;
+    putInt128LE(_data, i, userSharesAfter);
+    i += 16;
+    putInt128LE(_data, i, totalSharesBefore);
+    i += 16;
+    putInt128LE(_data, i, totalSharesAfter);
+    i += 16;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,41 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record AssignedProfitShare(Discriminator discriminator, BigInteger amount) implements NtbundleEvent {
+
+  public static final int BYTES = 24;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(13, 208, 181, 192, 192, 238, 120, 197);
+
+  public static final int AMOUNT_OFFSET = 8;
+
+  public static AssignedProfitShare read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var amount = getInt128LE(_data, i);
+    return new AssignedProfitShare(discriminator, amount);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt128LE(_data, i, amount);
+    i += 16;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

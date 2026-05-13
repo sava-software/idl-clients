@@ -1,0 +1,222 @@
+package software.sava.idl.clients.nt.bundle.gen.types;
+
+import java.math.BigInteger;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record BundleTempData(PublicKey _address,
+                             Discriminator discriminator,
+                             long cumulativePendingDeposits,
+                             long pendingDepositsCounter,
+                             long pendingWithdrawalsCounter,
+                             long pendingLockedWithdrawalsCounter,
+                             BigInteger lastTotalSharesMinted,
+                             long lastNettingTimestamp,
+                             boolean isNettingDone,
+                             long distributionBaseAmount,
+                             boolean isDistributionStarted,
+                             boolean pausedDepositsWithdrawals,
+                             long leftToDistribute,
+                             BigInteger allocatedShares,
+                             byte[] padding) implements SerDe {
+
+  public static final int BYTES = 267;
+  public static final int PADDING_LEN = 168;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(3, 137, 171, 33, 191, 15, 54, 4);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int CUMULATIVE_PENDING_DEPOSITS_OFFSET = 8;
+  public static final int PENDING_DEPOSITS_COUNTER_OFFSET = 16;
+  public static final int PENDING_WITHDRAWALS_COUNTER_OFFSET = 24;
+  public static final int PENDING_LOCKED_WITHDRAWALS_COUNTER_OFFSET = 32;
+  public static final int LAST_TOTAL_SHARES_MINTED_OFFSET = 40;
+  public static final int LAST_NETTING_TIMESTAMP_OFFSET = 56;
+  public static final int IS_NETTING_DONE_OFFSET = 64;
+  public static final int DISTRIBUTION_BASE_AMOUNT_OFFSET = 65;
+  public static final int IS_DISTRIBUTION_STARTED_OFFSET = 73;
+  public static final int PAUSED_DEPOSITS_WITHDRAWALS_OFFSET = 74;
+  public static final int LEFT_TO_DISTRIBUTE_OFFSET = 75;
+  public static final int ALLOCATED_SHARES_OFFSET = 83;
+  public static final int PADDING_OFFSET = 99;
+
+  public static Filter createCumulativePendingDepositsFilter(final long cumulativePendingDeposits) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, cumulativePendingDeposits);
+    return Filter.createMemCompFilter(CUMULATIVE_PENDING_DEPOSITS_OFFSET, _data);
+  }
+
+  public static Filter createPendingDepositsCounterFilter(final long pendingDepositsCounter) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, pendingDepositsCounter);
+    return Filter.createMemCompFilter(PENDING_DEPOSITS_COUNTER_OFFSET, _data);
+  }
+
+  public static Filter createPendingWithdrawalsCounterFilter(final long pendingWithdrawalsCounter) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, pendingWithdrawalsCounter);
+    return Filter.createMemCompFilter(PENDING_WITHDRAWALS_COUNTER_OFFSET, _data);
+  }
+
+  public static Filter createPendingLockedWithdrawalsCounterFilter(final long pendingLockedWithdrawalsCounter) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, pendingLockedWithdrawalsCounter);
+    return Filter.createMemCompFilter(PENDING_LOCKED_WITHDRAWALS_COUNTER_OFFSET, _data);
+  }
+
+  public static Filter createLastTotalSharesMintedFilter(final BigInteger lastTotalSharesMinted) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, lastTotalSharesMinted);
+    return Filter.createMemCompFilter(LAST_TOTAL_SHARES_MINTED_OFFSET, _data);
+  }
+
+  public static Filter createLastNettingTimestampFilter(final long lastNettingTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastNettingTimestamp);
+    return Filter.createMemCompFilter(LAST_NETTING_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createIsNettingDoneFilter(final boolean isNettingDone) {
+    return Filter.createMemCompFilter(IS_NETTING_DONE_OFFSET, new byte[]{(byte) (isNettingDone ? 1 : 0)});
+  }
+
+  public static Filter createDistributionBaseAmountFilter(final long distributionBaseAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, distributionBaseAmount);
+    return Filter.createMemCompFilter(DISTRIBUTION_BASE_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createIsDistributionStartedFilter(final boolean isDistributionStarted) {
+    return Filter.createMemCompFilter(IS_DISTRIBUTION_STARTED_OFFSET, new byte[]{(byte) (isDistributionStarted ? 1 : 0)});
+  }
+
+  public static Filter createPausedDepositsWithdrawalsFilter(final boolean pausedDepositsWithdrawals) {
+    return Filter.createMemCompFilter(PAUSED_DEPOSITS_WITHDRAWALS_OFFSET, new byte[]{(byte) (pausedDepositsWithdrawals ? 1 : 0)});
+  }
+
+  public static Filter createLeftToDistributeFilter(final long leftToDistribute) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, leftToDistribute);
+    return Filter.createMemCompFilter(LEFT_TO_DISTRIBUTE_OFFSET, _data);
+  }
+
+  public static Filter createAllocatedSharesFilter(final BigInteger allocatedShares) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, allocatedShares);
+    return Filter.createMemCompFilter(ALLOCATED_SHARES_OFFSET, _data);
+  }
+
+  public static BundleTempData read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static BundleTempData read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static BundleTempData read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], BundleTempData> FACTORY = BundleTempData::read;
+
+  public static BundleTempData read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var cumulativePendingDeposits = getInt64LE(_data, i);
+    i += 8;
+    final var pendingDepositsCounter = getInt64LE(_data, i);
+    i += 8;
+    final var pendingWithdrawalsCounter = getInt64LE(_data, i);
+    i += 8;
+    final var pendingLockedWithdrawalsCounter = getInt64LE(_data, i);
+    i += 8;
+    final var lastTotalSharesMinted = getInt128LE(_data, i);
+    i += 16;
+    final var lastNettingTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var isNettingDone = _data[i] == 1;
+    ++i;
+    final var distributionBaseAmount = getInt64LE(_data, i);
+    i += 8;
+    final var isDistributionStarted = _data[i] == 1;
+    ++i;
+    final var pausedDepositsWithdrawals = _data[i] == 1;
+    ++i;
+    final var leftToDistribute = getInt64LE(_data, i);
+    i += 8;
+    final var allocatedShares = getInt128LE(_data, i);
+    i += 16;
+    final var padding = new byte[168];
+    SerDeUtil.readArray(padding, _data, i);
+    return new BundleTempData(_address,
+                              discriminator,
+                              cumulativePendingDeposits,
+                              pendingDepositsCounter,
+                              pendingWithdrawalsCounter,
+                              pendingLockedWithdrawalsCounter,
+                              lastTotalSharesMinted,
+                              lastNettingTimestamp,
+                              isNettingDone,
+                              distributionBaseAmount,
+                              isDistributionStarted,
+                              pausedDepositsWithdrawals,
+                              leftToDistribute,
+                              allocatedShares,
+                              padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, cumulativePendingDeposits);
+    i += 8;
+    putInt64LE(_data, i, pendingDepositsCounter);
+    i += 8;
+    putInt64LE(_data, i, pendingWithdrawalsCounter);
+    i += 8;
+    putInt64LE(_data, i, pendingLockedWithdrawalsCounter);
+    i += 8;
+    putInt128LE(_data, i, lastTotalSharesMinted);
+    i += 16;
+    putInt64LE(_data, i, lastNettingTimestamp);
+    i += 8;
+    _data[i] = (byte) (isNettingDone ? 1 : 0);
+    ++i;
+    putInt64LE(_data, i, distributionBaseAmount);
+    i += 8;
+    _data[i] = (byte) (isDistributionStarted ? 1 : 0);
+    ++i;
+    _data[i] = (byte) (pausedDepositsWithdrawals ? 1 : 0);
+    ++i;
+    putInt64LE(_data, i, leftToDistribute);
+    i += 8;
+    putInt128LE(_data, i, allocatedShares);
+    i += 16;
+    i += SerDeUtil.writeArrayChecked(padding, 168, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

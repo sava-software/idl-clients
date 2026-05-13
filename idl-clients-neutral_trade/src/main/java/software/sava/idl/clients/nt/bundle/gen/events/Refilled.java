@@ -1,0 +1,54 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Refilled(Discriminator discriminator,
+                       PublicKey from,
+                       long refillValue,
+                       long timestamp) implements NtbundleEvent {
+
+  public static final int BYTES = 56;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(103, 127, 43, 0, 232, 50, 198, 85);
+
+  public static final int FROM_OFFSET = 8;
+  public static final int REFILL_VALUE_OFFSET = 40;
+  public static final int TIMESTAMP_OFFSET = 48;
+
+  public static Refilled read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var from = readPubKey(_data, i);
+    i += 32;
+    final var refillValue = getInt64LE(_data, i);
+    i += 8;
+    final var timestamp = getInt64LE(_data, i);
+    return new Refilled(discriminator, from, refillValue, timestamp);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    from.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, refillValue);
+    i += 8;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,39 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record BundleDepositorInitialized(Discriminator discriminator, PublicKey bundleDepositor) implements NtbundleEvent {
+
+  public static final int BYTES = 40;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(136, 231, 96, 201, 187, 244, 121, 42);
+
+  public static final int BUNDLE_DEPOSITOR_OFFSET = 8;
+
+  public static BundleDepositorInitialized read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var bundleDepositor = readPubKey(_data, i);
+    return new BundleDepositorInitialized(discriminator, bundleDepositor);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    bundleDepositor.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

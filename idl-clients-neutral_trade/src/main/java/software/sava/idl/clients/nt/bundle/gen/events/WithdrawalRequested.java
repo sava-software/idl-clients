@@ -1,0 +1,96 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record WithdrawalRequested(Discriminator discriminator,
+                                  PublicKey user,
+                                  BigInteger amount,
+                                  long timestamp,
+                                  long cooldownPeriod,
+                                  long estimatedPendingWithdrawalValue,
+                                  PublicKey bundleAccountKey,
+                                  long cooldownEndTimestamp,
+                                  long estimatedNetAmount) implements NtbundleEvent {
+
+  public static final int BYTES = 128;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(75, 207, 21, 12, 160, 102, 150, 55);
+
+  public static final int USER_OFFSET = 8;
+  public static final int AMOUNT_OFFSET = 40;
+  public static final int TIMESTAMP_OFFSET = 56;
+  public static final int COOLDOWN_PERIOD_OFFSET = 64;
+  public static final int ESTIMATED_PENDING_WITHDRAWAL_VALUE_OFFSET = 72;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 80;
+  public static final int COOLDOWN_END_TIMESTAMP_OFFSET = 112;
+  public static final int ESTIMATED_NET_AMOUNT_OFFSET = 120;
+
+  public static WithdrawalRequested read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var user = readPubKey(_data, i);
+    i += 32;
+    final var amount = getInt128LE(_data, i);
+    i += 16;
+    final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final var cooldownPeriod = getInt64LE(_data, i);
+    i += 8;
+    final var estimatedPendingWithdrawalValue = getInt64LE(_data, i);
+    i += 8;
+    final var bundleAccountKey = readPubKey(_data, i);
+    i += 32;
+    final var cooldownEndTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var estimatedNetAmount = getInt64LE(_data, i);
+    return new WithdrawalRequested(discriminator,
+                                   user,
+                                   amount,
+                                   timestamp,
+                                   cooldownPeriod,
+                                   estimatedPendingWithdrawalValue,
+                                   bundleAccountKey,
+                                   cooldownEndTimestamp,
+                                   estimatedNetAmount);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    user.write(_data, i);
+    i += 32;
+    putInt128LE(_data, i, amount);
+    i += 16;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    putInt64LE(_data, i, cooldownPeriod);
+    i += 8;
+    putInt64LE(_data, i, estimatedPendingWithdrawalValue);
+    i += 8;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, cooldownEndTimestamp);
+    i += 8;
+    putInt64LE(_data, i, estimatedNetAmount);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,52 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record UserBundleAccountClosed(Discriminator discriminator,
+                                      PublicKey user,
+                                      PublicKey bundleAccountKey,
+                                      PublicKey userBundleAccountKey) implements NtbundleEvent {
+
+  public static final int BYTES = 104;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(111, 102, 134, 54, 238, 23, 157, 183);
+
+  public static final int USER_OFFSET = 8;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 40;
+  public static final int USER_BUNDLE_ACCOUNT_KEY_OFFSET = 72;
+
+  public static UserBundleAccountClosed read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var user = readPubKey(_data, i);
+    i += 32;
+    final var bundleAccountKey = readPubKey(_data, i);
+    i += 32;
+    final var userBundleAccountKey = readPubKey(_data, i);
+    return new UserBundleAccountClosed(discriminator, user, bundleAccountKey, userBundleAccountKey);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    user.write(_data, i);
+    i += 32;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    userBundleAccountKey.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

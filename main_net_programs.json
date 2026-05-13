@@ -192,6 +192,15 @@
       "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
     },
     {
+      "name": "Neutral Trade",
+      "source": "idl-clients-neutral_trade",
+      "module": "neutral_trade",
+      "package": "nt.bundle",
+      "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
+    },
+    {
       "name": "Phoenix Ember",
       "source": "idl-clients-phoenix",
       "module": "phoenix",

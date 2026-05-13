@@ -1,0 +1,130 @@
+package software.sava.idl.clients.nt.bundle.gen;
+
+import java.util.List;
+
+import software.sava.core.accounts.ProgramDerivedAddress;
+import software.sava.core.accounts.PublicKey;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
+public final class NtbundlePDAs {
+
+  public static ProgramDerivedAddress bundleAccountPDA(final PublicKey program,
+                                                       final byte[] name) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE".getBytes(US_ASCII),
+      name
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundleAssetAccountPDA(final PublicKey program,
+                                                            final PublicKey bundleAssetAuthorityAccount,
+                                                            final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
+                                                            final PublicKey assetAddressAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      bundleAssetAuthorityAccount.toByteArray(),
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
+      assetAddressAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundleAssetAuthorityPDA(final PublicKey program,
+                                                              final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE_ASSET_AUTHORITY".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundleCreatorAccountPDA(final PublicKey program,
+                                                              final PublicKey creatorAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE_CREATOR".getBytes(US_ASCII),
+      creatorAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundleMasterAccountPDA(final PublicKey program) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE_MASTER".getBytes(US_ASCII)
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundleTempDataPDA(final PublicKey program,
+                                                        final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "BUNDLE_TEMP_DATA".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress oracleDataPDA(final PublicKey program,
+                                                    final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "ORACLE".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress pendingBundleAssetAuthorityPDA(final PublicKey program,
+                                                                     final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "PENDING_BUNDLE_ASSET_AUTHORITY".getBytes(US_ASCII),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress pendingDepositTokenAccountPDA(final PublicKey program,
+                                                                    final PublicKey pendingBundleAssetAuthorityAccount,
+                                                                    final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
+                                                                    final PublicKey assetAddressAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      pendingBundleAssetAuthorityAccount.toByteArray(),
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
+      assetAddressAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress strategyAccountPDA(final PublicKey program,
+                                                         final PublicKey receiverAddressAccount,
+                                                         final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "STRATEGY".getBytes(US_ASCII),
+      receiverAddressAccount.toByteArray(),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userBundleAccountPDA(final PublicKey program,
+                                                           final PublicKey userBundleAccountOwnerAccount,
+                                                           final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "USER_BUNDLE".getBytes(US_ASCII),
+      userBundleAccountOwnerAccount.toByteArray(),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userBundleAccount1PDA(final PublicKey program,
+                                                            final PublicKey authorityAccount,
+                                                            final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "USER_BUNDLE".getBytes(US_ASCII),
+      authorityAccount.toByteArray(),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress userBundleAccount2PDA(final PublicKey program,
+                                                            final PublicKey userAccount,
+                                                            final PublicKey bundleAccountAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "USER_BUNDLE".getBytes(US_ASCII),
+      userAccount.toByteArray(),
+      bundleAccountAccount.toByteArray()
+    ), program);
+  }
+
+  private NtbundlePDAs() {
+  }
+}

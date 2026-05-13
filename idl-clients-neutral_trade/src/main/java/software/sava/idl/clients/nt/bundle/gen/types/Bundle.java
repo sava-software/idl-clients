@@ -1,0 +1,299 @@
+package software.sava.idl.clients.nt.bundle.gen.types;
+
+import java.math.BigInteger;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getFloat32LE;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putFloat32LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Bundle(PublicKey _address,
+                     Discriminator discriminator,
+                     byte[] name,
+                     PublicKey manager,
+                     PublicKey keeper,
+                     PublicKey treasuryAccount,
+                     PublicKey[] allocatedReceivers,
+                     long bundleUnderlyingBalance,
+                     long maxDepositAmount,
+                     long withdrawalDelay,
+                     int performanceFee,
+                     int managementFeeBps,
+                     int depositFee,
+                     int withdrawalFee,
+                     BigInteger managerPfeeShares,
+                     int currentAllocationBps,
+                     long oracleBuffer,
+                     BigInteger totalShares,
+                     long assetPrecision,
+                     PublicKey assetAddress,
+                     int assetDecimals,
+                     long withdrawalTMin,
+                     long withdrawalTMax,
+                     float withdrawalCurve,
+                     boolean permissionned,
+                     BigInteger managerMfeeShares,
+                     long minDepositAmount,
+                     long oracleUpdateTimeLimit,
+                     long oracleMaxAge,
+                     long withdrawalRedemptionRequestCutoffTs,
+                     long withdrawalRedemptionUnlockCurrentCycleTs,
+                     long withdrawalRedemptionUnlockNextCycleTs,
+                     byte[] padding) implements SerDe {
+
+  public static final int NAME_LEN = 32;
+  public static final int PADDING_LEN = 207;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(15, 82, 167, 230, 37, 214, 82, 80);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int NAME_OFFSET = 8;
+  public static final int MANAGER_OFFSET = 40;
+  public static final int KEEPER_OFFSET = 72;
+  public static final int TREASURY_ACCOUNT_OFFSET = 104;
+  public static final int ALLOCATED_RECEIVERS_OFFSET = 136;
+
+  public static Filter createManagerFilter(final PublicKey manager) {
+    return Filter.createMemCompFilter(MANAGER_OFFSET, manager);
+  }
+
+  public static Filter createKeeperFilter(final PublicKey keeper) {
+    return Filter.createMemCompFilter(KEEPER_OFFSET, keeper);
+  }
+
+  public static Filter createTreasuryAccountFilter(final PublicKey treasuryAccount) {
+    return Filter.createMemCompFilter(TREASURY_ACCOUNT_OFFSET, treasuryAccount);
+  }
+
+  public static Bundle read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Bundle read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Bundle read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Bundle> FACTORY = Bundle::read;
+
+  public static Bundle read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var name = new byte[32];
+    i += SerDeUtil.readArray(name, _data, i);
+    final var manager = readPubKey(_data, i);
+    i += 32;
+    final var keeper = readPubKey(_data, i);
+    i += 32;
+    final var treasuryAccount = readPubKey(_data, i);
+    i += 32;
+    final var allocatedReceivers = SerDeUtil.readPublicKeyVector(4, _data, i);
+    i += SerDeUtil.lenVector(4, allocatedReceivers);
+    final var bundleUnderlyingBalance = getInt64LE(_data, i);
+    i += 8;
+    final var maxDepositAmount = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalDelay = getInt64LE(_data, i);
+    i += 8;
+    final var performanceFee = getInt32LE(_data, i);
+    i += 4;
+    final var managementFeeBps = getInt32LE(_data, i);
+    i += 4;
+    final var depositFee = getInt32LE(_data, i);
+    i += 4;
+    final var withdrawalFee = getInt32LE(_data, i);
+    i += 4;
+    final var managerPfeeShares = getInt128LE(_data, i);
+    i += 16;
+    final var currentAllocationBps = getInt32LE(_data, i);
+    i += 4;
+    final var oracleBuffer = getInt64LE(_data, i);
+    i += 8;
+    final var totalShares = getInt128LE(_data, i);
+    i += 16;
+    final var assetPrecision = getInt64LE(_data, i);
+    i += 8;
+    final var assetAddress = readPubKey(_data, i);
+    i += 32;
+    final var assetDecimals = _data[i] & 0xFF;
+    ++i;
+    final var withdrawalTMin = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalTMax = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalCurve = getFloat32LE(_data, i);
+    i += 4;
+    final var permissionned = _data[i] == 1;
+    ++i;
+    final var managerMfeeShares = getInt128LE(_data, i);
+    i += 16;
+    final var minDepositAmount = getInt64LE(_data, i);
+    i += 8;
+    final var oracleUpdateTimeLimit = getInt64LE(_data, i);
+    i += 8;
+    final var oracleMaxAge = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalRedemptionRequestCutoffTs = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalRedemptionUnlockCurrentCycleTs = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalRedemptionUnlockNextCycleTs = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new byte[207];
+    SerDeUtil.readArray(padding, _data, i);
+    return new Bundle(_address,
+                      discriminator,
+                      name,
+                      manager,
+                      keeper,
+                      treasuryAccount,
+                      allocatedReceivers,
+                      bundleUnderlyingBalance,
+                      maxDepositAmount,
+                      withdrawalDelay,
+                      performanceFee,
+                      managementFeeBps,
+                      depositFee,
+                      withdrawalFee,
+                      managerPfeeShares,
+                      currentAllocationBps,
+                      oracleBuffer,
+                      totalShares,
+                      assetPrecision,
+                      assetAddress,
+                      assetDecimals,
+                      withdrawalTMin,
+                      withdrawalTMax,
+                      withdrawalCurve,
+                      permissionned,
+                      managerMfeeShares,
+                      minDepositAmount,
+                      oracleUpdateTimeLimit,
+                      oracleMaxAge,
+                      withdrawalRedemptionRequestCutoffTs,
+                      withdrawalRedemptionUnlockCurrentCycleTs,
+                      withdrawalRedemptionUnlockNextCycleTs,
+                      padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+    manager.write(_data, i);
+    i += 32;
+    keeper.write(_data, i);
+    i += 32;
+    treasuryAccount.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeVector(4, allocatedReceivers, _data, i);
+    putInt64LE(_data, i, bundleUnderlyingBalance);
+    i += 8;
+    putInt64LE(_data, i, maxDepositAmount);
+    i += 8;
+    putInt64LE(_data, i, withdrawalDelay);
+    i += 8;
+    putInt32LE(_data, i, performanceFee);
+    i += 4;
+    putInt32LE(_data, i, managementFeeBps);
+    i += 4;
+    putInt32LE(_data, i, depositFee);
+    i += 4;
+    putInt32LE(_data, i, withdrawalFee);
+    i += 4;
+    putInt128LE(_data, i, managerPfeeShares);
+    i += 16;
+    putInt32LE(_data, i, currentAllocationBps);
+    i += 4;
+    putInt64LE(_data, i, oracleBuffer);
+    i += 8;
+    putInt128LE(_data, i, totalShares);
+    i += 16;
+    putInt64LE(_data, i, assetPrecision);
+    i += 8;
+    assetAddress.write(_data, i);
+    i += 32;
+    _data[i] = (byte) assetDecimals;
+    ++i;
+    putInt64LE(_data, i, withdrawalTMin);
+    i += 8;
+    putInt64LE(_data, i, withdrawalTMax);
+    i += 8;
+    putFloat32LE(_data, i, withdrawalCurve);
+    i += 4;
+    _data[i] = (byte) (permissionned ? 1 : 0);
+    ++i;
+    putInt128LE(_data, i, managerMfeeShares);
+    i += 16;
+    putInt64LE(_data, i, minDepositAmount);
+    i += 8;
+    putInt64LE(_data, i, oracleUpdateTimeLimit);
+    i += 8;
+    putInt64LE(_data, i, oracleMaxAge);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 207, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + SerDeUtil.lenArray(name)
+         + 32
+         + 32
+         + 32
+         + SerDeUtil.lenVector(4, allocatedReceivers)
+         + 8
+         + 8
+         + 8
+         + 4
+         + 4
+         + 4
+         + 4
+         + 16
+         + 4
+         + 8
+         + 16
+         + 8
+         + 32
+         + 1
+         + 8
+         + 8
+         + 4
+         + 1
+         + 16
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + SerDeUtil.lenArray(padding);
+  }
+}

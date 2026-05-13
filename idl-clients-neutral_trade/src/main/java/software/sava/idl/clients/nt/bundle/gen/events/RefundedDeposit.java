@@ -1,0 +1,64 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record RefundedDeposit(Discriminator discriminator,
+                              PublicKey user,
+                              long amount,
+                              long timestamp,
+                              PublicKey bundleAccountKey) implements NtbundleEvent {
+
+  public static final int BYTES = 88;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(193, 61, 203, 180, 250, 38, 151, 31);
+
+  public static final int USER_OFFSET = 8;
+  public static final int AMOUNT_OFFSET = 40;
+  public static final int TIMESTAMP_OFFSET = 48;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 56;
+
+  public static RefundedDeposit read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var user = readPubKey(_data, i);
+    i += 32;
+    final var amount = getInt64LE(_data, i);
+    i += 8;
+    final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final var bundleAccountKey = readPubKey(_data, i);
+    return new RefundedDeposit(discriminator,
+                               user,
+                               amount,
+                               timestamp,
+                               bundleAccountKey);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    user.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, amount);
+    i += 8;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,90 @@
+package software.sava.idl.clients.nt.bundle.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record OracleData(PublicKey _address,
+                         Discriminator discriminator,
+                         long averageExternalEquity,
+                         long lastUpdateTime,
+                         byte[] padding) implements SerDe {
+
+  public static final int BYTES = 88;
+  public static final int PADDING_LEN = 64;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(26, 131, 25, 110, 6, 141, 10, 37);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int AVERAGE_EXTERNAL_EQUITY_OFFSET = 8;
+  public static final int LAST_UPDATE_TIME_OFFSET = 16;
+  public static final int PADDING_OFFSET = 24;
+
+  public static Filter createAverageExternalEquityFilter(final long averageExternalEquity) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, averageExternalEquity);
+    return Filter.createMemCompFilter(AVERAGE_EXTERNAL_EQUITY_OFFSET, _data);
+  }
+
+  public static Filter createLastUpdateTimeFilter(final long lastUpdateTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastUpdateTime);
+    return Filter.createMemCompFilter(LAST_UPDATE_TIME_OFFSET, _data);
+  }
+
+  public static OracleData read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static OracleData read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static OracleData read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], OracleData> FACTORY = OracleData::read;
+
+  public static OracleData read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var averageExternalEquity = getInt64LE(_data, i);
+    i += 8;
+    final var lastUpdateTime = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new byte[64];
+    SerDeUtil.readArray(padding, _data, i);
+    return new OracleData(_address, discriminator, averageExternalEquity, lastUpdateTime, padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, averageExternalEquity);
+    i += 8;
+    putInt64LE(_data, i, lastUpdateTime);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 64, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

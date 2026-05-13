@@ -1,0 +1,104 @@
+package software.sava.idl.clients.nt.bundle.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Strategy(PublicKey _address,
+                       Discriminator discriminator,
+                       PublicKey receiverAddress,
+                       int allocationBps,
+                       boolean allowed,
+                       byte[] padding) implements SerDe {
+
+  public static final int BYTES = 141;
+  public static final int PADDING_LEN = 96;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(174, 110, 39, 119, 82, 106, 169, 102);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int RECEIVER_ADDRESS_OFFSET = 8;
+  public static final int ALLOCATION_BPS_OFFSET = 40;
+  public static final int ALLOWED_OFFSET = 44;
+  public static final int PADDING_OFFSET = 45;
+
+  public static Filter createReceiverAddressFilter(final PublicKey receiverAddress) {
+    return Filter.createMemCompFilter(RECEIVER_ADDRESS_OFFSET, receiverAddress);
+  }
+
+  public static Filter createAllocationBpsFilter(final int allocationBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, allocationBps);
+    return Filter.createMemCompFilter(ALLOCATION_BPS_OFFSET, _data);
+  }
+
+  public static Filter createAllowedFilter(final boolean allowed) {
+    return Filter.createMemCompFilter(ALLOWED_OFFSET, new byte[]{(byte) (allowed ? 1 : 0)});
+  }
+
+  public static Strategy read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Strategy read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Strategy read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Strategy> FACTORY = Strategy::read;
+
+  public static Strategy read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var receiverAddress = readPubKey(_data, i);
+    i += 32;
+    final var allocationBps = getInt32LE(_data, i);
+    i += 4;
+    final var allowed = _data[i] == 1;
+    ++i;
+    final var padding = new byte[96];
+    SerDeUtil.readArray(padding, _data, i);
+    return new Strategy(_address,
+                        discriminator,
+                        receiverAddress,
+                        allocationBps,
+                        allowed,
+                        padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    receiverAddress.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, allocationBps);
+    i += 4;
+    _data[i] = (byte) (allowed ? 1 : 0);
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 96, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,82 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record ChargedFeesToUser(Discriminator discriminator,
+                                BigInteger totalFeeShares,
+                                long totalFeeValue,
+                                BigInteger managementFeeShares,
+                                BigInteger performanceFeeShares,
+                                BigInteger sharePrice,
+                                PublicKey bundleAccountKey) implements NtbundleEvent {
+
+  public static final int BYTES = 112;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(201, 63, 172, 93, 230, 105, 127, 255);
+
+  public static final int TOTAL_FEE_SHARES_OFFSET = 8;
+  public static final int TOTAL_FEE_VALUE_OFFSET = 24;
+  public static final int MANAGEMENT_FEE_SHARES_OFFSET = 32;
+  public static final int PERFORMANCE_FEE_SHARES_OFFSET = 48;
+  public static final int SHARE_PRICE_OFFSET = 64;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 80;
+
+  public static ChargedFeesToUser read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var totalFeeShares = getInt128LE(_data, i);
+    i += 16;
+    final var totalFeeValue = getInt64LE(_data, i);
+    i += 8;
+    final var managementFeeShares = getInt128LE(_data, i);
+    i += 16;
+    final var performanceFeeShares = getInt128LE(_data, i);
+    i += 16;
+    final var sharePrice = getInt128LE(_data, i);
+    i += 16;
+    final var bundleAccountKey = readPubKey(_data, i);
+    return new ChargedFeesToUser(discriminator,
+                                 totalFeeShares,
+                                 totalFeeValue,
+                                 managementFeeShares,
+                                 performanceFeeShares,
+                                 sharePrice,
+                                 bundleAccountKey);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt128LE(_data, i, totalFeeShares);
+    i += 16;
+    putInt64LE(_data, i, totalFeeValue);
+    i += 8;
+    putInt128LE(_data, i, managementFeeShares);
+    i += 16;
+    putInt128LE(_data, i, performanceFeeShares);
+    i += 16;
+    putInt128LE(_data, i, sharePrice);
+    i += 16;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

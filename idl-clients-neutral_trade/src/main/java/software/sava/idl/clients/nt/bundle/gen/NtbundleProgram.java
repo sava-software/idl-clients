@@ -1,0 +1,2536 @@
+package software.sava.idl.clients.nt.bundle.gen;
+
+import java.math.BigInteger;
+
+import java.util.List;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.accounts.SolanaAccounts;
+import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.accounts.meta.AccountMeta.createRead;
+import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
+import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.encoding.ByteUtil.getFloat32LE;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putFloat32LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public final class NtbundleProgram {
+
+  public static final Discriminator ADD_STRATEGY_DISCRIMINATOR = toDiscriminator(64, 123, 127, 227, 192, 234, 198, 20);
+
+  public static List<AccountMeta> addStrategyKeys(final SolanaAccounts solanaAccounts,
+                                                  final PublicKey managerKey,
+                                                  final PublicKey strategyAccountKey,
+                                                  final PublicKey bundleAccountKey,
+                                                  final PublicKey receiverAddressKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(strategyAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(receiverAddressKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction addStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                        final SolanaAccounts solanaAccounts,
+                                        final PublicKey managerKey,
+                                        final PublicKey strategyAccountKey,
+                                        final PublicKey bundleAccountKey,
+                                        final PublicKey receiverAddressKey,
+                                        final int allocationBps) {
+    final var keys = addStrategyKeys(
+      solanaAccounts,
+      managerKey,
+      strategyAccountKey,
+      bundleAccountKey,
+      receiverAddressKey
+    );
+    return addStrategy(invokedNtbundleProgramMeta, keys, allocationBps);
+  }
+
+  public static Instruction addStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                        final List<AccountMeta> keys,
+                                        final int allocationBps) {
+    final byte[] _data = new byte[12];
+    int i = ADD_STRATEGY_DISCRIMINATOR.write(_data, 0);
+    putInt32LE(_data, i, allocationBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record AddStrategyIxData(Discriminator discriminator, int allocationBps) implements SerDe {  
+
+    public static AddStrategyIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int ALLOCATION_BPS_OFFSET = 8;
+
+    public static AddStrategyIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var allocationBps = getInt32LE(_data, i);
+      return new AddStrategyIxData(discriminator, allocationBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt32LE(_data, i, allocationBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator APPLY_FEES_TO_USER_DISCRIMINATOR = toDiscriminator(26, 41, 103, 167, 61, 147, 141, 30);
+
+  public static List<AccountMeta> applyFeesToUserKeys(final PublicKey keeperKey,
+                                                      final PublicKey userBundleAccountOwnerKey,
+                                                      final PublicKey userBundleAccountKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey oracleDataKey,
+                                                      final PublicKey bundleAssetAuthorityKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(userBundleAccountOwnerKey),
+      createWrite(userBundleAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleAssetAuthorityKey)
+    );
+  }
+
+  public static Instruction applyFeesToUser(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey keeperKey,
+                                            final PublicKey userBundleAccountOwnerKey,
+                                            final PublicKey userBundleAccountKey,
+                                            final PublicKey bundleAccountKey,
+                                            final PublicKey oracleDataKey,
+                                            final PublicKey bundleAssetAuthorityKey) {
+    final var keys = applyFeesToUserKeys(
+      keeperKey,
+      userBundleAccountOwnerKey,
+      userBundleAccountKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleAssetAuthorityKey
+    );
+    return applyFeesToUser(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction applyFeesToUser(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, APPLY_FEES_TO_USER_DISCRIMINATOR);
+  }
+
+  public static final Discriminator CHANGE_BUNDLE_MASTER_ADMIN_DISCRIMINATOR = toDiscriminator(255, 41, 246, 82, 7, 81, 174, 112);
+
+  public static List<AccountMeta> changeBundleMasterAdminKeys(final PublicKey adminKey,
+                                                              final PublicKey bundleMasterAccountKey) {
+    return List.of(
+      createWritableSigner(adminKey),
+      createWrite(bundleMasterAccountKey)
+    );
+  }
+
+  public static Instruction changeBundleMasterAdmin(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final PublicKey adminKey,
+                                                    final PublicKey bundleMasterAccountKey,
+                                                    final PublicKey newAdmin) {
+    final var keys = changeBundleMasterAdminKeys(
+      adminKey,
+      bundleMasterAccountKey
+    );
+    return changeBundleMasterAdmin(invokedNtbundleProgramMeta, keys, newAdmin);
+  }
+
+  public static Instruction changeBundleMasterAdmin(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final PublicKey newAdmin) {
+    final byte[] _data = new byte[40];
+    int i = CHANGE_BUNDLE_MASTER_ADMIN_DISCRIMINATOR.write(_data, 0);
+    newAdmin.write(_data, i);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record ChangeBundleMasterAdminIxData(Discriminator discriminator, PublicKey newAdmin) implements SerDe {  
+
+    public static ChangeBundleMasterAdminIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int NEW_ADMIN_OFFSET = 8;
+
+    public static ChangeBundleMasterAdminIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newAdmin = readPubKey(_data, i);
+      return new ChangeBundleMasterAdminIxData(discriminator, newAdmin);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newAdmin.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CHANGE_MANAGER_DISCRIMINATOR = toDiscriminator(97, 44, 74, 213, 119, 243, 203, 8);
+
+  public static List<AccountMeta> changeManagerKeys(final PublicKey managerKey,
+                                                    final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction changeManager(final AccountMeta invokedNtbundleProgramMeta,
+                                          final PublicKey managerKey,
+                                          final PublicKey bundleAccountKey,
+                                          final PublicKey newManager) {
+    final var keys = changeManagerKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return changeManager(invokedNtbundleProgramMeta, keys, newManager);
+  }
+
+  public static Instruction changeManager(final AccountMeta invokedNtbundleProgramMeta,
+                                          final List<AccountMeta> keys,
+                                          final PublicKey newManager) {
+    final byte[] _data = new byte[40];
+    int i = CHANGE_MANAGER_DISCRIMINATOR.write(_data, 0);
+    newManager.write(_data, i);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record ChangeManagerIxData(Discriminator discriminator, PublicKey newManager) implements SerDe {  
+
+    public static ChangeManagerIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int NEW_MANAGER_OFFSET = 8;
+
+    public static ChangeManagerIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newManager = readPubKey(_data, i);
+      return new ChangeManagerIxData(discriminator, newManager);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newManager.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CLOSE_USER_BUNDLE_ACCOUNT_DISCRIMINATOR = toDiscriminator(201, 195, 126, 228, 9, 173, 79, 215);
+
+  public static List<AccountMeta> closeUserBundleAccountKeys(final PublicKey authorityKey,
+                                                             final PublicKey userBundleAccountKey,
+                                                             final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(authorityKey),
+      createWrite(userBundleAccountKey),
+      createRead(bundleAccountKey)
+    );
+  }
+
+  public static Instruction closeUserBundleAccount(final AccountMeta invokedNtbundleProgramMeta,
+                                                   final PublicKey authorityKey,
+                                                   final PublicKey userBundleAccountKey,
+                                                   final PublicKey bundleAccountKey) {
+    final var keys = closeUserBundleAccountKeys(
+      authorityKey,
+      userBundleAccountKey,
+      bundleAccountKey
+    );
+    return closeUserBundleAccount(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction closeUserBundleAccount(final AccountMeta invokedNtbundleProgramMeta,
+                                                   final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, CLOSE_USER_BUNDLE_ACCOUNT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator DISTRIBUTE_TO_RECEIVERS_DISCRIMINATOR = toDiscriminator(123, 169, 151, 143, 0, 82, 209, 145);
+
+  public static List<AccountMeta> distributeToReceiversKeys(final PublicKey keeperKey,
+                                                            final PublicKey receiverAddressKey,
+                                                            final PublicKey bundleAssetAccountKey,
+                                                            final PublicKey receiverAtaKey,
+                                                            final PublicKey assetAddressKey,
+                                                            final PublicKey oracleDataKey,
+                                                            final PublicKey bundleAssetAuthorityKey,
+                                                            final PublicKey tokenProgramKey,
+                                                            final PublicKey bundleAccountKey,
+                                                            final PublicKey bundleTempDataKey,
+                                                            final PublicKey strategyAccountKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(receiverAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(receiverAtaKey),
+      createRead(assetAddressKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(strategyAccountKey)
+    );
+  }
+
+  public static Instruction distributeToReceivers(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final PublicKey keeperKey,
+                                                  final PublicKey receiverAddressKey,
+                                                  final PublicKey bundleAssetAccountKey,
+                                                  final PublicKey receiverAtaKey,
+                                                  final PublicKey assetAddressKey,
+                                                  final PublicKey oracleDataKey,
+                                                  final PublicKey bundleAssetAuthorityKey,
+                                                  final PublicKey tokenProgramKey,
+                                                  final PublicKey bundleAccountKey,
+                                                  final PublicKey bundleTempDataKey,
+                                                  final PublicKey strategyAccountKey) {
+    final var keys = distributeToReceiversKeys(
+      keeperKey,
+      receiverAddressKey,
+      bundleAssetAccountKey,
+      receiverAtaKey,
+      assetAddressKey,
+      oracleDataKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      strategyAccountKey
+    );
+    return distributeToReceivers(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction distributeToReceivers(final AccountMeta invokedNtbundleProgramMeta,
+                                                  final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, DISTRIBUTE_TO_RECEIVERS_DISCRIMINATOR);
+  }
+
+  public static final Discriminator ENABLE_STRATEGY_DISCRIMINATOR = toDiscriminator(245, 37, 61, 122, 99, 92, 182, 30);
+
+  public static List<AccountMeta> enableStrategyKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey managerKey,
+                                                     final PublicKey strategyAccountKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey receiverAddressKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(strategyAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(receiverAddressKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction enableStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey managerKey,
+                                           final PublicKey strategyAccountKey,
+                                           final PublicKey bundleAccountKey,
+                                           final PublicKey receiverAddressKey) {
+    final var keys = enableStrategyKeys(
+      solanaAccounts,
+      managerKey,
+      strategyAccountKey,
+      bundleAccountKey,
+      receiverAddressKey
+    );
+    return enableStrategy(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction enableStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                           final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, ENABLE_STRATEGY_DISCRIMINATOR);
+  }
+
+  public static final Discriminator END_DISTRIBUTION_DISCRIMINATOR = toDiscriminator(201, 74, 167, 103, 102, 125, 0, 236);
+
+  public static List<AccountMeta> endDistributionKeys(final PublicKey keeperKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey bundleTempDataKey,
+                                                      final PublicKey oracleDataKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey)
+    );
+  }
+
+  public static Instruction endDistribution(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey keeperKey,
+                                            final PublicKey bundleAccountKey,
+                                            final PublicKey bundleTempDataKey,
+                                            final PublicKey oracleDataKey) {
+    final var keys = endDistributionKeys(
+      keeperKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey
+    );
+    return endDistribution(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction endDistribution(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, END_DISTRIBUTION_DISCRIMINATOR);
+  }
+
+  public static final Discriminator INITIALIZE_BUNDLE_DISCRIMINATOR = toDiscriminator(93, 76, 148, 51, 99, 41, 179, 234);
+
+  public static List<AccountMeta> initializeBundleKeys(final SolanaAccounts solanaAccounts,
+                                                       final PublicKey creatorKey,
+                                                       final PublicKey bundleCreatorAccountKey,
+                                                       final PublicKey treasuryAccountKey,
+                                                       final PublicKey assetAddressKey,
+                                                       final PublicKey bundleAccountKey,
+                                                       final PublicKey bundleTempDataKey,
+                                                       final PublicKey oracleDataKey) {
+    return List.of(
+      createWritableSigner(creatorKey),
+      createRead(bundleCreatorAccountKey),
+      createRead(solanaAccounts.systemProgram()),
+      createWrite(treasuryAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey)
+    );
+  }
+
+  public static Instruction initializeBundle(final AccountMeta invokedNtbundleProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
+                                             final PublicKey creatorKey,
+                                             final PublicKey bundleCreatorAccountKey,
+                                             final PublicKey treasuryAccountKey,
+                                             final PublicKey assetAddressKey,
+                                             final PublicKey bundleAccountKey,
+                                             final PublicKey bundleTempDataKey,
+                                             final PublicKey oracleDataKey,
+                                             final byte[] name,
+                                             final PublicKey keeper,
+                                             final int depositFee,
+                                             final int withdrawalFee,
+                                             final int performanceFee,
+                                             final int managementFeeBps,
+                                             final long oracleBuffer,
+                                             final long maxDepositAmount,
+                                             final long minDepositAmount,
+                                             final long withdrawalDelay,
+                                             final long withdrawalTMin,
+                                             final long withdrawalTMax,
+                                             final float withdrawalCurve,
+                                             final long oracleMaxAge,
+                                             final long oracleUpdateTimeLimit,
+                                             final long withdrawalRedemptionRequestCutoffTs,
+                                             final long withdrawalRedemptionUnlockCurrentCycleTs,
+                                             final long withdrawalRedemptionUnlockNextCycleTs,
+                                             final boolean permissionned) {
+    final var keys = initializeBundleKeys(
+      solanaAccounts,
+      creatorKey,
+      bundleCreatorAccountKey,
+      treasuryAccountKey,
+      assetAddressKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey
+    );
+    return initializeBundle(
+      invokedNtbundleProgramMeta,
+      keys,
+      name,
+      keeper,
+      depositFee,
+      withdrawalFee,
+      performanceFee,
+      managementFeeBps,
+      oracleBuffer,
+      maxDepositAmount,
+      minDepositAmount,
+      withdrawalDelay,
+      withdrawalTMin,
+      withdrawalTMax,
+      withdrawalCurve,
+      oracleMaxAge,
+      oracleUpdateTimeLimit,
+      withdrawalRedemptionRequestCutoffTs,
+      withdrawalRedemptionUnlockCurrentCycleTs,
+      withdrawalRedemptionUnlockNextCycleTs,
+      permissionned
+    );
+  }
+
+  public static Instruction initializeBundle(final AccountMeta invokedNtbundleProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final byte[] name,
+                                             final PublicKey keeper,
+                                             final int depositFee,
+                                             final int withdrawalFee,
+                                             final int performanceFee,
+                                             final int managementFeeBps,
+                                             final long oracleBuffer,
+                                             final long maxDepositAmount,
+                                             final long minDepositAmount,
+                                             final long withdrawalDelay,
+                                             final long withdrawalTMin,
+                                             final long withdrawalTMax,
+                                             final float withdrawalCurve,
+                                             final long oracleMaxAge,
+                                             final long oracleUpdateTimeLimit,
+                                             final long withdrawalRedemptionRequestCutoffTs,
+                                             final long withdrawalRedemptionUnlockCurrentCycleTs,
+                                             final long withdrawalRedemptionUnlockNextCycleTs,
+                                             final boolean permissionned) {
+    final byte[] _data = new byte[149 + SerDeUtil.lenArray(name)];
+    int i = INITIALIZE_BUNDLE_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+    keeper.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, depositFee);
+    i += 4;
+    putInt32LE(_data, i, withdrawalFee);
+    i += 4;
+    putInt32LE(_data, i, performanceFee);
+    i += 4;
+    putInt32LE(_data, i, managementFeeBps);
+    i += 4;
+    putInt64LE(_data, i, oracleBuffer);
+    i += 8;
+    putInt64LE(_data, i, maxDepositAmount);
+    i += 8;
+    putInt64LE(_data, i, minDepositAmount);
+    i += 8;
+    putInt64LE(_data, i, withdrawalDelay);
+    i += 8;
+    putInt64LE(_data, i, withdrawalTMin);
+    i += 8;
+    putInt64LE(_data, i, withdrawalTMax);
+    i += 8;
+    putFloat32LE(_data, i, withdrawalCurve);
+    i += 4;
+    putInt64LE(_data, i, oracleMaxAge);
+    i += 8;
+    putInt64LE(_data, i, oracleUpdateTimeLimit);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+    i += 8;
+    _data[i] = (byte) (permissionned ? 1 : 0);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record InitializeBundleIxData(Discriminator discriminator,
+                                       byte[] name,
+                                       PublicKey keeper,
+                                       int depositFee,
+                                       int withdrawalFee,
+                                       int performanceFee,
+                                       int managementFeeBps,
+                                       long oracleBuffer,
+                                       long maxDepositAmount,
+                                       long minDepositAmount,
+                                       long withdrawalDelay,
+                                       long withdrawalTMin,
+                                       long withdrawalTMax,
+                                       float withdrawalCurve,
+                                       long oracleMaxAge,
+                                       long oracleUpdateTimeLimit,
+                                       long withdrawalRedemptionRequestCutoffTs,
+                                       long withdrawalRedemptionUnlockCurrentCycleTs,
+                                       long withdrawalRedemptionUnlockNextCycleTs,
+                                       boolean permissionned) implements SerDe {  
+
+    public static InitializeBundleIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 181;
+    public static final int NAME_LEN = 32;
+
+    public static final int NAME_OFFSET = 8;
+    public static final int KEEPER_OFFSET = 40;
+    public static final int DEPOSIT_FEE_OFFSET = 72;
+    public static final int WITHDRAWAL_FEE_OFFSET = 76;
+    public static final int PERFORMANCE_FEE_OFFSET = 80;
+    public static final int MANAGEMENT_FEE_BPS_OFFSET = 84;
+    public static final int ORACLE_BUFFER_OFFSET = 88;
+    public static final int MAX_DEPOSIT_AMOUNT_OFFSET = 96;
+    public static final int MIN_DEPOSIT_AMOUNT_OFFSET = 104;
+    public static final int WITHDRAWAL_DELAY_OFFSET = 112;
+    public static final int WITHDRAWAL_T_MIN_OFFSET = 120;
+    public static final int WITHDRAWAL_T_MAX_OFFSET = 128;
+    public static final int WITHDRAWAL_CURVE_OFFSET = 136;
+    public static final int ORACLE_MAX_AGE_OFFSET = 140;
+    public static final int ORACLE_UPDATE_TIME_LIMIT_OFFSET = 148;
+    public static final int WITHDRAWAL_REDEMPTION_REQUEST_CUTOFF_TS_OFFSET = 156;
+    public static final int WITHDRAWAL_REDEMPTION_UNLOCK_CURRENT_CYCLE_TS_OFFSET = 164;
+    public static final int WITHDRAWAL_REDEMPTION_UNLOCK_NEXT_CYCLE_TS_OFFSET = 172;
+    public static final int PERMISSIONNED_OFFSET = 180;
+
+    public static InitializeBundleIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var name = new byte[32];
+      i += SerDeUtil.readArray(name, _data, i);
+      final var keeper = readPubKey(_data, i);
+      i += 32;
+      final var depositFee = getInt32LE(_data, i);
+      i += 4;
+      final var withdrawalFee = getInt32LE(_data, i);
+      i += 4;
+      final var performanceFee = getInt32LE(_data, i);
+      i += 4;
+      final var managementFeeBps = getInt32LE(_data, i);
+      i += 4;
+      final var oracleBuffer = getInt64LE(_data, i);
+      i += 8;
+      final var maxDepositAmount = getInt64LE(_data, i);
+      i += 8;
+      final var minDepositAmount = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalDelay = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalTMin = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalTMax = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalCurve = getFloat32LE(_data, i);
+      i += 4;
+      final var oracleMaxAge = getInt64LE(_data, i);
+      i += 8;
+      final var oracleUpdateTimeLimit = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalRedemptionRequestCutoffTs = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalRedemptionUnlockCurrentCycleTs = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalRedemptionUnlockNextCycleTs = getInt64LE(_data, i);
+      i += 8;
+      final var permissionned = _data[i] == 1;
+      return new InitializeBundleIxData(discriminator,
+                                        name,
+                                        keeper,
+                                        depositFee,
+                                        withdrawalFee,
+                                        performanceFee,
+                                        managementFeeBps,
+                                        oracleBuffer,
+                                        maxDepositAmount,
+                                        minDepositAmount,
+                                        withdrawalDelay,
+                                        withdrawalTMin,
+                                        withdrawalTMax,
+                                        withdrawalCurve,
+                                        oracleMaxAge,
+                                        oracleUpdateTimeLimit,
+                                        withdrawalRedemptionRequestCutoffTs,
+                                        withdrawalRedemptionUnlockCurrentCycleTs,
+                                        withdrawalRedemptionUnlockNextCycleTs,
+                                        permissionned);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
+      keeper.write(_data, i);
+      i += 32;
+      putInt32LE(_data, i, depositFee);
+      i += 4;
+      putInt32LE(_data, i, withdrawalFee);
+      i += 4;
+      putInt32LE(_data, i, performanceFee);
+      i += 4;
+      putInt32LE(_data, i, managementFeeBps);
+      i += 4;
+      putInt64LE(_data, i, oracleBuffer);
+      i += 8;
+      putInt64LE(_data, i, maxDepositAmount);
+      i += 8;
+      putInt64LE(_data, i, minDepositAmount);
+      i += 8;
+      putInt64LE(_data, i, withdrawalDelay);
+      i += 8;
+      putInt64LE(_data, i, withdrawalTMin);
+      i += 8;
+      putInt64LE(_data, i, withdrawalTMax);
+      i += 8;
+      putFloat32LE(_data, i, withdrawalCurve);
+      i += 4;
+      putInt64LE(_data, i, oracleMaxAge);
+      i += 8;
+      putInt64LE(_data, i, oracleUpdateTimeLimit);
+      i += 8;
+      putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+      i += 8;
+      putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+      i += 8;
+      putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+      i += 8;
+      _data[i] = (byte) (permissionned ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INITIALIZE_BUNDLE_DEPOSITOR_DISCRIMINATOR = toDiscriminator(126, 6, 242, 36, 22, 209, 35, 2);
+
+  /// @param userBundleAccountKey each user gets one UserBundleAccount account; it will be created if it doesn't exist.
+  public static List<AccountMeta> initializeBundleDepositorKeys(final SolanaAccounts solanaAccounts,
+                                                                final PublicKey payerKey,
+                                                                final PublicKey authorityKey,
+                                                                final PublicKey bundleAccountKey,
+                                                                final PublicKey userBundleAccountKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createWritableSigner(authorityKey),
+      createRead(solanaAccounts.systemProgram()),
+      createWrite(bundleAccountKey),
+      createWrite(userBundleAccountKey)
+    );
+  }
+
+  /// @param userBundleAccountKey each user gets one UserBundleAccount account; it will be created if it doesn't exist.
+  public static Instruction initializeBundleDepositor(final AccountMeta invokedNtbundleProgramMeta,
+                                                      final SolanaAccounts solanaAccounts,
+                                                      final PublicKey payerKey,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey userBundleAccountKey) {
+    final var keys = initializeBundleDepositorKeys(
+      solanaAccounts,
+      payerKey,
+      authorityKey,
+      bundleAccountKey,
+      userBundleAccountKey
+    );
+    return initializeBundleDepositor(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction initializeBundleDepositor(final AccountMeta invokedNtbundleProgramMeta,
+                                                      final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, INITIALIZE_BUNDLE_DEPOSITOR_DISCRIMINATOR);
+  }
+
+  public static final Discriminator INITIALIZE_BUNDLE_MASTER_ACCOUNT_DISCRIMINATOR = toDiscriminator(125, 166, 190, 35, 73, 169, 140, 206);
+
+  public static List<AccountMeta> initializeBundleMasterAccountKeys(final SolanaAccounts solanaAccounts,
+                                                                    final PublicKey adminKey,
+                                                                    final PublicKey bundleMasterAccountKey) {
+    return List.of(
+      createWritableSigner(adminKey),
+      createWrite(bundleMasterAccountKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction initializeBundleMasterAccount(final AccountMeta invokedNtbundleProgramMeta,
+                                                          final SolanaAccounts solanaAccounts,
+                                                          final PublicKey adminKey,
+                                                          final PublicKey bundleMasterAccountKey) {
+    final var keys = initializeBundleMasterAccountKeys(
+      solanaAccounts,
+      adminKey,
+      bundleMasterAccountKey
+    );
+    return initializeBundleMasterAccount(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction initializeBundleMasterAccount(final AccountMeta invokedNtbundleProgramMeta,
+                                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, INITIALIZE_BUNDLE_MASTER_ACCOUNT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator INITIALIZE_PERMISSIONED_BUNDLE_DEPOSITOR_DISCRIMINATOR = toDiscriminator(157, 162, 213, 42, 205, 201, 37, 255);
+
+  /// @param userBundleAccountKey each user gets one UserBundleAccount account; it will be created if it doesn't exist.
+  public static List<AccountMeta> initializePermissionedBundleDepositorKeys(final SolanaAccounts solanaAccounts,
+                                                                            final PublicKey payerKey,
+                                                                            final PublicKey authorityKey,
+                                                                            final PublicKey bundleAccountKey,
+                                                                            final PublicKey userBundleAccountKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createWrite(authorityKey),
+      createRead(solanaAccounts.systemProgram()),
+      createWrite(bundleAccountKey),
+      createWrite(userBundleAccountKey)
+    );
+  }
+
+  /// @param userBundleAccountKey each user gets one UserBundleAccount account; it will be created if it doesn't exist.
+  public static Instruction initializePermissionedBundleDepositor(final AccountMeta invokedNtbundleProgramMeta,
+                                                                  final SolanaAccounts solanaAccounts,
+                                                                  final PublicKey payerKey,
+                                                                  final PublicKey authorityKey,
+                                                                  final PublicKey bundleAccountKey,
+                                                                  final PublicKey userBundleAccountKey) {
+    final var keys = initializePermissionedBundleDepositorKeys(
+      solanaAccounts,
+      payerKey,
+      authorityKey,
+      bundleAccountKey,
+      userBundleAccountKey
+    );
+    return initializePermissionedBundleDepositor(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction initializePermissionedBundleDepositor(final AccountMeta invokedNtbundleProgramMeta,
+                                                                  final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, INITIALIZE_PERMISSIONED_BUNDLE_DEPOSITOR_DISCRIMINATOR);
+  }
+
+  public static final Discriminator MANAGER_WITHDRAW_DISCRIMINATOR = toDiscriminator(201, 248, 190, 143, 86, 43, 183, 254);
+
+  public static List<AccountMeta> managerWithdrawKeys(final PublicKey managerKey,
+                                                      final PublicKey managerTokenAccountKey,
+                                                      final PublicKey assetAddressKey,
+                                                      final PublicKey bundleAssetAccountKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey oracleDataKey,
+                                                      final PublicKey bundleAssetAuthorityKey,
+                                                      final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(managerTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction managerWithdraw(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey managerKey,
+                                            final PublicKey managerTokenAccountKey,
+                                            final PublicKey assetAddressKey,
+                                            final PublicKey bundleAssetAccountKey,
+                                            final PublicKey bundleAccountKey,
+                                            final PublicKey oracleDataKey,
+                                            final PublicKey bundleAssetAuthorityKey,
+                                            final PublicKey tokenProgramKey) {
+    final var keys = managerWithdrawKeys(
+      managerKey,
+      managerTokenAccountKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return managerWithdraw(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction managerWithdraw(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, MANAGER_WITHDRAW_DISCRIMINATOR);
+  }
+
+  public static final Discriminator NET_PENDING_TRANSACTIONS_DISCRIMINATOR = toDiscriminator(44, 219, 50, 19, 246, 252, 37, 163);
+
+  public static List<AccountMeta> netPendingTransactionsKeys(final PublicKey keeperKey,
+                                                             final PublicKey bundleAccountKey,
+                                                             final PublicKey pendingDepositTokenAccountKey,
+                                                             final PublicKey bundleAssetAccountKey,
+                                                             final PublicKey assetAddressKey,
+                                                             final PublicKey pendingBundleAssetAuthorityKey,
+                                                             final PublicKey oracleDataKey,
+                                                             final PublicKey bundleTempDataKey,
+                                                             final PublicKey bundleAssetAuthorityKey,
+                                                             final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(bundleAccountKey),
+      createWrite(pendingDepositTokenAccountKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(pendingBundleAssetAuthorityKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleTempDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction netPendingTransactions(final AccountMeta invokedNtbundleProgramMeta,
+                                                   final PublicKey keeperKey,
+                                                   final PublicKey bundleAccountKey,
+                                                   final PublicKey pendingDepositTokenAccountKey,
+                                                   final PublicKey bundleAssetAccountKey,
+                                                   final PublicKey assetAddressKey,
+                                                   final PublicKey pendingBundleAssetAuthorityKey,
+                                                   final PublicKey oracleDataKey,
+                                                   final PublicKey bundleTempDataKey,
+                                                   final PublicKey bundleAssetAuthorityKey,
+                                                   final PublicKey tokenProgramKey) {
+    final var keys = netPendingTransactionsKeys(
+      keeperKey,
+      bundleAccountKey,
+      pendingDepositTokenAccountKey,
+      bundleAssetAccountKey,
+      assetAddressKey,
+      pendingBundleAssetAuthorityKey,
+      oracleDataKey,
+      bundleTempDataKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return netPendingTransactions(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction netPendingTransactions(final AccountMeta invokedNtbundleProgramMeta,
+                                                   final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, NET_PENDING_TRANSACTIONS_DISCRIMINATOR);
+  }
+
+  public static final Discriminator PAUSE_DEPOSITS_WITHDRAWALS_DISCRIMINATOR = toDiscriminator(106, 171, 198, 31, 183, 219, 159, 80);
+
+  public static List<AccountMeta> pauseDepositsWithdrawalsKeys(final PublicKey keeperKey,
+                                                               final PublicKey bundleAccountKey,
+                                                               final PublicKey bundleTempDataKey,
+                                                               final PublicKey oracleDataKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey)
+    );
+  }
+
+  public static Instruction pauseDepositsWithdrawals(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final PublicKey keeperKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey bundleTempDataKey,
+                                                     final PublicKey oracleDataKey,
+                                                     final boolean pause) {
+    final var keys = pauseDepositsWithdrawalsKeys(
+      keeperKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey
+    );
+    return pauseDepositsWithdrawals(invokedNtbundleProgramMeta, keys, pause);
+  }
+
+  public static Instruction pauseDepositsWithdrawals(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final boolean pause) {
+    final byte[] _data = new byte[9];
+    int i = PAUSE_DEPOSITS_WITHDRAWALS_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) (pause ? 1 : 0);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record PauseDepositsWithdrawalsIxData(Discriminator discriminator, boolean pause) implements SerDe {  
+
+    public static PauseDepositsWithdrawalsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int PAUSE_OFFSET = 8;
+
+    public static PauseDepositsWithdrawalsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var pause = _data[i] == 1;
+      return new PauseDepositsWithdrawalsIxData(discriminator, pause);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) (pause ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator PERFORM_REFILL_DISCRIMINATOR = toDiscriminator(241, 64, 6, 52, 58, 169, 15, 12);
+
+  public static List<AccountMeta> performRefillKeys(final PublicKey receiverAddressKey,
+                                                    final PublicKey bundleAssetAccountKey,
+                                                    final PublicKey receiverAtaKey,
+                                                    final PublicKey assetAddressKey,
+                                                    final PublicKey bundleAccountKey,
+                                                    final PublicKey strategyAccountKey,
+                                                    final PublicKey oracleDataKey,
+                                                    final PublicKey bundleAssetAuthorityKey,
+                                                    final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(receiverAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(receiverAtaKey),
+      createRead(assetAddressKey),
+      createWrite(bundleAccountKey),
+      createWrite(strategyAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction performRefill(final AccountMeta invokedNtbundleProgramMeta,
+                                          final PublicKey receiverAddressKey,
+                                          final PublicKey bundleAssetAccountKey,
+                                          final PublicKey receiverAtaKey,
+                                          final PublicKey assetAddressKey,
+                                          final PublicKey bundleAccountKey,
+                                          final PublicKey strategyAccountKey,
+                                          final PublicKey oracleDataKey,
+                                          final PublicKey bundleAssetAuthorityKey,
+                                          final PublicKey tokenProgramKey,
+                                          final long refillAmount) {
+    final var keys = performRefillKeys(
+      receiverAddressKey,
+      bundleAssetAccountKey,
+      receiverAtaKey,
+      assetAddressKey,
+      bundleAccountKey,
+      strategyAccountKey,
+      oracleDataKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return performRefill(invokedNtbundleProgramMeta, keys, refillAmount);
+  }
+
+  public static Instruction performRefill(final AccountMeta invokedNtbundleProgramMeta,
+                                          final List<AccountMeta> keys,
+                                          final long refillAmount) {
+    final byte[] _data = new byte[16];
+    int i = PERFORM_REFILL_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, refillAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record PerformRefillIxData(Discriminator discriminator, long refillAmount) implements SerDe {  
+
+    public static PerformRefillIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int REFILL_AMOUNT_OFFSET = 8;
+
+    public static PerformRefillIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var refillAmount = getInt64LE(_data, i);
+      return new PerformRefillIxData(discriminator, refillAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, refillAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator PROCESS_DEPOSIT_DISCRIMINATOR = toDiscriminator(136, 162, 64, 35, 84, 200, 254, 136);
+
+  /// @param pendingDepositTokenAccountKey the account holding the user's deposited asset before allocation.
+  /// @param userBundleAccountOwnerKey the owner of the pending request (for event purposes).
+  public static List<AccountMeta> processDepositKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey keeperKey,
+                                                     final PublicKey userBundleAccountKey,
+                                                     final PublicKey pendingDepositTokenAccountKey,
+                                                     final PublicKey userBundleAccountOwnerKey,
+                                                     final PublicKey assetAddressKey,
+                                                     final PublicKey bundleAssetAccountKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey bundleTempDataKey,
+                                                     final PublicKey oracleDataKey,
+                                                     final PublicKey pendingBundleAssetAuthorityKey,
+                                                     final PublicKey bundleAssetAuthorityKey,
+                                                     final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(userBundleAccountKey),
+      createWrite(pendingDepositTokenAccountKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey),
+      createWrite(pendingBundleAssetAuthorityKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param pendingDepositTokenAccountKey the account holding the user's deposited asset before allocation.
+  /// @param userBundleAccountOwnerKey the owner of the pending request (for event purposes).
+  public static Instruction processDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey keeperKey,
+                                           final PublicKey userBundleAccountKey,
+                                           final PublicKey pendingDepositTokenAccountKey,
+                                           final PublicKey userBundleAccountOwnerKey,
+                                           final PublicKey assetAddressKey,
+                                           final PublicKey bundleAssetAccountKey,
+                                           final PublicKey bundleAccountKey,
+                                           final PublicKey bundleTempDataKey,
+                                           final PublicKey oracleDataKey,
+                                           final PublicKey pendingBundleAssetAuthorityKey,
+                                           final PublicKey bundleAssetAuthorityKey,
+                                           final PublicKey tokenProgramKey) {
+    final var keys = processDepositKeys(
+      solanaAccounts,
+      keeperKey,
+      userBundleAccountKey,
+      pendingDepositTokenAccountKey,
+      userBundleAccountOwnerKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey,
+      pendingBundleAssetAuthorityKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return processDeposit(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction processDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                           final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_DEPOSIT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator PROCESS_WITHDRAWAL_DISCRIMINATOR = toDiscriminator(51, 97, 236, 17, 37, 33, 196, 64);
+
+  public static List<AccountMeta> processWithdrawalKeys(final SolanaAccounts solanaAccounts,
+                                                        final PublicKey keeperKey,
+                                                        final PublicKey userBundleAccountOwnerKey,
+                                                        final PublicKey userTokenAccountKey,
+                                                        final PublicKey assetAddressKey,
+                                                        final PublicKey bundleAssetAccountKey,
+                                                        final PublicKey pendingBundleAssetAuthorityKey,
+                                                        final PublicKey userBundleAccountKey,
+                                                        final PublicKey treasuryAccountKey,
+                                                        final PublicKey bundleAssetAuthorityKey,
+                                                        final PublicKey bundleAccountKey,
+                                                        final PublicKey bundleTempDataKey,
+                                                        final PublicKey oracleDataKey,
+                                                        final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(pendingBundleAssetAuthorityKey),
+      createWrite(userBundleAccountKey),
+      createWrite(treasuryAccountKey),
+      createWrite(bundleAssetAuthorityKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction processWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                              final SolanaAccounts solanaAccounts,
+                                              final PublicKey keeperKey,
+                                              final PublicKey userBundleAccountOwnerKey,
+                                              final PublicKey userTokenAccountKey,
+                                              final PublicKey assetAddressKey,
+                                              final PublicKey bundleAssetAccountKey,
+                                              final PublicKey pendingBundleAssetAuthorityKey,
+                                              final PublicKey userBundleAccountKey,
+                                              final PublicKey treasuryAccountKey,
+                                              final PublicKey bundleAssetAuthorityKey,
+                                              final PublicKey bundleAccountKey,
+                                              final PublicKey bundleTempDataKey,
+                                              final PublicKey oracleDataKey,
+                                              final PublicKey tokenProgramKey) {
+    final var keys = processWithdrawalKeys(
+      solanaAccounts,
+      keeperKey,
+      userBundleAccountOwnerKey,
+      userTokenAccountKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      pendingBundleAssetAuthorityKey,
+      userBundleAccountKey,
+      treasuryAccountKey,
+      bundleAssetAuthorityKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey,
+      tokenProgramKey
+    );
+    return processWithdrawal(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction processWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_WITHDRAWAL_DISCRIMINATOR);
+  }
+
+  public static final Discriminator REFUND_DEPOSIT_DISCRIMINATOR = toDiscriminator(19, 19, 78, 50, 187, 10, 162, 229);
+
+  /// @param userBundleAccountOwnerKey the owner of the pending request (for event purposes).
+  public static List<AccountMeta> refundDepositKeys(final SolanaAccounts solanaAccounts,
+                                                    final PublicKey keeperKey,
+                                                    final PublicKey userBundleAccountKey,
+                                                    final PublicKey userBundleAccountOwnerKey,
+                                                    final PublicKey userTokenAccountKey,
+                                                    final PublicKey assetAddressKey,
+                                                    final PublicKey bundleAssetAccountKey,
+                                                    final PublicKey bundleAssetAuthorityKey,
+                                                    final PublicKey bundleAccountKey,
+                                                    final PublicKey bundleTempDataKey,
+                                                    final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(userBundleAccountKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(bundleAssetAuthorityKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param userBundleAccountOwnerKey the owner of the pending request (for event purposes).
+  public static Instruction refundDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                          final SolanaAccounts solanaAccounts,
+                                          final PublicKey keeperKey,
+                                          final PublicKey userBundleAccountKey,
+                                          final PublicKey userBundleAccountOwnerKey,
+                                          final PublicKey userTokenAccountKey,
+                                          final PublicKey assetAddressKey,
+                                          final PublicKey bundleAssetAccountKey,
+                                          final PublicKey bundleAssetAuthorityKey,
+                                          final PublicKey bundleAccountKey,
+                                          final PublicKey bundleTempDataKey,
+                                          final PublicKey tokenProgramKey) {
+    final var keys = refundDepositKeys(
+      solanaAccounts,
+      keeperKey,
+      userBundleAccountKey,
+      userBundleAccountOwnerKey,
+      userTokenAccountKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      bundleAssetAuthorityKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      tokenProgramKey
+    );
+    return refundDeposit(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction refundDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REFUND_DEPOSIT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator REMOVE_STRATEGY_DISCRIMINATOR = toDiscriminator(185, 238, 33, 91, 134, 210, 97, 26);
+
+  public static List<AccountMeta> removeStrategyKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey managerKey,
+                                                     final PublicKey strategyAccountKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey receiverAddressKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(strategyAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(receiverAddressKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction removeStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey managerKey,
+                                           final PublicKey strategyAccountKey,
+                                           final PublicKey bundleAccountKey,
+                                           final PublicKey receiverAddressKey) {
+    final var keys = removeStrategyKeys(
+      solanaAccounts,
+      managerKey,
+      strategyAccountKey,
+      bundleAccountKey,
+      receiverAddressKey
+    );
+    return removeStrategy(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction removeStrategy(final AccountMeta invokedNtbundleProgramMeta,
+                                           final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REMOVE_STRATEGY_DISCRIMINATOR);
+  }
+
+  public static final Discriminator REQUEST_DEPOSIT_DISCRIMINATOR = toDiscriminator(243, 202, 197, 215, 135, 97, 213, 109);
+
+  /// @param userTokenAccountKey user token account (source of funds)
+  public static List<AccountMeta> requestDepositKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey userKey,
+                                                     final PublicKey userTokenAccountKey,
+                                                     final PublicKey pendingDepositTokenAccountKey,
+                                                     final PublicKey treasuryAccountKey,
+                                                     final PublicKey userBundleAccountKey,
+                                                     final PublicKey assetAddressKey,
+                                                     final PublicKey oracleDataKey,
+                                                     final PublicKey bundleTempDataKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey pendingBundleAssetAuthorityKey,
+                                                     final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(userKey),
+      createWrite(userTokenAccountKey),
+      createWrite(pendingDepositTokenAccountKey),
+      createWrite(treasuryAccountKey),
+      createWrite(userBundleAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleTempDataKey),
+      createWrite(bundleAccountKey),
+      createWrite(pendingBundleAssetAuthorityKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param userTokenAccountKey user token account (source of funds)
+  public static Instruction requestDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey userKey,
+                                           final PublicKey userTokenAccountKey,
+                                           final PublicKey pendingDepositTokenAccountKey,
+                                           final PublicKey treasuryAccountKey,
+                                           final PublicKey userBundleAccountKey,
+                                           final PublicKey assetAddressKey,
+                                           final PublicKey oracleDataKey,
+                                           final PublicKey bundleTempDataKey,
+                                           final PublicKey bundleAccountKey,
+                                           final PublicKey pendingBundleAssetAuthorityKey,
+                                           final PublicKey tokenProgramKey,
+                                           final long amount) {
+    final var keys = requestDepositKeys(
+      solanaAccounts,
+      userKey,
+      userTokenAccountKey,
+      pendingDepositTokenAccountKey,
+      treasuryAccountKey,
+      userBundleAccountKey,
+      assetAddressKey,
+      oracleDataKey,
+      bundleTempDataKey,
+      bundleAccountKey,
+      pendingBundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return requestDeposit(invokedNtbundleProgramMeta, keys, amount);
+  }
+
+  public static Instruction requestDeposit(final AccountMeta invokedNtbundleProgramMeta,
+                                           final List<AccountMeta> keys,
+                                           final long amount) {
+    final byte[] _data = new byte[16];
+    int i = REQUEST_DEPOSIT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record RequestDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
+
+    public static RequestDepositIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
+
+    public static RequestDepositIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      return new RequestDepositIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator REQUEST_WITHDRAWAL_DISCRIMINATOR = toDiscriminator(251, 85, 121, 205, 56, 201, 12, 177);
+
+  public static List<AccountMeta> requestWithdrawalKeys(final SolanaAccounts solanaAccounts,
+                                                        final PublicKey userKey,
+                                                        final PublicKey userBundleAccountKey,
+                                                        final PublicKey bundleAccountKey,
+                                                        final PublicKey oracleDataKey,
+                                                        final PublicKey bundleTempDataKey,
+                                                        final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(userKey),
+      createWrite(userBundleAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleTempDataKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(solanaAccounts.rentSysVar())
+    );
+  }
+
+  public static Instruction requestWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                              final SolanaAccounts solanaAccounts,
+                                              final PublicKey userKey,
+                                              final PublicKey userBundleAccountKey,
+                                              final PublicKey bundleAccountKey,
+                                              final PublicKey oracleDataKey,
+                                              final PublicKey bundleTempDataKey,
+                                              final PublicKey tokenProgramKey,
+                                              final BigInteger sharesAmount) {
+    final var keys = requestWithdrawalKeys(
+      solanaAccounts,
+      userKey,
+      userBundleAccountKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleTempDataKey,
+      tokenProgramKey
+    );
+    return requestWithdrawal(invokedNtbundleProgramMeta, keys, sharesAmount);
+  }
+
+  public static Instruction requestWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final BigInteger sharesAmount) {
+    final byte[] _data = new byte[24];
+    int i = REQUEST_WITHDRAWAL_DISCRIMINATOR.write(_data, 0);
+    putInt128LE(_data, i, sharesAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record RequestWithdrawalIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {  
+
+    public static RequestWithdrawalIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 24;
+
+    public static final int SHARES_AMOUNT_OFFSET = 8;
+
+    public static RequestWithdrawalIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var sharesAmount = getInt128LE(_data, i);
+      return new RequestWithdrawalIxData(discriminator, sharesAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt128LE(_data, i, sharesAmount);
+      i += 16;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_BUNDLE_CREATOR_DISCRIMINATOR = toDiscriminator(190, 144, 93, 89, 14, 138, 195, 166);
+
+  /// @param creatorKey CHECK safe as only the pubkey is read
+  public static List<AccountMeta> setBundleCreatorKeys(final SolanaAccounts solanaAccounts,
+                                                       final PublicKey adminKey,
+                                                       final PublicKey bundleMasterAccountKey,
+                                                       final PublicKey creatorKey,
+                                                       final PublicKey bundleCreatorAccountKey) {
+    return List.of(
+      createWritableSigner(adminKey),
+      createRead(bundleMasterAccountKey),
+      createRead(creatorKey),
+      createWrite(bundleCreatorAccountKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param creatorKey CHECK safe as only the pubkey is read
+  public static Instruction setBundleCreator(final AccountMeta invokedNtbundleProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
+                                             final PublicKey adminKey,
+                                             final PublicKey bundleMasterAccountKey,
+                                             final PublicKey creatorKey,
+                                             final PublicKey bundleCreatorAccountKey,
+                                             final boolean allowed) {
+    final var keys = setBundleCreatorKeys(
+      solanaAccounts,
+      adminKey,
+      bundleMasterAccountKey,
+      creatorKey,
+      bundleCreatorAccountKey
+    );
+    return setBundleCreator(invokedNtbundleProgramMeta, keys, allowed);
+  }
+
+  public static Instruction setBundleCreator(final AccountMeta invokedNtbundleProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final boolean allowed) {
+    final byte[] _data = new byte[9];
+    int i = SET_BUNDLE_CREATOR_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) (allowed ? 1 : 0);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetBundleCreatorIxData(Discriminator discriminator, boolean allowed) implements SerDe {  
+
+    public static SetBundleCreatorIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int ALLOWED_OFFSET = 8;
+
+    public static SetBundleCreatorIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var allowed = _data[i] == 1;
+      return new SetBundleCreatorIxData(discriminator, allowed);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) (allowed ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_DELAYS_DISCRIMINATOR = toDiscriminator(18, 56, 143, 125, 147, 15, 199, 108);
+
+  public static List<AccountMeta> setDelaysKeys(final PublicKey managerKey,
+                                                final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setDelays(final AccountMeta invokedNtbundleProgramMeta,
+                                      final PublicKey managerKey,
+                                      final PublicKey bundleAccountKey,
+                                      final long withdrawalDelay,
+                                      final long withdrawalTMin,
+                                      final long withdrawalTMax,
+                                      final float withdrawalCurve) {
+    final var keys = setDelaysKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setDelays(
+      invokedNtbundleProgramMeta,
+      keys,
+      withdrawalDelay,
+      withdrawalTMin,
+      withdrawalTMax,
+      withdrawalCurve
+    );
+  }
+
+  public static Instruction setDelays(final AccountMeta invokedNtbundleProgramMeta,
+                                      final List<AccountMeta> keys,
+                                      final long withdrawalDelay,
+                                      final long withdrawalTMin,
+                                      final long withdrawalTMax,
+                                      final float withdrawalCurve) {
+    final byte[] _data = new byte[36];
+    int i = SET_DELAYS_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, withdrawalDelay);
+    i += 8;
+    putInt64LE(_data, i, withdrawalTMin);
+    i += 8;
+    putInt64LE(_data, i, withdrawalTMax);
+    i += 8;
+    putFloat32LE(_data, i, withdrawalCurve);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetDelaysIxData(Discriminator discriminator,
+                                long withdrawalDelay,
+                                long withdrawalTMin,
+                                long withdrawalTMax,
+                                float withdrawalCurve) implements SerDe {  
+
+    public static SetDelaysIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 36;
+
+    public static final int WITHDRAWAL_DELAY_OFFSET = 8;
+    public static final int WITHDRAWAL_T_MIN_OFFSET = 16;
+    public static final int WITHDRAWAL_T_MAX_OFFSET = 24;
+    public static final int WITHDRAWAL_CURVE_OFFSET = 32;
+
+    public static SetDelaysIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var withdrawalDelay = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalTMin = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalTMax = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalCurve = getFloat32LE(_data, i);
+      return new SetDelaysIxData(discriminator,
+                                 withdrawalDelay,
+                                 withdrawalTMin,
+                                 withdrawalTMax,
+                                 withdrawalCurve);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, withdrawalDelay);
+      i += 8;
+      putInt64LE(_data, i, withdrawalTMin);
+      i += 8;
+      putInt64LE(_data, i, withdrawalTMax);
+      i += 8;
+      putFloat32LE(_data, i, withdrawalCurve);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_FEES_DISCRIMINATOR = toDiscriminator(137, 178, 49, 58, 0, 245, 242, 190);
+
+  public static List<AccountMeta> setFeesKeys(final PublicKey managerKey,
+                                              final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setFees(final AccountMeta invokedNtbundleProgramMeta,
+                                    final PublicKey managerKey,
+                                    final PublicKey bundleAccountKey,
+                                    final PublicKey treasury,
+                                    final int depositFee,
+                                    final int withdrawalFee,
+                                    final int performanceFee,
+                                    final int managementFeeBps) {
+    final var keys = setFeesKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setFees(
+      invokedNtbundleProgramMeta,
+      keys,
+      treasury,
+      depositFee,
+      withdrawalFee,
+      performanceFee,
+      managementFeeBps
+    );
+  }
+
+  public static Instruction setFees(final AccountMeta invokedNtbundleProgramMeta,
+                                    final List<AccountMeta> keys,
+                                    final PublicKey treasury,
+                                    final int depositFee,
+                                    final int withdrawalFee,
+                                    final int performanceFee,
+                                    final int managementFeeBps) {
+    final byte[] _data = new byte[56];
+    int i = SET_FEES_DISCRIMINATOR.write(_data, 0);
+    treasury.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, depositFee);
+    i += 4;
+    putInt32LE(_data, i, withdrawalFee);
+    i += 4;
+    putInt32LE(_data, i, performanceFee);
+    i += 4;
+    putInt32LE(_data, i, managementFeeBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetFeesIxData(Discriminator discriminator,
+                              PublicKey treasury,
+                              int depositFee,
+                              int withdrawalFee,
+                              int performanceFee,
+                              int managementFeeBps) implements SerDe {  
+
+    public static SetFeesIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 56;
+
+    public static final int TREASURY_OFFSET = 8;
+    public static final int DEPOSIT_FEE_OFFSET = 40;
+    public static final int WITHDRAWAL_FEE_OFFSET = 44;
+    public static final int PERFORMANCE_FEE_OFFSET = 48;
+    public static final int MANAGEMENT_FEE_BPS_OFFSET = 52;
+
+    public static SetFeesIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var treasury = readPubKey(_data, i);
+      i += 32;
+      final var depositFee = getInt32LE(_data, i);
+      i += 4;
+      final var withdrawalFee = getInt32LE(_data, i);
+      i += 4;
+      final var performanceFee = getInt32LE(_data, i);
+      i += 4;
+      final var managementFeeBps = getInt32LE(_data, i);
+      return new SetFeesIxData(discriminator,
+                               treasury,
+                               depositFee,
+                               withdrawalFee,
+                               performanceFee,
+                               managementFeeBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      treasury.write(_data, i);
+      i += 32;
+      putInt32LE(_data, i, depositFee);
+      i += 4;
+      putInt32LE(_data, i, withdrawalFee);
+      i += 4;
+      putInt32LE(_data, i, performanceFee);
+      i += 4;
+      putInt32LE(_data, i, managementFeeBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_KEEPER_DISCRIMINATOR = toDiscriminator(102, 94, 23, 78, 157, 222, 243, 214);
+
+  public static List<AccountMeta> setKeeperKeys(final PublicKey managerKey,
+                                                final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setKeeper(final AccountMeta invokedNtbundleProgramMeta,
+                                      final PublicKey managerKey,
+                                      final PublicKey bundleAccountKey,
+                                      final PublicKey newkeeper) {
+    final var keys = setKeeperKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setKeeper(invokedNtbundleProgramMeta, keys, newkeeper);
+  }
+
+  public static Instruction setKeeper(final AccountMeta invokedNtbundleProgramMeta,
+                                      final List<AccountMeta> keys,
+                                      final PublicKey newkeeper) {
+    final byte[] _data = new byte[40];
+    int i = SET_KEEPER_DISCRIMINATOR.write(_data, 0);
+    newkeeper.write(_data, i);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetKeeperIxData(Discriminator discriminator, PublicKey newkeeper) implements SerDe {  
+
+    public static SetKeeperIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int NEWKEEPER_OFFSET = 8;
+
+    public static SetKeeperIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newkeeper = readPubKey(_data, i);
+      return new SetKeeperIxData(discriminator, newkeeper);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newkeeper.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_MAX_DEPOSIT_AMOUNT_DISCRIMINATOR = toDiscriminator(29, 66, 217, 12, 80, 248, 214, 9);
+
+  public static List<AccountMeta> setMaxDepositAmountKeys(final PublicKey managerKey,
+                                                          final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setMaxDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
+                                                final PublicKey managerKey,
+                                                final PublicKey bundleAccountKey,
+                                                final long maxDepositAmount) {
+    final var keys = setMaxDepositAmountKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setMaxDepositAmount(invokedNtbundleProgramMeta, keys, maxDepositAmount);
+  }
+
+  public static Instruction setMaxDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long maxDepositAmount) {
+    final byte[] _data = new byte[16];
+    int i = SET_MAX_DEPOSIT_AMOUNT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, maxDepositAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetMaxDepositAmountIxData(Discriminator discriminator, long maxDepositAmount) implements SerDe {  
+
+    public static SetMaxDepositAmountIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int MAX_DEPOSIT_AMOUNT_OFFSET = 8;
+
+    public static SetMaxDepositAmountIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var maxDepositAmount = getInt64LE(_data, i);
+      return new SetMaxDepositAmountIxData(discriminator, maxDepositAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, maxDepositAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_MIN_DEPOSIT_AMOUNT_DISCRIMINATOR = toDiscriminator(224, 153, 215, 211, 233, 14, 124, 128);
+
+  public static List<AccountMeta> setMinDepositAmountKeys(final PublicKey managerKey,
+                                                          final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setMinDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
+                                                final PublicKey managerKey,
+                                                final PublicKey bundleAccountKey,
+                                                final long minDepositAmount) {
+    final var keys = setMinDepositAmountKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setMinDepositAmount(invokedNtbundleProgramMeta, keys, minDepositAmount);
+  }
+
+  public static Instruction setMinDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long minDepositAmount) {
+    final byte[] _data = new byte[16];
+    int i = SET_MIN_DEPOSIT_AMOUNT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, minDepositAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetMinDepositAmountIxData(Discriminator discriminator, long minDepositAmount) implements SerDe {  
+
+    public static SetMinDepositAmountIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int MIN_DEPOSIT_AMOUNT_OFFSET = 8;
+
+    public static SetMinDepositAmountIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var minDepositAmount = getInt64LE(_data, i);
+      return new SetMinDepositAmountIxData(discriminator, minDepositAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, minDepositAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_ORACLE_BUFFER_DISCRIMINATOR = toDiscriminator(7, 196, 14, 82, 110, 244, 46, 33);
+
+  public static List<AccountMeta> setOracleBufferKeys(final PublicKey managerKey,
+                                                      final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setOracleBuffer(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey managerKey,
+                                            final PublicKey bundleAccountKey,
+                                            final long oracleBuffer) {
+    final var keys = setOracleBufferKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setOracleBuffer(invokedNtbundleProgramMeta, keys, oracleBuffer);
+  }
+
+  public static Instruction setOracleBuffer(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final long oracleBuffer) {
+    final byte[] _data = new byte[16];
+    int i = SET_ORACLE_BUFFER_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, oracleBuffer);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetOracleBufferIxData(Discriminator discriminator, long oracleBuffer) implements SerDe {  
+
+    public static SetOracleBufferIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int ORACLE_BUFFER_OFFSET = 8;
+
+    public static SetOracleBufferIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var oracleBuffer = getInt64LE(_data, i);
+      return new SetOracleBufferIxData(discriminator, oracleBuffer);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, oracleBuffer);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_ORACLE_MAX_AGE_DISCRIMINATOR = toDiscriminator(75, 127, 254, 84, 122, 23, 122, 82);
+
+  public static List<AccountMeta> setOracleMaxAgeKeys(final PublicKey managerKey,
+                                                      final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setOracleMaxAge(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey managerKey,
+                                            final PublicKey bundleAccountKey,
+                                            final long oracleMaxAge) {
+    final var keys = setOracleMaxAgeKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setOracleMaxAge(invokedNtbundleProgramMeta, keys, oracleMaxAge);
+  }
+
+  public static Instruction setOracleMaxAge(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final long oracleMaxAge) {
+    final byte[] _data = new byte[16];
+    int i = SET_ORACLE_MAX_AGE_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, oracleMaxAge);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetOracleMaxAgeIxData(Discriminator discriminator, long oracleMaxAge) implements SerDe {  
+
+    public static SetOracleMaxAgeIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int ORACLE_MAX_AGE_OFFSET = 8;
+
+    public static SetOracleMaxAgeIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var oracleMaxAge = getInt64LE(_data, i);
+      return new SetOracleMaxAgeIxData(discriminator, oracleMaxAge);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, oracleMaxAge);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_ORACLE_UPDATE_TIME_LIMIT_DISCRIMINATOR = toDiscriminator(114, 2, 35, 146, 19, 99, 67, 202);
+
+  public static List<AccountMeta> setOracleUpdateTimeLimitKeys(final PublicKey managerKey,
+                                                               final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setOracleUpdateTimeLimit(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final PublicKey managerKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final long oracleUpdateTimeLimit) {
+    final var keys = setOracleUpdateTimeLimitKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setOracleUpdateTimeLimit(invokedNtbundleProgramMeta, keys, oracleUpdateTimeLimit);
+  }
+
+  public static Instruction setOracleUpdateTimeLimit(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final long oracleUpdateTimeLimit) {
+    final byte[] _data = new byte[16];
+    int i = SET_ORACLE_UPDATE_TIME_LIMIT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, oracleUpdateTimeLimit);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetOracleUpdateTimeLimitIxData(Discriminator discriminator, long oracleUpdateTimeLimit) implements SerDe {  
+
+    public static SetOracleUpdateTimeLimitIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int ORACLE_UPDATE_TIME_LIMIT_OFFSET = 8;
+
+    public static SetOracleUpdateTimeLimitIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var oracleUpdateTimeLimit = getInt64LE(_data, i);
+      return new SetOracleUpdateTimeLimitIxData(discriminator, oracleUpdateTimeLimit);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, oracleUpdateTimeLimit);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_WITHDRAWAL_REDEMPTION_SCHEDULE_DISCRIMINATOR = toDiscriminator(134, 108, 237, 103, 185, 13, 177, 105);
+
+  public static List<AccountMeta> setWithdrawalRedemptionScheduleKeys(final PublicKey managerKey,
+                                                                      final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  public static Instruction setWithdrawalRedemptionSchedule(final AccountMeta invokedNtbundleProgramMeta,
+                                                            final PublicKey managerKey,
+                                                            final PublicKey bundleAccountKey,
+                                                            final long withdrawalRedemptionRequestCutoffTs,
+                                                            final long withdrawalRedemptionUnlockCurrentCycleTs,
+                                                            final long withdrawalRedemptionUnlockNextCycleTs) {
+    final var keys = setWithdrawalRedemptionScheduleKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setWithdrawalRedemptionSchedule(
+      invokedNtbundleProgramMeta,
+      keys,
+      withdrawalRedemptionRequestCutoffTs,
+      withdrawalRedemptionUnlockCurrentCycleTs,
+      withdrawalRedemptionUnlockNextCycleTs
+    );
+  }
+
+  public static Instruction setWithdrawalRedemptionSchedule(final AccountMeta invokedNtbundleProgramMeta,
+                                                            final List<AccountMeta> keys,
+                                                            final long withdrawalRedemptionRequestCutoffTs,
+                                                            final long withdrawalRedemptionUnlockCurrentCycleTs,
+                                                            final long withdrawalRedemptionUnlockNextCycleTs) {
+    final byte[] _data = new byte[32];
+    int i = SET_WITHDRAWAL_REDEMPTION_SCHEDULE_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+    i += 8;
+    putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetWithdrawalRedemptionScheduleIxData(Discriminator discriminator,
+                                                      long withdrawalRedemptionRequestCutoffTs,
+                                                      long withdrawalRedemptionUnlockCurrentCycleTs,
+                                                      long withdrawalRedemptionUnlockNextCycleTs) implements SerDe {  
+
+    public static SetWithdrawalRedemptionScheduleIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 32;
+
+    public static final int WITHDRAWAL_REDEMPTION_REQUEST_CUTOFF_TS_OFFSET = 8;
+    public static final int WITHDRAWAL_REDEMPTION_UNLOCK_CURRENT_CYCLE_TS_OFFSET = 16;
+    public static final int WITHDRAWAL_REDEMPTION_UNLOCK_NEXT_CYCLE_TS_OFFSET = 24;
+
+    public static SetWithdrawalRedemptionScheduleIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var withdrawalRedemptionRequestCutoffTs = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalRedemptionUnlockCurrentCycleTs = getInt64LE(_data, i);
+      i += 8;
+      final var withdrawalRedemptionUnlockNextCycleTs = getInt64LE(_data, i);
+      return new SetWithdrawalRedemptionScheduleIxData(discriminator, withdrawalRedemptionRequestCutoffTs, withdrawalRedemptionUnlockCurrentCycleTs, withdrawalRedemptionUnlockNextCycleTs);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, withdrawalRedemptionRequestCutoffTs);
+      i += 8;
+      putInt64LE(_data, i, withdrawalRedemptionUnlockCurrentCycleTs);
+      i += 8;
+      putInt64LE(_data, i, withdrawalRedemptionUnlockNextCycleTs);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator START_DISTRIBUTION_DISCRIMINATOR = toDiscriminator(118, 230, 215, 75, 83, 2, 163, 35);
+
+  public static List<AccountMeta> startDistributionKeys(final PublicKey keeperKey,
+                                                        final PublicKey bundleAccountKey,
+                                                        final PublicKey bundleTempDataKey,
+                                                        final PublicKey oracleDataKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey)
+    );
+  }
+
+  public static Instruction startDistribution(final AccountMeta invokedNtbundleProgramMeta,
+                                              final PublicKey keeperKey,
+                                              final PublicKey bundleAccountKey,
+                                              final PublicKey bundleTempDataKey,
+                                              final PublicKey oracleDataKey) {
+    final var keys = startDistributionKeys(
+      keeperKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey
+    );
+    return startDistribution(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction startDistribution(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, START_DISTRIBUTION_DISCRIMINATOR);
+  }
+
+  public static final Discriminator UPDATE_ALLOCATIONS_DISCRIMINATOR = toDiscriminator(229, 242, 146, 124, 44, 15, 130, 95);
+
+  public static List<AccountMeta> updateAllocationsKeys(final PublicKey managerKey,
+                                                        final PublicKey receiverAddressKey,
+                                                        final PublicKey bundleAccountKey,
+                                                        final PublicKey strategyAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(receiverAddressKey),
+      createWrite(bundleAccountKey),
+      createWrite(strategyAccountKey)
+    );
+  }
+
+  public static Instruction updateAllocations(final AccountMeta invokedNtbundleProgramMeta,
+                                              final PublicKey managerKey,
+                                              final PublicKey receiverAddressKey,
+                                              final PublicKey bundleAccountKey,
+                                              final PublicKey strategyAccountKey,
+                                              final int newAllocationBps) {
+    final var keys = updateAllocationsKeys(
+      managerKey,
+      receiverAddressKey,
+      bundleAccountKey,
+      strategyAccountKey
+    );
+    return updateAllocations(invokedNtbundleProgramMeta, keys, newAllocationBps);
+  }
+
+  public static Instruction updateAllocations(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final int newAllocationBps) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_ALLOCATIONS_DISCRIMINATOR.write(_data, 0);
+    putInt32LE(_data, i, newAllocationBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record UpdateAllocationsIxData(Discriminator discriminator, int newAllocationBps) implements SerDe {  
+
+    public static UpdateAllocationsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int NEW_ALLOCATION_BPS_OFFSET = 8;
+
+    public static UpdateAllocationsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newAllocationBps = getInt32LE(_data, i);
+      return new UpdateAllocationsIxData(discriminator, newAllocationBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt32LE(_data, i, newAllocationBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_ORACLE_DISCRIMINATOR = toDiscriminator(112, 41, 209, 18, 248, 226, 252, 188);
+
+  public static List<AccountMeta> updateOracleKeys(final PublicKey keeperKey,
+                                                   final PublicKey bundleAccountKey,
+                                                   final PublicKey bundleTempDataKey,
+                                                   final PublicKey oracleDataKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createWrite(bundleAccountKey),
+      createWrite(bundleTempDataKey),
+      createWrite(oracleDataKey)
+    );
+  }
+
+  public static Instruction updateOracle(final AccountMeta invokedNtbundleProgramMeta,
+                                         final PublicKey keeperKey,
+                                         final PublicKey bundleAccountKey,
+                                         final PublicKey bundleTempDataKey,
+                                         final PublicKey oracleDataKey,
+                                         final long newEquity) {
+    final var keys = updateOracleKeys(
+      keeperKey,
+      bundleAccountKey,
+      bundleTempDataKey,
+      oracleDataKey
+    );
+    return updateOracle(invokedNtbundleProgramMeta, keys, newEquity);
+  }
+
+  public static Instruction updateOracle(final AccountMeta invokedNtbundleProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final long newEquity) {
+    final byte[] _data = new byte[16];
+    int i = UPDATE_ORACLE_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, newEquity);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record UpdateOracleIxData(Discriminator discriminator, long newEquity) implements SerDe {  
+
+    public static UpdateOracleIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int NEW_EQUITY_OFFSET = 8;
+
+    public static UpdateOracleIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newEquity = getInt64LE(_data, i);
+      return new UpdateOracleIxData(discriminator, newEquity);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, newEquity);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  private NtbundleProgram() {
+  }
+}

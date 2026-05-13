@@ -1,0 +1,651 @@
+package software.sava.idl.clients.nt.bundle.gen;
+
+import software.sava.idl.clients.core.gen.ProgramError;
+
+public sealed interface NtbundleError extends ProgramError permits
+    NtbundleError.InsufficientFunds,
+    NtbundleError.AllocationAmountZero,
+    NtbundleError.RedemptionAmountExceeded,
+    NtbundleError.RefillAmountInvalid,
+    NtbundleError.UnauthorizedKeeperAction,
+    NtbundleError.UnauthorizedManagerAction,
+    NtbundleError.UnauthorizedAdminAction,
+    NtbundleError.UnauthorizedBundleCreator,
+    NtbundleError.CallerNotNeutralFeeIncrementer,
+    NtbundleError.AmountMustBeBelowMax,
+    NtbundleError.InvalidNeutralFeeIncrementer,
+    NtbundleError.InvalidReceiver,
+    NtbundleError.MathError,
+    NtbundleError.InvalidAllocations,
+    NtbundleError.MustBeInWhitelist,
+    NtbundleError.DistributionAlreadyStarted,
+    NtbundleError.DistributionNotStarted,
+    NtbundleError.LeftToDistributeNotZero,
+    NtbundleError.ReceiverAlreadyAllocated,
+    NtbundleError.RawTransferReceiver,
+    NtbundleError.InvalidTwapPeriod,
+    NtbundleError.RefillAmountExceeded,
+    NtbundleError.PodTokenTotalSupplyZero,
+    NtbundleError.AllocationBpsGreaterThanGlobalAllocationBps,
+    NtbundleError.EquityOutOfBufferBound,
+    NtbundleError.RedemptionAmountZero,
+    NtbundleError.PendingDepositExists,
+    NtbundleError.InsufficientSharesBalance,
+    NtbundleError.PendingWithdrawalExists,
+    NtbundleError.PendingDepositOrWithdrawalExists,
+    NtbundleError.NoPendingWithdrawal,
+    NtbundleError.WithdrawalAlreadyProcessed,
+    NtbundleError.PendingDepositAmountZero,
+    NtbundleError.InsufficientBundleBalance,
+    NtbundleError.NoPendingTransactions,
+    NtbundleError.DepositsExtraInPendingsNotZero,
+    NtbundleError.PendingTransactionsExist,
+    NtbundleError.ManagerSharesZero,
+    NtbundleError.PausedDepositsWithdrawals,
+    NtbundleError.UnpausedDepositsWithdrawals,
+    NtbundleError.NettingNotDone,
+    NtbundleError.NettingAlreadyDone,
+    NtbundleError.OracleNotUpdated,
+    NtbundleError.MaxDepositAmountExceeded,
+    NtbundleError.TotalAssetExceedNewMaxDepositAmount,
+    NtbundleError.AllocationBpsIsZero,
+    NtbundleError.DepositAmountZero,
+    NtbundleError.InvalidWithdrawalDelay,
+    NtbundleError.InvalidWithdrawalCooldownPeriod,
+    NtbundleError.InvalidOracleBuffer,
+    NtbundleError.ExcessivePerformanceFee,
+    NtbundleError.ExcessiveManagementFee,
+    NtbundleError.ExcessiveDepositFee,
+    NtbundleError.ExcessiveWithdrawFee,
+    NtbundleError.WithdrawalDelayNotMet,
+    NtbundleError.InvalidAssetPrecision,
+    NtbundleError.InvalidAssetAddress,
+    NtbundleError.InvalidPermissionnedDepositor,
+    NtbundleError.PayerNotAuthority,
+    NtbundleError.StrategyAlreadyEnabled,
+    NtbundleError.StrategyDisabled,
+    NtbundleError.InvalidWithdrawalAmount,
+    NtbundleError.BundleNotPermissionned,
+    NtbundleError.BundleIsPermissionned,
+    NtbundleError.TooManyAllocatedReceivers,
+    NtbundleError.OracleUpdateTooFrequent,
+    NtbundleError.UserBundleAccountNotEmpty,
+    NtbundleError.MinDepositAmountNotMet,
+    NtbundleError.InvalidOracleMaxAge,
+    NtbundleError.InvalidOracleUpdateTimeLimit,
+    NtbundleError.InvalidWithdrawalRedemptionSchedule {
+
+  static NtbundleError getInstance(final int errorCode) {
+    return switch (errorCode) {
+      case 6000 -> InsufficientFunds.INSTANCE;
+      case 6001 -> AllocationAmountZero.INSTANCE;
+      case 6002 -> RedemptionAmountExceeded.INSTANCE;
+      case 6003 -> RefillAmountInvalid.INSTANCE;
+      case 6004 -> UnauthorizedKeeperAction.INSTANCE;
+      case 6005 -> UnauthorizedManagerAction.INSTANCE;
+      case 6006 -> UnauthorizedAdminAction.INSTANCE;
+      case 6007 -> UnauthorizedBundleCreator.INSTANCE;
+      case 6008 -> CallerNotNeutralFeeIncrementer.INSTANCE;
+      case 6009 -> AmountMustBeBelowMax.INSTANCE;
+      case 6010 -> InvalidNeutralFeeIncrementer.INSTANCE;
+      case 6011 -> InvalidReceiver.INSTANCE;
+      case 6012 -> MathError.INSTANCE;
+      case 6013 -> InvalidAllocations.INSTANCE;
+      case 6014 -> MustBeInWhitelist.INSTANCE;
+      case 6015 -> DistributionAlreadyStarted.INSTANCE;
+      case 6016 -> DistributionNotStarted.INSTANCE;
+      case 6017 -> LeftToDistributeNotZero.INSTANCE;
+      case 6018 -> ReceiverAlreadyAllocated.INSTANCE;
+      case 6019 -> RawTransferReceiver.INSTANCE;
+      case 6020 -> InvalidTwapPeriod.INSTANCE;
+      case 6021 -> RefillAmountExceeded.INSTANCE;
+      case 6022 -> PodTokenTotalSupplyZero.INSTANCE;
+      case 6023 -> AllocationBpsGreaterThanGlobalAllocationBps.INSTANCE;
+      case 6024 -> EquityOutOfBufferBound.INSTANCE;
+      case 6025 -> RedemptionAmountZero.INSTANCE;
+      case 6026 -> PendingDepositExists.INSTANCE;
+      case 6027 -> InsufficientSharesBalance.INSTANCE;
+      case 6028 -> PendingWithdrawalExists.INSTANCE;
+      case 6029 -> PendingDepositOrWithdrawalExists.INSTANCE;
+      case 6030 -> NoPendingWithdrawal.INSTANCE;
+      case 6031 -> WithdrawalAlreadyProcessed.INSTANCE;
+      case 6032 -> PendingDepositAmountZero.INSTANCE;
+      case 6033 -> InsufficientBundleBalance.INSTANCE;
+      case 6034 -> NoPendingTransactions.INSTANCE;
+      case 6035 -> DepositsExtraInPendingsNotZero.INSTANCE;
+      case 6036 -> PendingTransactionsExist.INSTANCE;
+      case 6037 -> ManagerSharesZero.INSTANCE;
+      case 6038 -> PausedDepositsWithdrawals.INSTANCE;
+      case 6039 -> UnpausedDepositsWithdrawals.INSTANCE;
+      case 6040 -> NettingNotDone.INSTANCE;
+      case 6041 -> NettingAlreadyDone.INSTANCE;
+      case 6042 -> OracleNotUpdated.INSTANCE;
+      case 6043 -> MaxDepositAmountExceeded.INSTANCE;
+      case 6044 -> TotalAssetExceedNewMaxDepositAmount.INSTANCE;
+      case 6045 -> AllocationBpsIsZero.INSTANCE;
+      case 6046 -> DepositAmountZero.INSTANCE;
+      case 6047 -> InvalidWithdrawalDelay.INSTANCE;
+      case 6048 -> InvalidWithdrawalCooldownPeriod.INSTANCE;
+      case 6049 -> InvalidOracleBuffer.INSTANCE;
+      case 6050 -> ExcessivePerformanceFee.INSTANCE;
+      case 6051 -> ExcessiveManagementFee.INSTANCE;
+      case 6052 -> ExcessiveDepositFee.INSTANCE;
+      case 6053 -> ExcessiveWithdrawFee.INSTANCE;
+      case 6054 -> WithdrawalDelayNotMet.INSTANCE;
+      case 6055 -> InvalidAssetPrecision.INSTANCE;
+      case 6056 -> InvalidAssetAddress.INSTANCE;
+      case 6057 -> InvalidPermissionnedDepositor.INSTANCE;
+      case 6058 -> PayerNotAuthority.INSTANCE;
+      case 6059 -> StrategyAlreadyEnabled.INSTANCE;
+      case 6060 -> StrategyDisabled.INSTANCE;
+      case 6061 -> InvalidWithdrawalAmount.INSTANCE;
+      case 6062 -> BundleNotPermissionned.INSTANCE;
+      case 6063 -> BundleIsPermissionned.INSTANCE;
+      case 6064 -> TooManyAllocatedReceivers.INSTANCE;
+      case 6065 -> OracleUpdateTooFrequent.INSTANCE;
+      case 6066 -> UserBundleAccountNotEmpty.INSTANCE;
+      case 6067 -> MinDepositAmountNotMet.INSTANCE;
+      case 6068 -> InvalidOracleMaxAge.INSTANCE;
+      case 6069 -> InvalidOracleUpdateTimeLimit.INSTANCE;
+      case 6070 -> InvalidWithdrawalRedemptionSchedule.INSTANCE;
+      default -> null;
+    };
+  }
+
+  record InsufficientFunds(int code, String msg) implements NtbundleError {
+
+    public static final InsufficientFunds INSTANCE = new InsufficientFunds(
+        6000, "Insufficient funds to process withdrawal"
+    );
+  }
+
+  record AllocationAmountZero(int code, String msg) implements NtbundleError {
+
+    public static final AllocationAmountZero INSTANCE = new AllocationAmountZero(
+        6001, "Allocation amount must be > 0"
+    );
+  }
+
+  record RedemptionAmountExceeded(int code, String msg) implements NtbundleError {
+
+    public static final RedemptionAmountExceeded INSTANCE = new RedemptionAmountExceeded(
+        6002, "Redemption exceeds bundle balance"
+    );
+  }
+
+  record RefillAmountInvalid(int code, String msg) implements NtbundleError {
+
+    public static final RefillAmountInvalid INSTANCE = new RefillAmountInvalid(
+        6003, "Refill amount must be > 0"
+    );
+  }
+
+  record UnauthorizedKeeperAction(int code, String msg) implements NtbundleError {
+
+    public static final UnauthorizedKeeperAction INSTANCE = new UnauthorizedKeeperAction(
+        6004, "Not bundle keeper"
+    );
+  }
+
+  record UnauthorizedManagerAction(int code, String msg) implements NtbundleError {
+
+    public static final UnauthorizedManagerAction INSTANCE = new UnauthorizedManagerAction(
+        6005, "Not bundle manager"
+    );
+  }
+
+  record UnauthorizedAdminAction(int code, String msg) implements NtbundleError {
+
+    public static final UnauthorizedAdminAction INSTANCE = new UnauthorizedAdminAction(
+        6006, "Not bundle admin"
+    );
+  }
+
+  record UnauthorizedBundleCreator(int code, String msg) implements NtbundleError {
+
+    public static final UnauthorizedBundleCreator INSTANCE = new UnauthorizedBundleCreator(
+        6007, "Not whitelisted bundle creator"
+    );
+  }
+
+  record CallerNotNeutralFeeIncrementer(int code, String msg) implements NtbundleError {
+
+    public static final CallerNotNeutralFeeIncrementer INSTANCE = new CallerNotNeutralFeeIncrementer(
+        6008, "Not neutral fee incrementer"
+    );
+  }
+
+  record AmountMustBeBelowMax(int code, String msg) implements NtbundleError {
+
+    public static final AmountMustBeBelowMax INSTANCE = new AmountMustBeBelowMax(
+        6009, "Amount above max limit"
+    );
+  }
+
+  record InvalidNeutralFeeIncrementer(int code, String msg) implements NtbundleError {
+
+    public static final InvalidNeutralFeeIncrementer INSTANCE = new InvalidNeutralFeeIncrementer(
+        6010, "Invalid fee incrementer"
+    );
+  }
+
+  record InvalidReceiver(int code, String msg) implements NtbundleError {
+
+    public static final InvalidReceiver INSTANCE = new InvalidReceiver(
+        6011, "Invalid receiver address"
+    );
+  }
+
+  record MathError(int code, String msg) implements NtbundleError {
+
+    public static final MathError INSTANCE = new MathError(
+        6012, "Math error"
+    );
+  }
+
+  record InvalidAllocations(int code, String msg) implements NtbundleError {
+
+    public static final InvalidAllocations INSTANCE = new InvalidAllocations(
+        6013, "Invalid allocations"
+    );
+  }
+
+  record MustBeInWhitelist(int code, String msg) implements NtbundleError {
+
+    public static final MustBeInWhitelist INSTANCE = new MustBeInWhitelist(
+        6014, "Not in whitelist"
+    );
+  }
+
+  record DistributionAlreadyStarted(int code, String msg) implements NtbundleError {
+
+    public static final DistributionAlreadyStarted INSTANCE = new DistributionAlreadyStarted(
+        6015, "Distribution already started"
+    );
+  }
+
+  record DistributionNotStarted(int code, String msg) implements NtbundleError {
+
+    public static final DistributionNotStarted INSTANCE = new DistributionNotStarted(
+        6016, "Distribution not started"
+    );
+  }
+
+  record LeftToDistributeNotZero(int code, String msg) implements NtbundleError {
+
+    public static final LeftToDistributeNotZero INSTANCE = new LeftToDistributeNotZero(
+        6017, "Distribution amount not zero"
+    );
+  }
+
+  record ReceiverAlreadyAllocated(int code, String msg) implements NtbundleError {
+
+    public static final ReceiverAlreadyAllocated INSTANCE = new ReceiverAlreadyAllocated(
+        6018, "Receiver already allocated"
+    );
+  }
+
+  record RawTransferReceiver(int code, String msg) implements NtbundleError {
+
+    public static final RawTransferReceiver INSTANCE = new RawTransferReceiver(
+        6019, "Not a raw transfer receiver"
+    );
+  }
+
+  record InvalidTwapPeriod(int code, String msg) implements NtbundleError {
+
+    public static final InvalidTwapPeriod INSTANCE = new InvalidTwapPeriod(
+        6020, "Invalid twap period"
+    );
+  }
+
+  record RefillAmountExceeded(int code, String msg) implements NtbundleError {
+
+    public static final RefillAmountExceeded INSTANCE = new RefillAmountExceeded(
+        6021, "Refill amount exceeded"
+    );
+  }
+
+  record PodTokenTotalSupplyZero(int code, String msg) implements NtbundleError {
+
+    public static final PodTokenTotalSupplyZero INSTANCE = new PodTokenTotalSupplyZero(
+        6022, "Pod token total supply is zero"
+    );
+  }
+
+  record AllocationBpsGreaterThanGlobalAllocationBps(int code, String msg) implements NtbundleError {
+
+    public static final AllocationBpsGreaterThanGlobalAllocationBps INSTANCE = new AllocationBpsGreaterThanGlobalAllocationBps(
+        6023, "Allocation bps greater than global allocation bps"
+    );
+  }
+
+  record EquityOutOfBufferBound(int code, String msg) implements NtbundleError {
+
+    public static final EquityOutOfBufferBound INSTANCE = new EquityOutOfBufferBound(
+        6024, "Equity out of buffer bound"
+    );
+  }
+
+  record RedemptionAmountZero(int code, String msg) implements NtbundleError {
+
+    public static final RedemptionAmountZero INSTANCE = new RedemptionAmountZero(
+        6025, "Redemption amount must be > 0"
+    );
+  }
+
+  record PendingDepositExists(int code, String msg) implements NtbundleError {
+
+    public static final PendingDepositExists INSTANCE = new PendingDepositExists(
+        6026, "Pending deposit exists"
+    );
+  }
+
+  record InsufficientSharesBalance(int code, String msg) implements NtbundleError {
+
+    public static final InsufficientSharesBalance INSTANCE = new InsufficientSharesBalance(
+        6027, "Insufficient Shares balance"
+    );
+  }
+
+  record PendingWithdrawalExists(int code, String msg) implements NtbundleError {
+
+    public static final PendingWithdrawalExists INSTANCE = new PendingWithdrawalExists(
+        6028, "Pending withdrawal exists"
+    );
+  }
+
+  record PendingDepositOrWithdrawalExists(int code, String msg) implements NtbundleError {
+
+    public static final PendingDepositOrWithdrawalExists INSTANCE = new PendingDepositOrWithdrawalExists(
+        6029, "Pending deposit or withdrawal exists"
+    );
+  }
+
+  record NoPendingWithdrawal(int code, String msg) implements NtbundleError {
+
+    public static final NoPendingWithdrawal INSTANCE = new NoPendingWithdrawal(
+        6030, "No pending withdrawal"
+    );
+  }
+
+  record WithdrawalAlreadyProcessed(int code, String msg) implements NtbundleError {
+
+    public static final WithdrawalAlreadyProcessed INSTANCE = new WithdrawalAlreadyProcessed(
+        6031, "Withdrawal already processed"
+    );
+  }
+
+  record PendingDepositAmountZero(int code, String msg) implements NtbundleError {
+
+    public static final PendingDepositAmountZero INSTANCE = new PendingDepositAmountZero(
+        6032, "Pending deposit amount is zero"
+    );
+  }
+
+  record InsufficientBundleBalance(int code, String msg) implements NtbundleError {
+
+    public static final InsufficientBundleBalance INSTANCE = new InsufficientBundleBalance(
+        6033, "Insufficient bundle balance"
+    );
+  }
+
+  record NoPendingTransactions(int code, String msg) implements NtbundleError {
+
+    public static final NoPendingTransactions INSTANCE = new NoPendingTransactions(
+        6034, "No pending transactions"
+    );
+  }
+
+  record DepositsExtraInPendingsNotZero(int code, String msg) implements NtbundleError {
+
+    public static final DepositsExtraInPendingsNotZero INSTANCE = new DepositsExtraInPendingsNotZero(
+        6035, "Deposits extra in pendings not zero"
+    );
+  }
+
+  record PendingTransactionsExist(int code, String msg) implements NtbundleError {
+
+    public static final PendingTransactionsExist INSTANCE = new PendingTransactionsExist(
+        6036, "Pending transactions exist"
+    );
+  }
+
+  record ManagerSharesZero(int code, String msg) implements NtbundleError {
+
+    public static final ManagerSharesZero INSTANCE = new ManagerSharesZero(
+        6037, "Manager shares is zero"
+    );
+  }
+
+  record PausedDepositsWithdrawals(int code, String msg) implements NtbundleError {
+
+    public static final PausedDepositsWithdrawals INSTANCE = new PausedDepositsWithdrawals(
+        6038, "Paused deposits withdrawals"
+    );
+  }
+
+  record UnpausedDepositsWithdrawals(int code, String msg) implements NtbundleError {
+
+    public static final UnpausedDepositsWithdrawals INSTANCE = new UnpausedDepositsWithdrawals(
+        6039, "Unpaused deposits withdrawals"
+    );
+  }
+
+  record NettingNotDone(int code, String msg) implements NtbundleError {
+
+    public static final NettingNotDone INSTANCE = new NettingNotDone(
+        6040, "Netting not done"
+    );
+  }
+
+  record NettingAlreadyDone(int code, String msg) implements NtbundleError {
+
+    public static final NettingAlreadyDone INSTANCE = new NettingAlreadyDone(
+        6041, "Netting already done"
+    );
+  }
+
+  record OracleNotUpdated(int code, String msg) implements NtbundleError {
+
+    public static final OracleNotUpdated INSTANCE = new OracleNotUpdated(
+        6042, "Oracle not updated"
+    );
+  }
+
+  record MaxDepositAmountExceeded(int code, String msg) implements NtbundleError {
+
+    public static final MaxDepositAmountExceeded INSTANCE = new MaxDepositAmountExceeded(
+        6043, "Max deposit amount exceeded"
+    );
+  }
+
+  record TotalAssetExceedNewMaxDepositAmount(int code, String msg) implements NtbundleError {
+
+    public static final TotalAssetExceedNewMaxDepositAmount INSTANCE = new TotalAssetExceedNewMaxDepositAmount(
+        6044, "Total asset exceed new max deposit amount"
+    );
+  }
+
+  record AllocationBpsIsZero(int code, String msg) implements NtbundleError {
+
+    public static final AllocationBpsIsZero INSTANCE = new AllocationBpsIsZero(
+        6045, "Allocation bps is zero"
+    );
+  }
+
+  record DepositAmountZero(int code, String msg) implements NtbundleError {
+
+    public static final DepositAmountZero INSTANCE = new DepositAmountZero(
+        6046, "Deposit amount is zero"
+    );
+  }
+
+  record InvalidWithdrawalDelay(int code, String msg) implements NtbundleError {
+
+    public static final InvalidWithdrawalDelay INSTANCE = new InvalidWithdrawalDelay(
+        6047, "Invalid withdrawal delay"
+    );
+  }
+
+  record InvalidWithdrawalCooldownPeriod(int code, String msg) implements NtbundleError {
+
+    public static final InvalidWithdrawalCooldownPeriod INSTANCE = new InvalidWithdrawalCooldownPeriod(
+        6048, "Invalid withdrawal cooldown period"
+    );
+  }
+
+  record InvalidOracleBuffer(int code, String msg) implements NtbundleError {
+
+    public static final InvalidOracleBuffer INSTANCE = new InvalidOracleBuffer(
+        6049, "Invalid oracle buffer"
+    );
+  }
+
+  record ExcessivePerformanceFee(int code, String msg) implements NtbundleError {
+
+    public static final ExcessivePerformanceFee INSTANCE = new ExcessivePerformanceFee(
+        6050, "Excessive performance fee"
+    );
+  }
+
+  record ExcessiveManagementFee(int code, String msg) implements NtbundleError {
+
+    public static final ExcessiveManagementFee INSTANCE = new ExcessiveManagementFee(
+        6051, "Excessive management fee"
+    );
+  }
+
+  record ExcessiveDepositFee(int code, String msg) implements NtbundleError {
+
+    public static final ExcessiveDepositFee INSTANCE = new ExcessiveDepositFee(
+        6052, "Excessive deposit fee"
+    );
+  }
+
+  record ExcessiveWithdrawFee(int code, String msg) implements NtbundleError {
+
+    public static final ExcessiveWithdrawFee INSTANCE = new ExcessiveWithdrawFee(
+        6053, "Excessive withdraw fee"
+    );
+  }
+
+  record WithdrawalDelayNotMet(int code, String msg) implements NtbundleError {
+
+    public static final WithdrawalDelayNotMet INSTANCE = new WithdrawalDelayNotMet(
+        6054, "Withdrawal delay not met"
+    );
+  }
+
+  record InvalidAssetPrecision(int code, String msg) implements NtbundleError {
+
+    public static final InvalidAssetPrecision INSTANCE = new InvalidAssetPrecision(
+        6055, "Invalid asset precision"
+    );
+  }
+
+  record InvalidAssetAddress(int code, String msg) implements NtbundleError {
+
+    public static final InvalidAssetAddress INSTANCE = new InvalidAssetAddress(
+        6056, "Invalid asset address"
+    );
+  }
+
+  record InvalidPermissionnedDepositor(int code, String msg) implements NtbundleError {
+
+    public static final InvalidPermissionnedDepositor INSTANCE = new InvalidPermissionnedDepositor(
+        6057, "Invalid permissionned depositor"
+    );
+  }
+
+  record PayerNotAuthority(int code, String msg) implements NtbundleError {
+
+    public static final PayerNotAuthority INSTANCE = new PayerNotAuthority(
+        6058, "Payer is not the authority"
+    );
+  }
+
+  record StrategyAlreadyEnabled(int code, String msg) implements NtbundleError {
+
+    public static final StrategyAlreadyEnabled INSTANCE = new StrategyAlreadyEnabled(
+        6059, "Strategy is already enabled"
+    );
+  }
+
+  record StrategyDisabled(int code, String msg) implements NtbundleError {
+
+    public static final StrategyDisabled INSTANCE = new StrategyDisabled(
+        6060, "Strategy is disabled"
+    );
+  }
+
+  record InvalidWithdrawalAmount(int code, String msg) implements NtbundleError {
+
+    public static final InvalidWithdrawalAmount INSTANCE = new InvalidWithdrawalAmount(
+        6061, "Invalid withdrawal amount"
+    );
+  }
+
+  record BundleNotPermissionned(int code, String msg) implements NtbundleError {
+
+    public static final BundleNotPermissionned INSTANCE = new BundleNotPermissionned(
+        6062, "Not permissionned"
+    );
+  }
+
+  record BundleIsPermissionned(int code, String msg) implements NtbundleError {
+
+    public static final BundleIsPermissionned INSTANCE = new BundleIsPermissionned(
+        6063, "Bundle is permissionned, use initialize_permissioned_bundle_depositor"
+    );
+  }
+
+  record TooManyAllocatedReceivers(int code, String msg) implements NtbundleError {
+
+    public static final TooManyAllocatedReceivers INSTANCE = new TooManyAllocatedReceivers(
+        6064, "Too many allocated receivers"
+    );
+  }
+
+  record OracleUpdateTooFrequent(int code, String msg) implements NtbundleError {
+
+    public static final OracleUpdateTooFrequent INSTANCE = new OracleUpdateTooFrequent(
+        6065, "Oracle update too frequent"
+    );
+  }
+
+  record UserBundleAccountNotEmpty(int code, String msg) implements NtbundleError {
+
+    public static final UserBundleAccountNotEmpty INSTANCE = new UserBundleAccountNotEmpty(
+        6066, "User bundle account not empty"
+    );
+  }
+
+  record MinDepositAmountNotMet(int code, String msg) implements NtbundleError {
+
+    public static final MinDepositAmountNotMet INSTANCE = new MinDepositAmountNotMet(
+        6067, "Min deposit amount not met"
+    );
+  }
+
+  record InvalidOracleMaxAge(int code, String msg) implements NtbundleError {
+
+    public static final InvalidOracleMaxAge INSTANCE = new InvalidOracleMaxAge(
+        6068, "Invalid oracle max age"
+    );
+  }
+
+  record InvalidOracleUpdateTimeLimit(int code, String msg) implements NtbundleError {
+
+    public static final InvalidOracleUpdateTimeLimit INSTANCE = new InvalidOracleUpdateTimeLimit(
+        6069, "Invalid oracle update time limit"
+    );
+  }
+
+  record InvalidWithdrawalRedemptionSchedule(int code, String msg) implements NtbundleError {
+
+    public static final InvalidWithdrawalRedemptionSchedule INSTANCE = new InvalidWithdrawalRedemptionSchedule(
+        6070, "Invalid withdrawal redemption schedule"
+    );
+  }
+}

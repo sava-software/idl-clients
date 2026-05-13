@@ -1,0 +1,240 @@
+package software.sava.idl.clients.nt.bundle.gen.types;
+
+import java.math.BigInteger;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record UserBundleAccount(PublicKey _address,
+                                Discriminator discriminator,
+                                PublicKey owner,
+                                long lastDepositTimestamp,
+                                BigInteger shares,
+                                long pendingDeposit,
+                                BigInteger pendingShares,
+                                long estimatedPendingWithdrawalValue,
+                                long withdrawalAvailableTimestamp,
+                                long lastWithdrawalProcessTimestamp,
+                                BigInteger lastHighWaterMark,
+                                BigInteger hwmPerShare,
+                                long lastManagementFeeTimestamp,
+                                BigInteger netDeposits,
+                                long totalFeeCharged,
+                                byte[] padding) implements SerDe {
+
+  public static final int BYTES = 440;
+  public static final int PADDING_LEN = 264;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(32, 181, 106, 26, 67, 130, 185, 241);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int OWNER_OFFSET = 8;
+  public static final int LAST_DEPOSIT_TIMESTAMP_OFFSET = 40;
+  public static final int SHARES_OFFSET = 48;
+  public static final int PENDING_DEPOSIT_OFFSET = 64;
+  public static final int PENDING_SHARES_OFFSET = 72;
+  public static final int ESTIMATED_PENDING_WITHDRAWAL_VALUE_OFFSET = 88;
+  public static final int WITHDRAWAL_AVAILABLE_TIMESTAMP_OFFSET = 96;
+  public static final int LAST_WITHDRAWAL_PROCESS_TIMESTAMP_OFFSET = 104;
+  public static final int LAST_HIGH_WATER_MARK_OFFSET = 112;
+  public static final int HWM_PER_SHARE_OFFSET = 128;
+  public static final int LAST_MANAGEMENT_FEE_TIMESTAMP_OFFSET = 144;
+  public static final int NET_DEPOSITS_OFFSET = 152;
+  public static final int TOTAL_FEE_CHARGED_OFFSET = 168;
+  public static final int PADDING_OFFSET = 176;
+
+  public static Filter createOwnerFilter(final PublicKey owner) {
+    return Filter.createMemCompFilter(OWNER_OFFSET, owner);
+  }
+
+  public static Filter createLastDepositTimestampFilter(final long lastDepositTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastDepositTimestamp);
+    return Filter.createMemCompFilter(LAST_DEPOSIT_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createSharesFilter(final BigInteger shares) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, shares);
+    return Filter.createMemCompFilter(SHARES_OFFSET, _data);
+  }
+
+  public static Filter createPendingDepositFilter(final long pendingDeposit) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, pendingDeposit);
+    return Filter.createMemCompFilter(PENDING_DEPOSIT_OFFSET, _data);
+  }
+
+  public static Filter createPendingSharesFilter(final BigInteger pendingShares) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, pendingShares);
+    return Filter.createMemCompFilter(PENDING_SHARES_OFFSET, _data);
+  }
+
+  public static Filter createEstimatedPendingWithdrawalValueFilter(final long estimatedPendingWithdrawalValue) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, estimatedPendingWithdrawalValue);
+    return Filter.createMemCompFilter(ESTIMATED_PENDING_WITHDRAWAL_VALUE_OFFSET, _data);
+  }
+
+  public static Filter createWithdrawalAvailableTimestampFilter(final long withdrawalAvailableTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, withdrawalAvailableTimestamp);
+    return Filter.createMemCompFilter(WITHDRAWAL_AVAILABLE_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createLastWithdrawalProcessTimestampFilter(final long lastWithdrawalProcessTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastWithdrawalProcessTimestamp);
+    return Filter.createMemCompFilter(LAST_WITHDRAWAL_PROCESS_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createLastHighWaterMarkFilter(final BigInteger lastHighWaterMark) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, lastHighWaterMark);
+    return Filter.createMemCompFilter(LAST_HIGH_WATER_MARK_OFFSET, _data);
+  }
+
+  public static Filter createHwmPerShareFilter(final BigInteger hwmPerShare) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, hwmPerShare);
+    return Filter.createMemCompFilter(HWM_PER_SHARE_OFFSET, _data);
+  }
+
+  public static Filter createLastManagementFeeTimestampFilter(final long lastManagementFeeTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastManagementFeeTimestamp);
+    return Filter.createMemCompFilter(LAST_MANAGEMENT_FEE_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createNetDepositsFilter(final BigInteger netDeposits) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, netDeposits);
+    return Filter.createMemCompFilter(NET_DEPOSITS_OFFSET, _data);
+  }
+
+  public static Filter createTotalFeeChargedFilter(final long totalFeeCharged) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, totalFeeCharged);
+    return Filter.createMemCompFilter(TOTAL_FEE_CHARGED_OFFSET, _data);
+  }
+
+  public static UserBundleAccount read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static UserBundleAccount read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static UserBundleAccount read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], UserBundleAccount> FACTORY = UserBundleAccount::read;
+
+  public static UserBundleAccount read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var owner = readPubKey(_data, i);
+    i += 32;
+    final var lastDepositTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var shares = getInt128LE(_data, i);
+    i += 16;
+    final var pendingDeposit = getInt64LE(_data, i);
+    i += 8;
+    final var pendingShares = getInt128LE(_data, i);
+    i += 16;
+    final var estimatedPendingWithdrawalValue = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalAvailableTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var lastWithdrawalProcessTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var lastHighWaterMark = getInt128LE(_data, i);
+    i += 16;
+    final var hwmPerShare = getInt128LE(_data, i);
+    i += 16;
+    final var lastManagementFeeTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var netDeposits = getInt128LE(_data, i);
+    i += 16;
+    final var totalFeeCharged = getInt64LE(_data, i);
+    i += 8;
+    final var padding = new byte[264];
+    SerDeUtil.readArray(padding, _data, i);
+    return new UserBundleAccount(_address,
+                                 discriminator,
+                                 owner,
+                                 lastDepositTimestamp,
+                                 shares,
+                                 pendingDeposit,
+                                 pendingShares,
+                                 estimatedPendingWithdrawalValue,
+                                 withdrawalAvailableTimestamp,
+                                 lastWithdrawalProcessTimestamp,
+                                 lastHighWaterMark,
+                                 hwmPerShare,
+                                 lastManagementFeeTimestamp,
+                                 netDeposits,
+                                 totalFeeCharged,
+                                 padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    owner.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, lastDepositTimestamp);
+    i += 8;
+    putInt128LE(_data, i, shares);
+    i += 16;
+    putInt64LE(_data, i, pendingDeposit);
+    i += 8;
+    putInt128LE(_data, i, pendingShares);
+    i += 16;
+    putInt64LE(_data, i, estimatedPendingWithdrawalValue);
+    i += 8;
+    putInt64LE(_data, i, withdrawalAvailableTimestamp);
+    i += 8;
+    putInt64LE(_data, i, lastWithdrawalProcessTimestamp);
+    i += 8;
+    putInt128LE(_data, i, lastHighWaterMark);
+    i += 16;
+    putInt128LE(_data, i, hwmPerShare);
+    i += 16;
+    putInt64LE(_data, i, lastManagementFeeTimestamp);
+    i += 8;
+    putInt128LE(_data, i, netDeposits);
+    i += 16;
+    putInt64LE(_data, i, totalFeeCharged);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding, 264, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

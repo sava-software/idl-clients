@@ -1,0 +1,110 @@
+package software.sava.idl.clients.nt.bundle.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Allocated(Discriminator discriminator,
+                        PublicKey from,
+                        PublicKey to,
+                        long amount,
+                        long timestamp,
+                        PublicKey bundleAccountKey,
+                        long netAmount,
+                        BigInteger sharePrice,
+                        BigInteger userSharesBefore,
+                        BigInteger userSharesAfter,
+                        BigInteger totalShares) implements NtbundleEvent {
+
+  public static final int BYTES = 192;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(146, 11, 194, 76, 4, 220, 226, 43);
+
+  public static final int FROM_OFFSET = 8;
+  public static final int TO_OFFSET = 40;
+  public static final int AMOUNT_OFFSET = 72;
+  public static final int TIMESTAMP_OFFSET = 80;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 88;
+  public static final int NET_AMOUNT_OFFSET = 120;
+  public static final int SHARE_PRICE_OFFSET = 128;
+  public static final int USER_SHARES_BEFORE_OFFSET = 144;
+  public static final int USER_SHARES_AFTER_OFFSET = 160;
+  public static final int TOTAL_SHARES_OFFSET = 176;
+
+  public static Allocated read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var from = readPubKey(_data, i);
+    i += 32;
+    final var to = readPubKey(_data, i);
+    i += 32;
+    final var amount = getInt64LE(_data, i);
+    i += 8;
+    final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final var bundleAccountKey = readPubKey(_data, i);
+    i += 32;
+    final var netAmount = getInt64LE(_data, i);
+    i += 8;
+    final var sharePrice = getInt128LE(_data, i);
+    i += 16;
+    final var userSharesBefore = getInt128LE(_data, i);
+    i += 16;
+    final var userSharesAfter = getInt128LE(_data, i);
+    i += 16;
+    final var totalShares = getInt128LE(_data, i);
+    return new Allocated(discriminator,
+                         from,
+                         to,
+                         amount,
+                         timestamp,
+                         bundleAccountKey,
+                         netAmount,
+                         sharePrice,
+                         userSharesBefore,
+                         userSharesAfter,
+                         totalShares);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    from.write(_data, i);
+    i += 32;
+    to.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, amount);
+    i += 8;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    bundleAccountKey.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, netAmount);
+    i += 8;
+    putInt128LE(_data, i, sharePrice);
+    i += 16;
+    putInt128LE(_data, i, userSharesBefore);
+    i += 16;
+    putInt128LE(_data, i, userSharesAfter);
+    i += 16;
+    putInt128LE(_data, i, totalShares);
+    i += 16;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}
