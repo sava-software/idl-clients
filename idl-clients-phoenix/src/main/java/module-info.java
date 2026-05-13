@@ -5,6 +5,7 @@ module software.sava.idl.clients.phoenix {
   exports software.sava.idl.clients.phoenix.ember.gen;
   exports software.sava.idl.clients.phoenix.perpetuals.gen.types;
   exports software.sava.idl.clients.phoenix.perpetuals.gen;
+  exports software.sava.idl.clients.phoenix;
   requires java.net.http;
   requires transitive software.sava.core;
   requires transitive software.sava.idl.clients.core;
