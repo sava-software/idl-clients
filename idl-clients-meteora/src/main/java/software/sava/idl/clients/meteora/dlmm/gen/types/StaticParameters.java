@@ -21,6 +21,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 /// @param baseFeePowerFactor Base fee power factor
 /// @param functionType function type
+/// @param collectFeeMode Collect fee mode
 /// @param padding Padding for bytemuck safe alignment
 public record StaticParameters(int baseFactor,
                                int filterPeriod,
@@ -33,10 +34,11 @@ public record StaticParameters(int baseFactor,
                                int protocolShare,
                                int baseFeePowerFactor,
                                int functionType,
+                               int collectFeeMode,
                                byte[] padding) implements SerDe {
 
   public static final int BYTES = 32;
-  public static final int PADDING_LEN = 4;
+  public static final int PADDING_LEN = 3;
 
   public static final int BASE_FACTOR_OFFSET = 0;
   public static final int FILTER_PERIOD_OFFSET = 2;
@@ -49,7 +51,8 @@ public record StaticParameters(int baseFactor,
   public static final int PROTOCOL_SHARE_OFFSET = 24;
   public static final int BASE_FEE_POWER_FACTOR_OFFSET = 26;
   public static final int FUNCTION_TYPE_OFFSET = 27;
-  public static final int PADDING_OFFSET = 28;
+  public static final int COLLECT_FEE_MODE_OFFSET = 28;
+  public static final int PADDING_OFFSET = 29;
 
   public static StaticParameters read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -78,7 +81,9 @@ public record StaticParameters(int baseFactor,
     ++i;
     final var functionType = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[4];
+    final var collectFeeMode = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[3];
     SerDeUtil.readArray(padding, _data, i);
     return new StaticParameters(baseFactor,
                                 filterPeriod,
@@ -91,6 +96,7 @@ public record StaticParameters(int baseFactor,
                                 protocolShare,
                                 baseFeePowerFactor,
                                 functionType,
+                                collectFeeMode,
                                 padding);
   }
 
@@ -119,7 +125,9 @@ public record StaticParameters(int baseFactor,
     ++i;
     _data[i] = (byte) functionType;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 4, _data, i);
+    _data[i] = (byte) collectFeeMode;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 3, _data, i);
     return i - _offset;
   }
 

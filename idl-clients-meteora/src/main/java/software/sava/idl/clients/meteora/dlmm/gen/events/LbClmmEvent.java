@@ -4,10 +4,12 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 public sealed interface LbClmmEvent extends SerDe permits
     AddLiquidity,
+    CancelLimitOrderEvt,
     ClaimFee,
     ClaimFee2,
     ClaimReward,
     ClaimReward2,
+    CloseLimitOrderEvt,
     CompositionFee,
     DecreasePositionLength,
     DynamicFeeParameterUpdate,
@@ -18,11 +20,14 @@ public sealed interface LbClmmEvent extends SerDe permits
     IncreasePositionLength,
     InitializeReward,
     LbPairCreate,
+    PlaceLimitOrderEvt,
     PositionClose,
     PositionCreate,
     Rebalancing,
     RemoveLiquidity,
+    SetPositionPermissionlessOperationBitsEvt,
     Swap,
+    Swap2Evt,
     UpdatePositionLockReleasePoint,
     UpdatePositionOperator,
     UpdateRewardDuration,
@@ -32,6 +37,8 @@ public sealed interface LbClmmEvent extends SerDe permits
   static LbClmmEvent read(final byte[] _data, final int _offset) {
     if (AddLiquidity.DISCRIMINATOR.equals(_data, _offset)) {
       return AddLiquidity.read(_data, _offset);
+    } else if (CancelLimitOrderEvt.DISCRIMINATOR.equals(_data, _offset)) {
+      return CancelLimitOrderEvt.read(_data, _offset);
     } else if (ClaimFee.DISCRIMINATOR.equals(_data, _offset)) {
       return ClaimFee.read(_data, _offset);
     } else if (ClaimFee2.DISCRIMINATOR.equals(_data, _offset)) {
@@ -40,6 +47,8 @@ public sealed interface LbClmmEvent extends SerDe permits
       return ClaimReward.read(_data, _offset);
     } else if (ClaimReward2.DISCRIMINATOR.equals(_data, _offset)) {
       return ClaimReward2.read(_data, _offset);
+    } else if (CloseLimitOrderEvt.DISCRIMINATOR.equals(_data, _offset)) {
+      return CloseLimitOrderEvt.read(_data, _offset);
     } else if (CompositionFee.DISCRIMINATOR.equals(_data, _offset)) {
       return CompositionFee.read(_data, _offset);
     } else if (DecreasePositionLength.DISCRIMINATOR.equals(_data, _offset)) {
@@ -60,6 +69,8 @@ public sealed interface LbClmmEvent extends SerDe permits
       return InitializeReward.read(_data, _offset);
     } else if (LbPairCreate.DISCRIMINATOR.equals(_data, _offset)) {
       return LbPairCreate.read(_data, _offset);
+    } else if (PlaceLimitOrderEvt.DISCRIMINATOR.equals(_data, _offset)) {
+      return PlaceLimitOrderEvt.read(_data, _offset);
     } else if (PositionClose.DISCRIMINATOR.equals(_data, _offset)) {
       return PositionClose.read(_data, _offset);
     } else if (PositionCreate.DISCRIMINATOR.equals(_data, _offset)) {
@@ -68,8 +79,12 @@ public sealed interface LbClmmEvent extends SerDe permits
       return Rebalancing.read(_data, _offset);
     } else if (RemoveLiquidity.DISCRIMINATOR.equals(_data, _offset)) {
       return RemoveLiquidity.read(_data, _offset);
+    } else if (SetPositionPermissionlessOperationBitsEvt.DISCRIMINATOR.equals(_data, _offset)) {
+      return SetPositionPermissionlessOperationBitsEvt.read(_data, _offset);
     } else if (Swap.DISCRIMINATOR.equals(_data, _offset)) {
       return Swap.read(_data, _offset);
+    } else if (Swap2Evt.DISCRIMINATOR.equals(_data, _offset)) {
+      return Swap2Evt.read(_data, _offset);
     } else if (UpdatePositionLockReleasePoint.DISCRIMINATOR.equals(_data, _offset)) {
       return UpdatePositionLockReleasePoint.read(_data, _offset);
     } else if (UpdatePositionOperator.DISCRIMINATOR.equals(_data, _offset)) {

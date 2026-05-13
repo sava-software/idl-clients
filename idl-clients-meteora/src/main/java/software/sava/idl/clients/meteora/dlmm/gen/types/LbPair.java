@@ -33,18 +33,18 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param reserveX LB token X vault
 /// @param reserveY LB token Y vault
 /// @param protocolFee Uncollected protocol fee
-/// @param padding1 _padding_1, previous Fee owner, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
+/// @param padding1 padding 1
 /// @param rewardInfos Farming reward information
 /// @param oracle Oracle pubkey
 /// @param binArrayBitmap Packed initialized bin array state
 /// @param lastUpdatedAt Last time the pool fee parameter was updated
-/// @param padding2 _padding_2, previous whitelisted_wallet, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
+/// @param padding2 _padding_2
 /// @param preActivationSwapAddress Address allowed to swap when the current point is greater than or equal to the pre-activation point. The pre-activation point is calculated as `activation_point - pre_activation_duration`.
 /// @param baseKey Base keypair. Only required for permission pair
 /// @param activationPoint Time point to enable the pair. Only applicable for permission pair.
 /// @param preActivationDuration Duration before activation activation_point. Used to calculate pre-activation time point for pre_activation_swap_address
-/// @param padding3 _padding 3 is reclaimed free space from swap_cap_deactivate_point and swap_cap_amount before, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
-/// @param padding4 _padding_4, previous lock_duration, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
+/// @param padding3 _padding 3
+/// @param padding4 _padding_4
 /// @param creator Pool creator
 /// @param tokenMintXProgramFlag token_mint_x_program_flag
 /// @param tokenMintYProgramFlag token_mint_y_program_flag

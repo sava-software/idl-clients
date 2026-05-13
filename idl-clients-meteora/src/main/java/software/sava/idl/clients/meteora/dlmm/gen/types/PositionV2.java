@@ -54,6 +54,7 @@ public record PositionV2(PublicKey _address,
                          int padding0,
                          PublicKey feeOwner,
                          int version,
+                         int permissionlessOperationBits,
                          byte[] reserved) implements SerDe {
 
   public static final int BYTES = 8120;
@@ -61,7 +62,7 @@ public record PositionV2(PublicKey _address,
   public static final int REWARD_INFOS_LEN = 70;
   public static final int FEE_INFOS_LEN = 70;
   public static final int TOTAL_CLAIMED_REWARDS_LEN = 2;
-  public static final int RESERVED_LEN = 86;
+  public static final int RESERVED_LEN = 85;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(117, 176, 212, 199, 245, 180, 133, 182);
@@ -83,7 +84,8 @@ public record PositionV2(PublicKey _address,
   public static final int PADDING_0_OFFSET = 8000;
   public static final int FEE_OWNER_OFFSET = 8001;
   public static final int VERSION_OFFSET = 8033;
-  public static final int RESERVED_OFFSET = 8034;
+  public static final int PERMISSIONLESS_OPERATION_BITS_OFFSET = 8034;
+  public static final int RESERVED_OFFSET = 8035;
 
   public static Filter createLbPairFilter(final PublicKey lbPair) {
     return Filter.createMemCompFilter(LB_PAIR_OFFSET, lbPair);
@@ -145,6 +147,10 @@ public record PositionV2(PublicKey _address,
     return Filter.createMemCompFilter(VERSION_OFFSET, new byte[]{(byte) version});
   }
 
+  public static Filter createPermissionlessOperationBitsFilter(final int permissionlessOperationBits) {
+    return Filter.createMemCompFilter(PERMISSIONLESS_OPERATION_BITS_OFFSET, new byte[]{(byte) permissionlessOperationBits});
+  }
+
   public static PositionV2 read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -197,7 +203,9 @@ public record PositionV2(PublicKey _address,
     i += 32;
     final var version = _data[i] & 0xFF;
     ++i;
-    final var reserved = new byte[86];
+    final var permissionlessOperationBits = _data[i] & 0xFF;
+    ++i;
+    final var reserved = new byte[85];
     SerDeUtil.readArray(reserved, _data, i);
     return new PositionV2(_address,
                           discriminator,
@@ -217,6 +225,7 @@ public record PositionV2(PublicKey _address,
                           padding0,
                           feeOwner,
                           version,
+                          permissionlessOperationBits,
                           reserved);
   }
 
@@ -251,7 +260,9 @@ public record PositionV2(PublicKey _address,
     i += 32;
     _data[i] = (byte) version;
     ++i;
-    i += SerDeUtil.writeArrayChecked(reserved, 86, _data, i);
+    _data[i] = (byte) permissionlessOperationBits;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(reserved, 85, _data, i);
     return i - _offset;
   }
 

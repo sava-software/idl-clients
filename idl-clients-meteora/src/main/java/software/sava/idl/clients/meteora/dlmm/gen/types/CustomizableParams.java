@@ -19,7 +19,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param activationPoint Decide when does the pool start trade. None = Now
 /// @param creatorPoolOnOffControl Pool creator have permission to enable/disable pool with restricted program validation. Only applicable for customizable permissionless pool.
 /// @param baseFeePowerFactor Base fee power factor
-/// @param functionType function type
+/// @param concreteFunctionType Concrete function type
+/// @param collectFeeMode Collect fee mode
 /// @param padding Padding, for future use
 public record CustomizableParams(int activeId,
                                  int binStep,
@@ -29,10 +30,11 @@ public record CustomizableParams(int activeId,
                                  OptionalLong activationPoint,
                                  boolean creatorPoolOnOffControl,
                                  int baseFeePowerFactor,
-                                 int functionType,
+                                 int concreteFunctionType,
+                                 int collectFeeMode,
                                  byte[] padding) implements SerDe {
 
-  public static final int PADDING_LEN = 61;
+  public static final int PADDING_LEN = 60;
   public static final int ACTIVE_ID_OFFSET = 0;
   public static final int BIN_STEP_OFFSET = 4;
   public static final int BASE_FACTOR_OFFSET = 6;
@@ -68,9 +70,11 @@ public record CustomizableParams(int activeId,
     ++i;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
-    final var functionType = _data[i] & 0xFF;
+    final var concreteFunctionType = _data[i] & 0xFF;
     ++i;
-    final var padding = new byte[61];
+    final var collectFeeMode = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[60];
     SerDeUtil.readArray(padding, _data, i);
     return new CustomizableParams(activeId,
                                   binStep,
@@ -80,7 +84,8 @@ public record CustomizableParams(int activeId,
                                   activationPoint,
                                   creatorPoolOnOffControl,
                                   baseFeePowerFactor,
-                                  functionType,
+                                  concreteFunctionType,
+                                  collectFeeMode,
                                   padding);
   }
 
@@ -102,9 +107,11 @@ public record CustomizableParams(int activeId,
     ++i;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    _data[i] = (byte) functionType;
+    _data[i] = (byte) concreteFunctionType;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding, 61, _data, i);
+    _data[i] = (byte) collectFeeMode;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 60, _data, i);
     return i - _offset;
   }
 
@@ -116,6 +123,7 @@ public record CustomizableParams(int activeId,
          + 1
          + 1
          + (activationPoint == null || activationPoint.isEmpty() ? 1 : (1 + 8))
+         + 1
          + 1
          + 1
          + 1

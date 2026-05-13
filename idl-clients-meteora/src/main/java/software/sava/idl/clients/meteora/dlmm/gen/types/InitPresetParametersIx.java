@@ -16,7 +16,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param maxVolatilityAccumulator Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
 /// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 /// @param baseFeePowerFactor Base fee power factor
-/// @param functionType function type
+/// @param concreteFunctionType function type
+/// @param collectFeeMode collect fee mode
 public record InitPresetParametersIx(int index,
                                      int binStep,
                                      int baseFactor,
@@ -27,9 +28,10 @@ public record InitPresetParametersIx(int index,
                                      int maxVolatilityAccumulator,
                                      int protocolShare,
                                      int baseFeePowerFactor,
-                                     int functionType) implements SerDe {
+                                     int concreteFunctionType,
+                                     int collectFeeMode) implements SerDe {
 
-  public static final int BYTES = 24;
+  public static final int BYTES = 25;
 
   public static final int INDEX_OFFSET = 0;
   public static final int BIN_STEP_OFFSET = 2;
@@ -41,7 +43,8 @@ public record InitPresetParametersIx(int index,
   public static final int MAX_VOLATILITY_ACCUMULATOR_OFFSET = 16;
   public static final int PROTOCOL_SHARE_OFFSET = 20;
   public static final int BASE_FEE_POWER_FACTOR_OFFSET = 22;
-  public static final int FUNCTION_TYPE_OFFSET = 23;
+  public static final int CONCRETE_FUNCTION_TYPE_OFFSET = 23;
+  public static final int COLLECT_FEE_MODE_OFFSET = 24;
 
   public static InitPresetParametersIx read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -68,7 +71,9 @@ public record InitPresetParametersIx(int index,
     i += 2;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     ++i;
-    final var functionType = _data[i] & 0xFF;
+    final var concreteFunctionType = _data[i] & 0xFF;
+    ++i;
+    final var collectFeeMode = _data[i] & 0xFF;
     return new InitPresetParametersIx(index,
                                       binStep,
                                       baseFactor,
@@ -79,7 +84,8 @@ public record InitPresetParametersIx(int index,
                                       maxVolatilityAccumulator,
                                       protocolShare,
                                       baseFeePowerFactor,
-                                      functionType);
+                                      concreteFunctionType,
+                                      collectFeeMode);
   }
 
   @Override
@@ -105,7 +111,9 @@ public record InitPresetParametersIx(int index,
     i += 2;
     _data[i] = (byte) baseFeePowerFactor;
     ++i;
-    _data[i] = (byte) functionType;
+    _data[i] = (byte) concreteFunctionType;
+    ++i;
+    _data[i] = (byte) collectFeeMode;
     ++i;
     return i - _offset;
   }

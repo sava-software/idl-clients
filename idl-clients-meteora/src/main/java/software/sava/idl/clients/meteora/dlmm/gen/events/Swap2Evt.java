@@ -1,0 +1,156 @@
+package software.sava.idl.clients.meteora.dlmm.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// @param amountIn Total amount, user transfer out
+/// @param amountLeft Leftover amount
+/// @param amountOut Total amount transfer to user, including transfer fee
+/// @param mmFee Market maker fee
+/// @param protocolFee Total protocol fee
+/// @param limitOrderFee Total limit order fee
+/// @param hostFee Total host fee
+/// @param feesOnInput check if fees on input
+/// @param feesOnTokenX check if fees is on token x
+public record Swap2Evt(Discriminator discriminator,
+                       PublicKey lbPair,
+                       PublicKey from,
+                       int startBinId,
+                       int endBinId,
+                       boolean swapForY,
+                       BigInteger feeBps,
+                       long amountIn,
+                       long amountLeft,
+                       long amountOut,
+                       long mmFee,
+                       long protocolFee,
+                       long limitOrderFee,
+                       long hostFee,
+                       boolean feesOnInput,
+                       boolean feesOnTokenX) implements LbClmmEvent {
+
+  public static final int BYTES = 155;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(46, 116, 82, 215, 148, 27, 84, 77);
+
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FROM_OFFSET = 40;
+  public static final int START_BIN_ID_OFFSET = 72;
+  public static final int END_BIN_ID_OFFSET = 76;
+  public static final int SWAP_FOR_Y_OFFSET = 80;
+  public static final int FEE_BPS_OFFSET = 81;
+  public static final int AMOUNT_IN_OFFSET = 97;
+  public static final int AMOUNT_LEFT_OFFSET = 105;
+  public static final int AMOUNT_OUT_OFFSET = 113;
+  public static final int MM_FEE_OFFSET = 121;
+  public static final int PROTOCOL_FEE_OFFSET = 129;
+  public static final int LIMIT_ORDER_FEE_OFFSET = 137;
+  public static final int HOST_FEE_OFFSET = 145;
+  public static final int FEES_ON_INPUT_OFFSET = 153;
+  public static final int FEES_ON_TOKEN_X_OFFSET = 154;
+
+  public static Swap2Evt read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var lbPair = readPubKey(_data, i);
+    i += 32;
+    final var from = readPubKey(_data, i);
+    i += 32;
+    final var startBinId = getInt32LE(_data, i);
+    i += 4;
+    final var endBinId = getInt32LE(_data, i);
+    i += 4;
+    final var swapForY = _data[i] == 1;
+    ++i;
+    final var feeBps = getInt128LE(_data, i);
+    i += 16;
+    final var amountIn = getInt64LE(_data, i);
+    i += 8;
+    final var amountLeft = getInt64LE(_data, i);
+    i += 8;
+    final var amountOut = getInt64LE(_data, i);
+    i += 8;
+    final var mmFee = getInt64LE(_data, i);
+    i += 8;
+    final var protocolFee = getInt64LE(_data, i);
+    i += 8;
+    final var limitOrderFee = getInt64LE(_data, i);
+    i += 8;
+    final var hostFee = getInt64LE(_data, i);
+    i += 8;
+    final var feesOnInput = _data[i] == 1;
+    ++i;
+    final var feesOnTokenX = _data[i] == 1;
+    return new Swap2Evt(discriminator,
+                        lbPair,
+                        from,
+                        startBinId,
+                        endBinId,
+                        swapForY,
+                        feeBps,
+                        amountIn,
+                        amountLeft,
+                        amountOut,
+                        mmFee,
+                        protocolFee,
+                        limitOrderFee,
+                        hostFee,
+                        feesOnInput,
+                        feesOnTokenX);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    lbPair.write(_data, i);
+    i += 32;
+    from.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, startBinId);
+    i += 4;
+    putInt32LE(_data, i, endBinId);
+    i += 4;
+    _data[i] = (byte) (swapForY ? 1 : 0);
+    ++i;
+    putInt128LE(_data, i, feeBps);
+    i += 16;
+    putInt64LE(_data, i, amountIn);
+    i += 8;
+    putInt64LE(_data, i, amountLeft);
+    i += 8;
+    putInt64LE(_data, i, amountOut);
+    i += 8;
+    putInt64LE(_data, i, mmFee);
+    i += 8;
+    putInt64LE(_data, i, protocolFee);
+    i += 8;
+    putInt64LE(_data, i, limitOrderFee);
+    i += 8;
+    putInt64LE(_data, i, hostFee);
+    i += 8;
+    _data[i] = (byte) (feesOnInput ? 1 : 0);
+    ++i;
+    _data[i] = (byte) (feesOnTokenX ? 1 : 0);
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

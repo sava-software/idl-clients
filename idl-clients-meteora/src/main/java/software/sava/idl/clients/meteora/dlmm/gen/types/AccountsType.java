@@ -6,7 +6,8 @@ public sealed interface AccountsType extends RustEnum permits
   AccountsType.TransferHookX,
   AccountsType.TransferHookY,
   AccountsType.TransferHookReward,
-  AccountsType.TransferHookMultiReward {
+  AccountsType.TransferHookMultiReward,
+  AccountsType.TransferHookReferral {
 
   static AccountsType read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -16,6 +17,7 @@ public sealed interface AccountsType extends RustEnum permits
       case 1 -> TransferHookY.INSTANCE;
       case 2 -> TransferHookReward.INSTANCE;
       case 3 -> TransferHookMultiReward.read(_data, i);
+      case 4 -> TransferHookReferral.INSTANCE;
       default -> null;
     };
   }
@@ -59,6 +61,16 @@ public sealed interface AccountsType extends RustEnum permits
     @Override
     public int ordinal() {
       return 3;
+    }
+  }
+
+  record TransferHookReferral() implements EnumNone, AccountsType {
+
+    public static final TransferHookReferral INSTANCE = new TransferHookReferral();
+
+    @Override
+    public int ordinal() {
+      return 4;
     }
   }
 }

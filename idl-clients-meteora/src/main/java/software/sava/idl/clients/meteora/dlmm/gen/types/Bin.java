@@ -6,41 +6,64 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amountX Amount of token X in the bin. This already excluded protocol fees.
-/// @param amountY Amount of token Y in the bin. This already excluded protocol fees.
+/// @param amountX Amount of token X in the bin for market making. This already excluded protocol fees.
+/// @param amountY Amount of token Y in the bin for market making. This already excluded protocol fees.
 /// @param price Bin price
-/// @param liquiditySupply Liquidities of the bin. This is the same as LP mint supply. q-number
-/// @param functionBytes function bytes, could be used for liquidity mining or other functions in future
+/// @param liquiditySupply Bin MM liquidity supply.
+/// @param fulfilledOrderAmountX Total fulfilled order amount x
+/// @param fulfilledOrderAmountY Total fulfilled order amount y
+/// @param limitOrderFeeAskSide Limit order fee collected by ask side orders
+/// @param limitOrderFeeBidSide Limit order fee collected by bid side orders
 /// @param feeAmountXPerTokenStored Swap fee amount of token X per liquidity deposited.
 /// @param feeAmountYPerTokenStored Swap fee amount of token Y per liquidity deposited.
-/// @param padding0 _padding_0, previous amount_x_in, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
-/// @param padding1 _padding_1, previous amount_y_in, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
+/// @param openOrderAmount Pending open limit orders amount in the bin.
+/// @param totalProcessingOrderAmount Total processing order amount
+/// @param processedOrderRemainingAmount Remaining in processing open limit orders amount in the bin.
+/// @param orderAge Age
+/// @param limitOrderAskSide limit order flag
+/// @param padding1 padding
 public record Bin(long amountX,
                   long amountY,
                   BigInteger price,
                   BigInteger liquiditySupply,
-                  BigInteger[] functionBytes,
+                  long fulfilledOrderAmountX,
+                  long fulfilledOrderAmountY,
+                  long limitOrderFeeAskSide,
+                  long limitOrderFeeBidSide,
                   BigInteger feeAmountXPerTokenStored,
                   BigInteger feeAmountYPerTokenStored,
-                  BigInteger padding0,
-                  BigInteger padding1) implements SerDe {
+                  long openOrderAmount,
+                  long totalProcessingOrderAmount,
+                  long processedOrderRemainingAmount,
+                  int orderAge,
+                  int limitOrderAskSide,
+                  byte[] padding1) implements SerDe {
 
   public static final int BYTES = 144;
-  public static final int FUNCTION_BYTES_LEN = 2;
+  public static final int PADDING_1_LEN = 3;
 
   public static final int AMOUNT_X_OFFSET = 0;
   public static final int AMOUNT_Y_OFFSET = 8;
   public static final int PRICE_OFFSET = 16;
   public static final int LIQUIDITY_SUPPLY_OFFSET = 32;
-  public static final int FUNCTION_BYTES_OFFSET = 48;
+  public static final int FULFILLED_ORDER_AMOUNT_X_OFFSET = 48;
+  public static final int FULFILLED_ORDER_AMOUNT_Y_OFFSET = 56;
+  public static final int LIMIT_ORDER_FEE_ASK_SIDE_OFFSET = 64;
+  public static final int LIMIT_ORDER_FEE_BID_SIDE_OFFSET = 72;
   public static final int FEE_AMOUNT_X_PER_TOKEN_STORED_OFFSET = 80;
   public static final int FEE_AMOUNT_Y_PER_TOKEN_STORED_OFFSET = 96;
-  public static final int PADDING_0_OFFSET = 112;
-  public static final int PADDING_1_OFFSET = 128;
+  public static final int OPEN_ORDER_AMOUNT_OFFSET = 112;
+  public static final int TOTAL_PROCESSING_ORDER_AMOUNT_OFFSET = 120;
+  public static final int PROCESSED_ORDER_REMAINING_AMOUNT_OFFSET = 128;
+  public static final int ORDER_AGE_OFFSET = 136;
+  public static final int LIMIT_ORDER_ASK_SIDE_OFFSET = 140;
+  public static final int PADDING_1_OFFSET = 141;
 
   public static Bin read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -55,23 +78,45 @@ public record Bin(long amountX,
     i += 16;
     final var liquiditySupply = getInt128LE(_data, i);
     i += 16;
-    final var functionBytes = new BigInteger[2];
-    i += SerDeUtil.read128Array(functionBytes, _data, i);
+    final var fulfilledOrderAmountX = getInt64LE(_data, i);
+    i += 8;
+    final var fulfilledOrderAmountY = getInt64LE(_data, i);
+    i += 8;
+    final var limitOrderFeeAskSide = getInt64LE(_data, i);
+    i += 8;
+    final var limitOrderFeeBidSide = getInt64LE(_data, i);
+    i += 8;
     final var feeAmountXPerTokenStored = getInt128LE(_data, i);
     i += 16;
     final var feeAmountYPerTokenStored = getInt128LE(_data, i);
     i += 16;
-    final var padding0 = getInt128LE(_data, i);
-    i += 16;
-    final var padding1 = getInt128LE(_data, i);
+    final var openOrderAmount = getInt64LE(_data, i);
+    i += 8;
+    final var totalProcessingOrderAmount = getInt64LE(_data, i);
+    i += 8;
+    final var processedOrderRemainingAmount = getInt64LE(_data, i);
+    i += 8;
+    final var orderAge = getInt32LE(_data, i);
+    i += 4;
+    final var limitOrderAskSide = _data[i] & 0xFF;
+    ++i;
+    final var padding1 = new byte[3];
+    SerDeUtil.readArray(padding1, _data, i);
     return new Bin(amountX,
                    amountY,
                    price,
                    liquiditySupply,
-                   functionBytes,
+                   fulfilledOrderAmountX,
+                   fulfilledOrderAmountY,
+                   limitOrderFeeAskSide,
+                   limitOrderFeeBidSide,
                    feeAmountXPerTokenStored,
                    feeAmountYPerTokenStored,
-                   padding0,
+                   openOrderAmount,
+                   totalProcessingOrderAmount,
+                   processedOrderRemainingAmount,
+                   orderAge,
+                   limitOrderAskSide,
                    padding1);
   }
 
@@ -86,15 +131,29 @@ public record Bin(long amountX,
     i += 16;
     putInt128LE(_data, i, liquiditySupply);
     i += 16;
-    i += SerDeUtil.write128ArrayChecked(functionBytes, 2, _data, i);
+    putInt64LE(_data, i, fulfilledOrderAmountX);
+    i += 8;
+    putInt64LE(_data, i, fulfilledOrderAmountY);
+    i += 8;
+    putInt64LE(_data, i, limitOrderFeeAskSide);
+    i += 8;
+    putInt64LE(_data, i, limitOrderFeeBidSide);
+    i += 8;
     putInt128LE(_data, i, feeAmountXPerTokenStored);
     i += 16;
     putInt128LE(_data, i, feeAmountYPerTokenStored);
     i += 16;
-    putInt128LE(_data, i, padding0);
-    i += 16;
-    putInt128LE(_data, i, padding1);
-    i += 16;
+    putInt64LE(_data, i, openOrderAmount);
+    i += 8;
+    putInt64LE(_data, i, totalProcessingOrderAmount);
+    i += 8;
+    putInt64LE(_data, i, processedOrderRemainingAmount);
+    i += 8;
+    putInt32LE(_data, i, orderAge);
+    i += 4;
+    _data[i] = (byte) limitOrderAskSide;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding1, 3, _data, i);
     return i - _offset;
   }
 

@@ -1,0 +1,116 @@
+package software.sava.idl.clients.meteora.dlmm.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// @param lbPair The LB pair of this LO
+/// @param owner Owner of the LO. Client rely on this to to fetch their LOs.
+/// @param binCount Bin count
+/// @param padding0 Padding
+/// @param padding1 Reserved space for future use
+public record LimitOrder(PublicKey _address,
+                         Discriminator discriminator,
+                         PublicKey lbPair,
+                         PublicKey owner,
+                         int binCount,
+                         byte[] padding0,
+                         long[] padding1) implements SerDe {
+
+  public static final int BYTES = 120;
+  public static final int PADDING_0_LEN = 14;
+  public static final int PADDING_1_LEN = 4;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(137, 183, 212, 91, 115, 29, 141, 227);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int OWNER_OFFSET = 40;
+  public static final int BIN_COUNT_OFFSET = 72;
+  public static final int PADDING_0_OFFSET = 74;
+  public static final int PADDING_1_OFFSET = 88;
+
+  public static Filter createLbPairFilter(final PublicKey lbPair) {
+    return Filter.createMemCompFilter(LB_PAIR_OFFSET, lbPair);
+  }
+
+  public static Filter createOwnerFilter(final PublicKey owner) {
+    return Filter.createMemCompFilter(OWNER_OFFSET, owner);
+  }
+
+  public static Filter createBinCountFilter(final int binCount) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, binCount);
+    return Filter.createMemCompFilter(BIN_COUNT_OFFSET, _data);
+  }
+
+  public static LimitOrder read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static LimitOrder read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static LimitOrder read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], LimitOrder> FACTORY = LimitOrder::read;
+
+  public static LimitOrder read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var lbPair = readPubKey(_data, i);
+    i += 32;
+    final var owner = readPubKey(_data, i);
+    i += 32;
+    final var binCount = getInt16LE(_data, i);
+    i += 2;
+    final var padding0 = new byte[14];
+    i += SerDeUtil.readArray(padding0, _data, i);
+    final var padding1 = new long[4];
+    SerDeUtil.readArray(padding1, _data, i);
+    return new LimitOrder(_address,
+                          discriminator,
+                          lbPair,
+                          owner,
+                          binCount,
+                          padding0,
+                          padding1);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    lbPair.write(_data, i);
+    i += 32;
+    owner.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, binCount);
+    i += 2;
+    i += SerDeUtil.writeArrayChecked(padding0, 14, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding1, 4, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

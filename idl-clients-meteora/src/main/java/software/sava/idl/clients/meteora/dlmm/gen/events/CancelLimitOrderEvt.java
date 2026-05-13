@@ -1,0 +1,82 @@
+package software.sava.idl.clients.meteora.dlmm.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record CancelLimitOrderEvt(Discriminator discriminator,
+                                  PublicKey lbPair,
+                                  PublicKey from,
+                                  PublicKey limitOrder,
+                                  long[] amounts,
+                                  int activeId,
+                                  int[] bins) implements LbClmmEvent {
+
+  public static final int AMOUNTS_LEN = 2;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(131, 234, 194, 133, 9, 14, 189, 209);
+
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int FROM_OFFSET = 40;
+  public static final int LIMIT_ORDER_OFFSET = 72;
+  public static final int AMOUNTS_OFFSET = 104;
+  public static final int ACTIVE_ID_OFFSET = 120;
+  public static final int BINS_OFFSET = 124;
+
+  public static CancelLimitOrderEvt read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var lbPair = readPubKey(_data, i);
+    i += 32;
+    final var from = readPubKey(_data, i);
+    i += 32;
+    final var limitOrder = readPubKey(_data, i);
+    i += 32;
+    final var amounts = new long[2];
+    i += SerDeUtil.readArray(amounts, _data, i);
+    final var activeId = getInt32LE(_data, i);
+    i += 4;
+    final var bins = SerDeUtil.readintVector(4, _data, i);
+    return new CancelLimitOrderEvt(discriminator,
+                                   lbPair,
+                                   from,
+                                   limitOrder,
+                                   amounts,
+                                   activeId,
+                                   bins);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    lbPair.write(_data, i);
+    i += 32;
+    from.write(_data, i);
+    i += 32;
+    limitOrder.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(amounts, 2, _data, i);
+    putInt32LE(_data, i, activeId);
+    i += 4;
+    i += SerDeUtil.writeVector(4, bins, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + 32
+         + 32
+         + 32
+         + SerDeUtil.lenArray(amounts)
+         + 4
+         + SerDeUtil.lenVector(4, bins);
+  }
+}

@@ -106,7 +106,14 @@ public sealed interface LbClmmError extends ProgramError permits
     LbClmmError.CpiDisabled,
     LbClmmError.MissingZapOutInstruction,
     LbClmmError.InvalidZapAccounts,
-    LbClmmError.InvalidZapOutParameters {
+    LbClmmError.InvalidZapOutParameters,
+    LbClmmError.InsufficientInAmount,
+    LbClmmError.InvalidPlaceLimitOrderParameters,
+    LbClmmError.InvalidLimitOrderOwner,
+    LbClmmError.InvalidCancelLimitOrderParameters,
+    LbClmmError.CannotFindLimitOrderByBinId,
+    LbClmmError.CancelNonEmptyLimitOrder,
+    LbClmmError.InvalidCollectFeeMode {
 
   static LbClmmError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -214,6 +221,13 @@ public sealed interface LbClmmError extends ProgramError permits
       case 6101 -> MissingZapOutInstruction.INSTANCE;
       case 6102 -> InvalidZapAccounts.INSTANCE;
       case 6103 -> InvalidZapOutParameters.INSTANCE;
+      case 6104 -> InsufficientInAmount.INSTANCE;
+      case 6105 -> InvalidPlaceLimitOrderParameters.INSTANCE;
+      case 6106 -> InvalidLimitOrderOwner.INSTANCE;
+      case 6107 -> InvalidCancelLimitOrderParameters.INSTANCE;
+      case 6108 -> CannotFindLimitOrderByBinId.INSTANCE;
+      case 6109 -> CancelNonEmptyLimitOrder.INSTANCE;
+      case 6110 -> InvalidCollectFeeMode.INSTANCE;
       default -> null;
     };
   }
@@ -943,6 +957,55 @@ public sealed interface LbClmmError extends ProgramError permits
 
     public static final InvalidZapOutParameters INSTANCE = new InvalidZapOutParameters(
         6103, "Invalid zap out parameters"
+    );
+  }
+
+  record InsufficientInAmount(int code, String msg) implements LbClmmError {
+
+    public static final InsufficientInAmount INSTANCE = new InsufficientInAmount(
+        6104, "Insufficient in amount"
+    );
+  }
+
+  record InvalidPlaceLimitOrderParameters(int code, String msg) implements LbClmmError {
+
+    public static final InvalidPlaceLimitOrderParameters INSTANCE = new InvalidPlaceLimitOrderParameters(
+        6105, "Invalid place limit order parameters"
+    );
+  }
+
+  record InvalidLimitOrderOwner(int code, String msg) implements LbClmmError {
+
+    public static final InvalidLimitOrderOwner INSTANCE = new InvalidLimitOrderOwner(
+        6106, "Invalid limit order owner"
+    );
+  }
+
+  record InvalidCancelLimitOrderParameters(int code, String msg) implements LbClmmError {
+
+    public static final InvalidCancelLimitOrderParameters INSTANCE = new InvalidCancelLimitOrderParameters(
+        6107, "Invalid cancel limit order parameters"
+    );
+  }
+
+  record CannotFindLimitOrderByBinId(int code, String msg) implements LbClmmError {
+
+    public static final CannotFindLimitOrderByBinId INSTANCE = new CannotFindLimitOrderByBinId(
+        6108, "Cannot find limit order by bin id"
+    );
+  }
+
+  record CancelNonEmptyLimitOrder(int code, String msg) implements LbClmmError {
+
+    public static final CancelNonEmptyLimitOrder INSTANCE = new CancelNonEmptyLimitOrder(
+        6109, "Cannot cancel non-empty limit order"
+    );
+  }
+
+  record InvalidCollectFeeMode(int code, String msg) implements LbClmmError {
+
+    public static final InvalidCollectFeeMode INSTANCE = new InvalidCollectFeeMode(
+        6110, "Invalid collect fee mode"
     );
   }
 }

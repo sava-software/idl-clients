@@ -27,6 +27,7 @@ import software.sava.idl.clients.meteora.dlmm.gen.types.LiquidityParameter;
 import software.sava.idl.clients.meteora.dlmm.gen.types.LiquidityParameterByStrategy;
 import software.sava.idl.clients.meteora.dlmm.gen.types.LiquidityParameterByStrategyOneSide;
 import software.sava.idl.clients.meteora.dlmm.gen.types.LiquidityParameterByWeight;
+import software.sava.idl.clients.meteora.dlmm.gen.types.PlaceLimitOrderParams;
 import software.sava.idl.clients.meteora.dlmm.gen.types.RebalanceLiquidityParams;
 import software.sava.idl.clients.meteora.dlmm.gen.types.RemainingAccountsInfo;
 
@@ -755,6 +756,124 @@ public final class LbClmmProgram {
     }
   }
 
+  public static final Discriminator ADD_LIQUIDITY_BY_WEIGHT_2_DISCRIMINATOR = toDiscriminator(209, 59, 63, 91, 111, 200, 153, 228);
+
+  public static List<AccountMeta> addLiquidityByWeight2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                                            final PublicKey positionKey,
+                                                            final PublicKey lbPairKey,
+                                                            final PublicKey binArrayBitmapExtensionKey,
+                                                            final PublicKey userTokenXKey,
+                                                            final PublicKey userTokenYKey,
+                                                            final PublicKey reserveXKey,
+                                                            final PublicKey reserveYKey,
+                                                            final PublicKey tokenXMintKey,
+                                                            final PublicKey tokenYMintKey,
+                                                            final PublicKey senderKey,
+                                                            final PublicKey tokenXProgramKey,
+                                                            final PublicKey tokenYProgramKey,
+                                                            final PublicKey eventAuthorityKey,
+                                                            final PublicKey programKey) {
+    return List.of(
+      createWrite(positionKey),
+      createWrite(lbPairKey),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(userTokenXKey),
+      createWrite(userTokenYKey),
+      createWrite(reserveXKey),
+      createWrite(reserveYKey),
+      createRead(tokenXMintKey),
+      createRead(tokenYMintKey),
+      createReadOnlySigner(senderKey),
+      createRead(tokenXProgramKey),
+      createRead(tokenYProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction addLiquidityByWeight2(final AccountMeta invokedLbClmmProgramMeta,
+                                                  final PublicKey positionKey,
+                                                  final PublicKey lbPairKey,
+                                                  final PublicKey binArrayBitmapExtensionKey,
+                                                  final PublicKey userTokenXKey,
+                                                  final PublicKey userTokenYKey,
+                                                  final PublicKey reserveXKey,
+                                                  final PublicKey reserveYKey,
+                                                  final PublicKey tokenXMintKey,
+                                                  final PublicKey tokenYMintKey,
+                                                  final PublicKey senderKey,
+                                                  final PublicKey tokenXProgramKey,
+                                                  final PublicKey tokenYProgramKey,
+                                                  final PublicKey eventAuthorityKey,
+                                                  final PublicKey programKey,
+                                                  final LiquidityParameterByWeight liquidityParameter,
+                                                  final RemainingAccountsInfo remainingAccountsInfo) {
+    final var keys = addLiquidityByWeight2Keys(
+      invokedLbClmmProgramMeta,
+      positionKey,
+      lbPairKey,
+      binArrayBitmapExtensionKey,
+      userTokenXKey,
+      userTokenYKey,
+      reserveXKey,
+      reserveYKey,
+      tokenXMintKey,
+      tokenYMintKey,
+      senderKey,
+      tokenXProgramKey,
+      tokenYProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return addLiquidityByWeight2(invokedLbClmmProgramMeta, keys, liquidityParameter, remainingAccountsInfo);
+  }
+
+  public static Instruction addLiquidityByWeight2(final AccountMeta invokedLbClmmProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final LiquidityParameterByWeight liquidityParameter,
+                                                  final RemainingAccountsInfo remainingAccountsInfo) {
+    final byte[] _data = new byte[8 + liquidityParameter.l() + remainingAccountsInfo.l()];
+    int i = ADD_LIQUIDITY_BY_WEIGHT_2_DISCRIMINATOR.write(_data, 0);
+    i += liquidityParameter.write(_data, i);
+    remainingAccountsInfo.write(_data, i);
+
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
+  }
+
+  public record AddLiquidityByWeight2IxData(Discriminator discriminator, LiquidityParameterByWeight liquidityParameter, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
+
+    public static AddLiquidityByWeight2IxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int LIQUIDITY_PARAMETER_OFFSET = 8;
+
+    public static AddLiquidityByWeight2IxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var liquidityParameter = LiquidityParameterByWeight.read(_data, i);
+      i += liquidityParameter.l();
+      final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
+      return new AddLiquidityByWeight2IxData(discriminator, liquidityParameter, remainingAccountsInfo);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += liquidityParameter.write(_data, i);
+      i += remainingAccountsInfo.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + liquidityParameter.l() + remainingAccountsInfo.l();
+    }
+  }
+
   public static final Discriminator ADD_LIQUIDITY_ONE_SIDE_DISCRIMINATOR = toDiscriminator(94, 155, 103, 151, 70, 95, 220, 165);
 
   public static List<AccountMeta> addLiquidityOneSideKeys(final AccountMeta invokedLbClmmProgramMeta,
@@ -1062,6 +1181,130 @@ public final class LbClmmProgram {
     @Override
     public int l() {
       return 8 + liquidityParameter.l() + remainingAccountsInfo.l();
+    }
+  }
+
+  public static final Discriminator CANCEL_LIMIT_ORDER_DISCRIMINATOR = toDiscriminator(132, 156, 132, 31, 67, 40, 232, 97);
+
+  /// @param ownerTokenXKey When dont set it tokenAccount to prevent unnecessary create token account (rent fee) when user only withdraw token y
+  public static List<AccountMeta> cancelLimitOrderKeys(final AccountMeta invokedLbClmmProgramMeta,
+                                                       final PublicKey lbPairKey,
+                                                       final PublicKey binArrayBitmapExtensionKey,
+                                                       final PublicKey reserveXKey,
+                                                       final PublicKey reserveYKey,
+                                                       final PublicKey tokenXMintKey,
+                                                       final PublicKey tokenYMintKey,
+                                                       final PublicKey limitOrderKey,
+                                                       final PublicKey ownerTokenXKey,
+                                                       final PublicKey ownerTokenYKey,
+                                                       final PublicKey ownerKey,
+                                                       final PublicKey tokenXProgramKey,
+                                                       final PublicKey tokenYProgramKey,
+                                                       final PublicKey memoProgramKey,
+                                                       final PublicKey eventAuthorityKey,
+                                                       final PublicKey programKey) {
+    return List.of(
+      createWrite(lbPairKey),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(reserveXKey),
+      createWrite(reserveYKey),
+      createRead(tokenXMintKey),
+      createRead(tokenYMintKey),
+      createWrite(limitOrderKey),
+      createWrite(ownerTokenXKey),
+      createWrite(ownerTokenYKey),
+      createReadOnlySigner(ownerKey),
+      createRead(tokenXProgramKey),
+      createRead(tokenYProgramKey),
+      createRead(memoProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param ownerTokenXKey When dont set it tokenAccount to prevent unnecessary create token account (rent fee) when user only withdraw token y
+  public static Instruction cancelLimitOrder(final AccountMeta invokedLbClmmProgramMeta,
+                                             final PublicKey lbPairKey,
+                                             final PublicKey binArrayBitmapExtensionKey,
+                                             final PublicKey reserveXKey,
+                                             final PublicKey reserveYKey,
+                                             final PublicKey tokenXMintKey,
+                                             final PublicKey tokenYMintKey,
+                                             final PublicKey limitOrderKey,
+                                             final PublicKey ownerTokenXKey,
+                                             final PublicKey ownerTokenYKey,
+                                             final PublicKey ownerKey,
+                                             final PublicKey tokenXProgramKey,
+                                             final PublicKey tokenYProgramKey,
+                                             final PublicKey memoProgramKey,
+                                             final PublicKey eventAuthorityKey,
+                                             final PublicKey programKey,
+                                             final int[] bins,
+                                             final RemainingAccountsInfo remainingAccountsInfo) {
+    final var keys = cancelLimitOrderKeys(
+      invokedLbClmmProgramMeta,
+      lbPairKey,
+      binArrayBitmapExtensionKey,
+      reserveXKey,
+      reserveYKey,
+      tokenXMintKey,
+      tokenYMintKey,
+      limitOrderKey,
+      ownerTokenXKey,
+      ownerTokenYKey,
+      ownerKey,
+      tokenXProgramKey,
+      tokenYProgramKey,
+      memoProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return cancelLimitOrder(invokedLbClmmProgramMeta, keys, bins, remainingAccountsInfo);
+  }
+
+  public static Instruction cancelLimitOrder(final AccountMeta invokedLbClmmProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final int[] bins,
+                                             final RemainingAccountsInfo remainingAccountsInfo) {
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, bins) + remainingAccountsInfo.l()];
+    int i = CANCEL_LIMIT_ORDER_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.writeVector(4, bins, _data, i);
+    remainingAccountsInfo.write(_data, i);
+
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
+  }
+
+  public record CancelLimitOrderIxData(Discriminator discriminator, int[] bins, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
+
+    public static CancelLimitOrderIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BINS_OFFSET = 8;
+
+    public static CancelLimitOrderIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var bins = SerDeUtil.readintVector(4, _data, i);
+      i += SerDeUtil.lenVector(4, bins);
+      final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
+      return new CancelLimitOrderIxData(discriminator, bins, remainingAccountsInfo);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeVector(4, bins, _data, i);
+      i += remainingAccountsInfo.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + SerDeUtil.lenVector(4, bins) + remainingAccountsInfo.l();
     }
   }
 
@@ -1512,6 +1755,39 @@ public final class LbClmmProgram {
     }
   }
 
+  public static final Discriminator CLOSE_BIN_ARRAY_DISCRIMINATOR = toDiscriminator(68, 174, 88, 80, 181, 204, 19, 224);
+
+  public static List<AccountMeta> closeBinArrayKeys(final PublicKey lbPairKey,
+                                                    final PublicKey binArrayKey,
+                                                    final PublicKey rentReceiverKey,
+                                                    final PublicKey signerKey) {
+    return List.of(
+      createRead(lbPairKey),
+      createWrite(binArrayKey),
+      createWritableSigner(rentReceiverKey),
+      createReadOnlySigner(signerKey)
+    );
+  }
+
+  public static Instruction closeBinArray(final AccountMeta invokedLbClmmProgramMeta,
+                                          final PublicKey lbPairKey,
+                                          final PublicKey binArrayKey,
+                                          final PublicKey rentReceiverKey,
+                                          final PublicKey signerKey) {
+    final var keys = closeBinArrayKeys(
+      lbPairKey,
+      binArrayKey,
+      rentReceiverKey,
+      signerKey
+    );
+    return closeBinArray(invokedLbClmmProgramMeta, keys);
+  }
+
+  public static Instruction closeBinArray(final AccountMeta invokedLbClmmProgramMeta,
+                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, CLOSE_BIN_ARRAY_DISCRIMINATOR);
+  }
+
   public static final Discriminator CLOSE_CLAIM_FEE_OPERATOR_ACCOUNT_DISCRIMINATOR = toDiscriminator(184, 213, 88, 31, 179, 101, 130, 36);
 
   public static List<AccountMeta> closeClaimFeeOperatorAccountKeys(final PublicKey claimFeeOperatorKey,
@@ -1539,6 +1815,43 @@ public final class LbClmmProgram {
   public static Instruction closeClaimFeeOperatorAccount(final AccountMeta invokedLbClmmProgramMeta,
                                                          final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, CLOSE_CLAIM_FEE_OPERATOR_ACCOUNT_DISCRIMINATOR);
+  }
+
+  public static final Discriminator CLOSE_LIMIT_ORDER_IF_EMPTY_DISCRIMINATOR = toDiscriminator(57, 124, 36, 155, 126, 249, 93, 171);
+
+  public static List<AccountMeta> closeLimitOrderIfEmptyKeys(final PublicKey limitOrderKey,
+                                                             final PublicKey ownerKey,
+                                                             final PublicKey rentReceiverKey,
+                                                             final PublicKey eventAuthorityKey,
+                                                             final PublicKey programKey) {
+    return List.of(
+      createWrite(limitOrderKey),
+      createReadOnlySigner(ownerKey),
+      createWrite(rentReceiverKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction closeLimitOrderIfEmpty(final AccountMeta invokedLbClmmProgramMeta,
+                                                   final PublicKey limitOrderKey,
+                                                   final PublicKey ownerKey,
+                                                   final PublicKey rentReceiverKey,
+                                                   final PublicKey eventAuthorityKey,
+                                                   final PublicKey programKey) {
+    final var keys = closeLimitOrderIfEmptyKeys(
+      limitOrderKey,
+      ownerKey,
+      rentReceiverKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return closeLimitOrderIfEmpty(invokedLbClmmProgramMeta, keys);
+  }
+
+  public static Instruction closeLimitOrderIfEmpty(final AccountMeta invokedLbClmmProgramMeta,
+                                                   final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, CLOSE_LIMIT_ORDER_IF_EMPTY_DISCRIMINATOR);
   }
 
   public static final Discriminator CLOSE_OPERATOR_ACCOUNT_DISCRIMINATOR = toDiscriminator(171, 9, 213, 74, 120, 23, 3, 29);
@@ -3187,7 +3500,7 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 20;
+    public static final int BYTES = 22;
 
     public static final int IX_DATA_OFFSET = 8;
 
@@ -3704,7 +4017,7 @@ public final class LbClmmProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 32;
+    public static final int BYTES = 33;
 
     public static final int IX_OFFSET = 8;
 
@@ -3902,61 +4215,118 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, INITIALIZE_TOKEN_BADGE_DISCRIMINATOR);
   }
 
-  public static final Discriminator MIGRATE_POSITION_DISCRIMINATOR = toDiscriminator(15, 132, 59, 50, 199, 6, 251, 46);
+  public static final Discriminator PLACE_LIMIT_ORDER_DISCRIMINATOR = toDiscriminator(108, 176, 33, 186, 146, 229, 1, 197);
 
-  public static List<AccountMeta> migratePositionKeys(final SolanaAccounts solanaAccounts,
-                                                      final PublicKey positionV2Key,
-                                                      final PublicKey positionV1Key,
+  public static List<AccountMeta> placeLimitOrderKeys(final AccountMeta invokedLbClmmProgramMeta,
+                                                      final SolanaAccounts solanaAccounts,
                                                       final PublicKey lbPairKey,
-                                                      final PublicKey binArrayLowerKey,
-                                                      final PublicKey binArrayUpperKey,
-                                                      final PublicKey signerAndPayerKey,
-                                                      final PublicKey rentReceiverKey,
+                                                      final PublicKey binArrayBitmapExtensionKey,
+                                                      final PublicKey reserveKey,
+                                                      final PublicKey tokenMintKey,
+                                                      final PublicKey limitOrderKey,
+                                                      final PublicKey payerKey,
+                                                      final PublicKey ownerKey,
+                                                      final PublicKey userTokenKey,
+                                                      final PublicKey senderKey,
+                                                      final PublicKey tokenProgramKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
-      createWritableSigner(positionV2Key),
-      createWrite(positionV1Key),
-      createRead(lbPairKey),
-      createWrite(binArrayLowerKey),
-      createWrite(binArrayUpperKey),
-      createWritableSigner(signerAndPayerKey),
+      createWrite(lbPairKey),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(reserveKey),
+      createRead(tokenMintKey),
+      createWritableSigner(limitOrderKey),
+      createWritableSigner(payerKey),
+      createRead(ownerKey),
+      createWrite(userTokenKey),
+      createReadOnlySigner(senderKey),
+      createRead(tokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
-      createWrite(rentReceiverKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
   }
 
-  public static Instruction migratePosition(final AccountMeta invokedLbClmmProgramMeta,
+  public static Instruction placeLimitOrder(final AccountMeta invokedLbClmmProgramMeta,
                                             final SolanaAccounts solanaAccounts,
-                                            final PublicKey positionV2Key,
-                                            final PublicKey positionV1Key,
                                             final PublicKey lbPairKey,
-                                            final PublicKey binArrayLowerKey,
-                                            final PublicKey binArrayUpperKey,
-                                            final PublicKey signerAndPayerKey,
-                                            final PublicKey rentReceiverKey,
+                                            final PublicKey binArrayBitmapExtensionKey,
+                                            final PublicKey reserveKey,
+                                            final PublicKey tokenMintKey,
+                                            final PublicKey limitOrderKey,
+                                            final PublicKey payerKey,
+                                            final PublicKey ownerKey,
+                                            final PublicKey userTokenKey,
+                                            final PublicKey senderKey,
+                                            final PublicKey tokenProgramKey,
                                             final PublicKey eventAuthorityKey,
-                                            final PublicKey programKey) {
-    final var keys = migratePositionKeys(
+                                            final PublicKey programKey,
+                                            final PlaceLimitOrderParams params,
+                                            final RemainingAccountsInfo remainingAccountsInfo) {
+    final var keys = placeLimitOrderKeys(
+      invokedLbClmmProgramMeta,
       solanaAccounts,
-      positionV2Key,
-      positionV1Key,
       lbPairKey,
-      binArrayLowerKey,
-      binArrayUpperKey,
-      signerAndPayerKey,
-      rentReceiverKey,
+      binArrayBitmapExtensionKey,
+      reserveKey,
+      tokenMintKey,
+      limitOrderKey,
+      payerKey,
+      ownerKey,
+      userTokenKey,
+      senderKey,
+      tokenProgramKey,
       eventAuthorityKey,
       programKey
     );
-    return migratePosition(invokedLbClmmProgramMeta, keys);
+    return placeLimitOrder(invokedLbClmmProgramMeta, keys, params, remainingAccountsInfo);
   }
 
-  public static Instruction migratePosition(final AccountMeta invokedLbClmmProgramMeta,
-                                            final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, MIGRATE_POSITION_DISCRIMINATOR);
+  public static Instruction placeLimitOrder(final AccountMeta invokedLbClmmProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final PlaceLimitOrderParams params,
+                                            final RemainingAccountsInfo remainingAccountsInfo) {
+    final byte[] _data = new byte[8 + params.l() + remainingAccountsInfo.l()];
+    int i = PLACE_LIMIT_ORDER_DISCRIMINATOR.write(_data, 0);
+    i += params.write(_data, i);
+    remainingAccountsInfo.write(_data, i);
+
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
+  }
+
+  public record PlaceLimitOrderIxData(Discriminator discriminator, PlaceLimitOrderParams params, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
+
+    public static PlaceLimitOrderIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static PlaceLimitOrderIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = PlaceLimitOrderParams.read(_data, i);
+      i += params.l();
+      final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
+      return new PlaceLimitOrderIxData(discriminator, params, remainingAccountsInfo);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      i += remainingAccountsInfo.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l() + remainingAccountsInfo.l();
+    }
   }
 
   public static final Discriminator REBALANCE_LIQUIDITY_DISCRIMINATOR = toDiscriminator(92, 4, 176, 193, 119, 185, 83, 9);
@@ -4722,97 +5092,6 @@ public final class LbClmmProgram {
     }
   }
 
-  public static final Discriminator RESET_BIN_ARRAY_TOMBSTONE_FIELDS_DISCRIMINATOR = toDiscriminator(54, 90, 252, 63, 41, 206, 63, 63);
-
-  public static List<AccountMeta> resetBinArrayTombstoneFieldsKeys(final PublicKey lbPairKey,
-                                                                   final PublicKey binArrayKey,
-                                                                   final PublicKey operatorKey,
-                                                                   final PublicKey signerKey) {
-    return List.of(
-      createRead(lbPairKey),
-      createWrite(binArrayKey),
-      createRead(operatorKey),
-      createReadOnlySigner(signerKey)
-    );
-  }
-
-  public static Instruction resetBinArrayTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                         final PublicKey lbPairKey,
-                                                         final PublicKey binArrayKey,
-                                                         final PublicKey operatorKey,
-                                                         final PublicKey signerKey) {
-    final var keys = resetBinArrayTombstoneFieldsKeys(
-      lbPairKey,
-      binArrayKey,
-      operatorKey,
-      signerKey
-    );
-    return resetBinArrayTombstoneFields(invokedLbClmmProgramMeta, keys);
-  }
-
-  public static Instruction resetBinArrayTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                         final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, RESET_BIN_ARRAY_TOMBSTONE_FIELDS_DISCRIMINATOR);
-  }
-
-  public static final Discriminator RESET_POOL_TOMBSTONE_FIELDS_DISCRIMINATOR = toDiscriminator(246, 109, 19, 120, 108, 113, 68, 252);
-
-  public static List<AccountMeta> resetPoolTombstoneFieldsKeys(final PublicKey lbPairKey,
-                                                               final PublicKey operatorKey,
-                                                               final PublicKey signerKey) {
-    return List.of(
-      createWrite(lbPairKey),
-      createRead(operatorKey),
-      createReadOnlySigner(signerKey)
-    );
-  }
-
-  public static Instruction resetPoolTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                     final PublicKey lbPairKey,
-                                                     final PublicKey operatorKey,
-                                                     final PublicKey signerKey) {
-    final var keys = resetPoolTombstoneFieldsKeys(
-      lbPairKey,
-      operatorKey,
-      signerKey
-    );
-    return resetPoolTombstoneFields(invokedLbClmmProgramMeta, keys);
-  }
-
-  public static Instruction resetPoolTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                     final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, RESET_POOL_TOMBSTONE_FIELDS_DISCRIMINATOR);
-  }
-
-  public static final Discriminator RESET_POSITION_TOMBSTONE_FIELDS_DISCRIMINATOR = toDiscriminator(206, 6, 51, 218, 211, 30, 159, 84);
-
-  public static List<AccountMeta> resetPositionTombstoneFieldsKeys(final PublicKey positionKey,
-                                                                   final PublicKey operatorKey,
-                                                                   final PublicKey signerKey) {
-    return List.of(
-      createWrite(positionKey),
-      createRead(operatorKey),
-      createReadOnlySigner(signerKey)
-    );
-  }
-
-  public static Instruction resetPositionTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                         final PublicKey positionKey,
-                                                         final PublicKey operatorKey,
-                                                         final PublicKey signerKey) {
-    final var keys = resetPositionTombstoneFieldsKeys(
-      positionKey,
-      operatorKey,
-      signerKey
-    );
-    return resetPositionTombstoneFields(invokedLbClmmProgramMeta, keys);
-  }
-
-  public static Instruction resetPositionTombstoneFields(final AccountMeta invokedLbClmmProgramMeta,
-                                                         final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, RESET_POSITION_TOMBSTONE_FIELDS_DISCRIMINATOR);
-  }
-
   public static final Discriminator SET_ACTIVATION_POINT_DISCRIMINATOR = toDiscriminator(91, 249, 15, 165, 26, 129, 254, 125);
 
   public static List<AccountMeta> setActivationPointKeys(final PublicKey lbPairKey,
@@ -5012,6 +5291,79 @@ public final class LbClmmProgram {
     }
   }
 
+  public static final Discriminator SET_PERMISSIONLESS_OPERATION_BITS_DISCRIMINATOR = toDiscriminator(84, 58, 203, 139, 163, 81, 190, 186);
+
+  public static List<AccountMeta> setPermissionlessOperationBitsKeys(final PublicKey positionKey,
+                                                                     final PublicKey ownerKey,
+                                                                     final PublicKey eventAuthorityKey,
+                                                                     final PublicKey programKey) {
+    return List.of(
+      createWrite(positionKey),
+      createReadOnlySigner(ownerKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction setPermissionlessOperationBits(final AccountMeta invokedLbClmmProgramMeta,
+                                                           final PublicKey positionKey,
+                                                           final PublicKey ownerKey,
+                                                           final PublicKey eventAuthorityKey,
+                                                           final PublicKey programKey,
+                                                           final int bits) {
+    final var keys = setPermissionlessOperationBitsKeys(
+      positionKey,
+      ownerKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return setPermissionlessOperationBits(invokedLbClmmProgramMeta, keys, bits);
+  }
+
+  public static Instruction setPermissionlessOperationBits(final AccountMeta invokedLbClmmProgramMeta,
+                                                           final List<AccountMeta> keys,
+                                                           final int bits) {
+    final byte[] _data = new byte[9];
+    int i = SET_PERMISSIONLESS_OPERATION_BITS_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) bits;
+
+    return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
+  }
+
+  public record SetPermissionlessOperationBitsIxData(Discriminator discriminator, int bits) implements SerDe {  
+
+    public static SetPermissionlessOperationBitsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int BITS_OFFSET = 8;
+
+    public static SetPermissionlessOperationBitsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var bits = _data[i] & 0xFF;
+      return new SetPermissionlessOperationBitsIxData(discriminator, bits);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) bits;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator SET_PRE_ACTIVATION_DURATION_DISCRIMINATOR = toDiscriminator(165, 61, 201, 244, 130, 159, 22, 100);
 
   public static List<AccountMeta> setPreActivationDurationKeys(final PublicKey lbPairKey,
@@ -5162,7 +5514,7 @@ public final class LbClmmProgram {
                                            final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),
@@ -5291,7 +5643,7 @@ public final class LbClmmProgram {
                                             final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),
@@ -5437,7 +5789,7 @@ public final class LbClmmProgram {
                                                    final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),
@@ -5566,7 +5918,7 @@ public final class LbClmmProgram {
                                                     final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),
@@ -5712,7 +6064,7 @@ public final class LbClmmProgram {
                                                           final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),
@@ -5864,7 +6216,7 @@ public final class LbClmmProgram {
                                                            final PublicKey programKey) {
     return List.of(
       createWrite(lbPairKey),
-      createRead(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(binArrayBitmapExtensionKey, invokedLbClmmProgramMeta.publicKey())),
       createWrite(reserveXKey),
       createWrite(reserveYKey),
       createWrite(userTokenInKey),

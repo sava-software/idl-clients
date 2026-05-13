@@ -1,0 +1,82 @@
+package software.sava.idl.clients.meteora.dlmm.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.meteora.dlmm.gen.types.PlaceLimitOrderParams;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record PlaceLimitOrderEvt(Discriminator discriminator,
+                                 PublicKey lbPair,
+                                 PublicKey sender,
+                                 PublicKey owner,
+                                 PublicKey limitOrder,
+                                 int activeId,
+                                 PlaceLimitOrderParams params) implements LbClmmEvent {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(43, 79, 27, 169, 244, 28, 225, 63);
+
+  public static final int LB_PAIR_OFFSET = 8;
+  public static final int SENDER_OFFSET = 40;
+  public static final int OWNER_OFFSET = 72;
+  public static final int LIMIT_ORDER_OFFSET = 104;
+  public static final int ACTIVE_ID_OFFSET = 136;
+  public static final int PARAMS_OFFSET = 140;
+
+  public static PlaceLimitOrderEvt read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var lbPair = readPubKey(_data, i);
+    i += 32;
+    final var sender = readPubKey(_data, i);
+    i += 32;
+    final var owner = readPubKey(_data, i);
+    i += 32;
+    final var limitOrder = readPubKey(_data, i);
+    i += 32;
+    final var activeId = getInt32LE(_data, i);
+    i += 4;
+    final var params = PlaceLimitOrderParams.read(_data, i);
+    return new PlaceLimitOrderEvt(discriminator,
+                                  lbPair,
+                                  sender,
+                                  owner,
+                                  limitOrder,
+                                  activeId,
+                                  params);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    lbPair.write(_data, i);
+    i += 32;
+    sender.write(_data, i);
+    i += 32;
+    owner.write(_data, i);
+    i += 32;
+    limitOrder.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, activeId);
+    i += 4;
+    i += params.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + 32
+         + 32
+         + 32
+         + 32
+         + 4
+         + params.l();
+  }
+}

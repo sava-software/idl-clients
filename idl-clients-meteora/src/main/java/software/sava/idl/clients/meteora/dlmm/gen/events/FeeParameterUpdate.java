@@ -12,14 +12,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 public record FeeParameterUpdate(Discriminator discriminator,
                                  PublicKey lbPair,
                                  int protocolShare,
-                                 int baseFactor) implements LbClmmEvent {
+                                 int baseFactor,
+                                 int baseFeePowerFactor) implements LbClmmEvent {
 
-  public static final int BYTES = 44;
+  public static final int BYTES = 45;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(48, 76, 241, 117, 144, 215, 242, 44);
 
   public static final int LB_PAIR_OFFSET = 8;
   public static final int PROTOCOL_SHARE_OFFSET = 40;
   public static final int BASE_FACTOR_OFFSET = 42;
+  public static final int BASE_FEE_POWER_FACTOR_OFFSET = 44;
 
   public static FeeParameterUpdate read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -32,7 +34,13 @@ public record FeeParameterUpdate(Discriminator discriminator,
     final var protocolShare = getInt16LE(_data, i);
     i += 2;
     final var baseFactor = getInt16LE(_data, i);
-    return new FeeParameterUpdate(discriminator, lbPair, protocolShare, baseFactor);
+    i += 2;
+    final var baseFeePowerFactor = _data[i] & 0xFF;
+    return new FeeParameterUpdate(discriminator,
+                                  lbPair,
+                                  protocolShare,
+                                  baseFactor,
+                                  baseFeePowerFactor);
   }
 
   @Override
@@ -44,6 +52,8 @@ public record FeeParameterUpdate(Discriminator discriminator,
     i += 2;
     putInt16LE(_data, i, baseFactor);
     i += 2;
+    _data[i] = (byte) baseFeePowerFactor;
+    ++i;
     return i - _offset;
   }
 
