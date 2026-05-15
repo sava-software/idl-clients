@@ -91,10 +91,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
 /// @param withdrawTicketCancellationEnabled Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
 ///                                          queued collateral vault back to their wallet).
-/// @param reserveRewardsMaxAprPct Maximum APR (in percent) at which reserves on this market may distribute their
-///                                `rewards_amount_per_slot`. `0` disables rewards on this market entirely
-///                                (`topup_reserve_rewards` is rejected). Bounded by 100% when set. See
-///                                ReserveConfig::rewards_amount_per_slot for the depositor-cap interaction.
+/// @param reserveRewardsMaxAprBps Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
+///                                may distribute their `rewards_amount_per_slot`. `0` disables rewards on this market
+///                                entirely (`topup_reserve_rewards` is rejected). Bounded by `FULL_BPS` (100% APR) when set.
+///                                See ReserveConfig::rewards_amount_per_slot for the depositor-cap interaction.
 /// @param minWithdrawQueuedLiquidityValue Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param fixedTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
@@ -181,8 +181,8 @@ public record LendingMarket(PublicKey _address,
                             int obligationBorrowRolloverConfigurationEnabled,
                             int obligationBorrowMigrationToFixedExecutionEnabled,
                             int withdrawTicketCancellationEnabled,
-                            int reserveRewardsMaxAprPct,
                             byte[] padding2,
+                            int reserveRewardsMaxAprBps,
                             long minWithdrawQueuedLiquidityValue,
                             long fixedTermRolloverWindowDurationSeconds,
                             long openTermRolloverWindowDurationSeconds,
@@ -199,7 +199,7 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_2_LEN = 2;
+  public static final int PADDING_2_LEN = 1;
   public static final int PADDING_1_LEN = 153;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -247,8 +247,8 @@ public record LendingMarket(PublicKey _address,
   public static final int OBLIGATION_BORROW_ROLLOVER_CONFIGURATION_ENABLED_OFFSET = 3354;
   public static final int OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET = 3355;
   public static final int WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET = 3356;
-  public static final int RESERVE_REWARDS_MAX_APR_PCT_OFFSET = 3357;
-  public static final int PADDING_2_OFFSET = 3358;
+  public static final int PADDING_2_OFFSET = 3357;
+  public static final int RESERVE_REWARDS_MAX_APR_BPS_OFFSET = 3358;
   public static final int MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET = 3360;
   public static final int FIXED_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3368;
   public static final int OPEN_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3376;
@@ -422,8 +422,10 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET, new byte[]{(byte) withdrawTicketCancellationEnabled});
   }
 
-  public static Filter createReserveRewardsMaxAprPctFilter(final int reserveRewardsMaxAprPct) {
-    return Filter.createMemCompFilter(RESERVE_REWARDS_MAX_APR_PCT_OFFSET, new byte[]{(byte) reserveRewardsMaxAprPct});
+  public static Filter createReserveRewardsMaxAprBpsFilter(final int reserveRewardsMaxAprBps) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, reserveRewardsMaxAprBps);
+    return Filter.createMemCompFilter(RESERVE_REWARDS_MAX_APR_BPS_OFFSET, _data);
   }
 
   public static Filter createMinWithdrawQueuedLiquidityValueFilter(final long minWithdrawQueuedLiquidityValue) {
@@ -568,10 +570,10 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var withdrawTicketCancellationEnabled = _data[i] & 0xFF;
     ++i;
-    final var reserveRewardsMaxAprPct = _data[i] & 0xFF;
-    ++i;
-    final var padding2 = new byte[2];
+    final var padding2 = new byte[1];
     i += SerDeUtil.readArray(padding2, _data, i);
+    final var reserveRewardsMaxAprBps = getInt16LE(_data, i);
+    i += 2;
     final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
     i += 8;
     final var fixedTermRolloverWindowDurationSeconds = getInt64LE(_data, i);
@@ -631,8 +633,8 @@ public record LendingMarket(PublicKey _address,
                              obligationBorrowRolloverConfigurationEnabled,
                              obligationBorrowMigrationToFixedExecutionEnabled,
                              withdrawTicketCancellationEnabled,
-                             reserveRewardsMaxAprPct,
                              padding2,
+                             reserveRewardsMaxAprBps,
                              minWithdrawQueuedLiquidityValue,
                              fixedTermRolloverWindowDurationSeconds,
                              openTermRolloverWindowDurationSeconds,
@@ -722,9 +724,9 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) withdrawTicketCancellationEnabled;
     ++i;
-    _data[i] = (byte) reserveRewardsMaxAprPct;
-    ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 1, _data, i);
+    putInt16LE(_data, i, reserveRewardsMaxAprBps);
+    i += 2;
     putInt64LE(_data, i, minWithdrawQueuedLiquidityValue);
     i += 8;
     putInt64LE(_data, i, fixedTermRolloverWindowDurationSeconds);

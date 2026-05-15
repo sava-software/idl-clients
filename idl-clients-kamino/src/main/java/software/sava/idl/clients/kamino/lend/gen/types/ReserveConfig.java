@@ -80,7 +80,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param rewardsAmountPerSlot Rewards distributed per slot to depositors. Drained from
 ///                             ReserveLiquidity::rewards_amount_available into
 ///                             ReserveLiquidity::total_available_amount at each refresh, capped by the
-///                             market-level LendingMarket::reserve_rewards_max_apr_pct. `0` disables.
+///                             market-level LendingMarket::reserve_rewards_max_apr_bps. `0` disables.
 ///                             
 ///                             **Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a
 ///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit

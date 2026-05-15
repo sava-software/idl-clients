@@ -1671,7 +1671,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
   record ReserveRewardsDisabled(int code, String msg) implements KaminoLendingError {
 
     public static final ReserveRewardsDisabled INSTANCE = new ReserveRewardsDisabled(
-        6184, "Reserve rewards are disabled on this market (reserve_rewards_max_apr_pct is 0)"
+        6184, "Reserve rewards are disabled on this market (reserve_rewards_max_apr_bps is 0)"
     );
   }
 }

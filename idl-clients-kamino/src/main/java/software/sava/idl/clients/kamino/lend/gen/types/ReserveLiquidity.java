@@ -42,7 +42,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                               touching Self::total_available_amount). On every `refresh_reserve`, up to
 ///                               `rewards_amount_per_slot * slots_elapsed` tokens are moved from this counter into
 ///                               Self::total_available_amount, inflating the cToken exchange rate, capped by the
-///                               market-level `reserve_rewards_max_apr_pct` cap.
+///                               market-level `reserve_rewards_max_apr_bps` cap.
 public record ReserveLiquidity(PublicKey mintPubkey,
                                PublicKey supplyVault,
                                PublicKey feeVault,
