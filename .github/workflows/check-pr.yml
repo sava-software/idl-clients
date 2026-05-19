@@ -1,11 +1,10 @@
-name: Gradle Check
+name: Gradle Check PR
 
 on:
   schedule:
     - cron: '0 */8 * * *'
-  push:
-    branches:
-      - main
+  pull_request:
+    types: [ opened, synchronize, reopened ]
 
 jobs:
   check:
