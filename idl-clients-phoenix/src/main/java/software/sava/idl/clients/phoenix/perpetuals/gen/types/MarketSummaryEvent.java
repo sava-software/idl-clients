@@ -1,0 +1,102 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::MarketSummary Borsh variant 8.
+/// Payload type: MarketSummaryEvent.
+///
+public record MarketSummaryEvent(Discriminator discriminator,
+                                 Symbol assetSymbol,
+                                 int assetId,
+                                 BaseLots openInterest,
+                                 SignedQuoteLots totalMakerQuoteLotFees,
+                                 QuoteLots totalTakerQuoteLotFees,
+                                 Ticks markPrice,
+                                 Ticks spotPrice) implements EternalEvent {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(8, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ASSET_SYMBOL_OFFSET = 8;
+  public static final int ASSET_ID_OFFSET = 24;
+  public static final int OPEN_INTEREST_OFFSET = 28;
+  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 37;
+
+  public static MarketSummaryEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var assetSymbol = Symbol.read(_data, i);
+    i += assetSymbol.l();
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final var openInterest = BaseLots.read(_data, i);
+    i += openInterest.l();
+    final SignedQuoteLots totalMakerQuoteLotFees;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      totalMakerQuoteLotFees = null;
+      ++i;
+    } else {
+      ++i;
+      totalMakerQuoteLotFees = SignedQuoteLots.read(_data, i);
+      i += totalMakerQuoteLotFees.l();
+    }
+    final QuoteLots totalTakerQuoteLotFees;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      totalTakerQuoteLotFees = null;
+      ++i;
+    } else {
+      ++i;
+      totalTakerQuoteLotFees = QuoteLots.read(_data, i);
+      i += totalTakerQuoteLotFees.l();
+    }
+    final var markPrice = Ticks.read(_data, i);
+    i += markPrice.l();
+    final var spotPrice = Ticks.read(_data, i);
+    return new MarketSummaryEvent(discriminator,
+                                  assetSymbol,
+                                  assetId,
+                                  openInterest,
+                                  totalMakerQuoteLotFees,
+                                  totalTakerQuoteLotFees,
+                                  markPrice,
+                                  spotPrice);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    i += assetSymbol.write(_data, i);
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    i += openInterest.write(_data, i);
+    i += SerDeUtil.writeOptional(1, totalMakerQuoteLotFees, _data, i);
+    i += SerDeUtil.writeOptional(1, totalTakerQuoteLotFees, _data, i);
+    i += markPrice.write(_data, i);
+    i += spotPrice.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + assetSymbol.l()
+         + 4
+         + openInterest.l()
+         + (totalMakerQuoteLotFees == null ? 1 : (1 + totalMakerQuoteLotFees.l()))
+         + (totalTakerQuoteLotFees == null ? 1 : (1 + totalTakerQuoteLotFees.l()))
+         + markPrice.l()
+         + spotPrice.l();
+  }
+}

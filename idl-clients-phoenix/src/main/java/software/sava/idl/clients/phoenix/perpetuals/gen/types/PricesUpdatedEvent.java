@@ -1,0 +1,209 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLotUpcasted;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedTicks;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::PricesUpdated Borsh variant 29.
+/// Payload type: PricesUpdatedEvent.
+///
+public record PricesUpdatedEvent(Discriminator discriminator,
+                                 PublicKey oracleSigner,
+                                 Symbol assetSymbol,
+                                 int assetId,
+                                 Ticks newBestBid,
+                                 Ticks newBestAsk,
+                                 Ticks newLastTrade,
+                                 Ticks newExchangeSpotPrice,
+                                 Ticks newExchangePerpPrice,
+                                 SignedTicks newMidSpotDiffEmaTicks,
+                                 Ticks newMarkPrice,
+                                 SignedQuoteLotsPerBaseLot cumulativeFundingRate,
+                                 SignedQuoteLotsPerBaseLot settledContribution,
+                                 SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator,
+                                 long assetSequenceNumber,
+                                 long prevAssetSequenceNumberSlot) implements EternalEvent {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(29, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ORACLE_SIGNER_OFFSET = 9;
+
+  public static PricesUpdatedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final PublicKey oracleSigner;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      oracleSigner = null;
+      ++i;
+    } else {
+      ++i;
+      oracleSigner = readPubKey(_data, i);
+      i += 32;
+    }
+    final var assetSymbol = Symbol.read(_data, i);
+    i += assetSymbol.l();
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final Ticks newBestBid;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newBestBid = null;
+      ++i;
+    } else {
+      ++i;
+      newBestBid = Ticks.read(_data, i);
+      i += newBestBid.l();
+    }
+    final Ticks newBestAsk;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newBestAsk = null;
+      ++i;
+    } else {
+      ++i;
+      newBestAsk = Ticks.read(_data, i);
+      i += newBestAsk.l();
+    }
+    final Ticks newLastTrade;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newLastTrade = null;
+      ++i;
+    } else {
+      ++i;
+      newLastTrade = Ticks.read(_data, i);
+      i += newLastTrade.l();
+    }
+    final Ticks newExchangeSpotPrice;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newExchangeSpotPrice = null;
+      ++i;
+    } else {
+      ++i;
+      newExchangeSpotPrice = Ticks.read(_data, i);
+      i += newExchangeSpotPrice.l();
+    }
+    final Ticks newExchangePerpPrice;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newExchangePerpPrice = null;
+      ++i;
+    } else {
+      ++i;
+      newExchangePerpPrice = Ticks.read(_data, i);
+      i += newExchangePerpPrice.l();
+    }
+    final SignedTicks newMidSpotDiffEmaTicks;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newMidSpotDiffEmaTicks = null;
+      ++i;
+    } else {
+      ++i;
+      newMidSpotDiffEmaTicks = SignedTicks.read(_data, i);
+      i += newMidSpotDiffEmaTicks.l();
+    }
+    final var newMarkPrice = Ticks.read(_data, i);
+    i += newMarkPrice.l();
+    final SignedQuoteLotsPerBaseLot cumulativeFundingRate;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      cumulativeFundingRate = null;
+      ++i;
+    } else {
+      ++i;
+      cumulativeFundingRate = SignedQuoteLotsPerBaseLot.read(_data, i);
+      i += cumulativeFundingRate.l();
+    }
+    final SignedQuoteLotsPerBaseLot settledContribution;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      settledContribution = null;
+      ++i;
+    } else {
+      ++i;
+      settledContribution = SignedQuoteLotsPerBaseLot.read(_data, i);
+      i += settledContribution.l();
+    }
+    final SignedQuoteLotsPerBaseLotUpcasted intervalAccumulator;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      intervalAccumulator = null;
+      ++i;
+    } else {
+      ++i;
+      intervalAccumulator = SignedQuoteLotsPerBaseLotUpcasted.read(_data, i);
+      i += intervalAccumulator.l();
+    }
+    final var assetSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var prevAssetSequenceNumberSlot = getInt64LE(_data, i);
+    return new PricesUpdatedEvent(discriminator,
+                                  oracleSigner,
+                                  assetSymbol,
+                                  assetId,
+                                  newBestBid,
+                                  newBestAsk,
+                                  newLastTrade,
+                                  newExchangeSpotPrice,
+                                  newExchangePerpPrice,
+                                  newMidSpotDiffEmaTicks,
+                                  newMarkPrice,
+                                  cumulativeFundingRate,
+                                  settledContribution,
+                                  intervalAccumulator,
+                                  assetSequenceNumber,
+                                  prevAssetSequenceNumberSlot);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    i += SerDeUtil.writeOptional(1, oracleSigner, _data, i);
+    i += assetSymbol.write(_data, i);
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    i += SerDeUtil.writeOptional(1, newBestBid, _data, i);
+    i += SerDeUtil.writeOptional(1, newBestAsk, _data, i);
+    i += SerDeUtil.writeOptional(1, newLastTrade, _data, i);
+    i += SerDeUtil.writeOptional(1, newExchangeSpotPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, newExchangePerpPrice, _data, i);
+    i += SerDeUtil.writeOptional(1, newMidSpotDiffEmaTicks, _data, i);
+    i += newMarkPrice.write(_data, i);
+    i += SerDeUtil.writeOptional(1, cumulativeFundingRate, _data, i);
+    i += SerDeUtil.writeOptional(1, settledContribution, _data, i);
+    i += SerDeUtil.writeOptional(1, intervalAccumulator, _data, i);
+    putInt64LE(_data, i, assetSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, prevAssetSequenceNumberSlot);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + (oracleSigner == null ? 1 : (1 + 32))
+         + assetSymbol.l()
+         + 4
+         + (newBestBid == null ? 1 : (1 + newBestBid.l()))
+         + (newBestAsk == null ? 1 : (1 + newBestAsk.l()))
+         + (newLastTrade == null ? 1 : (1 + newLastTrade.l()))
+         + (newExchangeSpotPrice == null ? 1 : (1 + newExchangeSpotPrice.l()))
+         + (newExchangePerpPrice == null ? 1 : (1 + newExchangePerpPrice.l()))
+         + (newMidSpotDiffEmaTicks == null ? 1 : (1 + newMidSpotDiffEmaTicks.l()))
+         + newMarkPrice.l()
+         + (cumulativeFundingRate == null ? 1 : (1 + cumulativeFundingRate.l()))
+         + (settledContribution == null ? 1 : (1 + settledContribution.l()))
+         + (intervalAccumulator == null ? 1 : (1 + intervalAccumulator.l()))
+         + 8
+         + 8;
+  }
+}

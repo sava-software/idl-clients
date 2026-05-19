@@ -1,0 +1,95 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::LiquidationTransfer Borsh variant 31.
+/// Payload type: LiquidationTransferEvent.
+///
+public record LiquidationTransferEvent(Discriminator discriminator,
+                                       PublicKey liquidatee,
+                                       PublicKey liquidator,
+                                       long assetId,
+                                       SignedBaseLots baseLotsTransferred,
+                                       SignedQuoteLots virtualQuoteLotsTransferred,
+                                       int haircutRate,
+                                       SignedQuoteLots liquidateeCollateralChange,
+                                       SignedQuoteLots liquidatorCollateralChange) implements EternalEvent {
+
+  public static final int BYTES = 114;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(31, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int LIQUIDATEE_OFFSET = 8;
+  public static final int LIQUIDATOR_OFFSET = 40;
+  public static final int ASSET_ID_OFFSET = 72;
+  public static final int BASE_LOTS_TRANSFERRED_OFFSET = 80;
+  public static final int VIRTUAL_QUOTE_LOTS_TRANSFERRED_OFFSET = 88;
+  public static final int HAIRCUT_RATE_OFFSET = 96;
+  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 98;
+  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 106;
+
+  public static LiquidationTransferEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var liquidatee = readPubKey(_data, i);
+    i += 32;
+    final var liquidator = readPubKey(_data, i);
+    i += 32;
+    final var assetId = getInt64LE(_data, i);
+    i += 8;
+    final var baseLotsTransferred = SignedBaseLots.read(_data, i);
+    i += baseLotsTransferred.l();
+    final var virtualQuoteLotsTransferred = SignedQuoteLots.read(_data, i);
+    i += virtualQuoteLotsTransferred.l();
+    final var haircutRate = getInt16LE(_data, i);
+    i += 2;
+    final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
+    i += liquidateeCollateralChange.l();
+    final var liquidatorCollateralChange = SignedQuoteLots.read(_data, i);
+    return new LiquidationTransferEvent(discriminator,
+                                        liquidatee,
+                                        liquidator,
+                                        assetId,
+                                        baseLotsTransferred,
+                                        virtualQuoteLotsTransferred,
+                                        haircutRate,
+                                        liquidateeCollateralChange,
+                                        liquidatorCollateralChange);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    liquidatee.write(_data, i);
+    i += 32;
+    liquidator.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, assetId);
+    i += 8;
+    i += baseLotsTransferred.write(_data, i);
+    i += virtualQuoteLotsTransferred.write(_data, i);
+    putInt16LE(_data, i, haircutRate);
+    i += 2;
+    i += liquidateeCollateralChange.write(_data, i);
+    i += liquidatorCollateralChange.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

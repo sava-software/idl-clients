@@ -1,0 +1,75 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// Fixed trader state embedded in the Phoenix Eternal DynamicTraderHeader.
+///
+public record TraderState(long quoteLotCollateral,
+                          int flags,
+                          byte[] padding,
+                          int globalPositionSequenceNumber,
+                          int makerFeeOverrideMultiplier,
+                          int takerFeeOverrideMultiplier) implements SerDe {
+
+  public static final int BYTES = 16;
+  public static final int PADDING_LEN = 1;
+
+  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 0;
+  public static final int FLAGS_OFFSET = 8;
+  public static final int PADDING_OFFSET = 12;
+  public static final int GLOBAL_POSITION_SEQUENCE_NUMBER_OFFSET = 13;
+  public static final int MAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 14;
+  public static final int TAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 15;
+
+  public static TraderState read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var quoteLotCollateral = getInt64LE(_data, i);
+    i += 8;
+    final var flags = getInt32LE(_data, i);
+    i += 4;
+    final var padding = new byte[1];
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var globalPositionSequenceNumber = _data[i] & 0xFF;
+    ++i;
+    final var makerFeeOverrideMultiplier = _data[i];
+    ++i;
+    final var takerFeeOverrideMultiplier = _data[i];
+    return new TraderState(quoteLotCollateral,
+                           flags,
+                           padding,
+                           globalPositionSequenceNumber,
+                           makerFeeOverrideMultiplier,
+                           takerFeeOverrideMultiplier);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, quoteLotCollateral);
+    i += 8;
+    putInt32LE(_data, i, flags);
+    i += 4;
+    i += SerDeUtil.writeArrayChecked(padding, 1, _data, i);
+    _data[i] = (byte) globalPositionSequenceNumber;
+    ++i;
+    _data[i] = (byte) makerFeeOverrideMultiplier;
+    ++i;
+    _data[i] = (byte) takerFeeOverrideMultiplier;
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

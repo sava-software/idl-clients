@@ -8,7 +8,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Parameters for updating a spline's mid-price with anti-reordering controls.
+/// Parameters for updating a spline's mid-price with anti-reordering protection.
 ///
 public record UpdateSplinePriceParamsWithOrdering(long newMidPrice,
                                                   OptionalLong userUpdateSlot,

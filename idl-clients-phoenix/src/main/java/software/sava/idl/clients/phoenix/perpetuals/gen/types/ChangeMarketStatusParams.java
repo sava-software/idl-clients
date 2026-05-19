@@ -1,0 +1,32 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Borsh payload for changing an orderbook market status.
+///
+public record ChangeMarketStatusParams(MarketStatus nextMarketStatus) implements SerDe {
+
+  public static final int BYTES = 1;
+
+  public static final int NEXT_MARKET_STATUS_OFFSET = 0;
+
+  public static ChangeMarketStatusParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var nextMarketStatus = MarketStatus.read(_data, _offset);
+    return new ChangeMarketStatusParams(nextMarketStatus);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += nextMarketStatus.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

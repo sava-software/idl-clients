@@ -1,0 +1,64 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+
+/// Borsh payload for updating withdraw cooldown and fee parameters.
+///
+public record UpdateWithdrawParametersParams(OptionalLong depositCooldownPeriodInSlots,
+                                             OptionalLong withdrawalFee,
+                                             OptionalLong enqueueingFee) implements SerDe {
+
+  public static final int DEPOSIT_COOLDOWN_PERIOD_IN_SLOTS_OFFSET = 1;
+
+  public static UpdateWithdrawParametersParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final OptionalLong depositCooldownPeriodInSlots;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      depositCooldownPeriodInSlots = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      depositCooldownPeriodInSlots = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong withdrawalFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      withdrawalFee = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      withdrawalFee = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong enqueueingFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      enqueueingFee = OptionalLong.empty();
+    } else {
+      ++i;
+      enqueueingFee = OptionalLong.of(getInt64LE(_data, i));
+    }
+    return new UpdateWithdrawParametersParams(depositCooldownPeriodInSlots, withdrawalFee, enqueueingFee);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeOptional(1, depositCooldownPeriodInSlots, _data, i);
+    i += SerDeUtil.writeOptional(1, withdrawalFee, _data, i);
+    i += SerDeUtil.writeOptional(1, enqueueingFee, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return (depositCooldownPeriodInSlots == null || depositCooldownPeriodInSlots.isEmpty() ? 1 : (1 + 8)) + (withdrawalFee == null || withdrawalFee.isEmpty() ? 1 : (1 + 8)) + (enqueueingFee == null || enqueueingFee.isEmpty() ? 1 : (1 + 8));
+  }
+}

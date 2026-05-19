@@ -1,0 +1,226 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Fixed metadata prefix for a Phoenix Eternal orderbook account.
+/// The large recent-trade buffer and dynamic orderbook bytes follow this prefix and are left as trailing account data by generic decoders.
+///
+public record OrderbookHeader(PublicKey _address,
+                              Discriminator discriminator,
+                              long discriminant,
+                              int marketStatus,
+                              int baseLotsDecimals,
+                              byte[] padding0,
+                              SequenceNumber sequenceNumber,
+                              int assetId,
+                              byte[] assetIdPadding,
+                              Symbol assetSymbol,
+                              long tickSizeInQuoteLotsPerBaseLot,
+                              SequenceNumber orderSequenceNumber,
+                              SequenceNumber tradeSequenceNumber,
+                              int defaultTakerFeeMicro,
+                              int defaultMakerFeeMicro,
+                              SignedQuoteLots totalMakerQuoteLotFees,
+                              QuoteLots totalTakerQuoteLotFees) implements SerDe {
+
+  public static final int BYTES = 128;
+  public static final int PADDING_0_LEN = 6;
+  public static final int ASSET_ID_PADDING_LEN = 4;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(65, 1, 40, 241, 166, 14, 86, 188);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int DISCRIMINANT_OFFSET = 8;
+  public static final int MARKET_STATUS_OFFSET = 16;
+  public static final int BASE_LOTS_DECIMALS_OFFSET = 17;
+  public static final int PADDING_0_OFFSET = 18;
+  public static final int SEQUENCE_NUMBER_OFFSET = 24;
+  public static final int ASSET_ID_OFFSET = 40;
+  public static final int ASSET_ID_PADDING_OFFSET = 44;
+  public static final int ASSET_SYMBOL_OFFSET = 48;
+  public static final int TICK_SIZE_IN_QUOTE_LOTS_PER_BASE_LOT_OFFSET = 64;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 72;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 88;
+  public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 104;
+  public static final int DEFAULT_MAKER_FEE_MICRO_OFFSET = 108;
+  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 112;
+  public static final int TOTAL_TAKER_QUOTE_LOT_FEES_OFFSET = 120;
+
+  public static Filter createDiscriminantFilter(final long discriminant) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, discriminant);
+    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
+  }
+
+  public static Filter createMarketStatusFilter(final int marketStatus) {
+    return Filter.createMemCompFilter(MARKET_STATUS_OFFSET, new byte[]{(byte) marketStatus});
+  }
+
+  public static Filter createBaseLotsDecimalsFilter(final int baseLotsDecimals) {
+    return Filter.createMemCompFilter(BASE_LOTS_DECIMALS_OFFSET, new byte[]{(byte) baseLotsDecimals});
+  }
+
+  public static Filter createSequenceNumberFilter(final SequenceNumber sequenceNumber) {
+    return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
+  }
+
+  public static Filter createAssetIdFilter(final int assetId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, assetId);
+    return Filter.createMemCompFilter(ASSET_ID_OFFSET, _data);
+  }
+
+  public static Filter createAssetSymbolFilter(final Symbol assetSymbol) {
+    return Filter.createMemCompFilter(ASSET_SYMBOL_OFFSET, assetSymbol.write());
+  }
+
+  public static Filter createTickSizeInQuoteLotsPerBaseLotFilter(final long tickSizeInQuoteLotsPerBaseLot) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, tickSizeInQuoteLotsPerBaseLot);
+    return Filter.createMemCompFilter(TICK_SIZE_IN_QUOTE_LOTS_PER_BASE_LOT_OFFSET, _data);
+  }
+
+  public static Filter createOrderSequenceNumberFilter(final SequenceNumber orderSequenceNumber) {
+    return Filter.createMemCompFilter(ORDER_SEQUENCE_NUMBER_OFFSET, orderSequenceNumber.write());
+  }
+
+  public static Filter createTradeSequenceNumberFilter(final SequenceNumber tradeSequenceNumber) {
+    return Filter.createMemCompFilter(TRADE_SEQUENCE_NUMBER_OFFSET, tradeSequenceNumber.write());
+  }
+
+  public static Filter createDefaultTakerFeeMicroFilter(final int defaultTakerFeeMicro) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, defaultTakerFeeMicro);
+    return Filter.createMemCompFilter(DEFAULT_TAKER_FEE_MICRO_OFFSET, _data);
+  }
+
+  public static Filter createDefaultMakerFeeMicroFilter(final int defaultMakerFeeMicro) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, defaultMakerFeeMicro);
+    return Filter.createMemCompFilter(DEFAULT_MAKER_FEE_MICRO_OFFSET, _data);
+  }
+
+  public static Filter createTotalMakerQuoteLotFeesFilter(final SignedQuoteLots totalMakerQuoteLotFees) {
+    return Filter.createMemCompFilter(TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET, totalMakerQuoteLotFees.write());
+  }
+
+  public static Filter createTotalTakerQuoteLotFeesFilter(final QuoteLots totalTakerQuoteLotFees) {
+    return Filter.createMemCompFilter(TOTAL_TAKER_QUOTE_LOT_FEES_OFFSET, totalTakerQuoteLotFees.write());
+  }
+
+  public static OrderbookHeader read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static OrderbookHeader read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static OrderbookHeader read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], OrderbookHeader> FACTORY = OrderbookHeader::read;
+
+  public static OrderbookHeader read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var discriminant = getInt64LE(_data, i);
+    i += 8;
+    final var marketStatus = _data[i] & 0xFF;
+    ++i;
+    final var baseLotsDecimals = _data[i];
+    ++i;
+    final var padding0 = new byte[6];
+    i += SerDeUtil.readArray(padding0, _data, i);
+    final var sequenceNumber = SequenceNumber.read(_data, i);
+    i += sequenceNumber.l();
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final var assetIdPadding = new byte[4];
+    i += SerDeUtil.readArray(assetIdPadding, _data, i);
+    final var assetSymbol = Symbol.read(_data, i);
+    i += assetSymbol.l();
+    final var tickSizeInQuoteLotsPerBaseLot = getInt64LE(_data, i);
+    i += 8;
+    final var orderSequenceNumber = SequenceNumber.read(_data, i);
+    i += orderSequenceNumber.l();
+    final var tradeSequenceNumber = SequenceNumber.read(_data, i);
+    i += tradeSequenceNumber.l();
+    final var defaultTakerFeeMicro = getInt32LE(_data, i);
+    i += 4;
+    final var defaultMakerFeeMicro = getInt32LE(_data, i);
+    i += 4;
+    final var totalMakerQuoteLotFees = SignedQuoteLots.read(_data, i);
+    i += totalMakerQuoteLotFees.l();
+    final var totalTakerQuoteLotFees = QuoteLots.read(_data, i);
+    return new OrderbookHeader(_address,
+                               discriminator,
+                               discriminant,
+                               marketStatus,
+                               baseLotsDecimals,
+                               padding0,
+                               sequenceNumber,
+                               assetId,
+                               assetIdPadding,
+                               assetSymbol,
+                               tickSizeInQuoteLotsPerBaseLot,
+                               orderSequenceNumber,
+                               tradeSequenceNumber,
+                               defaultTakerFeeMicro,
+                               defaultMakerFeeMicro,
+                               totalMakerQuoteLotFees,
+                               totalTakerQuoteLotFees);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, discriminant);
+    i += 8;
+    _data[i] = (byte) marketStatus;
+    ++i;
+    _data[i] = (byte) baseLotsDecimals;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding0, 6, _data, i);
+    i += sequenceNumber.write(_data, i);
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    i += SerDeUtil.writeArrayChecked(assetIdPadding, 4, _data, i);
+    i += assetSymbol.write(_data, i);
+    putInt64LE(_data, i, tickSizeInQuoteLotsPerBaseLot);
+    i += 8;
+    i += orderSequenceNumber.write(_data, i);
+    i += tradeSequenceNumber.write(_data, i);
+    putInt32LE(_data, i, defaultTakerFeeMicro);
+    i += 4;
+    putInt32LE(_data, i, defaultMakerFeeMicro);
+    i += 4;
+    i += totalMakerQuoteLotFees.write(_data, i);
+    i += totalTakerQuoteLotFees.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

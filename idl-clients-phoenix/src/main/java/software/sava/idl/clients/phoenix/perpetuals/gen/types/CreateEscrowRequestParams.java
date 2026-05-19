@@ -1,0 +1,52 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+
+/// Borsh payload for creating an escrow request.
+///
+public record CreateEscrowRequestParams(EscrowParticipantMetadata participantMetadata,
+                                        OptionalLong lastValidSlot,
+                                        EscrowAction[] actions) implements SerDe {
+
+  public static final int PARTICIPANT_METADATA_OFFSET = 0;
+  public static final int LAST_VALID_SLOT_OFFSET = 5;
+
+  public static CreateEscrowRequestParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var participantMetadata = EscrowParticipantMetadata.read(_data, i);
+    i += participantMetadata.l();
+    final OptionalLong lastValidSlot;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      lastValidSlot = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      lastValidSlot = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final var actions = SerDeUtil.readVector(4, EscrowAction.class, EscrowAction::read, _data, i);
+    return new CreateEscrowRequestParams(participantMetadata, lastValidSlot, actions);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += participantMetadata.write(_data, i);
+    i += SerDeUtil.writeOptional(1, lastValidSlot, _data, i);
+    i += SerDeUtil.writeVector(4, actions, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return participantMetadata.l() + (lastValidSlot == null || lastValidSlot.isEmpty() ? 1 : (1 + 8)) + SerDeUtil.lenVector(4, actions);
+  }
+}

@@ -1,0 +1,49 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::MarketDeleted Borsh variant 51.
+/// Payload type: MarketDeletedEvent.
+///
+public record MarketDeletedEvent(Discriminator discriminator, int assetId, long lamportsReclaimed) implements EternalEvent {
+
+  public static final int BYTES = 20;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(51, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ASSET_ID_OFFSET = 8;
+  public static final int LAMPORTS_RECLAIMED_OFFSET = 12;
+
+  public static MarketDeletedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final var lamportsReclaimed = getInt64LE(_data, i);
+    return new MarketDeletedEvent(discriminator, assetId, lamportsReclaimed);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    putInt64LE(_data, i, lamportsReclaimed);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

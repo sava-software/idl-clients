@@ -1,0 +1,67 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// Borsh payload for updating commodity market state and mark price inputs.
+///
+public record UpdateCommodityMarketStateInstruction(CommodityMarketState marketState,
+                                                    Ticks lastKnownIndexPrice,
+                                                    long lastIndexExpiryTimestamp,
+                                                    OptionalLong emaPeriodSlots) implements SerDe {
+
+  public static final int MARKET_STATE_OFFSET = 0;
+  public static final int LAST_KNOWN_INDEX_PRICE_OFFSET = 2;
+
+  public static UpdateCommodityMarketStateInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var marketState = CommodityMarketState.read(_data, i);
+    i += marketState.l();
+    final Ticks lastKnownIndexPrice;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      lastKnownIndexPrice = null;
+      ++i;
+    } else {
+      ++i;
+      lastKnownIndexPrice = Ticks.read(_data, i);
+      i += lastKnownIndexPrice.l();
+    }
+    final var lastIndexExpiryTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final OptionalLong emaPeriodSlots;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      emaPeriodSlots = OptionalLong.empty();
+    } else {
+      ++i;
+      emaPeriodSlots = OptionalLong.of(getInt64LE(_data, i));
+    }
+    return new UpdateCommodityMarketStateInstruction(marketState,
+                                                     lastKnownIndexPrice,
+                                                     lastIndexExpiryTimestamp,
+                                                     emaPeriodSlots);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += marketState.write(_data, i);
+    i += SerDeUtil.writeOptional(1, lastKnownIndexPrice, _data, i);
+    putInt64LE(_data, i, lastIndexExpiryTimestamp);
+    i += 8;
+    i += SerDeUtil.writeOptional(1, emaPeriodSlots, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return marketState.l() + (lastKnownIndexPrice == null ? 1 : (1 + lastKnownIndexPrice.l())) + 8 + (emaPeriodSlots == null || emaPeriodSlots.isEmpty() ? 1 : (1 + 8));
+  }
+}

@@ -1,0 +1,114 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::TradeSummary Borsh variant 6.
+/// Payload type: TradeSummaryEvent.
+///
+public record TradeSummaryEvent(Discriminator discriminator,
+                                PublicKey trader,
+                                long tradeSequenceNumber,
+                                long prevTradeSequenceNumberSlot,
+                                Side side,
+                                BaseLots baseLotsFilled,
+                                QuoteLots quoteLotsFilled,
+                                QuoteLots feeInQuoteLots,
+                                SignedBaseLots baseLotPosition,
+                                SignedQuoteLots virtualQuoteLotPosition,
+                                SignedQuoteLots quoteLotCollateral,
+                                SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot) implements EternalEvent {
+
+  public static final int BYTES = 113;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(6, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int TRADER_OFFSET = 8;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 40;
+  public static final int PREV_TRADE_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
+  public static final int SIDE_OFFSET = 56;
+  public static final int BASE_LOTS_FILLED_OFFSET = 57;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 65;
+  public static final int FEE_IN_QUOTE_LOTS_OFFSET = 73;
+  public static final int BASE_LOT_POSITION_OFFSET = 81;
+  public static final int VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 89;
+  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 97;
+  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 105;
+
+  public static TradeSummaryEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var trader = readPubKey(_data, i);
+    i += 32;
+    final var tradeSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var prevTradeSequenceNumberSlot = getInt64LE(_data, i);
+    i += 8;
+    final var side = Side.read(_data, i);
+    i += side.l();
+    final var baseLotsFilled = BaseLots.read(_data, i);
+    i += baseLotsFilled.l();
+    final var quoteLotsFilled = QuoteLots.read(_data, i);
+    i += quoteLotsFilled.l();
+    final var feeInQuoteLots = QuoteLots.read(_data, i);
+    i += feeInQuoteLots.l();
+    final var baseLotPosition = SignedBaseLots.read(_data, i);
+    i += baseLotPosition.l();
+    final var virtualQuoteLotPosition = SignedQuoteLots.read(_data, i);
+    i += virtualQuoteLotPosition.l();
+    final var quoteLotCollateral = SignedQuoteLots.read(_data, i);
+    i += quoteLotCollateral.l();
+    final var cumulativeFundingSnapshot = SignedQuoteLotsPerBaseLot.read(_data, i);
+    return new TradeSummaryEvent(discriminator,
+                                 trader,
+                                 tradeSequenceNumber,
+                                 prevTradeSequenceNumberSlot,
+                                 side,
+                                 baseLotsFilled,
+                                 quoteLotsFilled,
+                                 feeInQuoteLots,
+                                 baseLotPosition,
+                                 virtualQuoteLotPosition,
+                                 quoteLotCollateral,
+                                 cumulativeFundingSnapshot);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    trader.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, tradeSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, prevTradeSequenceNumberSlot);
+    i += 8;
+    i += side.write(_data, i);
+    i += baseLotsFilled.write(_data, i);
+    i += quoteLotsFilled.write(_data, i);
+    i += feeInQuoteLots.write(_data, i);
+    i += baseLotPosition.write(_data, i);
+    i += virtualQuoteLotPosition.write(_data, i);
+    i += quoteLotCollateral.write(_data, i);
+    i += cumulativeFundingSnapshot.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

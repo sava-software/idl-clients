@@ -1,0 +1,35 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Borsh payload for upserting an escrow request.
+///
+public record UpsertEscrowRequestParams(EscrowParticipantMetadata participantMetadata, EscrowAction action) implements SerDe {
+
+  public static final int PARTICIPANT_METADATA_OFFSET = 0;
+  public static final int ACTION_OFFSET = 4;
+
+  public static UpsertEscrowRequestParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var participantMetadata = EscrowParticipantMetadata.read(_data, i);
+    i += participantMetadata.l();
+    final var action = EscrowAction.read(_data, i);
+    return new UpsertEscrowRequestParams(participantMetadata, action);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += participantMetadata.write(_data, i);
+    i += action.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return participantMetadata.l() + action.l();
+  }
+}

@@ -1,0 +1,79 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderModificationReason;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::OrderModified Borsh variant 7.
+/// Payload type: OrderModifiedEvent.
+///
+public record OrderModifiedEvent(Discriminator discriminator,
+                                 long orderSequenceNumber,
+                                 Ticks price,
+                                 SignedBaseLots baseLotsReleased,
+                                 SignedQuoteLots quoteLotsReleased,
+                                 BaseLots baseLotsRemaining,
+                                 OrderModificationReason reason) implements EternalEvent {
+
+  public static final int BYTES = 49;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(7, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 8;
+  public static final int PRICE_OFFSET = 16;
+  public static final int BASE_LOTS_RELEASED_OFFSET = 24;
+  public static final int QUOTE_LOTS_RELEASED_OFFSET = 32;
+  public static final int BASE_LOTS_REMAINING_OFFSET = 40;
+  public static final int REASON_OFFSET = 48;
+
+  public static OrderModifiedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var orderSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var price = Ticks.read(_data, i);
+    i += price.l();
+    final var baseLotsReleased = SignedBaseLots.read(_data, i);
+    i += baseLotsReleased.l();
+    final var quoteLotsReleased = SignedQuoteLots.read(_data, i);
+    i += quoteLotsReleased.l();
+    final var baseLotsRemaining = BaseLots.read(_data, i);
+    i += baseLotsRemaining.l();
+    final var reason = OrderModificationReason.read(_data, i);
+    return new OrderModifiedEvent(discriminator,
+                                  orderSequenceNumber,
+                                  price,
+                                  baseLotsReleased,
+                                  quoteLotsReleased,
+                                  baseLotsRemaining,
+                                  reason);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, orderSequenceNumber);
+    i += 8;
+    i += price.write(_data, i);
+    i += baseLotsReleased.write(_data, i);
+    i += quoteLotsReleased.write(_data, i);
+    i += baseLotsRemaining.write(_data, i);
+    i += reason.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

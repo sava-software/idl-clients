@@ -1,0 +1,49 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::EscrowRequestAccepted Borsh variant 54.
+/// Payload type: EscrowRequestAcceptedEvent.
+///
+public record EscrowRequestAcceptedEvent(Discriminator discriminator, PublicKey receiverAuthority, long sequenceNumber) implements EternalEvent {
+
+  public static final int BYTES = 48;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(54, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int RECEIVER_AUTHORITY_OFFSET = 8;
+  public static final int SEQUENCE_NUMBER_OFFSET = 40;
+
+  public static EscrowRequestAcceptedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var receiverAuthority = readPubKey(_data, i);
+    i += 32;
+    final var sequenceNumber = getInt64LE(_data, i);
+    return new EscrowRequestAcceptedEvent(discriminator, receiverAuthority, sequenceNumber);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    receiverAuthority.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, sequenceNumber);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

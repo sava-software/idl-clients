@@ -1,0 +1,37 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// One fixed slot in the PerpAssetMap ShortMapV2 backing array.
+///
+public record PerpAssetMapEntry(Symbol key, PerpAssetMetadata value) implements SerDe {
+
+  public static final int BYTES = 1584;
+
+  public static final int KEY_OFFSET = 0;
+  public static final int VALUE_OFFSET = 16;
+
+  public static PerpAssetMapEntry read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var key = Symbol.read(_data, i);
+    i += key.l();
+    final var value = PerpAssetMetadata.read(_data, i);
+    return new PerpAssetMapEntry(key, value);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += key.write(_data, i);
+    i += value.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

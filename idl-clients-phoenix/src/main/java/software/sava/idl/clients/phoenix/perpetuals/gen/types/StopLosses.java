@@ -1,0 +1,158 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Fixed Phoenix Eternal StopLosses account layout.
+///
+public record StopLosses(PublicKey _address,
+                         Discriminator discriminator,
+                         long discriminant,
+                         StopLoss[] stopLosses,
+                         long initialized,
+                         SequenceNumber sequenceNumber,
+                         PublicKey fundingKey,
+                         PublicKey traderKey,
+                         int assetId,
+                         byte[] assetIdPadding,
+                         long[] padding) implements SerDe {
+
+  public static final int BYTES = 336;
+  public static final int STOP_LOSSES_LEN = 2;
+  public static final int ASSET_ID_PADDING_LEN = 4;
+  public static final int PADDING_LEN = 8;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(127, 64, 139, 143, 70, 43, 167, 152);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int DISCRIMINANT_OFFSET = 8;
+  public static final int STOP_LOSSES_OFFSET = 16;
+  public static final int INITIALIZED_OFFSET = 176;
+  public static final int SEQUENCE_NUMBER_OFFSET = 184;
+  public static final int FUNDING_KEY_OFFSET = 200;
+  public static final int TRADER_KEY_OFFSET = 232;
+  public static final int ASSET_ID_OFFSET = 264;
+  public static final int ASSET_ID_PADDING_OFFSET = 268;
+  public static final int PADDING_OFFSET = 272;
+
+  public static Filter createDiscriminantFilter(final long discriminant) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, discriminant);
+    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
+  }
+
+  public static Filter createInitializedFilter(final long initialized) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, initialized);
+    return Filter.createMemCompFilter(INITIALIZED_OFFSET, _data);
+  }
+
+  public static Filter createSequenceNumberFilter(final SequenceNumber sequenceNumber) {
+    return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
+  }
+
+  public static Filter createFundingKeyFilter(final PublicKey fundingKey) {
+    return Filter.createMemCompFilter(FUNDING_KEY_OFFSET, fundingKey);
+  }
+
+  public static Filter createTraderKeyFilter(final PublicKey traderKey) {
+    return Filter.createMemCompFilter(TRADER_KEY_OFFSET, traderKey);
+  }
+
+  public static Filter createAssetIdFilter(final int assetId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, assetId);
+    return Filter.createMemCompFilter(ASSET_ID_OFFSET, _data);
+  }
+
+  public static StopLosses read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static StopLosses read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static StopLosses read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], StopLosses> FACTORY = StopLosses::read;
+
+  public static StopLosses read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var discriminant = getInt64LE(_data, i);
+    i += 8;
+    final var stopLosses = new StopLoss[2];
+    i += SerDeUtil.readArray(stopLosses, StopLoss::read, _data, i);
+    final var initialized = getInt64LE(_data, i);
+    i += 8;
+    final var sequenceNumber = SequenceNumber.read(_data, i);
+    i += sequenceNumber.l();
+    final var fundingKey = readPubKey(_data, i);
+    i += 32;
+    final var traderKey = readPubKey(_data, i);
+    i += 32;
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final var assetIdPadding = new byte[4];
+    i += SerDeUtil.readArray(assetIdPadding, _data, i);
+    final var padding = new long[8];
+    SerDeUtil.readArray(padding, _data, i);
+    return new StopLosses(_address,
+                          discriminator,
+                          discriminant,
+                          stopLosses,
+                          initialized,
+                          sequenceNumber,
+                          fundingKey,
+                          traderKey,
+                          assetId,
+                          assetIdPadding,
+                          padding);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, discriminant);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(stopLosses, 2, _data, i);
+    putInt64LE(_data, i, initialized);
+    i += 8;
+    i += sequenceNumber.write(_data, i);
+    fundingKey.write(_data, i);
+    i += 32;
+    traderKey.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    i += SerDeUtil.writeArrayChecked(assetIdPadding, 4, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

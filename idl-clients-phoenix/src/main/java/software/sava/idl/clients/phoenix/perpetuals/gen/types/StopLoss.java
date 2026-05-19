@@ -1,0 +1,92 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+/// One fixed trigger order slot stored inside the StopLosses account.
+///
+public record StopLoss(long sequenceNumber,
+                       Ticks triggerPrice,
+                       Ticks executionPrice,
+                       BaseLots tradeSize,
+                       long slot,
+                       int positionSequenceNumber,
+                       int flags,
+                       byte[] padding,
+                       byte[] padding2) implements SerDe {
+
+  public static final int BYTES = 80;
+  public static final int PADDING_LEN = 6;
+  public static final int PADDING_2_LEN = 32;
+
+  public static final int SEQUENCE_NUMBER_OFFSET = 0;
+  public static final int TRIGGER_PRICE_OFFSET = 8;
+  public static final int EXECUTION_PRICE_OFFSET = 16;
+  public static final int TRADE_SIZE_OFFSET = 24;
+  public static final int SLOT_OFFSET = 32;
+  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 40;
+  public static final int FLAGS_OFFSET = 41;
+  public static final int PADDING_OFFSET = 42;
+  public static final int PADDING_2_OFFSET = 48;
+
+  public static StopLoss read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var sequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var triggerPrice = Ticks.read(_data, i);
+    i += triggerPrice.l();
+    final var executionPrice = Ticks.read(_data, i);
+    i += executionPrice.l();
+    final var tradeSize = BaseLots.read(_data, i);
+    i += tradeSize.l();
+    final var slot = getInt64LE(_data, i);
+    i += 8;
+    final var positionSequenceNumber = _data[i] & 0xFF;
+    ++i;
+    final var flags = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[6];
+    i += SerDeUtil.readArray(padding, _data, i);
+    final var padding2 = new byte[32];
+    SerDeUtil.readArray(padding2, _data, i);
+    return new StopLoss(sequenceNumber,
+                        triggerPrice,
+                        executionPrice,
+                        tradeSize,
+                        slot,
+                        positionSequenceNumber,
+                        flags,
+                        padding,
+                        padding2);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, sequenceNumber);
+    i += 8;
+    i += triggerPrice.write(_data, i);
+    i += executionPrice.write(_data, i);
+    i += tradeSize.write(_data, i);
+    putInt64LE(_data, i, slot);
+    i += 8;
+    _data[i] = (byte) positionSequenceNumber;
+    ++i;
+    _data[i] = (byte) flags;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 6, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 32, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

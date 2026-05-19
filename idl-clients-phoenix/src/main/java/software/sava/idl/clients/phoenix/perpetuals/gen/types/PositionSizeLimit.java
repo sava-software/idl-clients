@@ -1,0 +1,40 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+
+public sealed interface PositionSizeLimit extends RustEnum permits
+  PositionSizeLimit.Disabled,
+  PositionSizeLimit.Limit {
+
+  static PositionSizeLimit read(final byte[] _data, final int _offset) {
+    final int ordinal = _data[_offset] & 0xFF;
+    final int i = _offset + 1;
+    return switch (ordinal) {
+      case 0 -> Disabled.INSTANCE;
+      case 1 -> Limit.read(_data, i);
+      default -> null;
+    };
+  }
+
+  record Disabled() implements EnumNone, PositionSizeLimit {
+
+    public static final Disabled INSTANCE = new Disabled();
+
+    @Override
+    public int ordinal() {
+      return 0;
+    }
+  }
+
+  record Limit(PositionSizeLimits val) implements SerDeEnum, PositionSizeLimit {
+
+    public static Limit read(final byte[] _data, final int _offset) {
+      return new Limit(PositionSizeLimits.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 1;
+    }
+  }
+}

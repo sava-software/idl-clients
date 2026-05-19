@@ -1,0 +1,155 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Direction;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.OptionalFIFOOrderId;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.StopLossOrderKind;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::TriggerOrderPlaced Borsh variant 58.
+/// Payload type: TriggerOrderPlacedEvent.
+///
+public record TriggerOrderPlacedEvent(Discriminator discriminator,
+                                      PublicKey trader,
+                                      long sequenceNumber,
+                                      long prevSequenceNumberSlot,
+                                      long assetId,
+                                      int conditionalOrderIndex,
+                                      Ticks triggerPrice,
+                                      Ticks executionPrice,
+                                      Side tradeSide,
+                                      Direction triggerDirection,
+                                      StopLossOrderKind orderKind,
+                                      BaseLots maxSize,
+                                      BaseLots fillableSize,
+                                      BaseLots filledSize,
+                                      boolean usePercent,
+                                      int percent,
+                                      int positionSequenceNumber,
+                                      OptionalFIFOOrderId attachedOrderId) implements EternalEvent {
+
+  public static final int BYTES = 127;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(58, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int TRADER_OFFSET = 8;
+  public static final int SEQUENCE_NUMBER_OFFSET = 40;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
+  public static final int ASSET_ID_OFFSET = 56;
+  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 64;
+  public static final int TRIGGER_PRICE_OFFSET = 65;
+  public static final int EXECUTION_PRICE_OFFSET = 73;
+  public static final int TRADE_SIDE_OFFSET = 81;
+  public static final int TRIGGER_DIRECTION_OFFSET = 82;
+  public static final int ORDER_KIND_OFFSET = 83;
+  public static final int MAX_SIZE_OFFSET = 84;
+  public static final int FILLABLE_SIZE_OFFSET = 92;
+  public static final int FILLED_SIZE_OFFSET = 100;
+  public static final int USE_PERCENT_OFFSET = 108;
+  public static final int PERCENT_OFFSET = 109;
+  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 110;
+  public static final int ATTACHED_ORDER_ID_OFFSET = 111;
+
+  public static TriggerOrderPlacedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var trader = readPubKey(_data, i);
+    i += 32;
+    final var sequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var prevSequenceNumberSlot = getInt64LE(_data, i);
+    i += 8;
+    final var assetId = getInt64LE(_data, i);
+    i += 8;
+    final var conditionalOrderIndex = _data[i] & 0xFF;
+    ++i;
+    final var triggerPrice = Ticks.read(_data, i);
+    i += triggerPrice.l();
+    final var executionPrice = Ticks.read(_data, i);
+    i += executionPrice.l();
+    final var tradeSide = Side.read(_data, i);
+    i += tradeSide.l();
+    final var triggerDirection = Direction.read(_data, i);
+    i += triggerDirection.l();
+    final var orderKind = StopLossOrderKind.read(_data, i);
+    i += orderKind.l();
+    final var maxSize = BaseLots.read(_data, i);
+    i += maxSize.l();
+    final var fillableSize = BaseLots.read(_data, i);
+    i += fillableSize.l();
+    final var filledSize = BaseLots.read(_data, i);
+    i += filledSize.l();
+    final var usePercent = _data[i] == 1;
+    ++i;
+    final var percent = _data[i] & 0xFF;
+    ++i;
+    final var positionSequenceNumber = _data[i] & 0xFF;
+    ++i;
+    final var attachedOrderId = OptionalFIFOOrderId.read(_data, i);
+    return new TriggerOrderPlacedEvent(discriminator,
+                                       trader,
+                                       sequenceNumber,
+                                       prevSequenceNumberSlot,
+                                       assetId,
+                                       conditionalOrderIndex,
+                                       triggerPrice,
+                                       executionPrice,
+                                       tradeSide,
+                                       triggerDirection,
+                                       orderKind,
+                                       maxSize,
+                                       fillableSize,
+                                       filledSize,
+                                       usePercent,
+                                       percent,
+                                       positionSequenceNumber,
+                                       attachedOrderId);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    trader.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, sequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, prevSequenceNumberSlot);
+    i += 8;
+    putInt64LE(_data, i, assetId);
+    i += 8;
+    _data[i] = (byte) conditionalOrderIndex;
+    ++i;
+    i += triggerPrice.write(_data, i);
+    i += executionPrice.write(_data, i);
+    i += tradeSide.write(_data, i);
+    i += triggerDirection.write(_data, i);
+    i += orderKind.write(_data, i);
+    i += maxSize.write(_data, i);
+    i += fillableSize.write(_data, i);
+    i += filledSize.write(_data, i);
+    _data[i] = (byte) (usePercent ? 1 : 0);
+    ++i;
+    _data[i] = (byte) percent;
+    ++i;
+    _data[i] = (byte) positionSequenceNumber;
+    ++i;
+    i += attachedOrderId.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

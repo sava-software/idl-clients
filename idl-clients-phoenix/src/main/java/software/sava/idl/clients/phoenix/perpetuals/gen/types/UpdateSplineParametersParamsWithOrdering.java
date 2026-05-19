@@ -6,8 +6,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Parameters for updating spline regions with anti-reordering controls.
-///
 public record UpdateSplineParametersParamsWithOrdering(TickRegionParams[] bidRegions,
                                                        TickRegionParams[] askRegions,
                                                        boolean refreshRegions,

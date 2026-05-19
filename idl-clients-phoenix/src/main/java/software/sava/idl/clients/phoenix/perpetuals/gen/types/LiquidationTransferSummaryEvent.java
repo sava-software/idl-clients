@@ -1,0 +1,80 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::LiquidationTransferSummary Borsh variant 30.
+/// Payload type: LiquidationTransferSummaryEvent.
+///
+public record LiquidationTransferSummaryEvent(Discriminator discriminator,
+                                              PublicKey liquidatee,
+                                              PublicKey liquidator,
+                                              int totalTransfers,
+                                              SignedQuoteLots liquidateeCollateralChange,
+                                              SignedQuoteLots liquidatorCollateralChange,
+                                              QuoteLots haircutCollected) implements EternalEvent {
+
+  public static final int BYTES = 100;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(30, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int LIQUIDATEE_OFFSET = 8;
+  public static final int LIQUIDATOR_OFFSET = 40;
+  public static final int TOTAL_TRANSFERS_OFFSET = 72;
+  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 76;
+  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 84;
+  public static final int HAIRCUT_COLLECTED_OFFSET = 92;
+
+  public static LiquidationTransferSummaryEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var liquidatee = readPubKey(_data, i);
+    i += 32;
+    final var liquidator = readPubKey(_data, i);
+    i += 32;
+    final var totalTransfers = getInt32LE(_data, i);
+    i += 4;
+    final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
+    i += liquidateeCollateralChange.l();
+    final var liquidatorCollateralChange = SignedQuoteLots.read(_data, i);
+    i += liquidatorCollateralChange.l();
+    final var haircutCollected = QuoteLots.read(_data, i);
+    return new LiquidationTransferSummaryEvent(discriminator,
+                                               liquidatee,
+                                               liquidator,
+                                               totalTransfers,
+                                               liquidateeCollateralChange,
+                                               liquidatorCollateralChange,
+                                               haircutCollected);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    liquidatee.write(_data, i);
+    i += 32;
+    liquidator.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, totalTransfers);
+    i += 4;
+    i += liquidateeCollateralChange.write(_data, i);
+    i += liquidatorCollateralChange.write(_data, i);
+    i += haircutCollected.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

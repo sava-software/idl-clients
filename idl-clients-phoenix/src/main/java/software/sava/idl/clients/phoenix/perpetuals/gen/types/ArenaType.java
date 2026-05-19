@@ -1,0 +1,15 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+/// Arena account family to initialize.
+public enum ArenaType implements RustEnum {
+
+  GlobalTraderIndex,
+  ActiveTraderBuffer;
+
+  public static ArenaType read(final byte[] _data, final int _offset) {
+    return SerDeUtil.read(1, ArenaType.values(), _data, _offset);
+  }
+}

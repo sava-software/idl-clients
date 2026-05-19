@@ -1,0 +1,68 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record CommodityMarketStateConfig(CommodityMarketState marketState,
+                                         boolean isCommodity,
+                                         Ticks lastKnownIndexPrice,
+                                         long lastIndexExpiryTimestamp,
+                                         Ticks commoditiesAfterHoursRadius) implements SerDe {
+
+  public static final int MARKET_STATE_OFFSET = 0;
+  public static final int IS_COMMODITY_OFFSET = 1;
+  public static final int LAST_KNOWN_INDEX_PRICE_OFFSET = 3;
+
+  public static CommodityMarketStateConfig read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var marketState = CommodityMarketState.read(_data, i);
+    i += marketState.l();
+    final var isCommodity = _data[i] == 1;
+    ++i;
+    final Ticks lastKnownIndexPrice;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      lastKnownIndexPrice = null;
+      ++i;
+    } else {
+      ++i;
+      lastKnownIndexPrice = Ticks.read(_data, i);
+      i += lastKnownIndexPrice.l();
+    }
+    final var lastIndexExpiryTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var commoditiesAfterHoursRadius = Ticks.read(_data, i);
+    return new CommodityMarketStateConfig(marketState,
+                                          isCommodity,
+                                          lastKnownIndexPrice,
+                                          lastIndexExpiryTimestamp,
+                                          commoditiesAfterHoursRadius);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += marketState.write(_data, i);
+    _data[i] = (byte) (isCommodity ? 1 : 0);
+    ++i;
+    i += SerDeUtil.writeOptional(1, lastKnownIndexPrice, _data, i);
+    putInt64LE(_data, i, lastIndexExpiryTimestamp);
+    i += 8;
+    i += commoditiesAfterHoursRadius.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return marketState.l()
+         + 1
+         + (lastKnownIndexPrice == null ? 1 : (1 + lastKnownIndexPrice.l()))
+         + 8
+         + commoditiesAfterHoursRadius.l();
+  }
+}

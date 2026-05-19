@@ -1,0 +1,953 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+
+  /// Borsh enum emitted by Eternal Log instructions. Variant discriminators are one-byte ordinals.
+public sealed interface MarketEvent extends RustEnum permits
+  MarketEvent.SlotContext,
+  MarketEvent.Header,
+  MarketEvent.OrderPlaced,
+  MarketEvent.OrderFilled,
+  MarketEvent.OrderRejected,
+  MarketEvent.SplineFilled,
+  MarketEvent.TradeSummary,
+  MarketEvent.OrderModified,
+  MarketEvent.MarketSummary,
+  MarketEvent.TraderRegistered,
+  MarketEvent.TraderCollateralTransferred,
+  MarketEvent.TraderActivated,
+  MarketEvent.TraderDeactivated,
+  MarketEvent.TraderFundsDeposited,
+  MarketEvent.TraderFundsWithdrawn,
+  MarketEvent.TraderFundsWithdrawnEnqueued,
+  MarketEvent.TraderFundsWithdrawnDropped,
+  MarketEvent.TraderWithdrawCancelled,
+  MarketEvent.TraderFundingSettled,
+  MarketEvent.SplineRegistered,
+  MarketEvent.SplineActivated,
+  MarketEvent.SplineDeactivated,
+  MarketEvent.SplinePriceUpdated,
+  MarketEvent.SplineParametersUpdated,
+  MarketEvent.MarketAdded,
+  MarketEvent.MarketStatusChanged,
+  MarketEvent.MarketParametersUpdated,
+  MarketEvent.FundingParametersUpdated,
+  MarketEvent.FeesClaimed,
+  MarketEvent.PricesUpdated,
+  MarketEvent.LiquidationTransferSummary,
+  MarketEvent.LiquidationTransfer,
+  MarketEvent.Liquidation,
+  MarketEvent.CloseMatchedPositions,
+  MarketEvent.NameSuccessor,
+  MarketEvent.ClaimAuthority,
+  MarketEvent.WithdrawStateTransition,
+  MarketEvent.PnL,
+  MarketEvent.StopLossPlaced,
+  MarketEvent.StopLossCancelled,
+  MarketEvent.StopLossExecuted,
+  MarketEvent.ExchangeStatusChanged,
+  MarketEvent.TraderCapabilitiesEnabled,
+  MarketEvent.TraderFundsWithdrawnFeePayment,
+  MarketEvent.OrderPacket,
+  MarketEvent.SetPermission,
+  MarketEvent.AuthorityChanged,
+  MarketEvent.TraderDelegated,
+  MarketEvent.AdminParameterUpdated,
+  MarketEvent.TraderFeesUpdated,
+  MarketEvent.MarketClosed,
+  MarketEvent.MarketDeleted,
+  MarketEvent.EscrowAccountCreated,
+  MarketEvent.EscrowRequestCreated,
+  MarketEvent.EscrowRequestAccepted,
+  MarketEvent.EscrowRequestCancelled,
+  MarketEvent.SplinePriceUpdatedWithOrdering,
+  MarketEvent.SplineParametersUpdatedWithOrdering,
+  MarketEvent.TriggerOrderPlaced,
+  MarketEvent.TriggerOrderCancelled,
+  MarketEvent.TriggerOrderExecuted,
+  MarketEvent.PingInvalidated,
+  MarketEvent.PingActivated,
+  MarketEvent.SplinePositionLimitsConfigUpdated,
+  MarketEvent.MarketTombstoned,
+  MarketEvent.ShutdownClosePositions,
+  MarketEvent.OrderResidualDiscarded {
+
+  static MarketEvent read(final byte[] _data, final int _offset) {
+    final int ordinal = _data[_offset] & 0xFF;
+    final int i = _offset + 1;
+    return switch (ordinal) {
+      case 0 -> SlotContext.read(_data, i);
+      case 1 -> Header.read(_data, i);
+      case 2 -> OrderPlaced.read(_data, i);
+      case 3 -> OrderFilled.read(_data, i);
+      case 4 -> OrderRejected.read(_data, i);
+      case 5 -> SplineFilled.read(_data, i);
+      case 6 -> TradeSummary.read(_data, i);
+      case 7 -> OrderModified.read(_data, i);
+      case 8 -> MarketSummary.read(_data, i);
+      case 9 -> TraderRegistered.read(_data, i);
+      case 10 -> TraderCollateralTransferred.read(_data, i);
+      case 11 -> TraderActivated.read(_data, i);
+      case 12 -> TraderDeactivated.read(_data, i);
+      case 13 -> TraderFundsDeposited.read(_data, i);
+      case 14 -> TraderFundsWithdrawn.read(_data, i);
+      case 15 -> TraderFundsWithdrawnEnqueued.read(_data, i);
+      case 16 -> TraderFundsWithdrawnDropped.read(_data, i);
+      case 17 -> TraderWithdrawCancelled.read(_data, i);
+      case 18 -> TraderFundingSettled.read(_data, i);
+      case 19 -> SplineRegistered.read(_data, i);
+      case 20 -> SplineActivated.read(_data, i);
+      case 21 -> SplineDeactivated.read(_data, i);
+      case 22 -> SplinePriceUpdated.read(_data, i);
+      case 23 -> SplineParametersUpdated.read(_data, i);
+      case 24 -> MarketAdded.read(_data, i);
+      case 25 -> MarketStatusChanged.read(_data, i);
+      case 26 -> MarketParametersUpdated.read(_data, i);
+      case 27 -> FundingParametersUpdated.read(_data, i);
+      case 28 -> FeesClaimed.read(_data, i);
+      case 29 -> PricesUpdated.read(_data, i);
+      case 30 -> LiquidationTransferSummary.read(_data, i);
+      case 31 -> LiquidationTransfer.read(_data, i);
+      case 32 -> Liquidation.read(_data, i);
+      case 33 -> CloseMatchedPositions.read(_data, i);
+      case 34 -> NameSuccessor.read(_data, i);
+      case 35 -> ClaimAuthority.read(_data, i);
+      case 36 -> WithdrawStateTransition.read(_data, i);
+      case 37 -> PnL.read(_data, i);
+      case 38 -> StopLossPlaced.read(_data, i);
+      case 39 -> StopLossCancelled.read(_data, i);
+      case 40 -> StopLossExecuted.read(_data, i);
+      case 41 -> ExchangeStatusChanged.read(_data, i);
+      case 42 -> TraderCapabilitiesEnabled.read(_data, i);
+      case 43 -> TraderFundsWithdrawnFeePayment.read(_data, i);
+      case 44 -> OrderPacket.read(_data, i);
+      case 45 -> SetPermission.read(_data, i);
+      case 46 -> AuthorityChanged.read(_data, i);
+      case 47 -> TraderDelegated.read(_data, i);
+      case 48 -> AdminParameterUpdated.read(_data, i);
+      case 49 -> TraderFeesUpdated.read(_data, i);
+      case 50 -> MarketClosed.read(_data, i);
+      case 51 -> MarketDeleted.read(_data, i);
+      case 52 -> EscrowAccountCreated.read(_data, i);
+      case 53 -> EscrowRequestCreated.read(_data, i);
+      case 54 -> EscrowRequestAccepted.read(_data, i);
+      case 55 -> EscrowRequestCancelled.read(_data, i);
+      case 56 -> SplinePriceUpdatedWithOrdering.read(_data, i);
+      case 57 -> SplineParametersUpdatedWithOrdering.read(_data, i);
+      case 58 -> TriggerOrderPlaced.read(_data, i);
+      case 59 -> TriggerOrderCancelled.read(_data, i);
+      case 60 -> TriggerOrderExecuted.read(_data, i);
+      case 61 -> PingInvalidated.read(_data, i);
+      case 62 -> PingActivated.read(_data, i);
+      case 63 -> SplinePositionLimitsConfigUpdated.read(_data, i);
+      case 64 -> MarketTombstoned.read(_data, i);
+      case 65 -> ShutdownClosePositions.read(_data, i);
+      case 66 -> OrderResidualDiscarded.read(_data, i);
+      default -> null;
+    };
+  }
+
+  record SlotContext(SlotContextEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SlotContext read(final byte[] _data, final int _offset) {
+      return new SlotContext(SlotContextEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 0;
+    }
+  }
+
+  record Header(MarketEventHeader val) implements SerDeEnum, MarketEvent {
+
+    public static Header read(final byte[] _data, final int _offset) {
+      return new Header(MarketEventHeader.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 1;
+    }
+  }
+
+  record OrderPlaced(OrderPlacedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderPlaced read(final byte[] _data, final int _offset) {
+      return new OrderPlaced(OrderPlacedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 2;
+    }
+  }
+
+  record OrderFilled(OrderFilledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderFilled read(final byte[] _data, final int _offset) {
+      return new OrderFilled(OrderFilledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 3;
+    }
+  }
+
+  record OrderRejected(OrderRejectedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderRejected read(final byte[] _data, final int _offset) {
+      return new OrderRejected(OrderRejectedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 4;
+    }
+  }
+
+  record SplineFilled(SplineFilledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineFilled read(final byte[] _data, final int _offset) {
+      return new SplineFilled(SplineFilledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 5;
+    }
+  }
+
+  record TradeSummary(TradeSummaryEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TradeSummary read(final byte[] _data, final int _offset) {
+      return new TradeSummary(TradeSummaryEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 6;
+    }
+  }
+
+  record OrderModified(OrderModifiedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderModified read(final byte[] _data, final int _offset) {
+      return new OrderModified(OrderModifiedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 7;
+    }
+  }
+
+  record MarketSummary(MarketSummaryEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketSummary read(final byte[] _data, final int _offset) {
+      return new MarketSummary(MarketSummaryEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 8;
+    }
+  }
+
+  record TraderRegistered(TraderRegisteredEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderRegistered read(final byte[] _data, final int _offset) {
+      return new TraderRegistered(TraderRegisteredEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 9;
+    }
+  }
+
+  record TraderCollateralTransferred(TraderCollateralTransferredEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderCollateralTransferred read(final byte[] _data, final int _offset) {
+      return new TraderCollateralTransferred(TraderCollateralTransferredEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 10;
+    }
+  }
+
+  record TraderActivated(TraderActivatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderActivated read(final byte[] _data, final int _offset) {
+      return new TraderActivated(TraderActivatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 11;
+    }
+  }
+
+  record TraderDeactivated(TraderDeactivatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderDeactivated read(final byte[] _data, final int _offset) {
+      return new TraderDeactivated(TraderDeactivatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 12;
+    }
+  }
+
+  record TraderFundsDeposited(TraderFundsDepositedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundsDeposited read(final byte[] _data, final int _offset) {
+      return new TraderFundsDeposited(TraderFundsDepositedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 13;
+    }
+  }
+
+  record TraderFundsWithdrawn(TraderFundsWithdrawnEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundsWithdrawn read(final byte[] _data, final int _offset) {
+      return new TraderFundsWithdrawn(TraderFundsWithdrawnEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 14;
+    }
+  }
+
+  record TraderFundsWithdrawnEnqueued(TraderFundsWithdrawnEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundsWithdrawnEnqueued read(final byte[] _data, final int _offset) {
+      return new TraderFundsWithdrawnEnqueued(TraderFundsWithdrawnEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 15;
+    }
+  }
+
+  record TraderFundsWithdrawnDropped(TraderFundsWithdrawnEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundsWithdrawnDropped read(final byte[] _data, final int _offset) {
+      return new TraderFundsWithdrawnDropped(TraderFundsWithdrawnEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 16;
+    }
+  }
+
+  record TraderWithdrawCancelled(TraderWithdrawCancelledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderWithdrawCancelled read(final byte[] _data, final int _offset) {
+      return new TraderWithdrawCancelled(TraderWithdrawCancelledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 17;
+    }
+  }
+
+  record TraderFundingSettled(TraderFundingSettledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundingSettled read(final byte[] _data, final int _offset) {
+      return new TraderFundingSettled(TraderFundingSettledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 18;
+    }
+  }
+
+  record SplineRegistered(SplineRegisteredEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineRegistered read(final byte[] _data, final int _offset) {
+      return new SplineRegistered(SplineRegisteredEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 19;
+    }
+  }
+
+  record SplineActivated(SplineActivatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineActivated read(final byte[] _data, final int _offset) {
+      return new SplineActivated(SplineActivatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 20;
+    }
+  }
+
+  record SplineDeactivated(SplineDeactivatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineDeactivated read(final byte[] _data, final int _offset) {
+      return new SplineDeactivated(SplineDeactivatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 21;
+    }
+  }
+
+  record SplinePriceUpdated(SplinePriceUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplinePriceUpdated read(final byte[] _data, final int _offset) {
+      return new SplinePriceUpdated(SplinePriceUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 22;
+    }
+  }
+
+  record SplineParametersUpdated(SplineParametersUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineParametersUpdated read(final byte[] _data, final int _offset) {
+      return new SplineParametersUpdated(SplineParametersUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 23;
+    }
+  }
+
+  record MarketAdded(MarketAddedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketAdded read(final byte[] _data, final int _offset) {
+      return new MarketAdded(MarketAddedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 24;
+    }
+  }
+
+  record MarketStatusChanged(MarketStatusChangedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketStatusChanged read(final byte[] _data, final int _offset) {
+      return new MarketStatusChanged(MarketStatusChangedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 25;
+    }
+  }
+
+  record MarketParametersUpdated(MarketParametersUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketParametersUpdated read(final byte[] _data, final int _offset) {
+      return new MarketParametersUpdated(MarketParametersUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 26;
+    }
+  }
+
+  record FundingParametersUpdated(FundingParametersUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static FundingParametersUpdated read(final byte[] _data, final int _offset) {
+      return new FundingParametersUpdated(FundingParametersUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 27;
+    }
+  }
+
+  record FeesClaimed(FeesClaimedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static FeesClaimed read(final byte[] _data, final int _offset) {
+      return new FeesClaimed(FeesClaimedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 28;
+    }
+  }
+
+  record PricesUpdated(PricesUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static PricesUpdated read(final byte[] _data, final int _offset) {
+      return new PricesUpdated(PricesUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 29;
+    }
+  }
+
+  record LiquidationTransferSummary(LiquidationTransferSummaryEvent val) implements SerDeEnum, MarketEvent {
+
+    public static LiquidationTransferSummary read(final byte[] _data, final int _offset) {
+      return new LiquidationTransferSummary(LiquidationTransferSummaryEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 30;
+    }
+  }
+
+  record LiquidationTransfer(LiquidationTransferEvent val) implements SerDeEnum, MarketEvent {
+
+    public static LiquidationTransfer read(final byte[] _data, final int _offset) {
+      return new LiquidationTransfer(LiquidationTransferEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 31;
+    }
+  }
+
+  record Liquidation(LiquidationEvent val) implements SerDeEnum, MarketEvent {
+
+    public static Liquidation read(final byte[] _data, final int _offset) {
+      return new Liquidation(LiquidationEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 32;
+    }
+  }
+
+  record CloseMatchedPositions(CloseMatchedPositionsEvent val) implements SerDeEnum, MarketEvent {
+
+    public static CloseMatchedPositions read(final byte[] _data, final int _offset) {
+      return new CloseMatchedPositions(CloseMatchedPositionsEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 33;
+    }
+  }
+
+  record NameSuccessor(NameSuccessorEvent val) implements SerDeEnum, MarketEvent {
+
+    public static NameSuccessor read(final byte[] _data, final int _offset) {
+      return new NameSuccessor(NameSuccessorEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 34;
+    }
+  }
+
+  record ClaimAuthority(ClaimAuthorityEvent val) implements SerDeEnum, MarketEvent {
+
+    public static ClaimAuthority read(final byte[] _data, final int _offset) {
+      return new ClaimAuthority(ClaimAuthorityEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 35;
+    }
+  }
+
+  record WithdrawStateTransition(WithdrawStateTransitionEvent val) implements SerDeEnum, MarketEvent {
+
+    public static WithdrawStateTransition read(final byte[] _data, final int _offset) {
+      return new WithdrawStateTransition(WithdrawStateTransitionEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 36;
+    }
+  }
+
+  record PnL(PnLEvent val) implements SerDeEnum, MarketEvent {
+
+    public static PnL read(final byte[] _data, final int _offset) {
+      return new PnL(PnLEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 37;
+    }
+  }
+
+  record StopLossPlaced(StopLossPlacedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static StopLossPlaced read(final byte[] _data, final int _offset) {
+      return new StopLossPlaced(StopLossPlacedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 38;
+    }
+  }
+
+  record StopLossCancelled(StopLossCancelledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static StopLossCancelled read(final byte[] _data, final int _offset) {
+      return new StopLossCancelled(StopLossCancelledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 39;
+    }
+  }
+
+  record StopLossExecuted(StopLossExecutedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static StopLossExecuted read(final byte[] _data, final int _offset) {
+      return new StopLossExecuted(StopLossExecutedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 40;
+    }
+  }
+
+  record ExchangeStatusChanged(ExchangeStatusChangedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static ExchangeStatusChanged read(final byte[] _data, final int _offset) {
+      return new ExchangeStatusChanged(ExchangeStatusChangedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 41;
+    }
+  }
+
+  record TraderCapabilitiesEnabled(TraderCapabilitiesEnabledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderCapabilitiesEnabled read(final byte[] _data, final int _offset) {
+      return new TraderCapabilitiesEnabled(TraderCapabilitiesEnabledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 42;
+    }
+  }
+
+  record TraderFundsWithdrawnFeePayment(TraderFundsWithdrawnFeePaymentEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFundsWithdrawnFeePayment read(final byte[] _data, final int _offset) {
+      return new TraderFundsWithdrawnFeePayment(TraderFundsWithdrawnFeePaymentEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 43;
+    }
+  }
+
+  record OrderPacket(OrderPacketEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderPacket read(final byte[] _data, final int _offset) {
+      return new OrderPacket(OrderPacketEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 44;
+    }
+  }
+
+  record SetPermission(SetPermissionEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SetPermission read(final byte[] _data, final int _offset) {
+      return new SetPermission(SetPermissionEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 45;
+    }
+  }
+
+  record AuthorityChanged(AuthorityChangedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static AuthorityChanged read(final byte[] _data, final int _offset) {
+      return new AuthorityChanged(AuthorityChangedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 46;
+    }
+  }
+
+  record TraderDelegated(TraderDelegatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderDelegated read(final byte[] _data, final int _offset) {
+      return new TraderDelegated(TraderDelegatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 47;
+    }
+  }
+
+  record AdminParameterUpdated(AdminParameterUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static AdminParameterUpdated read(final byte[] _data, final int _offset) {
+      return new AdminParameterUpdated(AdminParameterUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 48;
+    }
+  }
+
+  record TraderFeesUpdated(TraderFeesUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TraderFeesUpdated read(final byte[] _data, final int _offset) {
+      return new TraderFeesUpdated(TraderFeesUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 49;
+    }
+  }
+
+  record MarketClosed(MarketClosedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketClosed read(final byte[] _data, final int _offset) {
+      return new MarketClosed(MarketClosedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 50;
+    }
+  }
+
+  record MarketDeleted(MarketDeletedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketDeleted read(final byte[] _data, final int _offset) {
+      return new MarketDeleted(MarketDeletedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 51;
+    }
+  }
+
+  record EscrowAccountCreated(EscrowAccountCreatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static EscrowAccountCreated read(final byte[] _data, final int _offset) {
+      return new EscrowAccountCreated(EscrowAccountCreatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 52;
+    }
+  }
+
+  record EscrowRequestCreated(EscrowRequestCreatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static EscrowRequestCreated read(final byte[] _data, final int _offset) {
+      return new EscrowRequestCreated(EscrowRequestCreatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 53;
+    }
+  }
+
+  record EscrowRequestAccepted(EscrowRequestAcceptedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static EscrowRequestAccepted read(final byte[] _data, final int _offset) {
+      return new EscrowRequestAccepted(EscrowRequestAcceptedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 54;
+    }
+  }
+
+  record EscrowRequestCancelled(EscrowRequestCancelledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static EscrowRequestCancelled read(final byte[] _data, final int _offset) {
+      return new EscrowRequestCancelled(EscrowRequestCancelledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 55;
+    }
+  }
+
+  record SplinePriceUpdatedWithOrdering(SplinePriceUpdatedWithOrderingEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplinePriceUpdatedWithOrdering read(final byte[] _data, final int _offset) {
+      return new SplinePriceUpdatedWithOrdering(SplinePriceUpdatedWithOrderingEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 56;
+    }
+  }
+
+  record SplineParametersUpdatedWithOrdering(SplineParametersUpdatedWithOrderingEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplineParametersUpdatedWithOrdering read(final byte[] _data, final int _offset) {
+      return new SplineParametersUpdatedWithOrdering(SplineParametersUpdatedWithOrderingEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 57;
+    }
+  }
+
+  record TriggerOrderPlaced(TriggerOrderPlacedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TriggerOrderPlaced read(final byte[] _data, final int _offset) {
+      return new TriggerOrderPlaced(TriggerOrderPlacedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 58;
+    }
+  }
+
+  record TriggerOrderCancelled(TriggerOrderCancelledEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TriggerOrderCancelled read(final byte[] _data, final int _offset) {
+      return new TriggerOrderCancelled(TriggerOrderCancelledEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 59;
+    }
+  }
+
+  record TriggerOrderExecuted(TriggerOrderExecutedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static TriggerOrderExecuted read(final byte[] _data, final int _offset) {
+      return new TriggerOrderExecuted(TriggerOrderExecutedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 60;
+    }
+  }
+
+  record PingInvalidated(PingInvalidatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static PingInvalidated read(final byte[] _data, final int _offset) {
+      return new PingInvalidated(PingInvalidatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 61;
+    }
+  }
+
+  record PingActivated(PingActivatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static PingActivated read(final byte[] _data, final int _offset) {
+      return new PingActivated(PingActivatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 62;
+    }
+  }
+
+  record SplinePositionLimitsConfigUpdated(SplinePositionLimitsConfigUpdatedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static SplinePositionLimitsConfigUpdated read(final byte[] _data, final int _offset) {
+      return new SplinePositionLimitsConfigUpdated(SplinePositionLimitsConfigUpdatedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 63;
+    }
+  }
+
+  record MarketTombstoned(MarketTombstonedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static MarketTombstoned read(final byte[] _data, final int _offset) {
+      return new MarketTombstoned(MarketTombstonedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 64;
+    }
+  }
+
+  record ShutdownClosePositions(ShutdownClosePositionsEvent val) implements SerDeEnum, MarketEvent {
+
+    public static ShutdownClosePositions read(final byte[] _data, final int _offset) {
+      return new ShutdownClosePositions(ShutdownClosePositionsEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 65;
+    }
+  }
+
+  record OrderResidualDiscarded(OrderResidualDiscardedEvent val) implements SerDeEnum, MarketEvent {
+
+    public static OrderResidualDiscarded read(final byte[] _data, final int _offset) {
+      return new OrderResidualDiscarded(OrderResidualDiscardedEvent.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 66;
+    }
+  }
+}

@@ -1,0 +1,103 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.OptionalNonZeroU64;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderFlags;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::OrderPlaced Borsh variant 2.
+/// Payload type: OrderPlacedEvent.
+///
+public record OrderPlacedEvent(Discriminator discriminator,
+                               int orderId,
+                               OrderFlags orderFlags,
+                               long orderSequenceNumber,
+                               long prevOrderSequenceNumberSlot,
+                               byte[] clientOrderId,
+                               Ticks price,
+                               SignedBaseLots quantity,
+                               OptionalNonZeroU64 lastValidSlot,
+                               long initialSlot) implements EternalEvent {
+
+  public static final int BYTES = 77;
+  public static final int CLIENT_ORDER_ID_LEN = 16;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(2, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ORDER_ID_OFFSET = 8;
+  public static final int ORDER_FLAGS_OFFSET = 12;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 13;
+  public static final int PREV_ORDER_SEQUENCE_NUMBER_SLOT_OFFSET = 21;
+  public static final int CLIENT_ORDER_ID_OFFSET = 29;
+  public static final int PRICE_OFFSET = 45;
+  public static final int QUANTITY_OFFSET = 53;
+  public static final int LAST_VALID_SLOT_OFFSET = 61;
+  public static final int INITIAL_SLOT_OFFSET = 69;
+
+  public static OrderPlacedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var orderId = getInt32LE(_data, i);
+    i += 4;
+    final var orderFlags = OrderFlags.read(_data, i);
+    i += orderFlags.l();
+    final var orderSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var prevOrderSequenceNumberSlot = getInt64LE(_data, i);
+    i += 8;
+    final var clientOrderId = new byte[16];
+    i += SerDeUtil.readArray(clientOrderId, _data, i);
+    final var price = Ticks.read(_data, i);
+    i += price.l();
+    final var quantity = SignedBaseLots.read(_data, i);
+    i += quantity.l();
+    final var lastValidSlot = OptionalNonZeroU64.read(_data, i);
+    i += lastValidSlot.l();
+    final var initialSlot = getInt64LE(_data, i);
+    return new OrderPlacedEvent(discriminator,
+                                orderId,
+                                orderFlags,
+                                orderSequenceNumber,
+                                prevOrderSequenceNumberSlot,
+                                clientOrderId,
+                                price,
+                                quantity,
+                                lastValidSlot,
+                                initialSlot);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt32LE(_data, i, orderId);
+    i += 4;
+    i += orderFlags.write(_data, i);
+    putInt64LE(_data, i, orderSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, prevOrderSequenceNumberSlot);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(clientOrderId, 16, _data, i);
+    i += price.write(_data, i);
+    i += quantity.write(_data, i);
+    i += lastValidSlot.write(_data, i);
+    putInt64LE(_data, i, initialSlot);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

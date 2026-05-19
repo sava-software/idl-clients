@@ -1,0 +1,32 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Borsh payload for initializing a new arena account.
+///
+public record InitializeArenaParams(ArenaType arenaType) implements SerDe {
+
+  public static final int BYTES = 1;
+
+  public static final int ARENA_TYPE_OFFSET = 0;
+
+  public static InitializeArenaParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var arenaType = ArenaType.read(_data, _offset);
+    return new InitializeArenaParams(arenaType);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += arenaType.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

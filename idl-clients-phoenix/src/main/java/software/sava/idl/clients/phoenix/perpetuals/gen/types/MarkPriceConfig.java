@@ -1,0 +1,129 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record MarkPriceConfig(long emaPeriodSlots,
+                              long emaDiffRadius,
+                              long bookPriceRadius,
+                              long commoditiesAfterHoursRadius,
+                              long spotPriceWeight,
+                              long bookPriceWeight,
+                              long perpPriceWeight,
+                              long spotPriceStaleThreshold,
+                              long bookPriceStaleThreshold,
+                              long perpPriceStaleThreshold,
+                              ValidationRule[][][] riskActionPriceValidityRules,
+                              int oracleDivergenceRadius,
+                              int minOracleResponses,
+                              long commoditiesAfterHoursRadiusBps) implements SerDe {
+
+  public static final int BYTES = 347;
+  public static final int RISK_ACTION_PRICE_VALIDITY_RULES_LEN = 8;
+
+  public static final int EMA_PERIOD_SLOTS_OFFSET = 0;
+  public static final int EMA_DIFF_RADIUS_OFFSET = 8;
+  public static final int BOOK_PRICE_RADIUS_OFFSET = 16;
+  public static final int COMMODITIES_AFTER_HOURS_RADIUS_OFFSET = 24;
+  public static final int SPOT_PRICE_WEIGHT_OFFSET = 32;
+  public static final int BOOK_PRICE_WEIGHT_OFFSET = 40;
+  public static final int PERP_PRICE_WEIGHT_OFFSET = 48;
+  public static final int SPOT_PRICE_STALE_THRESHOLD_OFFSET = 56;
+  public static final int BOOK_PRICE_STALE_THRESHOLD_OFFSET = 64;
+  public static final int PERP_PRICE_STALE_THRESHOLD_OFFSET = 72;
+  public static final int RISK_ACTION_PRICE_VALIDITY_RULES_OFFSET = 80;
+  public static final int ORACLE_DIVERGENCE_RADIUS_OFFSET = 336;
+  public static final int MIN_ORACLE_RESPONSES_OFFSET = 338;
+  public static final int COMMODITIES_AFTER_HOURS_RADIUS_BPS_OFFSET = 339;
+
+  public static MarkPriceConfig read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var emaPeriodSlots = getInt64LE(_data, i);
+    i += 8;
+    final var emaDiffRadius = getInt64LE(_data, i);
+    i += 8;
+    final var bookPriceRadius = getInt64LE(_data, i);
+    i += 8;
+    final var commoditiesAfterHoursRadius = getInt64LE(_data, i);
+    i += 8;
+    final var spotPriceWeight = getInt64LE(_data, i);
+    i += 8;
+    final var bookPriceWeight = getInt64LE(_data, i);
+    i += 8;
+    final var perpPriceWeight = getInt64LE(_data, i);
+    i += 8;
+    final var spotPriceStaleThreshold = getInt64LE(_data, i);
+    i += 8;
+    final var bookPriceStaleThreshold = getInt64LE(_data, i);
+    i += 8;
+    final var perpPriceStaleThreshold = getInt64LE(_data, i);
+    i += 8;
+    final var riskActionPriceValidityRules = new ValidationRule[8][4][8];
+    i += SerDeUtil.readArray(riskActionPriceValidityRules, ValidationRule::read, _data, i);
+    final var oracleDivergenceRadius = getInt16LE(_data, i);
+    i += 2;
+    final var minOracleResponses = _data[i] & 0xFF;
+    ++i;
+    final var commoditiesAfterHoursRadiusBps = getInt64LE(_data, i);
+    return new MarkPriceConfig(emaPeriodSlots,
+                               emaDiffRadius,
+                               bookPriceRadius,
+                               commoditiesAfterHoursRadius,
+                               spotPriceWeight,
+                               bookPriceWeight,
+                               perpPriceWeight,
+                               spotPriceStaleThreshold,
+                               bookPriceStaleThreshold,
+                               perpPriceStaleThreshold,
+                               riskActionPriceValidityRules,
+                               oracleDivergenceRadius,
+                               minOracleResponses,
+                               commoditiesAfterHoursRadiusBps);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, emaPeriodSlots);
+    i += 8;
+    putInt64LE(_data, i, emaDiffRadius);
+    i += 8;
+    putInt64LE(_data, i, bookPriceRadius);
+    i += 8;
+    putInt64LE(_data, i, commoditiesAfterHoursRadius);
+    i += 8;
+    putInt64LE(_data, i, spotPriceWeight);
+    i += 8;
+    putInt64LE(_data, i, bookPriceWeight);
+    i += 8;
+    putInt64LE(_data, i, perpPriceWeight);
+    i += 8;
+    putInt64LE(_data, i, spotPriceStaleThreshold);
+    i += 8;
+    putInt64LE(_data, i, bookPriceStaleThreshold);
+    i += 8;
+    putInt64LE(_data, i, perpPriceStaleThreshold);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(riskActionPriceValidityRules, 8, 4, 8, _data, i);
+    putInt16LE(_data, i, oracleDivergenceRadius);
+    i += 2;
+    _data[i] = (byte) minOracleResponses;
+    ++i;
+    putInt64LE(_data, i, commoditiesAfterHoursRadiusBps);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

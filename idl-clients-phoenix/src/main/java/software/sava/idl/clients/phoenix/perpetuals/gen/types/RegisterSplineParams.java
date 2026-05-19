@@ -1,0 +1,23 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Empty Borsh payload for registering a spline trader.
+public record RegisterSplineParams() implements SerDe {
+
+  private static final RegisterSplineParams INSTANCE = new RegisterSplineParams();
+
+  public static RegisterSplineParams read(final byte[] _data, final int _offset) {
+    return INSTANCE;
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    return 0;
+  }
+
+  @Override
+  public int l() {
+    return 0;
+  }
+}

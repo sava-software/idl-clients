@@ -1,0 +1,52 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import java.util.OptionalInt;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+
+/// Borsh payload for updating market default fees.
+///
+public record UpdateMarketFeesParams(OptionalInt defaultTakerFeeMicro, OptionalInt defaultMakerFeeMicro) implements SerDe {
+
+  public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 1;
+
+  public static UpdateMarketFeesParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final OptionalInt defaultTakerFeeMicro;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      defaultTakerFeeMicro = OptionalInt.empty();
+      ++i;
+    } else {
+      ++i;
+      defaultTakerFeeMicro = OptionalInt.of(getInt32LE(_data, i));
+      i += 4;
+    }
+    final OptionalInt defaultMakerFeeMicro;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      defaultMakerFeeMicro = OptionalInt.empty();
+    } else {
+      ++i;
+      defaultMakerFeeMicro = OptionalInt.of(getInt32LE(_data, i));
+    }
+    return new UpdateMarketFeesParams(defaultTakerFeeMicro, defaultMakerFeeMicro);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeOptional(1, defaultTakerFeeMicro, _data, i);
+    i += SerDeUtil.writeOptional(1, defaultMakerFeeMicro, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return (defaultTakerFeeMicro == null || defaultTakerFeeMicro.isEmpty() ? 1 : (1 + 4)) + (defaultMakerFeeMicro == null || defaultMakerFeeMicro.isEmpty() ? 1 : (1 + 4));
+  }
+}

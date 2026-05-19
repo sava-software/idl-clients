@@ -1,0 +1,583 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.RustEnum;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public sealed interface AdminParameterUpdateKind extends RustEnum permits
+  AdminParameterUpdateKind.CancelRiskFactor,
+  AdminParameterUpdateKind.IsolatedOnly,
+  AdminParameterUpdateKind.LeverageTiers,
+  AdminParameterUpdateKind.MarkPriceParameters,
+  AdminParameterUpdateKind.OpenInterestCap,
+  AdminParameterUpdateKind.UpnlRiskFactor,
+  AdminParameterUpdateKind.UpnlRiskFactorForWithdrawals,
+  AdminParameterUpdateKind.WithdrawParameters,
+  AdminParameterUpdateKind.WithdrawRateLimits,
+  AdminParameterUpdateKind.TraderCapability,
+  AdminParameterUpdateKind.FundingParameters,
+  AdminParameterUpdateKind.MarketFees,
+  AdminParameterUpdateKind.OpenInterestAdjustment,
+  AdminParameterUpdateKind.CommodityMarketState {
+
+  static AdminParameterUpdateKind read(final byte[] _data, final int _offset) {
+    final int ordinal = _data[_offset] & 0xFF;
+    final int i = _offset + 1;
+    return switch (ordinal) {
+      case 0 -> CancelRiskFactor.read(_data, i);
+      case 1 -> IsolatedOnly.read(_data, i);
+      case 2 -> LeverageTiers.read(_data, i);
+      case 3 -> MarkPriceParameters.read(_data, i);
+      case 4 -> OpenInterestCap.read(_data, i);
+      case 5 -> UpnlRiskFactor.read(_data, i);
+      case 6 -> UpnlRiskFactorForWithdrawals.read(_data, i);
+      case 7 -> WithdrawParameters.read(_data, i);
+      case 8 -> WithdrawRateLimits.read(_data, i);
+      case 9 -> TraderCapability.read(_data, i);
+      case 10 -> FundingParameters.read(_data, i);
+      case 11 -> MarketFees.read(_data, i);
+      case 12 -> OpenInterestAdjustment.read(_data, i);
+      case 13 -> CommodityMarketState.read(_data, i);
+      default -> null;
+    };
+  }
+
+  record CancelRiskFactor(int previous, int _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 4;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 2;
+
+    public static CancelRiskFactor read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = getInt16LE(_data, i);
+      i += 2;
+      final var _new = getInt16LE(_data, i);
+      return new CancelRiskFactor(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt16LE(_data, i, previous);
+      i += 2;
+      putInt16LE(_data, i, _new);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 0;
+    }
+  }
+
+  record IsolatedOnly(boolean previous, boolean _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 2;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 1;
+
+    public static IsolatedOnly read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = _data[i] == 1;
+      ++i;
+      final var _new = _data[i] == 1;
+      return new IsolatedOnly(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) (previous ? 1 : 0);
+      ++i;
+      _data[i] = (byte) (_new ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 1;
+    }
+  }
+
+  record LeverageTiers(LeverageTiers previous, LeverageTiers _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 192;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 96;
+
+    public static LeverageTiers read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = LeverageTiers.read(_data, i);
+      i += previous.l();
+      final var _new = LeverageTiers.read(_data, i);
+      return new LeverageTiers(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 2;
+    }
+  }
+
+  record MarkPriceParameters(MarkPriceConfig previous, MarkPriceConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 694;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 347;
+
+    public static MarkPriceParameters read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = MarkPriceConfig.read(_data, i);
+      i += previous.l();
+      final var _new = MarkPriceConfig.read(_data, i);
+      return new MarkPriceParameters(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 3;
+    }
+  }
+
+  record OpenInterestCap(long previous, long _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 16;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 8;
+
+    public static OpenInterestCap read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = getInt64LE(_data, i);
+      i += 8;
+      final var _new = getInt64LE(_data, i);
+      return new OpenInterestCap(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, previous);
+      i += 8;
+      putInt64LE(_data, i, _new);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 4;
+    }
+  }
+
+  record UpnlRiskFactor(int previous, int _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 4;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 2;
+
+    public static UpnlRiskFactor read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = getInt16LE(_data, i);
+      i += 2;
+      final var _new = getInt16LE(_data, i);
+      return new UpnlRiskFactor(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt16LE(_data, i, previous);
+      i += 2;
+      putInt16LE(_data, i, _new);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 5;
+    }
+  }
+
+  record UpnlRiskFactorForWithdrawals(int previous, int _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 4;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 2;
+
+    public static UpnlRiskFactorForWithdrawals read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = getInt16LE(_data, i);
+      i += 2;
+      final var _new = getInt16LE(_data, i);
+      return new UpnlRiskFactorForWithdrawals(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt16LE(_data, i, previous);
+      i += 2;
+      putInt16LE(_data, i, _new);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 6;
+    }
+  }
+
+  record WithdrawParameters(WithdrawConfig previous, WithdrawConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 48;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 24;
+
+    public static WithdrawParameters read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = WithdrawConfig.read(_data, i);
+      i += previous.l();
+      final var _new = WithdrawConfig.read(_data, i);
+      return new WithdrawParameters(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 7;
+    }
+  }
+
+  record WithdrawRateLimits(WithdrawRateLimitConfig previous, WithdrawRateLimitConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 32;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 16;
+
+    public static WithdrawRateLimits read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = WithdrawRateLimitConfig.read(_data, i);
+      i += previous.l();
+      final var _new = WithdrawRateLimitConfig.read(_data, i);
+      return new WithdrawRateLimits(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 8;
+    }
+  }
+
+  record TraderCapability(PublicKey trader,
+                          TraderCapabilityFlags previousFlags,
+                          TraderCapabilityFlags newFlags) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 40;
+
+    public static final int TRADER_OFFSET = 0;
+    public static final int PREVIOUS_FLAGS_OFFSET = 32;
+    public static final int NEW_FLAGS_OFFSET = 36;
+
+    public static TraderCapability read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var trader = readPubKey(_data, i);
+      i += 32;
+      final var previousFlags = TraderCapabilityFlags.read(_data, i);
+      i += previousFlags.l();
+      final var newFlags = TraderCapabilityFlags.read(_data, i);
+      return new TraderCapability(trader, previousFlags, newFlags);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      trader.write(_data, i);
+      i += 32;
+      i += previousFlags.write(_data, i);
+      i += newFlags.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 9;
+    }
+  }
+
+  record FundingParameters(FundingConfig previous, FundingConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 48;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 24;
+
+    public static FundingParameters read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = FundingConfig.read(_data, i);
+      i += previous.l();
+      final var _new = FundingConfig.read(_data, i);
+      return new FundingParameters(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 10;
+    }
+  }
+
+  record MarketFees(MarketFeeConfig previous, MarketFeeConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 16;
+
+    public static final int PREVIOUS_OFFSET = 0;
+    public static final int _NEW_OFFSET = 8;
+
+    public static MarketFees read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = MarketFeeConfig.read(_data, i);
+      i += previous.l();
+      final var _new = MarketFeeConfig.read(_data, i);
+      return new MarketFees(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 11;
+    }
+  }
+
+  record OpenInterestAdjustment(long previousOpenInterest, long newOpenInterest) implements AdminParameterUpdateKind {
+
+    public static final int BYTES = 16;
+
+    public static final int PREVIOUS_OPEN_INTEREST_OFFSET = 0;
+    public static final int NEW_OPEN_INTEREST_OFFSET = 8;
+
+    public static OpenInterestAdjustment read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previousOpenInterest = getInt64LE(_data, i);
+      i += 8;
+      final var newOpenInterest = getInt64LE(_data, i);
+      return new OpenInterestAdjustment(previousOpenInterest, newOpenInterest);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, previousOpenInterest);
+      i += 8;
+      putInt64LE(_data, i, newOpenInterest);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 12;
+    }
+  }
+
+  record CommodityMarketState(CommodityMarketStateConfig previous, CommodityMarketStateConfig _new) implements AdminParameterUpdateKind {
+
+    public static final int PREVIOUS_OFFSET = 0;
+
+    public static CommodityMarketState read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var previous = CommodityMarketStateConfig.read(_data, i);
+      i += previous.l();
+      final var _new = CommodityMarketStateConfig.read(_data, i);
+      return new CommodityMarketState(previous, _new);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += previous.write(_data, i);
+      i += _new.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 1 + previous.l() + _new.l();
+    }
+
+    @Override
+    public int ordinal() {
+      return 13;
+    }
+  }
+}

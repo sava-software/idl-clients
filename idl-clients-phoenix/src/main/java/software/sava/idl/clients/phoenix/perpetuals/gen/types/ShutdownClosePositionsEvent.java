@@ -1,0 +1,90 @@
+package software.sava.idl.clients.phoenix.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
+import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::ShutdownClosePositions Borsh variant 65.
+/// Payload type: ShutdownClosePositionsEvent.
+///
+public record ShutdownClosePositionsEvent(Discriminator discriminator,
+                                          PublicKey longTrader,
+                                          PublicKey shortTrader,
+                                          int assetId,
+                                          BaseLots baseLotsClosed,
+                                          Ticks settlementPrice,
+                                          long tradeSequenceNumber,
+                                          long sequenceNumber) implements EternalEvent {
+
+  public static final int BYTES = 108;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(65, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int LONG_TRADER_OFFSET = 8;
+  public static final int SHORT_TRADER_OFFSET = 40;
+  public static final int ASSET_ID_OFFSET = 72;
+  public static final int BASE_LOTS_CLOSED_OFFSET = 76;
+  public static final int SETTLEMENT_PRICE_OFFSET = 84;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 92;
+  public static final int SEQUENCE_NUMBER_OFFSET = 100;
+
+  public static ShutdownClosePositionsEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var longTrader = readPubKey(_data, i);
+    i += 32;
+    final var shortTrader = readPubKey(_data, i);
+    i += 32;
+    final var assetId = getInt32LE(_data, i);
+    i += 4;
+    final var baseLotsClosed = BaseLots.read(_data, i);
+    i += baseLotsClosed.l();
+    final var settlementPrice = Ticks.read(_data, i);
+    i += settlementPrice.l();
+    final var tradeSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var sequenceNumber = getInt64LE(_data, i);
+    return new ShutdownClosePositionsEvent(discriminator,
+                                           longTrader,
+                                           shortTrader,
+                                           assetId,
+                                           baseLotsClosed,
+                                           settlementPrice,
+                                           tradeSequenceNumber,
+                                           sequenceNumber);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    longTrader.write(_data, i);
+    i += 32;
+    shortTrader.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, assetId);
+    i += 4;
+    i += baseLotsClosed.write(_data, i);
+    i += settlementPrice.write(_data, i);
+    putInt64LE(_data, i, tradeSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, sequenceNumber);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

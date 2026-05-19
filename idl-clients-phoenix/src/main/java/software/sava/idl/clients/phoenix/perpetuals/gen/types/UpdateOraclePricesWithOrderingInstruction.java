@@ -6,16 +6,16 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Oracle instruction payload including timestamp ordering controls for price updates.
+/// Oracle instruction payload containing ordered price updates and timestamp reset policy.
 ///
-public record UpdateOraclePricesWithOrderingParams(long updateTimestamp,
-                                                   OraclePriceUpdate[] updates,
-                                                   boolean shouldResetTimestamp) implements SerDe {
+public record UpdateOraclePricesWithOrderingInstruction(long updateTimestamp,
+                                                        OraclePriceUpdate[] updates,
+                                                        boolean shouldResetTimestamp) implements SerDe {
 
   public static final int UPDATE_TIMESTAMP_OFFSET = 0;
   public static final int UPDATES_OFFSET = 8;
 
-  public static UpdateOraclePricesWithOrderingParams read(final byte[] _data, final int _offset) {
+  public static UpdateOraclePricesWithOrderingInstruction read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -25,7 +25,7 @@ public record UpdateOraclePricesWithOrderingParams(long updateTimestamp,
     final var updates = SerDeUtil.readVector(4, OraclePriceUpdate.class, OraclePriceUpdate::read, _data, i);
     i += SerDeUtil.lenVector(4, updates);
     final var shouldResetTimestamp = _data[i] == 1;
-    return new UpdateOraclePricesWithOrderingParams(updateTimestamp, updates, shouldResetTimestamp);
+    return new UpdateOraclePricesWithOrderingInstruction(updateTimestamp, updates, shouldResetTimestamp);
   }
 
   @Override
