@@ -1,0 +1,36 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record ExecuteConditionalOrderInstruction(int index, Direction triggerDirection) implements SerDe {
+
+  public static final int BYTES = 2;
+
+  public static final int INDEX_OFFSET = 0;
+  public static final int TRIGGER_DIRECTION_OFFSET = 1;
+
+  public static ExecuteConditionalOrderInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var index = _data[i] & 0xFF;
+    ++i;
+    final var triggerDirection = Direction.read(_data, i);
+    return new ExecuteConditionalOrderInstruction(index, triggerDirection);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    _data[i] = (byte) index;
+    ++i;
+    i += triggerDirection.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

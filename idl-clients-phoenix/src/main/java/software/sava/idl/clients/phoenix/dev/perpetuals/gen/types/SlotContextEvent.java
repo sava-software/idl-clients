@@ -1,0 +1,47 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::SlotContext Borsh variant 0.
+/// Payload type: SlotContextEvent.
+///
+public record SlotContextEvent(Discriminator discriminator, long timestamp, long slot) implements EternalEvent {
+
+  public static final int BYTES = 24;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(0, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int TIMESTAMP_OFFSET = 8;
+  public static final int SLOT_OFFSET = 16;
+
+  public static SlotContextEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var timestamp = getInt64LE(_data, i);
+    i += 8;
+    final var slot = getInt64LE(_data, i);
+    return new SlotContextEvent(discriminator, timestamp, slot);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, timestamp);
+    i += 8;
+    putInt64LE(_data, i, slot);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

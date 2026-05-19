@@ -1,0 +1,47 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record WithdrawConfig(long depositCooldownPeriodInSlots,
+                             long withdrawalFee,
+                             long enqueueingFee) implements SerDe {
+
+  public static final int BYTES = 24;
+
+  public static final int DEPOSIT_COOLDOWN_PERIOD_IN_SLOTS_OFFSET = 0;
+  public static final int WITHDRAWAL_FEE_OFFSET = 8;
+  public static final int ENQUEUEING_FEE_OFFSET = 16;
+
+  public static WithdrawConfig read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var depositCooldownPeriodInSlots = getInt64LE(_data, i);
+    i += 8;
+    final var withdrawalFee = getInt64LE(_data, i);
+    i += 8;
+    final var enqueueingFee = getInt64LE(_data, i);
+    return new WithdrawConfig(depositCooldownPeriodInSlots, withdrawalFee, enqueueingFee);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, depositCooldownPeriodInSlots);
+    i += 8;
+    putInt64LE(_data, i, withdrawalFee);
+    i += 8;
+    putInt64LE(_data, i, enqueueingFee);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

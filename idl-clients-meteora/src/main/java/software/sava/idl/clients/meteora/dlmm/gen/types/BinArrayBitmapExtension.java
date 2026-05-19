@@ -71,8 +71,8 @@ public record BinArrayBitmapExtension(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     lbPair.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(positiveBinArrayBitmap, 12, _data, i);
-    i += SerDeUtil.writeArrayChecked(negativeBinArrayBitmap, 12, _data, i);
+    i += SerDeUtil.writeArrayChecked(positiveBinArrayBitmap, 12, 8, _data, i);
+    i += SerDeUtil.writeArrayChecked(negativeBinArrayBitmap, 12, 8, _data, i);
     return i - _offset;
   }
 

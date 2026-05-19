@@ -1,0 +1,80 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.FundingRateUnitInSeconds;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
+
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::FundingParametersUpdated Borsh variant 27.
+/// Payload type: FundingParametersUpdatedEvent.
+///
+public record FundingParametersUpdatedEvent(Discriminator discriminator,
+                                            Symbol symbol,
+                                            FundingRateUnitInSeconds newFundingIntervalSeconds,
+                                            FundingRateUnitInSeconds newFundingPeriodSeconds,
+                                            SignedQuoteLotsPerBaseLot newMaxFundingRate) implements EternalEvent {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(27, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int SYMBOL_OFFSET = 8;
+  public static final int NEW_FUNDING_INTERVAL_SECONDS_OFFSET = 25;
+
+  public static FundingParametersUpdatedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var symbol = Symbol.read(_data, i);
+    i += symbol.l();
+    final FundingRateUnitInSeconds newFundingIntervalSeconds;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newFundingIntervalSeconds = null;
+      ++i;
+    } else {
+      ++i;
+      newFundingIntervalSeconds = FundingRateUnitInSeconds.read(_data, i);
+      i += newFundingIntervalSeconds.l();
+    }
+    final FundingRateUnitInSeconds newFundingPeriodSeconds;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newFundingPeriodSeconds = null;
+      ++i;
+    } else {
+      ++i;
+      newFundingPeriodSeconds = FundingRateUnitInSeconds.read(_data, i);
+      i += newFundingPeriodSeconds.l();
+    }
+    final SignedQuoteLotsPerBaseLot newMaxFundingRate;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newMaxFundingRate = null;
+    } else {
+      ++i;
+      newMaxFundingRate = SignedQuoteLotsPerBaseLot.read(_data, i);
+    }
+    return new FundingParametersUpdatedEvent(discriminator,
+                                             symbol,
+                                             newFundingIntervalSeconds,
+                                             newFundingPeriodSeconds,
+                                             newMaxFundingRate);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    i += symbol.write(_data, i);
+    i += SerDeUtil.writeOptional(1, newFundingIntervalSeconds, _data, i);
+    i += SerDeUtil.writeOptional(1, newFundingPeriodSeconds, _data, i);
+    i += SerDeUtil.writeOptional(1, newMaxFundingRate, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + symbol.l() + (newFundingIntervalSeconds == null ? 1 : (1 + newFundingIntervalSeconds.l())) + (newFundingPeriodSeconds == null ? 1 : (1 + newFundingPeriodSeconds.l())) + (newMaxFundingRate == null ? 1 : (1 + newMaxFundingRate.l()));
+  }
+}

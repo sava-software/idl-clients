@@ -1,0 +1,52 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+
+/// Borsh payload for updating withdraw throttle rate limits.
+///
+public record UpdateWithdrawRateLimitsParams(OptionalLong maxBudget, OptionalLong replenishAmountPerSlot) implements SerDe {
+
+  public static final int MAX_BUDGET_OFFSET = 1;
+
+  public static UpdateWithdrawRateLimitsParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final OptionalLong maxBudget;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      maxBudget = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      maxBudget = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong replenishAmountPerSlot;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      replenishAmountPerSlot = OptionalLong.empty();
+    } else {
+      ++i;
+      replenishAmountPerSlot = OptionalLong.of(getInt64LE(_data, i));
+    }
+    return new UpdateWithdrawRateLimitsParams(maxBudget, replenishAmountPerSlot);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeOptional(1, maxBudget, _data, i);
+    i += SerDeUtil.writeOptional(1, replenishAmountPerSlot, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return (maxBudget == null || maxBudget.isEmpty() ? 1 : (1 + 8)) + (replenishAmountPerSlot == null || replenishAmountPerSlot.isEmpty() ? 1 : (1 + 8));
+  }
+}

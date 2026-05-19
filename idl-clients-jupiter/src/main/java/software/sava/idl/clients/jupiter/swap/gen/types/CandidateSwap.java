@@ -17,7 +17,8 @@ public sealed interface CandidateSwap extends RustEnum permits
   CandidateSwap.BisonFiV2,
   CandidateSwap.GoonFiV2,
   CandidateSwap.GoonFiV3,
-  CandidateSwap.WhirlpoolV2 {
+  CandidateSwap.WhirlpoolV2,
+  CandidateSwap.ZeroFiSwapV2 {
 
   static CandidateSwap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -34,6 +35,7 @@ public sealed interface CandidateSwap extends RustEnum permits
       case 8 -> GoonFiV2.read(_data, i);
       case 9 -> GoonFiV3.read(_data, i);
       case 10 -> WhirlpoolV2.read(_data, i);
+      case 11 -> ZeroFiSwapV2.INSTANCE;
       default -> null;
     };
   }
@@ -257,6 +259,16 @@ public sealed interface CandidateSwap extends RustEnum permits
     @Override
     public int ordinal() {
       return 10;
+    }
+  }
+
+  record ZeroFiSwapV2() implements EnumNone, CandidateSwap {
+
+    public static final ZeroFiSwapV2 INSTANCE = new ZeroFiSwapV2();
+
+    @Override
+    public int ordinal() {
+      return 11;
     }
   }
 }

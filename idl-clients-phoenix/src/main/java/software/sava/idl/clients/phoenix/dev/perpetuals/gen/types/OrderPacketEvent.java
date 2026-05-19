@@ -1,0 +1,54 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.OrderPacket;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::OrderPacket Borsh variant 44.
+/// Payload type: OrderPacketEvent.
+///
+public record OrderPacketEvent(Discriminator discriminator,
+                               OrderPacket orderPacket,
+                               PublicKey trader,
+                               long nextOrderSequenceNumber) implements EternalEvent {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(44, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int ORDER_PACKET_OFFSET = 8;
+
+  public static OrderPacketEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var orderPacket = OrderPacket.read(_data, i);
+    i += orderPacket.l();
+    final var trader = readPubKey(_data, i);
+    i += 32;
+    final var nextOrderSequenceNumber = getInt64LE(_data, i);
+    return new OrderPacketEvent(discriminator, orderPacket, trader, nextOrderSequenceNumber);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    i += orderPacket.write(_data, i);
+    trader.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, nextOrderSequenceNumber);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return 8 + orderPacket.l() + 32 + 8;
+  }
+}

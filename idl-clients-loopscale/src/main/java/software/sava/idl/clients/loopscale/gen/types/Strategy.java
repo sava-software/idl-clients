@@ -349,7 +349,7 @@ public record Strategy(PublicKey _address,
     i += activeLoanCount.write(_data, i);
     marketInformation.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(collateralMap, 200, _data, i);
+    i += SerDeUtil.writeArrayChecked(collateralMap, 200, 5, _data, i);
     i += externalYieldAccounts.write(_data, i);
     i += supplyMonitor.write(_data, i);
     i += withdrawMonitor.write(_data, i);

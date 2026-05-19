@@ -1,0 +1,15 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+public enum ValidationRule implements RustEnum {
+
+  Ignore,
+  Require,
+  Forbid;
+
+  public static ValidationRule read(final byte[] _data, final int _offset) {
+    return SerDeUtil.read(1, ValidationRule.values(), _data, _offset);
+  }
+}

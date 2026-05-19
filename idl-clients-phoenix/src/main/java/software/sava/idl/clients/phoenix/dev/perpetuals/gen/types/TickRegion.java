@@ -1,0 +1,77 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record TickRegion(Ticks startOffset,
+                         Ticks endOffset,
+                         BaseLotsPerTickU32 density,
+                         BaseLotsPerTickU32 topLevelHiddenTakeSize,
+                         BaseLots totalSize,
+                         BaseLotsU32 filledSize,
+                         BaseLotsU32 hiddenFilledSize,
+                         long lifespan) implements SerDe {
+
+  public static final int BYTES = 48;
+
+  public static final int START_OFFSET_OFFSET = 0;
+  public static final int END_OFFSET_OFFSET = 8;
+  public static final int DENSITY_OFFSET = 16;
+  public static final int TOP_LEVEL_HIDDEN_TAKE_SIZE_OFFSET = 20;
+  public static final int TOTAL_SIZE_OFFSET = 24;
+  public static final int FILLED_SIZE_OFFSET = 32;
+  public static final int HIDDEN_FILLED_SIZE_OFFSET = 36;
+  public static final int LIFESPAN_OFFSET = 40;
+
+  public static TickRegion read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var startOffset = Ticks.read(_data, i);
+    i += startOffset.l();
+    final var endOffset = Ticks.read(_data, i);
+    i += endOffset.l();
+    final var density = BaseLotsPerTickU32.read(_data, i);
+    i += density.l();
+    final var topLevelHiddenTakeSize = BaseLotsPerTickU32.read(_data, i);
+    i += topLevelHiddenTakeSize.l();
+    final var totalSize = BaseLots.read(_data, i);
+    i += totalSize.l();
+    final var filledSize = BaseLotsU32.read(_data, i);
+    i += filledSize.l();
+    final var hiddenFilledSize = BaseLotsU32.read(_data, i);
+    i += hiddenFilledSize.l();
+    final var lifespan = getInt64LE(_data, i);
+    return new TickRegion(startOffset,
+                          endOffset,
+                          density,
+                          topLevelHiddenTakeSize,
+                          totalSize,
+                          filledSize,
+                          hiddenFilledSize,
+                          lifespan);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += startOffset.write(_data, i);
+    i += endOffset.write(_data, i);
+    i += density.write(_data, i);
+    i += topLevelHiddenTakeSize.write(_data, i);
+    i += totalSize.write(_data, i);
+    i += filledSize.write(_data, i);
+    i += hiddenFilledSize.write(_data, i);
+    putInt64LE(_data, i, lifespan);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -216,7 +216,8 @@
       "package": "phoenix.perpetuals",
       "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor"
+      "idlType": "anchor",
+      "eventsInTypesPackage": true
     },
     {
       "name": "Phoenix Perpetuals Dev",
@@ -225,7 +226,8 @@
       "package": "phoenix.dev.perpetuals",
       "program": "phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor"
+      "idlType": "anchor",
+      "eventsInTypesPackage": true
     },
     {
       "name": "Pyth Lazer",

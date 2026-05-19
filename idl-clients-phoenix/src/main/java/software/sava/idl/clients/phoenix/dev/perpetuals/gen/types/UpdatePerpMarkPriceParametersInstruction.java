@@ -1,0 +1,212 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import java.util.OptionalInt;
+import java.util.OptionalLong;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+
+/// Borsh payload for updating mark price calculation parameters for a perp asset.
+///
+public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
+                                                       OptionalLong emaPeriodSlots,
+                                                       OptionalLong emaDiffRadius,
+                                                       OptionalLong bookPriceRadius,
+                                                       OptionalLong commoditiesAfterHoursRadiusBps,
+                                                       OptionalLong adjustedExchangeSpotPriceWeight,
+                                                       OptionalLong bookPriceWeight,
+                                                       OptionalLong exchangePerpPriceWeight,
+                                                       OptionalLong spotPriceStaleThreshold,
+                                                       OptionalLong bookPriceStaleThreshold,
+                                                       OptionalLong perpPriceStaleThreshold,
+                                                       ValidationRule[][][] riskActionPriceValidityRules,
+                                                       OptionalInt oracleDivergenceRadius,
+                                                       OptionalInt minOracleResponses) implements SerDe {
+
+  public static final int PERP_ASSET_SYMBOL_OFFSET = 0;
+  public static final int EMA_PERIOD_SLOTS_OFFSET = 17;
+
+  public static UpdatePerpMarkPriceParametersInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var perpAssetSymbol = Symbol.read(_data, i);
+    i += perpAssetSymbol.l();
+    final OptionalLong emaPeriodSlots;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      emaPeriodSlots = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      emaPeriodSlots = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong emaDiffRadius;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      emaDiffRadius = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      emaDiffRadius = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong bookPriceRadius;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      bookPriceRadius = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      bookPriceRadius = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong commoditiesAfterHoursRadiusBps;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      commoditiesAfterHoursRadiusBps = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      commoditiesAfterHoursRadiusBps = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong adjustedExchangeSpotPriceWeight;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      adjustedExchangeSpotPriceWeight = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      adjustedExchangeSpotPriceWeight = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong bookPriceWeight;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      bookPriceWeight = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      bookPriceWeight = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong exchangePerpPriceWeight;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      exchangePerpPriceWeight = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      exchangePerpPriceWeight = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong spotPriceStaleThreshold;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      spotPriceStaleThreshold = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      spotPriceStaleThreshold = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong bookPriceStaleThreshold;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      bookPriceStaleThreshold = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      bookPriceStaleThreshold = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final OptionalLong perpPriceStaleThreshold;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      perpPriceStaleThreshold = OptionalLong.empty();
+      ++i;
+    } else {
+      ++i;
+      perpPriceStaleThreshold = OptionalLong.of(getInt64LE(_data, i));
+      i += 8;
+    }
+    final ValidationRule[][][] riskActionPriceValidityRules;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      riskActionPriceValidityRules = null;
+      ++i;
+    } else {
+      ++i;
+      riskActionPriceValidityRules = new ValidationRule[8][4][8];
+      i += SerDeUtil.readArray(riskActionPriceValidityRules, ValidationRule::read, _data, i);
+    }
+    final OptionalInt oracleDivergenceRadius;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      oracleDivergenceRadius = OptionalInt.empty();
+      ++i;
+    } else {
+      ++i;
+      oracleDivergenceRadius = OptionalInt.of(getInt16LE(_data, i));
+      i += 2;
+    }
+    final OptionalInt minOracleResponses;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      minOracleResponses = OptionalInt.empty();
+    } else {
+      ++i;
+      minOracleResponses = OptionalInt.of(_data[i] & 0xFF);
+    }
+    return new UpdatePerpMarkPriceParametersInstruction(perpAssetSymbol,
+                                                        emaPeriodSlots,
+                                                        emaDiffRadius,
+                                                        bookPriceRadius,
+                                                        commoditiesAfterHoursRadiusBps,
+                                                        adjustedExchangeSpotPriceWeight,
+                                                        bookPriceWeight,
+                                                        exchangePerpPriceWeight,
+                                                        spotPriceStaleThreshold,
+                                                        bookPriceStaleThreshold,
+                                                        perpPriceStaleThreshold,
+                                                        riskActionPriceValidityRules,
+                                                        oracleDivergenceRadius,
+                                                        minOracleResponses);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += perpAssetSymbol.write(_data, i);
+    i += SerDeUtil.writeOptional(1, emaPeriodSlots, _data, i);
+    i += SerDeUtil.writeOptional(1, emaDiffRadius, _data, i);
+    i += SerDeUtil.writeOptional(1, bookPriceRadius, _data, i);
+    i += SerDeUtil.writeOptional(1, commoditiesAfterHoursRadiusBps, _data, i);
+    i += SerDeUtil.writeOptional(1, adjustedExchangeSpotPriceWeight, _data, i);
+    i += SerDeUtil.writeOptional(1, bookPriceWeight, _data, i);
+    i += SerDeUtil.writeOptional(1, exchangePerpPriceWeight, _data, i);
+    i += SerDeUtil.writeOptional(1, spotPriceStaleThreshold, _data, i);
+    i += SerDeUtil.writeOptional(1, bookPriceStaleThreshold, _data, i);
+    i += SerDeUtil.writeOptional(1, perpPriceStaleThreshold, _data, i);
+    if (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0) {
+      _data[i++] = 0;
+    } else {
+      _data[i++] = 1;
+      i += SerDeUtil.writeArrayChecked(riskActionPriceValidityRules, 8, 4, 8, _data, i);
+    }
+    i += SerDeUtil.writeOptionalshort(1, oracleDivergenceRadius, _data, i);
+    i += SerDeUtil.writeOptionalbyte(1, minOracleResponses, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return perpAssetSymbol.l()
+         + (emaPeriodSlots == null || emaPeriodSlots.isEmpty() ? 1 : (1 + 8))
+         + (emaDiffRadius == null || emaDiffRadius.isEmpty() ? 1 : (1 + 8))
+         + (bookPriceRadius == null || bookPriceRadius.isEmpty() ? 1 : (1 + 8))
+         + (commoditiesAfterHoursRadiusBps == null || commoditiesAfterHoursRadiusBps.isEmpty() ? 1 : (1 + 8))
+         + (adjustedExchangeSpotPriceWeight == null || adjustedExchangeSpotPriceWeight.isEmpty() ? 1 : (1 + 8))
+         + (bookPriceWeight == null || bookPriceWeight.isEmpty() ? 1 : (1 + 8))
+         + (exchangePerpPriceWeight == null || exchangePerpPriceWeight.isEmpty() ? 1 : (1 + 8))
+         + (spotPriceStaleThreshold == null || spotPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
+         + (bookPriceStaleThreshold == null || bookPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
+         + (perpPriceStaleThreshold == null || perpPriceStaleThreshold.isEmpty() ? 1 : (1 + 8))
+         + (riskActionPriceValidityRules == null || riskActionPriceValidityRules.length == 0 ? 1 : (1 + SerDeUtil.lenArray(riskActionPriceValidityRules)))
+         + (oracleDivergenceRadius == null || oracleDivergenceRadius.isEmpty() ? 1 : (1 + 2))
+         + (minOracleResponses == null || minOracleResponses.isEmpty() ? 1 : (1 + 1));
+  }
+}

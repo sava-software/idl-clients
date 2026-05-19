@@ -1,0 +1,108 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.QuoteLots;
+import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLots;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::TraderCollateralTransferred Borsh variant 10.
+/// Payload type: TraderCollateralTransferredEvent.
+///
+public record TraderCollateralTransferredEvent(Discriminator discriminator,
+                                               PublicKey authority,
+                                               QuoteLots amount,
+                                               PublicKey srcTrader,
+                                               long srcTraderSequenceNumber,
+                                               long srcTraderPrevSequenceNumberSlot,
+                                               SignedQuoteLots srcTraderNewCollateralBalance,
+                                               PublicKey dstTrader,
+                                               long dstTraderSequenceNumber,
+                                               long dstTraderPrevSequenceNumberSlot,
+                                               SignedQuoteLots dstTraderNewCollateralBalance) implements EternalEvent {
+
+  public static final int BYTES = 160;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(10, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int AMOUNT_OFFSET = 40;
+  public static final int SRC_TRADER_OFFSET = 48;
+  public static final int SRC_TRADER_SEQUENCE_NUMBER_OFFSET = 80;
+  public static final int SRC_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 88;
+  public static final int SRC_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 96;
+  public static final int DST_TRADER_OFFSET = 104;
+  public static final int DST_TRADER_SEQUENCE_NUMBER_OFFSET = 136;
+  public static final int DST_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 144;
+  public static final int DST_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 152;
+
+  public static TraderCollateralTransferredEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var authority = readPubKey(_data, i);
+    i += 32;
+    final var amount = QuoteLots.read(_data, i);
+    i += amount.l();
+    final var srcTrader = readPubKey(_data, i);
+    i += 32;
+    final var srcTraderSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var srcTraderPrevSequenceNumberSlot = getInt64LE(_data, i);
+    i += 8;
+    final var srcTraderNewCollateralBalance = SignedQuoteLots.read(_data, i);
+    i += srcTraderNewCollateralBalance.l();
+    final var dstTrader = readPubKey(_data, i);
+    i += 32;
+    final var dstTraderSequenceNumber = getInt64LE(_data, i);
+    i += 8;
+    final var dstTraderPrevSequenceNumberSlot = getInt64LE(_data, i);
+    i += 8;
+    final var dstTraderNewCollateralBalance = SignedQuoteLots.read(_data, i);
+    return new TraderCollateralTransferredEvent(discriminator,
+                                                authority,
+                                                amount,
+                                                srcTrader,
+                                                srcTraderSequenceNumber,
+                                                srcTraderPrevSequenceNumberSlot,
+                                                srcTraderNewCollateralBalance,
+                                                dstTrader,
+                                                dstTraderSequenceNumber,
+                                                dstTraderPrevSequenceNumberSlot,
+                                                dstTraderNewCollateralBalance);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    authority.write(_data, i);
+    i += 32;
+    i += amount.write(_data, i);
+    srcTrader.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, srcTraderSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, srcTraderPrevSequenceNumberSlot);
+    i += 8;
+    i += srcTraderNewCollateralBalance.write(_data, i);
+    dstTrader.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, dstTraderSequenceNumber);
+    i += 8;
+    putInt64LE(_data, i, dstTraderPrevSequenceNumberSlot);
+    i += 8;
+    i += dstTraderNewCollateralBalance.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

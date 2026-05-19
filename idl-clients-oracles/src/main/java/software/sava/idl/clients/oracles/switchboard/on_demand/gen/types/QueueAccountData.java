@@ -364,10 +364,10 @@ public record QueueAccountData(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     authority.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(mrEnclaves, 32, _data, i);
+    i += SerDeUtil.writeArrayChecked(mrEnclaves, 32, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(oracleKeys, 78, _data, i);
     i += SerDeUtil.writeArrayChecked(reserved1, 40, _data, i);
-    i += SerDeUtil.writeArrayChecked(secpOracleSigningKeys, 30, _data, i);
+    i += SerDeUtil.writeArrayChecked(secpOracleSigningKeys, 30, 20, _data, i);
     i += SerDeUtil.writeArrayChecked(ed25519OracleSigningKeys, 30, _data, i);
     putInt64LE(_data, i, maxQuoteVerificationAge);
     i += 8;

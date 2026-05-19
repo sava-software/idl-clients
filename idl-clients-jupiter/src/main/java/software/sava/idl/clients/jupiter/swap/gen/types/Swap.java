@@ -165,7 +165,10 @@ public sealed interface Swap extends RustEnum permits
   Swap.PumpSwapSellV3WithCashbackClaim,
   Swap.PumpWrappedBuyV4WithCashbackClaim,
   Swap.PumpWrappedSellV4WithCashbackClaim,
-  Swap.GoonFiV3 {
+  Swap.GoonFiV3,
+  Swap.PumpWrappedBuyV5,
+  Swap.PumpWrappedSellV5,
+  Swap.ZeroFiSwapV2 {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -323,6 +326,9 @@ public sealed interface Swap extends RustEnum permits
       case 149 -> PumpWrappedBuyV4WithCashbackClaim.INSTANCE;
       case 150 -> PumpWrappedSellV4WithCashbackClaim.INSTANCE;
       case 151 -> GoonFiV3.read(_data, i);
+      case 152 -> PumpWrappedBuyV5.read(_data, i);
+      case 153 -> PumpWrappedSellV5.read(_data, i);
+      case 154 -> ZeroFiSwapV2.INSTANCE;
       default -> null;
     };
   }
@@ -2534,6 +2540,46 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 151;
+    }
+  }
+
+  record PumpWrappedBuyV5(boolean val) implements EnumBool, Swap {
+
+    public static final PumpWrappedBuyV5 TRUE = new PumpWrappedBuyV5(true);
+    public static final PumpWrappedBuyV5 FALSE = new PumpWrappedBuyV5(false);
+
+    public static PumpWrappedBuyV5 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PumpWrappedBuyV5.TRUE : PumpWrappedBuyV5.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 152;
+    }
+  }
+
+  record PumpWrappedSellV5(boolean val) implements EnumBool, Swap {
+
+    public static final PumpWrappedSellV5 TRUE = new PumpWrappedSellV5(true);
+    public static final PumpWrappedSellV5 FALSE = new PumpWrappedSellV5(false);
+
+    public static PumpWrappedSellV5 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? PumpWrappedSellV5.TRUE : PumpWrappedSellV5.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 153;
+    }
+  }
+
+  record ZeroFiSwapV2() implements EnumNone, Swap {
+
+    public static final ZeroFiSwapV2 INSTANCE = new ZeroFiSwapV2();
+
+    @Override
+    public int ordinal() {
+      return 154;
     }
   }
 }

@@ -1,0 +1,47 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record FundingConfig(long fundingIntervalSeconds,
+                            long fundingPeriodSeconds,
+                            long maxFundingRate) implements SerDe {
+
+  public static final int BYTES = 24;
+
+  public static final int FUNDING_INTERVAL_SECONDS_OFFSET = 0;
+  public static final int FUNDING_PERIOD_SECONDS_OFFSET = 8;
+  public static final int MAX_FUNDING_RATE_OFFSET = 16;
+
+  public static FundingConfig read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var fundingIntervalSeconds = getInt64LE(_data, i);
+    i += 8;
+    final var fundingPeriodSeconds = getInt64LE(_data, i);
+    i += 8;
+    final var maxFundingRate = getInt64LE(_data, i);
+    return new FundingConfig(fundingIntervalSeconds, fundingPeriodSeconds, maxFundingRate);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt64LE(_data, i, fundingIntervalSeconds);
+    i += 8;
+    putInt64LE(_data, i, fundingPeriodSeconds);
+    i += 8;
+    putInt64LE(_data, i, maxFundingRate);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

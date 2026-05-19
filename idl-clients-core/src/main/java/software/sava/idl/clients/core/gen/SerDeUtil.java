@@ -2449,6 +2449,17 @@ public final class SerDeUtil {
     return i - offset;
   }
 
+  public static <T extends SerDe> int readArray(final T[][][] result,
+                                                final Factory<T> factory,
+                                                final byte[] data,
+                                                final int offset) {
+    int i = offset;
+    for (final var out : result) {
+      i += readArray(out, factory, data, i);
+    }
+    return i - offset;
+  }
+
   public static <T extends SerDe> T[] readVector(final int prefixBytes,
                                                  final Class<T> clazz,
                                                  final Factory<T> factory,
@@ -2562,6 +2573,22 @@ public final class SerDeUtil {
     return i - offset;
   }
 
+  public static int writeArrayChecked(final SerDe[][][] array,
+                                      final int firstDimensionLength,
+                                      final int secondDimensionLength,
+                                      final int thirdDimensionLength,
+                                      final byte[] data,
+                                      final int offset) {
+    if (array.length != firstDimensionLength) {
+      throw invalidArrayLength(array, firstDimensionLength, array.length);
+    }
+    int i = offset;
+    for (final var a : array) {
+      i += writeArrayChecked(a, secondDimensionLength, thirdDimensionLength, data, i);
+    }
+    return i - offset;
+  }
+
   public static int writeVector(final int prefixBytes,
                                 final SerDe[][] array,
                                 final byte[] data,
@@ -2623,6 +2650,14 @@ public final class SerDeUtil {
     int len = prefixBytes;
     for (final var a : array) {
       len += lenVector(prefixBytes, a);
+    }
+    return len;
+  }
+
+  public static int lenArray(final SerDe[][][] array) {
+    int len = 0;
+    for (final var a : array) {
+      len += lenArray(a);
     }
     return len;
   }

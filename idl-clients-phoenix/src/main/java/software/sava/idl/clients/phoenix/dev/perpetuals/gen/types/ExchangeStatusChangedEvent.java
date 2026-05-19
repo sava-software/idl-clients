@@ -1,0 +1,55 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// MarketEvent::ExchangeStatusChanged Borsh variant 41.
+/// Payload type: ExchangeStatusChangedEvent.
+///
+public record ExchangeStatusChangedEvent(Discriminator discriminator,
+                                         int previousBits,
+                                         int newBits,
+                                         PublicKey authority) implements EternalEvent {
+
+  public static final int BYTES = 42;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(41, 0, 0, 0, 0, 0, 0, 0);
+
+  public static final int PREVIOUS_BITS_OFFSET = 8;
+  public static final int NEW_BITS_OFFSET = 9;
+  public static final int AUTHORITY_OFFSET = 10;
+
+  public static ExchangeStatusChangedEvent read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var previousBits = _data[i] & 0xFF;
+    ++i;
+    final var newBits = _data[i] & 0xFF;
+    ++i;
+    final var authority = readPubKey(_data, i);
+    return new ExchangeStatusChangedEvent(discriminator, previousBits, newBits, authority);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    _data[i] = (byte) previousBits;
+    ++i;
+    _data[i] = (byte) newBits;
+    ++i;
+    authority.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

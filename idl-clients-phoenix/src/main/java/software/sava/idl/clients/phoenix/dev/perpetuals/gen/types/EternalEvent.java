@@ -1,0 +1,225 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public sealed interface EternalEvent extends SerDe permits
+    SlotContextEvent,
+    MarketEventHeader,
+    OrderPlacedEvent,
+    OrderFilledEvent,
+    OrderRejectedEvent,
+    SplineFilledEvent,
+    TradeSummaryEvent,
+    OrderModifiedEvent,
+    MarketSummaryEvent,
+    TraderRegisteredEvent,
+    TraderCollateralTransferredEvent,
+    TraderActivatedEvent,
+    TraderDeactivatedEvent,
+    TraderFundsDepositedEvent,
+    TraderFundsWithdrawnEvent,
+    TraderFundsWithdrawnEnqueuedEvent,
+    TraderFundsWithdrawnDroppedEvent,
+    TraderWithdrawCancelledEvent,
+    TraderFundingSettledEvent,
+    SplineRegisteredEvent,
+    SplineActivatedEvent,
+    SplineDeactivatedEvent,
+    SplinePriceUpdatedEvent,
+    SplineParametersUpdatedEvent,
+    MarketAddedEvent,
+    MarketStatusChangedEvent,
+    MarketParametersUpdatedEvent,
+    FundingParametersUpdatedEvent,
+    FeesClaimedEvent,
+    PricesUpdatedEvent,
+    LiquidationTransferSummaryEvent,
+    LiquidationTransferEvent,
+    LiquidationEvent,
+    CloseMatchedPositionsEvent,
+    NameSuccessorEvent,
+    ClaimAuthorityEvent,
+    WithdrawStateTransitionEvent,
+    PnLEvent,
+    StopLossPlacedEvent,
+    StopLossCancelledEvent,
+    StopLossExecutedEvent,
+    ExchangeStatusChangedEvent,
+    TraderCapabilitiesEnabledEvent,
+    TraderFundsWithdrawnFeePaymentEvent,
+    OrderPacketEvent,
+    SetPermissionEvent,
+    AuthorityChangedEvent,
+    TraderDelegatedEvent,
+    AdminParameterUpdatedEvent,
+    TraderFeesUpdatedEvent,
+    MarketClosedEvent,
+    MarketDeletedEvent,
+    EscrowAccountCreatedEvent,
+    EscrowRequestCreatedEvent,
+    EscrowRequestAcceptedEvent,
+    EscrowRequestCancelledEvent,
+    SplinePriceUpdatedWithOrderingEvent,
+    SplineParametersUpdatedWithOrderingEvent,
+    TriggerOrderPlacedEvent,
+    TriggerOrderCancelledEvent,
+    TriggerOrderExecutedEvent,
+    PingInvalidatedEvent,
+    PingActivatedEvent,
+    SplinePositionLimitsConfigUpdatedEvent,
+    MarketTombstonedEvent,
+    ShutdownClosePositionsEvent,
+    OrderResidualDiscardedEvent {
+
+  static EternalEvent read(final byte[] _data, final int _offset) {
+    if (SlotContextEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SlotContextEvent.read(_data, _offset);
+    } else if (MarketEventHeader.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketEventHeader.read(_data, _offset);
+    } else if (OrderPlacedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderPlacedEvent.read(_data, _offset);
+    } else if (OrderFilledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderFilledEvent.read(_data, _offset);
+    } else if (OrderRejectedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderRejectedEvent.read(_data, _offset);
+    } else if (SplineFilledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineFilledEvent.read(_data, _offset);
+    } else if (TradeSummaryEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TradeSummaryEvent.read(_data, _offset);
+    } else if (OrderModifiedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderModifiedEvent.read(_data, _offset);
+    } else if (MarketSummaryEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketSummaryEvent.read(_data, _offset);
+    } else if (TraderRegisteredEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderRegisteredEvent.read(_data, _offset);
+    } else if (TraderCollateralTransferredEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderCollateralTransferredEvent.read(_data, _offset);
+    } else if (TraderActivatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderActivatedEvent.read(_data, _offset);
+    } else if (TraderDeactivatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderDeactivatedEvent.read(_data, _offset);
+    } else if (TraderFundsDepositedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundsDepositedEvent.read(_data, _offset);
+    } else if (TraderFundsWithdrawnEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundsWithdrawnEvent.read(_data, _offset);
+    } else if (TraderFundsWithdrawnEnqueuedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundsWithdrawnEnqueuedEvent.read(_data, _offset);
+    } else if (TraderFundsWithdrawnDroppedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundsWithdrawnDroppedEvent.read(_data, _offset);
+    } else if (TraderWithdrawCancelledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderWithdrawCancelledEvent.read(_data, _offset);
+    } else if (TraderFundingSettledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundingSettledEvent.read(_data, _offset);
+    } else if (SplineRegisteredEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineRegisteredEvent.read(_data, _offset);
+    } else if (SplineActivatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineActivatedEvent.read(_data, _offset);
+    } else if (SplineDeactivatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineDeactivatedEvent.read(_data, _offset);
+    } else if (SplinePriceUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplinePriceUpdatedEvent.read(_data, _offset);
+    } else if (SplineParametersUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineParametersUpdatedEvent.read(_data, _offset);
+    } else if (MarketAddedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketAddedEvent.read(_data, _offset);
+    } else if (MarketStatusChangedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketStatusChangedEvent.read(_data, _offset);
+    } else if (MarketParametersUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketParametersUpdatedEvent.read(_data, _offset);
+    } else if (FundingParametersUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return FundingParametersUpdatedEvent.read(_data, _offset);
+    } else if (FeesClaimedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return FeesClaimedEvent.read(_data, _offset);
+    } else if (PricesUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return PricesUpdatedEvent.read(_data, _offset);
+    } else if (LiquidationTransferSummaryEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidationTransferSummaryEvent.read(_data, _offset);
+    } else if (LiquidationTransferEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidationTransferEvent.read(_data, _offset);
+    } else if (LiquidationEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidationEvent.read(_data, _offset);
+    } else if (CloseMatchedPositionsEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return CloseMatchedPositionsEvent.read(_data, _offset);
+    } else if (NameSuccessorEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return NameSuccessorEvent.read(_data, _offset);
+    } else if (ClaimAuthorityEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return ClaimAuthorityEvent.read(_data, _offset);
+    } else if (WithdrawStateTransitionEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return WithdrawStateTransitionEvent.read(_data, _offset);
+    } else if (PnLEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return PnLEvent.read(_data, _offset);
+    } else if (StopLossPlacedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return StopLossPlacedEvent.read(_data, _offset);
+    } else if (StopLossCancelledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return StopLossCancelledEvent.read(_data, _offset);
+    } else if (StopLossExecutedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return StopLossExecutedEvent.read(_data, _offset);
+    } else if (ExchangeStatusChangedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return ExchangeStatusChangedEvent.read(_data, _offset);
+    } else if (TraderCapabilitiesEnabledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderCapabilitiesEnabledEvent.read(_data, _offset);
+    } else if (TraderFundsWithdrawnFeePaymentEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFundsWithdrawnFeePaymentEvent.read(_data, _offset);
+    } else if (OrderPacketEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderPacketEvent.read(_data, _offset);
+    } else if (SetPermissionEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SetPermissionEvent.read(_data, _offset);
+    } else if (AuthorityChangedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return AuthorityChangedEvent.read(_data, _offset);
+    } else if (TraderDelegatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderDelegatedEvent.read(_data, _offset);
+    } else if (AdminParameterUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return AdminParameterUpdatedEvent.read(_data, _offset);
+    } else if (TraderFeesUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TraderFeesUpdatedEvent.read(_data, _offset);
+    } else if (MarketClosedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketClosedEvent.read(_data, _offset);
+    } else if (MarketDeletedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketDeletedEvent.read(_data, _offset);
+    } else if (EscrowAccountCreatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowAccountCreatedEvent.read(_data, _offset);
+    } else if (EscrowRequestCreatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowRequestCreatedEvent.read(_data, _offset);
+    } else if (EscrowRequestAcceptedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowRequestAcceptedEvent.read(_data, _offset);
+    } else if (EscrowRequestCancelledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return EscrowRequestCancelledEvent.read(_data, _offset);
+    } else if (SplinePriceUpdatedWithOrderingEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplinePriceUpdatedWithOrderingEvent.read(_data, _offset);
+    } else if (SplineParametersUpdatedWithOrderingEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplineParametersUpdatedWithOrderingEvent.read(_data, _offset);
+    } else if (TriggerOrderPlacedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TriggerOrderPlacedEvent.read(_data, _offset);
+    } else if (TriggerOrderCancelledEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TriggerOrderCancelledEvent.read(_data, _offset);
+    } else if (TriggerOrderExecutedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return TriggerOrderExecutedEvent.read(_data, _offset);
+    } else if (PingInvalidatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return PingInvalidatedEvent.read(_data, _offset);
+    } else if (PingActivatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return PingActivatedEvent.read(_data, _offset);
+    } else if (SplinePositionLimitsConfigUpdatedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return SplinePositionLimitsConfigUpdatedEvent.read(_data, _offset);
+    } else if (MarketTombstonedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return MarketTombstonedEvent.read(_data, _offset);
+    } else if (ShutdownClosePositionsEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return ShutdownClosePositionsEvent.read(_data, _offset);
+    } else if (OrderResidualDiscardedEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return OrderResidualDiscardedEvent.read(_data, _offset);
+    } else {
+      return null;
+    }
+  }
+
+  static EternalEvent read(final byte[] _data) {
+    return read(_data, 0);
+  }
+
+  static EternalEvent readCPI(final byte[] _data, final int _offset) {
+    return read(_data, _offset + 8);
+  }
+
+  static EternalEvent readCPI(final byte[] _data) {
+    return read(_data, 8);
+  }
+}

@@ -90,7 +90,7 @@ public record OracleMappings(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(twapSourceOrRefPriceToleranceBps, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(twapEnabledBitmask, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(refPrice, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(generic, 512, _data, i);
+    i += SerDeUtil.writeArrayChecked(generic, 512, 20, _data, i);
     return i - _offset;
   }
 

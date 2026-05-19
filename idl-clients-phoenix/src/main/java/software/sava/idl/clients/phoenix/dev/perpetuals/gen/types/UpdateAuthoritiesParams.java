@@ -1,0 +1,106 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+
+/// Borsh payload for root authority updates to subordinate authorities.
+///
+public record UpdateAuthoritiesParams(PublicKey newRiskAuthority,
+                                      PublicKey newMarketAuthority,
+                                      PublicKey newOracleAuthority,
+                                      PublicKey newCancelAuthority,
+                                      PublicKey newBackstopAuthority,
+                                      PublicKey newAdlAuthority) implements SerDe {
+
+  public static final int NEW_RISK_AUTHORITY_OFFSET = 1;
+
+  public static UpdateAuthoritiesParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final PublicKey newRiskAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newRiskAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      newRiskAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final PublicKey newMarketAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newMarketAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      newMarketAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final PublicKey newOracleAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newOracleAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      newOracleAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final PublicKey newCancelAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newCancelAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      newCancelAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final PublicKey newBackstopAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newBackstopAuthority = null;
+      ++i;
+    } else {
+      ++i;
+      newBackstopAuthority = readPubKey(_data, i);
+      i += 32;
+    }
+    final PublicKey newAdlAuthority;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      newAdlAuthority = null;
+    } else {
+      ++i;
+      newAdlAuthority = readPubKey(_data, i);
+    }
+    return new UpdateAuthoritiesParams(newRiskAuthority,
+                                       newMarketAuthority,
+                                       newOracleAuthority,
+                                       newCancelAuthority,
+                                       newBackstopAuthority,
+                                       newAdlAuthority);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeOptional(1, newRiskAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newMarketAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newOracleAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newCancelAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newBackstopAuthority, _data, i);
+    i += SerDeUtil.writeOptional(1, newAdlAuthority, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return (newRiskAuthority == null ? 1 : (1 + 32))
+         + (newMarketAuthority == null ? 1 : (1 + 32))
+         + (newOracleAuthority == null ? 1 : (1 + 32))
+         + (newCancelAuthority == null ? 1 : (1 + 32))
+         + (newBackstopAuthority == null ? 1 : (1 + 32))
+         + (newAdlAuthority == null ? 1 : (1 + 32));
+  }
+}

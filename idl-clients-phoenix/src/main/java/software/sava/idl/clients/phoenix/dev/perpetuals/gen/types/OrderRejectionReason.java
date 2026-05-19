@@ -1,0 +1,17 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+public enum OrderRejectionReason implements RustEnum {
+
+  TooManyLimitOrders,
+  PostOnlyCross,
+  InvalidOrderPacket,
+  TiFInvalid,
+  OutsideExecutionPriceBand;
+
+  public static OrderRejectionReason read(final byte[] _data, final int _offset) {
+    return SerDeUtil.read(1, OrderRejectionReason.values(), _data, _offset);
+  }
+}

@@ -1,0 +1,37 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+/// Borsh payload for updating withdrawal uPnL risk factor for a perp asset.
+///
+public record UpdatePerpUPnlRiskFactorForWithdrawalsInstruction(Symbol perpAssetSymbol, UPnlRiskFactor upnlRiskFactorForWithdrawals) implements SerDe {
+
+  public static final int BYTES = 24;
+
+  public static final int PERP_ASSET_SYMBOL_OFFSET = 0;
+  public static final int UPNL_RISK_FACTOR_FOR_WITHDRAWALS_OFFSET = 16;
+
+  public static UpdatePerpUPnlRiskFactorForWithdrawalsInstruction read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var perpAssetSymbol = Symbol.read(_data, i);
+    i += perpAssetSymbol.l();
+    final var upnlRiskFactorForWithdrawals = UPnlRiskFactor.read(_data, i);
+    return new UpdatePerpUPnlRiskFactorForWithdrawalsInstruction(perpAssetSymbol, upnlRiskFactorForWithdrawals);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += perpAssetSymbol.write(_data, i);
+    i += upnlRiskFactorForWithdrawals.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

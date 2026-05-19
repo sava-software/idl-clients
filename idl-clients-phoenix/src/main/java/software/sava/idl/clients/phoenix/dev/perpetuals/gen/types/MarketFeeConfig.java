@@ -1,0 +1,40 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+
+public record MarketFeeConfig(int defaultTakerFeeMicro, int defaultMakerFeeMicro) implements SerDe {
+
+  public static final int BYTES = 8;
+
+  public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 0;
+  public static final int DEFAULT_MAKER_FEE_MICRO_OFFSET = 4;
+
+  public static MarketFeeConfig read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var defaultTakerFeeMicro = getInt32LE(_data, i);
+    i += 4;
+    final var defaultMakerFeeMicro = getInt32LE(_data, i);
+    return new MarketFeeConfig(defaultTakerFeeMicro, defaultMakerFeeMicro);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt32LE(_data, i, defaultTakerFeeMicro);
+    i += 4;
+    putInt32LE(_data, i, defaultMakerFeeMicro);
+    i += 4;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

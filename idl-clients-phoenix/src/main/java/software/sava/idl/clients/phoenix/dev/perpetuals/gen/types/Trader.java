@@ -1,0 +1,241 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Fixed DynamicTraderHeader prefix for a Phoenix Eternal trader account.
+/// Dynamic position map bytes follow this header and are left as trailing account data by generic decoders.
+///
+public record Trader(PublicKey _address,
+                     Discriminator discriminator,
+                     long discriminant,
+                     SequenceNumber sequenceNumber,
+                     PublicKey key,
+                     PublicKey authority,
+                     TraderState traderState,
+                     byte[] padding0,
+                     int withdrawQueueNode,
+                     long maxPositions,
+                     PublicKey positionAuthority,
+                     int numMarketsWithSplines,
+                     int traderPdaIndex,
+                     int traderSubaccountIndex,
+                     PublicKey fundingKey,
+                     byte[] padding1,
+                     long lastDepositSlot,
+                     byte[] conditionalOrderBits) implements SerDe {
+
+  public static final int BYTES = 232;
+  public static final int PADDING_0_LEN = 4;
+  public static final int PADDING_1_LEN = 4;
+  public static final int CONDITIONAL_ORDER_BITS_LEN = 24;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(41, 97, 73, 105, 110, 214, 112, 9);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int DISCRIMINANT_OFFSET = 8;
+  public static final int SEQUENCE_NUMBER_OFFSET = 16;
+  public static final int KEY_OFFSET = 32;
+  public static final int AUTHORITY_OFFSET = 64;
+  public static final int TRADER_STATE_OFFSET = 96;
+  public static final int PADDING_0_OFFSET = 112;
+  public static final int WITHDRAW_QUEUE_NODE_OFFSET = 116;
+  public static final int MAX_POSITIONS_OFFSET = 120;
+  public static final int POSITION_AUTHORITY_OFFSET = 128;
+  public static final int NUM_MARKETS_WITH_SPLINES_OFFSET = 160;
+  public static final int TRADER_PDA_INDEX_OFFSET = 162;
+  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 163;
+  public static final int FUNDING_KEY_OFFSET = 164;
+  public static final int PADDING_1_OFFSET = 196;
+  public static final int LAST_DEPOSIT_SLOT_OFFSET = 200;
+  public static final int CONDITIONAL_ORDER_BITS_OFFSET = 208;
+
+  public static Filter createDiscriminantFilter(final long discriminant) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, discriminant);
+    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
+  }
+
+  public static Filter createSequenceNumberFilter(final SequenceNumber sequenceNumber) {
+    return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
+  }
+
+  public static Filter createKeyFilter(final PublicKey key) {
+    return Filter.createMemCompFilter(KEY_OFFSET, key);
+  }
+
+  public static Filter createAuthorityFilter(final PublicKey authority) {
+    return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
+  }
+
+  public static Filter createTraderStateFilter(final TraderState traderState) {
+    return Filter.createMemCompFilter(TRADER_STATE_OFFSET, traderState.write());
+  }
+
+  public static Filter createWithdrawQueueNodeFilter(final int withdrawQueueNode) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, withdrawQueueNode);
+    return Filter.createMemCompFilter(WITHDRAW_QUEUE_NODE_OFFSET, _data);
+  }
+
+  public static Filter createMaxPositionsFilter(final long maxPositions) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, maxPositions);
+    return Filter.createMemCompFilter(MAX_POSITIONS_OFFSET, _data);
+  }
+
+  public static Filter createPositionAuthorityFilter(final PublicKey positionAuthority) {
+    return Filter.createMemCompFilter(POSITION_AUTHORITY_OFFSET, positionAuthority);
+  }
+
+  public static Filter createNumMarketsWithSplinesFilter(final int numMarketsWithSplines) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, numMarketsWithSplines);
+    return Filter.createMemCompFilter(NUM_MARKETS_WITH_SPLINES_OFFSET, _data);
+  }
+
+  public static Filter createTraderPdaIndexFilter(final int traderPdaIndex) {
+    return Filter.createMemCompFilter(TRADER_PDA_INDEX_OFFSET, new byte[]{(byte) traderPdaIndex});
+  }
+
+  public static Filter createTraderSubaccountIndexFilter(final int traderSubaccountIndex) {
+    return Filter.createMemCompFilter(TRADER_SUBACCOUNT_INDEX_OFFSET, new byte[]{(byte) traderSubaccountIndex});
+  }
+
+  public static Filter createFundingKeyFilter(final PublicKey fundingKey) {
+    return Filter.createMemCompFilter(FUNDING_KEY_OFFSET, fundingKey);
+  }
+
+  public static Filter createLastDepositSlotFilter(final long lastDepositSlot) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastDepositSlot);
+    return Filter.createMemCompFilter(LAST_DEPOSIT_SLOT_OFFSET, _data);
+  }
+
+  public static Trader read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Trader read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Trader read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Trader> FACTORY = Trader::read;
+
+  public static Trader read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var discriminant = getInt64LE(_data, i);
+    i += 8;
+    final var sequenceNumber = SequenceNumber.read(_data, i);
+    i += sequenceNumber.l();
+    final var key = readPubKey(_data, i);
+    i += 32;
+    final var authority = readPubKey(_data, i);
+    i += 32;
+    final var traderState = TraderState.read(_data, i);
+    i += traderState.l();
+    final var padding0 = new byte[4];
+    i += SerDeUtil.readArray(padding0, _data, i);
+    final var withdrawQueueNode = getInt32LE(_data, i);
+    i += 4;
+    final var maxPositions = getInt64LE(_data, i);
+    i += 8;
+    final var positionAuthority = readPubKey(_data, i);
+    i += 32;
+    final var numMarketsWithSplines = getInt16LE(_data, i);
+    i += 2;
+    final var traderPdaIndex = _data[i] & 0xFF;
+    ++i;
+    final var traderSubaccountIndex = _data[i] & 0xFF;
+    ++i;
+    final var fundingKey = readPubKey(_data, i);
+    i += 32;
+    final var padding1 = new byte[4];
+    i += SerDeUtil.readArray(padding1, _data, i);
+    final var lastDepositSlot = getInt64LE(_data, i);
+    i += 8;
+    final var conditionalOrderBits = new byte[24];
+    SerDeUtil.readArray(conditionalOrderBits, _data, i);
+    return new Trader(_address,
+                      discriminator,
+                      discriminant,
+                      sequenceNumber,
+                      key,
+                      authority,
+                      traderState,
+                      padding0,
+                      withdrawQueueNode,
+                      maxPositions,
+                      positionAuthority,
+                      numMarketsWithSplines,
+                      traderPdaIndex,
+                      traderSubaccountIndex,
+                      fundingKey,
+                      padding1,
+                      lastDepositSlot,
+                      conditionalOrderBits);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, discriminant);
+    i += 8;
+    i += sequenceNumber.write(_data, i);
+    key.write(_data, i);
+    i += 32;
+    authority.write(_data, i);
+    i += 32;
+    i += traderState.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
+    putInt32LE(_data, i, withdrawQueueNode);
+    i += 4;
+    putInt64LE(_data, i, maxPositions);
+    i += 8;
+    positionAuthority.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, numMarketsWithSplines);
+    i += 2;
+    _data[i] = (byte) traderPdaIndex;
+    ++i;
+    _data[i] = (byte) traderSubaccountIndex;
+    ++i;
+    fundingKey.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(padding1, 4, _data, i);
+    putInt64LE(_data, i, lastDepositSlot);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(conditionalOrderBits, 24, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

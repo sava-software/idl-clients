@@ -1,0 +1,35 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+/// Opaque fixed-size zero-copy PerpAssetMetadata payload stored inside PerpAssetMap.
+///
+public record PerpAssetMetadata(byte[] raw) implements SerDe {
+
+  public static final int BYTES = 1568;
+  public static final int RAW_LEN = 1568;
+
+  public static final int RAW_OFFSET = 0;
+
+  public static PerpAssetMetadata read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var raw = new byte[1568];
+    SerDeUtil.readArray(raw, _data, _offset);
+    return new PerpAssetMetadata(raw);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeArrayChecked(raw, 1568, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

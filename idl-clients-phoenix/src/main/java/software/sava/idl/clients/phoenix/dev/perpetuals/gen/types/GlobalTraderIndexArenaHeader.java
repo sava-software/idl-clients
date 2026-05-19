@@ -1,0 +1,31 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.core.programs.Discriminator;
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Discriminator-only account definition for viewer compatibility.
+/// The full global trader index arena layout is not modeled in this IDL.
+public record GlobalTraderIndexArenaHeader(Discriminator discriminator) implements SerDe {
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(98, 110, 179, 71, 203, 120, 200, 235);
+
+  public static GlobalTraderIndexArenaHeader read(final byte[] _data, final int _offset) {
+    return _data == null || _data.length == 0
+        ? null
+        : new GlobalTraderIndexArenaHeader(createAnchorDiscriminator(_data, _offset));
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    discriminator.write(_data, _offset);
+    return 8;
+  }
+
+  @Override
+  public int l() {
+    return 8;
+  }
+}

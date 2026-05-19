@@ -1,0 +1,41 @@
+package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record LeverageTier(BaseLots upperBoundSize,
+                           Constant maxLeverage,
+                           BasisPoints limitOrderRiskFactor) implements SerDe {
+
+  public static final int BYTES = 24;
+
+  public static final int UPPER_BOUND_SIZE_OFFSET = 0;
+  public static final int MAX_LEVERAGE_OFFSET = 8;
+  public static final int LIMIT_ORDER_RISK_FACTOR_OFFSET = 16;
+
+  public static LeverageTier read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var upperBoundSize = BaseLots.read(_data, i);
+    i += upperBoundSize.l();
+    final var maxLeverage = Constant.read(_data, i);
+    i += maxLeverage.l();
+    final var limitOrderRiskFactor = BasisPoints.read(_data, i);
+    return new LeverageTier(upperBoundSize, maxLeverage, limitOrderRiskFactor);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += upperBoundSize.write(_data, i);
+    i += maxLeverage.write(_data, i);
+    i += limitOrderRiskFactor.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}
