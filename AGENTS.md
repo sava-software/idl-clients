@@ -235,3 +235,118 @@ module's `build.gradle.kts`.
 These edits are intended as local, temporary development aids. Revert them
 (restore the comments) before committing unless the task explicitly asks
 to make the included build permanent.
+
+## Writing hand-written client wrappers
+
+Most modules expose a hand-written `<Program>Client` interface plus a
+package-private `<Program>ClientImpl` that wraps the generated
+`<Program>Program` instruction builders. New wrappers (and additions to
+existing ones) should follow the conventions below — they are consistent
+across modules but not otherwise documented.
+
+### Layout and shape
+
+- Place both files directly under `software/sava/idl/clients/<module>/`
+  (outside any `gen/` package). The interface is public; the `Impl` class is
+  package-private and `final`.
+- Expose construction via `static createClient(...)` factories on the
+  interface, providing two overloads:
+  - `createClient(SolanaAccounts solanaAccounts, <Module>Accounts accounts)`
+  - `createClient(<Module>Accounts accounts)` — defaults to
+    `SolanaAccounts.MAIN_NET`.
+- Expose accessors on the interface:
+  - `SolanaAccounts solanaAccounts()`
+  - `<Module>Accounts <module>Accounts()`
+- Each method on the interface returns a single `Instruction` (or a small
+  composite where it genuinely makes sense) and mirrors one generated
+  instruction builder.
+
+### Parameter conventions
+
+Decide where each account comes from using this rule of thumb:
+
+- **Global / program-wide accounts** — program ids, log authorities, global
+  config/state PDAs, global indices, shared vaults, the system program, and
+  default token program — come from `<Module>Accounts` / `SolanaAccounts`
+  and are **not** method parameters. If a global account needed by a new
+  instruction is missing from `<Module>Accounts`, **add it to the accounts
+  record** (e.g. `<Module>AccountsRecord`) rather than threading it through
+  every method signature.
+- **Per-user / per-market accounts** — trader wallets, trader accounts,
+  orderbooks, asset maps, splines, conditional-orders accounts, escrow
+  accounts, stop-loss accounts, user token accounts, mints — are method
+  parameters of type `PublicKey`. Callers derive them via the generated
+  `<Program>PDAs` helpers; wrappers must not re-derive PDAs internally
+  (keeps the impl allocation-free and seed-agnostic).
+
+### Calling the generated builders
+
+Each generated `<Program>Program` exposes two overloads per instruction: a
+long `(AccountMeta invokedProgram, PublicKey programId, ...explicit
+accounts..., params)` form and a shorter convenience form that resolves
+some accounts from defaults. **Hand-written wrappers call the long form**,
+passing `accounts.invoked<Program>Program()` as the `AccountMeta` and its
+`.publicKey()` as `programId`. This makes the wrapper's account sourcing
+explicit and avoids hidden defaults leaking through.
+
+### Instruction coverage policy
+
+By default, only wrap **trader / end-user facing** instructions. Skip
+admin, permissioned, and off-chain crank-only instructions unless a
+specific non-admin use case requires them. Typical categories to skip:
+
+- Permission / authority management (e.g. `set*Permission*`, role or
+  authority setters).
+- Parameter / configuration setters intended for program admins (e.g.
+  `update*`, `set*` on global or market config).
+- Lifecycle management of program-owned accounts (e.g. `init*`,
+  `close*`, `tombstone*` on markets, pools, or other shared state).
+- Forced / privileged user-state mutations (e.g. `forceCancel*`,
+  `liquidate*`, forced position closes or transfers).
+- Off-chain crank / keeper instructions that advance program state
+  rather than express user intent (e.g. `execute*` of pre-committed
+  orders, queue consumers, matching/uncrossing cranks, expiry sweeps,
+  oracle/price pushers).
+- Diagnostic / logging-only instructions (e.g. `log*`).
+
+Note the omissions in the wrapper's PR/commit description so they can be
+added later if a non-admin caller appears.
+
+### Cross-checking semantics
+
+When the generated Java account list is ambiguous (e.g. two
+`globalConfig`-shaped parameters, or accounts whose role isn't obvious
+from the name), the authoritative reference is the upstream Rust under
+`symlinks/external/rust-solana-programs`, not the IDL JSON or the
+generated method/parameter names.
+
+If the program's Rust source isn't already present under
+`symlinks/external/`, **stop and ask the user before cloning anything**.
+Some deployed programs (notably the Phoenix `eternal` / `ember` programs
+this repo currently targets) have **no public open-source repo for the
+deployed version** — older public repos like `phoenix-v1` do **not**
+correspond to what's on chain and must not be used as a cross-check
+source. Do not guess a URL, do not clone a "close enough" repo, and do
+not symlink one in unilaterally. Ask the user to point at (or provide) a
+trustworthy Rust checkout; if none exists, note the ambiguity in the
+PR/commit description and proceed conservatively rather than fabricating
+a reference.
+
+### Imports / `module-info.java`
+
+Pulling generated `types/` records from a sibling `gen/` package within
+the same module does **not** require a `module-info.java` change. Adding
+a brand-new top-level module **does** require updating both the module's
+`module-info.java` and `gradle/aggregation/build.gradle.kts`.
+
+### Fast feedback loop
+
+While iterating on a single module's wrapper, prefer:
+
+```sh
+./gradlew :idl-clients-<module>:compileJava
+```
+
+over the full `./gradlew check` — it gives a much faster turnaround and
+catches the kinds of errors (wrong builder overload, missing import,
+type mismatch on a generated `types/` record) that dominate this work.
