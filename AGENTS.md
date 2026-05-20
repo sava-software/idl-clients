@@ -410,8 +410,8 @@ explicit and avoids hidden defaults leaking through.
 ### Instruction coverage policy
 
 By default, only wrap **trader / end-user facing** instructions. Skip
-admin, permissioned, and off-chain crank-only instructions unless a
-specific non-admin use case requires them. Typical categories to skip:
+admin and permissioned instructions unless a specific non-admin use case
+requires them. Typical categories to skip:
 
 - Permission / authority management (e.g. `set*Permission*`, role or
   authority setters).
@@ -421,10 +421,6 @@ specific non-admin use case requires them. Typical categories to skip:
   `close*`, `tombstone*` on markets, pools, or other shared state).
 - Forced / privileged user-state mutations (e.g. `forceCancel*`,
   `liquidate*`, forced position closes or transfers).
-- Off-chain crank / keeper instructions that advance program state
-  rather than express user intent (e.g. `execute*` of pre-committed
-  orders, queue consumers, matching/uncrossing cranks, expiry sweeps,
-  oracle/price pushers).
 - Diagnostic / logging-only instructions (e.g. `log*`).
 
 List **every skipped instruction** in the wrapper's PR/commit

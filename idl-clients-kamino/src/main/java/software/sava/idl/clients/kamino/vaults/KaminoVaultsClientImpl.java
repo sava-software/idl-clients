@@ -7,22 +7,20 @@ import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.vaults.gen.KaminoVaultProgram;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
-public class KaminoVaultsClientImpl implements KaminoVaultsClient {
+final class KaminoVaultsClientImpl implements KaminoVaultsClient {
 
   private final SPLAccountClient splAccountClient;
   private final SolanaAccounts solanaAccounts;
   private final KaminoAccounts kaminoAccounts;
-  private final PublicKey withdrawFromAvailableGlobalConfigKey;
   private final PublicKey owner;
   private final PublicKey feePayer;
 
-  KaminoVaultsClientImpl(final SPLAccountClient SPLAccountClient, final KaminoAccounts kaminoAccounts) {
-    this.splAccountClient = SPLAccountClient;
-    this.solanaAccounts = SPLAccountClient.solanaAccounts();
+  KaminoVaultsClientImpl(final SPLAccountClient splAccountClient, final KaminoAccounts kaminoAccounts) {
+    this.splAccountClient = splAccountClient;
+    this.solanaAccounts = splAccountClient.solanaAccounts();
     this.kaminoAccounts = kaminoAccounts;
-    this.owner = SPLAccountClient.owner();
-    this.feePayer = SPLAccountClient.feePayer().publicKey();
-    this.withdrawFromAvailableGlobalConfigKey = kaminoAccounts.kVaultGlobalConfig().publicKey();
+    this.owner = splAccountClient.owner();
+    this.feePayer = splAccountClient.feePayer().publicKey();
   }
 
   @Override
@@ -81,48 +79,112 @@ public class KaminoVaultsClientImpl implements KaminoVaultsClient {
   }
 
   @Override
-  public Instruction withdraw(final PublicKey withdrawFromAvailableVaultStateKey,
-                              final PublicKey withdrawFromAvailableTokenVaultKey,
-                              final PublicKey withdrawFromAvailableBaseVaultAuthorityKey,
-                              final PublicKey withdrawFromAvailableUserTokenAtaKey,
-                              final PublicKey withdrawFromAvailableTokenMintKey,
-                              final PublicKey withdrawFromAvailableUserSharesAtaKey,
-                              final PublicKey withdrawFromAvailableSharesMintKey,
-                              final PublicKey withdrawFromAvailableTokenProgramKey,
-                              final PublicKey withdrawFromAvailableSharesTokenProgramKey,
-                              final PublicKey withdrawFromReserveAccountsReserveKey,
-                              final PublicKey withdrawFromReserveAccountsCtokenVaultKey,
-                              final PublicKey withdrawFromReserveAccountsLendingMarketKey,
-                              final PublicKey withdrawFromReserveAccountsLendingMarketAuthorityKey,
-                              final PublicKey withdrawFromReserveAccountsReserveLiquiditySupplyKey,
-                              final PublicKey withdrawFromReserveAccountsReserveCollateralMintKey,
-                              final PublicKey withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+  public Instruction withdraw(final PublicKey vaultStateKey,
+                              final PublicKey tokenVaultKey,
+                              final PublicKey baseVaultAuthorityKey,
+                              final PublicKey userTokenAtaKey,
+                              final PublicKey tokenMintKey,
+                              final PublicKey userSharesAtaKey,
+                              final PublicKey sharesMintKey,
+                              final PublicKey tokenProgramKey,
+                              final PublicKey sharesTokenProgramKey,
+                              final PublicKey reserveKey,
+                              final PublicKey ctokenVaultKey,
+                              final PublicKey lendingMarketKey,
+                              final PublicKey lendingMarketAuthorityKey,
+                              final PublicKey reserveLiquiditySupplyKey,
+                              final PublicKey reserveCollateralMintKey,
+                              final PublicKey reserveCollateralTokenProgramKey,
                               final long sharesAmount) {
     return KaminoVaultProgram.withdraw(
         kaminoAccounts.invokedKVaultsProgram(),
         owner,
-        withdrawFromAvailableVaultStateKey,
-        withdrawFromAvailableGlobalConfigKey,
-        withdrawFromAvailableTokenVaultKey,
-        withdrawFromAvailableBaseVaultAuthorityKey,
-        withdrawFromAvailableUserTokenAtaKey,
-        withdrawFromAvailableTokenMintKey,
-        withdrawFromAvailableUserSharesAtaKey,
-        withdrawFromAvailableSharesMintKey,
-        withdrawFromAvailableTokenProgramKey,
-        withdrawFromAvailableSharesTokenProgramKey,
+        vaultStateKey,
+        kaminoAccounts.kVaultGlobalConfig().publicKey(),
+        tokenVaultKey,
+        baseVaultAuthorityKey,
+        userTokenAtaKey,
+        tokenMintKey,
+        userSharesAtaKey,
+        sharesMintKey,
+        tokenProgramKey,
+        sharesTokenProgramKey,
         kaminoAccounts.kLendProgram(),
         kaminoAccounts.kVaultsEventAuthority(),
         kaminoAccounts.kVaultsProgram(),
-        withdrawFromAvailableVaultStateKey,
-        withdrawFromReserveAccountsReserveKey,
-        withdrawFromReserveAccountsCtokenVaultKey,
-        withdrawFromReserveAccountsLendingMarketKey,
-        withdrawFromReserveAccountsLendingMarketAuthorityKey,
-        withdrawFromReserveAccountsReserveLiquiditySupplyKey,
-        withdrawFromReserveAccountsReserveCollateralMintKey,
-        withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+        vaultStateKey,
+        reserveKey,
+        ctokenVaultKey,
+        lendingMarketKey,
+        lendingMarketAuthorityKey,
+        reserveLiquiditySupplyKey,
+        reserveCollateralMintKey,
+        reserveCollateralTokenProgramKey,
         solanaAccounts.instructionsSysVar(),
+        kaminoAccounts.kVaultsEventAuthority(),
+        kaminoAccounts.kVaultsProgram(),
+        sharesAmount
+    );
+  }
+
+  @Override
+  public Instruction withdrawFromAvailable(final PublicKey vaultStateKey,
+                                           final PublicKey tokenVaultKey,
+                                           final PublicKey baseVaultAuthorityKey,
+                                           final PublicKey userTokenAtaKey,
+                                           final PublicKey tokenMintKey,
+                                           final PublicKey userSharesAtaKey,
+                                           final PublicKey sharesMintKey,
+                                           final PublicKey tokenProgramKey,
+                                           final PublicKey sharesTokenProgramKey,
+                                           final long sharesAmount) {
+    return KaminoVaultProgram.withdrawFromAvailable(
+        kaminoAccounts.invokedKVaultsProgram(),
+        owner,
+        vaultStateKey,
+        kaminoAccounts.kVaultGlobalConfig().publicKey(),
+        tokenVaultKey,
+        baseVaultAuthorityKey,
+        userTokenAtaKey,
+        tokenMintKey,
+        userSharesAtaKey,
+        sharesMintKey,
+        tokenProgramKey,
+        sharesTokenProgramKey,
+        kaminoAccounts.kLendProgram(),
+        kaminoAccounts.kVaultsEventAuthority(),
+        kaminoAccounts.kVaultsProgram(),
+        sharesAmount
+    );
+  }
+
+  @Override
+  public Instruction redeemInKind(final PublicKey vaultStateKey,
+                                  final PublicKey baseVaultAuthorityKey,
+                                  final PublicKey reserveKey,
+                                  final PublicKey ctokenVaultKey,
+                                  final PublicKey userCtokenTaKey,
+                                  final PublicKey ctokenMintKey,
+                                  final PublicKey userSharesTaKey,
+                                  final PublicKey sharesMintKey,
+                                  final PublicKey reserveCollateralTokenProgramKey,
+                                  final PublicKey sharesTokenProgramKey,
+                                  final long sharesAmount) {
+    return KaminoVaultProgram.redeemInKind(
+        kaminoAccounts.invokedKVaultsProgram(),
+        owner,
+        vaultStateKey,
+        kaminoAccounts.kVaultGlobalConfig().publicKey(),
+        baseVaultAuthorityKey,
+        reserveKey,
+        ctokenVaultKey,
+        userCtokenTaKey,
+        ctokenMintKey,
+        userSharesTaKey,
+        sharesMintKey,
+        reserveCollateralTokenProgramKey,
+        sharesTokenProgramKey,
+        kaminoAccounts.kLendProgram(),
         kaminoAccounts.kVaultsEventAuthority(),
         kaminoAccounts.kVaultsProgram(),
         sharesAmount

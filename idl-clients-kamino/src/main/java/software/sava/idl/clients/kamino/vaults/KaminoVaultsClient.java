@@ -29,6 +29,12 @@ public interface KaminoVaultsClient {
 
   PublicKey feePayer();
 
+  /// Deposit `maxAmount` of the vault's underlying token in exchange for shares.
+  ///
+  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
+  /// (in allocation order) to refresh them via klend before computing the
+  /// share price; callers must append those reserves via
+  /// `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
   Instruction deposit(final PublicKey vaultStateKey,
                       final PublicKey tokenVaultKey,
                       final PublicKey tokenMintKey,
@@ -83,63 +89,74 @@ public interface KaminoVaultsClient {
     );
   }
 
-  Instruction withdraw(final PublicKey withdrawFromAvailableVaultStateKey,
-                       final PublicKey withdrawFromAvailableTokenVaultKey,
-                       final PublicKey withdrawFromAvailableBaseVaultAuthorityKey,
-                       final PublicKey withdrawFromAvailableUserTokenAtaKey,
-                       final PublicKey withdrawFromAvailableTokenMintKey,
-                       final PublicKey withdrawFromAvailableUserSharesAtaKey,
-                       final PublicKey withdrawFromAvailableSharesMintKey,
-                       final PublicKey withdrawFromAvailableTokenProgramKey,
-                       final PublicKey withdrawFromAvailableSharesTokenProgramKey,
-                       final PublicKey withdrawFromReserveAccountsReserveKey,
-                       final PublicKey withdrawFromReserveAccountsCtokenVaultKey,
-                       final PublicKey withdrawFromReserveAccountsLendingMarketKey,
-                       final PublicKey withdrawFromReserveAccountsLendingMarketAuthorityKey,
-                       final PublicKey withdrawFromReserveAccountsReserveLiquiditySupplyKey,
-                       final PublicKey withdrawFromReserveAccountsReserveCollateralMintKey,
-                       final PublicKey withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+  /// Burn `sharesAmount` shares for the underlying token. Drains the vault's
+  /// available (uninvested) liquidity first and, if not enough, redeems
+  /// collateral from the supplied reserve.
+  ///
+  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
+  /// (in allocation order) to refresh them via klend; callers must append those
+  /// reserves via `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
+  ///
+  /// `vaultStateKey` is passed to both the `WithdrawFromAvailable` and
+  /// `WithdrawFromInvested` account groups; the program enforces they refer to
+  /// the same vault.
+  Instruction withdraw(final PublicKey vaultStateKey,
+                       final PublicKey tokenVaultKey,
+                       final PublicKey baseVaultAuthorityKey,
+                       final PublicKey userTokenAtaKey,
+                       final PublicKey tokenMintKey,
+                       final PublicKey userSharesAtaKey,
+                       final PublicKey sharesMintKey,
+                       final PublicKey tokenProgramKey,
+                       final PublicKey sharesTokenProgramKey,
+                       final PublicKey reserveKey,
+                       final PublicKey ctokenVaultKey,
+                       final PublicKey lendingMarketKey,
+                       final PublicKey lendingMarketAuthorityKey,
+                       final PublicKey reserveLiquiditySupplyKey,
+                       final PublicKey reserveCollateralMintKey,
+                       final PublicKey reserveCollateralTokenProgramKey,
                        final long sharesAmount);
 
   default Instruction withdraw(final VaultState vaultState,
-                               final PublicKey withdrawFromAvailableUserTokenAtaKey,
-                               final PublicKey withdrawFromAvailableUserSharesAtaKey,
-                               final PublicKey withdrawFromAvailableSharesTokenProgramKey,
-                               final PublicKey withdrawFromReserveAccountsReserveKey,
-                               final PublicKey withdrawFromReserveAccountsCtokenVaultKey,
-                               final PublicKey withdrawFromReserveAccountsLendingMarketKey,
-                               final PublicKey withdrawFromReserveAccountsLendingMarketAuthorityKey,
-                               final PublicKey withdrawFromReserveAccountsReserveLiquiditySupplyKey,
-                               final PublicKey withdrawFromReserveAccountsReserveCollateralMintKey,
-                               final PublicKey withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+                               final PublicKey userTokenAtaKey,
+                               final PublicKey userSharesAtaKey,
+                               final PublicKey sharesTokenProgramKey,
+                               final PublicKey reserveKey,
+                               final PublicKey ctokenVaultKey,
+                               final PublicKey lendingMarketKey,
+                               final PublicKey lendingMarketAuthorityKey,
+                               final PublicKey reserveLiquiditySupplyKey,
+                               final PublicKey reserveCollateralMintKey,
+                               final PublicKey reserveCollateralTokenProgramKey,
                                final long maxAmount) {
 
     return withdraw(
         vaultState._address(),
         vaultState.tokenVault(),
         vaultState.baseVaultAuthority(),
-        withdrawFromAvailableUserTokenAtaKey,
+        userTokenAtaKey,
         vaultState.tokenMint(),
-        withdrawFromAvailableUserSharesAtaKey,
+        userSharesAtaKey,
         vaultState.sharesMint(),
         vaultState.tokenProgram(),
-        withdrawFromAvailableSharesTokenProgramKey,
-        withdrawFromReserveAccountsReserveKey,
-        withdrawFromReserveAccountsCtokenVaultKey,
-        withdrawFromReserveAccountsLendingMarketKey,
-        withdrawFromReserveAccountsLendingMarketAuthorityKey,
-        withdrawFromReserveAccountsReserveLiquiditySupplyKey,
-        withdrawFromReserveAccountsReserveCollateralMintKey,
-        withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+        sharesTokenProgramKey,
+        reserveKey,
+        ctokenVaultKey,
+        lendingMarketKey,
+        lendingMarketAuthorityKey,
+        reserveLiquiditySupplyKey,
+        reserveCollateralMintKey,
+        reserveCollateralTokenProgramKey,
         maxAmount
     );
   }
 
   default Instruction withdraw(final VaultState vaultState,
-                               final PublicKey withdrawFromAvailableUserTokenAtaKey,
-                               final PublicKey withdrawFromAvailableUserSharesAtaKey,
-                               final PublicKey withdrawFromAvailableSharesTokenProgramKey,
-                               final PublicKey withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+                               final PublicKey userTokenAtaKey,
+                               final PublicKey userSharesAtaKey,
+                               final PublicKey sharesTokenProgramKey,
+                               final PublicKey reserveCollateralTokenProgramKey,
                                final Reserve reserve,
                                final long maxAmount) {
     final var kaminoAccounts = kaminoAccounts();
@@ -147,29 +164,24 @@ public interface KaminoVaultsClient {
     final var vaultStateKey = vaultState._address();
     final var cTokenVault = kaminoAccounts.cTokenVault(vaultStateKey, reserve._address()).publicKey();
     return withdraw(
-        vaultStateKey,
-        vaultState.tokenVault(),
-        vaultState.baseVaultAuthority(),
-        withdrawFromAvailableUserTokenAtaKey,
-        vaultState.tokenMint(),
-        withdrawFromAvailableUserSharesAtaKey,
-        vaultState.sharesMint(),
-        vaultState.tokenProgram(),
-        withdrawFromAvailableSharesTokenProgramKey,
+        vaultState,
+        userTokenAtaKey,
+        userSharesAtaKey,
+        sharesTokenProgramKey,
         reserve._address(),
         cTokenVault,
         lendingMarket,
         kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
         reserve.liquidity().supplyVault(),
         reserve.collateral().mintPubkey(),
-        withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+        reserveCollateralTokenProgramKey,
         maxAmount
     );
   }
 
   default Instruction withdraw(final VaultState vaultState,
-                               final PublicKey withdrawFromAvailableSharesTokenProgramKey,
-                               final PublicKey withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+                               final PublicKey sharesTokenProgramKey,
+                               final PublicKey reserveCollateralTokenProgramKey,
                                final Reserve reserve,
                                final long maxAmount) {
     final var tokenMint = vaultState.tokenMint();
@@ -177,15 +189,132 @@ public interface KaminoVaultsClient {
     final var splAccountClient = splAccountClient();
     final var userTokenAtaKey = splAccountClient.findATA(tokenProgram, tokenMint).publicKey();
     final var sharesMint = vaultState.sharesMint();
-    final var userSharesAtaKey = splAccountClient.findATA(withdrawFromAvailableSharesTokenProgramKey, sharesMint).publicKey();
+    final var userSharesAtaKey = splAccountClient.findATA(sharesTokenProgramKey, sharesMint).publicKey();
     return withdraw(
         vaultState,
         userTokenAtaKey,
         userSharesAtaKey,
-        withdrawFromAvailableSharesTokenProgramKey,
-        withdrawFromReserveAccountsReserveCollateralTokenProgramKey,
+        sharesTokenProgramKey,
+        reserveCollateralTokenProgramKey,
         reserve,
         maxAmount
+    );
+  }
+
+  /// Withdraw `sharesAmount` worth of underlying token from the vault's
+  /// *available* (uninvested) liquidity only. Cheaper than `withdraw` since it
+  /// skips the reserve-redemption leg; will fail if the available liquidity is
+  /// insufficient. The handler does not read `remaining_accounts`.
+  Instruction withdrawFromAvailable(final PublicKey vaultStateKey,
+                                    final PublicKey tokenVaultKey,
+                                    final PublicKey baseVaultAuthorityKey,
+                                    final PublicKey userTokenAtaKey,
+                                    final PublicKey tokenMintKey,
+                                    final PublicKey userSharesAtaKey,
+                                    final PublicKey sharesMintKey,
+                                    final PublicKey tokenProgramKey,
+                                    final PublicKey sharesTokenProgramKey,
+                                    final long sharesAmount);
+
+  default Instruction withdrawFromAvailable(final VaultState vaultState,
+                                            final PublicKey userTokenAtaKey,
+                                            final PublicKey userSharesAtaKey,
+                                            final PublicKey sharesTokenProgramKey,
+                                            final long sharesAmount) {
+    return withdrawFromAvailable(
+        vaultState._address(),
+        vaultState.tokenVault(),
+        vaultState.baseVaultAuthority(),
+        userTokenAtaKey,
+        vaultState.tokenMint(),
+        userSharesAtaKey,
+        vaultState.sharesMint(),
+        vaultState.tokenProgram(),
+        sharesTokenProgramKey,
+        sharesAmount
+    );
+  }
+
+  default Instruction withdrawFromAvailable(final VaultState vaultState,
+                                            final PublicKey sharesTokenProgramKey,
+                                            final long sharesAmount) {
+    final var tokenMint = vaultState.tokenMint();
+    final var tokenProgram = vaultState.tokenProgram();
+    final var splAccountClient = splAccountClient();
+    final var userTokenAtaKey = splAccountClient.findATA(tokenProgram, tokenMint).publicKey();
+    final var sharesMint = vaultState.sharesMint();
+    final var userSharesAtaKey = splAccountClient.findATA(sharesTokenProgramKey, sharesMint).publicKey();
+    return withdrawFromAvailable(
+        vaultState,
+        userTokenAtaKey,
+        userSharesAtaKey,
+        sharesTokenProgramKey,
+        sharesAmount
+    );
+  }
+
+  /// Burn `sharesAmount` shares and pay out a single reserve's cTokens directly
+  /// to the user (bypassing the redeem-to-underlying step). Useful for callers
+  /// that want to settle in cTokens.
+  ///
+  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
+  /// (in allocation order) to refresh them via klend; callers must append those
+  /// reserves via `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
+  Instruction redeemInKind(final PublicKey vaultStateKey,
+                           final PublicKey baseVaultAuthorityKey,
+                           final PublicKey reserveKey,
+                           final PublicKey ctokenVaultKey,
+                           final PublicKey userCtokenTaKey,
+                           final PublicKey ctokenMintKey,
+                           final PublicKey userSharesTaKey,
+                           final PublicKey sharesMintKey,
+                           final PublicKey reserveCollateralTokenProgramKey,
+                           final PublicKey sharesTokenProgramKey,
+                           final long sharesAmount);
+
+  default Instruction redeemInKind(final VaultState vaultState,
+                                   final Reserve reserve,
+                                   final PublicKey userCtokenTaKey,
+                                   final PublicKey userSharesTaKey,
+                                   final PublicKey reserveCollateralTokenProgramKey,
+                                   final PublicKey sharesTokenProgramKey,
+                                   final long sharesAmount) {
+    final var kaminoAccounts = kaminoAccounts();
+    final var vaultStateKey = vaultState._address();
+    final var cTokenVault = kaminoAccounts.cTokenVault(vaultStateKey, reserve._address()).publicKey();
+    return redeemInKind(
+        vaultStateKey,
+        vaultState.baseVaultAuthority(),
+        reserve._address(),
+        cTokenVault,
+        userCtokenTaKey,
+        reserve.collateral().mintPubkey(),
+        userSharesTaKey,
+        vaultState.sharesMint(),
+        reserveCollateralTokenProgramKey,
+        sharesTokenProgramKey,
+        sharesAmount
+    );
+  }
+
+  default Instruction redeemInKind(final VaultState vaultState,
+                                   final Reserve reserve,
+                                   final PublicKey reserveCollateralTokenProgramKey,
+                                   final PublicKey sharesTokenProgramKey,
+                                   final long sharesAmount) {
+    final var splAccountClient = splAccountClient();
+    final var cTokenMint = reserve.collateral().mintPubkey();
+    final var userCtokenTaKey = splAccountClient.findATA(reserveCollateralTokenProgramKey, cTokenMint).publicKey();
+    final var sharesMint = vaultState.sharesMint();
+    final var userSharesTaKey = splAccountClient.findATA(sharesTokenProgramKey, sharesMint).publicKey();
+    return redeemInKind(
+        vaultState,
+        reserve,
+        userCtokenTaKey,
+        userSharesTaKey,
+        reserveCollateralTokenProgramKey,
+        sharesTokenProgramKey,
+        sharesAmount
     );
   }
 }
