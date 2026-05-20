@@ -71,11 +71,8 @@ replay_pid*.log
 # Node/Yarn (if any tooling pulls it in locally)
 node_modules/
 **/.cache/
-/protocol-v2/
-/drift-protocol-v2-docs/
-/scope
 Integ.*
 /markets/
-/rebalance-service
-/sym/
+/symlinks/
 *.bin
+/.junie/

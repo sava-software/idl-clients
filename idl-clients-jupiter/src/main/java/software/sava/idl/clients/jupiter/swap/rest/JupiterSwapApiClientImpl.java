@@ -28,7 +28,7 @@ import static software.sava.rpc.json.PublicKeyEncoding.PARSE_BASE58_PUBLIC_KEY;
 
 final class JupiterSwapApiClientImpl extends JsonHttpClient implements JupiterSwapApiClient {
 
-  // Legacy Swap
+  // Metis Swap
   private static final Function<HttpResponse<?>, JupiterQuote> QUOTE_PARSER = applyGenericResponse(JupiterQuote::parse);
   private static final Function<HttpResponse<?>, JupiterSwapTx> SWAP_TX = applyGenericResponse(JupiterSwapTx::parse);
   private static final Function<HttpResponse<?>, byte[]> SWAP_INSTRUCTIONS_TX = response -> {
