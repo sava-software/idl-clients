@@ -52,7 +52,7 @@ final class MarinadeProgramClientImpl implements MarinadeProgramClient {
   public Instruction marinadeDeposit(final PublicKey mSolTokenAccount, final long lamports) {
     return MarinadeFinanceProgram.deposit(
         marinadeAccounts.invokedMarinadeProgram(),
-        marinadeAccounts.stateProgram(),
+        marinadeAccounts.stateAccount(),
         marinadeAccounts.mSolTokenMint(),
         marinadeAccounts.liquidityPoolSolLegAccount(),
         marinadeAccounts.liquidityPoolMSolLegAccount(),
@@ -72,17 +72,18 @@ final class MarinadeProgramClientImpl implements MarinadeProgramClient {
                                          final PublicKey stakeListKey,
                                          final PublicKey stakeAccount,
                                          final PublicKey duplicationFlagKey,
+                                         final PublicKey rentPayer,
                                          final PublicKey mSolTokenAccount,
                                          final int validatorIndex) {
     return MarinadeFinanceProgram.depositStakeAccount(
         marinadeAccounts.invokedMarinadeProgram(),
-        marinadeAccounts.stateProgram(),
+        marinadeAccounts.stateAccount(),
         validatorListKey,
         stakeListKey,
         stakeAccount,
         owner,
         duplicationFlagKey,
-        feePayer,
+        rentPayer,
         marinadeAccounts.mSolTokenMint(),
         mSolTokenAccount,
         marinadeAccounts.mSolTokenMintAuthorityPDA(),
@@ -99,7 +100,7 @@ final class MarinadeProgramClientImpl implements MarinadeProgramClient {
   public Instruction claimTicket(final PublicKey ticketAccount) {
     return MarinadeFinanceProgram.claim(
         marinadeAccounts.invokedMarinadeProgram(),
-        marinadeAccounts.stateProgram(),
+        marinadeAccounts.stateAccount(),
         marinadeAccounts.treasuryReserveSolPDA(),
         ticketAccount,
         owner,
@@ -116,35 +117,112 @@ final class MarinadeProgramClientImpl implements MarinadeProgramClient {
                                           final PublicKey stakeDepositAuthorityKey,
                                           final PublicKey stakeAccount,
                                           final PublicKey splitStakeAccountKey,
+                                          final PublicKey splitStakeRentPayer,
+                                          final PublicKey beneficiary,
                                           final int stakeIndex,
                                           final int validatorIndex,
                                           final long msolAmount) {
     return MarinadeFinanceProgram.withdrawStakeAccount(
         marinadeAccounts.invokedMarinadeProgram(),
-        marinadeAccounts.stateProgram(),
+        marinadeAccounts.stateAccount(),
         marinadeAccounts.mSolTokenMint(),
         mSolTokenAccount,
         owner,
         marinadeAccounts.treasuryMSolAccount(),
         validatorListKey,
         stakeListKey,
-
         stakeWithdrawalAuthorityKey,
         stakeDepositAuthorityKey,
-
         stakeAccount,
         splitStakeAccountKey,
-        feePayer,
-
+        splitStakeRentPayer,
         solanaAccounts.clockSysVar(),
         solanaAccounts.systemProgram(),
         solanaAccounts.tokenProgram(),
         solanaAccounts.stakeProgram(),
-
         stakeIndex,
         validatorIndex,
         msolAmount,
-        owner
+        beneficiary
+    );
+  }
+
+  @Override
+  public Instruction liquidUnstake(final PublicKey mSolTokenAccount,
+                                   final PublicKey solReceiverAccount,
+                                   final long msolAmount) {
+    return MarinadeFinanceProgram.liquidUnstake(
+        marinadeAccounts.invokedMarinadeProgram(),
+        marinadeAccounts.stateAccount(),
+        marinadeAccounts.mSolTokenMint(),
+        marinadeAccounts.liquidityPoolSolLegAccount(),
+        marinadeAccounts.liquidityPoolMSolLegAccount(),
+        marinadeAccounts.treasuryMSolAccount(),
+        mSolTokenAccount,
+        owner,
+        solReceiverAccount,
+        solanaAccounts.systemProgram(),
+        solanaAccounts.tokenProgram(),
+        msolAmount
+    );
+  }
+
+  @Override
+  public Instruction orderUnstake(final PublicKey mSolTokenAccount,
+                                  final PublicKey newTicketAccount,
+                                  final long msolAmount) {
+    return MarinadeFinanceProgram.orderUnstake(
+        marinadeAccounts.invokedMarinadeProgram(),
+        marinadeAccounts.stateAccount(),
+        marinadeAccounts.mSolTokenMint(),
+        mSolTokenAccount,
+        owner,
+        newTicketAccount,
+        solanaAccounts.clockSysVar(),
+        solanaAccounts.rentSysVar(),
+        solanaAccounts.tokenProgram(),
+        msolAmount
+    );
+  }
+
+  @Override
+  public Instruction addLiquidity(final PublicKey solSourceAccount,
+                                  final PublicKey lpTokenAccount,
+                                  final long lamports) {
+    return MarinadeFinanceProgram.addLiquidity(
+        marinadeAccounts.invokedMarinadeProgram(),
+        marinadeAccounts.stateAccount(),
+        marinadeAccounts.liquidityPoolMSolSolMint(),
+        marinadeAccounts.liquidityPoolAuthPDA(),
+        marinadeAccounts.liquidityPoolMSolLegAccount(),
+        marinadeAccounts.liquidityPoolSolLegAccount(),
+        solSourceAccount,
+        lpTokenAccount,
+        solanaAccounts.systemProgram(),
+        solanaAccounts.tokenProgram(),
+        lamports
+    );
+  }
+
+  @Override
+  public Instruction removeLiquidity(final PublicKey lpTokenAccount,
+                                     final PublicKey solReceiverAccount,
+                                     final PublicKey mSolReceiverAccount,
+                                     final long lpTokens) {
+    return MarinadeFinanceProgram.removeLiquidity(
+        marinadeAccounts.invokedMarinadeProgram(),
+        marinadeAccounts.stateAccount(),
+        marinadeAccounts.liquidityPoolMSolSolMint(),
+        lpTokenAccount,
+        owner,
+        solReceiverAccount,
+        mSolReceiverAccount,
+        marinadeAccounts.liquidityPoolSolLegAccount(),
+        marinadeAccounts.liquidityPoolMSolLegAccount(),
+        marinadeAccounts.liquidityPoolMSolLegAuthority(),
+        solanaAccounts.systemProgram(),
+        solanaAccounts.tokenProgram(),
+        lpTokens
     );
   }
 }

@@ -20,5 +20,8 @@ record MarinadeAccountsRecord(PublicKey mSolTokenMint,
                               PublicKey liquidityPoolMSolLegAccount,
                               PublicKey liquidityPoolMSolLegAuthority,
                               PublicKey liquidityPoolSolLegAccount,
-                              PublicKey validatorListAccount) implements MarinadeAccounts {
+                              PublicKey validatorListAccount,
+                              PublicKey stakeListAccount,
+                              PublicKey stakeWithdrawAuthority,
+                              PublicKey stakeDepositAuthority) implements MarinadeAccounts {
 }

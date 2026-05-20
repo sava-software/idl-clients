@@ -9,17 +9,19 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.State;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.TicketAccountData;
 import software.sava.idl.clients.spl.SPLAccountClient;
+import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
 import software.sava.solana.programs.stake.StakeAccount;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface MarinadeProgramClient {
+
+  // --- Factories ---
 
   static MarinadeProgramClient createClient(final SPLAccountClient splAccountClient,
                                             final MarinadeAccounts marinadeAccounts) {
@@ -29,6 +31,8 @@ public interface MarinadeProgramClient {
   static MarinadeProgramClient createClient(final SPLAccountClient splAccountClient) {
     return createClient(splAccountClient, MarinadeAccounts.MAIN_NET);
   }
+
+  // --- Static helpers ---
 
   static CompletableFuture<Long> getMinimumBalanceForTicketAccount(final SolanaRpcClient rpcClient) {
     return rpcClient.getMinimumBalanceForRentExemption(TicketAccountData.BYTES);
@@ -42,6 +46,12 @@ public interface MarinadeProgramClient {
         List.of(TicketAccountData.SIZE_FILTER, TicketAccountData.createBeneficiaryFilter(owner)),
         TicketAccountData.FACTORY
     );
+  }
+
+  static CompletableFuture<AccountInfo<MarinadeValidatorList>> fetchValidatorList(final SolanaRpcClient rpcClient,
+                                                                                  final State programState) {
+    final var destinationValidatorList = programState.validatorSystem().validatorList();
+    return rpcClient.getAccountInfo(destinationValidatorList.account(), MarinadeValidatorList.FACTORY);
   }
 
   static long totalVirtualStakedLamports(final State state) {
@@ -94,6 +104,8 @@ public interface MarinadeProgramClient {
     return validatorIndex(stakeAccount.voterPublicKey().toByteArray(), validatorListData, state);
   }
 
+  // --- Accessors ---
+
   SolanaAccounts solanaAccounts();
 
   MarinadeAccounts marinadeAccounts();
@@ -104,20 +116,58 @@ public interface MarinadeProgramClient {
 
   PublicKey feePayer();
 
+  // --- Abstract instructions ---
+
+  Instruction marinadeDeposit(final PublicKey mSolTokenAccount, final long lamports);
+
+  Instruction depositStakeAccount(final PublicKey validatorListKey,
+                                  final PublicKey stakeListKey,
+                                  final PublicKey stakeAccount,
+                                  final PublicKey duplicationFlagKey,
+                                  final PublicKey rentPayer,
+                                  final PublicKey mSolTokenAccount,
+                                  final int validatorIndex);
+
+  Instruction claimTicket(final PublicKey ticketAccount);
+
+  Instruction withdrawStakeAccount(final PublicKey mSolTokenAccount,
+                                   final PublicKey validatorListKey,
+                                   final PublicKey stakeListKey,
+                                   final PublicKey stakeWithdrawalAuthorityKey,
+                                   final PublicKey stakeDepositAuthorityKey,
+                                   final PublicKey stakeAccount,
+                                   final PublicKey splitStakeAccountKey,
+                                   final PublicKey splitStakeRentPayer,
+                                   final PublicKey beneficiary,
+                                   final int stakeIndex,
+                                   final int validatorIndex,
+                                   final long msolAmount);
+
+  Instruction liquidUnstake(final PublicKey mSolTokenAccount,
+                            final PublicKey solReceiverAccount,
+                            final long msolAmount);
+
+  Instruction orderUnstake(final PublicKey mSolTokenAccount,
+                           final PublicKey newTicketAccount,
+                           final long msolAmount);
+
+  Instruction addLiquidity(final PublicKey solSourceAccount,
+                           final PublicKey lpTokenAccount,
+                           final long lamports);
+
+  Instruction removeLiquidity(final PublicKey lpTokenAccount,
+                              final PublicKey solReceiverAccount,
+                              final PublicKey mSolReceiverAccount,
+                              final long lpTokens);
+
+  // --- Default helpers / convenience overloads ---
+
   default CompletableFuture<List<AccountInfo<TokenAccount>>> fetchMSolTokenAccounts(final SolanaRpcClient rpcClient) {
     return rpcClient.getTokenAccountsForTokenMintByOwner(owner(), marinadeAccounts().mSolTokenMint());
   }
 
-  Instruction marinadeDeposit(final PublicKey mSolTokenAccount, final long lamports);
-
   default CompletableFuture<AccountInfo<State>> fetchProgramState(final SolanaRpcClient rpcClient) {
-    return rpcClient.getAccountInfo(marinadeAccounts().stateProgram(), State.FACTORY);
-  }
-
-  static CompletableFuture<AccountInfo<MarinadeValidatorList>> fetchValidatorList(final SolanaRpcClient rpcClient,
-                                                                                  final State programState) {
-    final var destinationValidatorList = programState.validatorSystem().validatorList();
-    return rpcClient.getAccountInfo(destinationValidatorList.account(), MarinadeValidatorList.FACTORY);
+    return rpcClient.getAccountInfo(marinadeAccounts().stateAccount(), State.FACTORY);
   }
 
   default CompletableFuture<List<AccountInfo<TicketAccountData>>> fetchTicketAccounts(final SolanaRpcClient rpcClient) {
@@ -125,13 +175,16 @@ public interface MarinadeProgramClient {
   }
 
   default ProgramDerivedAddress findDuplicationKey(final PublicKey validatorPublicKey) {
-    final var marinadeAccounts = marinadeAccounts();
-    return PublicKey.findProgramAddress(List.of(
-            marinadeAccounts.stateProgram().toByteArray(),
-            "unique_validator".getBytes(StandardCharsets.UTF_8),
-            validatorPublicKey.toByteArray()
-        ), marinadeAccounts.marinadeProgram()
-    );
+    return marinadeAccounts().findDuplicationKey(validatorPublicKey);
+  }
+
+  default PublicKey deriveATA(final PublicKey ownerKey, final PublicKey mintKey) {
+    return AssociatedTokenPDAs.associatedTokenPDA(
+        solanaAccounts().associatedTokenAccountProgram(),
+        ownerKey,
+        solanaAccounts().tokenProgram(),
+        mintKey
+    ).publicKey();
   }
 
   @Deprecated
@@ -143,12 +196,24 @@ public interface MarinadeProgramClient {
     );
   }
 
-  Instruction depositStakeAccount(final PublicKey validatorListKey,
-                                  final PublicKey stakeListKey,
-                                  final PublicKey stakeAccount,
-                                  final PublicKey duplicationFlagKey,
-                                  final PublicKey mSolTokenAccount,
-                                  final int validatorIndex);
+  // depositStakeAccount
+
+  default Instruction depositStakeAccount(final PublicKey validatorListKey,
+                                          final PublicKey stakeListKey,
+                                          final PublicKey stakeAccount,
+                                          final PublicKey duplicationFlagKey,
+                                          final PublicKey mSolTokenAccount,
+                                          final int validatorIndex) {
+    return depositStakeAccount(
+        validatorListKey,
+        stakeListKey,
+        stakeAccount,
+        duplicationFlagKey,
+        feePayer(),
+        mSolTokenAccount,
+        validatorIndex
+    );
+  }
 
   default Instruction depositStakeAccount(final State marinadeProgramState,
                                           final PublicKey stakeAccount,
@@ -160,27 +225,45 @@ public interface MarinadeProgramClient {
         marinadeProgramState.stakeSystem().stakeList().account(),
         stakeAccount,
         findDuplicationKey(validatorPublicKey).publicKey(),
+        feePayer(),
         mSolTokenAccount,
         validatorIndex
     );
   }
 
-  Instruction claimTicket(final PublicKey ticketAccount);
+  // claimTicket
 
   default List<Instruction> claimTickets(final Collection<PublicKey> ticketAccounts) {
     return ticketAccounts.stream().map(this::claimTicket).toList();
   }
 
-  Instruction withdrawStakeAccount(final PublicKey mSolTokenAccount,
-                                   final PublicKey validatorListKey,
-                                   final PublicKey stakeListKey,
-                                   final PublicKey stakeWithdrawalAuthorityKey,
-                                   final PublicKey stakeDepositAuthorityKey,
-                                   final PublicKey stakeAccount,
-                                   final PublicKey splitStakeAccountKey,
-                                   final int stakeIndex,
-                                   final int validatorIndex,
-                                   final long msolAmount);
+  // withdrawStakeAccount
+
+  default Instruction withdrawStakeAccount(final PublicKey mSolTokenAccount,
+                                           final PublicKey validatorListKey,
+                                           final PublicKey stakeListKey,
+                                           final PublicKey stakeWithdrawalAuthorityKey,
+                                           final PublicKey stakeDepositAuthorityKey,
+                                           final PublicKey stakeAccount,
+                                           final PublicKey splitStakeAccountKey,
+                                           final int stakeIndex,
+                                           final int validatorIndex,
+                                           final long msolAmount) {
+    return withdrawStakeAccount(
+        mSolTokenAccount,
+        validatorListKey,
+        stakeListKey,
+        stakeWithdrawalAuthorityKey,
+        stakeDepositAuthorityKey,
+        stakeAccount,
+        splitStakeAccountKey,
+        feePayer(),
+        owner(),
+        stakeIndex,
+        validatorIndex,
+        msolAmount
+    );
+  }
 
   default Instruction withdrawStakeAccount(final State marinadeProgramState,
                                            final PublicKey mSolTokenAccount,
@@ -194,13 +277,72 @@ public interface MarinadeProgramClient {
         mSolTokenAccount,
         marinadeProgramState.validatorSystem().validatorList().account(),
         marinadeProgramState.stakeSystem().stakeList().account(),
-        marinadeAccounts.deriveStakeWithdrawAuthority().publicKey(),
-        marinadeAccounts.deriveStakeDepositAuthority().publicKey(),
+        marinadeAccounts.stakeWithdrawAuthority(),
+        marinadeAccounts.stakeDepositAuthority(),
         stakeAccount,
         splitStakeAccountKey,
+        feePayer(),
+        owner(),
         stakeIndex,
         validatorIndex,
         msolAmount
+    );
+  }
+
+  default Instruction withdrawStakeAccount(final State marinadeProgramState,
+                                           final PublicKey mSolTokenAccount,
+                                           final PublicKey stakeAccount,
+                                           final PublicKey splitStakeAccountKey,
+                                           final PublicKey splitStakeRentPayer,
+                                           final PublicKey beneficiary,
+                                           final int stakeIndex,
+                                           final int validatorIndex,
+                                           final long msolAmount) {
+    final var marinadeAccounts = marinadeAccounts();
+    return withdrawStakeAccount(
+        mSolTokenAccount,
+        marinadeProgramState.validatorSystem().validatorList().account(),
+        marinadeProgramState.stakeSystem().stakeList().account(),
+        marinadeAccounts.stakeWithdrawAuthority(),
+        marinadeAccounts.stakeDepositAuthority(),
+        stakeAccount,
+        splitStakeAccountKey,
+        splitStakeRentPayer,
+        beneficiary,
+        stakeIndex,
+        validatorIndex,
+        msolAmount
+    );
+  }
+
+  // liquidUnstake / addLiquidity / removeLiquidity convenience overloads
+
+  default Instruction liquidUnstake(final PublicKey mSolTokenAccount, final long msolAmount) {
+    return liquidUnstake(mSolTokenAccount, owner(), msolAmount);
+  }
+
+  default Instruction addLiquidity(final PublicKey lpTokenAccount, final long lamports) {
+    return addLiquidity(owner(), lpTokenAccount, lamports);
+  }
+
+  default Instruction addLiquidityATA(final long lamports) {
+    return addLiquidity(owner(), deriveATA(owner(), marinadeAccounts().liquidityPoolMSolSolMint()), lamports);
+  }
+
+  default Instruction removeLiquidity(final PublicKey lpTokenAccount,
+                                      final PublicKey mSolReceiverAccount,
+                                      final long lpTokens) {
+    return removeLiquidity(lpTokenAccount, owner(), mSolReceiverAccount, lpTokens);
+  }
+
+  default Instruction removeLiquidityATA(final long lpTokens) {
+    final var marinadeAccounts = marinadeAccounts();
+    final var ownerKey = owner();
+    return removeLiquidity(
+        deriveATA(ownerKey, marinadeAccounts.liquidityPoolMSolSolMint()),
+        ownerKey,
+        deriveATA(ownerKey, marinadeAccounts.mSolTokenMint()),
+        lpTokens
     );
   }
 }
