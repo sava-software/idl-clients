@@ -1,0 +1,74 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import java.math.BigInteger;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+
+public record Tick(boolean initialized,
+                   BigInteger liquidityNet,
+                   BigInteger liquidityGross,
+                   BigInteger feeGrowthOutsideA,
+                   BigInteger feeGrowthOutsideB,
+                   BigInteger[] rewardGrowthsOutside) implements SerDe {
+
+  public static final int BYTES = 113;
+  public static final int REWARD_GROWTHS_OUTSIDE_LEN = 3;
+
+  public static final int INITIALIZED_OFFSET = 0;
+  public static final int LIQUIDITY_NET_OFFSET = 1;
+  public static final int LIQUIDITY_GROSS_OFFSET = 17;
+  public static final int FEE_GROWTH_OUTSIDE_A_OFFSET = 33;
+  public static final int FEE_GROWTH_OUTSIDE_B_OFFSET = 49;
+  public static final int REWARD_GROWTHS_OUTSIDE_OFFSET = 65;
+
+  public static Tick read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var initialized = _data[i] == 1;
+    ++i;
+    final var liquidityNet = getInt128LE(_data, i);
+    i += 16;
+    final var liquidityGross = getInt128LE(_data, i);
+    i += 16;
+    final var feeGrowthOutsideA = getInt128LE(_data, i);
+    i += 16;
+    final var feeGrowthOutsideB = getInt128LE(_data, i);
+    i += 16;
+    final var rewardGrowthsOutside = new BigInteger[3];
+    SerDeUtil.read128Array(rewardGrowthsOutside, _data, i);
+    return new Tick(initialized,
+                    liquidityNet,
+                    liquidityGross,
+                    feeGrowthOutsideA,
+                    feeGrowthOutsideB,
+                    rewardGrowthsOutside);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    _data[i] = (byte) (initialized ? 1 : 0);
+    ++i;
+    putInt128LE(_data, i, liquidityNet);
+    i += 16;
+    putInt128LE(_data, i, liquidityGross);
+    i += 16;
+    putInt128LE(_data, i, feeGrowthOutsideA);
+    i += 16;
+    putInt128LE(_data, i, feeGrowthOutsideB);
+    i += 16;
+    i += SerDeUtil.write128ArrayChecked(rewardGrowthsOutside, 3, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

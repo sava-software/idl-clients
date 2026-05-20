@@ -1,0 +1,116 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LockConfig(PublicKey _address,
+                         Discriminator discriminator,
+                         PublicKey position,
+                         PublicKey positionOwner,
+                         PublicKey whirlpool,
+                         long lockedTimestamp,
+                         LockTypeLabel lockType) implements SerDe {
+
+  public static final int BYTES = 113;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(106, 47, 238, 159, 124, 12, 160, 192);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int POSITION_OFFSET = 8;
+  public static final int POSITION_OWNER_OFFSET = 40;
+  public static final int WHIRLPOOL_OFFSET = 72;
+  public static final int LOCKED_TIMESTAMP_OFFSET = 104;
+  public static final int LOCK_TYPE_OFFSET = 112;
+
+  public static Filter createPositionFilter(final PublicKey position) {
+    return Filter.createMemCompFilter(POSITION_OFFSET, position);
+  }
+
+  public static Filter createPositionOwnerFilter(final PublicKey positionOwner) {
+    return Filter.createMemCompFilter(POSITION_OWNER_OFFSET, positionOwner);
+  }
+
+  public static Filter createWhirlpoolFilter(final PublicKey whirlpool) {
+    return Filter.createMemCompFilter(WHIRLPOOL_OFFSET, whirlpool);
+  }
+
+  public static Filter createLockedTimestampFilter(final long lockedTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lockedTimestamp);
+    return Filter.createMemCompFilter(LOCKED_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createLockTypeFilter(final LockTypeLabel lockType) {
+    return Filter.createMemCompFilter(LOCK_TYPE_OFFSET, lockType.write());
+  }
+
+  public static LockConfig read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static LockConfig read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static LockConfig read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], LockConfig> FACTORY = LockConfig::read;
+
+  public static LockConfig read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var position = readPubKey(_data, i);
+    i += 32;
+    final var positionOwner = readPubKey(_data, i);
+    i += 32;
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var lockedTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var lockType = LockTypeLabel.read(_data, i);
+    return new LockConfig(_address,
+                          discriminator,
+                          position,
+                          positionOwner,
+                          whirlpool,
+                          lockedTimestamp,
+                          lockType);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    position.write(_data, i);
+    i += 32;
+    positionOwner.write(_data, i);
+    i += 32;
+    whirlpool.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, lockedTimestamp);
+    i += 8;
+    i += lockType.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

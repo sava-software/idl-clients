@@ -1,0 +1,110 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Traded(Discriminator discriminator,
+                     PublicKey whirlpool,
+                     boolean aToB,
+                     BigInteger preSqrtPrice,
+                     BigInteger postSqrtPrice,
+                     long inputAmount,
+                     long outputAmount,
+                     long inputTransferFee,
+                     long outputTransferFee,
+                     long lpFee,
+                     long protocolFee) implements WhirlpoolEvent {
+
+  public static final int BYTES = 121;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(225, 202, 73, 175, 147, 43, 160, 150);
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int A_TO_B_OFFSET = 40;
+  public static final int PRE_SQRT_PRICE_OFFSET = 41;
+  public static final int POST_SQRT_PRICE_OFFSET = 57;
+  public static final int INPUT_AMOUNT_OFFSET = 73;
+  public static final int OUTPUT_AMOUNT_OFFSET = 81;
+  public static final int INPUT_TRANSFER_FEE_OFFSET = 89;
+  public static final int OUTPUT_TRANSFER_FEE_OFFSET = 97;
+  public static final int LP_FEE_OFFSET = 105;
+  public static final int PROTOCOL_FEE_OFFSET = 113;
+
+  public static Traded read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var aToB = _data[i] == 1;
+    ++i;
+    final var preSqrtPrice = getInt128LE(_data, i);
+    i += 16;
+    final var postSqrtPrice = getInt128LE(_data, i);
+    i += 16;
+    final var inputAmount = getInt64LE(_data, i);
+    i += 8;
+    final var outputAmount = getInt64LE(_data, i);
+    i += 8;
+    final var inputTransferFee = getInt64LE(_data, i);
+    i += 8;
+    final var outputTransferFee = getInt64LE(_data, i);
+    i += 8;
+    final var lpFee = getInt64LE(_data, i);
+    i += 8;
+    final var protocolFee = getInt64LE(_data, i);
+    return new Traded(discriminator,
+                      whirlpool,
+                      aToB,
+                      preSqrtPrice,
+                      postSqrtPrice,
+                      inputAmount,
+                      outputAmount,
+                      inputTransferFee,
+                      outputTransferFee,
+                      lpFee,
+                      protocolFee);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    _data[i] = (byte) (aToB ? 1 : 0);
+    ++i;
+    putInt128LE(_data, i, preSqrtPrice);
+    i += 16;
+    putInt128LE(_data, i, postSqrtPrice);
+    i += 16;
+    putInt64LE(_data, i, inputAmount);
+    i += 8;
+    putInt64LE(_data, i, outputAmount);
+    i += 8;
+    putInt64LE(_data, i, inputTransferFee);
+    i += 8;
+    putInt64LE(_data, i, outputTransferFee);
+    i += 8;
+    putInt64LE(_data, i, lpFee);
+    i += 8;
+    putInt64LE(_data, i, protocolFee);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

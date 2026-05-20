@@ -1,0 +1,168 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LiquidityRepositioned(Discriminator discriminator,
+                                    PublicKey whirlpool,
+                                    PublicKey position,
+                                    int existingRangeTickLowerIndex,
+                                    int existingRangeTickUpperIndex,
+                                    int newRangeTickLowerIndex,
+                                    int newRangeTickUpperIndex,
+                                    BigInteger existingRangeLiquidity,
+                                    BigInteger newRangeLiquidity,
+                                    long existingRangeTokenAAmount,
+                                    long existingRangeTokenBAmount,
+                                    long newRangeTokenAAmount,
+                                    long newRangeTokenBAmount,
+                                    long tokenATransferAmount,
+                                    long tokenATransferFee,
+                                    boolean isTokenATransferFromOwner,
+                                    long tokenBTransferAmount,
+                                    long tokenBTransferFee,
+                                    boolean isTokenBTransferFromOwner) implements WhirlpoolEvent {
+
+  public static final int BYTES = 186;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(95, 130, 181, 132, 251, 50, 195, 38);
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int EXISTING_RANGE_TICK_LOWER_INDEX_OFFSET = 72;
+  public static final int EXISTING_RANGE_TICK_UPPER_INDEX_OFFSET = 76;
+  public static final int NEW_RANGE_TICK_LOWER_INDEX_OFFSET = 80;
+  public static final int NEW_RANGE_TICK_UPPER_INDEX_OFFSET = 84;
+  public static final int EXISTING_RANGE_LIQUIDITY_OFFSET = 88;
+  public static final int NEW_RANGE_LIQUIDITY_OFFSET = 104;
+  public static final int EXISTING_RANGE_TOKEN_A_AMOUNT_OFFSET = 120;
+  public static final int EXISTING_RANGE_TOKEN_B_AMOUNT_OFFSET = 128;
+  public static final int NEW_RANGE_TOKEN_A_AMOUNT_OFFSET = 136;
+  public static final int NEW_RANGE_TOKEN_B_AMOUNT_OFFSET = 144;
+  public static final int TOKEN_A_TRANSFER_AMOUNT_OFFSET = 152;
+  public static final int TOKEN_A_TRANSFER_FEE_OFFSET = 160;
+  public static final int IS_TOKEN_A_TRANSFER_FROM_OWNER_OFFSET = 168;
+  public static final int TOKEN_B_TRANSFER_AMOUNT_OFFSET = 169;
+  public static final int TOKEN_B_TRANSFER_FEE_OFFSET = 177;
+  public static final int IS_TOKEN_B_TRANSFER_FROM_OWNER_OFFSET = 185;
+
+  public static LiquidityRepositioned read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var position = readPubKey(_data, i);
+    i += 32;
+    final var existingRangeTickLowerIndex = getInt32LE(_data, i);
+    i += 4;
+    final var existingRangeTickUpperIndex = getInt32LE(_data, i);
+    i += 4;
+    final var newRangeTickLowerIndex = getInt32LE(_data, i);
+    i += 4;
+    final var newRangeTickUpperIndex = getInt32LE(_data, i);
+    i += 4;
+    final var existingRangeLiquidity = getInt128LE(_data, i);
+    i += 16;
+    final var newRangeLiquidity = getInt128LE(_data, i);
+    i += 16;
+    final var existingRangeTokenAAmount = getInt64LE(_data, i);
+    i += 8;
+    final var existingRangeTokenBAmount = getInt64LE(_data, i);
+    i += 8;
+    final var newRangeTokenAAmount = getInt64LE(_data, i);
+    i += 8;
+    final var newRangeTokenBAmount = getInt64LE(_data, i);
+    i += 8;
+    final var tokenATransferAmount = getInt64LE(_data, i);
+    i += 8;
+    final var tokenATransferFee = getInt64LE(_data, i);
+    i += 8;
+    final var isTokenATransferFromOwner = _data[i] == 1;
+    ++i;
+    final var tokenBTransferAmount = getInt64LE(_data, i);
+    i += 8;
+    final var tokenBTransferFee = getInt64LE(_data, i);
+    i += 8;
+    final var isTokenBTransferFromOwner = _data[i] == 1;
+    return new LiquidityRepositioned(discriminator,
+                                     whirlpool,
+                                     position,
+                                     existingRangeTickLowerIndex,
+                                     existingRangeTickUpperIndex,
+                                     newRangeTickLowerIndex,
+                                     newRangeTickUpperIndex,
+                                     existingRangeLiquidity,
+                                     newRangeLiquidity,
+                                     existingRangeTokenAAmount,
+                                     existingRangeTokenBAmount,
+                                     newRangeTokenAAmount,
+                                     newRangeTokenBAmount,
+                                     tokenATransferAmount,
+                                     tokenATransferFee,
+                                     isTokenATransferFromOwner,
+                                     tokenBTransferAmount,
+                                     tokenBTransferFee,
+                                     isTokenBTransferFromOwner);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    position.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, existingRangeTickLowerIndex);
+    i += 4;
+    putInt32LE(_data, i, existingRangeTickUpperIndex);
+    i += 4;
+    putInt32LE(_data, i, newRangeTickLowerIndex);
+    i += 4;
+    putInt32LE(_data, i, newRangeTickUpperIndex);
+    i += 4;
+    putInt128LE(_data, i, existingRangeLiquidity);
+    i += 16;
+    putInt128LE(_data, i, newRangeLiquidity);
+    i += 16;
+    putInt64LE(_data, i, existingRangeTokenAAmount);
+    i += 8;
+    putInt64LE(_data, i, existingRangeTokenBAmount);
+    i += 8;
+    putInt64LE(_data, i, newRangeTokenAAmount);
+    i += 8;
+    putInt64LE(_data, i, newRangeTokenBAmount);
+    i += 8;
+    putInt64LE(_data, i, tokenATransferAmount);
+    i += 8;
+    putInt64LE(_data, i, tokenATransferFee);
+    i += 8;
+    _data[i] = (byte) (isTokenATransferFromOwner ? 1 : 0);
+    ++i;
+    putInt64LE(_data, i, tokenBTransferAmount);
+    i += 8;
+    putInt64LE(_data, i, tokenBTransferFee);
+    i += 8;
+    _data[i] = (byte) (isTokenBTransferFromOwner ? 1 : 0);
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,64 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record PositionOpened(Discriminator discriminator,
+                             PublicKey whirlpool,
+                             PublicKey position,
+                             int tickLowerIndex,
+                             int tickUpperIndex) implements WhirlpoolEvent {
+
+  public static final int BYTES = 80;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(237, 175, 243, 230, 147, 117, 101, 121);
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int TICK_LOWER_INDEX_OFFSET = 72;
+  public static final int TICK_UPPER_INDEX_OFFSET = 76;
+
+  public static PositionOpened read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var position = readPubKey(_data, i);
+    i += 32;
+    final var tickLowerIndex = getInt32LE(_data, i);
+    i += 4;
+    final var tickUpperIndex = getInt32LE(_data, i);
+    return new PositionOpened(discriminator,
+                              whirlpool,
+                              position,
+                              tickLowerIndex,
+                              tickUpperIndex);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    position.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, tickLowerIndex);
+    i += 4;
+    putInt32LE(_data, i, tickUpperIndex);
+    i += 4;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

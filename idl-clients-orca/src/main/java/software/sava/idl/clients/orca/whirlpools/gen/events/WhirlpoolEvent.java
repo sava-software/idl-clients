@@ -1,0 +1,42 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public sealed interface WhirlpoolEvent extends SerDe permits
+    LiquidityDecreased,
+    LiquidityIncreased,
+    LiquidityRepositioned,
+    PoolInitialized,
+    PositionOpened,
+    Traded {
+
+  static WhirlpoolEvent read(final byte[] _data, final int _offset) {
+    if (LiquidityDecreased.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidityDecreased.read(_data, _offset);
+    } else if (LiquidityIncreased.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidityIncreased.read(_data, _offset);
+    } else if (LiquidityRepositioned.DISCRIMINATOR.equals(_data, _offset)) {
+      return LiquidityRepositioned.read(_data, _offset);
+    } else if (PoolInitialized.DISCRIMINATOR.equals(_data, _offset)) {
+      return PoolInitialized.read(_data, _offset);
+    } else if (PositionOpened.DISCRIMINATOR.equals(_data, _offset)) {
+      return PositionOpened.read(_data, _offset);
+    } else if (Traded.DISCRIMINATOR.equals(_data, _offset)) {
+      return Traded.read(_data, _offset);
+    } else {
+      return null;
+    }
+  }
+
+  static WhirlpoolEvent read(final byte[] _data) {
+    return read(_data, 0);
+  }
+
+  static WhirlpoolEvent readCPI(final byte[] _data, final int _offset) {
+    return read(_data, _offset + 8);
+  }
+
+  static WhirlpoolEvent readCPI(final byte[] _data) {
+    return read(_data, 8);
+  }
+}

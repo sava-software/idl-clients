@@ -1,0 +1,642 @@
+package software.sava.idl.clients.orca.whirlpools.gen;
+
+import software.sava.idl.clients.core.gen.ProgramError;
+
+public sealed interface WhirlpoolError extends ProgramError permits
+    WhirlpoolError.InvalidEnum,
+    WhirlpoolError.InvalidStartTick,
+    WhirlpoolError.TickArrayExistInPool,
+    WhirlpoolError.TickArrayIndexOutofBounds,
+    WhirlpoolError.InvalidTickSpacing,
+    WhirlpoolError.ClosePositionNotEmpty,
+    WhirlpoolError.DivideByZero,
+    WhirlpoolError.NumberCastError,
+    WhirlpoolError.NumberDownCastError,
+    WhirlpoolError.TickNotFound,
+    WhirlpoolError.InvalidTickIndex,
+    WhirlpoolError.SqrtPriceOutOfBounds,
+    WhirlpoolError.LiquidityZero,
+    WhirlpoolError.LiquidityTooHigh,
+    WhirlpoolError.LiquidityOverflow,
+    WhirlpoolError.LiquidityUnderflow,
+    WhirlpoolError.LiquidityNetError,
+    WhirlpoolError.TokenMaxExceeded,
+    WhirlpoolError.TokenMinSubceeded,
+    WhirlpoolError.MissingOrInvalidDelegate,
+    WhirlpoolError.InvalidPositionTokenAmount,
+    WhirlpoolError.InvalidTimestampConversion,
+    WhirlpoolError.InvalidTimestamp,
+    WhirlpoolError.InvalidTickArraySequence,
+    WhirlpoolError.InvalidTokenMintOrder,
+    WhirlpoolError.RewardNotInitialized,
+    WhirlpoolError.InvalidRewardIndex,
+    WhirlpoolError.RewardVaultAmountInsufficient,
+    WhirlpoolError.FeeRateMaxExceeded,
+    WhirlpoolError.ProtocolFeeRateMaxExceeded,
+    WhirlpoolError.MultiplicationShiftRightOverflow,
+    WhirlpoolError.MulDivOverflow,
+    WhirlpoolError.MulDivInvalidInput,
+    WhirlpoolError.MultiplicationOverflow,
+    WhirlpoolError.InvalidSqrtPriceLimitDirection,
+    WhirlpoolError.ZeroTradableAmount,
+    WhirlpoolError.AmountOutBelowMinimum,
+    WhirlpoolError.AmountInAboveMaximum,
+    WhirlpoolError.TickArraySequenceInvalidIndex,
+    WhirlpoolError.AmountCalcOverflow,
+    WhirlpoolError.AmountRemainingOverflow,
+    WhirlpoolError.InvalidIntermediaryMint,
+    WhirlpoolError.DuplicateTwoHopPool,
+    WhirlpoolError.InvalidBundleIndex,
+    WhirlpoolError.BundledPositionAlreadyOpened,
+    WhirlpoolError.BundledPositionAlreadyClosed,
+    WhirlpoolError.PositionBundleNotDeletable,
+    WhirlpoolError.UnsupportedTokenMint,
+    WhirlpoolError.RemainingAccountsInvalidSlice,
+    WhirlpoolError.RemainingAccountsInsufficient,
+    WhirlpoolError.NoExtraAccountsForTransferHook,
+    WhirlpoolError.IntermediateTokenAmountMismatch,
+    WhirlpoolError.TransferFeeCalculationError,
+    WhirlpoolError.RemainingAccountsDuplicatedAccountsType,
+    WhirlpoolError.FullRangeOnlyPool,
+    WhirlpoolError.TooManySupplementalTickArrays,
+    WhirlpoolError.DifferentWhirlpoolTickArrayAccount,
+    WhirlpoolError.PartialFillError,
+    WhirlpoolError.PositionNotLockable,
+    WhirlpoolError.OperationNotAllowedOnLockedPosition,
+    WhirlpoolError.SameTickRangeNotAllowed,
+    WhirlpoolError.InvalidAdaptiveFeeConstants,
+    WhirlpoolError.InvalidFeeTierIndex,
+    WhirlpoolError.InvalidTradeEnableTimestamp,
+    WhirlpoolError.TradeIsNotEnabled,
+    WhirlpoolError.RentCalculationError,
+    WhirlpoolError.FeatureIsNotEnabled,
+    WhirlpoolError.PositionWithTokenExtensionsRequired,
+    WhirlpoolError.AdaptiveFeeConstantsUnchanged,
+    WhirlpoolError.PriceSlippageOutOfBounds {
+
+  static WhirlpoolError getInstance(final int errorCode) {
+    return switch (errorCode) {
+      case 6000 -> InvalidEnum.INSTANCE;
+      case 6001 -> InvalidStartTick.INSTANCE;
+      case 6002 -> TickArrayExistInPool.INSTANCE;
+      case 6003 -> TickArrayIndexOutofBounds.INSTANCE;
+      case 6004 -> InvalidTickSpacing.INSTANCE;
+      case 6005 -> ClosePositionNotEmpty.INSTANCE;
+      case 6006 -> DivideByZero.INSTANCE;
+      case 6007 -> NumberCastError.INSTANCE;
+      case 6008 -> NumberDownCastError.INSTANCE;
+      case 6009 -> TickNotFound.INSTANCE;
+      case 6010 -> InvalidTickIndex.INSTANCE;
+      case 6011 -> SqrtPriceOutOfBounds.INSTANCE;
+      case 6012 -> LiquidityZero.INSTANCE;
+      case 6013 -> LiquidityTooHigh.INSTANCE;
+      case 6014 -> LiquidityOverflow.INSTANCE;
+      case 6015 -> LiquidityUnderflow.INSTANCE;
+      case 6016 -> LiquidityNetError.INSTANCE;
+      case 6017 -> TokenMaxExceeded.INSTANCE;
+      case 6018 -> TokenMinSubceeded.INSTANCE;
+      case 6019 -> MissingOrInvalidDelegate.INSTANCE;
+      case 6020 -> InvalidPositionTokenAmount.INSTANCE;
+      case 6021 -> InvalidTimestampConversion.INSTANCE;
+      case 6022 -> InvalidTimestamp.INSTANCE;
+      case 6023 -> InvalidTickArraySequence.INSTANCE;
+      case 6024 -> InvalidTokenMintOrder.INSTANCE;
+      case 6025 -> RewardNotInitialized.INSTANCE;
+      case 6026 -> InvalidRewardIndex.INSTANCE;
+      case 6027 -> RewardVaultAmountInsufficient.INSTANCE;
+      case 6028 -> FeeRateMaxExceeded.INSTANCE;
+      case 6029 -> ProtocolFeeRateMaxExceeded.INSTANCE;
+      case 6030 -> MultiplicationShiftRightOverflow.INSTANCE;
+      case 6031 -> MulDivOverflow.INSTANCE;
+      case 6032 -> MulDivInvalidInput.INSTANCE;
+      case 6033 -> MultiplicationOverflow.INSTANCE;
+      case 6034 -> InvalidSqrtPriceLimitDirection.INSTANCE;
+      case 6035 -> ZeroTradableAmount.INSTANCE;
+      case 6036 -> AmountOutBelowMinimum.INSTANCE;
+      case 6037 -> AmountInAboveMaximum.INSTANCE;
+      case 6038 -> TickArraySequenceInvalidIndex.INSTANCE;
+      case 6039 -> AmountCalcOverflow.INSTANCE;
+      case 6040 -> AmountRemainingOverflow.INSTANCE;
+      case 6041 -> InvalidIntermediaryMint.INSTANCE;
+      case 6042 -> DuplicateTwoHopPool.INSTANCE;
+      case 6043 -> InvalidBundleIndex.INSTANCE;
+      case 6044 -> BundledPositionAlreadyOpened.INSTANCE;
+      case 6045 -> BundledPositionAlreadyClosed.INSTANCE;
+      case 6046 -> PositionBundleNotDeletable.INSTANCE;
+      case 6047 -> UnsupportedTokenMint.INSTANCE;
+      case 6048 -> RemainingAccountsInvalidSlice.INSTANCE;
+      case 6049 -> RemainingAccountsInsufficient.INSTANCE;
+      case 6050 -> NoExtraAccountsForTransferHook.INSTANCE;
+      case 6051 -> IntermediateTokenAmountMismatch.INSTANCE;
+      case 6052 -> TransferFeeCalculationError.INSTANCE;
+      case 6053 -> RemainingAccountsDuplicatedAccountsType.INSTANCE;
+      case 6054 -> FullRangeOnlyPool.INSTANCE;
+      case 6055 -> TooManySupplementalTickArrays.INSTANCE;
+      case 6056 -> DifferentWhirlpoolTickArrayAccount.INSTANCE;
+      case 6057 -> PartialFillError.INSTANCE;
+      case 6058 -> PositionNotLockable.INSTANCE;
+      case 6059 -> OperationNotAllowedOnLockedPosition.INSTANCE;
+      case 6060 -> SameTickRangeNotAllowed.INSTANCE;
+      case 6061 -> InvalidAdaptiveFeeConstants.INSTANCE;
+      case 6062 -> InvalidFeeTierIndex.INSTANCE;
+      case 6063 -> InvalidTradeEnableTimestamp.INSTANCE;
+      case 6064 -> TradeIsNotEnabled.INSTANCE;
+      case 6065 -> RentCalculationError.INSTANCE;
+      case 6066 -> FeatureIsNotEnabled.INSTANCE;
+      case 6067 -> PositionWithTokenExtensionsRequired.INSTANCE;
+      case 6068 -> AdaptiveFeeConstantsUnchanged.INSTANCE;
+      case 6069 -> PriceSlippageOutOfBounds.INSTANCE;
+      default -> null;
+    };
+  }
+
+  record InvalidEnum(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidEnum INSTANCE = new InvalidEnum(
+        6000, "Enum value could not be converted"
+    );
+  }
+
+  record InvalidStartTick(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidStartTick INSTANCE = new InvalidStartTick(
+        6001, "Invalid start tick index provided."
+    );
+  }
+
+  record TickArrayExistInPool(int code, String msg) implements WhirlpoolError {
+
+    public static final TickArrayExistInPool INSTANCE = new TickArrayExistInPool(
+        6002, "Tick-array already exists in this whirlpool"
+    );
+  }
+
+  record TickArrayIndexOutofBounds(int code, String msg) implements WhirlpoolError {
+
+    public static final TickArrayIndexOutofBounds INSTANCE = new TickArrayIndexOutofBounds(
+        6003, "Attempt to search for a tick-array failed"
+    );
+  }
+
+  record InvalidTickSpacing(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTickSpacing INSTANCE = new InvalidTickSpacing(
+        6004, "Tick-spacing is not supported"
+    );
+  }
+
+  record ClosePositionNotEmpty(int code, String msg) implements WhirlpoolError {
+
+    public static final ClosePositionNotEmpty INSTANCE = new ClosePositionNotEmpty(
+        6005, "Position is not empty It cannot be closed"
+    );
+  }
+
+  record DivideByZero(int code, String msg) implements WhirlpoolError {
+
+    public static final DivideByZero INSTANCE = new DivideByZero(
+        6006, "Unable to divide by zero"
+    );
+  }
+
+  record NumberCastError(int code, String msg) implements WhirlpoolError {
+
+    public static final NumberCastError INSTANCE = new NumberCastError(
+        6007, "Unable to cast number into BigInt"
+    );
+  }
+
+  record NumberDownCastError(int code, String msg) implements WhirlpoolError {
+
+    public static final NumberDownCastError INSTANCE = new NumberDownCastError(
+        6008, "Unable to down cast number"
+    );
+  }
+
+  record TickNotFound(int code, String msg) implements WhirlpoolError {
+
+    public static final TickNotFound INSTANCE = new TickNotFound(
+        6009, "Tick not found within tick array"
+    );
+  }
+
+  record InvalidTickIndex(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTickIndex INSTANCE = new InvalidTickIndex(
+        6010, "Provided tick index is either out of bounds or uninitializable"
+    );
+  }
+
+  record SqrtPriceOutOfBounds(int code, String msg) implements WhirlpoolError {
+
+    public static final SqrtPriceOutOfBounds INSTANCE = new SqrtPriceOutOfBounds(
+        6011, "Provided sqrt price out of bounds"
+    );
+  }
+
+  record LiquidityZero(int code, String msg) implements WhirlpoolError {
+
+    public static final LiquidityZero INSTANCE = new LiquidityZero(
+        6012, "Liquidity amount must be greater than zero"
+    );
+  }
+
+  record LiquidityTooHigh(int code, String msg) implements WhirlpoolError {
+
+    public static final LiquidityTooHigh INSTANCE = new LiquidityTooHigh(
+        6013, "Liquidity amount must be less than i64::MAX"
+    );
+  }
+
+  record LiquidityOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final LiquidityOverflow INSTANCE = new LiquidityOverflow(
+        6014, "Liquidity overflow"
+    );
+  }
+
+  record LiquidityUnderflow(int code, String msg) implements WhirlpoolError {
+
+    public static final LiquidityUnderflow INSTANCE = new LiquidityUnderflow(
+        6015, "Liquidity underflow"
+    );
+  }
+
+  record LiquidityNetError(int code, String msg) implements WhirlpoolError {
+
+    public static final LiquidityNetError INSTANCE = new LiquidityNetError(
+        6016, "Tick liquidity net underflowed or overflowed"
+    );
+  }
+
+  record TokenMaxExceeded(int code, String msg) implements WhirlpoolError {
+
+    public static final TokenMaxExceeded INSTANCE = new TokenMaxExceeded(
+        6017, "Exceeded token max"
+    );
+  }
+
+  record TokenMinSubceeded(int code, String msg) implements WhirlpoolError {
+
+    public static final TokenMinSubceeded INSTANCE = new TokenMinSubceeded(
+        6018, "Did not meet token min"
+    );
+  }
+
+  record MissingOrInvalidDelegate(int code, String msg) implements WhirlpoolError {
+
+    public static final MissingOrInvalidDelegate INSTANCE = new MissingOrInvalidDelegate(
+        6019, "Position token account has a missing or invalid delegate"
+    );
+  }
+
+  record InvalidPositionTokenAmount(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidPositionTokenAmount INSTANCE = new InvalidPositionTokenAmount(
+        6020, "Position token amount must be 1"
+    );
+  }
+
+  record InvalidTimestampConversion(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTimestampConversion INSTANCE = new InvalidTimestampConversion(
+        6021, "Timestamp should be convertible from i64 to u64"
+    );
+  }
+
+  record InvalidTimestamp(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTimestamp INSTANCE = new InvalidTimestamp(
+        6022, "Timestamp should be greater than the last updated timestamp"
+    );
+  }
+
+  record InvalidTickArraySequence(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTickArraySequence INSTANCE = new InvalidTickArraySequence(
+        6023, "Invalid tick array sequence provided for instruction."
+    );
+  }
+
+  record InvalidTokenMintOrder(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTokenMintOrder INSTANCE = new InvalidTokenMintOrder(
+        6024, "Token Mint in wrong order"
+    );
+  }
+
+  record RewardNotInitialized(int code, String msg) implements WhirlpoolError {
+
+    public static final RewardNotInitialized INSTANCE = new RewardNotInitialized(
+        6025, "Reward not initialized"
+    );
+  }
+
+  record InvalidRewardIndex(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidRewardIndex INSTANCE = new InvalidRewardIndex(
+        6026, "Invalid reward index"
+    );
+  }
+
+  record RewardVaultAmountInsufficient(int code, String msg) implements WhirlpoolError {
+
+    public static final RewardVaultAmountInsufficient INSTANCE = new RewardVaultAmountInsufficient(
+        6027, "Reward vault requires amount to support emissions for at least one day"
+    );
+  }
+
+  record FeeRateMaxExceeded(int code, String msg) implements WhirlpoolError {
+
+    public static final FeeRateMaxExceeded INSTANCE = new FeeRateMaxExceeded(
+        6028, "Exceeded max fee rate"
+    );
+  }
+
+  record ProtocolFeeRateMaxExceeded(int code, String msg) implements WhirlpoolError {
+
+    public static final ProtocolFeeRateMaxExceeded INSTANCE = new ProtocolFeeRateMaxExceeded(
+        6029, "Exceeded max protocol fee rate"
+    );
+  }
+
+  record MultiplicationShiftRightOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final MultiplicationShiftRightOverflow INSTANCE = new MultiplicationShiftRightOverflow(
+        6030, "Multiplication with shift right overflow"
+    );
+  }
+
+  record MulDivOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final MulDivOverflow INSTANCE = new MulDivOverflow(
+        6031, "Muldiv overflow"
+    );
+  }
+
+  record MulDivInvalidInput(int code, String msg) implements WhirlpoolError {
+
+    public static final MulDivInvalidInput INSTANCE = new MulDivInvalidInput(
+        6032, "Invalid div_u256 input"
+    );
+  }
+
+  record MultiplicationOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final MultiplicationOverflow INSTANCE = new MultiplicationOverflow(
+        6033, "Multiplication overflow"
+    );
+  }
+
+  record InvalidSqrtPriceLimitDirection(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidSqrtPriceLimitDirection INSTANCE = new InvalidSqrtPriceLimitDirection(
+        6034, "Provided SqrtPriceLimit not in the same direction as the swap."
+    );
+  }
+
+  record ZeroTradableAmount(int code, String msg) implements WhirlpoolError {
+
+    public static final ZeroTradableAmount INSTANCE = new ZeroTradableAmount(
+        6035, "There are no tradable amount to swap."
+    );
+  }
+
+  record AmountOutBelowMinimum(int code, String msg) implements WhirlpoolError {
+
+    public static final AmountOutBelowMinimum INSTANCE = new AmountOutBelowMinimum(
+        6036, "Amount out below minimum threshold"
+    );
+  }
+
+  record AmountInAboveMaximum(int code, String msg) implements WhirlpoolError {
+
+    public static final AmountInAboveMaximum INSTANCE = new AmountInAboveMaximum(
+        6037, "Amount in above maximum threshold"
+    );
+  }
+
+  record TickArraySequenceInvalidIndex(int code, String msg) implements WhirlpoolError {
+
+    public static final TickArraySequenceInvalidIndex INSTANCE = new TickArraySequenceInvalidIndex(
+        6038, "Invalid index for tick array sequence"
+    );
+  }
+
+  record AmountCalcOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final AmountCalcOverflow INSTANCE = new AmountCalcOverflow(
+        6039, "Amount calculated overflows"
+    );
+  }
+
+  record AmountRemainingOverflow(int code, String msg) implements WhirlpoolError {
+
+    public static final AmountRemainingOverflow INSTANCE = new AmountRemainingOverflow(
+        6040, "Amount remaining overflows"
+    );
+  }
+
+  record InvalidIntermediaryMint(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidIntermediaryMint INSTANCE = new InvalidIntermediaryMint(
+        6041, "Invalid intermediary mint"
+    );
+  }
+
+  record DuplicateTwoHopPool(int code, String msg) implements WhirlpoolError {
+
+    public static final DuplicateTwoHopPool INSTANCE = new DuplicateTwoHopPool(
+        6042, "Duplicate two hop pool"
+    );
+  }
+
+  record InvalidBundleIndex(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidBundleIndex INSTANCE = new InvalidBundleIndex(
+        6043, "Bundle index is out of bounds"
+    );
+  }
+
+  record BundledPositionAlreadyOpened(int code, String msg) implements WhirlpoolError {
+
+    public static final BundledPositionAlreadyOpened INSTANCE = new BundledPositionAlreadyOpened(
+        6044, "Position has already been opened"
+    );
+  }
+
+  record BundledPositionAlreadyClosed(int code, String msg) implements WhirlpoolError {
+
+    public static final BundledPositionAlreadyClosed INSTANCE = new BundledPositionAlreadyClosed(
+        6045, "Position has already been closed"
+    );
+  }
+
+  record PositionBundleNotDeletable(int code, String msg) implements WhirlpoolError {
+
+    public static final PositionBundleNotDeletable INSTANCE = new PositionBundleNotDeletable(
+        6046, "Unable to delete PositionBundle with open positions"
+    );
+  }
+
+  record UnsupportedTokenMint(int code, String msg) implements WhirlpoolError {
+
+    public static final UnsupportedTokenMint INSTANCE = new UnsupportedTokenMint(
+        6047, "Token mint has unsupported attributes"
+    );
+  }
+
+  record RemainingAccountsInvalidSlice(int code, String msg) implements WhirlpoolError {
+
+    public static final RemainingAccountsInvalidSlice INSTANCE = new RemainingAccountsInvalidSlice(
+        6048, "Invalid remaining accounts"
+    );
+  }
+
+  record RemainingAccountsInsufficient(int code, String msg) implements WhirlpoolError {
+
+    public static final RemainingAccountsInsufficient INSTANCE = new RemainingAccountsInsufficient(
+        6049, "Insufficient remaining accounts"
+    );
+  }
+
+  record NoExtraAccountsForTransferHook(int code, String msg) implements WhirlpoolError {
+
+    public static final NoExtraAccountsForTransferHook INSTANCE = new NoExtraAccountsForTransferHook(
+        6050, "Unable to call transfer hook without extra accounts"
+    );
+  }
+
+  record IntermediateTokenAmountMismatch(int code, String msg) implements WhirlpoolError {
+
+    public static final IntermediateTokenAmountMismatch INSTANCE = new IntermediateTokenAmountMismatch(
+        6051, "Output and input amount mismatch"
+    );
+  }
+
+  record TransferFeeCalculationError(int code, String msg) implements WhirlpoolError {
+
+    public static final TransferFeeCalculationError INSTANCE = new TransferFeeCalculationError(
+        6052, "Transfer fee calculation failed"
+    );
+  }
+
+  record RemainingAccountsDuplicatedAccountsType(int code, String msg) implements WhirlpoolError {
+
+    public static final RemainingAccountsDuplicatedAccountsType INSTANCE = new RemainingAccountsDuplicatedAccountsType(
+        6053, "Same accounts type is provided more than once"
+    );
+  }
+
+  record FullRangeOnlyPool(int code, String msg) implements WhirlpoolError {
+
+    public static final FullRangeOnlyPool INSTANCE = new FullRangeOnlyPool(
+        6054, "This whirlpool only supports full-range positions"
+    );
+  }
+
+  record TooManySupplementalTickArrays(int code, String msg) implements WhirlpoolError {
+
+    public static final TooManySupplementalTickArrays INSTANCE = new TooManySupplementalTickArrays(
+        6055, "Too many supplemental tick arrays provided"
+    );
+  }
+
+  record DifferentWhirlpoolTickArrayAccount(int code, String msg) implements WhirlpoolError {
+
+    public static final DifferentWhirlpoolTickArrayAccount INSTANCE = new DifferentWhirlpoolTickArrayAccount(
+        6056, "TickArray account for different whirlpool provided"
+    );
+  }
+
+  record PartialFillError(int code, String msg) implements WhirlpoolError {
+
+    public static final PartialFillError INSTANCE = new PartialFillError(
+        6057, "Trade resulted in partial fill"
+    );
+  }
+
+  record PositionNotLockable(int code, String msg) implements WhirlpoolError {
+
+    public static final PositionNotLockable INSTANCE = new PositionNotLockable(
+        6058, "Position is not lockable"
+    );
+  }
+
+  record OperationNotAllowedOnLockedPosition(int code, String msg) implements WhirlpoolError {
+
+    public static final OperationNotAllowedOnLockedPosition INSTANCE = new OperationNotAllowedOnLockedPosition(
+        6059, "Operation not allowed on locked position"
+    );
+  }
+
+  record SameTickRangeNotAllowed(int code, String msg) implements WhirlpoolError {
+
+    public static final SameTickRangeNotAllowed INSTANCE = new SameTickRangeNotAllowed(
+        6060, "Cannot reset position range with same tick range"
+    );
+  }
+
+  record InvalidAdaptiveFeeConstants(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidAdaptiveFeeConstants INSTANCE = new InvalidAdaptiveFeeConstants(
+        6061, "Invalid adaptive fee constants"
+    );
+  }
+
+  record InvalidFeeTierIndex(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidFeeTierIndex INSTANCE = new InvalidFeeTierIndex(
+        6062, "Invalid fee tier index"
+    );
+  }
+
+  record InvalidTradeEnableTimestamp(int code, String msg) implements WhirlpoolError {
+
+    public static final InvalidTradeEnableTimestamp INSTANCE = new InvalidTradeEnableTimestamp(
+        6063, "Invalid trade enable timestamp"
+    );
+  }
+
+  record TradeIsNotEnabled(int code, String msg) implements WhirlpoolError {
+
+    public static final TradeIsNotEnabled INSTANCE = new TradeIsNotEnabled(
+        6064, "Trade is not enabled yet"
+    );
+  }
+
+  record RentCalculationError(int code, String msg) implements WhirlpoolError {
+
+    public static final RentCalculationError INSTANCE = new RentCalculationError(
+        6065, "Rent calculation error"
+    );
+  }
+
+  record FeatureIsNotEnabled(int code, String msg) implements WhirlpoolError {
+
+    public static final FeatureIsNotEnabled INSTANCE = new FeatureIsNotEnabled(
+        6066, "Feature is not enabled"
+    );
+  }
+
+  record PositionWithTokenExtensionsRequired(int code, String msg) implements WhirlpoolError {
+
+    public static final PositionWithTokenExtensionsRequired INSTANCE = new PositionWithTokenExtensionsRequired(
+        6067, "This whirlpool only supports open_position_with_token_extensions instruction"
+    );
+  }
+
+  record AdaptiveFeeConstantsUnchanged(int code, String msg) implements WhirlpoolError {
+
+    public static final AdaptiveFeeConstantsUnchanged INSTANCE = new AdaptiveFeeConstantsUnchanged(
+        6068, "Provided adaptive fee constants are unchanged"
+    );
+  }
+
+  record PriceSlippageOutOfBounds(int code, String msg) implements WhirlpoolError {
+
+    public static final PriceSlippageOutOfBounds INSTANCE = new PriceSlippageOutOfBounds(
+        6069, "Price outside slippage bounds"
+    );
+  }
+}

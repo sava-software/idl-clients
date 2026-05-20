@@ -1,0 +1,31 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record WhirlpoolBumps(int whirlpoolBump) implements SerDe {
+
+  public static final int BYTES = 1;
+
+  public static final int WHIRLPOOL_BUMP_OFFSET = 0;
+
+  public static WhirlpoolBumps read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var whirlpoolBump = _data[_offset] & 0xFF;
+    return new WhirlpoolBumps(whirlpoolBump);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    _data[i] = (byte) whirlpoolBump;
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

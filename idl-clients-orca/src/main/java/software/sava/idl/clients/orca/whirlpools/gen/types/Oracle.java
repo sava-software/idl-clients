@@ -1,0 +1,113 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record Oracle(PublicKey _address,
+                     Discriminator discriminator,
+                     PublicKey whirlpool,
+                     long tradeEnableTimestamp,
+                     AdaptiveFeeConstants adaptiveFeeConstants,
+                     AdaptiveFeeVariables adaptiveFeeVariables,
+                     byte[] reserved) implements SerDe {
+
+  public static final int BYTES = 254;
+  public static final int RESERVED_LEN = 128;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(139, 194, 131, 179, 140, 179, 229, 244);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int TRADE_ENABLE_TIMESTAMP_OFFSET = 40;
+  public static final int ADAPTIVE_FEE_CONSTANTS_OFFSET = 48;
+  public static final int ADAPTIVE_FEE_VARIABLES_OFFSET = 82;
+  public static final int RESERVED_OFFSET = 126;
+
+  public static Filter createWhirlpoolFilter(final PublicKey whirlpool) {
+    return Filter.createMemCompFilter(WHIRLPOOL_OFFSET, whirlpool);
+  }
+
+  public static Filter createTradeEnableTimestampFilter(final long tradeEnableTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, tradeEnableTimestamp);
+    return Filter.createMemCompFilter(TRADE_ENABLE_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static Filter createAdaptiveFeeConstantsFilter(final AdaptiveFeeConstants adaptiveFeeConstants) {
+    return Filter.createMemCompFilter(ADAPTIVE_FEE_CONSTANTS_OFFSET, adaptiveFeeConstants.write());
+  }
+
+  public static Filter createAdaptiveFeeVariablesFilter(final AdaptiveFeeVariables adaptiveFeeVariables) {
+    return Filter.createMemCompFilter(ADAPTIVE_FEE_VARIABLES_OFFSET, adaptiveFeeVariables.write());
+  }
+
+  public static Oracle read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Oracle read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Oracle read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Oracle> FACTORY = Oracle::read;
+
+  public static Oracle read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var tradeEnableTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var adaptiveFeeConstants = AdaptiveFeeConstants.read(_data, i);
+    i += adaptiveFeeConstants.l();
+    final var adaptiveFeeVariables = AdaptiveFeeVariables.read(_data, i);
+    i += adaptiveFeeVariables.l();
+    final var reserved = new byte[128];
+    SerDeUtil.readArray(reserved, _data, i);
+    return new Oracle(_address,
+                      discriminator,
+                      whirlpool,
+                      tradeEnableTimestamp,
+                      adaptiveFeeConstants,
+                      adaptiveFeeVariables,
+                      reserved);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, tradeEnableTimestamp);
+    i += 8;
+    i += adaptiveFeeConstants.write(_data, i);
+    i += adaptiveFeeVariables.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(reserved, 128, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

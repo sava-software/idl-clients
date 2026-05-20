@@ -1,0 +1,119 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record WhirlpoolsConfig(PublicKey _address,
+                               Discriminator discriminator,
+                               PublicKey feeAuthority,
+                               PublicKey collectProtocolFeesAuthority,
+                               PublicKey rewardEmissionsSuperAuthority,
+                               int defaultProtocolFeeRate,
+                               int featureFlags) implements SerDe {
+
+  public static final int BYTES = 108;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(157, 20, 49, 224, 217, 87, 193, 254);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int FEE_AUTHORITY_OFFSET = 8;
+  public static final int COLLECT_PROTOCOL_FEES_AUTHORITY_OFFSET = 40;
+  public static final int REWARD_EMISSIONS_SUPER_AUTHORITY_OFFSET = 72;
+  public static final int DEFAULT_PROTOCOL_FEE_RATE_OFFSET = 104;
+  public static final int FEATURE_FLAGS_OFFSET = 106;
+
+  public static Filter createFeeAuthorityFilter(final PublicKey feeAuthority) {
+    return Filter.createMemCompFilter(FEE_AUTHORITY_OFFSET, feeAuthority);
+  }
+
+  public static Filter createCollectProtocolFeesAuthorityFilter(final PublicKey collectProtocolFeesAuthority) {
+    return Filter.createMemCompFilter(COLLECT_PROTOCOL_FEES_AUTHORITY_OFFSET, collectProtocolFeesAuthority);
+  }
+
+  public static Filter createRewardEmissionsSuperAuthorityFilter(final PublicKey rewardEmissionsSuperAuthority) {
+    return Filter.createMemCompFilter(REWARD_EMISSIONS_SUPER_AUTHORITY_OFFSET, rewardEmissionsSuperAuthority);
+  }
+
+  public static Filter createDefaultProtocolFeeRateFilter(final int defaultProtocolFeeRate) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, defaultProtocolFeeRate);
+    return Filter.createMemCompFilter(DEFAULT_PROTOCOL_FEE_RATE_OFFSET, _data);
+  }
+
+  public static Filter createFeatureFlagsFilter(final int featureFlags) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, featureFlags);
+    return Filter.createMemCompFilter(FEATURE_FLAGS_OFFSET, _data);
+  }
+
+  public static WhirlpoolsConfig read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static WhirlpoolsConfig read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static WhirlpoolsConfig read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], WhirlpoolsConfig> FACTORY = WhirlpoolsConfig::read;
+
+  public static WhirlpoolsConfig read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var feeAuthority = readPubKey(_data, i);
+    i += 32;
+    final var collectProtocolFeesAuthority = readPubKey(_data, i);
+    i += 32;
+    final var rewardEmissionsSuperAuthority = readPubKey(_data, i);
+    i += 32;
+    final var defaultProtocolFeeRate = getInt16LE(_data, i);
+    i += 2;
+    final var featureFlags = getInt16LE(_data, i);
+    return new WhirlpoolsConfig(_address,
+                                discriminator,
+                                feeAuthority,
+                                collectProtocolFeesAuthority,
+                                rewardEmissionsSuperAuthority,
+                                defaultProtocolFeeRate,
+                                featureFlags);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    feeAuthority.write(_data, i);
+    i += 32;
+    collectProtocolFeesAuthority.write(_data, i);
+    i += 32;
+    rewardEmissionsSuperAuthority.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, defaultProtocolFeeRate);
+    i += 2;
+    putInt16LE(_data, i, featureFlags);
+    i += 2;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

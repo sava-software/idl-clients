@@ -1,0 +1,31 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+
+public sealed interface ConfigFeatureFlag extends RustEnum permits
+  ConfigFeatureFlag.TokenBadge {
+
+  static ConfigFeatureFlag read(final byte[] _data, final int _offset) {
+    final int ordinal = _data[_offset] & 0xFF;
+    final int i = _offset + 1;
+    return switch (ordinal) {
+      case 0 -> TokenBadge.read(_data, i);
+      default -> null;
+    };
+  }
+
+  record TokenBadge(boolean val) implements EnumBool, ConfigFeatureFlag {
+
+    public static final TokenBadge TRUE = new TokenBadge(true);
+    public static final TokenBadge FALSE = new TokenBadge(false);
+
+    public static TokenBadge read(final byte[] _data, int i) {
+      return _data[i] == 1 ? TokenBadge.TRUE : TokenBadge.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 0;
+    }
+  }
+}

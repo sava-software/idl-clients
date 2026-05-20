@@ -1,0 +1,31 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+
+public record OpenPositionBumps(int positionBump) implements SerDe {
+
+  public static final int BYTES = 1;
+
+  public static final int POSITION_BUMP_OFFSET = 0;
+
+  public static OpenPositionBumps read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var positionBump = _data[_offset] & 0xFF;
+    return new OpenPositionBumps(positionBump);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    _data[i] = (byte) positionBump;
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

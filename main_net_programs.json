@@ -201,6 +201,14 @@
       "idlType": "anchor"
     },
     {
+      "name": "Orca Whirlpools",
+      "source": "idl-clients-orca",
+      "module": "orca",
+      "package": "orca.whirlpools",
+      "program": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "idlType": "anchor"
+    },
+    {
       "name": "Phoenix Ember",
       "source": "idl-clients-phoenix",
       "module": "phoenix",

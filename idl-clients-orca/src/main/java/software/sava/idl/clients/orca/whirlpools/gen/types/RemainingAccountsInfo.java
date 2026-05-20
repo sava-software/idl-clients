@@ -1,0 +1,29 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+public record RemainingAccountsInfo(RemainingAccountsSlice[] slices) implements SerDe {
+
+  public static final int SLICES_OFFSET = 0;
+
+  public static RemainingAccountsInfo read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var slices = SerDeUtil.readVector(4, RemainingAccountsSlice.class, RemainingAccountsSlice::read, _data, _offset);
+    return new RemainingAccountsInfo(slices);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeVector(4, slices, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return SerDeUtil.lenVector(4, slices);
+  }
+}

@@ -275,9 +275,46 @@ Decide where each account comes from using this rule of thumb:
 - **Per-user / per-market accounts** — trader wallets, trader accounts,
   orderbooks, asset maps, splines, conditional-orders accounts, escrow
   accounts, stop-loss accounts, user token accounts, mints — are method
-  parameters of type `PublicKey`. Callers derive them via the generated
-  `<Program>PDAs` helpers; wrappers must not re-derive PDAs internally
-  (keeps the impl allocation-free and seed-agnostic).
+  parameters of type `PublicKey`. The abstract method on the interface
+  must take these as explicit `PublicKey` parameters and the `Impl` must
+  not derive PDAs in that path (keeps the impl allocation-free and
+  seed-agnostic, and lets callers pass overrides such as non-ATA token
+  accounts). Convenience derivation belongs in `default` methods on the
+  interface (see below).
+
+### Convenience `default` methods (PDA / ATA derivation)
+
+The wrapper interface should also expose `default` overloads that derive
+program-seeded PDAs and associated token accounts from caller context and
+delegate to the explicit-account methods above. This gives callers a
+one-call experience for the common path while preserving an escape hatch
+for the explicit form.
+
+Rules:
+
+- Derive only accounts whose value is fully determined by other inputs:
+  - Program-seeded PDAs whose seeds are constants plus accounts the caller
+    already passes (or the program id from `<Module>Accounts`) — use the
+    generated `<Program>PDAs` helpers.
+  - Associated token accounts derived from `(owner, tokenProgram, mint)` —
+    use `AssociatedTokenPDAs.associatedTokenPDA(...)` with the ATA program
+    id from `SolanaAccounts.associatedTokenAccountProgram()`. If the
+    consuming module doesn't already depend on `idl-clients-spl`, add
+    `project(":idl-clients-spl")` to its `build.gradle.kts` and
+    `requires transitive software.sava.idl.clients.spl;` to its
+    `module-info.java`.
+- The `default` method's parameter list should be a strict subset of the
+  abstract method's (replace derived params with the inputs needed to
+  derive them, e.g. `positionMint` instead of `(position, positionMint,
+  positionTokenAccount)`).
+- The `default` method body must simply call the abstract method with the
+  derived values — no extra logic, branching, or validation.
+- Expose the individual derivations as small `default` helpers on the
+  interface (e.g. `derivePositionKey`, `deriveOracleKey`, `deriveATA`) so
+  callers can reuse them without depending on the convenience overload.
+- For globally-fixed program-seeded PDAs (singletons whose seeds are
+  constants only), add them to `<Module>Accounts` and auto-wire them in
+  the `Impl`; they are not method parameters at all.
 
 ### Calling the generated builders
 

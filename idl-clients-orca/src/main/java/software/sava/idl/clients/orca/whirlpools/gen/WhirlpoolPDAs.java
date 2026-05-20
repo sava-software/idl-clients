@@ -1,0 +1,200 @@
+package software.sava.idl.clients.orca.whirlpools.gen;
+
+import java.util.List;
+
+import software.sava.core.accounts.ProgramDerivedAddress;
+import software.sava.core.accounts.PublicKey;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
+public final class WhirlpoolPDAs {
+
+  public static ProgramDerivedAddress adaptiveFeeTierPDA(final PublicKey program,
+                                                         final PublicKey whirlpoolsConfigAccount,
+                                                         final byte[] feeTierIndex) {
+    return PublicKey.findProgramAddress(List.of(
+      "fee_tier".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      feeTierIndex
+    ), program);
+  }
+
+  public static ProgramDerivedAddress bundledPositionPDA(final PublicKey program,
+                                                         final PublicKey positionBundlePositionBundleMintAccount,
+                                                         final byte[] bundleIndex) {
+    return PublicKey.findProgramAddress(List.of(
+      "bundled_position".getBytes(US_ASCII),
+      positionBundlePositionBundleMintAccount.toByteArray(),
+      bundleIndex
+    ), program);
+  }
+
+  public static ProgramDerivedAddress configExtensionPDA(final PublicKey program,
+                                                         final PublicKey configAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "config_extension".getBytes(US_ASCII),
+      configAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress feeTierPDA(final PublicKey program,
+                                                 final PublicKey configAccount,
+                                                 final byte[] tickSpacing) {
+    return PublicKey.findProgramAddress(List.of(
+      "fee_tier".getBytes(US_ASCII),
+      configAccount.toByteArray(),
+      tickSpacing
+    ), program);
+  }
+
+  public static ProgramDerivedAddress lockConfigPDA(final PublicKey program,
+                                                    final PublicKey positionAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "lock_config".getBytes(US_ASCII),
+      positionAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress oraclePDA(final PublicKey program,
+                                                final PublicKey whirlpoolAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "oracle".getBytes(US_ASCII),
+      whirlpoolAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress oracleOnePDA(final PublicKey program,
+                                                   final PublicKey whirlpoolOneAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "oracle".getBytes(US_ASCII),
+      whirlpoolOneAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress oracleTwoPDA(final PublicKey program,
+                                                   final PublicKey whirlpoolTwoAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "oracle".getBytes(US_ASCII),
+      whirlpoolTwoAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionPDA(final PublicKey program,
+                                                  final PublicKey positionMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "position".getBytes(US_ASCII),
+      positionMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionBundlePDA(final PublicKey program,
+                                                        final PublicKey positionBundleMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "position_bundle".getBytes(US_ASCII),
+      positionBundleMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionBundleTokenAccountPDA(final PublicKey program,
+                                                                    final PublicKey positionBundleOwnerAccount,
+                                                                    final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
+                                                                    final PublicKey positionBundleMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      positionBundleOwnerAccount.toByteArray(),
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
+      positionBundleMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey program,
+                                                              final PublicKey ownerAccount,
+                                                              final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
+                                                              final PublicKey positionMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      ownerAccount.toByteArray(),
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
+      positionMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress rewardTokenBadgePDA(final PublicKey program,
+                                                          final PublicKey whirlpoolWhirlpoolsConfigAccount,
+                                                          final PublicKey rewardMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "token_badge".getBytes(US_ASCII),
+      whirlpoolWhirlpoolsConfigAccount.toByteArray(),
+      rewardMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tickArrayPDA(final PublicKey program,
+                                                   final PublicKey whirlpoolAccount,
+                                                   final byte[] startTickIndex) {
+    return PublicKey.findProgramAddress(List.of(
+      "tick_array".getBytes(US_ASCII),
+      whirlpoolAccount.toByteArray(),
+      startTickIndex
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenBadgePDA(final PublicKey program,
+                                                    final PublicKey whirlpoolsConfigAccount,
+                                                    final PublicKey tokenMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "token_badge".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      tokenMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenBadgeAPDA(final PublicKey program,
+                                                     final PublicKey whirlpoolsConfigAccount,
+                                                     final PublicKey tokenMintAAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "token_badge".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      tokenMintAAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tokenBadgeBPDA(final PublicKey program,
+                                                     final PublicKey whirlpoolsConfigAccount,
+                                                     final PublicKey tokenMintBAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "token_badge".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      tokenMintBAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress whirlpoolPDA(final PublicKey program,
+                                                   final PublicKey whirlpoolsConfigAccount,
+                                                   final PublicKey tokenMintAAccount,
+                                                   final PublicKey tokenMintBAccount,
+                                                   final byte[] tickSpacing) {
+    return PublicKey.findProgramAddress(List.of(
+      "whirlpool".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      tokenMintAAccount.toByteArray(),
+      tokenMintBAccount.toByteArray(),
+      tickSpacing
+    ), program);
+  }
+
+  public static ProgramDerivedAddress whirlpool1PDA(final PublicKey program,
+                                                    final PublicKey whirlpoolsConfigAccount,
+                                                    final PublicKey tokenMintAAccount,
+                                                    final PublicKey tokenMintBAccount,
+                                                    final PublicKey adaptiveFeeTierFeeTierIndexAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "whirlpool".getBytes(US_ASCII),
+      whirlpoolsConfigAccount.toByteArray(),
+      tokenMintAAccount.toByteArray(),
+      tokenMintBAccount.toByteArray(),
+      adaptiveFeeTierFeeTierIndexAccount.toByteArray()
+    ), program);
+  }
+
+  private WhirlpoolPDAs() {
+  }
+}

@@ -1,0 +1,110 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record PoolInitialized(Discriminator discriminator,
+                              PublicKey whirlpool,
+                              PublicKey whirlpoolsConfig,
+                              PublicKey tokenMintA,
+                              PublicKey tokenMintB,
+                              int tickSpacing,
+                              PublicKey tokenProgramA,
+                              PublicKey tokenProgramB,
+                              int decimalsA,
+                              int decimalsB,
+                              BigInteger initialSqrtPrice) implements WhirlpoolEvent {
+
+  public static final int BYTES = 220;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(100, 118, 173, 87, 12, 198, 254, 229);
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int WHIRLPOOLS_CONFIG_OFFSET = 40;
+  public static final int TOKEN_MINT_A_OFFSET = 72;
+  public static final int TOKEN_MINT_B_OFFSET = 104;
+  public static final int TICK_SPACING_OFFSET = 136;
+  public static final int TOKEN_PROGRAM_A_OFFSET = 138;
+  public static final int TOKEN_PROGRAM_B_OFFSET = 170;
+  public static final int DECIMALS_A_OFFSET = 202;
+  public static final int DECIMALS_B_OFFSET = 203;
+  public static final int INITIAL_SQRT_PRICE_OFFSET = 204;
+
+  public static PoolInitialized read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var whirlpoolsConfig = readPubKey(_data, i);
+    i += 32;
+    final var tokenMintA = readPubKey(_data, i);
+    i += 32;
+    final var tokenMintB = readPubKey(_data, i);
+    i += 32;
+    final var tickSpacing = getInt16LE(_data, i);
+    i += 2;
+    final var tokenProgramA = readPubKey(_data, i);
+    i += 32;
+    final var tokenProgramB = readPubKey(_data, i);
+    i += 32;
+    final var decimalsA = _data[i] & 0xFF;
+    ++i;
+    final var decimalsB = _data[i] & 0xFF;
+    ++i;
+    final var initialSqrtPrice = getInt128LE(_data, i);
+    return new PoolInitialized(discriminator,
+                               whirlpool,
+                               whirlpoolsConfig,
+                               tokenMintA,
+                               tokenMintB,
+                               tickSpacing,
+                               tokenProgramA,
+                               tokenProgramB,
+                               decimalsA,
+                               decimalsB,
+                               initialSqrtPrice);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    whirlpoolsConfig.write(_data, i);
+    i += 32;
+    tokenMintA.write(_data, i);
+    i += 32;
+    tokenMintB.write(_data, i);
+    i += 32;
+    putInt16LE(_data, i, tickSpacing);
+    i += 2;
+    tokenProgramA.write(_data, i);
+    i += 32;
+    tokenProgramB.write(_data, i);
+    i += 32;
+    _data[i] = (byte) decimalsA;
+    ++i;
+    _data[i] = (byte) decimalsB;
+    ++i;
+    putInt128LE(_data, i, initialSqrtPrice);
+    i += 16;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,105 @@
+package software.sava.idl.clients.orca.whirlpools.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LiquidityDecreased(Discriminator discriminator,
+                                 PublicKey whirlpool,
+                                 PublicKey position,
+                                 int tickLowerIndex,
+                                 int tickUpperIndex,
+                                 BigInteger liquidity,
+                                 long tokenAAmount,
+                                 long tokenBAmount,
+                                 long tokenATransferFee,
+                                 long tokenBTransferFee) implements WhirlpoolEvent {
+
+  public static final int BYTES = 128;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(166, 1, 36, 71, 112, 202, 181, 171);
+
+  public static final int WHIRLPOOL_OFFSET = 8;
+  public static final int POSITION_OFFSET = 40;
+  public static final int TICK_LOWER_INDEX_OFFSET = 72;
+  public static final int TICK_UPPER_INDEX_OFFSET = 76;
+  public static final int LIQUIDITY_OFFSET = 80;
+  public static final int TOKEN_A_AMOUNT_OFFSET = 96;
+  public static final int TOKEN_B_AMOUNT_OFFSET = 104;
+  public static final int TOKEN_A_TRANSFER_FEE_OFFSET = 112;
+  public static final int TOKEN_B_TRANSFER_FEE_OFFSET = 120;
+
+  public static LiquidityDecreased read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpool = readPubKey(_data, i);
+    i += 32;
+    final var position = readPubKey(_data, i);
+    i += 32;
+    final var tickLowerIndex = getInt32LE(_data, i);
+    i += 4;
+    final var tickUpperIndex = getInt32LE(_data, i);
+    i += 4;
+    final var liquidity = getInt128LE(_data, i);
+    i += 16;
+    final var tokenAAmount = getInt64LE(_data, i);
+    i += 8;
+    final var tokenBAmount = getInt64LE(_data, i);
+    i += 8;
+    final var tokenATransferFee = getInt64LE(_data, i);
+    i += 8;
+    final var tokenBTransferFee = getInt64LE(_data, i);
+    return new LiquidityDecreased(discriminator,
+                                  whirlpool,
+                                  position,
+                                  tickLowerIndex,
+                                  tickUpperIndex,
+                                  liquidity,
+                                  tokenAAmount,
+                                  tokenBAmount,
+                                  tokenATransferFee,
+                                  tokenBTransferFee);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpool.write(_data, i);
+    i += 32;
+    position.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, tickLowerIndex);
+    i += 4;
+    putInt32LE(_data, i, tickUpperIndex);
+    i += 4;
+    putInt128LE(_data, i, liquidity);
+    i += 16;
+    putInt64LE(_data, i, tokenAAmount);
+    i += 8;
+    putInt64LE(_data, i, tokenBAmount);
+    i += 8;
+    putInt64LE(_data, i, tokenATransferFee);
+    i += 8;
+    putInt64LE(_data, i, tokenBTransferFee);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

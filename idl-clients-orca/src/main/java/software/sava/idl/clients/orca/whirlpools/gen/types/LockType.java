@@ -1,0 +1,13 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+public enum LockType implements RustEnum {
+
+  Permanent;
+
+  public static LockType read(final byte[] _data, final int _offset) {
+    return SerDeUtil.read(1, LockType.values(), _data, _offset);
+  }
+}

@@ -1,0 +1,87 @@
+package software.sava.idl.clients.orca.whirlpools.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record WhirlpoolsConfigExtension(PublicKey _address,
+                                        Discriminator discriminator,
+                                        PublicKey whirlpoolsConfig,
+                                        PublicKey configExtensionAuthority,
+                                        PublicKey tokenBadgeAuthority) implements SerDe {
+
+  public static final int BYTES = 104;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(2, 99, 215, 163, 240, 26, 153, 58);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int WHIRLPOOLS_CONFIG_OFFSET = 8;
+  public static final int CONFIG_EXTENSION_AUTHORITY_OFFSET = 40;
+  public static final int TOKEN_BADGE_AUTHORITY_OFFSET = 72;
+
+  public static Filter createWhirlpoolsConfigFilter(final PublicKey whirlpoolsConfig) {
+    return Filter.createMemCompFilter(WHIRLPOOLS_CONFIG_OFFSET, whirlpoolsConfig);
+  }
+
+  public static Filter createConfigExtensionAuthorityFilter(final PublicKey configExtensionAuthority) {
+    return Filter.createMemCompFilter(CONFIG_EXTENSION_AUTHORITY_OFFSET, configExtensionAuthority);
+  }
+
+  public static Filter createTokenBadgeAuthorityFilter(final PublicKey tokenBadgeAuthority) {
+    return Filter.createMemCompFilter(TOKEN_BADGE_AUTHORITY_OFFSET, tokenBadgeAuthority);
+  }
+
+  public static WhirlpoolsConfigExtension read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static WhirlpoolsConfigExtension read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static WhirlpoolsConfigExtension read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], WhirlpoolsConfigExtension> FACTORY = WhirlpoolsConfigExtension::read;
+
+  public static WhirlpoolsConfigExtension read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var whirlpoolsConfig = readPubKey(_data, i);
+    i += 32;
+    final var configExtensionAuthority = readPubKey(_data, i);
+    i += 32;
+    final var tokenBadgeAuthority = readPubKey(_data, i);
+    return new WhirlpoolsConfigExtension(_address, discriminator, whirlpoolsConfig, configExtensionAuthority, tokenBadgeAuthority);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    whirlpoolsConfig.write(_data, i);
+    i += 32;
+    configExtensionAuthority.write(_data, i);
+    i += 32;
+    tokenBadgeAuthority.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}
