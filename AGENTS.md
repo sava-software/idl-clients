@@ -103,6 +103,13 @@ read-only):
   Java appears ambiguous.
 - `external/scope` → upstream Rust source for the Scope oracle program,
   referenced by `idl-clients-oracles` and downstream consumers.
+- `external/solana-program-sdks` → official program SDKs that live in their
+  own repos (typically JavaScript/TypeScript) rather than alongside the
+  on-chain program under `external/rust-solana-programs`. Useful when
+  porting off-chain utility code (math helpers, quotes, slippage/fee
+  adjustments, account decoders) into this repo's `*Util` classes or
+  sibling `quote/` packages. See the "Referencing upstream SDKs for
+  utility code" subsection under "Writing hand-written client wrappers".
 
 ### How to use them
 
@@ -316,6 +323,43 @@ Rules:
   constants only), add them to `<Module>Accounts` and auto-wire them in
   the `Impl`; they are not method parameters at all.
 
+### Extra (non-IDL) accounts (`remaining_accounts`)
+
+Some programs read additional accounts from `ctx.remaining_accounts` that
+are **not** declared in the IDL's `accounts:` list and therefore are **not**
+emitted by the generated builders. Common cases:
+
+- **Token-2022 transfer-hook accounts** — required whenever a mint used by
+  the instruction has the `TransferHook` extension enabled. Per such mint,
+  append the hook program id, the per-mint `extra-account-metas` PDA
+  (seeds: `["extra-account-metas", mint]`, owned by the hook program), and
+  every account listed by that PDA after resolving any seed-based metas.
+- **Per-instruction "supplemental" slices** — e.g. extra tick arrays on
+  Whirlpool swaps, extra oracle/market keys on perp cranks, etc. These are
+  usually paired with an instruction arg (often `RemainingAccountsInfo` or
+  similar) that tells the program how many remaining accounts belong to
+  each category and in what order they appear.
+
+The generated `Instruction` only carries the IDL accounts; the caller must
+append the rest via `Instruction.extraAccount(...)` / `extraAccounts(List)`
+**after** calling the builder. When such extras exist for a program:
+
+- Add a small helper next to the `<Program>Client` (e.g.
+  `<Program>RemainingAccounts`) that builds both the instruction-arg
+  payload (when present) and the matching ordered `List<AccountMeta>`, and
+  exposes a static `append(Instruction, ...)` to wire them onto the
+  produced `Instruction`. See `idl-clients-orca/.../WhirlpoolRemainingAccounts`
+  for the reference pattern.
+- Document the requirement on the affected interface methods (or on the
+  client type itself) — at minimum: which slice kinds apply to which
+  instruction, the order they must appear in, and that the matching
+  arg/info must be passed to the builder.
+- Cross-check the upstream Rust (`parse_remaining_accounts`, manual
+  `ctx.remaining_accounts.iter()`, or transfer-hook helpers like
+  `spl_token_2022::onchain::invoke_transfer_checked`) to confirm exactly
+  which accounts are read and in what order. The IDL alone will not show
+  these.
+
 ### Calling the generated builders
 
 Each generated `<Program>Program` exposes two overloads per instruction: a
@@ -348,6 +392,59 @@ specific non-admin use case requires them. Typical categories to skip:
 
 Note the omissions in the wrapper's PR/commit description so they can be
 added later if a non-admin caller appears.
+
+### Referencing upstream SDKs for utility code
+
+Beyond the on-chain Rust program sources, many Solana programs ship an
+official SDK — typically a Rust crate (under `rust-sdk/`) and/or a
+JavaScript/TypeScript package — that contains substantial off-chain utility
+code worth surfacing in this repo's hand-written wrappers and `*Util`
+classes. Examples include math conversions (tick ↔ sqrt-price, price ↔
+tick), quote / amount-estimation helpers, slippage and transfer-fee
+adjustments, fixed-point primitives, and account/bitmap decoders.
+
+When wiring or extending a `<Program>Client`, look for an upstream SDK and
+port the relevant helpers into the matching module (`<Module>Util`, a
+sibling `quote/` package, etc.). The two reference locations are:
+
+- **Same-repo SDK** — when the SDK lives alongside the on-chain program,
+  it is reachable from `symlinks/external/rust-solana-programs/<program>/`.
+  Typical layout: `rust-sdk/core/src/{math,quote,...}` for the Rust crate
+  and `ts-sdk/` for the JS/TS package. The Whirlpools SDK under
+  `symlinks/external/rust-solana-programs/whirlpools/{rust-sdk,ts-sdk}/`
+  is the canonical example — `OrcaUtil` and the `quote/` package mirror
+  `rust-sdk/core/src/math/` and `rust-sdk/core/src/quote/` byte-exactly.
+- **Separate-repo SDK** — when the SDK is published in its own repo
+  (common for JS/TS-only SDKs), it is symlinked under
+  `symlinks/external/solana-program-sdks/<program>/`. Treat it as
+  read-only reference material like the rest of `symlinks/external/`.
+  If the upstream SDK for a program is not already symlinked there,
+  **stop and ask the user before cloning anything** — the same rules as
+  the "Cross-checking semantics" subsection below apply (no guessed URLs,
+  no "close enough" repos).
+
+Guidance for porting:
+
+- Prefer the Rust SDK when both exist — the TS SDK is often a thin
+  re-export over the Rust crate (e.g. Whirlpools' `ts-sdk/core/src/lib.rs`
+  is literally `pub use orca_whirlpools_core::*;`), so the Rust source is
+  the authoritative reference for numeric / fixed-point routines.
+- Port pure functions verbatim (same constants, same shifts, same
+  rounding) so the Rust crate's `#[cfg(test)]` vectors can be translated
+  one-to-one as JUnit tests; this is the cheapest way to prove parity.
+- Reuse generated `gen/types/` records (e.g. `Whirlpool`, `Position`,
+  `Tick`) directly when a helper consumes on-chain state — do not invent
+  parallel facade types.
+- When a helper depends on values that aren't part of any on-chain
+  account (e.g. Token-2022 `TransferFee`), add a small input record next
+  to the helpers and document that callers must populate it from the
+  appropriate mint extension at runtime.
+- Skip SDK code that is purely a Rust/TS-side instruction builder — that
+  job is already covered by the generated `<Program>Program` and the
+  hand-written `<Program>Client` in this repo.
+- Note in the PR/commit description which SDK modules were ported and
+  which were intentionally deferred (e.g. a heavy swap quoter that
+  iterates an on-chain account sequence) so follow-up work is discoverable.
 
 ### Cross-checking semantics
 

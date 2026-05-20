@@ -1,0 +1,130 @@
+package software.sava.idl.clients.orca.quote;
+
+import org.junit.jupiter.api.Test;
+import software.sava.idl.clients.orca.whirlpools.gen.types.Position;
+import software.sava.idl.clients.orca.whirlpools.gen.types.Tick;
+import software.sava.idl.clients.orca.whirlpools.gen.types.Whirlpool;
+
+import java.math.BigInteger;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static software.sava.idl.clients.orca.quote.WhirlpoolQuoteTestSupport.*;
+
+/// Ported from `rust-sdk/core/src/quote/rewards.rs#tests`.
+final class CollectRewardsQuoteTests {
+
+  private static final BigInteger[] DEFAULT_GROWTH_GLOBALS = {
+      bi(500).shiftLeft(64),
+      bi(600).shiftLeft(64),
+      bi(700).shiftLeft(64)
+  };
+  private static final BigInteger[] DEFAULT_EMISSIONS = {bi(1), bi(2), bi(3)};
+  private static final BigInteger[] DEFAULT_TICK_OUTSIDES = {bi(10), bi(20), bi(30)};
+
+  private static Whirlpool defaultPool(final int tickCurrent) {
+    return whirlpoolForRewards(tickCurrent, 0L, DEFAULT_GROWTH_GLOBALS, DEFAULT_EMISSIONS, bi(50));
+  }
+
+  private static Position defaultPos() {
+    return positionForRewards(bi(50), 5, 10,
+        new BigInteger[]{ZERO, ZERO, ZERO},
+        new long[]{100L, 200L, 300L});
+  }
+
+  private static Tick defaultTick() {
+    return tickRewards(DEFAULT_TICK_OUTSIDES);
+  }
+
+  @Test
+  void belowRange() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(0), defaultPos(),
+        defaultTick(), defaultTick(), 10L, null, null, null);
+    assertEquals(100L, q.rewards()[0].rewardsOwed());
+    assertEquals(200L, q.rewards()[1].rewardsOwed());
+    assertEquals(300L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void inRange() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(7), defaultPos(),
+        defaultTick(), defaultTick(), 10L, null, null, null);
+    assertEquals(25099L, q.rewards()[0].rewardsOwed());
+    assertEquals(30199L, q.rewards()[1].rewardsOwed());
+    assertEquals(35299L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void aboveRange() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(15), defaultPos(),
+        defaultTick(), defaultTick(), 10L, null, null, null);
+    assertEquals(100L, q.rewards()[0].rewardsOwed());
+    assertEquals(200L, q.rewards()[1].rewardsOwed());
+    assertEquals(300L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void onRangeLower() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(5), defaultPos(),
+        defaultTick(), defaultTick(), 10L, null, null, null);
+    assertEquals(25099L, q.rewards()[0].rewardsOwed());
+    assertEquals(30199L, q.rewards()[1].rewardsOwed());
+    assertEquals(35299L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void onRangeUpper() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(10), defaultPos(),
+        defaultTick(), defaultTick(), 10L, null, null, null);
+    assertEquals(100L, q.rewards()[0].rewardsOwed());
+    assertEquals(200L, q.rewards()[1].rewardsOwed());
+    assertEquals(300L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void withTransferFees() {
+    final var q = WhirlpoolQuote.collectRewardsQuote(defaultPool(7), defaultPos(),
+        defaultTick(), defaultTick(), 10L,
+        TransferFee.of(1000), TransferFee.of(2000), TransferFee.of(3000));
+    assertEquals(22589L, q.rewards()[0].rewardsOwed());
+    assertEquals(24159L, q.rewards()[1].rewardsOwed());
+    assertEquals(24709L, q.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void cyclicGrowthCheckpoint() {
+    final var p = positionForRewards(bi(91354442895L), 15168, 19648,
+        new BigInteger[]{
+            bi("340282366920938463463374607431768211400"),
+            bi("340282366920938463463374607431768211000"),
+            ZERO},
+        new long[]{0L, 0L, 0L});
+    final var pool = whirlpoolForRewards(18158, 0L,
+        new BigInteger[]{ZERO, ZERO, ZERO}, new BigInteger[]{ZERO, ZERO, ZERO}, ZERO);
+    final var tl = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+    final var tu = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+    final var r = WhirlpoolQuote.collectRewardsQuote(pool, p, tl, tu, 10L, null, null, null);
+    assertEquals(0L, r.rewards()[0].rewardsOwed());
+    assertEquals(0L, r.rewards()[1].rewardsOwed());
+    assertEquals(0L, r.rewards()[2].rewardsOwed());
+  }
+
+  @Test
+  void forceProductOverflow() {
+    final BigInteger half = OrcaUtilU128Max().shiftRight(1);
+    final var pool = whirlpoolForRewards(5, 50L,
+        new BigInteger[]{half, ZERO, ZERO},
+        new BigInteger[]{bi(1), ZERO, ZERO}, bi(59));
+    final var p = positionForRewards(OrcaUtilU128Max(), 0, 10,
+        new BigInteger[]{ZERO, ZERO, ZERO}, new long[]{0L, 0L, 0L});
+    final var tl = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+    final var tu = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+    final var r = WhirlpoolQuote.collectRewardsQuote(pool, p, tl, tu, 1746011244L, null, null, null);
+    assertEquals(0L, r.rewards()[0].rewardsOwed());
+    assertEquals(0L, r.rewards()[1].rewardsOwed());
+    assertEquals(0L, r.rewards()[2].rewardsOwed());
+  }
+
+  private static BigInteger OrcaUtilU128Max() {
+    return software.sava.idl.clients.orca.OrcaUtil.U128_MASK;
+  }
+}

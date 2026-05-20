@@ -1,5 +1,6 @@
 module software.sava.idl.clients.orca {
   exports software.sava.idl.clients.orca;
+  exports software.sava.idl.clients.orca.quote;
   exports software.sava.idl.clients.orca.whirlpools.gen.events;
   exports software.sava.idl.clients.orca.whirlpools.gen.types;
   exports software.sava.idl.clients.orca.whirlpools.gen;

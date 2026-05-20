@@ -14,6 +14,29 @@ import software.sava.idl.clients.orca.whirlpools.gen.types.RemainingAccountsInfo
 import software.sava.idl.clients.orca.whirlpools.gen.types.RepositionLiquidityMethod;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 
+/// Trader-facing client wrapper around the generated `WhirlpoolProgram` builders.
+///
+/// **Extra (non-IDL) accounts on V2 instructions.** The methods whose names end in
+/// `V2` (and `repositionLiquidityV2`) accept a `RemainingAccountsInfo` argument
+/// and additionally expect the matching accounts to be appended to the produced
+/// `Instruction` as `remaining_accounts`. These are not part of the IDL account
+/// list and therefore not emitted by the generated builders. Two categories
+/// apply:
+///
+///  - Token-2022 **transfer-hook** accounts — required whenever a token mint
+///    passed to the instruction has the `TransferHook` extension enabled. Per
+///    mint, append the hook program id, the per-mint `extra-account-metas` PDA
+///    (`["extra-account-metas", mint]` under the hook program), and every
+///    account listed by that PDA after resolving any seed-based metas.
+///  - **Supplemental tick arrays** — optional extra tick arrays for `swapV2`
+///    and `twoHopSwapV2` so a single swap can traverse more than the three
+///    tick arrays declared in the IDL.
+///
+/// Use [WhirlpoolRemainingAccounts] to build both the `RemainingAccountsInfo`
+/// arg and the matching ordered `List<AccountMeta>` to append via
+/// `WhirlpoolRemainingAccounts.append(ix, extras)`. Pass `null` for
+/// `remainingAccountsInfo` (and append nothing) when no transfer-hook /
+/// supplemental tick arrays are needed.
 public interface OrcaWhirlpoolsClient {
 
   static OrcaWhirlpoolsClient createClient(final SolanaAccounts solanaAccounts, final OrcaAccounts accounts) {
