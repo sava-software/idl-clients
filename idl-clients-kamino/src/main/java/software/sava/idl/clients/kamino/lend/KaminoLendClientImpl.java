@@ -4,11 +4,14 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
+import software.sava.idl.clients.kamino.farms.gen.FarmsProgram;
 import software.sava.idl.clients.kamino.lend.gen.KaminoLendingProgram;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
 import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.spl.SPLAccountClient;
+
+import java.math.BigInteger;
 
 final class KaminoLendClientImpl implements KaminoLendClient {
 
@@ -733,6 +736,135 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         owner,
         obligationKey,
         solanaAccounts.instructionsSysVar()
+    );
+  }
+
+  // ===== FarmsProgram =====
+
+  private PublicKey scopeOrSentinel(final PublicKey scopePricesKey) {
+    return KaminoAccounts.isNullKey(scopePricesKey) ? kaminoAccounts.farmProgram() : scopePricesKey;
+  }
+
+  @Override
+  public Instruction initializeFarmUser(final PublicKey farmStateKey,
+                                        final PublicKey userStateKey,
+                                        final PublicKey delegatee) {
+    return FarmsProgram.initializeUser(
+        kaminoAccounts.invokedFarmsProgram(),
+        owner,
+        feePayer,
+        owner,
+        KaminoAccounts.isNullKey(delegatee) ? owner : delegatee,
+        userStateKey,
+        farmStateKey,
+        solanaAccounts.systemProgram(),
+        solanaAccounts.rentSysVar()
+    );
+  }
+
+  @Override
+  public Instruction refreshFarm(final PublicKey farmStateKey, final PublicKey scopePricesKey) {
+    return FarmsProgram.refreshFarm(
+        kaminoAccounts.invokedFarmsProgram(),
+        farmStateKey,
+        scopeOrSentinel(scopePricesKey)
+    );
+  }
+
+  @Override
+  public Instruction refreshFarmUserState(final PublicKey userStateKey,
+                                          final PublicKey farmStateKey,
+                                          final PublicKey scopePricesKey) {
+    return FarmsProgram.refreshUserState(
+        kaminoAccounts.invokedFarmsProgram(),
+        userStateKey,
+        farmStateKey,
+        scopeOrSentinel(scopePricesKey)
+    );
+  }
+
+  @Override
+  public Instruction harvestFarmReward(final PublicKey userStateKey,
+                                       final PublicKey farmStateKey,
+                                       final PublicKey rewardMint,
+                                       final PublicKey userRewardTokenAccount,
+                                       final PublicKey rewardsVault,
+                                       final PublicKey rewardsTreasuryVault,
+                                       final PublicKey farmVaultsAuthority,
+                                       final PublicKey scopePricesKey,
+                                       final PublicKey tokenProgram,
+                                       final long rewardIndex) {
+    return FarmsProgram.harvestReward(
+        kaminoAccounts.invokedFarmsProgram(),
+        owner,
+        userStateKey,
+        farmStateKey,
+        kaminoAccounts.farmsGlobalConfig(),
+        rewardMint,
+        userRewardTokenAccount,
+        rewardsVault,
+        rewardsTreasuryVault,
+        farmVaultsAuthority,
+        scopeOrSentinel(scopePricesKey),
+        tokenProgram,
+        rewardIndex
+    );
+  }
+
+  @Override
+  public Instruction stakeFarm(final PublicKey userStateKey,
+                               final PublicKey farmStateKey,
+                               final PublicKey farmVault,
+                               final PublicKey userAta,
+                               final PublicKey tokenMint,
+                               final PublicKey scopePricesKey,
+                               final PublicKey tokenProgram,
+                               final long amount) {
+    return FarmsProgram.stake(
+        kaminoAccounts.invokedFarmsProgram(),
+        owner,
+        userStateKey,
+        farmStateKey,
+        farmVault,
+        userAta,
+        tokenMint,
+        scopeOrSentinel(scopePricesKey),
+        tokenProgram,
+        amount
+    );
+  }
+
+  @Override
+  public Instruction unstakeFarm(final PublicKey userStateKey,
+                                 final PublicKey farmStateKey,
+                                 final PublicKey scopePricesKey,
+                                 final BigInteger stakeSharesScaled) {
+    return FarmsProgram.unstake(
+        kaminoAccounts.invokedFarmsProgram(),
+        owner,
+        userStateKey,
+        farmStateKey,
+        scopeOrSentinel(scopePricesKey),
+        stakeSharesScaled
+    );
+  }
+
+  @Override
+  public Instruction withdrawUnstakedFarmDeposits(final PublicKey userStateKey,
+                                                  final PublicKey farmStateKey,
+                                                  final PublicKey userAta,
+                                                  final PublicKey farmVault,
+                                                  final PublicKey farmVaultsAuthority,
+                                                  final PublicKey tokenProgram) {
+    return FarmsProgram.withdrawUnstakedDeposits(
+        kaminoAccounts.invokedFarmsProgram(),
+        owner,
+        userStateKey,
+        farmStateKey,
+        userAta,
+        farmVault,
+        farmVaultsAuthority,
+        tokenProgram
     );
   }
 }

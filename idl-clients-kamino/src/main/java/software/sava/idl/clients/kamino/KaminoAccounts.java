@@ -64,7 +64,8 @@ public interface KaminoAccounts {
         scopePricesProgram,
         hubbleScopeFeedAccounts, kaminoScopeFeedAccounts,
         scopeFeeds,
-        farmProgram, farmsGlobalConfig,
+        AccountMeta.createInvoked(farmProgram),
+        farmsGlobalConfig,
         AccountMeta.createInvoked(kVaultsProgram),
         kVaultsEventAuthority
     );
@@ -280,7 +281,11 @@ public interface KaminoAccounts {
 
   PublicKey mainMarketLUT();
 
-  PublicKey farmProgram();
+  AccountMeta invokedFarmsProgram();
+
+  default PublicKey farmProgram() {
+    return invokedFarmsProgram().publicKey();
+  }
 
   PublicKey farmsGlobalConfig();
 

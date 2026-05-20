@@ -12,7 +12,7 @@ record KaminoAccountsRecord(AccountMeta invokedKLendProgram,
                             ScopeFeedAccounts scopeMainnetHubbleFeed,
                             ScopeFeedAccounts scopeMainnetKLendFeed,
                             Map<PublicKey, ScopeFeedAccounts> scopeFeeds,
-                            PublicKey farmProgram,
+                            AccountMeta invokedFarmsProgram,
                             PublicKey farmsGlobalConfig,
                             AccountMeta invokedKVaultsProgram,
                             PublicKey kVaultsEventAuthority) implements KaminoAccounts {

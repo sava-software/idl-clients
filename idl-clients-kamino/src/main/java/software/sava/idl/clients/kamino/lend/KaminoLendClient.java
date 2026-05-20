@@ -315,4 +315,63 @@ public interface KaminoLendClient {
   Instruction acceptObligationOwnership(final PublicKey obligationKey);
 
   Instruction abortObligationOwnershipTransfer(final PublicKey obligationKey);
+
+  // ===== FarmsProgram (trader-facing) =====
+
+  /// Initialize a user state account on a farm. For non-delegated farms pass `delegatee`
+  /// as `null` / `KaminoAccounts.NULL_KEY` and the caller's `owner` will be substituted
+  /// (required by the program: payer == owner == delegatee for non-delegated farms, and
+  /// `delegatee` is also the user-state PDA seed — derive `userStateKey` accordingly).
+  Instruction initializeFarmUser(final PublicKey farmStateKey,
+                                 final PublicKey userStateKey,
+                                 final PublicKey delegatee);
+
+  /// Refresh a farm's accumulated rewards. `scopePricesKey` may be null/NULL_KEY when the
+  /// farm doesn't use a scope price feed; the farm program id is substituted as the
+  /// Anchor `Option` sentinel.
+  Instruction refreshFarm(final PublicKey farmStateKey, final PublicKey scopePricesKey);
+
+  /// Refresh a user's stake state. `scopePricesKey` is optional (see [#refreshFarm]).
+  Instruction refreshFarmUserState(final PublicKey userStateKey,
+                                   final PublicKey farmStateKey,
+                                   final PublicKey scopePricesKey);
+
+  /// Harvest a single reward (`rewardIndex`) for the calling user from a farm.
+  /// `scopePricesKey` is optional (see [#refreshFarm]).
+  Instruction harvestFarmReward(final PublicKey userStateKey,
+                                final PublicKey farmStateKey,
+                                final PublicKey rewardMint,
+                                final PublicKey userRewardTokenAccount,
+                                final PublicKey rewardsVault,
+                                final PublicKey rewardsTreasuryVault,
+                                final PublicKey farmVaultsAuthority,
+                                final PublicKey scopePricesKey,
+                                final PublicKey tokenProgram,
+                                final long rewardIndex);
+
+  /// Stake `amount` of the farm's stake token into a user state.
+  /// `scopePricesKey` is optional (see [#refreshFarm]).
+  Instruction stakeFarm(final PublicKey userStateKey,
+                        final PublicKey farmStateKey,
+                        final PublicKey farmVault,
+                        final PublicKey userAta,
+                        final PublicKey tokenMint,
+                        final PublicKey scopePricesKey,
+                        final PublicKey tokenProgram,
+                        final long amount);
+
+  /// Begin unstaking `stakeSharesScaled` shares from a user state.
+  /// `scopePricesKey` is optional (see [#refreshFarm]).
+  Instruction unstakeFarm(final PublicKey userStateKey,
+                          final PublicKey farmStateKey,
+                          final PublicKey scopePricesKey,
+                          final java.math.BigInteger stakeSharesScaled);
+
+  /// Withdraw any tokens that have completed the unstake cool-down.
+  Instruction withdrawUnstakedFarmDeposits(final PublicKey userStateKey,
+                                           final PublicKey farmStateKey,
+                                           final PublicKey userAta,
+                                           final PublicKey farmVault,
+                                           final PublicKey farmVaultsAuthority,
+                                           final PublicKey tokenProgram);
 }
