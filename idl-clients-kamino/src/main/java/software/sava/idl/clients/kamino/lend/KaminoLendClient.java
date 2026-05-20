@@ -150,4 +150,169 @@ public interface KaminoLendClient {
                                                                        final PublicKey farmsAccountsObligationFarmUserStateKey,
                                                                        final PublicKey farmsAccountsReserveFarmStateKey,
                                                                        final long collateralAmount);
+
+  // Non-V2 trader-facing instructions.
+
+  Instruction depositReserveLiquidity(final PublicKey reserveKey,
+                                      final KaminoReservePDAs reservePDAs,
+                                      final PublicKey userSourceLiquidity,
+                                      final PublicKey userDestinationCollateral,
+                                      final long liquidityAmount);
+
+  Instruction redeemReserveCollateral(final PublicKey reserveKey,
+                                      final KaminoReservePDAs reservePDAs,
+                                      final PublicKey userSourceCollateral,
+                                      final PublicKey userDestinationLiquidity,
+                                      final long collateralAmount);
+
+  Instruction depositObligationCollateral(final PublicKey obligationKey,
+                                          final PublicKey reserveKey,
+                                          final KaminoReservePDAs reservePDAs,
+                                          final PublicKey reserveDestinationCollateral,
+                                          final PublicKey userSourceCollateral,
+                                          final long collateralAmount);
+
+  Instruction depositObligationCollateralV2(final PublicKey obligationKey,
+                                            final PublicKey reserveKey,
+                                            final KaminoReservePDAs reservePDAs,
+                                            final PublicKey reserveDestinationCollateral,
+                                            final PublicKey userSourceCollateral,
+                                            final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                            final PublicKey farmsAccountsReserveFarmStateKey,
+                                            final long collateralAmount);
+
+  Instruction withdrawObligationCollateral(final PublicKey obligationKey,
+                                           final PublicKey reserveKey,
+                                           final KaminoReservePDAs reservePDAs,
+                                           final PublicKey reserveSourceCollateral,
+                                           final PublicKey userDestinationCollateral,
+                                           final long collateralAmount);
+
+  Instruction withdrawObligationCollateralV2(final PublicKey obligationKey,
+                                             final PublicKey reserveKey,
+                                             final KaminoReservePDAs reservePDAs,
+                                             final PublicKey reserveSourceCollateral,
+                                             final PublicKey userDestinationCollateral,
+                                             final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                             final PublicKey farmsAccountsReserveFarmStateKey,
+                                             final long collateralAmount);
+
+  Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final PublicKey obligationKey,
+                                                                    final PublicKey reserveKey,
+                                                                    final PublicKey reserveSourceCollateral,
+                                                                    final KaminoReservePDAs reservePDAs,
+                                                                    final PublicKey userDestinationLiquidity,
+                                                                    final long collateralAmount);
+
+  /// Borrow liquidity against an obligation.
+  ///
+  /// `referrerTokenState` may be `null` (no referrer); pass the program id as the sentinel.
+  /// Caller must prepend a `refreshObligation` (and any required `refreshReserve`s) and append
+  /// the obligation's deposit-reserve keys as remaining accounts via
+  /// `KaminoLendingRemainingAccounts.appendDepositReserves(...)`, followed by the optional
+  /// permission account (see `KaminoLendingRemainingAccounts.appendPermissionAccount(...)`)
+  /// when the market enforces `PermissionedOp::BORROW`.
+  Instruction borrowObligationLiquidity(final PublicKey obligationKey,
+                                        final PublicKey lendingMarket,
+                                        final PublicKey borrowReserveKey,
+                                        final PublicKey borrowReserveLiquidityMint,
+                                        final PublicKey reserveSourceLiquidity,
+                                        final PublicKey borrowReserveLiquidityFeeReceiver,
+                                        final PublicKey userDestinationLiquidity,
+                                        final PublicKey referrerTokenState,
+                                        final PublicKey tokenProgram,
+                                        final long liquidityAmount);
+
+  /// See `borrowObligationLiquidity`. Append deposit-reserve keys + optional permission via
+  /// `KaminoLendingRemainingAccounts`. Farms accounts are part of the IDL account list (not
+  /// remaining accounts).
+  Instruction borrowObligationLiquidityV2(final PublicKey obligationKey,
+                                          final PublicKey lendingMarket,
+                                          final PublicKey borrowReserveKey,
+                                          final PublicKey borrowReserveLiquidityMint,
+                                          final PublicKey reserveSourceLiquidity,
+                                          final PublicKey borrowReserveLiquidityFeeReceiver,
+                                          final PublicKey userDestinationLiquidity,
+                                          final PublicKey referrerTokenState,
+                                          final PublicKey tokenProgram,
+                                          final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                          final PublicKey farmsAccountsReserveFarmStateKey,
+                                          final long liquidityAmount);
+
+  /// Repay liquidity owed by an obligation.
+  ///
+  /// Caller may need to append the optional `PermissionedOp::REPAY` permission account as a
+  /// remaining account via `KaminoLendingRemainingAccounts.appendPermissionAccount(...)`.
+  Instruction repayObligationLiquidity(final PublicKey obligationKey,
+                                       final PublicKey lendingMarket,
+                                       final PublicKey repayReserveKey,
+                                       final PublicKey reserveLiquidityMint,
+                                       final PublicKey reserveDestinationLiquidity,
+                                       final PublicKey userSourceLiquidity,
+                                       final PublicKey tokenProgram,
+                                       final long liquidityAmount);
+
+  Instruction repayObligationLiquidityV2(final PublicKey obligationKey,
+                                         final PublicKey lendingMarket,
+                                         final PublicKey repayReserveKey,
+                                         final PublicKey reserveLiquidityMint,
+                                         final PublicKey reserveDestinationLiquidity,
+                                         final PublicKey userSourceLiquidity,
+                                         final PublicKey tokenProgram,
+                                         final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                         final PublicKey farmsAccountsReserveFarmStateKey,
+                                         final long liquidityAmount);
+
+  Instruction flashBorrowReserveLiquidity(final PublicKey lendingMarket,
+                                          final PublicKey reserveKey,
+                                          final PublicKey reserveLiquidityMint,
+                                          final PublicKey reserveSourceLiquidity,
+                                          final PublicKey userDestinationLiquidity,
+                                          final PublicKey reserveLiquidityFeeReceiver,
+                                          final PublicKey referrerTokenState,
+                                          final PublicKey referrerAccount,
+                                          final PublicKey tokenProgram,
+                                          final long liquidityAmount);
+
+  Instruction flashRepayReserveLiquidity(final PublicKey lendingMarket,
+                                         final PublicKey reserveKey,
+                                         final PublicKey reserveLiquidityMint,
+                                         final PublicKey reserveDestinationLiquidity,
+                                         final PublicKey userSourceLiquidity,
+                                         final PublicKey reserveLiquidityFeeReceiver,
+                                         final PublicKey referrerTokenState,
+                                         final PublicKey referrerAccount,
+                                         final PublicKey tokenProgram,
+                                         final long liquidityAmount,
+                                         final int borrowInstructionIndex);
+
+  /// Refresh helper that callers typically prepend to V1 deposit/borrow/repay/withdraw
+  /// instructions when farms are enabled (the V2 forms do this internally).
+  Instruction refreshObligationFarmsForReserve(final PublicKey obligationKey,
+                                               final PublicKey reserveKey,
+                                               final PublicKey reserveFarmState,
+                                               final PublicKey obligationFarmUserState,
+                                               final PublicKey lendingMarket,
+                                               final int mode);
+
+  /// Opt the obligation into a new elevation group. Caller must append the new group's
+  /// reserves as remaining accounts via
+  /// `KaminoLendingRemainingAccounts.appendDepositReserves(...)`.
+  Instruction requestElevationGroup(final PublicKey obligationKey,
+                                    final PublicKey lendingMarket,
+                                    final int elevationGroup);
+
+  /// Set the obligation's stop-loss / take-profit order at `index`.
+  Instruction setObligationOrder(final PublicKey obligationKey,
+                                 final PublicKey lendingMarket,
+                                 final int index,
+                                 final ObligationOrder order);
+
+  // Obligation ownership transfer (each side signs separately).
+
+  Instruction initiateObligationOwnershipTransfer(final PublicKey obligationKey, final PublicKey newOwner);
+
+  Instruction acceptObligationOwnership(final PublicKey obligationKey);
+
+  Instruction abortObligationOwnershipTransfer(final PublicKey obligationKey);
 }

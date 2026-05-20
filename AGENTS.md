@@ -251,6 +251,21 @@ package-private `<Program>ClientImpl` that wraps the generated
 existing ones) should follow the conventions below — they are consistent
 across modules but not otherwise documented.
 
+Quick jump to the subsections in this section:
+
+- [Layout and shape](#layout-and-shape)
+- [Parameter conventions](#parameter-conventions)
+- [Convenience `default` methods (PDA / ATA derivation)](#convenience-default-methods-pda--ata-derivation)
+- [Extra (non-IDL) accounts (`remaining_accounts`)](#extra-non-idl-accounts-remaining_accounts)
+- [Calling the generated builders](#calling-the-generated-builders)
+- [Instruction coverage policy](#instruction-coverage-policy)
+- [Numeric helpers / `*Util` placement](#numeric-helpers--util-placement)
+- [Referencing upstream SDKs for utility code](#referencing-upstream-sdks-for-utility-code)
+- [Cross-checking semantics](#cross-checking-semantics)
+- [Imports / `module-info.java`](#imports--module-infojava)
+- [Test module setup](#test-module-setup)
+- [Fast feedback loop](#fast-feedback-loop)
+
 ### Layout and shape
 
 - Place both files directly under `software/sava/idl/clients/<module>/`
@@ -288,6 +303,15 @@ Decide where each account comes from using this rule of thumb:
   seed-agnostic, and lets callers pass overrides such as non-ATA token
   accounts). Convenience derivation belongs in `default` methods on the
   interface (see below).
+- **Single-key-derivable PDAs** — when a PDA's seeds are entirely
+  determined by one account the caller already passes (e.g.
+  `lending_market_auth` is `["lma", market]`), expose it as a derivation
+  method on `<Module>Accounts` (returning a `ProgramDerivedAddress` or
+  `PublicKey`) and call it from the `Impl` rather than threading the
+  derived key through the method signature. This sits between "global on
+  `<Module>Accounts`" and "per-call `default` derivation helper on the
+  interface": the caller still picks the input (e.g. which market), but
+  the derived key never appears in the method signature.
 
 ### Convenience `default` methods (PDA / ATA derivation)
 
@@ -322,6 +346,9 @@ Rules:
 - For globally-fixed program-seeded PDAs (singletons whose seeds are
   constants only), add them to `<Module>Accounts` and auto-wire them in
   the `Impl`; they are not method parameters at all.
+- Generated `<Program>PDAs.*` methods return `ProgramDerivedAddress`
+  (a `(publicKey, bump)` pair), **not** `PublicKey` — call `.publicKey()`
+  before passing the result to a generated builder.
 
 ### Extra (non-IDL) accounts (`remaining_accounts`)
 
@@ -359,6 +386,16 @@ append the rest via `Instruction.extraAccount(...)` / `extraAccounts(List)`
   `spl_token_2022::onchain::invoke_transfer_checked`) to confirm exactly
   which accounts are read and in what order. The IDL alone will not show
   these.
+- **Writability / signer flags must match the handler.** Every appended
+  `AccountMeta` must reflect what the program actually does with it —
+  the IDL won't help. Read the Rust handler's `next_account_info(...)`
+  chain (or `for r in ctx.remaining_accounts` loop) and look at every
+  borrow: `try_borrow_mut_data()` / writes via `Account::reload` / token
+  transfers out of it ⇒ writable; `try_borrow_data()` / read-only
+  oracle/reserve lookups ⇒ read-only. Signer flags on remaining accounts
+  are extremely rare; default to non-signer and only flip when the
+  handler calls `is_signer`. Wrong writability is the single biggest
+  source of "compiles but transaction rejected" bugs.
 
 ### Calling the generated builders
 
@@ -390,8 +427,19 @@ specific non-admin use case requires them. Typical categories to skip:
   oracle/price pushers).
 - Diagnostic / logging-only instructions (e.g. `log*`).
 
-Note the omissions in the wrapper's PR/commit description so they can be
-added later if a non-admin caller appears.
+List **every skipped instruction** in the wrapper's PR/commit
+description, grouped by the skip categories above, so they can be added
+later if a non-admin caller appears.
+
+### Numeric helpers / `*Util` placement
+
+Pure numeric helpers ported from upstream SDK math modules go on
+`<Module>Util` (or `<Module><Program>Util` when the module has more than
+one program). Helpers that return composite results (quotes, bounds,
+status enums) live in a sibling `quote/` package as small records,
+exported separately so `<Module>Util` stays primitive-typed. See
+`idl-clients-orca/.../OrcaUtil` and `idl-clients-orca/.../quote/` for
+the reference pattern.
 
 ### Referencing upstream SDKs for utility code
 
@@ -473,6 +521,23 @@ the same module does **not** require a `module-info.java` change. Adding
 a brand-new top-level module **does** require updating both the module's
 `module-info.java` and `gradle/aggregation/build.gradle.kts`.
 
+### Test module setup
+
+When adding the first unit tests to a module, mirror the JUnit setup
+from `idl-clients-kamino/build.gradle.kts`:
+
+```kotlin
+// build.gradle.kts
+testModuleInfo {
+  requires("org.junit.jupiter.api")
+  runtimeOnly("org.junit.jupiter.engine")
+}
+```
+
+No `module-info.java` is needed under `src/test/java/` — the build's
+`testModuleInfo` block configures the test module on the fly. `idl-clients-kamino`
+and `idl-clients-orca` are the canonical references.
+
 ### Fast feedback loop
 
 While iterating on a single module's wrapper, prefer:
@@ -484,3 +549,6 @@ While iterating on a single module's wrapper, prefer:
 over the full `./gradlew check` — it gives a much faster turnaround and
 catches the kinds of errors (wrong builder overload, missing import,
 type mismatch on a generated `types/` record) that dominate this work.
+
+When the module has tests, `./gradlew :idl-clients-<module>:test`
+rebuilds only what's needed and runs the module's JUnit suite.

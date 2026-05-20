@@ -6,6 +6,7 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.KaminoLendingProgram;
 import software.sava.idl.clients.kamino.lend.gen.types.InitObligationArgs;
+import software.sava.idl.clients.kamino.lend.gen.types.ObligationOrder;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.spl.SPLAccountClient;
 
@@ -193,10 +194,10 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         kaminoAccounts.invokedKLendProgram(),
         reserveKey,
         lendingMarket,
-        pythOracleKey == null || pythOracleKey.equals(PublicKey.NONE) ? kLendProgram : pythOracleKey,
-        switchboardPriceOracleKey == null || switchboardPriceOracleKey.equals(PublicKey.NONE) ? kLendProgram : switchboardPriceOracleKey,
-        switchboardTwapOracleKey == null || switchboardTwapOracleKey.equals(PublicKey.NONE) ? kLendProgram : switchboardTwapOracleKey,
-        scopePricesKey == null || scopePricesKey.equals(PublicKey.NONE) ? kLendProgram : scopePricesKey
+        KaminoAccounts.isNullKey(pythOracleKey) ? kLendProgram : pythOracleKey,
+        KaminoAccounts.isNullKey(switchboardPriceOracleKey) ? kLendProgram : switchboardPriceOracleKey,
+        KaminoAccounts.isNullKey(switchboardTwapOracleKey) ? kLendProgram : switchboardTwapOracleKey,
+        KaminoAccounts.isNullKey(scopePricesKey) ? kLendProgram : scopePricesKey
     );
   }
 
@@ -301,6 +302,437 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         farmsAccountsReserveFarmStateKey,
         kaminoAccounts.farmProgram(),
         collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction depositReserveLiquidity(final PublicKey reserveKey,
+                                             final KaminoReservePDAs reservePDAs,
+                                             final PublicKey userSourceLiquidity,
+                                             final PublicKey userDestinationCollateral,
+                                             final long liquidityAmount) {
+    return KaminoLendingProgram.depositReserveLiquidity(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        reserveKey,
+        reservePDAs.market(),
+        reservePDAs.marketAuthority(),
+        reservePDAs.mint(),
+        reservePDAs.liquiditySupplyVault(),
+        reservePDAs.collateralMint(),
+        userSourceLiquidity,
+        userDestinationCollateral,
+        reservePDAs.tokenProgram(),
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction redeemReserveCollateral(final PublicKey reserveKey,
+                                             final KaminoReservePDAs reservePDAs,
+                                             final PublicKey userSourceCollateral,
+                                             final PublicKey userDestinationLiquidity,
+                                             final long collateralAmount) {
+    return KaminoLendingProgram.redeemReserveCollateral(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        reservePDAs.market(),
+        reserveKey,
+        reservePDAs.marketAuthority(),
+        reservePDAs.mint(),
+        reservePDAs.collateralMint(),
+        reservePDAs.liquiditySupplyVault(),
+        userSourceCollateral,
+        userDestinationLiquidity,
+        reservePDAs.tokenProgram(),
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction depositObligationCollateral(final PublicKey obligationKey,
+                                                 final PublicKey reserveKey,
+                                                 final KaminoReservePDAs reservePDAs,
+                                                 final PublicKey reserveDestinationCollateral,
+                                                 final PublicKey userSourceCollateral,
+                                                 final long collateralAmount) {
+    return KaminoLendingProgram.depositObligationCollateral(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        reservePDAs.market(),
+        reserveKey,
+        reserveDestinationCollateral,
+        userSourceCollateral,
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction depositObligationCollateralV2(final PublicKey obligationKey,
+                                                   final PublicKey reserveKey,
+                                                   final KaminoReservePDAs reservePDAs,
+                                                   final PublicKey reserveDestinationCollateral,
+                                                   final PublicKey userSourceCollateral,
+                                                   final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                                   final PublicKey farmsAccountsReserveFarmStateKey,
+                                                   final long collateralAmount) {
+    return KaminoLendingProgram.depositObligationCollateralV2(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        reservePDAs.market(),
+        reserveKey,
+        reserveDestinationCollateral,
+        userSourceCollateral,
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        reservePDAs.marketAuthority(),
+        farmsAccountsObligationFarmUserStateKey,
+        farmsAccountsReserveFarmStateKey,
+        kaminoAccounts.farmProgram(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction withdrawObligationCollateral(final PublicKey obligationKey,
+                                                  final PublicKey reserveKey,
+                                                  final KaminoReservePDAs reservePDAs,
+                                                  final PublicKey reserveSourceCollateral,
+                                                  final PublicKey userDestinationCollateral,
+                                                  final long collateralAmount) {
+    return KaminoLendingProgram.withdrawObligationCollateral(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        reservePDAs.market(),
+        reservePDAs.marketAuthority(),
+        reserveKey,
+        reserveSourceCollateral,
+        userDestinationCollateral,
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction withdrawObligationCollateralV2(final PublicKey obligationKey,
+                                                    final PublicKey reserveKey,
+                                                    final KaminoReservePDAs reservePDAs,
+                                                    final PublicKey reserveSourceCollateral,
+                                                    final PublicKey userDestinationCollateral,
+                                                    final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                                    final PublicKey farmsAccountsReserveFarmStateKey,
+                                                    final long collateralAmount) {
+    return KaminoLendingProgram.withdrawObligationCollateralV2(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        reservePDAs.market(),
+        reservePDAs.marketAuthority(),
+        reserveKey,
+        reserveSourceCollateral,
+        userDestinationCollateral,
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        farmsAccountsObligationFarmUserStateKey,
+        farmsAccountsReserveFarmStateKey,
+        kaminoAccounts.farmProgram(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final PublicKey obligationKey,
+                                                                            final PublicKey reserveKey,
+                                                                            final PublicKey reserveSourceCollateral,
+                                                                            final KaminoReservePDAs reservePDAs,
+                                                                            final PublicKey userDestinationLiquidity,
+                                                                            final long collateralAmount) {
+    return KaminoLendingProgram.withdrawObligationCollateralAndRedeemReserveCollateral(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        reservePDAs.market(),
+        reservePDAs.marketAuthority(),
+        reserveKey,
+        reservePDAs.mint(),
+        reserveSourceCollateral,
+        reservePDAs.collateralMint(),
+        reservePDAs.liquiditySupplyVault(),
+        userDestinationLiquidity,
+        kaminoAccounts.kLendProgram(),
+        reservePDAs.tokenProgram(),
+        reservePDAs.tokenProgram(),
+        solanaAccounts.instructionsSysVar(),
+        collateralAmount
+    );
+  }
+
+  @Override
+  public Instruction borrowObligationLiquidity(final PublicKey obligationKey,
+                                               final PublicKey lendingMarket,
+                                               final PublicKey borrowReserveKey,
+                                               final PublicKey borrowReserveLiquidityMint,
+                                               final PublicKey reserveSourceLiquidity,
+                                               final PublicKey borrowReserveLiquidityFeeReceiver,
+                                               final PublicKey userDestinationLiquidity,
+                                               final PublicKey referrerTokenState,
+                                               final PublicKey tokenProgram,
+                                               final long liquidityAmount) {
+    return KaminoLendingProgram.borrowObligationLiquidity(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        borrowReserveKey,
+        borrowReserveLiquidityMint,
+        reserveSourceLiquidity,
+        borrowReserveLiquidityFeeReceiver,
+        userDestinationLiquidity,
+        KaminoAccounts.isNullKey(referrerTokenState) ? kaminoAccounts.kLendProgram() : referrerTokenState,
+        tokenProgram,
+        solanaAccounts.instructionsSysVar(),
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction borrowObligationLiquidityV2(final PublicKey obligationKey,
+                                                 final PublicKey lendingMarket,
+                                                 final PublicKey borrowReserveKey,
+                                                 final PublicKey borrowReserveLiquidityMint,
+                                                 final PublicKey reserveSourceLiquidity,
+                                                 final PublicKey borrowReserveLiquidityFeeReceiver,
+                                                 final PublicKey userDestinationLiquidity,
+                                                 final PublicKey referrerTokenState,
+                                                 final PublicKey tokenProgram,
+                                                 final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                                 final PublicKey farmsAccountsReserveFarmStateKey,
+                                                 final long liquidityAmount) {
+    return KaminoLendingProgram.borrowObligationLiquidityV2(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        borrowReserveKey,
+        borrowReserveLiquidityMint,
+        reserveSourceLiquidity,
+        borrowReserveLiquidityFeeReceiver,
+        userDestinationLiquidity,
+        KaminoAccounts.isNullKey(referrerTokenState) ? kaminoAccounts.kLendProgram() : referrerTokenState,
+        tokenProgram,
+        solanaAccounts.instructionsSysVar(),
+        farmsAccountsObligationFarmUserStateKey,
+        farmsAccountsReserveFarmStateKey,
+        kaminoAccounts.farmProgram(),
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction repayObligationLiquidity(final PublicKey obligationKey,
+                                              final PublicKey lendingMarket,
+                                              final PublicKey repayReserveKey,
+                                              final PublicKey reserveLiquidityMint,
+                                              final PublicKey reserveDestinationLiquidity,
+                                              final PublicKey userSourceLiquidity,
+                                              final PublicKey tokenProgram,
+                                              final long liquidityAmount) {
+    return KaminoLendingProgram.repayObligationLiquidity(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        repayReserveKey,
+        reserveLiquidityMint,
+        reserveDestinationLiquidity,
+        userSourceLiquidity,
+        tokenProgram,
+        solanaAccounts.instructionsSysVar(),
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction repayObligationLiquidityV2(final PublicKey obligationKey,
+                                                final PublicKey lendingMarket,
+                                                final PublicKey repayReserveKey,
+                                                final PublicKey reserveLiquidityMint,
+                                                final PublicKey reserveDestinationLiquidity,
+                                                final PublicKey userSourceLiquidity,
+                                                final PublicKey tokenProgram,
+                                                final PublicKey farmsAccountsObligationFarmUserStateKey,
+                                                final PublicKey farmsAccountsReserveFarmStateKey,
+                                                final long liquidityAmount) {
+    return KaminoLendingProgram.repayObligationLiquidityV2(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        repayReserveKey,
+        reserveLiquidityMint,
+        reserveDestinationLiquidity,
+        userSourceLiquidity,
+        tokenProgram,
+        solanaAccounts.instructionsSysVar(),
+        farmsAccountsObligationFarmUserStateKey,
+        farmsAccountsReserveFarmStateKey,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        kaminoAccounts.farmProgram(),
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction flashBorrowReserveLiquidity(final PublicKey lendingMarket,
+                                                 final PublicKey reserveKey,
+                                                 final PublicKey reserveLiquidityMint,
+                                                 final PublicKey reserveSourceLiquidity,
+                                                 final PublicKey userDestinationLiquidity,
+                                                 final PublicKey reserveLiquidityFeeReceiver,
+                                                 final PublicKey referrerTokenState,
+                                                 final PublicKey referrerAccount,
+                                                 final PublicKey tokenProgram,
+                                                 final long liquidityAmount) {
+    return KaminoLendingProgram.flashBorrowReserveLiquidity(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        lendingMarket,
+        reserveKey,
+        reserveLiquidityMint,
+        reserveSourceLiquidity,
+        userDestinationLiquidity,
+        reserveLiquidityFeeReceiver,
+        KaminoAccounts.isNullKey(referrerTokenState) ? kaminoAccounts.kLendProgram() : referrerTokenState,
+        KaminoAccounts.isNullKey(referrerAccount) ? kaminoAccounts.kLendProgram() : referrerAccount,
+        solanaAccounts.instructionsSysVar(),
+        tokenProgram,
+        liquidityAmount
+    );
+  }
+
+  @Override
+  public Instruction flashRepayReserveLiquidity(final PublicKey lendingMarket,
+                                                final PublicKey reserveKey,
+                                                final PublicKey reserveLiquidityMint,
+                                                final PublicKey reserveDestinationLiquidity,
+                                                final PublicKey userSourceLiquidity,
+                                                final PublicKey reserveLiquidityFeeReceiver,
+                                                final PublicKey referrerTokenState,
+                                                final PublicKey referrerAccount,
+                                                final PublicKey tokenProgram,
+                                                final long liquidityAmount,
+                                                final int borrowInstructionIndex) {
+    return KaminoLendingProgram.flashRepayReserveLiquidity(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        lendingMarket,
+        reserveKey,
+        reserveLiquidityMint,
+        reserveDestinationLiquidity,
+        userSourceLiquidity,
+        reserveLiquidityFeeReceiver,
+        KaminoAccounts.isNullKey(referrerTokenState) ? kaminoAccounts.kLendProgram() : referrerTokenState,
+        KaminoAccounts.isNullKey(referrerAccount) ? kaminoAccounts.kLendProgram() : referrerAccount,
+        solanaAccounts.instructionsSysVar(),
+        tokenProgram,
+        liquidityAmount,
+        borrowInstructionIndex
+    );
+  }
+
+  @Override
+  public Instruction refreshObligationFarmsForReserve(final PublicKey obligationKey,
+                                                      final PublicKey reserveKey,
+                                                      final PublicKey reserveFarmState,
+                                                      final PublicKey obligationFarmUserState,
+                                                      final PublicKey lendingMarket,
+                                                      final int mode) {
+    return KaminoLendingProgram.refreshObligationFarmsForReserve(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        kaminoAccounts.lendingMarketAuthPda(lendingMarket).publicKey(),
+        reserveKey,
+        reserveFarmState,
+        obligationFarmUserState,
+        lendingMarket,
+        kaminoAccounts.farmProgram(),
+        solanaAccounts.rentSysVar(),
+        solanaAccounts.systemProgram(),
+        mode
+    );
+  }
+
+  @Override
+  public Instruction requestElevationGroup(final PublicKey obligationKey,
+                                           final PublicKey lendingMarket,
+                                           final int elevationGroup) {
+    return KaminoLendingProgram.requestElevationGroup(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        elevationGroup
+    );
+  }
+
+  @Override
+  public Instruction setObligationOrder(final PublicKey obligationKey,
+                                        final PublicKey lendingMarket,
+                                        final int index,
+                                        final ObligationOrder order) {
+    return KaminoLendingProgram.setObligationOrder(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        lendingMarket,
+        index,
+        order
+    );
+  }
+
+  @Override
+  public Instruction initiateObligationOwnershipTransfer(final PublicKey obligationKey, final PublicKey newOwner) {
+    return KaminoLendingProgram.initiateObligationOwnershipTransfer(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        solanaAccounts.instructionsSysVar(),
+        newOwner
+    );
+  }
+
+  @Override
+  public Instruction acceptObligationOwnership(final PublicKey obligationKey) {
+    return KaminoLendingProgram.acceptObligationOwnership(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        solanaAccounts.instructionsSysVar()
+    );
+  }
+
+  @Override
+  public Instruction abortObligationOwnershipTransfer(final PublicKey obligationKey) {
+    return KaminoLendingProgram.abortObligationOwnershipTransfer(
+        kaminoAccounts.invokedKLendProgram(),
+        owner,
+        obligationKey,
+        solanaAccounts.instructionsSysVar()
     );
   }
 }
