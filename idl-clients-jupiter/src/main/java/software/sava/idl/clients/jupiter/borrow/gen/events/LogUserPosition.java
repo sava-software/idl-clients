@@ -1,0 +1,89 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUserPosition(Discriminator discriminator,
+                              PublicKey user,
+                              int nftId,
+                              int vaultId,
+                              PublicKey positionMint,
+                              int tick,
+                              long col,
+                              long borrow) implements VaultsEvent {
+
+  public static final int BYTES = 98;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(46, 44, 213, 42, 55, 59, 190, 133);
+
+  public static final int USER_OFFSET = 8;
+  public static final int NFT_ID_OFFSET = 40;
+  public static final int VAULT_ID_OFFSET = 44;
+  public static final int POSITION_MINT_OFFSET = 46;
+  public static final int TICK_OFFSET = 78;
+  public static final int COL_OFFSET = 82;
+  public static final int BORROW_OFFSET = 90;
+
+  public static LogUserPosition read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var user = readPubKey(_data, i);
+    i += 32;
+    final var nftId = getInt32LE(_data, i);
+    i += 4;
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var positionMint = readPubKey(_data, i);
+    i += 32;
+    final var tick = getInt32LE(_data, i);
+    i += 4;
+    final var col = getInt64LE(_data, i);
+    i += 8;
+    final var borrow = getInt64LE(_data, i);
+    return new LogUserPosition(discriminator,
+                               user,
+                               nftId,
+                               vaultId,
+                               positionMint,
+                               tick,
+                               col,
+                               borrow);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    user.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, nftId);
+    i += 4;
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    positionMint.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, tick);
+    i += 4;
+    putInt64LE(_data, i, col);
+    i += 8;
+    putInt64LE(_data, i, borrow);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

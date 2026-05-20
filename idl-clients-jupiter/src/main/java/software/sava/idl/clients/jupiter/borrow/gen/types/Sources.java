@@ -1,0 +1,66 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+
+public record Sources(PublicKey source,
+                      boolean invert,
+                      BigInteger multiplier,
+                      BigInteger divisor,
+                      SourceType sourceType) implements SerDe {
+
+  public static final int BYTES = 66;
+
+  public static final int SOURCE_OFFSET = 0;
+  public static final int INVERT_OFFSET = 32;
+  public static final int MULTIPLIER_OFFSET = 33;
+  public static final int DIVISOR_OFFSET = 49;
+  public static final int SOURCE_TYPE_OFFSET = 65;
+
+  public static Sources read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var source = readPubKey(_data, i);
+    i += 32;
+    final var invert = _data[i] == 1;
+    ++i;
+    final var multiplier = getInt128LE(_data, i);
+    i += 16;
+    final var divisor = getInt128LE(_data, i);
+    i += 16;
+    final var sourceType = SourceType.read(_data, i);
+    return new Sources(source,
+                       invert,
+                       multiplier,
+                       divisor,
+                       sourceType);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    source.write(_data, i);
+    i += 32;
+    _data[i] = (byte) (invert ? 1 : 0);
+    ++i;
+    putInt128LE(_data, i, multiplier);
+    i += 16;
+    putInt128LE(_data, i, divisor);
+    i += 16;
+    i += sourceType.write(_data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

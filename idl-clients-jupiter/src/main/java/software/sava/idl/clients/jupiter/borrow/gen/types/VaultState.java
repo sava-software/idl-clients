@@ -1,0 +1,286 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.math.BigInteger;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record VaultState(PublicKey _address,
+                         Discriminator discriminator,
+                         int vaultId,
+                         int branchLiquidated,
+                         int topmostTick,
+                         int currentBranchId,
+                         int totalBranchId,
+                         long totalSupply,
+                         long totalBorrow,
+                         int totalPositions,
+                         BigInteger absorbedDebtAmount,
+                         BigInteger absorbedColAmount,
+                         long absorbedDustDebt,
+                         long liquiditySupplyExchangePrice,
+                         long liquidityBorrowExchangePrice,
+                         long vaultSupplyExchangePrice,
+                         long vaultBorrowExchangePrice,
+                         int nextPositionId,
+                         long lastUpdateTimestamp) implements SerDe {
+
+  public static final int BYTES = 127;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(228, 196, 82, 165, 98, 210, 235, 152);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int BRANCH_LIQUIDATED_OFFSET = 10;
+  public static final int TOPMOST_TICK_OFFSET = 11;
+  public static final int CURRENT_BRANCH_ID_OFFSET = 15;
+  public static final int TOTAL_BRANCH_ID_OFFSET = 19;
+  public static final int TOTAL_SUPPLY_OFFSET = 23;
+  public static final int TOTAL_BORROW_OFFSET = 31;
+  public static final int TOTAL_POSITIONS_OFFSET = 39;
+  public static final int ABSORBED_DEBT_AMOUNT_OFFSET = 43;
+  public static final int ABSORBED_COL_AMOUNT_OFFSET = 59;
+  public static final int ABSORBED_DUST_DEBT_OFFSET = 75;
+  public static final int LIQUIDITY_SUPPLY_EXCHANGE_PRICE_OFFSET = 83;
+  public static final int LIQUIDITY_BORROW_EXCHANGE_PRICE_OFFSET = 91;
+  public static final int VAULT_SUPPLY_EXCHANGE_PRICE_OFFSET = 99;
+  public static final int VAULT_BORROW_EXCHANGE_PRICE_OFFSET = 107;
+  public static final int NEXT_POSITION_ID_OFFSET = 115;
+  public static final int LAST_UPDATE_TIMESTAMP_OFFSET = 119;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createBranchLiquidatedFilter(final int branchLiquidated) {
+    return Filter.createMemCompFilter(BRANCH_LIQUIDATED_OFFSET, new byte[]{(byte) branchLiquidated});
+  }
+
+  public static Filter createTopmostTickFilter(final int topmostTick) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, topmostTick);
+    return Filter.createMemCompFilter(TOPMOST_TICK_OFFSET, _data);
+  }
+
+  public static Filter createCurrentBranchIdFilter(final int currentBranchId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, currentBranchId);
+    return Filter.createMemCompFilter(CURRENT_BRANCH_ID_OFFSET, _data);
+  }
+
+  public static Filter createTotalBranchIdFilter(final int totalBranchId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, totalBranchId);
+    return Filter.createMemCompFilter(TOTAL_BRANCH_ID_OFFSET, _data);
+  }
+
+  public static Filter createTotalSupplyFilter(final long totalSupply) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, totalSupply);
+    return Filter.createMemCompFilter(TOTAL_SUPPLY_OFFSET, _data);
+  }
+
+  public static Filter createTotalBorrowFilter(final long totalBorrow) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, totalBorrow);
+    return Filter.createMemCompFilter(TOTAL_BORROW_OFFSET, _data);
+  }
+
+  public static Filter createTotalPositionsFilter(final int totalPositions) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, totalPositions);
+    return Filter.createMemCompFilter(TOTAL_POSITIONS_OFFSET, _data);
+  }
+
+  public static Filter createAbsorbedDebtAmountFilter(final BigInteger absorbedDebtAmount) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, absorbedDebtAmount);
+    return Filter.createMemCompFilter(ABSORBED_DEBT_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createAbsorbedColAmountFilter(final BigInteger absorbedColAmount) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, absorbedColAmount);
+    return Filter.createMemCompFilter(ABSORBED_COL_AMOUNT_OFFSET, _data);
+  }
+
+  public static Filter createAbsorbedDustDebtFilter(final long absorbedDustDebt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, absorbedDustDebt);
+    return Filter.createMemCompFilter(ABSORBED_DUST_DEBT_OFFSET, _data);
+  }
+
+  public static Filter createLiquiditySupplyExchangePriceFilter(final long liquiditySupplyExchangePrice) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, liquiditySupplyExchangePrice);
+    return Filter.createMemCompFilter(LIQUIDITY_SUPPLY_EXCHANGE_PRICE_OFFSET, _data);
+  }
+
+  public static Filter createLiquidityBorrowExchangePriceFilter(final long liquidityBorrowExchangePrice) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, liquidityBorrowExchangePrice);
+    return Filter.createMemCompFilter(LIQUIDITY_BORROW_EXCHANGE_PRICE_OFFSET, _data);
+  }
+
+  public static Filter createVaultSupplyExchangePriceFilter(final long vaultSupplyExchangePrice) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, vaultSupplyExchangePrice);
+    return Filter.createMemCompFilter(VAULT_SUPPLY_EXCHANGE_PRICE_OFFSET, _data);
+  }
+
+  public static Filter createVaultBorrowExchangePriceFilter(final long vaultBorrowExchangePrice) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, vaultBorrowExchangePrice);
+    return Filter.createMemCompFilter(VAULT_BORROW_EXCHANGE_PRICE_OFFSET, _data);
+  }
+
+  public static Filter createNextPositionIdFilter(final int nextPositionId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, nextPositionId);
+    return Filter.createMemCompFilter(NEXT_POSITION_ID_OFFSET, _data);
+  }
+
+  public static Filter createLastUpdateTimestampFilter(final long lastUpdateTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastUpdateTimestamp);
+    return Filter.createMemCompFilter(LAST_UPDATE_TIMESTAMP_OFFSET, _data);
+  }
+
+  public static VaultState read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static VaultState read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static VaultState read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], VaultState> FACTORY = VaultState::read;
+
+  public static VaultState read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var branchLiquidated = _data[i] & 0xFF;
+    ++i;
+    final var topmostTick = getInt32LE(_data, i);
+    i += 4;
+    final var currentBranchId = getInt32LE(_data, i);
+    i += 4;
+    final var totalBranchId = getInt32LE(_data, i);
+    i += 4;
+    final var totalSupply = getInt64LE(_data, i);
+    i += 8;
+    final var totalBorrow = getInt64LE(_data, i);
+    i += 8;
+    final var totalPositions = getInt32LE(_data, i);
+    i += 4;
+    final var absorbedDebtAmount = getInt128LE(_data, i);
+    i += 16;
+    final var absorbedColAmount = getInt128LE(_data, i);
+    i += 16;
+    final var absorbedDustDebt = getInt64LE(_data, i);
+    i += 8;
+    final var liquiditySupplyExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var liquidityBorrowExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var vaultSupplyExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var vaultBorrowExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var nextPositionId = getInt32LE(_data, i);
+    i += 4;
+    final var lastUpdateTimestamp = getInt64LE(_data, i);
+    return new VaultState(_address,
+                          discriminator,
+                          vaultId,
+                          branchLiquidated,
+                          topmostTick,
+                          currentBranchId,
+                          totalBranchId,
+                          totalSupply,
+                          totalBorrow,
+                          totalPositions,
+                          absorbedDebtAmount,
+                          absorbedColAmount,
+                          absorbedDustDebt,
+                          liquiditySupplyExchangePrice,
+                          liquidityBorrowExchangePrice,
+                          vaultSupplyExchangePrice,
+                          vaultBorrowExchangePrice,
+                          nextPositionId,
+                          lastUpdateTimestamp);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    _data[i] = (byte) branchLiquidated;
+    ++i;
+    putInt32LE(_data, i, topmostTick);
+    i += 4;
+    putInt32LE(_data, i, currentBranchId);
+    i += 4;
+    putInt32LE(_data, i, totalBranchId);
+    i += 4;
+    putInt64LE(_data, i, totalSupply);
+    i += 8;
+    putInt64LE(_data, i, totalBorrow);
+    i += 8;
+    putInt32LE(_data, i, totalPositions);
+    i += 4;
+    putInt128LE(_data, i, absorbedDebtAmount);
+    i += 16;
+    putInt128LE(_data, i, absorbedColAmount);
+    i += 16;
+    putInt64LE(_data, i, absorbedDustDebt);
+    i += 8;
+    putInt64LE(_data, i, liquiditySupplyExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, liquidityBorrowExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, vaultSupplyExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, vaultBorrowExchangePrice);
+    i += 8;
+    putInt32LE(_data, i, nextPositionId);
+    i += 4;
+    putInt64LE(_data, i, lastUpdateTimestamp);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

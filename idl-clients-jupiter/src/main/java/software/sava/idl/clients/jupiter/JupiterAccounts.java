@@ -5,6 +5,8 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.jupiter.borrow.gen.VaultsPDAs;
+import software.sava.idl.clients.jupiter.lend.gen.LendingPDAs;
 import software.sava.idl.clients.jupiter.merkle_distributor.gen.MerkleDistributorPDAs;
 
 import java.util.List;
@@ -28,7 +30,9 @@ public interface JupiterAccounts {
       "GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY",
       "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN",
       "bJ1TRoFo2P6UHVwqdiipp6Qhp2HaaHpLowZ5LHet8Gm",
-      "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R"
+      "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R",
+      "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9",
+      "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi"
   );
 
   static JupiterAccounts createAccounts(final PublicKey swapProgram,
@@ -38,7 +42,9 @@ public interface JupiterAccounts {
                                         final PublicKey govProgram,
                                         final PublicKey jupTokenMint,
                                         final PublicKey jupBaseKey,
-                                        final PublicKey merkleDistributorProgram) {
+                                        final PublicKey merkleDistributorProgram,
+                                        final PublicKey lendingProgram,
+                                        final PublicKey vaultsProgram) {
     return new JupiterAccountsRecord(
         swapProgram, createInvoked(swapProgram),
         deriveEventAuthority(swapProgram).publicKey(),
@@ -50,7 +56,11 @@ public interface JupiterAccounts {
         jupBaseKey,
         deriveLocker(voteProgram, jupBaseKey).publicKey(),
         deriveGovernor(govProgram, jupBaseKey).publicKey(),
-        createInvoked(merkleDistributorProgram)
+        createInvoked(merkleDistributorProgram),
+        lendingProgram, createInvoked(lendingProgram),
+        LendingPDAs.lendingAdminPDA(lendingProgram).publicKey(),
+        vaultsProgram, createInvoked(vaultsProgram),
+        VaultsPDAs.vaultAdminPDA(vaultsProgram).publicKey()
     );
   }
 
@@ -61,7 +71,9 @@ public interface JupiterAccounts {
                                         final String govProgram,
                                         final String jupTokenMint,
                                         final String jupBaseKey,
-                                        final String merkleDistributorProgram) {
+                                        final String merkleDistributorProgram,
+                                        final String lendingProgram,
+                                        final String vaultsProgram) {
     return createAccounts(
         fromBase58Encoded(swapProgram),
         fromBase58Encoded(limitOrderProgram),
@@ -70,7 +82,9 @@ public interface JupiterAccounts {
         fromBase58Encoded(govProgram),
         fromBase58Encoded(jupTokenMint),
         fromBase58Encoded(jupBaseKey),
-        fromBase58Encoded(merkleDistributorProgram)
+        fromBase58Encoded(merkleDistributorProgram),
+        fromBase58Encoded(lendingProgram),
+        fromBase58Encoded(vaultsProgram)
     );
   }
 
@@ -254,7 +268,27 @@ public interface JupiterAccounts {
 
   AccountMeta invokedMerkleDistributorProgram();
 
+  PublicKey lendingProgram();
+
+  AccountMeta invokedLendingProgram();
+
+  PublicKey lendingAdminKey();
+
+  PublicKey vaultsProgram();
+
+  AccountMeta invokedVaultsProgram();
+
+  PublicKey vaultsAdminKey();
+
   default ProgramDerivedAddress deriveClaimStatus(final PublicKey claimantAccount, final PublicKey distributorAccount) {
     return MerkleDistributorPDAs.claimStatusPDA(invokedMerkleDistributorProgram().publicKey(), claimantAccount, distributorAccount);
+  }
+
+  default ProgramDerivedAddress deriveFTokenMint(final PublicKey mint) {
+    return LendingPDAs.fTokenMintPDA(lendingProgram(), mint);
+  }
+
+  default ProgramDerivedAddress deriveLending(final PublicKey mint, final PublicKey fTokenMint) {
+    return LendingPDAs.lendingPDA(lendingProgram(), mint, fTokenMint);
   }
 }

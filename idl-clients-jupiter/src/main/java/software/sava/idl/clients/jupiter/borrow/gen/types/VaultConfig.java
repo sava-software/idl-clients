@@ -1,0 +1,254 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record VaultConfig(PublicKey _address,
+                          Discriminator discriminator,
+                          int vaultId,
+                          int supplyRateMagnifier,
+                          int borrowRateMagnifier,
+                          int collateralFactor,
+                          int liquidationThreshold,
+                          int liquidationMaxLimit,
+                          int withdrawGap,
+                          int liquidationPenalty,
+                          int borrowFee,
+                          PublicKey oracle,
+                          PublicKey rebalancer,
+                          PublicKey liquidityProgram,
+                          PublicKey oracleProgram,
+                          PublicKey supplyToken,
+                          PublicKey borrowToken,
+                          int bump) implements SerDe {
+
+  public static final int BYTES = 219;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(99, 86, 43, 216, 184, 102, 119, 77);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 10;
+  public static final int BORROW_RATE_MAGNIFIER_OFFSET = 12;
+  public static final int COLLATERAL_FACTOR_OFFSET = 14;
+  public static final int LIQUIDATION_THRESHOLD_OFFSET = 16;
+  public static final int LIQUIDATION_MAX_LIMIT_OFFSET = 18;
+  public static final int WITHDRAW_GAP_OFFSET = 20;
+  public static final int LIQUIDATION_PENALTY_OFFSET = 22;
+  public static final int BORROW_FEE_OFFSET = 24;
+  public static final int ORACLE_OFFSET = 26;
+  public static final int REBALANCER_OFFSET = 58;
+  public static final int LIQUIDITY_PROGRAM_OFFSET = 90;
+  public static final int ORACLE_PROGRAM_OFFSET = 122;
+  public static final int SUPPLY_TOKEN_OFFSET = 154;
+  public static final int BORROW_TOKEN_OFFSET = 186;
+  public static final int BUMP_OFFSET = 218;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createSupplyRateMagnifierFilter(final int supplyRateMagnifier) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, supplyRateMagnifier);
+    return Filter.createMemCompFilter(SUPPLY_RATE_MAGNIFIER_OFFSET, _data);
+  }
+
+  public static Filter createBorrowRateMagnifierFilter(final int borrowRateMagnifier) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, borrowRateMagnifier);
+    return Filter.createMemCompFilter(BORROW_RATE_MAGNIFIER_OFFSET, _data);
+  }
+
+  public static Filter createCollateralFactorFilter(final int collateralFactor) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, collateralFactor);
+    return Filter.createMemCompFilter(COLLATERAL_FACTOR_OFFSET, _data);
+  }
+
+  public static Filter createLiquidationThresholdFilter(final int liquidationThreshold) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, liquidationThreshold);
+    return Filter.createMemCompFilter(LIQUIDATION_THRESHOLD_OFFSET, _data);
+  }
+
+  public static Filter createLiquidationMaxLimitFilter(final int liquidationMaxLimit) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, liquidationMaxLimit);
+    return Filter.createMemCompFilter(LIQUIDATION_MAX_LIMIT_OFFSET, _data);
+  }
+
+  public static Filter createWithdrawGapFilter(final int withdrawGap) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, withdrawGap);
+    return Filter.createMemCompFilter(WITHDRAW_GAP_OFFSET, _data);
+  }
+
+  public static Filter createLiquidationPenaltyFilter(final int liquidationPenalty) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, liquidationPenalty);
+    return Filter.createMemCompFilter(LIQUIDATION_PENALTY_OFFSET, _data);
+  }
+
+  public static Filter createBorrowFeeFilter(final int borrowFee) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, borrowFee);
+    return Filter.createMemCompFilter(BORROW_FEE_OFFSET, _data);
+  }
+
+  public static Filter createOracleFilter(final PublicKey oracle) {
+    return Filter.createMemCompFilter(ORACLE_OFFSET, oracle);
+  }
+
+  public static Filter createRebalancerFilter(final PublicKey rebalancer) {
+    return Filter.createMemCompFilter(REBALANCER_OFFSET, rebalancer);
+  }
+
+  public static Filter createLiquidityProgramFilter(final PublicKey liquidityProgram) {
+    return Filter.createMemCompFilter(LIQUIDITY_PROGRAM_OFFSET, liquidityProgram);
+  }
+
+  public static Filter createOracleProgramFilter(final PublicKey oracleProgram) {
+    return Filter.createMemCompFilter(ORACLE_PROGRAM_OFFSET, oracleProgram);
+  }
+
+  public static Filter createSupplyTokenFilter(final PublicKey supplyToken) {
+    return Filter.createMemCompFilter(SUPPLY_TOKEN_OFFSET, supplyToken);
+  }
+
+  public static Filter createBorrowTokenFilter(final PublicKey borrowToken) {
+    return Filter.createMemCompFilter(BORROW_TOKEN_OFFSET, borrowToken);
+  }
+
+  public static Filter createBumpFilter(final int bump) {
+    return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
+  }
+
+  public static VaultConfig read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static VaultConfig read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static VaultConfig read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], VaultConfig> FACTORY = VaultConfig::read;
+
+  public static VaultConfig read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var supplyRateMagnifier = getInt16LE(_data, i);
+    i += 2;
+    final var borrowRateMagnifier = getInt16LE(_data, i);
+    i += 2;
+    final var collateralFactor = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationThreshold = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationMaxLimit = getInt16LE(_data, i);
+    i += 2;
+    final var withdrawGap = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationPenalty = getInt16LE(_data, i);
+    i += 2;
+    final var borrowFee = getInt16LE(_data, i);
+    i += 2;
+    final var oracle = readPubKey(_data, i);
+    i += 32;
+    final var rebalancer = readPubKey(_data, i);
+    i += 32;
+    final var liquidityProgram = readPubKey(_data, i);
+    i += 32;
+    final var oracleProgram = readPubKey(_data, i);
+    i += 32;
+    final var supplyToken = readPubKey(_data, i);
+    i += 32;
+    final var borrowToken = readPubKey(_data, i);
+    i += 32;
+    final var bump = _data[i] & 0xFF;
+    return new VaultConfig(_address,
+                           discriminator,
+                           vaultId,
+                           supplyRateMagnifier,
+                           borrowRateMagnifier,
+                           collateralFactor,
+                           liquidationThreshold,
+                           liquidationMaxLimit,
+                           withdrawGap,
+                           liquidationPenalty,
+                           borrowFee,
+                           oracle,
+                           rebalancer,
+                           liquidityProgram,
+                           oracleProgram,
+                           supplyToken,
+                           borrowToken,
+                           bump);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, supplyRateMagnifier);
+    i += 2;
+    putInt16LE(_data, i, borrowRateMagnifier);
+    i += 2;
+    putInt16LE(_data, i, collateralFactor);
+    i += 2;
+    putInt16LE(_data, i, liquidationThreshold);
+    i += 2;
+    putInt16LE(_data, i, liquidationMaxLimit);
+    i += 2;
+    putInt16LE(_data, i, withdrawGap);
+    i += 2;
+    putInt16LE(_data, i, liquidationPenalty);
+    i += 2;
+    putInt16LE(_data, i, borrowFee);
+    i += 2;
+    oracle.write(_data, i);
+    i += 32;
+    rebalancer.write(_data, i);
+    i += 32;
+    liquidityProgram.write(_data, i);
+    i += 32;
+    oracleProgram.write(_data, i);
+    i += 32;
+    supplyToken.write(_data, i);
+    i += 32;
+    borrowToken.write(_data, i);
+    i += 32;
+    _data[i] = (byte) bump;
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

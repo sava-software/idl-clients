@@ -1,0 +1,193 @@
+package software.sava.idl.clients.jupiter.borrow.gen;
+
+import java.util.List;
+
+import software.sava.core.accounts.ProgramDerivedAddress;
+import software.sava.core.accounts.PublicKey;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
+
+public final class VaultsPDAs {
+
+  public static ProgramDerivedAddress branchPDA(final PublicKey program,
+                                                final byte[] vaultId,
+                                                final byte[] branchId) {
+    return PublicKey.findProgramAddress(List.of(
+      "branch".getBytes(US_ASCII),
+      vaultId,
+      branchId
+    ), program);
+  }
+
+  public static ProgramDerivedAddress metadataAccountPDA(final PublicKey program,
+                                                         final PublicKey metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s,
+                                                         final PublicKey positionMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      "metadata".getBytes(US_ASCII),
+      metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s.toByteArray(),
+      positionMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionPDA(final PublicKey program,
+                                                  final byte[] vaultId,
+                                                  final byte[] nextPositionId) {
+    return PublicKey.findProgramAddress(List.of(
+      "position".getBytes(US_ASCII),
+      vaultId,
+      nextPositionId
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionMintPDA(final PublicKey program,
+                                                      final byte[] vaultId,
+                                                      final byte[] nextPositionId) {
+    return PublicKey.findProgramAddress(List.of(
+      "position_mint".getBytes(US_ASCII),
+      vaultId,
+      nextPositionId
+    ), program);
+  }
+
+  public static ProgramDerivedAddress positionTokenAccountPDA(final PublicKey program,
+                                                              final PublicKey signerAccount,
+                                                              final PublicKey TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA,
+                                                              final PublicKey positionMintAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      signerAccount.toByteArray(),
+      TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA.toByteArray(),
+      positionMintAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress rebalancerBorrowTokenAccountPDA(final PublicKey program,
+                                                                      final PublicKey rebalancerAccount,
+                                                                      final PublicKey borrowTokenProgramAccount,
+                                                                      final PublicKey borrowTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      rebalancerAccount.toByteArray(),
+      borrowTokenProgramAccount.toByteArray(),
+      borrowTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress rebalancerSupplyTokenAccountPDA(final PublicKey program,
+                                                                      final PublicKey rebalancerAccount,
+                                                                      final PublicKey supplyTokenProgramAccount,
+                                                                      final PublicKey supplyTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      rebalancerAccount.toByteArray(),
+      supplyTokenProgramAccount.toByteArray(),
+      supplyTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress recipientBorrowTokenAccountPDA(final PublicKey program,
+                                                                     final PublicKey recipientAccount,
+                                                                     final PublicKey borrowTokenProgramAccount,
+                                                                     final PublicKey borrowTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      recipientAccount.toByteArray(),
+      borrowTokenProgramAccount.toByteArray(),
+      borrowTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress recipientSupplyTokenAccountPDA(final PublicKey program,
+                                                                     final PublicKey recipientAccount,
+                                                                     final PublicKey supplyTokenProgramAccount,
+                                                                     final PublicKey supplyTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      recipientAccount.toByteArray(),
+      supplyTokenProgramAccount.toByteArray(),
+      supplyTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress signerBorrowTokenAccountPDA(final PublicKey program,
+                                                                  final PublicKey signerAccount,
+                                                                  final PublicKey borrowTokenProgramAccount,
+                                                                  final PublicKey borrowTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      signerAccount.toByteArray(),
+      borrowTokenProgramAccount.toByteArray(),
+      borrowTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress signerSupplyTokenAccountPDA(final PublicKey program,
+                                                                  final PublicKey signerAccount,
+                                                                  final PublicKey supplyTokenProgramAccount,
+                                                                  final PublicKey supplyTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      signerAccount.toByteArray(),
+      supplyTokenProgramAccount.toByteArray(),
+      supplyTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress signerTokenAccountPDA(final PublicKey program,
+                                                            final PublicKey signerAccount,
+                                                            final PublicKey borrowTokenProgramAccount,
+                                                            final PublicKey borrowTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      signerAccount.toByteArray(),
+      borrowTokenProgramAccount.toByteArray(),
+      borrowTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress tickHasDebtArrayPDA(final PublicKey program,
+                                                          final byte[] vaultId,
+                                                          final byte[] index) {
+    return PublicKey.findProgramAddress(List.of(
+      "tick_has_debt".getBytes(US_ASCII),
+      vaultId,
+      index
+    ), program);
+  }
+
+  public static ProgramDerivedAddress toTokenAccountPDA(final PublicKey program,
+                                                        final PublicKey toAccount,
+                                                        final PublicKey supplyTokenProgramAccount,
+                                                        final PublicKey supplyTokenAccount) {
+    return PublicKey.findProgramAddress(List.of(
+      toAccount.toByteArray(),
+      supplyTokenProgramAccount.toByteArray(),
+      supplyTokenAccount.toByteArray()
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vaultAdminPDA(final PublicKey program) {
+    return PublicKey.findProgramAddress(List.of(
+      "vault_admin".getBytes(US_ASCII)
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vaultConfigPDA(final PublicKey program,
+                                                     final byte[] vaultId) {
+    return PublicKey.findProgramAddress(List.of(
+      "vault_config".getBytes(US_ASCII),
+      vaultId
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vaultMetadataPDA(final PublicKey program,
+                                                       final byte[] vaultId) {
+    return PublicKey.findProgramAddress(List.of(
+      "vault_metadata".getBytes(US_ASCII),
+      vaultId
+    ), program);
+  }
+
+  public static ProgramDerivedAddress vaultStatePDA(final PublicKey program,
+                                                    final byte[] vaultId) {
+    return PublicKey.findProgramAddress(List.of(
+      "vault_state".getBytes(US_ASCII),
+      vaultId
+    ), program);
+  }
+
+  private VaultsPDAs() {
+  }
+}

@@ -1,0 +1,91 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// @param tickHasDebt Each array contains 8 TickHasDebt structs
+///                    Each TickHasDebt covers 256 ticks
+///                    Total: 8 * 256 = 2048 ticks per TickHasDebtArray
+public record TickHasDebtArray(PublicKey _address,
+                               Discriminator discriminator,
+                               int vaultId,
+                               int index,
+                               TickHasDebt[] tickHasDebt) implements SerDe {
+
+  public static final int BYTES = 267;
+  public static final int TICK_HAS_DEBT_LEN = 8;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(91, 232, 60, 29, 124, 103, 49, 252);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int INDEX_OFFSET = 10;
+  public static final int TICK_HAS_DEBT_OFFSET = 11;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createIndexFilter(final int index) {
+    return Filter.createMemCompFilter(INDEX_OFFSET, new byte[]{(byte) index});
+  }
+
+  public static TickHasDebtArray read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static TickHasDebtArray read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static TickHasDebtArray read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], TickHasDebtArray> FACTORY = TickHasDebtArray::read;
+
+  public static TickHasDebtArray read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var index = _data[i] & 0xFF;
+    ++i;
+    final var tickHasDebt = new TickHasDebt[8];
+    SerDeUtil.readArray(tickHasDebt, TickHasDebt::read, _data, i);
+    return new TickHasDebtArray(_address, discriminator, vaultId, index, tickHasDebt);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    _data[i] = (byte) index;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(tickHasDebt, 8, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

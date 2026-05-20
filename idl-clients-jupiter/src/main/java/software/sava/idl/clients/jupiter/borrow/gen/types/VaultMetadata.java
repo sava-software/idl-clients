@@ -1,0 +1,106 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record VaultMetadata(PublicKey _address,
+                            Discriminator discriminator,
+                            int vaultId,
+                            PublicKey lookupTable,
+                            int supplyMintDecimals,
+                            int borrowMintDecimals) implements SerDe {
+
+  public static final int BYTES = 44;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(248, 177, 244, 93, 67, 19, 117, 57);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int LOOKUP_TABLE_OFFSET = 10;
+  public static final int SUPPLY_MINT_DECIMALS_OFFSET = 42;
+  public static final int BORROW_MINT_DECIMALS_OFFSET = 43;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createLookupTableFilter(final PublicKey lookupTable) {
+    return Filter.createMemCompFilter(LOOKUP_TABLE_OFFSET, lookupTable);
+  }
+
+  public static Filter createSupplyMintDecimalsFilter(final int supplyMintDecimals) {
+    return Filter.createMemCompFilter(SUPPLY_MINT_DECIMALS_OFFSET, new byte[]{(byte) supplyMintDecimals});
+  }
+
+  public static Filter createBorrowMintDecimalsFilter(final int borrowMintDecimals) {
+    return Filter.createMemCompFilter(BORROW_MINT_DECIMALS_OFFSET, new byte[]{(byte) borrowMintDecimals});
+  }
+
+  public static VaultMetadata read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static VaultMetadata read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static VaultMetadata read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], VaultMetadata> FACTORY = VaultMetadata::read;
+
+  public static VaultMetadata read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var lookupTable = readPubKey(_data, i);
+    i += 32;
+    final var supplyMintDecimals = _data[i] & 0xFF;
+    ++i;
+    final var borrowMintDecimals = _data[i] & 0xFF;
+    return new VaultMetadata(_address,
+                             discriminator,
+                             vaultId,
+                             lookupTable,
+                             supplyMintDecimals,
+                             borrowMintDecimals);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    lookupTable.write(_data, i);
+    i += 32;
+    _data[i] = (byte) supplyMintDecimals;
+    ++i;
+    _data[i] = (byte) borrowMintDecimals;
+    ++i;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

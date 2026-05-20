@@ -1,0 +1,39 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUpdateSupplyRateMagnifier(Discriminator discriminator, int supplyRateMagnifier) implements VaultsEvent {
+
+  public static final int BYTES = 10;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(198, 113, 184, 213, 239, 18, 253, 56);
+
+  public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 8;
+
+  public static LogUpdateSupplyRateMagnifier read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var supplyRateMagnifier = getInt16LE(_data, i);
+    return new LogUpdateSupplyRateMagnifier(discriminator, supplyRateMagnifier);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, supplyRateMagnifier);
+    i += 2;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

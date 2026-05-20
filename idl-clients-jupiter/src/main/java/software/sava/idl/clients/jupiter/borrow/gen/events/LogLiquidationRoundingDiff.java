@@ -1,0 +1,64 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogLiquidationRoundingDiff(Discriminator discriminator,
+                                         int vaultId,
+                                         long actualDebtAmt,
+                                         long debtAmount,
+                                         long diff) implements VaultsEvent {
+
+  public static final int BYTES = 34;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(35, 189, 179, 90, 218, 51, 104, 128);
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int ACTUAL_DEBT_AMT_OFFSET = 10;
+  public static final int DEBT_AMOUNT_OFFSET = 18;
+  public static final int DIFF_OFFSET = 26;
+
+  public static LogLiquidationRoundingDiff read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var actualDebtAmt = getInt64LE(_data, i);
+    i += 8;
+    final var debtAmount = getInt64LE(_data, i);
+    i += 8;
+    final var diff = getInt64LE(_data, i);
+    return new LogLiquidationRoundingDiff(discriminator,
+                                          vaultId,
+                                          actualDebtAmt,
+                                          debtAmount,
+                                          diff);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt64LE(_data, i, actualDebtAmt);
+    i += 8;
+    putInt64LE(_data, i, debtAmount);
+    i += 8;
+    putInt64LE(_data, i, diff);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

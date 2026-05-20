@@ -13,5 +13,9 @@ record JupiterAccountsRecord(PublicKey swapProgram, AccountMeta invokedSwapProgr
                              PublicKey jupBaseKey,
                              PublicKey lockerKey,
                              PublicKey governorKey,
-                             AccountMeta invokedMerkleDistributorProgram) implements JupiterAccounts {
+                             AccountMeta invokedMerkleDistributorProgram,
+                             PublicKey lendingProgram, AccountMeta invokedLendingProgram,
+                             PublicKey lendingAdminKey,
+                             PublicKey vaultsProgram, AccountMeta invokedVaultsProgram,
+                             PublicKey vaultsAdminKey) implements JupiterAccounts {
 }

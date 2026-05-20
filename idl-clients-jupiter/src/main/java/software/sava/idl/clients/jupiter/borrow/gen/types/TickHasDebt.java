@@ -1,0 +1,38 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+
+/// Tick has debt structure
+/// Each TickHasDebt can track 8 * 256 = 2048 ticks
+/// children_bits has 32 bytes = 256 bits total
+/// Each map within the array covers 256 ticks
+///
+public record TickHasDebt(byte[] childrenBits) implements SerDe {
+
+  public static final int BYTES = 32;
+  public static final int CHILDREN_BITS_LEN = 32;
+
+  public static final int CHILDREN_BITS_OFFSET = 0;
+
+  public static TickHasDebt read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var childrenBits = new byte[32];
+    SerDeUtil.readArray(childrenBits, _data, _offset);
+    return new TickHasDebt(childrenBits);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    i += SerDeUtil.writeArrayChecked(childrenBits, 32, _data, i);
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,75 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import java.math.BigInteger;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogOperate(Discriminator discriminator,
+                         PublicKey signer,
+                         int nftId,
+                         BigInteger newCol,
+                         BigInteger newDebt,
+                         PublicKey to) implements VaultsEvent {
+
+  public static final int BYTES = 108;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(180, 8, 81, 71, 19, 132, 173, 8);
+
+  public static final int SIGNER_OFFSET = 8;
+  public static final int NFT_ID_OFFSET = 40;
+  public static final int NEW_COL_OFFSET = 44;
+  public static final int NEW_DEBT_OFFSET = 60;
+  public static final int TO_OFFSET = 76;
+
+  public static LogOperate read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var signer = readPubKey(_data, i);
+    i += 32;
+    final var nftId = getInt32LE(_data, i);
+    i += 4;
+    final var newCol = getInt128LE(_data, i);
+    i += 16;
+    final var newDebt = getInt128LE(_data, i);
+    i += 16;
+    final var to = readPubKey(_data, i);
+    return new LogOperate(discriminator,
+                          signer,
+                          nftId,
+                          newCol,
+                          newDebt,
+                          to);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    signer.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, nftId);
+    i += 4;
+    putInt128LE(_data, i, newCol);
+    i += 16;
+    putInt128LE(_data, i, newDebt);
+    i += 16;
+    to.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

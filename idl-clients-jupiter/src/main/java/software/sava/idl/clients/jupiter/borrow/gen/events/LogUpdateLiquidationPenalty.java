@@ -1,0 +1,39 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUpdateLiquidationPenalty(Discriminator discriminator, int liquidationPenalty) implements VaultsEvent {
+
+  public static final int BYTES = 10;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(42, 132, 67, 48, 209, 133, 77, 83);
+
+  public static final int LIQUIDATION_PENALTY_OFFSET = 8;
+
+  public static LogUpdateLiquidationPenalty read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var liquidationPenalty = getInt16LE(_data, i);
+    return new LogUpdateLiquidationPenalty(discriminator, liquidationPenalty);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, liquidationPenalty);
+    i += 2;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

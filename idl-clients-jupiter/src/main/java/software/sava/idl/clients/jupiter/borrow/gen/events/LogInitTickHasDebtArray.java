@@ -1,0 +1,39 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogInitTickHasDebtArray(Discriminator discriminator, PublicKey tickHasDebtArray) implements VaultsEvent {
+
+  public static final int BYTES = 40;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(15, 134, 113, 2, 251, 206, 30, 129);
+
+  public static final int TICK_HAS_DEBT_ARRAY_OFFSET = 8;
+
+  public static LogInitTickHasDebtArray read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var tickHasDebtArray = readPubKey(_data, i);
+    return new LogInitTickHasDebtArray(discriminator, tickHasDebtArray);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    tickHasDebtArray.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,165 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Tick data structure
+///
+public record Tick(PublicKey _address,
+                   Discriminator discriminator,
+                   int vaultId,
+                   int tick,
+                   int isLiquidated,
+                   int totalIds,
+                   long rawDebt,
+                   int isFullyLiquidated,
+                   int liquidationBranchId,
+                   long debtFactor) implements SerDe {
+
+  public static final int BYTES = 40;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(176, 94, 67, 247, 133, 173, 7, 115);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int TICK_OFFSET = 10;
+  public static final int IS_LIQUIDATED_OFFSET = 14;
+  public static final int TOTAL_IDS_OFFSET = 15;
+  public static final int RAW_DEBT_OFFSET = 19;
+  public static final int IS_FULLY_LIQUIDATED_OFFSET = 27;
+  public static final int LIQUIDATION_BRANCH_ID_OFFSET = 28;
+  public static final int DEBT_FACTOR_OFFSET = 32;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createTickFilter(final int tick) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, tick);
+    return Filter.createMemCompFilter(TICK_OFFSET, _data);
+  }
+
+  public static Filter createIsLiquidatedFilter(final int isLiquidated) {
+    return Filter.createMemCompFilter(IS_LIQUIDATED_OFFSET, new byte[]{(byte) isLiquidated});
+  }
+
+  public static Filter createTotalIdsFilter(final int totalIds) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, totalIds);
+    return Filter.createMemCompFilter(TOTAL_IDS_OFFSET, _data);
+  }
+
+  public static Filter createRawDebtFilter(final long rawDebt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, rawDebt);
+    return Filter.createMemCompFilter(RAW_DEBT_OFFSET, _data);
+  }
+
+  public static Filter createIsFullyLiquidatedFilter(final int isFullyLiquidated) {
+    return Filter.createMemCompFilter(IS_FULLY_LIQUIDATED_OFFSET, new byte[]{(byte) isFullyLiquidated});
+  }
+
+  public static Filter createLiquidationBranchIdFilter(final int liquidationBranchId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, liquidationBranchId);
+    return Filter.createMemCompFilter(LIQUIDATION_BRANCH_ID_OFFSET, _data);
+  }
+
+  public static Filter createDebtFactorFilter(final long debtFactor) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, debtFactor);
+    return Filter.createMemCompFilter(DEBT_FACTOR_OFFSET, _data);
+  }
+
+  public static Tick read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Tick read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Tick read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Tick> FACTORY = Tick::read;
+
+  public static Tick read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var tick = getInt32LE(_data, i);
+    i += 4;
+    final var isLiquidated = _data[i] & 0xFF;
+    ++i;
+    final var totalIds = getInt32LE(_data, i);
+    i += 4;
+    final var rawDebt = getInt64LE(_data, i);
+    i += 8;
+    final var isFullyLiquidated = _data[i] & 0xFF;
+    ++i;
+    final var liquidationBranchId = getInt32LE(_data, i);
+    i += 4;
+    final var debtFactor = getInt64LE(_data, i);
+    return new Tick(_address,
+                    discriminator,
+                    vaultId,
+                    tick,
+                    isLiquidated,
+                    totalIds,
+                    rawDebt,
+                    isFullyLiquidated,
+                    liquidationBranchId,
+                    debtFactor);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, tick);
+    i += 4;
+    _data[i] = (byte) isLiquidated;
+    ++i;
+    putInt32LE(_data, i, totalIds);
+    i += 4;
+    putInt64LE(_data, i, rawDebt);
+    i += 8;
+    _data[i] = (byte) isFullyLiquidated;
+    ++i;
+    putInt32LE(_data, i, liquidationBranchId);
+    i += 4;
+    putInt64LE(_data, i, debtFactor);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

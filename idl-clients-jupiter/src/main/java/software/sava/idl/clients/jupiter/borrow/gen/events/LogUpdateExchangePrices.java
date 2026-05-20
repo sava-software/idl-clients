@@ -1,0 +1,62 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUpdateExchangePrices(Discriminator discriminator,
+                                      long vaultSupplyExchangePrice,
+                                      long vaultBorrowExchangePrice,
+                                      long liquiditySupplyExchangePrice,
+                                      long liquidityBorrowExchangePrice) implements VaultsEvent {
+
+  public static final int BYTES = 40;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(190, 194, 69, 204, 30, 86, 181, 163);
+
+  public static final int VAULT_SUPPLY_EXCHANGE_PRICE_OFFSET = 8;
+  public static final int VAULT_BORROW_EXCHANGE_PRICE_OFFSET = 16;
+  public static final int LIQUIDITY_SUPPLY_EXCHANGE_PRICE_OFFSET = 24;
+  public static final int LIQUIDITY_BORROW_EXCHANGE_PRICE_OFFSET = 32;
+
+  public static LogUpdateExchangePrices read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultSupplyExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var vaultBorrowExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var liquiditySupplyExchangePrice = getInt64LE(_data, i);
+    i += 8;
+    final var liquidityBorrowExchangePrice = getInt64LE(_data, i);
+    return new LogUpdateExchangePrices(discriminator,
+                                       vaultSupplyExchangePrice,
+                                       vaultBorrowExchangePrice,
+                                       liquiditySupplyExchangePrice,
+                                       liquidityBorrowExchangePrice);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, vaultSupplyExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, vaultBorrowExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, liquiditySupplyExchangePrice);
+    i += 8;
+    putInt64LE(_data, i, liquidityBorrowExchangePrice);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

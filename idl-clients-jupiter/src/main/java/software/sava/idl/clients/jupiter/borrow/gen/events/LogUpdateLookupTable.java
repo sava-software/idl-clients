@@ -1,0 +1,39 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUpdateLookupTable(Discriminator discriminator, PublicKey lookupTable) implements VaultsEvent {
+
+  public static final int BYTES = 40;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(45, 248, 126, 111, 185, 41, 103, 5);
+
+  public static final int LOOKUP_TABLE_OFFSET = 8;
+
+  public static LogUpdateLookupTable read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var lookupTable = readPubKey(_data, i);
+    return new LogUpdateLookupTable(discriminator, lookupTable);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    lookupTable.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

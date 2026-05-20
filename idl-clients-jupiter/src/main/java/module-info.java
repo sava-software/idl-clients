@@ -1,10 +1,14 @@
 module software.sava.idl.clients.jupiter {
+  exports software.sava.idl.clients.jupiter.borrow.gen.events;
+  exports software.sava.idl.clients.jupiter.borrow.gen.types;
+  exports software.sava.idl.clients.jupiter.borrow.gen;
+  exports software.sava.idl.clients.jupiter.borrow;
   exports software.sava.idl.clients.jupiter.governance.gen.events;
   exports software.sava.idl.clients.jupiter.governance.gen.types;
   exports software.sava.idl.clients.jupiter.governance.gen;
-  exports software.sava.idl.clients.jupiter.lend_borrow.gen.events;
-  exports software.sava.idl.clients.jupiter.lend_borrow.gen.types;
-  exports software.sava.idl.clients.jupiter.lend_borrow.gen;
+  exports software.sava.idl.clients.jupiter.lend.gen.events;
+  exports software.sava.idl.clients.jupiter.lend.gen.types;
+  exports software.sava.idl.clients.jupiter.lend.gen;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen.events;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen.types;
   exports software.sava.idl.clients.jupiter.merkle_distributor.gen;
@@ -25,6 +29,7 @@ module software.sava.idl.clients.jupiter {
   exports software.sava.idl.clients.jupiter.voter.rest.response;
   exports software.sava.idl.clients.jupiter.voter;
   exports software.sava.idl.clients.jupiter;
+  exports software.sava.idl.clients.jupiter.lend;
   requires java.net.http;
   requires transitive software.sava.core;
   requires transitive software.sava.idl.clients.core;

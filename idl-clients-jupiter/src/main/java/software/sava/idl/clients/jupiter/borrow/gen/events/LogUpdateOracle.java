@@ -1,0 +1,39 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogUpdateOracle(Discriminator discriminator, PublicKey newOracle) implements VaultsEvent {
+
+  public static final int BYTES = 40;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(251, 163, 219, 57, 30, 152, 177, 10);
+
+  public static final int NEW_ORACLE_OFFSET = 8;
+
+  public static LogUpdateOracle read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var newOracle = readPubKey(_data, i);
+    return new LogUpdateOracle(discriminator, newOracle);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    newOracle.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

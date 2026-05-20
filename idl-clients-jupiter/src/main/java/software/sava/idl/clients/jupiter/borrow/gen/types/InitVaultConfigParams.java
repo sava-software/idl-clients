@@ -1,0 +1,107 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.SerDe;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+
+public record InitVaultConfigParams(int supplyRateMagnifier,
+                                    int borrowRateMagnifier,
+                                    int collateralFactor,
+                                    int liquidationThreshold,
+                                    int liquidationMaxLimit,
+                                    int withdrawGap,
+                                    int liquidationPenalty,
+                                    int borrowFee,
+                                    PublicKey rebalancer,
+                                    PublicKey liquidityProgram,
+                                    PublicKey oracleProgram) implements SerDe {
+
+  public static final int BYTES = 112;
+
+  public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 0;
+  public static final int BORROW_RATE_MAGNIFIER_OFFSET = 2;
+  public static final int COLLATERAL_FACTOR_OFFSET = 4;
+  public static final int LIQUIDATION_THRESHOLD_OFFSET = 6;
+  public static final int LIQUIDATION_MAX_LIMIT_OFFSET = 8;
+  public static final int WITHDRAW_GAP_OFFSET = 10;
+  public static final int LIQUIDATION_PENALTY_OFFSET = 12;
+  public static final int BORROW_FEE_OFFSET = 14;
+  public static final int REBALANCER_OFFSET = 16;
+  public static final int LIQUIDITY_PROGRAM_OFFSET = 48;
+  public static final int ORACLE_PROGRAM_OFFSET = 80;
+
+  public static InitVaultConfigParams read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    int i = _offset;
+    final var supplyRateMagnifier = getInt16LE(_data, i);
+    i += 2;
+    final var borrowRateMagnifier = getInt16LE(_data, i);
+    i += 2;
+    final var collateralFactor = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationThreshold = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationMaxLimit = getInt16LE(_data, i);
+    i += 2;
+    final var withdrawGap = getInt16LE(_data, i);
+    i += 2;
+    final var liquidationPenalty = getInt16LE(_data, i);
+    i += 2;
+    final var borrowFee = getInt16LE(_data, i);
+    i += 2;
+    final var rebalancer = readPubKey(_data, i);
+    i += 32;
+    final var liquidityProgram = readPubKey(_data, i);
+    i += 32;
+    final var oracleProgram = readPubKey(_data, i);
+    return new InitVaultConfigParams(supplyRateMagnifier,
+                                     borrowRateMagnifier,
+                                     collateralFactor,
+                                     liquidationThreshold,
+                                     liquidationMaxLimit,
+                                     withdrawGap,
+                                     liquidationPenalty,
+                                     borrowFee,
+                                     rebalancer,
+                                     liquidityProgram,
+                                     oracleProgram);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset;
+    putInt16LE(_data, i, supplyRateMagnifier);
+    i += 2;
+    putInt16LE(_data, i, borrowRateMagnifier);
+    i += 2;
+    putInt16LE(_data, i, collateralFactor);
+    i += 2;
+    putInt16LE(_data, i, liquidationThreshold);
+    i += 2;
+    putInt16LE(_data, i, liquidationMaxLimit);
+    i += 2;
+    putInt16LE(_data, i, withdrawGap);
+    i += 2;
+    putInt16LE(_data, i, liquidationPenalty);
+    i += 2;
+    putInt16LE(_data, i, borrowFee);
+    i += 2;
+    rebalancer.write(_data, i);
+    i += 32;
+    liquidityProgram.write(_data, i);
+    i += 32;
+    oracleProgram.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

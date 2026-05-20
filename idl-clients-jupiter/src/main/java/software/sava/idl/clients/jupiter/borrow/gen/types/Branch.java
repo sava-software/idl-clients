@@ -1,0 +1,180 @@
+package software.sava.idl.clients.jupiter.borrow.gen.types;
+
+import java.util.function.BiFunction;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.rpc.Filter;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.rpc.json.http.response.AccountInfo;
+
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+/// Branch data structure
+///
+public record Branch(PublicKey _address,
+                     Discriminator discriminator,
+                     int vaultId,
+                     int branchId,
+                     int status,
+                     int minimaTick,
+                     int minimaTickPartials,
+                     long debtLiquidity,
+                     long debtFactor,
+                     int connectedBranchId,
+                     int connectedMinimaTick) implements SerDe {
+
+  public static final int BYTES = 47;
+  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(14, 63, 100, 50, 25, 8, 29, 5);
+  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
+
+  public static final int VAULT_ID_OFFSET = 8;
+  public static final int BRANCH_ID_OFFSET = 10;
+  public static final int STATUS_OFFSET = 14;
+  public static final int MINIMA_TICK_OFFSET = 15;
+  public static final int MINIMA_TICK_PARTIALS_OFFSET = 19;
+  public static final int DEBT_LIQUIDITY_OFFSET = 23;
+  public static final int DEBT_FACTOR_OFFSET = 31;
+  public static final int CONNECTED_BRANCH_ID_OFFSET = 39;
+  public static final int CONNECTED_MINIMA_TICK_OFFSET = 43;
+
+  public static Filter createVaultIdFilter(final int vaultId) {
+    final byte[] _data = new byte[2];
+    putInt16LE(_data, 0, vaultId);
+    return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
+  }
+
+  public static Filter createBranchIdFilter(final int branchId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, branchId);
+    return Filter.createMemCompFilter(BRANCH_ID_OFFSET, _data);
+  }
+
+  public static Filter createStatusFilter(final int status) {
+    return Filter.createMemCompFilter(STATUS_OFFSET, new byte[]{(byte) status});
+  }
+
+  public static Filter createMinimaTickFilter(final int minimaTick) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, minimaTick);
+    return Filter.createMemCompFilter(MINIMA_TICK_OFFSET, _data);
+  }
+
+  public static Filter createMinimaTickPartialsFilter(final int minimaTickPartials) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, minimaTickPartials);
+    return Filter.createMemCompFilter(MINIMA_TICK_PARTIALS_OFFSET, _data);
+  }
+
+  public static Filter createDebtLiquidityFilter(final long debtLiquidity) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, debtLiquidity);
+    return Filter.createMemCompFilter(DEBT_LIQUIDITY_OFFSET, _data);
+  }
+
+  public static Filter createDebtFactorFilter(final long debtFactor) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, debtFactor);
+    return Filter.createMemCompFilter(DEBT_FACTOR_OFFSET, _data);
+  }
+
+  public static Filter createConnectedBranchIdFilter(final int connectedBranchId) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, connectedBranchId);
+    return Filter.createMemCompFilter(CONNECTED_BRANCH_ID_OFFSET, _data);
+  }
+
+  public static Filter createConnectedMinimaTickFilter(final int connectedMinimaTick) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, connectedMinimaTick);
+    return Filter.createMemCompFilter(CONNECTED_MINIMA_TICK_OFFSET, _data);
+  }
+
+  public static Branch read(final byte[] _data, final int _offset) {
+    return read(null, _data, _offset);
+  }
+
+  public static Branch read(final AccountInfo<byte[]> accountInfo) {
+    return read(accountInfo.pubKey(), accountInfo.data(), 0);
+  }
+
+  public static Branch read(final PublicKey _address, final byte[] _data) {
+    return read(_address, _data, 0);
+  }
+
+  public static final BiFunction<PublicKey, byte[], Branch> FACTORY = Branch::read;
+
+  public static Branch read(final PublicKey _address, final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var vaultId = getInt16LE(_data, i);
+    i += 2;
+    final var branchId = getInt32LE(_data, i);
+    i += 4;
+    final var status = _data[i] & 0xFF;
+    ++i;
+    final var minimaTick = getInt32LE(_data, i);
+    i += 4;
+    final var minimaTickPartials = getInt32LE(_data, i);
+    i += 4;
+    final var debtLiquidity = getInt64LE(_data, i);
+    i += 8;
+    final var debtFactor = getInt64LE(_data, i);
+    i += 8;
+    final var connectedBranchId = getInt32LE(_data, i);
+    i += 4;
+    final var connectedMinimaTick = getInt32LE(_data, i);
+    return new Branch(_address,
+                      discriminator,
+                      vaultId,
+                      branchId,
+                      status,
+                      minimaTick,
+                      minimaTickPartials,
+                      debtLiquidity,
+                      debtFactor,
+                      connectedBranchId,
+                      connectedMinimaTick);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, branchId);
+    i += 4;
+    _data[i] = (byte) status;
+    ++i;
+    putInt32LE(_data, i, minimaTick);
+    i += 4;
+    putInt32LE(_data, i, minimaTickPartials);
+    i += 4;
+    putInt64LE(_data, i, debtLiquidity);
+    i += 8;
+    putInt64LE(_data, i, debtFactor);
+    i += 8;
+    putInt32LE(_data, i, connectedBranchId);
+    i += 4;
+    putInt32LE(_data, i, connectedMinimaTick);
+    i += 4;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

@@ -1,0 +1,44 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogAbsorb(Discriminator discriminator, long colAmount, long debtAmount) implements VaultsEvent {
+
+  public static final int BYTES = 24;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(177, 119, 143, 137, 184, 63, 197, 215);
+
+  public static final int COL_AMOUNT_OFFSET = 8;
+  public static final int DEBT_AMOUNT_OFFSET = 16;
+
+  public static LogAbsorb read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var colAmount = getInt64LE(_data, i);
+    i += 8;
+    final var debtAmount = getInt64LE(_data, i);
+    return new LogAbsorb(discriminator, colAmount, debtAmount);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    putInt64LE(_data, i, colAmount);
+    i += 8;
+    putInt64LE(_data, i, debtAmount);
+    i += 8;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

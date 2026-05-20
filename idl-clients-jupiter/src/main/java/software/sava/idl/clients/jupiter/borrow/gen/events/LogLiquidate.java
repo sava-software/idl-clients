@@ -1,0 +1,64 @@
+package software.sava.idl.clients.jupiter.borrow.gen.events;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.programs.Discriminator;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public record LogLiquidate(Discriminator discriminator,
+                           PublicKey signer,
+                           long colAmount,
+                           long debtAmount,
+                           PublicKey to) implements VaultsEvent {
+
+  public static final int BYTES = 88;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(154, 128, 202, 147, 65, 233, 195, 73);
+
+  public static final int SIGNER_OFFSET = 8;
+  public static final int COL_AMOUNT_OFFSET = 40;
+  public static final int DEBT_AMOUNT_OFFSET = 48;
+  public static final int TO_OFFSET = 56;
+
+  public static LogLiquidate read(final byte[] _data, final int _offset) {
+    if (_data == null || _data.length == 0) {
+      return null;
+    }
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    int i = _offset + discriminator.length();
+    final var signer = readPubKey(_data, i);
+    i += 32;
+    final var colAmount = getInt64LE(_data, i);
+    i += 8;
+    final var debtAmount = getInt64LE(_data, i);
+    i += 8;
+    final var to = readPubKey(_data, i);
+    return new LogLiquidate(discriminator,
+                            signer,
+                            colAmount,
+                            debtAmount,
+                            to);
+  }
+
+  @Override
+  public int write(final byte[] _data, final int _offset) {
+    int i = _offset + discriminator.write(_data, _offset);
+    signer.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, colAmount);
+    i += 8;
+    putInt64LE(_data, i, debtAmount);
+    i += 8;
+    to.write(_data, i);
+    i += 32;
+    return i - _offset;
+  }
+
+  @Override
+  public int l() {
+    return BYTES;
+  }
+}

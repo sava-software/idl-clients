@@ -1,0 +1,2745 @@
+package software.sava.idl.clients.jupiter.borrow.gen;
+
+import java.math.BigInteger;
+
+import java.util.List;
+
+import software.sava.core.accounts.PublicKey;
+import software.sava.core.accounts.SolanaAccounts;
+import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.core.programs.Discriminator;
+import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.jupiter.borrow.gen.types.AddressBool;
+import software.sava.idl.clients.jupiter.borrow.gen.types.InitVaultConfigParams;
+import software.sava.idl.clients.jupiter.borrow.gen.types.TransferType;
+import software.sava.idl.clients.jupiter.borrow.gen.types.UpdateCoreSettingsParams;
+
+import static java.util.Objects.requireNonNullElse;
+
+import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.accounts.meta.AccountMeta.createRead;
+import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
+import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
+import static software.sava.core.accounts.meta.AccountMeta.createWrite;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.toDiscriminator;
+
+public final class VaultsProgram {
+
+  public static final Discriminator GET_EXCHANGE_PRICES_DISCRIMINATOR = toDiscriminator(237, 128, 83, 152, 52, 21, 231, 86);
+
+  public static List<AccountMeta> getExchangePricesKeys(final PublicKey vaultStateKey,
+                                                        final PublicKey vaultConfigKey,
+                                                        final PublicKey supplyTokenReservesKey,
+                                                        final PublicKey borrowTokenReservesKey) {
+    return List.of(
+      createRead(vaultStateKey),
+      createRead(vaultConfigKey),
+      createRead(supplyTokenReservesKey),
+      createRead(borrowTokenReservesKey)
+    );
+  }
+
+  public static Instruction getExchangePrices(final AccountMeta invokedVaultsProgramMeta,
+                                              final PublicKey vaultStateKey,
+                                              final PublicKey vaultConfigKey,
+                                              final PublicKey supplyTokenReservesKey,
+                                              final PublicKey borrowTokenReservesKey) {
+    final var keys = getExchangePricesKeys(
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesKey,
+      borrowTokenReservesKey
+    );
+    return getExchangePrices(invokedVaultsProgramMeta, keys);
+  }
+
+  public static Instruction getExchangePrices(final AccountMeta invokedVaultsProgramMeta,
+                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, GET_EXCHANGE_PRICES_DISCRIMINATOR);
+  }
+
+  public static final Discriminator INIT_BRANCH_DISCRIMINATOR = toDiscriminator(162, 91, 57, 23, 228, 93, 111, 21);
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initBranchKeys(final SolanaAccounts solanaAccounts,
+                                                 final PublicKey signerKey,
+                                                 final PublicKey vaultConfigKey,
+                                                 final PublicKey branchKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(vaultConfigKey),
+      createWrite(branchKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static Instruction initBranch(final AccountMeta invokedVaultsProgramMeta,
+                                       final SolanaAccounts solanaAccounts,
+                                       final PublicKey signerKey,
+                                       final PublicKey vaultConfigKey,
+                                       final PublicKey branchKey,
+                                       final int vaultId,
+                                       final int branchId) {
+    final var keys = initBranchKeys(
+      solanaAccounts,
+      signerKey,
+      vaultConfigKey,
+      branchKey
+    );
+    return initBranch(invokedVaultsProgramMeta, keys, vaultId, branchId);
+  }
+
+  public static Instruction initBranch(final AccountMeta invokedVaultsProgramMeta,
+                                       final List<AccountMeta> keys,
+                                       final int vaultId,
+                                       final int branchId) {
+    final byte[] _data = new byte[14];
+    int i = INIT_BRANCH_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, branchId);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitBranchIxData(Discriminator discriminator, int vaultId, int branchId) implements SerDe {  
+
+    public static InitBranchIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 14;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int BRANCH_ID_OFFSET = 10;
+
+    public static InitBranchIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var branchId = getInt32LE(_data, i);
+      return new InitBranchIxData(discriminator, vaultId, branchId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt32LE(_data, i, branchId);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_POSITION_DISCRIMINATOR = toDiscriminator(197, 20, 10, 1, 97, 160, 177, 91);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initPositionKeys(final SolanaAccounts solanaAccounts,
+                                                   final PublicKey signerKey,
+                                                   final PublicKey vaultAdminKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey positionKey,
+                                                   final PublicKey positionMintKey,
+                                                   final PublicKey positionTokenAccountKey,
+                                                   final PublicKey metadataAccountKey,
+                                                   final PublicKey tokenProgramKey,
+                                                   final PublicKey metadataProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(positionKey),
+      createWrite(positionMintKey),
+      createWrite(positionTokenAccountKey),
+      createWrite(metadataAccountKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(solanaAccounts.instructionsSysVar()),
+      createRead(metadataProgramKey),
+      createRead(solanaAccounts.rentSysVar())
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  public static Instruction initPosition(final AccountMeta invokedVaultsProgramMeta,
+                                         final SolanaAccounts solanaAccounts,
+                                         final PublicKey signerKey,
+                                         final PublicKey vaultAdminKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey positionKey,
+                                         final PublicKey positionMintKey,
+                                         final PublicKey positionTokenAccountKey,
+                                         final PublicKey metadataAccountKey,
+                                         final PublicKey tokenProgramKey,
+                                         final PublicKey metadataProgramKey,
+                                         final int vaultId,
+                                         final int nextPositionId) {
+    final var keys = initPositionKeys(
+      solanaAccounts,
+      signerKey,
+      vaultAdminKey,
+      vaultStateKey,
+      positionKey,
+      positionMintKey,
+      positionTokenAccountKey,
+      metadataAccountKey,
+      tokenProgramKey,
+      metadataProgramKey
+    );
+    return initPosition(invokedVaultsProgramMeta, keys, vaultId, nextPositionId);
+  }
+
+  public static Instruction initPosition(final AccountMeta invokedVaultsProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final int vaultId,
+                                         final int nextPositionId) {
+    final byte[] _data = new byte[14];
+    int i = INIT_POSITION_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, nextPositionId);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitPositionIxData(Discriminator discriminator, int vaultId, int nextPositionId) implements SerDe {  
+
+    public static InitPositionIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 14;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int NEXT_POSITION_ID_OFFSET = 10;
+
+    public static InitPositionIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var nextPositionId = getInt32LE(_data, i);
+      return new InitPositionIxData(discriminator, vaultId, nextPositionId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt32LE(_data, i, nextPositionId);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_TICK_DISCRIMINATOR = toDiscriminator(22, 13, 62, 141, 73, 89, 178, 29);
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initTickKeys(final SolanaAccounts solanaAccounts,
+                                               final PublicKey signerKey,
+                                               final PublicKey vaultConfigKey,
+                                               final PublicKey tickDataKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(vaultConfigKey),
+      createWrite(tickDataKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static Instruction initTick(final AccountMeta invokedVaultsProgramMeta,
+                                     final SolanaAccounts solanaAccounts,
+                                     final PublicKey signerKey,
+                                     final PublicKey vaultConfigKey,
+                                     final PublicKey tickDataKey,
+                                     final int vaultId,
+                                     final int tick) {
+    final var keys = initTickKeys(
+      solanaAccounts,
+      signerKey,
+      vaultConfigKey,
+      tickDataKey
+    );
+    return initTick(invokedVaultsProgramMeta, keys, vaultId, tick);
+  }
+
+  public static Instruction initTick(final AccountMeta invokedVaultsProgramMeta,
+                                     final List<AccountMeta> keys,
+                                     final int vaultId,
+                                     final int tick) {
+    final byte[] _data = new byte[14];
+    int i = INIT_TICK_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, tick);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitTickIxData(Discriminator discriminator, int vaultId, int tick) implements SerDe {  
+
+    public static InitTickIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 14;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int TICK_OFFSET = 10;
+
+    public static InitTickIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var tick = getInt32LE(_data, i);
+      return new InitTickIxData(discriminator, vaultId, tick);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt32LE(_data, i, tick);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_TICK_HAS_DEBT_ARRAY_DISCRIMINATOR = toDiscriminator(206, 108, 146, 245, 20, 0, 141, 208);
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initTickHasDebtArrayKeys(final SolanaAccounts solanaAccounts,
+                                                           final PublicKey signerKey,
+                                                           final PublicKey vaultConfigKey,
+                                                           final PublicKey tickHasDebtArrayKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(vaultConfigKey),
+      createWrite(tickHasDebtArrayKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
+                                                 final SolanaAccounts solanaAccounts,
+                                                 final PublicKey signerKey,
+                                                 final PublicKey vaultConfigKey,
+                                                 final PublicKey tickHasDebtArrayKey,
+                                                 final int vaultId,
+                                                 final int index) {
+    final var keys = initTickHasDebtArrayKeys(
+      solanaAccounts,
+      signerKey,
+      vaultConfigKey,
+      tickHasDebtArrayKey
+    );
+    return initTickHasDebtArray(invokedVaultsProgramMeta, keys, vaultId, index);
+  }
+
+  public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final int vaultId,
+                                                 final int index) {
+    final byte[] _data = new byte[11];
+    int i = INIT_TICK_HAS_DEBT_ARRAY_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    _data[i] = (byte) index;
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {  
+
+    public static InitTickHasDebtArrayIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 11;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int INDEX_OFFSET = 10;
+
+    public static InitTickHasDebtArrayIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var index = _data[i] & 0xFF;
+      return new InitTickHasDebtArrayIxData(discriminator, vaultId, index);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      _data[i] = (byte) index;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_TICK_ID_LIQUIDATION_DISCRIMINATOR = toDiscriminator(56, 110, 121, 169, 152, 241, 86, 183);
+
+  /// @param tickDataKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initTickIdLiquidationKeys(final SolanaAccounts solanaAccounts,
+                                                            final PublicKey signerKey,
+                                                            final PublicKey tickDataKey,
+                                                            final PublicKey tickIdLiquidationKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(tickDataKey),
+      createWrite(tickIdLiquidationKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param tickDataKey @dev Verification inside instruction logic
+  public static Instruction initTickIdLiquidation(final AccountMeta invokedVaultsProgramMeta,
+                                                  final SolanaAccounts solanaAccounts,
+                                                  final PublicKey signerKey,
+                                                  final PublicKey tickDataKey,
+                                                  final PublicKey tickIdLiquidationKey,
+                                                  final int vaultId,
+                                                  final int tick,
+                                                  final int totalIds) {
+    final var keys = initTickIdLiquidationKeys(
+      solanaAccounts,
+      signerKey,
+      tickDataKey,
+      tickIdLiquidationKey
+    );
+    return initTickIdLiquidation(
+      invokedVaultsProgramMeta,
+      keys,
+      vaultId,
+      tick,
+      totalIds
+    );
+  }
+
+  public static Instruction initTickIdLiquidation(final AccountMeta invokedVaultsProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final int vaultId,
+                                                  final int tick,
+                                                  final int totalIds) {
+    final byte[] _data = new byte[18];
+    int i = INIT_TICK_ID_LIQUIDATION_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt32LE(_data, i, tick);
+    i += 4;
+    putInt32LE(_data, i, totalIds);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitTickIdLiquidationIxData(Discriminator discriminator,
+                                            int vaultId,
+                                            int tick,
+                                            int totalIds) implements SerDe {  
+
+    public static InitTickIdLiquidationIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 18;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int TICK_OFFSET = 10;
+    public static final int TOTAL_IDS_OFFSET = 14;
+
+    public static InitTickIdLiquidationIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var tick = getInt32LE(_data, i);
+      i += 4;
+      final var totalIds = getInt32LE(_data, i);
+      return new InitTickIdLiquidationIxData(discriminator, vaultId, tick, totalIds);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt32LE(_data, i, tick);
+      i += 4;
+      putInt32LE(_data, i, totalIds);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_VAULT_ADMIN_DISCRIMINATOR = toDiscriminator(22, 133, 2, 244, 123, 100, 249, 230);
+
+  public static List<AccountMeta> initVaultAdminKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey signerKey,
+                                                     final PublicKey vaultAdminKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(vaultAdminKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction initVaultAdmin(final AccountMeta invokedVaultsProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey signerKey,
+                                           final PublicKey vaultAdminKey,
+                                           final PublicKey liquidity,
+                                           final PublicKey authority) {
+    final var keys = initVaultAdminKeys(
+      solanaAccounts,
+      signerKey,
+      vaultAdminKey
+    );
+    return initVaultAdmin(invokedVaultsProgramMeta, keys, liquidity, authority);
+  }
+
+  public static Instruction initVaultAdmin(final AccountMeta invokedVaultsProgramMeta,
+                                           final List<AccountMeta> keys,
+                                           final PublicKey liquidity,
+                                           final PublicKey authority) {
+    final byte[] _data = new byte[72];
+    int i = INIT_VAULT_ADMIN_DISCRIMINATOR.write(_data, 0);
+    liquidity.write(_data, i);
+    i += 32;
+    authority.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitVaultAdminIxData(Discriminator discriminator, PublicKey liquidity, PublicKey authority) implements SerDe {  
+
+    public static InitVaultAdminIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 72;
+
+    public static final int LIQUIDITY_OFFSET = 8;
+    public static final int AUTHORITY_OFFSET = 40;
+
+    public static InitVaultAdminIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var liquidity = readPubKey(_data, i);
+      i += 32;
+      final var authority = readPubKey(_data, i);
+      return new InitVaultAdminIxData(discriminator, liquidity, authority);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      liquidity.write(_data, i);
+      i += 32;
+      authority.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_VAULT_CONFIG_DISCRIMINATOR = toDiscriminator(41, 194, 69, 254, 196, 246, 226, 195);
+
+  public static List<AccountMeta> initVaultConfigKeys(final SolanaAccounts solanaAccounts,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey vaultAdminKey,
+                                                      final PublicKey vaultConfigKey,
+                                                      final PublicKey vaultMetadataKey,
+                                                      final PublicKey oracleKey,
+                                                      final PublicKey supplyTokenKey,
+                                                      final PublicKey borrowTokenKey) {
+    return List.of(
+      createWritableSigner(authorityKey),
+      createWrite(vaultAdminKey),
+      createWrite(vaultConfigKey),
+      createWrite(vaultMetadataKey),
+      createRead(oracleKey),
+      createRead(supplyTokenKey),
+      createRead(borrowTokenKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction initVaultConfig(final AccountMeta invokedVaultsProgramMeta,
+                                            final SolanaAccounts solanaAccounts,
+                                            final PublicKey authorityKey,
+                                            final PublicKey vaultAdminKey,
+                                            final PublicKey vaultConfigKey,
+                                            final PublicKey vaultMetadataKey,
+                                            final PublicKey oracleKey,
+                                            final PublicKey supplyTokenKey,
+                                            final PublicKey borrowTokenKey,
+                                            final int vaultId,
+                                            final InitVaultConfigParams params) {
+    final var keys = initVaultConfigKeys(
+      solanaAccounts,
+      authorityKey,
+      vaultAdminKey,
+      vaultConfigKey,
+      vaultMetadataKey,
+      oracleKey,
+      supplyTokenKey,
+      borrowTokenKey
+    );
+    return initVaultConfig(invokedVaultsProgramMeta, keys, vaultId, params);
+  }
+
+  public static Instruction initVaultConfig(final AccountMeta invokedVaultsProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final int vaultId,
+                                            final InitVaultConfigParams params) {
+    final byte[] _data = new byte[10 + params.l()];
+    int i = INIT_VAULT_CONFIG_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitVaultConfigIxData(Discriminator discriminator, int vaultId, InitVaultConfigParams params) implements SerDe {  
+
+    public static InitVaultConfigIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 122;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int PARAMS_OFFSET = 10;
+
+    public static InitVaultConfigIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var params = InitVaultConfigParams.read(_data, i);
+      return new InitVaultConfigIxData(discriminator, vaultId, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INIT_VAULT_STATE_DISCRIMINATOR = toDiscriminator(96, 120, 23, 100, 153, 11, 13, 165);
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> initVaultStateKeys(final SolanaAccounts solanaAccounts,
+                                                     final PublicKey authorityKey,
+                                                     final PublicKey vaultAdminKey,
+                                                     final PublicKey vaultConfigKey,
+                                                     final PublicKey vaultStateKey,
+                                                     final PublicKey supplyTokenReservesLiquidityKey,
+                                                     final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createWritableSigner(authorityKey),
+      createRead(vaultAdminKey),
+      createRead(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction initVaultState(final AccountMeta invokedVaultsProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
+                                           final PublicKey authorityKey,
+                                           final PublicKey vaultAdminKey,
+                                           final PublicKey vaultConfigKey,
+                                           final PublicKey vaultStateKey,
+                                           final PublicKey supplyTokenReservesLiquidityKey,
+                                           final PublicKey borrowTokenReservesLiquidityKey,
+                                           final int vaultId) {
+    final var keys = initVaultStateKeys(
+      solanaAccounts,
+      authorityKey,
+      vaultAdminKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return initVaultState(invokedVaultsProgramMeta, keys, vaultId);
+  }
+
+  public static Instruction initVaultState(final AccountMeta invokedVaultsProgramMeta,
+                                           final List<AccountMeta> keys,
+                                           final int vaultId) {
+    final byte[] _data = new byte[10];
+    int i = INIT_VAULT_STATE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record InitVaultStateIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+
+    public static InitVaultStateIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 10;
+
+    public static final int VAULT_ID_OFFSET = 8;
+
+    public static InitVaultStateIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      return new InitVaultStateIxData(discriminator, vaultId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator LIQUIDATE_DISCRIMINATOR = toDiscriminator(223, 179, 226, 125, 48, 46, 39, 74);
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  public static List<AccountMeta> liquidateKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
+                                                final PublicKey signerKey,
+                                                final PublicKey signerTokenAccountKey,
+                                                final PublicKey toKey,
+                                                final PublicKey toTokenAccountKey,
+                                                final PublicKey vaultConfigKey,
+                                                final PublicKey vaultStateKey,
+                                                final PublicKey supplyTokenKey,
+                                                final PublicKey borrowTokenKey,
+                                                final PublicKey oracleKey,
+                                                final PublicKey newBranchKey,
+                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                final PublicKey borrowTokenReservesLiquidityKey,
+                                                final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                final PublicKey supplyRateModelKey,
+                                                final PublicKey borrowRateModelKey,
+                                                final PublicKey supplyTokenClaimAccountKey,
+                                                final PublicKey liquidityKey,
+                                                final PublicKey liquidityProgramKey,
+                                                final PublicKey vaultSupplyTokenAccountKey,
+                                                final PublicKey vaultBorrowTokenAccountKey,
+                                                final PublicKey supplyTokenProgramKey,
+                                                final PublicKey borrowTokenProgramKey,
+                                                final PublicKey oracleProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(signerTokenAccountKey),
+      createRead(toKey),
+      createWrite(toTokenAccountKey),
+      createRead(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(supplyTokenKey),
+      createRead(borrowTokenKey),
+      createRead(oracleKey),
+      createWrite(newBranchKey),
+      createWrite(supplyTokenReservesLiquidityKey),
+      createWrite(borrowTokenReservesLiquidityKey),
+      createWrite(vaultSupplyPositionOnLiquidityKey),
+      createWrite(vaultBorrowPositionOnLiquidityKey),
+      createRead(supplyRateModelKey),
+      createRead(borrowRateModelKey),
+      createWrite(requireNonNullElse(supplyTokenClaimAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(vaultSupplyTokenAccountKey),
+      createWrite(vaultBorrowTokenAccountKey),
+      createRead(supplyTokenProgramKey),
+      createRead(borrowTokenProgramKey),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(oracleProgramKey)
+    );
+  }
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  public static Instruction liquidate(final AccountMeta invokedVaultsProgramMeta,
+                                      final SolanaAccounts solanaAccounts,
+                                      final PublicKey signerKey,
+                                      final PublicKey signerTokenAccountKey,
+                                      final PublicKey toKey,
+                                      final PublicKey toTokenAccountKey,
+                                      final PublicKey vaultConfigKey,
+                                      final PublicKey vaultStateKey,
+                                      final PublicKey supplyTokenKey,
+                                      final PublicKey borrowTokenKey,
+                                      final PublicKey oracleKey,
+                                      final PublicKey newBranchKey,
+                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                      final PublicKey borrowTokenReservesLiquidityKey,
+                                      final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                      final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                      final PublicKey supplyRateModelKey,
+                                      final PublicKey borrowRateModelKey,
+                                      final PublicKey supplyTokenClaimAccountKey,
+                                      final PublicKey liquidityKey,
+                                      final PublicKey liquidityProgramKey,
+                                      final PublicKey vaultSupplyTokenAccountKey,
+                                      final PublicKey vaultBorrowTokenAccountKey,
+                                      final PublicKey supplyTokenProgramKey,
+                                      final PublicKey borrowTokenProgramKey,
+                                      final PublicKey oracleProgramKey,
+                                      final long debtAmt,
+                                      final BigInteger colPerUnitDebt,
+                                      final boolean absorb,
+                                      final TransferType transferType,
+                                      final byte[] remainingAccountsIndices) {
+    final var keys = liquidateKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      signerKey,
+      signerTokenAccountKey,
+      toKey,
+      toTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      oracleKey,
+      newBranchKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      supplyTokenClaimAccountKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey,
+      oracleProgramKey
+    );
+    return liquidate(
+      invokedVaultsProgramMeta,
+      keys,
+      debtAmt,
+      colPerUnitDebt,
+      absorb,
+      transferType,
+      remainingAccountsIndices
+    );
+  }
+
+  public static Instruction liquidate(final AccountMeta invokedVaultsProgramMeta,
+                                      final List<AccountMeta> keys,
+                                      final long debtAmt,
+                                      final BigInteger colPerUnitDebt,
+                                      final boolean absorb,
+                                      final TransferType transferType,
+                                      final byte[] remainingAccountsIndices) {
+    final byte[] _data = new byte[
+    33
+    + (transferType == null ? 1 : (1 + transferType.l())) + SerDeUtil.lenVector(4, remainingAccountsIndices)
+    ];
+    int i = LIQUIDATE_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, debtAmt);
+    i += 8;
+    putInt128LE(_data, i, colPerUnitDebt);
+    i += 16;
+    _data[i] = (byte) (absorb ? 1 : 0);
+    ++i;
+    i += SerDeUtil.writeOptional(1, transferType, _data, i);
+    SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record LiquidateIxData(Discriminator discriminator,
+                                long debtAmt,
+                                BigInteger colPerUnitDebt,
+                                boolean absorb,
+                                TransferType transferType,
+                                byte[] remainingAccountsIndices) implements SerDe {  
+
+    public static LiquidateIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int DEBT_AMT_OFFSET = 8;
+    public static final int COL_PER_UNIT_DEBT_OFFSET = 16;
+    public static final int ABSORB_OFFSET = 32;
+    public static final int TRANSFER_TYPE_OFFSET = 34;
+
+    public static LiquidateIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var debtAmt = getInt64LE(_data, i);
+      i += 8;
+      final var colPerUnitDebt = getInt128LE(_data, i);
+      i += 16;
+      final var absorb = _data[i] == 1;
+      ++i;
+      final TransferType transferType;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        transferType = null;
+        ++i;
+      } else {
+        ++i;
+        transferType = TransferType.read(_data, i);
+        i += transferType.l();
+      }
+      final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
+      return new LiquidateIxData(discriminator,
+                                 debtAmt,
+                                 colPerUnitDebt,
+                                 absorb,
+                                 transferType,
+                                 remainingAccountsIndices);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, debtAmt);
+      i += 8;
+      putInt128LE(_data, i, colPerUnitDebt);
+      i += 16;
+      _data[i] = (byte) (absorb ? 1 : 0);
+      ++i;
+      i += SerDeUtil.writeOptional(1, transferType, _data, i);
+      i += SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8
+           + 16
+           + 1
+           + (transferType == null ? 1 : (1 + transferType.l()))
+           + SerDeUtil.lenVector(4, remainingAccountsIndices);
+    }
+  }
+
+  public static final Discriminator OPERATE_DISCRIMINATOR = toDiscriminator(217, 106, 208, 99, 116, 151, 42, 135);
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  /// @param vaultStateKey @dev verification inside instruction logic
+  /// @param positionTokenAccountKey @dev verification inside instruction logic
+  public static List<AccountMeta> operateKeys(final AccountMeta invokedVaultsProgramMeta,
+                                              final SolanaAccounts solanaAccounts,
+                                              final PublicKey signerKey,
+                                              final PublicKey signerSupplyTokenAccountKey,
+                                              final PublicKey signerBorrowTokenAccountKey,
+                                              final PublicKey recipientKey,
+                                              final PublicKey recipientBorrowTokenAccountKey,
+                                              final PublicKey recipientSupplyTokenAccountKey,
+                                              final PublicKey vaultConfigKey,
+                                              final PublicKey vaultStateKey,
+                                              final PublicKey supplyTokenKey,
+                                              final PublicKey borrowTokenKey,
+                                              final PublicKey oracleKey,
+                                              final PublicKey positionKey,
+                                              final PublicKey positionTokenAccountKey,
+                                              final PublicKey currentPositionTickKey,
+                                              final PublicKey finalPositionTickKey,
+                                              final PublicKey currentPositionTickIdKey,
+                                              final PublicKey finalPositionTickIdKey,
+                                              final PublicKey newBranchKey,
+                                              final PublicKey supplyTokenReservesLiquidityKey,
+                                              final PublicKey borrowTokenReservesLiquidityKey,
+                                              final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                              final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                              final PublicKey supplyRateModelKey,
+                                              final PublicKey borrowRateModelKey,
+                                              final PublicKey vaultSupplyTokenAccountKey,
+                                              final PublicKey vaultBorrowTokenAccountKey,
+                                              final PublicKey supplyTokenClaimAccountKey,
+                                              final PublicKey borrowTokenClaimAccountKey,
+                                              final PublicKey liquidityKey,
+                                              final PublicKey liquidityProgramKey,
+                                              final PublicKey oracleProgramKey,
+                                              final PublicKey supplyTokenProgramKey,
+                                              final PublicKey borrowTokenProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(signerSupplyTokenAccountKey),
+      createWrite(signerBorrowTokenAccountKey),
+      createRead(requireNonNullElse(recipientKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(recipientBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(recipientSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(supplyTokenKey),
+      createRead(borrowTokenKey),
+      createRead(oracleKey),
+      createWrite(positionKey),
+      createRead(positionTokenAccountKey),
+      createWrite(currentPositionTickKey),
+      createWrite(finalPositionTickKey),
+      createRead(currentPositionTickIdKey),
+      createWrite(finalPositionTickIdKey),
+      createWrite(newBranchKey),
+      createWrite(supplyTokenReservesLiquidityKey),
+      createWrite(borrowTokenReservesLiquidityKey),
+      createWrite(vaultSupplyPositionOnLiquidityKey),
+      createWrite(vaultBorrowPositionOnLiquidityKey),
+      createRead(supplyRateModelKey),
+      createRead(borrowRateModelKey),
+      createWrite(vaultSupplyTokenAccountKey),
+      createWrite(vaultBorrowTokenAccountKey),
+      createWrite(requireNonNullElse(supplyTokenClaimAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowTokenClaimAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createRead(oracleProgramKey),
+      createRead(supplyTokenProgramKey),
+      createRead(borrowTokenProgramKey),
+      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  /// @param vaultStateKey @dev verification inside instruction logic
+  /// @param positionTokenAccountKey @dev verification inside instruction logic
+  public static Instruction operate(final AccountMeta invokedVaultsProgramMeta,
+                                    final SolanaAccounts solanaAccounts,
+                                    final PublicKey signerKey,
+                                    final PublicKey signerSupplyTokenAccountKey,
+                                    final PublicKey signerBorrowTokenAccountKey,
+                                    final PublicKey recipientKey,
+                                    final PublicKey recipientBorrowTokenAccountKey,
+                                    final PublicKey recipientSupplyTokenAccountKey,
+                                    final PublicKey vaultConfigKey,
+                                    final PublicKey vaultStateKey,
+                                    final PublicKey supplyTokenKey,
+                                    final PublicKey borrowTokenKey,
+                                    final PublicKey oracleKey,
+                                    final PublicKey positionKey,
+                                    final PublicKey positionTokenAccountKey,
+                                    final PublicKey currentPositionTickKey,
+                                    final PublicKey finalPositionTickKey,
+                                    final PublicKey currentPositionTickIdKey,
+                                    final PublicKey finalPositionTickIdKey,
+                                    final PublicKey newBranchKey,
+                                    final PublicKey supplyTokenReservesLiquidityKey,
+                                    final PublicKey borrowTokenReservesLiquidityKey,
+                                    final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                    final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                    final PublicKey supplyRateModelKey,
+                                    final PublicKey borrowRateModelKey,
+                                    final PublicKey vaultSupplyTokenAccountKey,
+                                    final PublicKey vaultBorrowTokenAccountKey,
+                                    final PublicKey supplyTokenClaimAccountKey,
+                                    final PublicKey borrowTokenClaimAccountKey,
+                                    final PublicKey liquidityKey,
+                                    final PublicKey liquidityProgramKey,
+                                    final PublicKey oracleProgramKey,
+                                    final PublicKey supplyTokenProgramKey,
+                                    final PublicKey borrowTokenProgramKey,
+                                    final BigInteger newCol,
+                                    final BigInteger newDebt,
+                                    final TransferType transferType,
+                                    final byte[] remainingAccountsIndices) {
+    final var keys = operateKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      signerKey,
+      signerSupplyTokenAccountKey,
+      signerBorrowTokenAccountKey,
+      recipientKey,
+      recipientBorrowTokenAccountKey,
+      recipientSupplyTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      oracleKey,
+      positionKey,
+      positionTokenAccountKey,
+      currentPositionTickKey,
+      finalPositionTickKey,
+      currentPositionTickIdKey,
+      finalPositionTickIdKey,
+      newBranchKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenClaimAccountKey,
+      borrowTokenClaimAccountKey,
+      liquidityKey,
+      liquidityProgramKey,
+      oracleProgramKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey
+    );
+    return operate(
+      invokedVaultsProgramMeta,
+      keys,
+      newCol,
+      newDebt,
+      transferType,
+      remainingAccountsIndices
+    );
+  }
+
+  public static Instruction operate(final AccountMeta invokedVaultsProgramMeta,
+                                    final List<AccountMeta> keys,
+                                    final BigInteger newCol,
+                                    final BigInteger newDebt,
+                                    final TransferType transferType,
+                                    final byte[] remainingAccountsIndices) {
+    final byte[] _data = new byte[
+    40
+    + (transferType == null ? 1 : (1 + transferType.l())) + SerDeUtil.lenVector(4, remainingAccountsIndices)
+    ];
+    int i = OPERATE_DISCRIMINATOR.write(_data, 0);
+    putInt128LE(_data, i, newCol);
+    i += 16;
+    putInt128LE(_data, i, newDebt);
+    i += 16;
+    i += SerDeUtil.writeOptional(1, transferType, _data, i);
+    SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record OperateIxData(Discriminator discriminator,
+                              BigInteger newCol,
+                              BigInteger newDebt,
+                              TransferType transferType,
+                              byte[] remainingAccountsIndices) implements SerDe {  
+
+    public static OperateIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int NEW_COL_OFFSET = 8;
+    public static final int NEW_DEBT_OFFSET = 24;
+    public static final int TRANSFER_TYPE_OFFSET = 41;
+
+    public static OperateIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newCol = getInt128LE(_data, i);
+      i += 16;
+      final var newDebt = getInt128LE(_data, i);
+      i += 16;
+      final TransferType transferType;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        transferType = null;
+        ++i;
+      } else {
+        ++i;
+        transferType = TransferType.read(_data, i);
+        i += transferType.l();
+      }
+      final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
+      return new OperateIxData(discriminator,
+                               newCol,
+                               newDebt,
+                               transferType,
+                               remainingAccountsIndices);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt128LE(_data, i, newCol);
+      i += 16;
+      putInt128LE(_data, i, newDebt);
+      i += 16;
+      i += SerDeUtil.writeOptional(1, transferType, _data, i);
+      i += SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 16 + 16 + (transferType == null ? 1 : (1 + transferType.l())) + SerDeUtil.lenVector(4, remainingAccountsIndices);
+    }
+  }
+
+  public static final Discriminator REBALANCE_DISCRIMINATOR = toDiscriminator(108, 158, 77, 9, 210, 52, 88, 62);
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  /// @param vaultStateKey @dev verification inside instruction logic
+  public static List<AccountMeta> rebalanceKeys(final SolanaAccounts solanaAccounts,
+                                                final PublicKey rebalancerKey,
+                                                final PublicKey rebalancerSupplyTokenAccountKey,
+                                                final PublicKey rebalancerBorrowTokenAccountKey,
+                                                final PublicKey vaultConfigKey,
+                                                final PublicKey vaultStateKey,
+                                                final PublicKey supplyTokenKey,
+                                                final PublicKey borrowTokenKey,
+                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                final PublicKey borrowTokenReservesLiquidityKey,
+                                                final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                final PublicKey supplyRateModelKey,
+                                                final PublicKey borrowRateModelKey,
+                                                final PublicKey liquidityKey,
+                                                final PublicKey liquidityProgramKey,
+                                                final PublicKey vaultSupplyTokenAccountKey,
+                                                final PublicKey vaultBorrowTokenAccountKey,
+                                                final PublicKey supplyTokenProgramKey,
+                                                final PublicKey borrowTokenProgramKey) {
+    return List.of(
+      createWritableSigner(rebalancerKey),
+      createWrite(rebalancerSupplyTokenAccountKey),
+      createWrite(rebalancerBorrowTokenAccountKey),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(supplyTokenKey),
+      createRead(borrowTokenKey),
+      createWrite(supplyTokenReservesLiquidityKey),
+      createWrite(borrowTokenReservesLiquidityKey),
+      createWrite(vaultSupplyPositionOnLiquidityKey),
+      createWrite(vaultBorrowPositionOnLiquidityKey),
+      createRead(supplyRateModelKey),
+      createRead(borrowRateModelKey),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(vaultSupplyTokenAccountKey),
+      createWrite(vaultBorrowTokenAccountKey),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(supplyTokenProgramKey),
+      createRead(borrowTokenProgramKey),
+      createRead(solanaAccounts.associatedTokenAccountProgram())
+    );
+  }
+
+  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
+  ///                       @dev verification inside instruction logic
+  /// @param vaultStateKey @dev verification inside instruction logic
+  public static Instruction rebalance(final AccountMeta invokedVaultsProgramMeta,
+                                      final SolanaAccounts solanaAccounts,
+                                      final PublicKey rebalancerKey,
+                                      final PublicKey rebalancerSupplyTokenAccountKey,
+                                      final PublicKey rebalancerBorrowTokenAccountKey,
+                                      final PublicKey vaultConfigKey,
+                                      final PublicKey vaultStateKey,
+                                      final PublicKey supplyTokenKey,
+                                      final PublicKey borrowTokenKey,
+                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                      final PublicKey borrowTokenReservesLiquidityKey,
+                                      final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                      final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                      final PublicKey supplyRateModelKey,
+                                      final PublicKey borrowRateModelKey,
+                                      final PublicKey liquidityKey,
+                                      final PublicKey liquidityProgramKey,
+                                      final PublicKey vaultSupplyTokenAccountKey,
+                                      final PublicKey vaultBorrowTokenAccountKey,
+                                      final PublicKey supplyTokenProgramKey,
+                                      final PublicKey borrowTokenProgramKey) {
+    final var keys = rebalanceKeys(
+      solanaAccounts,
+      rebalancerKey,
+      rebalancerSupplyTokenAccountKey,
+      rebalancerBorrowTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey
+    );
+    return rebalance(invokedVaultsProgramMeta, keys);
+  }
+
+  public static Instruction rebalance(final AccountMeta invokedVaultsProgramMeta,
+                                      final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, REBALANCE_DISCRIMINATOR);
+  }
+
+  public static final Discriminator UPDATE_AUTHORITY_DISCRIMINATOR = toDiscriminator(32, 46, 64, 28, 149, 75, 243, 88);
+
+  public static List<AccountMeta> updateAuthorityKeys(final PublicKey signerKey,
+                                                      final PublicKey vaultAdminKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createWrite(vaultAdminKey)
+    );
+  }
+
+  public static Instruction updateAuthority(final AccountMeta invokedVaultsProgramMeta,
+                                            final PublicKey signerKey,
+                                            final PublicKey vaultAdminKey,
+                                            final PublicKey newAuthority) {
+    final var keys = updateAuthorityKeys(
+      signerKey,
+      vaultAdminKey
+    );
+    return updateAuthority(invokedVaultsProgramMeta, keys, newAuthority);
+  }
+
+  public static Instruction updateAuthority(final AccountMeta invokedVaultsProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final PublicKey newAuthority) {
+    final byte[] _data = new byte[40];
+    int i = UPDATE_AUTHORITY_DISCRIMINATOR.write(_data, 0);
+    newAuthority.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {  
+
+    public static UpdateAuthorityIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 40;
+
+    public static final int NEW_AUTHORITY_OFFSET = 8;
+
+    public static UpdateAuthorityIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newAuthority = readPubKey(_data, i);
+      return new UpdateAuthorityIxData(discriminator, newAuthority);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newAuthority.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_AUTHS_DISCRIMINATOR = toDiscriminator(93, 96, 178, 156, 57, 117, 253, 209);
+
+  public static List<AccountMeta> updateAuthsKeys(final PublicKey signerKey,
+                                                  final PublicKey vaultAdminKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createWrite(vaultAdminKey)
+    );
+  }
+
+  public static Instruction updateAuths(final AccountMeta invokedVaultsProgramMeta,
+                                        final PublicKey signerKey,
+                                        final PublicKey vaultAdminKey,
+                                        final AddressBool[] authStatus) {
+    final var keys = updateAuthsKeys(
+      signerKey,
+      vaultAdminKey
+    );
+    return updateAuths(invokedVaultsProgramMeta, keys, authStatus);
+  }
+
+  public static Instruction updateAuths(final AccountMeta invokedVaultsProgramMeta,
+                                        final List<AccountMeta> keys,
+                                        final AddressBool[] authStatus) {
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, authStatus)];
+    int i = UPDATE_AUTHS_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeVector(4, authStatus, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {  
+
+    public static UpdateAuthsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int AUTH_STATUS_OFFSET = 8;
+
+    public static UpdateAuthsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var authStatus = SerDeUtil.readVector(4, AddressBool.class, AddressBool::read, _data, i);
+      return new UpdateAuthsIxData(discriminator, authStatus);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeVector(4, authStatus, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + SerDeUtil.lenVector(4, authStatus);
+    }
+  }
+
+  public static final Discriminator UPDATE_BORROW_FEE_DISCRIMINATOR = toDiscriminator(251, 124, 35, 148, 202, 167, 157, 65);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateBorrowFeeKeys(final PublicKey authorityKey,
+                                                      final PublicKey vaultAdminKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey vaultConfigKey,
+                                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                                      final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
+                                            final PublicKey authorityKey,
+                                            final PublicKey vaultAdminKey,
+                                            final PublicKey vaultStateKey,
+                                            final PublicKey vaultConfigKey,
+                                            final PublicKey supplyTokenReservesLiquidityKey,
+                                            final PublicKey borrowTokenReservesLiquidityKey,
+                                            final int vaultId,
+                                            final int borrowFee) {
+    final var keys = updateBorrowFeeKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateBorrowFee(invokedVaultsProgramMeta, keys, vaultId, borrowFee);
+  }
+
+  public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
+                                            final List<AccountMeta> keys,
+                                            final int vaultId,
+                                            final int borrowFee) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_BORROW_FEE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, borrowFee);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {  
+
+    public static UpdateBorrowFeeIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int BORROW_FEE_OFFSET = 10;
+
+    public static UpdateBorrowFeeIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var borrowFee = getInt16LE(_data, i);
+      return new UpdateBorrowFeeIxData(discriminator, vaultId, borrowFee);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, borrowFee);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_BORROW_RATE_MAGNIFIER_DISCRIMINATOR = toDiscriminator(75, 250, 27, 176, 156, 53, 26, 112);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateBorrowRateMagnifierKeys(final PublicKey authorityKey,
+                                                                final PublicKey vaultAdminKey,
+                                                                final PublicKey vaultStateKey,
+                                                                final PublicKey vaultConfigKey,
+                                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                                final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateBorrowRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey vaultAdminKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey vaultConfigKey,
+                                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                                      final PublicKey borrowTokenReservesLiquidityKey,
+                                                      final int vaultId,
+                                                      final int borrowRateMagnifier) {
+    final var keys = updateBorrowRateMagnifierKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateBorrowRateMagnifier(invokedVaultsProgramMeta, keys, vaultId, borrowRateMagnifier);
+  }
+
+  public static Instruction updateBorrowRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final int vaultId,
+                                                      final int borrowRateMagnifier) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_BORROW_RATE_MAGNIFIER_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, borrowRateMagnifier);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateBorrowRateMagnifierIxData(Discriminator discriminator, int vaultId, int borrowRateMagnifier) implements SerDe {  
+
+    public static UpdateBorrowRateMagnifierIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int BORROW_RATE_MAGNIFIER_OFFSET = 10;
+
+    public static UpdateBorrowRateMagnifierIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var borrowRateMagnifier = getInt16LE(_data, i);
+      return new UpdateBorrowRateMagnifierIxData(discriminator, vaultId, borrowRateMagnifier);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, borrowRateMagnifier);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_COLLATERAL_FACTOR_DISCRIMINATOR = toDiscriminator(244, 83, 227, 215, 220, 82, 201, 221);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateCollateralFactorKeys(final PublicKey authorityKey,
+                                                             final PublicKey vaultAdminKey,
+                                                             final PublicKey vaultStateKey,
+                                                             final PublicKey vaultConfigKey,
+                                                             final PublicKey supplyTokenReservesLiquidityKey,
+                                                             final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateCollateralFactor(final AccountMeta invokedVaultsProgramMeta,
+                                                   final PublicKey authorityKey,
+                                                   final PublicKey vaultAdminKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey vaultConfigKey,
+                                                   final PublicKey supplyTokenReservesLiquidityKey,
+                                                   final PublicKey borrowTokenReservesLiquidityKey,
+                                                   final int vaultId,
+                                                   final int collateralFactor) {
+    final var keys = updateCollateralFactorKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateCollateralFactor(invokedVaultsProgramMeta, keys, vaultId, collateralFactor);
+  }
+
+  public static Instruction updateCollateralFactor(final AccountMeta invokedVaultsProgramMeta,
+                                                   final List<AccountMeta> keys,
+                                                   final int vaultId,
+                                                   final int collateralFactor) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_COLLATERAL_FACTOR_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, collateralFactor);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateCollateralFactorIxData(Discriminator discriminator, int vaultId, int collateralFactor) implements SerDe {  
+
+    public static UpdateCollateralFactorIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int COLLATERAL_FACTOR_OFFSET = 10;
+
+    public static UpdateCollateralFactorIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var collateralFactor = getInt16LE(_data, i);
+      return new UpdateCollateralFactorIxData(discriminator, vaultId, collateralFactor);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, collateralFactor);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_CORE_SETTINGS_DISCRIMINATOR = toDiscriminator(101, 84, 9, 11, 60, 104, 149, 234);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateCoreSettingsKeys(final PublicKey authorityKey,
+                                                         final PublicKey vaultAdminKey,
+                                                         final PublicKey vaultStateKey,
+                                                         final PublicKey vaultConfigKey,
+                                                         final PublicKey supplyTokenReservesLiquidityKey,
+                                                         final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateCoreSettings(final AccountMeta invokedVaultsProgramMeta,
+                                               final PublicKey authorityKey,
+                                               final PublicKey vaultAdminKey,
+                                               final PublicKey vaultStateKey,
+                                               final PublicKey vaultConfigKey,
+                                               final PublicKey supplyTokenReservesLiquidityKey,
+                                               final PublicKey borrowTokenReservesLiquidityKey,
+                                               final int vaultId,
+                                               final UpdateCoreSettingsParams params) {
+    final var keys = updateCoreSettingsKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateCoreSettings(invokedVaultsProgramMeta, keys, vaultId, params);
+  }
+
+  public static Instruction updateCoreSettings(final AccountMeta invokedVaultsProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final int vaultId,
+                                               final UpdateCoreSettingsParams params) {
+    final byte[] _data = new byte[10 + params.l()];
+    int i = UPDATE_CORE_SETTINGS_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateCoreSettingsIxData(Discriminator discriminator, int vaultId, UpdateCoreSettingsParams params) implements SerDe {  
+
+    public static UpdateCoreSettingsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 26;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int PARAMS_OFFSET = 10;
+
+    public static UpdateCoreSettingsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var params = UpdateCoreSettingsParams.read(_data, i);
+      return new UpdateCoreSettingsIxData(discriminator, vaultId, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_EXCHANGE_PRICES_DISCRIMINATOR = toDiscriminator(209, 14, 188, 95, 242, 20, 119, 196);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateExchangePricesKeys(final PublicKey vaultStateKey,
+                                                           final PublicKey vaultConfigKey,
+                                                           final PublicKey supplyTokenReservesLiquidityKey,
+                                                           final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createWrite(vaultStateKey),
+      createRead(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateExchangePrices(final AccountMeta invokedVaultsProgramMeta,
+                                                 final PublicKey vaultStateKey,
+                                                 final PublicKey vaultConfigKey,
+                                                 final PublicKey supplyTokenReservesLiquidityKey,
+                                                 final PublicKey borrowTokenReservesLiquidityKey,
+                                                 final int vaultId) {
+    final var keys = updateExchangePricesKeys(
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateExchangePrices(invokedVaultsProgramMeta, keys, vaultId);
+  }
+
+  public static Instruction updateExchangePrices(final AccountMeta invokedVaultsProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final int vaultId) {
+    final byte[] _data = new byte[10];
+    int i = UPDATE_EXCHANGE_PRICES_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateExchangePricesIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+
+    public static UpdateExchangePricesIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 10;
+
+    public static final int VAULT_ID_OFFSET = 8;
+
+    public static UpdateExchangePricesIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      return new UpdateExchangePricesIxData(discriminator, vaultId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_LIQUIDATION_MAX_LIMIT_DISCRIMINATOR = toDiscriminator(183, 242, 152, 150, 176, 40, 65, 161);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateLiquidationMaxLimitKeys(final PublicKey authorityKey,
+                                                                final PublicKey vaultAdminKey,
+                                                                final PublicKey vaultStateKey,
+                                                                final PublicKey vaultConfigKey,
+                                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                                final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateLiquidationMaxLimit(final AccountMeta invokedVaultsProgramMeta,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey vaultAdminKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey vaultConfigKey,
+                                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                                      final PublicKey borrowTokenReservesLiquidityKey,
+                                                      final int vaultId,
+                                                      final int liquidationMaxLimit) {
+    final var keys = updateLiquidationMaxLimitKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateLiquidationMaxLimit(invokedVaultsProgramMeta, keys, vaultId, liquidationMaxLimit);
+  }
+
+  public static Instruction updateLiquidationMaxLimit(final AccountMeta invokedVaultsProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final int vaultId,
+                                                      final int liquidationMaxLimit) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_LIQUIDATION_MAX_LIMIT_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, liquidationMaxLimit);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateLiquidationMaxLimitIxData(Discriminator discriminator, int vaultId, int liquidationMaxLimit) implements SerDe {  
+
+    public static UpdateLiquidationMaxLimitIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int LIQUIDATION_MAX_LIMIT_OFFSET = 10;
+
+    public static UpdateLiquidationMaxLimitIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var liquidationMaxLimit = getInt16LE(_data, i);
+      return new UpdateLiquidationMaxLimitIxData(discriminator, vaultId, liquidationMaxLimit);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, liquidationMaxLimit);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_LIQUIDATION_PENALTY_DISCRIMINATOR = toDiscriminator(21, 168, 167, 206, 98, 206, 69, 32);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateLiquidationPenaltyKeys(final PublicKey authorityKey,
+                                                               final PublicKey vaultAdminKey,
+                                                               final PublicKey vaultStateKey,
+                                                               final PublicKey vaultConfigKey,
+                                                               final PublicKey supplyTokenReservesLiquidityKey,
+                                                               final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateLiquidationPenalty(final AccountMeta invokedVaultsProgramMeta,
+                                                     final PublicKey authorityKey,
+                                                     final PublicKey vaultAdminKey,
+                                                     final PublicKey vaultStateKey,
+                                                     final PublicKey vaultConfigKey,
+                                                     final PublicKey supplyTokenReservesLiquidityKey,
+                                                     final PublicKey borrowTokenReservesLiquidityKey,
+                                                     final int vaultId,
+                                                     final int liquidationPenalty) {
+    final var keys = updateLiquidationPenaltyKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateLiquidationPenalty(invokedVaultsProgramMeta, keys, vaultId, liquidationPenalty);
+  }
+
+  public static Instruction updateLiquidationPenalty(final AccountMeta invokedVaultsProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final int vaultId,
+                                                     final int liquidationPenalty) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_LIQUIDATION_PENALTY_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, liquidationPenalty);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateLiquidationPenaltyIxData(Discriminator discriminator, int vaultId, int liquidationPenalty) implements SerDe {  
+
+    public static UpdateLiquidationPenaltyIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int LIQUIDATION_PENALTY_OFFSET = 10;
+
+    public static UpdateLiquidationPenaltyIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var liquidationPenalty = getInt16LE(_data, i);
+      return new UpdateLiquidationPenaltyIxData(discriminator, vaultId, liquidationPenalty);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, liquidationPenalty);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_LIQUIDATION_THRESHOLD_DISCRIMINATOR = toDiscriminator(53, 185, 87, 243, 138, 11, 79, 28);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateLiquidationThresholdKeys(final PublicKey authorityKey,
+                                                                 final PublicKey vaultAdminKey,
+                                                                 final PublicKey vaultStateKey,
+                                                                 final PublicKey vaultConfigKey,
+                                                                 final PublicKey supplyTokenReservesLiquidityKey,
+                                                                 final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateLiquidationThreshold(final AccountMeta invokedVaultsProgramMeta,
+                                                       final PublicKey authorityKey,
+                                                       final PublicKey vaultAdminKey,
+                                                       final PublicKey vaultStateKey,
+                                                       final PublicKey vaultConfigKey,
+                                                       final PublicKey supplyTokenReservesLiquidityKey,
+                                                       final PublicKey borrowTokenReservesLiquidityKey,
+                                                       final int vaultId,
+                                                       final int liquidationThreshold) {
+    final var keys = updateLiquidationThresholdKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateLiquidationThreshold(invokedVaultsProgramMeta, keys, vaultId, liquidationThreshold);
+  }
+
+  public static Instruction updateLiquidationThreshold(final AccountMeta invokedVaultsProgramMeta,
+                                                       final List<AccountMeta> keys,
+                                                       final int vaultId,
+                                                       final int liquidationThreshold) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_LIQUIDATION_THRESHOLD_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, liquidationThreshold);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateLiquidationThresholdIxData(Discriminator discriminator, int vaultId, int liquidationThreshold) implements SerDe {  
+
+    public static UpdateLiquidationThresholdIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int LIQUIDATION_THRESHOLD_OFFSET = 10;
+
+    public static UpdateLiquidationThresholdIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var liquidationThreshold = getInt16LE(_data, i);
+      return new UpdateLiquidationThresholdIxData(discriminator, vaultId, liquidationThreshold);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, liquidationThreshold);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_LOOKUP_TABLE_DISCRIMINATOR = toDiscriminator(221, 59, 30, 246, 106, 223, 137, 55);
+
+  /// @param vaultMetadataKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateLookupTableKeys(final PublicKey authorityKey,
+                                                        final PublicKey vaultAdminKey,
+                                                        final PublicKey vaultMetadataKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultMetadataKey)
+    );
+  }
+
+  /// @param vaultMetadataKey @dev Verification inside instruction logic
+  public static Instruction updateLookupTable(final AccountMeta invokedVaultsProgramMeta,
+                                              final PublicKey authorityKey,
+                                              final PublicKey vaultAdminKey,
+                                              final PublicKey vaultMetadataKey,
+                                              final int vaultId,
+                                              final PublicKey lookupTable) {
+    final var keys = updateLookupTableKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultMetadataKey
+    );
+    return updateLookupTable(invokedVaultsProgramMeta, keys, vaultId, lookupTable);
+  }
+
+  public static Instruction updateLookupTable(final AccountMeta invokedVaultsProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final int vaultId,
+                                              final PublicKey lookupTable) {
+    final byte[] _data = new byte[42];
+    int i = UPDATE_LOOKUP_TABLE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    lookupTable.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateLookupTableIxData(Discriminator discriminator, int vaultId, PublicKey lookupTable) implements SerDe {  
+
+    public static UpdateLookupTableIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 42;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int LOOKUP_TABLE_OFFSET = 10;
+
+    public static UpdateLookupTableIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var lookupTable = readPubKey(_data, i);
+      return new UpdateLookupTableIxData(discriminator, vaultId, lookupTable);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      lookupTable.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_ORACLE_DISCRIMINATOR = toDiscriminator(112, 41, 209, 18, 248, 226, 252, 188);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateOracleKeys(final PublicKey authorityKey,
+                                                   final PublicKey vaultAdminKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey vaultConfigKey,
+                                                   final PublicKey newOracleKey,
+                                                   final PublicKey supplyTokenReservesLiquidityKey,
+                                                   final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(newOracleKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateOracle(final AccountMeta invokedVaultsProgramMeta,
+                                         final PublicKey authorityKey,
+                                         final PublicKey vaultAdminKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey vaultConfigKey,
+                                         final PublicKey newOracleKey,
+                                         final PublicKey supplyTokenReservesLiquidityKey,
+                                         final PublicKey borrowTokenReservesLiquidityKey,
+                                         final int vaultId) {
+    final var keys = updateOracleKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      newOracleKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateOracle(invokedVaultsProgramMeta, keys, vaultId);
+  }
+
+  public static Instruction updateOracle(final AccountMeta invokedVaultsProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final int vaultId) {
+    final byte[] _data = new byte[10];
+    int i = UPDATE_ORACLE_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateOracleIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+
+    public static UpdateOracleIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 10;
+
+    public static final int VAULT_ID_OFFSET = 8;
+
+    public static UpdateOracleIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      return new UpdateOracleIxData(discriminator, vaultId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_REBALANCER_DISCRIMINATOR = toDiscriminator(206, 187, 54, 228, 145, 8, 203, 111);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateRebalancerKeys(final PublicKey authorityKey,
+                                                       final PublicKey vaultAdminKey,
+                                                       final PublicKey vaultStateKey,
+                                                       final PublicKey vaultConfigKey,
+                                                       final PublicKey supplyTokenReservesLiquidityKey,
+                                                       final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateRebalancer(final AccountMeta invokedVaultsProgramMeta,
+                                             final PublicKey authorityKey,
+                                             final PublicKey vaultAdminKey,
+                                             final PublicKey vaultStateKey,
+                                             final PublicKey vaultConfigKey,
+                                             final PublicKey supplyTokenReservesLiquidityKey,
+                                             final PublicKey borrowTokenReservesLiquidityKey,
+                                             final int vaultId,
+                                             final PublicKey newRebalancer) {
+    final var keys = updateRebalancerKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateRebalancer(invokedVaultsProgramMeta, keys, vaultId, newRebalancer);
+  }
+
+  public static Instruction updateRebalancer(final AccountMeta invokedVaultsProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final int vaultId,
+                                             final PublicKey newRebalancer) {
+    final byte[] _data = new byte[42];
+    int i = UPDATE_REBALANCER_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    newRebalancer.write(_data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateRebalancerIxData(Discriminator discriminator, int vaultId, PublicKey newRebalancer) implements SerDe {  
+
+    public static UpdateRebalancerIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 42;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int NEW_REBALANCER_OFFSET = 10;
+
+    public static UpdateRebalancerIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var newRebalancer = readPubKey(_data, i);
+      return new UpdateRebalancerIxData(discriminator, vaultId, newRebalancer);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      newRebalancer.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_SUPPLY_RATE_MAGNIFIER_DISCRIMINATOR = toDiscriminator(175, 59, 117, 196, 211, 170, 22, 12);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateSupplyRateMagnifierKeys(final PublicKey authorityKey,
+                                                                final PublicKey vaultAdminKey,
+                                                                final PublicKey vaultStateKey,
+                                                                final PublicKey vaultConfigKey,
+                                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                                final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateSupplyRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey vaultAdminKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey vaultConfigKey,
+                                                      final PublicKey supplyTokenReservesLiquidityKey,
+                                                      final PublicKey borrowTokenReservesLiquidityKey,
+                                                      final int vaultId,
+                                                      final int supplyRateMagnifier) {
+    final var keys = updateSupplyRateMagnifierKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateSupplyRateMagnifier(invokedVaultsProgramMeta, keys, vaultId, supplyRateMagnifier);
+  }
+
+  public static Instruction updateSupplyRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final int vaultId,
+                                                      final int supplyRateMagnifier) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_SUPPLY_RATE_MAGNIFIER_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, supplyRateMagnifier);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateSupplyRateMagnifierIxData(Discriminator discriminator, int vaultId, int supplyRateMagnifier) implements SerDe {  
+
+    public static UpdateSupplyRateMagnifierIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 10;
+
+    public static UpdateSupplyRateMagnifierIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var supplyRateMagnifier = getInt16LE(_data, i);
+      return new UpdateSupplyRateMagnifierIxData(discriminator, vaultId, supplyRateMagnifier);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, supplyRateMagnifier);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_WITHDRAW_GAP_DISCRIMINATOR = toDiscriminator(229, 163, 76, 21, 82, 215, 25, 233);
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static List<AccountMeta> updateWithdrawGapKeys(final PublicKey authorityKey,
+                                                        final PublicKey vaultAdminKey,
+                                                        final PublicKey vaultStateKey,
+                                                        final PublicKey vaultConfigKey,
+                                                        final PublicKey supplyTokenReservesLiquidityKey,
+                                                        final PublicKey borrowTokenReservesLiquidityKey) {
+    return List.of(
+      createReadOnlySigner(authorityKey),
+      createRead(vaultAdminKey),
+      createWrite(vaultStateKey),
+      createWrite(vaultConfigKey),
+      createRead(supplyTokenReservesLiquidityKey),
+      createRead(borrowTokenReservesLiquidityKey)
+    );
+  }
+
+  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  public static Instruction updateWithdrawGap(final AccountMeta invokedVaultsProgramMeta,
+                                              final PublicKey authorityKey,
+                                              final PublicKey vaultAdminKey,
+                                              final PublicKey vaultStateKey,
+                                              final PublicKey vaultConfigKey,
+                                              final PublicKey supplyTokenReservesLiquidityKey,
+                                              final PublicKey borrowTokenReservesLiquidityKey,
+                                              final int vaultId,
+                                              final int withdrawGap) {
+    final var keys = updateWithdrawGapKeys(
+      authorityKey,
+      vaultAdminKey,
+      vaultStateKey,
+      vaultConfigKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey
+    );
+    return updateWithdrawGap(invokedVaultsProgramMeta, keys, vaultId, withdrawGap);
+  }
+
+  public static Instruction updateWithdrawGap(final AccountMeta invokedVaultsProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final int vaultId,
+                                              final int withdrawGap) {
+    final byte[] _data = new byte[12];
+    int i = UPDATE_WITHDRAW_GAP_DISCRIMINATOR.write(_data, 0);
+    putInt16LE(_data, i, vaultId);
+    i += 2;
+    putInt16LE(_data, i, withdrawGap);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record UpdateWithdrawGapIxData(Discriminator discriminator, int vaultId, int withdrawGap) implements SerDe {  
+
+    public static UpdateWithdrawGapIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int VAULT_ID_OFFSET = 8;
+    public static final int WITHDRAW_GAP_OFFSET = 10;
+
+    public static UpdateWithdrawGapIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var vaultId = getInt16LE(_data, i);
+      i += 2;
+      final var withdrawGap = getInt16LE(_data, i);
+      return new UpdateWithdrawGapIxData(discriminator, vaultId, withdrawGap);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt16LE(_data, i, vaultId);
+      i += 2;
+      putInt16LE(_data, i, withdrawGap);
+      i += 2;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  private VaultsProgram() {
+  }
+}
