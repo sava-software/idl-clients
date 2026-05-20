@@ -29,9 +29,7 @@ public interface MeteoraDlmmClient {
         solanaAccounts,
         meteoraAccounts,
         owner,
-        feePayer,
-        solanaAccounts.readMemoProgramV2().publicKey(),
-        meteoraAccounts.eventAuthority().publicKey()
+        feePayer
     );
   }
 
@@ -558,8 +556,8 @@ public interface MeteoraDlmmClient {
                                final PublicKey tokenYMintKey,
                                final PublicKey tokenXProgramKey,
                                final PublicKey tokenYProgramKey,
-                               final int minBidId,
-                               final int maxBidId,
+                               final int minBinId,
+                               final int maxBinId,
                                final RemainingAccountsInfo remainingAccountsInfo) {
     final var programId = meteoraAccounts().dlmmProgram();
     final var reserveXKey = MeteoraPDAs.reservePDA(lbPairKey, tokenXMintKey, programId);
@@ -572,7 +570,7 @@ public interface MeteoraDlmmClient {
         userTokenXKey, userTokenYKey,
         tokenXMintKey, tokenYMintKey,
         tokenXProgramKey, tokenYProgramKey,
-        minBidId, maxBidId,
+        minBinId, maxBinId,
         remainingAccountsInfo
     );
   }
@@ -628,8 +626,8 @@ public interface MeteoraDlmmClient {
                           final PublicKey userTokenAccountKey,
                           final PublicKey tokenProgramKey,
                           final int rewardIndex,
-                          final int minBidId,
-                          final int maxBidId,
+                          final int minBinId,
+                          final int maxBinId,
                           final RemainingAccountsInfo remainingAccountsInfo);
 
   default Instruction claimReward(final PublicKey lbPairKey,
@@ -638,8 +636,8 @@ public interface MeteoraDlmmClient {
                                   final PublicKey userTokenAccountKey,
                                   final PublicKey tokenProgramKey,
                                   final int rewardIndex,
-                                  final int minBidId,
-                                  final int maxBidId,
+                                  final int minBinId,
+                                  final int maxBinId,
                                   final RemainingAccountsInfo remainingAccountsInfo) {
     final var programId = meteoraAccounts().dlmmProgram();
     final var rewardVaultKey = MeteoraPDAs.rewardVaultPDA(lbPairKey, rewardIndex, programId).publicKey();
@@ -649,7 +647,7 @@ public interface MeteoraDlmmClient {
         positionKey,
         rewardVaultKey, rewardMintKey, userTokenAccountKey, tokenProgramKey,
         rewardIndex,
-        minBidId, maxBidId,
+        minBinId, maxBinId,
         remainingAccountsInfo
     );
   }
@@ -684,5 +682,403 @@ public interface MeteoraDlmmClient {
 
   default Instruction closePosition(final PositionV2 position) {
     return closePosition(position, feePayer().publicKey());
+  }
+
+  /// `closePosition2` only allows closing positions that already have all liquidity removed.
+  /// `closePositionIfEmpty` is a no-fail variant that closes the position iff it currently has no
+  /// liquidity; useful for GC after a full withdraw without risking an on-chain reject.
+  Instruction closePositionIfEmpty(final PublicKey positionKey, final PublicKey rentReceiverKey);
+
+  default Instruction closePositionIfEmpty(final PublicKey positionKey) {
+    return closePositionIfEmpty(positionKey, feePayer().publicKey());
+  }
+
+  default Instruction closePositionIfEmpty(final PositionV2 position, final PublicKey rentReceiverKey) {
+    return closePositionIfEmpty(position._address(), rentReceiverKey);
+  }
+
+  default Instruction closePositionIfEmpty(final PositionV2 position) {
+    return closePositionIfEmpty(position, feePayer().publicKey());
+  }
+
+  /// V2 variant of `initializePosition` (no rent sysvar in the account list) — used by callers
+  /// targeting dynamic-position / Token-2022 friendly position layouts.
+  Instruction initializePosition2(final PublicKey positionKey,
+                                  final PublicKey lbPairKey,
+                                  final int lowerBinId,
+                                  final int width);
+
+  /// Dynamically extend a position's upper bin id (must already be initialized via `initializePosition2`).
+  Instruction increasePositionLength2(final PublicKey funderKey,
+                                      final PublicKey lbPairKey,
+                                      final PublicKey positionKey,
+                                      final int minimumUpperBinId);
+
+  default Instruction increasePositionLength2(final PublicKey lbPairKey,
+                                              final PublicKey positionKey,
+                                              final int minimumUpperBinId) {
+    return increasePositionLength2(feePayer().publicKey(), lbPairKey, positionKey, minimumUpperBinId);
+  }
+
+  /// Dynamically shrink a position. `side` follows the program enum (`0` = lower, `1` = upper);
+  /// `lengthToRemove` is the number of bins to drop from the chosen side.
+  Instruction decreasePositionLength(final PublicKey positionKey,
+                                     final PublicKey rentReceiverKey,
+                                     final int lengthToRemove,
+                                     final int side);
+
+  default Instruction decreasePositionLength(final PublicKey positionKey,
+                                             final int lengthToRemove,
+                                             final int side) {
+    return decreasePositionLength(positionKey, feePayer().publicKey(), lengthToRemove, side);
+  }
+
+  /// Bitmap maintenance — advances the active-bin pointer to `binId` by walking from
+  /// `fromBinArray` to `toBinArray`. Callable by anyone; useful when the active bin is stale
+  /// and a swap would otherwise fail.
+  Instruction goToABin(final PublicKey lbPairKey,
+                       final PublicKey binArrayBitmapExtensionKey,
+                       final PublicKey fromBinArrayKey,
+                       final PublicKey toBinArrayKey,
+                       final int binId);
+
+  /// Add liquidity weighted across the given bins. Pairs with `addLiquidityByStrategy` — use this
+  /// when caller already has a per-bin weight schedule rather than a strategy descriptor.
+  Instruction addLiquidityByWeight(final PublicKey positionKey,
+                                   final PublicKey lbPairKey,
+                                   final PublicKey binArrayBitmapExtensionKey,
+                                   final PublicKey userTokenXKey,
+                                   final PublicKey userTokenYKey,
+                                   final PublicKey reserveXKey,
+                                   final PublicKey reserveYKey,
+                                   final PublicKey tokenXMintKey,
+                                   final PublicKey tokenYMintKey,
+                                   final PublicKey tokenXProgramKey,
+                                   final PublicKey tokenYProgramKey,
+                                   final LiquidityParameterByWeight liquidityParameter,
+                                   final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction addLiquidityByWeight(final PublicKey positionKey,
+                                           final LbPair lbPair,
+                                           final PublicKey binArrayBitmapExtensionKey,
+                                           final PublicKey userTokenXKey,
+                                           final PublicKey userTokenYKey,
+                                           final PublicKey tokenXProgramKey,
+                                           final PublicKey tokenYProgramKey,
+                                           final LiquidityParameterByWeight liquidityParameter,
+                                           final RemainingAccountsInfo remainingAccountsInfo) {
+    return addLiquidityByWeight(
+        positionKey,
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        userTokenXKey, userTokenYKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        tokenXProgramKey, tokenYProgramKey,
+        liquidityParameter,
+        remainingAccountsInfo
+    );
+  }
+
+  /// V1 single-sided add-liquidity using a strategy descriptor. V1 has no remaining-accounts
+  /// payload — bin arrays still go in via `appendBinAccounts(...)` if applicable.
+  /// `binArrayLowerKey` / `binArrayUpperKey` are the two bin arrays covering the strategy range.
+  Instruction addLiquidityByStrategyOneSide(final PublicKey positionKey,
+                                            final PublicKey lbPairKey,
+                                            final PublicKey binArrayBitmapExtensionKey,
+                                            final PublicKey userTokenKey,
+                                            final PublicKey reserveKey,
+                                            final PublicKey tokenMintKey,
+                                            final PublicKey binArrayLowerKey,
+                                            final PublicKey binArrayUpperKey,
+                                            final PublicKey tokenProgramKey,
+                                            final LiquidityParameterByStrategyOneSide liquidityParameter);
+
+  /// V1 single-sided add-liquidity with explicit per-bin amounts (not strategy-derived).
+  Instruction addLiquidityOneSide(final PublicKey positionKey,
+                                  final PublicKey lbPairKey,
+                                  final PublicKey binArrayBitmapExtensionKey,
+                                  final PublicKey userTokenKey,
+                                  final PublicKey reserveKey,
+                                  final PublicKey tokenMintKey,
+                                  final PublicKey binArrayLowerKey,
+                                  final PublicKey binArrayUpperKey,
+                                  final PublicKey tokenProgramKey,
+                                  final LiquidityOneSideParameter liquidityParameter);
+
+  /// Force-removes **all** liquidity from a position (no per-bin reduction). The two bin-array
+  /// accounts must be the two arrays the position spans.
+  Instruction removeAllLiquidity(final PublicKey positionKey,
+                                 final PublicKey lbPairKey,
+                                 final PublicKey binArrayBitmapExtensionKey,
+                                 final PublicKey userTokenXKey,
+                                 final PublicKey userTokenYKey,
+                                 final PublicKey reserveXKey,
+                                 final PublicKey reserveYKey,
+                                 final PublicKey tokenXMintKey,
+                                 final PublicKey tokenYMintKey,
+                                 final PublicKey binArrayLowerKey,
+                                 final PublicKey binArrayUpperKey,
+                                 final PublicKey tokenXProgramKey,
+                                 final PublicKey tokenYProgramKey);
+
+  default Instruction removeAllLiquidity(final PositionV2 position,
+                                         final LbPair lbPair,
+                                         final PublicKey binArrayBitmapExtensionKey,
+                                         final PublicKey userTokenXKey,
+                                         final PublicKey userTokenYKey,
+                                         final PublicKey binArrayLowerKey,
+                                         final PublicKey binArrayUpperKey,
+                                         final PublicKey tokenXProgramKey,
+                                         final PublicKey tokenYProgramKey) {
+    return removeAllLiquidity(
+        position._address(),
+        position.lbPair(),
+        binArrayBitmapExtensionKey,
+        userTokenXKey, userTokenYKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        binArrayLowerKey, binArrayUpperKey,
+        tokenXProgramKey, tokenYProgramKey
+    );
+  }
+
+  /// Rebalance an existing position by atomically removing and re-depositing liquidity at a new
+  /// range. Used by the official market-making crate. The `RebalanceLiquidityParams` arg encodes
+  /// the new range / strategy; bin arrays for both legs go in via `extraAccounts(...)`.
+  Instruction rebalanceLiquidity(final PublicKey positionKey,
+                                 final PublicKey lbPairKey,
+                                 final PublicKey binArrayBitmapExtensionKey,
+                                 final PublicKey userTokenXKey,
+                                 final PublicKey userTokenYKey,
+                                 final PublicKey reserveXKey,
+                                 final PublicKey reserveYKey,
+                                 final PublicKey tokenXMintKey,
+                                 final PublicKey tokenYMintKey,
+                                 final PublicKey rentPayerKey,
+                                 final PublicKey tokenXProgramKey,
+                                 final PublicKey tokenYProgramKey,
+                                 final RebalanceLiquidityParams params,
+                                 final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction rebalanceLiquidity(final PublicKey positionKey,
+                                         final LbPair lbPair,
+                                         final PublicKey binArrayBitmapExtensionKey,
+                                         final PublicKey userTokenXKey,
+                                         final PublicKey userTokenYKey,
+                                         final PublicKey tokenXProgramKey,
+                                         final PublicKey tokenYProgramKey,
+                                         final RebalanceLiquidityParams params,
+                                         final RemainingAccountsInfo remainingAccountsInfo) {
+    return rebalanceLiquidity(
+        positionKey,
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        userTokenXKey, userTokenYKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        feePayer().publicKey(),
+        tokenXProgramKey, tokenYProgramKey,
+        params,
+        remainingAccountsInfo
+    );
+  }
+
+  /// Permissionless pair-status setter. Document on-chain constraints: only callable when the
+  /// program's permissionless-operation bits allow it; otherwise rejected.
+  Instruction setPairStatusPermissionless(final PublicKey lbPairKey, final int status);
+
+  // ---------------------------------------------------------------------------
+  // Swaps
+  // ---------------------------------------------------------------------------
+
+  /// V2 exact-in swap. Bin arrays covering the active-id walk must be appended via
+  /// `appendBinAccounts(...)` / `MeteoraDlmmRemainingAccounts.appendBinAccounts(...)` after
+  /// building the instruction. `hostFeeInKey == null` is treated as the program-id sentinel
+  /// (Anchor `Option`). `oracleKey` defaults to `LbPair.oracle()` when using the `LbPair` overload.
+  Instruction swap(final PublicKey lbPairKey,
+                   final PublicKey binArrayBitmapExtensionKey,
+                   final PublicKey reserveXKey,
+                   final PublicKey reserveYKey,
+                   final PublicKey userTokenInKey,
+                   final PublicKey userTokenOutKey,
+                   final PublicKey tokenXMintKey,
+                   final PublicKey tokenYMintKey,
+                   final PublicKey oracleKey,
+                   final PublicKey hostFeeInKey,
+                   final PublicKey tokenXProgramKey,
+                   final PublicKey tokenYProgramKey,
+                   final long amountIn,
+                   final long minAmountOut,
+                   final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction swap(final LbPair lbPair,
+                           final PublicKey binArrayBitmapExtensionKey,
+                           final PublicKey userTokenInKey,
+                           final PublicKey userTokenOutKey,
+                           final PublicKey hostFeeInKey,
+                           final PublicKey tokenXProgramKey,
+                           final PublicKey tokenYProgramKey,
+                           final long amountIn,
+                           final long minAmountOut,
+                           final RemainingAccountsInfo remainingAccountsInfo) {
+    return swap(
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        userTokenInKey, userTokenOutKey,
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        lbPair.oracle(),
+        hostFeeInKey,
+        tokenXProgramKey, tokenYProgramKey,
+        amountIn, minAmountOut,
+        remainingAccountsInfo
+    );
+  }
+
+  /// V2 exact-out swap.
+  Instruction swapExactOut(final PublicKey lbPairKey,
+                           final PublicKey binArrayBitmapExtensionKey,
+                           final PublicKey reserveXKey,
+                           final PublicKey reserveYKey,
+                           final PublicKey userTokenInKey,
+                           final PublicKey userTokenOutKey,
+                           final PublicKey tokenXMintKey,
+                           final PublicKey tokenYMintKey,
+                           final PublicKey oracleKey,
+                           final PublicKey hostFeeInKey,
+                           final PublicKey tokenXProgramKey,
+                           final PublicKey tokenYProgramKey,
+                           final long maxInAmount,
+                           final long outAmount,
+                           final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction swapExactOut(final LbPair lbPair,
+                                   final PublicKey binArrayBitmapExtensionKey,
+                                   final PublicKey userTokenInKey,
+                                   final PublicKey userTokenOutKey,
+                                   final PublicKey hostFeeInKey,
+                                   final PublicKey tokenXProgramKey,
+                                   final PublicKey tokenYProgramKey,
+                                   final long maxInAmount,
+                                   final long outAmount,
+                                   final RemainingAccountsInfo remainingAccountsInfo) {
+    return swapExactOut(
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        userTokenInKey, userTokenOutKey,
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        lbPair.oracle(),
+        hostFeeInKey,
+        tokenXProgramKey, tokenYProgramKey,
+        maxInAmount, outAmount,
+        remainingAccountsInfo
+    );
+  }
+
+  /// V2 exact-in swap with a price-impact guard. `activeId` is the caller's expected active bin
+  /// (use `OptionalInt.empty()` to skip the check); `maxPriceImpactBps` rejects swaps that move
+  /// the active bin by more than the given basis points.
+  Instruction swapWithPriceImpact(final PublicKey lbPairKey,
+                                  final PublicKey binArrayBitmapExtensionKey,
+                                  final PublicKey reserveXKey,
+                                  final PublicKey reserveYKey,
+                                  final PublicKey userTokenInKey,
+                                  final PublicKey userTokenOutKey,
+                                  final PublicKey tokenXMintKey,
+                                  final PublicKey tokenYMintKey,
+                                  final PublicKey oracleKey,
+                                  final PublicKey hostFeeInKey,
+                                  final PublicKey tokenXProgramKey,
+                                  final PublicKey tokenYProgramKey,
+                                  final long amountIn,
+                                  final java.util.OptionalInt activeId,
+                                  final int maxPriceImpactBps,
+                                  final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction swapWithPriceImpact(final LbPair lbPair,
+                                          final PublicKey binArrayBitmapExtensionKey,
+                                          final PublicKey userTokenInKey,
+                                          final PublicKey userTokenOutKey,
+                                          final PublicKey hostFeeInKey,
+                                          final PublicKey tokenXProgramKey,
+                                          final PublicKey tokenYProgramKey,
+                                          final long amountIn,
+                                          final java.util.OptionalInt activeId,
+                                          final int maxPriceImpactBps,
+                                          final RemainingAccountsInfo remainingAccountsInfo) {
+    return swapWithPriceImpact(
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        userTokenInKey, userTokenOutKey,
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        lbPair.oracle(),
+        hostFeeInKey,
+        tokenXProgramKey, tokenYProgramKey,
+        amountIn, activeId, maxPriceImpactBps,
+        remainingAccountsInfo
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Limit orders
+  // ---------------------------------------------------------------------------
+
+  /// Place a limit order. `limitOrderKey` is a caller-supplied fresh keypair (NOT a PDA) — the
+  /// caller must also sign with that keypair when submitting the transaction.
+  Instruction placeLimitOrder(final PublicKey lbPairKey,
+                              final PublicKey binArrayBitmapExtensionKey,
+                              final PublicKey reserveKey,
+                              final PublicKey tokenMintKey,
+                              final PublicKey limitOrderKey,
+                              final PublicKey userTokenKey,
+                              final PublicKey tokenProgramKey,
+                              final PlaceLimitOrderParams params,
+                              final RemainingAccountsInfo remainingAccountsInfo);
+
+  /// Cancel one or more bins of an existing limit order. `bins` are the bin ids to cancel.
+  Instruction cancelLimitOrder(final PublicKey lbPairKey,
+                               final PublicKey binArrayBitmapExtensionKey,
+                               final PublicKey reserveXKey,
+                               final PublicKey reserveYKey,
+                               final PublicKey tokenXMintKey,
+                               final PublicKey tokenYMintKey,
+                               final PublicKey limitOrderKey,
+                               final PublicKey ownerTokenXKey,
+                               final PublicKey ownerTokenYKey,
+                               final PublicKey tokenXProgramKey,
+                               final PublicKey tokenYProgramKey,
+                               final int[] bins,
+                               final RemainingAccountsInfo remainingAccountsInfo);
+
+  default Instruction cancelLimitOrder(final LbPair lbPair,
+                                       final PublicKey binArrayBitmapExtensionKey,
+                                       final PublicKey limitOrderKey,
+                                       final PublicKey ownerTokenXKey,
+                                       final PublicKey ownerTokenYKey,
+                                       final PublicKey tokenXProgramKey,
+                                       final PublicKey tokenYProgramKey,
+                                       final int[] bins,
+                                       final RemainingAccountsInfo remainingAccountsInfo) {
+    return cancelLimitOrder(
+        lbPair._address(),
+        binArrayBitmapExtensionKey,
+        lbPair.reserveX(), lbPair.reserveY(),
+        lbPair.tokenXMint(), lbPair.tokenYMint(),
+        limitOrderKey,
+        ownerTokenXKey, ownerTokenYKey,
+        tokenXProgramKey, tokenYProgramKey,
+        bins,
+        remainingAccountsInfo
+    );
+  }
+
+  /// GC an empty limit-order account after all of its bins have been cancelled / filled.
+  Instruction closeLimitOrderIfEmpty(final PublicKey limitOrderKey, final PublicKey rentReceiverKey);
+
+  default Instruction closeLimitOrderIfEmpty(final PublicKey limitOrderKey) {
+    return closeLimitOrderIfEmpty(limitOrderKey, feePayer().publicKey());
   }
 }
