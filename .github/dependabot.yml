@@ -2,12 +2,6 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels: [ "dependencies", "gradle" ]
-
-  - package-ecosystem: "gradle"
     directories:
       - "/idl-clients-*"
     schedule:
