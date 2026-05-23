@@ -3,13 +3,35 @@ version: 2
 updates:
   - package-ecosystem: "gradle"
     directories:
-      - "/idl-clients-*"
+      - "/idl-clients-cctp"
+      - "/idl-clients-core"
+      - "/idl-clients-drift"
+      - "/idl-clients-jupiter"
+      - "/idl-clients-kamino"
+      - "/idl-clients-loopscale"
+      - "/idl-clients-marinade"
+      - "/idl-clients-metaplex"
+      - "/idl-clients-meteora"
+      - "/idl-clients-neutral_trade"
+      - "/idl-clients-oracles"
+      - "/idl-clients-orca"
+      - "/idl-clients-phoenix"
+      - "/idl-clients-spl"
+      - "/idl-clients-squads"
     schedule:
       interval: "weekly"
     labels: [ "dependencies", "gradle" ]
+    groups:
+      gradle-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     labels: [ "dependencies", "ci" ]
+    groups:
+      github-actions:
+        patterns:
+          - "*"
