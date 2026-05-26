@@ -19,5 +19,5 @@ permissions:
 jobs:
   release-please:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
-    uses: sava-software/sava-build/.github/workflows/release-please.yml
+    uses: sava-software/sava-build/.github/workflows/release-please.yml@main
     secrets: inherit
