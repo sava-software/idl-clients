@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.12.9](https://github.com/sava-software/idl-clients/compare/25.12.8...25.12.9) (2026-05-26)
+
+
+### Features
+
+* add generated comment to all generated source files. ([469851f](https://github.com/sava-software/idl-clients/commit/469851f66d385a645a6914c43fd204a64d17f3e0))
+* **kamino:** add Conditional and TotalMintSupply entries ([0fc722d](https://github.com/sava-software/idl-clients/commit/0fc722d675e7380d1efdc187741f72adb8e3314e))
+
 ## [25.12.8](https://github.com/sava-software/idl-clients/compare/25.12.7...25.12.8) (2026-05-22)
 
 
