@@ -51,7 +51,9 @@ public enum OracleType implements RustEnum {
   ScopeTwap7d,
   MultiplicationChain,
   SplBalance,
-  StakedSolBalance;
+  StakedSolBalance,
+  TotalMintSupply,
+  Conditional;
 
   public static OracleType read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, OracleType.values(), _data, _offset);

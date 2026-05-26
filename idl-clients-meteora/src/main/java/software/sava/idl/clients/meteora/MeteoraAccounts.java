@@ -4,8 +4,7 @@ import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.programs.Discriminator;
-
-import java.util.List;
+import software.sava.idl.clients.meteora.dlmm.gen.LbClmmPDAs;
 
 import static software.sava.core.accounts.PublicKey.fromBase58Encoded;
 
@@ -34,10 +33,7 @@ public interface MeteoraAccounts {
                                         final PublicKey dlmmVaultProgram,
                                         final PublicKey affiliateProgram,
                                         final PublicKey mercurialStableSwapProgram) {
-    final var eventAuthority = PublicKey.findProgramAddress(
-        List.of("__event_authority".getBytes()),
-        dlmmProgram
-    );
+    final var eventAuthority = LbClmmPDAs.eventAuthorityPDA(dlmmProgram);
     return new MeteoraAccountsRecord(
         dlmmProgram,
         AccountMeta.createInvoked(dlmmProgram),

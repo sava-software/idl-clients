@@ -106,6 +106,22 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, refPrice);
       }
       case ChainlinkExchangeRate -> new ChainlinkExchangeRate(i, priceAccount, emaTypes);
+      case Conditional -> {
+        validateNoRefPrice(oracleType, refPrice);
+        validateNoEmaTypes(oracleType, emaTypes);
+        final var data = ConditionalData.read(generic[i], 0);
+        final var condition = software.sava.idl.clients.kamino.scope.gen.types.Condition.values()[data.condition()];
+        final int numSources = switch (condition) {
+          case NonZero -> 1;
+          case WithinRangeAbs, OutsideRangeAbs -> 3;
+          default -> 2;
+        };
+        final var sourceIndices = data.sources();
+        final var slice = new short[numSources];
+        System.arraycopy(sourceIndices, 0, slice, 0, numSources);
+        final var sources = parseEntries(slice);
+        yield new Conditional(i, condition, data.toleranceBps(), sources);
+      }
       case ChainlinkNAV -> new ChainlinkNAV(i, priceAccount, emaTypes);
       case DiscountToMaturity -> {
         validateNoEmaTypes(oracleType, emaTypes);
@@ -182,6 +198,11 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         validateNoRefPrice(oracleType, refPrice);
         validateNoEmaTypes(oracleType, emaTypes);
         yield new StakedSolBalance(i, priceAccount);
+      }
+      case TotalMintSupply -> {
+        validateNoRefPrice(oracleType, refPrice);
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new TotalMintSupply(i, priceAccount);
       }
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
       case Unused -> {

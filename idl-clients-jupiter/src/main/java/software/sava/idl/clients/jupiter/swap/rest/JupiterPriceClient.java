@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 public interface JupiterPriceClient {
 
+  int PRICE_LIMIT = 50;
+
   static JupiterPriceClient.Builder build() {
     return new Builder();
   }
@@ -29,13 +31,10 @@ public interface JupiterPriceClient {
 
   class Builder extends JupiterClientBuilder<JupiterPriceClient> {
 
-    protected URI v3PricePath;
-
     protected void setURLs() {
       if (endpoint == null) {
         endpoint = URI.create("https://api.jup.ag");
       }
-      this.v3PricePath = endpoint.resolve("/price/v3");
     }
 
     @Override
@@ -47,8 +46,7 @@ public interface JupiterPriceClient {
           httpClient,
           requestTimeout,
           extendRequest(),
-          testResponse,
-          v3PricePath
+          testResponse
       );
     }
   }

@@ -141,6 +141,28 @@ public final class MeteoraPDAs {
     return LbClmmPDAs.presetParameterPDA(programId, ixIndexBytes);
   }
 
+  public static ProgramDerivedAddress lbPairWithPresetParamPDA(final PublicKey presetParameter,
+                                                               final PublicKey xMint,
+                                                               final PublicKey yMint,
+                                                               final PublicKey programId) {
+    final PublicKey minKey;
+    final PublicKey maxKey;
+    if (xMint.compareTo(yMint) < 0) {
+      minKey = xMint;
+      maxKey = yMint;
+    } else {
+      minKey = yMint;
+      maxKey = xMint;
+    }
+
+    return PublicKey.findProgramAddress(List.of(
+            presetParameter.toByteArray(),
+            minKey.toByteArray(),
+            maxKey.toByteArray()
+        ), programId
+    );
+  }
+
   private MeteoraPDAs() {
   }
 }

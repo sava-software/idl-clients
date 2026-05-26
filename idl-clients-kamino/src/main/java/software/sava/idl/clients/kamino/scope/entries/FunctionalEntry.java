@@ -2,7 +2,7 @@ package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.accounts.PublicKey;
 
-public sealed interface FunctionalEntry extends ScopeEntry permits SplBalance, SplStake, StakedSolBalance {
+public sealed interface FunctionalEntry extends ScopeEntry permits SplBalance, SplStake, StakedSolBalance, TotalMintSupply {
 
   PublicKey priceAccount();
 }

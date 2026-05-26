@@ -25,10 +25,9 @@ final class JupiterPriceClientImpl extends JsonHttpClient implements JupiterPric
                          final HttpClient httpClient,
                          final Duration requestTimeout,
                          final UnaryOperator<HttpRequest.Builder> extendRequest,
-                         final BiPredicate<HttpResponse<?>, byte[]> testResponse,
-                         final URI v3PricePath) {
+                         final BiPredicate<HttpResponse<?>, byte[]> testResponse) {
     super(endpoint, httpClient, requestTimeout, extendRequest, null, testResponse);
-    this.v3PricePath = v3PricePath;
+    this.v3PricePath = endpoint.resolve("/price/v3");
   }
 
   @Override
