@@ -2,6 +2,8 @@ module software.sava.idl.clients.spl {
   exports software.sava.idl.clients.spl.associated_token.gen;
   exports software.sava.idl.clients.spl.attestation_service.gen.types;
   exports software.sava.idl.clients.spl.attestation_service.gen;
+  exports software.sava.idl.clients.spl.lut.gen.types;
+  exports software.sava.idl.clients.spl.lut.gen;
   exports software.sava.idl.clients.spl.stake.gen.types;
   exports software.sava.idl.clients.spl.stake.gen;
   exports software.sava.idl.clients.spl.system.gen.types;

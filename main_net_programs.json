@@ -11,6 +11,15 @@
   "tabLength": 2,
   "programs": [
     {
+      "name": "Address Lookup Table",
+      "source": "idl-clients-spl",
+      "module": "spl",
+      "package": "spl.lut",
+      "program": "AddressLookupTab1e1111111111111111111111111",
+      "idlType": "codama",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/program/idl.json"
+    },
+    {
       "name": "CCTP Message Transmitter V2",
       "source": "idl-clients-cctp",
       "package": "cctp.message_transmitter.v2",
@@ -299,16 +308,392 @@
       "idlFile": "idls/codama/spl/stake.json",
       "idlType": "codama",
       "definedTypes": [
-        {"kind":"definedTypeNode","name":"unixTimestamp","type":{"endian":"le","format":"i64","kind":"numberTypeNode"}},
-        {"kind":"definedTypeNode","name":"epoch","type":{"endian":"le","format":"u64","kind":"numberTypeNode"}},
-        {"kind":"definedTypeNode","name":"lockupArgs","type":{"fields":[{"kind":"structFieldTypeNode","name":"unixTimestamp","type":{"item":{"kind":"definedTypeLinkNode","name":"unixTimestamp"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"epoch","type":{"item":{"kind":"definedTypeLinkNode","name":"epoch"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"custodian","type":{"item":{"kind":"publicKeyTypeNode"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"lockupParams","type":{"fields":[{"kind":"structFieldTypeNode","name":"unixTimestamp","type":{"item":{"kind":"definedTypeLinkNode","name":"unixTimestamp"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"epoch","type":{"item":{"kind":"definedTypeLinkNode","name":"epoch"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"custodian","type":{"item":{"kind":"publicKeyTypeNode"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"lockupCheckedParams","type":{"fields":[{"kind":"structFieldTypeNode","name":"unixTimestamp","type":{"item":{"kind":"definedTypeLinkNode","name":"unixTimestamp"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"epoch","type":{"item":{"kind":"definedTypeLinkNode","name":"epoch"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"lockupCheckedArgs","type":{"fields":[{"kind":"structFieldTypeNode","name":"unixTimestamp","type":{"item":{"kind":"definedTypeLinkNode","name":"unixTimestamp"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}},{"kind":"structFieldTypeNode","name":"epoch","type":{"item":{"kind":"definedTypeLinkNode","name":"epoch"},"kind":"optionTypeNode","prefix":{"endian":"le","format":"u8","kind":"numberTypeNode"}}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"authorizeCheckedWithSeedArgs","type":{"fields":[{"kind":"structFieldTypeNode","name":"stakeAuthorize","type":{"kind":"definedTypeLinkNode","name":"stakeAuthorize"}},{"kind":"structFieldTypeNode","name":"authoritySeed","type":{"kind":"sizePrefixTypeNode","prefix":{"endian":"le","format":"u64","kind":"numberTypeNode"},"type":{"encoding":"utf8","kind":"stringTypeNode"}}},{"kind":"structFieldTypeNode","name":"authorityOwner","type":{"kind":"publicKeyTypeNode"}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"authorizeWithSeedArgs","type":{"fields":[{"kind":"structFieldTypeNode","name":"newAuthorizedPubkey","type":{"kind":"publicKeyTypeNode"}},{"kind":"structFieldTypeNode","name":"stakeAuthorize","type":{"kind":"definedTypeLinkNode","name":"stakeAuthorize"}},{"kind":"structFieldTypeNode","name":"authoritySeed","type":{"kind":"sizePrefixTypeNode","prefix":{"endian":"le","format":"u64","kind":"numberTypeNode"},"type":{"encoding":"utf8","kind":"stringTypeNode"}}},{"kind":"structFieldTypeNode","name":"authorityOwner","type":{"kind":"publicKeyTypeNode"}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"authorizeWithSeedParams","type":{"fields":[{"kind":"structFieldTypeNode","name":"newAuthorizedPubkey","type":{"kind":"publicKeyTypeNode"}},{"kind":"structFieldTypeNode","name":"stakeAuthorize","type":{"kind":"definedTypeLinkNode","name":"stakeAuthorize"}},{"kind":"structFieldTypeNode","name":"authoritySeed","type":{"kind":"sizePrefixTypeNode","prefix":{"endian":"le","format":"u64","kind":"numberTypeNode"},"type":{"encoding":"utf8","kind":"stringTypeNode"}}},{"kind":"structFieldTypeNode","name":"authorityOwner","type":{"kind":"publicKeyTypeNode"}}],"kind":"structTypeNode"}},
-        {"kind":"definedTypeNode","name":"authorizeCheckedWithSeedParams","type":{"fields":[{"kind":"structFieldTypeNode","name":"stakeAuthorize","type":{"kind":"definedTypeLinkNode","name":"stakeAuthorize"}},{"kind":"structFieldTypeNode","name":"authoritySeed","type":{"kind":"sizePrefixTypeNode","prefix":{"endian":"le","format":"u64","kind":"numberTypeNode"},"type":{"encoding":"utf8","kind":"stringTypeNode"}}},{"kind":"structFieldTypeNode","name":"authorityOwner","type":{"kind":"publicKeyTypeNode"}}],"kind":"structTypeNode"}}
+        {
+          "kind": "definedTypeNode",
+          "name": "unixTimestamp",
+          "type": {
+            "endian": "le",
+            "format": "i64",
+            "kind": "numberTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "epoch",
+          "type": {
+            "endian": "le",
+            "format": "u64",
+            "kind": "numberTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "lockupArgs",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "unixTimestamp",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "unixTimestamp"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "epoch",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "epoch"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "custodian",
+                "type": {
+                  "item": {
+                    "kind": "publicKeyTypeNode"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "lockupParams",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "unixTimestamp",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "unixTimestamp"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "epoch",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "epoch"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "custodian",
+                "type": {
+                  "item": {
+                    "kind": "publicKeyTypeNode"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "lockupCheckedParams",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "unixTimestamp",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "unixTimestamp"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "epoch",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "epoch"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "lockupCheckedArgs",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "unixTimestamp",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "unixTimestamp"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "epoch",
+                "type": {
+                  "item": {
+                    "kind": "definedTypeLinkNode",
+                    "name": "epoch"
+                  },
+                  "kind": "optionTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u8",
+                    "kind": "numberTypeNode"
+                  }
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "authorizeCheckedWithSeedArgs",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "stakeAuthorize",
+                "type": {
+                  "kind": "definedTypeLinkNode",
+                  "name": "stakeAuthorize"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authoritySeed",
+                "type": {
+                  "kind": "sizePrefixTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u64",
+                    "kind": "numberTypeNode"
+                  },
+                  "type": {
+                    "encoding": "utf8",
+                    "kind": "stringTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authorityOwner",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "authorizeWithSeedArgs",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "newAuthorizedPubkey",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "stakeAuthorize",
+                "type": {
+                  "kind": "definedTypeLinkNode",
+                  "name": "stakeAuthorize"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authoritySeed",
+                "type": {
+                  "kind": "sizePrefixTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u64",
+                    "kind": "numberTypeNode"
+                  },
+                  "type": {
+                    "encoding": "utf8",
+                    "kind": "stringTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authorityOwner",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "authorizeWithSeedParams",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "newAuthorizedPubkey",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "stakeAuthorize",
+                "type": {
+                  "kind": "definedTypeLinkNode",
+                  "name": "stakeAuthorize"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authoritySeed",
+                "type": {
+                  "kind": "sizePrefixTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u64",
+                    "kind": "numberTypeNode"
+                  },
+                  "type": {
+                    "encoding": "utf8",
+                    "kind": "stringTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authorityOwner",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        },
+        {
+          "kind": "definedTypeNode",
+          "name": "authorizeCheckedWithSeedParams",
+          "type": {
+            "fields": [
+              {
+                "kind": "structFieldTypeNode",
+                "name": "stakeAuthorize",
+                "type": {
+                  "kind": "definedTypeLinkNode",
+                  "name": "stakeAuthorize"
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authoritySeed",
+                "type": {
+                  "kind": "sizePrefixTypeNode",
+                  "prefix": {
+                    "endian": "le",
+                    "format": "u64",
+                    "kind": "numberTypeNode"
+                  },
+                  "type": {
+                    "encoding": "utf8",
+                    "kind": "stringTypeNode"
+                  }
+                }
+              },
+              {
+                "kind": "structFieldTypeNode",
+                "name": "authorityOwner",
+                "type": {
+                  "kind": "publicKeyTypeNode"
+                }
+              }
+            ],
+            "kind": "structTypeNode"
+          }
+        }
       ]
     },
     {
