@@ -27,6 +27,15 @@
       "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
     },
     {
+      "name": "Compute Budget",
+      "source": "idl-clients-spl",
+      "module": "spl",
+      "package": "spl.compute_budget",
+      "program": "ComputeBudget111111111111111111111111111111",
+      "idlType": "codama",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/program/idl.json"
+    },
+    {
       "name": "Drift",
       "source": "idl-clients-drift",
       "package": "drift",
