@@ -1,5 +1,14 @@
 # Changelog
 
+## [25.12.10](https://github.com/sava-software/idl-clients/compare/25.12.9...25.12.10) (2026-05-27)
+
+
+### Features
+
+* **spl:** add address lookup table IDL support ([40e1e6c](https://github.com/sava-software/idl-clients/commit/40e1e6c5a2f2bd7d9b358a07f34790cfc955778b))
+* **spl:** add Compute Budget program support ([21047bc](https://github.com/sava-software/idl-clients/commit/21047bc6c4efa0cf7153f26c801b3f64face2d7f))
+* **spl:** add stake-related IDL types ([bbcb91d](https://github.com/sava-software/idl-clients/commit/bbcb91de48dca457234b04d61d2fcf1cc0eb4e7a))
+
 ## [25.12.9](https://github.com/sava-software/idl-clients/compare/25.12.8...25.12.9) (2026-05-26)
 
 
