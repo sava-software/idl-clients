@@ -22,7 +22,7 @@ public interface RustEnum extends SerDe {
   }
 
   default int l() {
-    return 1;
+    return ordinalBytes();
   }
 
   default int writeOrdinal(final byte[] data, final int offset) {
@@ -98,7 +98,7 @@ public interface RustEnum extends SerDe {
     int val();
 
     default int l() {
-      return 2;
+      return ordinalBytes() + 1;
     }
 
     default int write(final byte[] data, final int offset) {
@@ -158,7 +158,7 @@ public interface RustEnum extends SerDe {
     BigInteger val();
 
     default int l() {
-      return 129;
+      return ordinalBytes() + SerDeUtil.INT128_BYTES;
     }
 
     default int write(final byte[] data, final int offset) {
@@ -173,7 +173,7 @@ public interface RustEnum extends SerDe {
     BigInteger val();
 
     default int l() {
-      return 257;
+      return ordinalBytes() + SerDeUtil.INT256_BYTES;
     }
 
     default int write(final byte[] data, final int offset) {
