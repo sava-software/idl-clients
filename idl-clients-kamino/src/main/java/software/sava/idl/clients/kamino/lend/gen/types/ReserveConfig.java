@@ -87,6 +87,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
 ///                             will eventually cross the cap and arm the autodeleverage countdown. Size
 ///                             `deposit_limit` and RPS together.
+/// @param permissionedOps Bitmask of PermissionedOps gated by the parent market's `permissioning_authority`
+///                        when this reserve is the operation's target. `0` = no operation is restricted at the
+///                        reserve level. Use Reserve::get_permissioned_ops for a typed view.
 public record ReserveConfig(int status,
                             int paddingDeprecatedAssetTier,
                             int hostFixedInterestRateBps,
@@ -123,9 +126,10 @@ public record ReserveConfig(int status,
                             long deleveragingBonusIncreaseBpsPerDay,
                             long debtMaturityTimestamp,
                             long debtTermSeconds,
-                            long rewardsAmountPerSlot) implements SerDe {
+                            long rewardsAmountPerSlot,
+                            long permissionedOps) implements SerDe {
 
-  public static final int BYTES = 944;
+  public static final int BYTES = 952;
   public static final int RESERVED_1_LEN = 4;
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
@@ -167,6 +171,7 @@ public record ReserveConfig(int status,
   public static final int DEBT_MATURITY_TIMESTAMP_OFFSET = 920;
   public static final int DEBT_TERM_SECONDS_OFFSET = 928;
   public static final int REWARDS_AMOUNT_PER_SLOT_OFFSET = 936;
+  public static final int PERMISSIONED_OPS_OFFSET = 944;
 
   public static ReserveConfig read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -246,6 +251,8 @@ public record ReserveConfig(int status,
     final var debtTermSeconds = getInt64LE(_data, i);
     i += 8;
     final var rewardsAmountPerSlot = getInt64LE(_data, i);
+    i += 8;
+    final var permissionedOps = getInt64LE(_data, i);
     return new ReserveConfig(status,
                              paddingDeprecatedAssetTier,
                              hostFixedInterestRateBps,
@@ -282,7 +289,8 @@ public record ReserveConfig(int status,
                              deleveragingBonusIncreaseBpsPerDay,
                              debtMaturityTimestamp,
                              debtTermSeconds,
-                             rewardsAmountPerSlot);
+                             rewardsAmountPerSlot,
+                             permissionedOps);
   }
 
   @Override
@@ -353,6 +361,8 @@ public record ReserveConfig(int status,
     putInt64LE(_data, i, debtTermSeconds);
     i += 8;
     putInt64LE(_data, i, rewardsAmountPerSlot);
+    i += 8;
+    putInt64LE(_data, i, permissionedOps);
     i += 8;
     return i - _offset;
   }

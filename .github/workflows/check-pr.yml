@@ -5,11 +5,14 @@ on:
     types: [ opened, synchronize, reopened ]
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: check-pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
   check:
+    if: >
+      github.event.pull_request.user.login != 'sava-release-please[bot]' &&
+      github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
 
     steps:
