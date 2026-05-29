@@ -1187,6 +1187,108 @@ public final class SystemProgram {
     }
   }
 
+  public static final Discriminator CREATE_ACCOUNT_ALLOW_PREFUND_DISCRIMINATOR = toDiscriminator(13, 0, 0, 0);
+
+  public static List<AccountMeta> createAccountAllowPrefundKeys(final PublicKey newAccountKey,
+                                                                final PublicKey payerKey) {
+    final var keys = new ArrayList<AccountMeta>(2);
+    keys.add(createWritableSigner(newAccountKey));
+    if (payerKey != null) {
+      keys.add(createWritableSigner(payerKey));
+    }
+    return keys;
+  }
+
+  public static Instruction createAccountAllowPrefund(final AccountMeta invokedSystemProgramMeta,
+                                                      final PublicKey newAccountKey,
+                                                      final PublicKey payerKey,
+                                                      final long lamports,
+                                                      final long space,
+                                                      final PublicKey programAddress) {
+    final var keys = createAccountAllowPrefundKeys(
+      newAccountKey,
+      payerKey
+    );
+    return createAccountAllowPrefund(
+      invokedSystemProgramMeta,
+      keys,
+      lamports,
+      space,
+      programAddress
+    );
+  }
+
+  public static Instruction createAccountAllowPrefund(final AccountMeta invokedSystemProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final long lamports,
+                                                      final long space,
+                                                      final PublicKey programAddress) {
+    final byte[] _data = new byte[52];
+    int i = CREATE_ACCOUNT_ALLOW_PREFUND_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, lamports);
+    i += 8;
+    putInt64LE(_data, i, space);
+    i += 8;
+    programAddress.write(_data, i);
+
+    return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
+  }
+
+  public record CreateAccountAllowPrefundIxData(int discriminator,
+                                                long lamports,
+                                                long space,
+                                                PublicKey programAddress) implements SerDe {  
+
+    public static CreateAccountAllowPrefundIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 52;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int LAMPORTS_OFFSET = 4;
+    public static final int SPACE_OFFSET = 12;
+    public static final int PROGRAM_ADDRESS_OFFSET = 20;
+
+    public static CreateAccountAllowPrefundIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = getInt32LE(_data, i);
+      i += 4;
+      final var lamports = getInt64LE(_data, i);
+      i += 8;
+      final var space = getInt64LE(_data, i);
+      i += 8;
+      final var programAddress = readPubKey(_data, i);
+      return new CreateAccountAllowPrefundIxData(discriminator,
+                                                 lamports,
+                                                 space,
+                                                 programAddress);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      putInt32LE(_data, i, discriminator);
+      i += 4;
+      putInt64LE(_data, i, lamports);
+      i += 8;
+      putInt64LE(_data, i, space);
+      i += 8;
+      programAddress.write(_data, i);
+      i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   private SystemProgram() {
   }
 }
