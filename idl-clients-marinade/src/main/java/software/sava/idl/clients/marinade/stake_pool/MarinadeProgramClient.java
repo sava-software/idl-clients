@@ -10,9 +10,9 @@ import software.sava.idl.clients.marinade.stake_pool.gen.types.State;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.TicketAccountData;
 import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
+import software.sava.idl.clients.spl.stake.StakeAccount;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
 import software.sava.rpc.json.http.response.AccountInfo;
-import software.sava.solana.programs.stake.StakeAccount;
 
 import java.util.Arrays;
 import java.util.Collection;
