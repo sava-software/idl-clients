@@ -1,5 +1,14 @@
 # Changelog
 
+## [25.12.11](https://github.com/sava-software/idl-clients/compare/25.12.10...25.12.11) (2026-05-30)
+
+
+### Features
+
+* **kamino:** add `permissionedOps` to ReserveConfig ([111eb15](https://github.com/sava-software/idl-clients/commit/111eb1585821c47fddc7d39d9e1d1f7a48d068da))
+* **spl:** add createAccountAllowPrefund support to SystemProgram ([9975eab](https://github.com/sava-software/idl-clients/commit/9975eab08b749fc3bcaa58a6fe2757b338794995))
+* **spl:** add stake, memo, and signature validation support ([6cfa155](https://github.com/sava-software/idl-clients/commit/6cfa155872f3b90f1a8970249fbccc92454e8f33))
+
 ## [25.12.10](https://github.com/sava-software/idl-clients/compare/25.12.9...25.12.10) (2026-05-27)
 
 
