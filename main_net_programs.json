@@ -759,6 +759,22 @@
       "excludeTypes": [
         "TokenMetadataField"
       ]
+    },
+    {
+      "name": "Wormhole Post Message Shim",
+      "source": "idl-clients-oracles",
+      "module": "oracles",
+      "package": "oracles.wormhole.post_message",
+      "program": "EtZMZM22ViKMo4r5y4Anovs3wKQ2owUmDpjygnMMcdEX",
+      "idlURL": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_post_message_shim.json"
+    },
+    {
+      "name": "Wormhole Verify Vaa Shim",
+      "source": "idl-clients-oracles",
+      "module": "oracles",
+      "package": "oracles.wormhole.verify_vaa",
+      "program": "EFaNWErqAtVWufdNb7yofSHHfWFos843DFpu4JBw24at",
+      "idlURL": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_verify_vaa_shim.json"
     }
   ]
 }
