@@ -36,4 +36,4 @@ jobs:
           ./gradlew --stacktrace -PjavaVersion=${{ steps.setup.outputs.java-version }} check
         env:
           ORG_GRADLE_PROJECT_savaGithubPackagesUsername: ${{ github.actor }}
-          ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_savaGithubPackagesPassword: ${{ secrets.READ_SAVA_PACKAGES }}
