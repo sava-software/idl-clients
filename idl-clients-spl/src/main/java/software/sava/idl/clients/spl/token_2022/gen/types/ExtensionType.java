@@ -50,12 +50,6 @@ public enum ExtensionType implements SerDe {
   confidentialTransferFee,
   /// Includes confidential withheld transfer fees
   confidentialTransferFeeAmount,
-  /// Tokens have a scaled UI amount
-  scaledUiAmountConfig,
-  /// Mint contains pausable configuration
-  pausableConfig,
-  /// Account contains pausable configuration
-  pausableAccount,
   /// Mint contains a pointer to another account (or the same account) that
   /// holds metadata
   metadataPointer,
@@ -70,7 +64,17 @@ public enum ExtensionType implements SerDe {
   /// holds group member configurations
   groupMemberPointer,
   /// Mint contains token group member configurations
-  tokenGroupMember;
+  tokenGroupMember,
+  /// Mint allowing the minting and burning of confidential tokens
+  confidentialMintBurn,
+  /// Tokens whose UI amount is scaled by a given amount
+  scaledUiAmountConfig,
+  /// Mint contains pausable configuration
+  pausableConfig,
+  /// Account contains pausable configuration
+  pausableAccount,
+  /// Mint requires a permissioned burn authority to sign for any burn
+  permissionedBurn;
 
   public static ExtensionType read(final byte[] _data, final int _offset) {
     return ExtensionType.values()[ByteUtil.getInt16LE(_data, _offset)];

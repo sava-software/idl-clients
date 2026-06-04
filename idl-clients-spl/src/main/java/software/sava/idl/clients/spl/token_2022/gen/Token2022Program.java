@@ -11,15 +11,15 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.spl.token_2022.gen.types.AccountState;
 import software.sava.idl.clients.spl.token_2022.gen.types.AuthorityType;
 import software.sava.idl.clients.spl.token_2022.gen.types.DecryptableBalance;
+import software.sava.idl.clients.spl.token_2022.gen.types.EncryptedBalance;
 import software.sava.idl.clients.spl.token_2022.gen.types.ExtensionType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-
-import static java.util.Objects.requireNonNullElse;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -1867,10 +1867,14 @@ public final class Token2022Program {
   /// account, and needs to have its token `amount` field updated.
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
-  public static List<AccountMeta> syncNativeKeys(final PublicKey accountKey) {
-    return List.of(
-      createWrite(accountKey)
-    );
+  public static List<AccountMeta> syncNativeKeys(final SolanaAccounts solanaAccounts,
+                                                 final PublicKey accountKey) {
+    final var keys = new ArrayList<AccountMeta>(2);
+    keys.add(createWrite(accountKey));
+    if (solanaAccounts != null && solanaAccounts.rentSysVar() != null) {
+      keys.add(createRead(solanaAccounts.rentSysVar()));
+    }
+    return keys;
   }
 
   /// Given a wrapped / native token account (a token account containing SOL)
@@ -1881,8 +1885,10 @@ public final class Token2022Program {
   ///
   /// @param accountKey The native token account to sync with its underlying lamports.
   public static Instruction syncNative(final AccountMeta invokedToken2022ProgramMeta,
+                                       final SolanaAccounts solanaAccounts,
                                        final PublicKey accountKey) {
     final var keys = syncNativeKeys(
+      solanaAccounts,
       accountKey
     );
     return syncNative(invokedToken2022ProgramMeta, keys);
@@ -3808,19 +3814,15 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
-  /// @param recordKey (Optional) Record account if the accompanying proof is to be read from a record account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> configureConfidentialTransferAccountKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                                           final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> configureConfidentialTransferAccountKeys(final SolanaAccounts solanaAccounts,
                                                                            final PublicKey tokenKey,
                                                                            final PublicKey mintKey,
-                                                                           final PublicKey recordKey,
                                                                            final PublicKey authorityKey) {
     return List.of(
       createWrite(tokenKey),
       createRead(mintKey),
       createRead(solanaAccounts.instructionsSysVar()),
-      createRead(requireNonNullElse(recordKey, invokedToken2022ProgramMeta.publicKey())),
       createReadOnlySigner(authorityKey)
     );
   }
@@ -3845,7 +3847,6 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
-  /// @param recordKey (Optional) Record account if the accompanying proof is to be read from a record account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
   /// @param maximumPendingBalanceCreditCounter The maximum number of despots and transfers that an account can receiver
@@ -3858,17 +3859,14 @@ public final class Token2022Program {
                                                                  final SolanaAccounts solanaAccounts,
                                                                  final PublicKey tokenKey,
                                                                  final PublicKey mintKey,
-                                                                 final PublicKey recordKey,
                                                                  final PublicKey authorityKey,
                                                                  final DecryptableBalance decryptableZeroBalance,
                                                                  final long maximumPendingBalanceCreditCounter,
                                                                  final int proofInstructionOffset) {
     final var keys = configureConfidentialTransferAccountKeys(
-      invokedToken2022ProgramMeta,
       solanaAccounts,
       tokenKey,
       mintKey,
-      recordKey,
       authorityKey
     );
     return configureConfidentialTransferAccount(
@@ -4141,17 +4139,13 @@ public final class Token2022Program {
   /// context state account for the proof must be provided.
   ///
   /// @param tokenKey The SPL Token account.
-  /// @param recordKey (Optional) Record account if the accompanying proof is to be read from a record account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> emptyConfidentialTransferAccountKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                                       final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> emptyConfidentialTransferAccountKeys(final SolanaAccounts solanaAccounts,
                                                                        final PublicKey tokenKey,
-                                                                       final PublicKey recordKey,
                                                                        final PublicKey authorityKey) {
     return List.of(
       createWrite(tokenKey),
       createRead(solanaAccounts.instructionsSysVar()),
-      createRead(requireNonNullElse(recordKey, invokedToken2022ProgramMeta.publicKey())),
       createReadOnlySigner(authorityKey)
     );
   }
@@ -4177,7 +4171,6 @@ public final class Token2022Program {
   /// context state account for the proof must be provided.
   ///
   /// @param tokenKey The SPL Token account.
-  /// @param recordKey (Optional) Record account if the accompanying proof is to be read from a record account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param proofInstructionOffset Relative location of the `ProofInstruction::VerifyCloseAccount`
   ///                               instruction to the `EmptyAccount` instruction in the transaction. If
@@ -4185,14 +4178,11 @@ public final class Token2022Program {
   public static Instruction emptyConfidentialTransferAccount(final AccountMeta invokedToken2022ProgramMeta,
                                                              final SolanaAccounts solanaAccounts,
                                                              final PublicKey tokenKey,
-                                                             final PublicKey recordKey,
                                                              final PublicKey authorityKey,
                                                              final int proofInstructionOffset) {
     final var keys = emptyConfidentialTransferAccountKeys(
-      invokedToken2022ProgramMeta,
       solanaAccounts,
       tokenKey,
-      recordKey,
       authorityKey
     );
     return emptyConfidentialTransferAccount(
@@ -4484,21 +4474,26 @@ public final class Token2022Program {
   /// @param equalityRecordKey (Optional) Equality proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> confidentialWithdrawKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                           final PublicKey tokenKey,
+  public static List<AccountMeta> confidentialWithdrawKeys(final PublicKey tokenKey,
                                                            final PublicKey mintKey,
                                                            final PublicKey instructionsSysvarKey,
                                                            final PublicKey equalityRecordKey,
                                                            final PublicKey rangeRecordKey,
                                                            final PublicKey authorityKey) {
-    return List.of(
-      createWrite(tokenKey),
-      createRead(mintKey),
-      createRead(requireNonNullElse(instructionsSysvarKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(equalityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(rangeRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createReadOnlySigner(authorityKey)
-    );
+    final var keys = new ArrayList<AccountMeta>(6);
+    keys.add(createWrite(tokenKey));
+    keys.add(createRead(mintKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
   }
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
@@ -4547,7 +4542,6 @@ public final class Token2022Program {
                                                  final int equalityProofInstructionOffset,
                                                  final int rangeProofInstructionOffset) {
     final var keys = confidentialWithdrawKeys(
-      invokedToken2022ProgramMeta,
       tokenKey,
       mintKey,
       instructionsSysvarKey,
@@ -4740,8 +4734,7 @@ public final class Token2022Program {
   /// @param ciphertextValidityRecordKey (Optional) Ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> confidentialTransferKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                           final PublicKey sourceTokenKey,
+  public static List<AccountMeta> confidentialTransferKeys(final PublicKey sourceTokenKey,
                                                            final PublicKey mintKey,
                                                            final PublicKey destinationTokenKey,
                                                            final PublicKey instructionsSysvarKey,
@@ -4749,16 +4742,24 @@ public final class Token2022Program {
                                                            final PublicKey ciphertextValidityRecordKey,
                                                            final PublicKey rangeRecordKey,
                                                            final PublicKey authorityKey) {
-    return List.of(
-      createWrite(sourceTokenKey),
-      createRead(mintKey),
-      createWrite(destinationTokenKey),
-      createRead(requireNonNullElse(instructionsSysvarKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(equalityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(ciphertextValidityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(rangeRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createReadOnlySigner(authorityKey)
-    );
+    final var keys = new ArrayList<AccountMeta>(8);
+    keys.add(createWrite(sourceTokenKey));
+    keys.add(createRead(mintKey));
+    keys.add(createWrite(destinationTokenKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (ciphertextValidityRecordKey != null) {
+      keys.add(createRead(ciphertextValidityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
   }
 
   /// Transfer tokens confidentially.
@@ -4786,6 +4787,8 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
@@ -4807,11 +4810,12 @@ public final class Token2022Program {
                                                  final PublicKey rangeRecordKey,
                                                  final PublicKey authorityKey,
                                                  final DecryptableBalance newSourceDecryptableAvailableBalance,
+                                                 final EncryptedBalance transferAmountAuditorCiphertextLo,
+                                                 final EncryptedBalance transferAmountAuditorCiphertextHi,
                                                  final int equalityProofInstructionOffset,
                                                  final int ciphertextValidityProofInstructionOffset,
                                                  final int rangeProofInstructionOffset) {
     final var keys = confidentialTransferKeys(
-      invokedToken2022ProgramMeta,
       sourceTokenKey,
       mintKey,
       destinationTokenKey,
@@ -4825,6 +4829,8 @@ public final class Token2022Program {
       invokedToken2022ProgramMeta,
       keys,
       newSourceDecryptableAvailableBalance,
+      transferAmountAuditorCiphertextLo,
+      transferAmountAuditorCiphertextHi,
       equalityProofInstructionOffset,
       ciphertextValidityProofInstructionOffset,
       rangeProofInstructionOffset
@@ -4846,6 +4852,8 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
@@ -4860,14 +4868,18 @@ public final class Token2022Program {
   public static Instruction confidentialTransfer(final AccountMeta invokedToken2022ProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final DecryptableBalance newSourceDecryptableAvailableBalance,
+                                                 final EncryptedBalance transferAmountAuditorCiphertextLo,
+                                                 final EncryptedBalance transferAmountAuditorCiphertextHi,
                                                  final int equalityProofInstructionOffset,
                                                  final int ciphertextValidityProofInstructionOffset,
                                                  final int rangeProofInstructionOffset) {
-    final byte[] _data = new byte[5 + newSourceDecryptableAvailableBalance.l()];
+    final byte[] _data = new byte[5 + newSourceDecryptableAvailableBalance.l() + transferAmountAuditorCiphertextLo.l() + transferAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_TRANSFER_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) 7;
     ++i;
     i += newSourceDecryptableAvailableBalance.write(_data, i);
+    i += transferAmountAuditorCiphertextLo.write(_data, i);
+    i += transferAmountAuditorCiphertextHi.write(_data, i);
     _data[i] = (byte) equalityProofInstructionOffset;
     ++i;
     _data[i] = (byte) ciphertextValidityProofInstructionOffset;
@@ -4892,6 +4904,8 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
@@ -4906,6 +4920,8 @@ public final class Token2022Program {
   public record ConfidentialTransferIxData(int discriminator,
                                            int confidentialTransferDiscriminator,
                                            DecryptableBalance newSourceDecryptableAvailableBalance,
+                                           EncryptedBalance transferAmountAuditorCiphertextLo,
+                                           EncryptedBalance transferAmountAuditorCiphertextHi,
                                            int equalityProofInstructionOffset,
                                            int ciphertextValidityProofInstructionOffset,
                                            int rangeProofInstructionOffset) implements SerDe {  
@@ -4914,14 +4930,16 @@ public final class Token2022Program {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 41;
+    public static final int BYTES = 169;
 
     public static final int DISCRIMINATOR_OFFSET = 0;
     public static final int CONFIDENTIAL_TRANSFER_DISCRIMINATOR_OFFSET = 1;
     public static final int NEW_SOURCE_DECRYPTABLE_AVAILABLE_BALANCE_OFFSET = 2;
-    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 38;
-    public static final int CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 39;
-    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 40;
+    public static final int TRANSFER_AMOUNT_AUDITOR_CIPHERTEXT_LO_OFFSET = 38;
+    public static final int TRANSFER_AMOUNT_AUDITOR_CIPHERTEXT_HI_OFFSET = 102;
+    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 166;
+    public static final int CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 167;
+    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 168;
 
     public static ConfidentialTransferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -4935,6 +4953,10 @@ public final class Token2022Program {
       ++i;
       final var newSourceDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
       i += newSourceDecryptableAvailableBalance.l();
+      final var transferAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
+      i += transferAmountAuditorCiphertextLo.l();
+      final var transferAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
+      i += transferAmountAuditorCiphertextHi.l();
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var ciphertextValidityProofInstructionOffset = _data[i];
@@ -4943,6 +4965,8 @@ public final class Token2022Program {
       return new ConfidentialTransferIxData(discriminator,
                                             confidentialTransferDiscriminator,
                                             newSourceDecryptableAvailableBalance,
+                                            transferAmountAuditorCiphertextLo,
+                                            transferAmountAuditorCiphertextHi,
                                             equalityProofInstructionOffset,
                                             ciphertextValidityProofInstructionOffset,
                                             rangeProofInstructionOffset);
@@ -4956,6 +4980,8 @@ public final class Token2022Program {
       _data[i] = (byte) confidentialTransferDiscriminator;
       ++i;
       i += newSourceDecryptableAvailableBalance.write(_data, i);
+      i += transferAmountAuditorCiphertextLo.write(_data, i);
+      i += transferAmountAuditorCiphertextHi.write(_data, i);
       _data[i] = (byte) equalityProofInstructionOffset;
       ++i;
       _data[i] = (byte) ciphertextValidityProofInstructionOffset;
@@ -5537,8 +5563,7 @@ public final class Token2022Program {
   /// @param feeCiphertextValidityRecordKey (Optional) Fee ciphertext validity proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> confidentialTransferWithFeeKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                                  final PublicKey sourceTokenKey,
+  public static List<AccountMeta> confidentialTransferWithFeeKeys(final PublicKey sourceTokenKey,
                                                                   final PublicKey mintKey,
                                                                   final PublicKey destinationTokenKey,
                                                                   final PublicKey instructionsSysvarKey,
@@ -5548,18 +5573,30 @@ public final class Token2022Program {
                                                                   final PublicKey feeCiphertextValidityRecordKey,
                                                                   final PublicKey rangeRecordKey,
                                                                   final PublicKey authorityKey) {
-    return List.of(
-      createWrite(sourceTokenKey),
-      createRead(mintKey),
-      createWrite(destinationTokenKey),
-      createRead(requireNonNullElse(instructionsSysvarKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(equalityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(transferAmountCiphertextValidityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(feeSigmaRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(feeCiphertextValidityRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createRead(requireNonNullElse(rangeRecordKey, invokedToken2022ProgramMeta.publicKey())),
-      createReadOnlySigner(authorityKey)
-    );
+    final var keys = new ArrayList<AccountMeta>(10);
+    keys.add(createWrite(sourceTokenKey));
+    keys.add(createRead(mintKey));
+    keys.add(createWrite(destinationTokenKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (transferAmountCiphertextValidityRecordKey != null) {
+      keys.add(createRead(transferAmountCiphertextValidityRecordKey));
+    }
+    if (feeSigmaRecordKey != null) {
+      keys.add(createRead(feeSigmaRecordKey));
+    }
+    if (feeCiphertextValidityRecordKey != null) {
+      keys.add(createRead(feeCiphertextValidityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
   }
 
   /// Transfer tokens confidentially with fee.
@@ -5595,6 +5632,8 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
@@ -5629,13 +5668,14 @@ public final class Token2022Program {
                                                         final PublicKey rangeRecordKey,
                                                         final PublicKey authorityKey,
                                                         final DecryptableBalance newSourceDecryptableAvailableBalance,
+                                                        final EncryptedBalance transferAmountAuditorCiphertextLo,
+                                                        final EncryptedBalance transferAmountAuditorCiphertextHi,
                                                         final int equalityProofInstructionOffset,
                                                         final int transferAmountCiphertextValidityProofInstructionOffset,
                                                         final int feeSigmaProofInstructionOffset,
                                                         final int feeCiphertextValidityProofInstructionOffset,
                                                         final int rangeProofInstructionOffset) {
     final var keys = confidentialTransferWithFeeKeys(
-      invokedToken2022ProgramMeta,
       sourceTokenKey,
       mintKey,
       destinationTokenKey,
@@ -5651,6 +5691,8 @@ public final class Token2022Program {
       invokedToken2022ProgramMeta,
       keys,
       newSourceDecryptableAvailableBalance,
+      transferAmountAuditorCiphertextLo,
+      transferAmountAuditorCiphertextHi,
       equalityProofInstructionOffset,
       transferAmountCiphertextValidityProofInstructionOffset,
       feeSigmaProofInstructionOffset,
@@ -5679,6 +5721,8 @@ public final class Token2022Program {
   /// associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
@@ -5704,16 +5748,20 @@ public final class Token2022Program {
   public static Instruction confidentialTransferWithFee(final AccountMeta invokedToken2022ProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final DecryptableBalance newSourceDecryptableAvailableBalance,
+                                                        final EncryptedBalance transferAmountAuditorCiphertextLo,
+                                                        final EncryptedBalance transferAmountAuditorCiphertextHi,
                                                         final int equalityProofInstructionOffset,
                                                         final int transferAmountCiphertextValidityProofInstructionOffset,
                                                         final int feeSigmaProofInstructionOffset,
                                                         final int feeCiphertextValidityProofInstructionOffset,
                                                         final int rangeProofInstructionOffset) {
-    final byte[] _data = new byte[7 + newSourceDecryptableAvailableBalance.l()];
+    final byte[] _data = new byte[7 + newSourceDecryptableAvailableBalance.l() + transferAmountAuditorCiphertextLo.l() + transferAmountAuditorCiphertextHi.l()];
     int i = CONFIDENTIAL_TRANSFER_WITH_FEE_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) 13;
     ++i;
     i += newSourceDecryptableAvailableBalance.write(_data, i);
+    i += transferAmountAuditorCiphertextLo.write(_data, i);
+    i += transferAmountAuditorCiphertextHi.write(_data, i);
     _data[i] = (byte) equalityProofInstructionOffset;
     ++i;
     _data[i] = (byte) transferAmountCiphertextValidityProofInstructionOffset;
@@ -5747,6 +5795,8 @@ public final class Token2022Program {
   /// associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
+  /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
+  /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
   /// @param equalityProofInstructionOffset Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
@@ -5772,6 +5822,8 @@ public final class Token2022Program {
   public record ConfidentialTransferWithFeeIxData(int discriminator,
                                                   int confidentialTransferDiscriminator,
                                                   DecryptableBalance newSourceDecryptableAvailableBalance,
+                                                  EncryptedBalance transferAmountAuditorCiphertextLo,
+                                                  EncryptedBalance transferAmountAuditorCiphertextHi,
                                                   int equalityProofInstructionOffset,
                                                   int transferAmountCiphertextValidityProofInstructionOffset,
                                                   int feeSigmaProofInstructionOffset,
@@ -5782,16 +5834,18 @@ public final class Token2022Program {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 43;
+    public static final int BYTES = 171;
 
     public static final int DISCRIMINATOR_OFFSET = 0;
     public static final int CONFIDENTIAL_TRANSFER_DISCRIMINATOR_OFFSET = 1;
     public static final int NEW_SOURCE_DECRYPTABLE_AVAILABLE_BALANCE_OFFSET = 2;
-    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 38;
-    public static final int TRANSFER_AMOUNT_CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 39;
-    public static final int FEE_SIGMA_PROOF_INSTRUCTION_OFFSET_OFFSET = 40;
-    public static final int FEE_CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 41;
-    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 42;
+    public static final int TRANSFER_AMOUNT_AUDITOR_CIPHERTEXT_LO_OFFSET = 38;
+    public static final int TRANSFER_AMOUNT_AUDITOR_CIPHERTEXT_HI_OFFSET = 102;
+    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 166;
+    public static final int TRANSFER_AMOUNT_CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 167;
+    public static final int FEE_SIGMA_PROOF_INSTRUCTION_OFFSET_OFFSET = 168;
+    public static final int FEE_CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 169;
+    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 170;
 
     public static ConfidentialTransferWithFeeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -5805,6 +5859,10 @@ public final class Token2022Program {
       ++i;
       final var newSourceDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
       i += newSourceDecryptableAvailableBalance.l();
+      final var transferAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
+      i += transferAmountAuditorCiphertextLo.l();
+      final var transferAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
+      i += transferAmountAuditorCiphertextHi.l();
       final var equalityProofInstructionOffset = _data[i];
       ++i;
       final var transferAmountCiphertextValidityProofInstructionOffset = _data[i];
@@ -5817,6 +5875,8 @@ public final class Token2022Program {
       return new ConfidentialTransferWithFeeIxData(discriminator,
                                                    confidentialTransferDiscriminator,
                                                    newSourceDecryptableAvailableBalance,
+                                                   transferAmountAuditorCiphertextLo,
+                                                   transferAmountAuditorCiphertextHi,
                                                    equalityProofInstructionOffset,
                                                    transferAmountCiphertextValidityProofInstructionOffset,
                                                    feeSigmaProofInstructionOffset,
@@ -5832,6 +5892,8 @@ public final class Token2022Program {
       _data[i] = (byte) confidentialTransferDiscriminator;
       ++i;
       i += newSourceDecryptableAvailableBalance.write(_data, i);
+      i += transferAmountAuditorCiphertextLo.write(_data, i);
+      i += transferAmountAuditorCiphertextHi.write(_data, i);
       _data[i] = (byte) equalityProofInstructionOffset;
       ++i;
       _data[i] = (byte) transferAmountCiphertextValidityProofInstructionOffset;
@@ -5841,6 +5903,168 @@ public final class Token2022Program {
       _data[i] = (byte) feeCiphertextValidityProofInstructionOffset;
       ++i;
       _data[i] = (byte) rangeProofInstructionOffset;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR = toDiscriminator(27);
+
+  /// Configures confidential transfers for a token account.
+  /// 
+  /// This instruction is identical to the `ConfigureAccount` instruction
+  /// except that an `ElGamalRegistry` account is expected in place of the
+  /// `VerifyPubkeyValidity` proof.
+  /// 
+  /// An `ElGamalRegistry` account is valid if it shares the same owner with
+  /// the token account. If a valid `ElGamalRegistry` account is provided,
+  /// then the program skips the verification of the ElGamal pubkey validity
+  /// proof as well as the token owner signature.
+  /// 
+  /// If the token account is not large enough to include the new
+  /// confidential transfer extension, then optionally reallocate the account
+  /// to increase the data size. To reallocate, a payer account to fund the
+  /// reallocation and the system account should be included in the
+  /// instruction.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The corresponding SPL Token mint.
+  /// @param elgamalRegistryKey The ElGamal registry account.
+  /// @param payerKey (Optional) The payer account to fund reallocation.
+  /// @param systemProgramKey (Optional) System program for reallocation funding.
+  public static List<AccountMeta> configureConfidentialTransferAccountWithRegistryKeys(final PublicKey tokenKey,
+                                                                                       final PublicKey mintKey,
+                                                                                       final PublicKey elgamalRegistryKey,
+                                                                                       final PublicKey payerKey,
+                                                                                       final PublicKey systemProgramKey) {
+    final var keys = new ArrayList<AccountMeta>(5);
+    keys.add(createWrite(tokenKey));
+    keys.add(createRead(mintKey));
+    keys.add(createRead(elgamalRegistryKey));
+    if (payerKey != null) {
+      keys.add(createWritableSigner(payerKey));
+    }
+    if (systemProgramKey != null) {
+      keys.add(createRead(systemProgramKey));
+    }
+    return keys;
+  }
+
+  /// Configures confidential transfers for a token account.
+  /// 
+  /// This instruction is identical to the `ConfigureAccount` instruction
+  /// except that an `ElGamalRegistry` account is expected in place of the
+  /// `VerifyPubkeyValidity` proof.
+  /// 
+  /// An `ElGamalRegistry` account is valid if it shares the same owner with
+  /// the token account. If a valid `ElGamalRegistry` account is provided,
+  /// then the program skips the verification of the ElGamal pubkey validity
+  /// proof as well as the token owner signature.
+  /// 
+  /// If the token account is not large enough to include the new
+  /// confidential transfer extension, then optionally reallocate the account
+  /// to increase the data size. To reallocate, a payer account to fund the
+  /// reallocation and the system account should be included in the
+  /// instruction.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The corresponding SPL Token mint.
+  /// @param elgamalRegistryKey The ElGamal registry account.
+  /// @param payerKey (Optional) The payer account to fund reallocation.
+  /// @param systemProgramKey (Optional) System program for reallocation funding.
+  public static Instruction configureConfidentialTransferAccountWithRegistry(final AccountMeta invokedToken2022ProgramMeta,
+                                                                             final PublicKey tokenKey,
+                                                                             final PublicKey mintKey,
+                                                                             final PublicKey elgamalRegistryKey,
+                                                                             final PublicKey payerKey,
+                                                                             final PublicKey systemProgramKey) {
+    final var keys = configureConfidentialTransferAccountWithRegistryKeys(
+      tokenKey,
+      mintKey,
+      elgamalRegistryKey,
+      payerKey,
+      systemProgramKey
+    );
+    return configureConfidentialTransferAccountWithRegistry(invokedToken2022ProgramMeta, keys);
+  }
+
+  /// Configures confidential transfers for a token account.
+  /// 
+  /// This instruction is identical to the `ConfigureAccount` instruction
+  /// except that an `ElGamalRegistry` account is expected in place of the
+  /// `VerifyPubkeyValidity` proof.
+  /// 
+  /// An `ElGamalRegistry` account is valid if it shares the same owner with
+  /// the token account. If a valid `ElGamalRegistry` account is provided,
+  /// then the program skips the verification of the ElGamal pubkey validity
+  /// proof as well as the token owner signature.
+  /// 
+  /// If the token account is not large enough to include the new
+  /// confidential transfer extension, then optionally reallocate the account
+  /// to increase the data size. To reallocate, a payer account to fund the
+  /// reallocation and the system account should be included in the
+  /// instruction.
+  ///
+  public static Instruction configureConfidentialTransferAccountWithRegistry(final AccountMeta invokedToken2022ProgramMeta,
+                                                                             final List<AccountMeta> keys) {
+    final byte[] _data = new byte[2];
+    int i = CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 14;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Configures confidential transfers for a token account.
+  /// 
+  /// This instruction is identical to the `ConfigureAccount` instruction
+  /// except that an `ElGamalRegistry` account is expected in place of the
+  /// `VerifyPubkeyValidity` proof.
+  /// 
+  /// An `ElGamalRegistry` account is valid if it shares the same owner with
+  /// the token account. If a valid `ElGamalRegistry` account is provided,
+  /// then the program skips the verification of the ElGamal pubkey validity
+  /// proof as well as the token owner signature.
+  /// 
+  /// If the token account is not large enough to include the new
+  /// confidential transfer extension, then optionally reallocate the account
+  /// to increase the data size. To reallocate, a payer account to fund the
+  /// reallocation and the system account should be included in the
+  /// instruction.
+  ///
+  public record ConfigureConfidentialTransferAccountWithRegistryIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+
+    public static ConfigureConfidentialTransferAccountWithRegistryIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 2;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_TRANSFER_DISCRIMINATOR_OFFSET = 1;
+
+    public static ConfigureConfidentialTransferAccountWithRegistryIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialTransferDiscriminator = _data[i] & 0xFF;
+      return new ConfigureConfidentialTransferAccountWithRegistryIxData(discriminator, confidentialTransferDiscriminator);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialTransferDiscriminator;
       ++i;
       return i - _offset;
     }
@@ -7388,10 +7612,7 @@ public final class Token2022Program {
       authority.write(_data, i);
     }
     i += 32;
-    if (withdrawWithheldAuthorityElGamalPubkey != null) {
-      withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
-    }
-    i += 32;
+    withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
 
     return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
   }
@@ -7451,9 +7672,7 @@ public final class Token2022Program {
         authority.write(_data, i);
       }
       i += 32;
-      if (withdrawWithheldAuthorityElGamalPubkey != null) {
-        withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
-      }
+      withdrawWithheldAuthorityElGamalPubkey.write(_data, i);
       i += 32;
       return i - _offset;
     }
@@ -7477,20 +7696,19 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param destinationKey The fee receiver account.
-  /// @param instructionsSysvarOrContextStateKey Instructions sysvar or context state account
-  /// @param recordKey Optional record account if proof is read from record
+  /// @param instructionsSysvarOrContextStateKey Instructions sysvar if `VerifyCiphertextCiphertextEquality` is
+  ///                                            included in the same transaction or context state account if
+  ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
+  ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
-  public static List<AccountMeta> withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                                                               final PublicKey mintKey,
+  public static List<AccountMeta> withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(final PublicKey mintKey,
                                                                                                final PublicKey destinationKey,
                                                                                                final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                               final PublicKey recordKey,
                                                                                                final PublicKey authorityKey) {
     return List.of(
       createWrite(mintKey),
       createWrite(destinationKey),
       createRead(instructionsSysvarOrContextStateKey),
-      createRead(requireNonNullElse(recordKey, invokedToken2022ProgramMeta.publicKey())),
       createReadOnlySigner(authorityKey)
     );
   }
@@ -7506,8 +7724,10 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param destinationKey The fee receiver account.
-  /// @param instructionsSysvarOrContextStateKey Instructions sysvar or context state account
-  /// @param recordKey Optional record account if proof is read from record
+  /// @param instructionsSysvarOrContextStateKey Instructions sysvar if `VerifyCiphertextCiphertextEquality` is
+  ///                                            included in the same transaction or context state account if
+  ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
+  ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
   /// @param proofInstructionOffset Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
@@ -7515,16 +7735,13 @@ public final class Token2022Program {
                                                                                      final PublicKey mintKey,
                                                                                      final PublicKey destinationKey,
                                                                                      final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                     final PublicKey recordKey,
                                                                                      final PublicKey authorityKey,
                                                                                      final int proofInstructionOffset,
                                                                                      final DecryptableBalance newDecryptableAvailableBalance) {
     final var keys = withdrawWithheldTokensFromMintForConfidentialTransferFeeKeys(
-      invokedToken2022ProgramMeta,
       mintKey,
       destinationKey,
       instructionsSysvarOrContextStateKey,
-      recordKey,
       authorityKey
     );
     return withdrawWithheldTokensFromMintForConfidentialTransferFee(
@@ -7636,20 +7853,19 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param destinationKey The fee receiver account.
-  /// @param instructionsSysvarOrContextStateKey Instructions sysvar or context state account
-  /// @param recordKey Optional record account
+  /// @param instructionsSysvarOrContextStateKey Instructions sysvar if `VerifyCiphertextCiphertextEquality` is
+  ///                                            included in the same transaction or context state account if
+  ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
+  ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
-  public static List<AccountMeta> withdrawWithheldTokensFromAccountsForConfidentialTransferFeeKeys(final AccountMeta invokedToken2022ProgramMeta,
-                                                                                                   final PublicKey mintKey,
+  public static List<AccountMeta> withdrawWithheldTokensFromAccountsForConfidentialTransferFeeKeys(final PublicKey mintKey,
                                                                                                    final PublicKey destinationKey,
                                                                                                    final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                                   final PublicKey recordKey,
                                                                                                    final PublicKey authorityKey) {
     return List.of(
       createRead(mintKey),
       createWrite(destinationKey),
       createRead(instructionsSysvarOrContextStateKey),
-      createRead(requireNonNullElse(recordKey, invokedToken2022ProgramMeta.publicKey())),
       createReadOnlySigner(authorityKey)
     );
   }
@@ -7662,8 +7878,10 @@ public final class Token2022Program {
   ///
   /// @param mintKey The token mint.
   /// @param destinationKey The fee receiver account.
-  /// @param instructionsSysvarOrContextStateKey Instructions sysvar or context state account
-  /// @param recordKey Optional record account
+  /// @param instructionsSysvarOrContextStateKey Instructions sysvar if `VerifyCiphertextCiphertextEquality` is
+  ///                                            included in the same transaction or context state account if
+  ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
+  ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
   /// @param numTokenAccounts Number of token accounts harvested
   /// @param proofInstructionOffset Proof instruction offset
@@ -7672,17 +7890,14 @@ public final class Token2022Program {
                                                                                          final PublicKey mintKey,
                                                                                          final PublicKey destinationKey,
                                                                                          final PublicKey instructionsSysvarOrContextStateKey,
-                                                                                         final PublicKey recordKey,
                                                                                          final PublicKey authorityKey,
                                                                                          final int numTokenAccounts,
                                                                                          final int proofInstructionOffset,
                                                                                          final DecryptableBalance newDecryptableAvailableBalance) {
     final var keys = withdrawWithheldTokensFromAccountsForConfidentialTransferFeeKeys(
-      invokedToken2022ProgramMeta,
       mintKey,
       destinationKey,
       instructionsSysvarOrContextStateKey,
-      recordKey,
       authorityKey
     );
     return withdrawWithheldTokensFromAccountsForConfidentialTransferFee(
@@ -8051,15 +8266,15 @@ public final class Token2022Program {
   /// owned account by sending them to any other account, leaving behind only
   /// lamports for rent exemption.
   ///
-  /// @param sourceAccountKey Account holding excess lamports.
-  /// @param destinationAccountKey Destination account for withdrawn lamports.
-  /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  public static List<AccountMeta> withdrawExcessLamportsKeys(final PublicKey sourceAccountKey,
-                                                             final PublicKey destinationAccountKey,
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
+  public static List<AccountMeta> withdrawExcessLamportsKeys(final PublicKey sourceKey,
+                                                             final PublicKey destinationKey,
                                                              final PublicKey authorityKey) {
     return List.of(
-      createWrite(sourceAccountKey),
-      createWrite(destinationAccountKey),
+      createWrite(sourceKey),
+      createWrite(destinationKey),
       createReadOnlySigner(authorityKey)
     );
   }
@@ -8068,16 +8283,16 @@ public final class Token2022Program {
   /// owned account by sending them to any other account, leaving behind only
   /// lamports for rent exemption.
   ///
-  /// @param sourceAccountKey Account holding excess lamports.
-  /// @param destinationAccountKey Destination account for withdrawn lamports.
-  /// @param authorityKey The source account's owner/delegate or its multisignature account.
+  /// @param sourceKey The source account.
+  /// @param destinationKey The destination account.
+  /// @param authorityKey The source account owner or its multisignature account.
   public static Instruction withdrawExcessLamports(final AccountMeta invokedToken2022ProgramMeta,
-                                                   final PublicKey sourceAccountKey,
-                                                   final PublicKey destinationAccountKey,
+                                                   final PublicKey sourceKey,
+                                                   final PublicKey destinationKey,
                                                    final PublicKey authorityKey) {
     final var keys = withdrawExcessLamportsKeys(
-      sourceAccountKey,
-      destinationAccountKey,
+      sourceKey,
+      destinationKey,
       authorityKey
     );
     return withdrawExcessLamports(invokedToken2022ProgramMeta, keys);
@@ -8881,6 +9096,1050 @@ public final class Token2022Program {
         memberAddress.write(_data, i);
       }
       i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Initializes confidential mints and burns for a mint.
+  /// 
+  /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
+  /// requires no signers and MUST be included within the same Transaction as
+  /// `TokenInstruction::InitializeMint`. Otherwise another party can
+  /// initialize the configuration.
+  /// 
+  /// The instruction fails if the `TokenInstruction::InitializeMint`
+  /// instruction has already executed for the mint.
+  ///
+  /// @param mintKey The SPL Token mint.
+  public static List<AccountMeta> initializeConfidentialMintBurnKeys(final PublicKey mintKey) {
+    return List.of(
+      createWrite(mintKey)
+    );
+  }
+
+  /// Initializes confidential mints and burns for a mint.
+  /// 
+  /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
+  /// requires no signers and MUST be included within the same Transaction as
+  /// `TokenInstruction::InitializeMint`. Otherwise another party can
+  /// initialize the configuration.
+  /// 
+  /// The instruction fails if the `TokenInstruction::InitializeMint`
+  /// instruction has already executed for the mint.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param supplyElgamalPubkey The ElGamal pubkey used to encrypt the confidential supply.
+  /// @param decryptableSupply The initial 0 supply encrypted with the supply aes key.
+  public static Instruction initializeConfidentialMintBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                           final PublicKey mintKey,
+                                                           final PublicKey supplyElgamalPubkey,
+                                                           final DecryptableBalance decryptableSupply) {
+    final var keys = initializeConfidentialMintBurnKeys(
+      mintKey
+    );
+    return initializeConfidentialMintBurn(
+      invokedToken2022ProgramMeta,
+      keys,
+      supplyElgamalPubkey,
+      decryptableSupply
+    );
+  }
+
+  /// Initializes confidential mints and burns for a mint.
+  /// 
+  /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
+  /// requires no signers and MUST be included within the same Transaction as
+  /// `TokenInstruction::InitializeMint`. Otherwise another party can
+  /// initialize the configuration.
+  /// 
+  /// The instruction fails if the `TokenInstruction::InitializeMint`
+  /// instruction has already executed for the mint.
+  ///
+  /// @param supplyElgamalPubkey The ElGamal pubkey used to encrypt the confidential supply.
+  /// @param decryptableSupply The initial 0 supply encrypted with the supply aes key.
+  public static Instruction initializeConfidentialMintBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                           final List<AccountMeta> keys,
+                                                           final PublicKey supplyElgamalPubkey,
+                                                           final DecryptableBalance decryptableSupply) {
+    final byte[] _data = new byte[34 + decryptableSupply.l()];
+    int i = INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 0;
+    ++i;
+    supplyElgamalPubkey.write(_data, i);
+    i += 32;
+    decryptableSupply.write(_data, i);
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Initializes confidential mints and burns for a mint.
+  /// 
+  /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
+  /// requires no signers and MUST be included within the same Transaction as
+  /// `TokenInstruction::InitializeMint`. Otherwise another party can
+  /// initialize the configuration.
+  /// 
+  /// The instruction fails if the `TokenInstruction::InitializeMint`
+  /// instruction has already executed for the mint.
+  ///
+  /// @param supplyElgamalPubkey The ElGamal pubkey used to encrypt the confidential supply.
+  /// @param decryptableSupply The initial 0 supply encrypted with the supply aes key.
+  public record InitializeConfidentialMintBurnIxData(int discriminator,
+                                                     int confidentialMintBurnDiscriminator,
+                                                     PublicKey supplyElgamalPubkey,
+                                                     DecryptableBalance decryptableSupply) implements SerDe {  
+
+    public static InitializeConfidentialMintBurnIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 70;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int SUPPLY_ELGAMAL_PUBKEY_OFFSET = 2;
+    public static final int DECRYPTABLE_SUPPLY_OFFSET = 34;
+
+    public static InitializeConfidentialMintBurnIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var supplyElgamalPubkey = readPubKey(_data, i);
+      i += 32;
+      final var decryptableSupply = DecryptableBalance.read(_data, i);
+      return new InitializeConfidentialMintBurnIxData(discriminator,
+                                                      confidentialMintBurnDiscriminator,
+                                                      supplyElgamalPubkey,
+                                                      decryptableSupply);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
+      supplyElgamalPubkey.write(_data, i);
+      i += 32;
+      i += decryptableSupply.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Rotates the ElGamal pubkey used to encrypt confidential supply.
+  /// 
+  /// The pending burn amount must be zero in order for this instruction to be
+  /// processed successfully.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The confidential mint authority or its multisignature account.
+  public static List<AccountMeta> rotateSupplyElgamalPubkeyKeys(final SolanaAccounts solanaAccounts,
+                                                                final PublicKey mintKey,
+                                                                final PublicKey authorityKey) {
+    return List.of(
+      createWrite(mintKey),
+      createRead(solanaAccounts.instructionsSysVar()),
+      createReadOnlySigner(authorityKey)
+    );
+  }
+
+  /// Rotates the ElGamal pubkey used to encrypt confidential supply.
+  /// 
+  /// The pending burn amount must be zero in order for this instruction to be
+  /// processed successfully.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
+  /// @param proofInstructionOffset The location of the
+  ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
+  ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
+  ///                               transaction. If the offset is `0`, then use a context state account
+  ///                               for the proof.
+  public static Instruction rotateSupplyElgamalPubkey(final AccountMeta invokedToken2022ProgramMeta,
+                                                      final SolanaAccounts solanaAccounts,
+                                                      final PublicKey mintKey,
+                                                      final PublicKey authorityKey,
+                                                      final PublicKey newSupplyElgamalPubkey,
+                                                      final int proofInstructionOffset) {
+    final var keys = rotateSupplyElgamalPubkeyKeys(
+      solanaAccounts,
+      mintKey,
+      authorityKey
+    );
+    return rotateSupplyElgamalPubkey(
+      invokedToken2022ProgramMeta,
+      keys,
+      newSupplyElgamalPubkey,
+      proofInstructionOffset
+    );
+  }
+
+  /// Rotates the ElGamal pubkey used to encrypt confidential supply.
+  /// 
+  /// The pending burn amount must be zero in order for this instruction to be
+  /// processed successfully.
+  ///
+  /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
+  /// @param proofInstructionOffset The location of the
+  ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
+  ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
+  ///                               transaction. If the offset is `0`, then use a context state account
+  ///                               for the proof.
+  public static Instruction rotateSupplyElgamalPubkey(final AccountMeta invokedToken2022ProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final PublicKey newSupplyElgamalPubkey,
+                                                      final int proofInstructionOffset) {
+    final byte[] _data = new byte[35];
+    int i = ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 1;
+    ++i;
+    newSupplyElgamalPubkey.write(_data, i);
+    i += 32;
+    _data[i] = (byte) proofInstructionOffset;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Rotates the ElGamal pubkey used to encrypt confidential supply.
+  /// 
+  /// The pending burn amount must be zero in order for this instruction to be
+  /// processed successfully.
+  ///
+  /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
+  /// @param proofInstructionOffset The location of the
+  ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
+  ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
+  ///                               transaction. If the offset is `0`, then use a context state account
+  ///                               for the proof.
+  public record RotateSupplyElgamalPubkeyIxData(int discriminator,
+                                                int confidentialMintBurnDiscriminator,
+                                                PublicKey newSupplyElgamalPubkey,
+                                                int proofInstructionOffset) implements SerDe {  
+
+    public static RotateSupplyElgamalPubkeyIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 35;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int NEW_SUPPLY_ELGAMAL_PUBKEY_OFFSET = 2;
+    public static final int PROOF_INSTRUCTION_OFFSET_OFFSET = 34;
+
+    public static RotateSupplyElgamalPubkeyIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var newSupplyElgamalPubkey = readPubKey(_data, i);
+      i += 32;
+      final var proofInstructionOffset = _data[i];
+      return new RotateSupplyElgamalPubkeyIxData(discriminator,
+                                                 confidentialMintBurnDiscriminator,
+                                                 newSupplyElgamalPubkey,
+                                                 proofInstructionOffset);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
+      newSupplyElgamalPubkey.write(_data, i);
+      i += 32;
+      _data[i] = (byte) proofInstructionOffset;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_CONFIDENTIAL_MINT_BURN_DECRYPTABLE_SUPPLY_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Updates the decryptable supply of the mint.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The confidential mint authority or its multisignature account.
+  public static List<AccountMeta> updateConfidentialMintBurnDecryptableSupplyKeys(final PublicKey mintKey,
+                                                                                  final PublicKey authorityKey) {
+    return List.of(
+      createWrite(mintKey),
+      createReadOnlySigner(authorityKey)
+    );
+  }
+
+  /// Updates the decryptable supply of the mint.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The confidential mint authority or its multisignature account.
+  /// @param newDecryptableSupply The new decryptable supply.
+  public static Instruction updateConfidentialMintBurnDecryptableSupply(final AccountMeta invokedToken2022ProgramMeta,
+                                                                        final PublicKey mintKey,
+                                                                        final PublicKey authorityKey,
+                                                                        final DecryptableBalance newDecryptableSupply) {
+    final var keys = updateConfidentialMintBurnDecryptableSupplyKeys(
+      mintKey,
+      authorityKey
+    );
+    return updateConfidentialMintBurnDecryptableSupply(
+      invokedToken2022ProgramMeta,
+      keys,
+      newDecryptableSupply
+    );
+  }
+
+  /// Updates the decryptable supply of the mint.
+  ///
+  /// @param newDecryptableSupply The new decryptable supply.
+  public static Instruction updateConfidentialMintBurnDecryptableSupply(final AccountMeta invokedToken2022ProgramMeta,
+                                                                        final List<AccountMeta> keys,
+                                                                        final DecryptableBalance newDecryptableSupply) {
+    final byte[] _data = new byte[2 + newDecryptableSupply.l()];
+    int i = UPDATE_CONFIDENTIAL_MINT_BURN_DECRYPTABLE_SUPPLY_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 2;
+    ++i;
+    newDecryptableSupply.write(_data, i);
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Updates the decryptable supply of the mint.
+  ///
+  /// @param newDecryptableSupply The new decryptable supply.
+  public record UpdateConfidentialMintBurnDecryptableSupplyIxData(int discriminator,
+                                                                  int confidentialMintBurnDiscriminator,
+                                                                  DecryptableBalance newDecryptableSupply) implements SerDe {  
+
+    public static UpdateConfidentialMintBurnDecryptableSupplyIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 38;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int NEW_DECRYPTABLE_SUPPLY_OFFSET = 2;
+
+    public static UpdateConfidentialMintBurnDecryptableSupplyIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var newDecryptableSupply = DecryptableBalance.read(_data, i);
+      return new UpdateConfidentialMintBurnDecryptableSupplyIxData(discriminator, confidentialMintBurnDiscriminator, newDecryptableSupply);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
+      i += newDecryptableSupply.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CONFIDENTIAL_MINT_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Mints tokens to a confidential balance.
+  /// 
+  /// Fails if the destination account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param authorityKey The account owner or its multisignature account.
+  public static List<AccountMeta> confidentialMintKeys(final PublicKey tokenKey,
+                                                       final PublicKey mintKey,
+                                                       final PublicKey instructionsSysvarKey,
+                                                       final PublicKey equalityRecordKey,
+                                                       final PublicKey ciphertextValidityRecordKey,
+                                                       final PublicKey rangeRecordKey,
+                                                       final PublicKey authorityKey) {
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(tokenKey));
+    keys.add(createWrite(mintKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (ciphertextValidityRecordKey != null) {
+      keys.add(createRead(ciphertextValidityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
+  }
+
+  /// Mints tokens to a confidential balance.
+  /// 
+  /// Fails if the destination account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param authorityKey The account owner or its multisignature account.
+  /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
+  /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
+  /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialMint` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public static Instruction confidentialMint(final AccountMeta invokedToken2022ProgramMeta,
+                                             final PublicKey tokenKey,
+                                             final PublicKey mintKey,
+                                             final PublicKey instructionsSysvarKey,
+                                             final PublicKey equalityRecordKey,
+                                             final PublicKey ciphertextValidityRecordKey,
+                                             final PublicKey rangeRecordKey,
+                                             final PublicKey authorityKey,
+                                             final DecryptableBalance newDecryptableSupply,
+                                             final EncryptedBalance mintAmountAuditorCiphertextLo,
+                                             final EncryptedBalance mintAmountAuditorCiphertextHi,
+                                             final int equalityProofInstructionOffset,
+                                             final int ciphertextValidityProofInstructionOffset,
+                                             final int rangeProofInstructionOffset) {
+    final var keys = confidentialMintKeys(
+      tokenKey,
+      mintKey,
+      instructionsSysvarKey,
+      equalityRecordKey,
+      ciphertextValidityRecordKey,
+      rangeRecordKey,
+      authorityKey
+    );
+    return confidentialMint(
+      invokedToken2022ProgramMeta,
+      keys,
+      newDecryptableSupply,
+      mintAmountAuditorCiphertextLo,
+      mintAmountAuditorCiphertextHi,
+      equalityProofInstructionOffset,
+      ciphertextValidityProofInstructionOffset,
+      rangeProofInstructionOffset
+    );
+  }
+
+  /// Mints tokens to a confidential balance.
+  /// 
+  /// Fails if the destination account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
+  /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
+  /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialMint` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public static Instruction confidentialMint(final AccountMeta invokedToken2022ProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final DecryptableBalance newDecryptableSupply,
+                                             final EncryptedBalance mintAmountAuditorCiphertextLo,
+                                             final EncryptedBalance mintAmountAuditorCiphertextHi,
+                                             final int equalityProofInstructionOffset,
+                                             final int ciphertextValidityProofInstructionOffset,
+                                             final int rangeProofInstructionOffset) {
+    final byte[] _data = new byte[5 + newDecryptableSupply.l() + mintAmountAuditorCiphertextLo.l() + mintAmountAuditorCiphertextHi.l()];
+    int i = CONFIDENTIAL_MINT_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 3;
+    ++i;
+    i += newDecryptableSupply.write(_data, i);
+    i += mintAmountAuditorCiphertextLo.write(_data, i);
+    i += mintAmountAuditorCiphertextHi.write(_data, i);
+    _data[i] = (byte) equalityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) rangeProofInstructionOffset;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Mints tokens to a confidential balance.
+  /// 
+  /// Fails if the destination account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
+  /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
+  /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialMint` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public record ConfidentialMintIxData(int discriminator,
+                                       int confidentialMintBurnDiscriminator,
+                                       DecryptableBalance newDecryptableSupply,
+                                       EncryptedBalance mintAmountAuditorCiphertextLo,
+                                       EncryptedBalance mintAmountAuditorCiphertextHi,
+                                       int equalityProofInstructionOffset,
+                                       int ciphertextValidityProofInstructionOffset,
+                                       int rangeProofInstructionOffset) implements SerDe {  
+
+    public static ConfidentialMintIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 169;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int NEW_DECRYPTABLE_SUPPLY_OFFSET = 2;
+    public static final int MINT_AMOUNT_AUDITOR_CIPHERTEXT_LO_OFFSET = 38;
+    public static final int MINT_AMOUNT_AUDITOR_CIPHERTEXT_HI_OFFSET = 102;
+    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 166;
+    public static final int CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 167;
+    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 168;
+
+    public static ConfidentialMintIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var newDecryptableSupply = DecryptableBalance.read(_data, i);
+      i += newDecryptableSupply.l();
+      final var mintAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
+      i += mintAmountAuditorCiphertextLo.l();
+      final var mintAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
+      i += mintAmountAuditorCiphertextHi.l();
+      final var equalityProofInstructionOffset = _data[i];
+      ++i;
+      final var ciphertextValidityProofInstructionOffset = _data[i];
+      ++i;
+      final var rangeProofInstructionOffset = _data[i];
+      return new ConfidentialMintIxData(discriminator,
+                                        confidentialMintBurnDiscriminator,
+                                        newDecryptableSupply,
+                                        mintAmountAuditorCiphertextLo,
+                                        mintAmountAuditorCiphertextHi,
+                                        equalityProofInstructionOffset,
+                                        ciphertextValidityProofInstructionOffset,
+                                        rangeProofInstructionOffset);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
+      i += newDecryptableSupply.write(_data, i);
+      i += mintAmountAuditorCiphertextLo.write(_data, i);
+      i += mintAmountAuditorCiphertextHi.write(_data, i);
+      _data[i] = (byte) equalityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) rangeProofInstructionOffset;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Burns tokens from a confidential balance.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param authorityKey The account owner or its multisignature account.
+  public static List<AccountMeta> confidentialBurnKeys(final PublicKey tokenKey,
+                                                       final PublicKey mintKey,
+                                                       final PublicKey instructionsSysvarKey,
+                                                       final PublicKey equalityRecordKey,
+                                                       final PublicKey ciphertextValidityRecordKey,
+                                                       final PublicKey rangeRecordKey,
+                                                       final PublicKey authorityKey) {
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(tokenKey));
+    keys.add(createWrite(mintKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (ciphertextValidityRecordKey != null) {
+      keys.add(createRead(ciphertextValidityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
+  }
+
+  /// Burns tokens from a confidential balance.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param authorityKey The account owner or its multisignature account.
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public static Instruction confidentialBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                             final PublicKey tokenKey,
+                                             final PublicKey mintKey,
+                                             final PublicKey instructionsSysvarKey,
+                                             final PublicKey equalityRecordKey,
+                                             final PublicKey ciphertextValidityRecordKey,
+                                             final PublicKey rangeRecordKey,
+                                             final PublicKey authorityKey,
+                                             final DecryptableBalance newDecryptableAvailableBalance,
+                                             final EncryptedBalance burnAmountAuditorCiphertextLo,
+                                             final EncryptedBalance burnAmountAuditorCiphertextHi,
+                                             final int equalityProofInstructionOffset,
+                                             final int ciphertextValidityProofInstructionOffset,
+                                             final int rangeProofInstructionOffset) {
+    final var keys = confidentialBurnKeys(
+      tokenKey,
+      mintKey,
+      instructionsSysvarKey,
+      equalityRecordKey,
+      ciphertextValidityRecordKey,
+      rangeRecordKey,
+      authorityKey
+    );
+    return confidentialBurn(
+      invokedToken2022ProgramMeta,
+      keys,
+      newDecryptableAvailableBalance,
+      burnAmountAuditorCiphertextLo,
+      burnAmountAuditorCiphertextHi,
+      equalityProofInstructionOffset,
+      ciphertextValidityProofInstructionOffset,
+      rangeProofInstructionOffset
+    );
+  }
+
+  /// Burns tokens from a confidential balance.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public static Instruction confidentialBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final DecryptableBalance newDecryptableAvailableBalance,
+                                             final EncryptedBalance burnAmountAuditorCiphertextLo,
+                                             final EncryptedBalance burnAmountAuditorCiphertextHi,
+                                             final int equalityProofInstructionOffset,
+                                             final int ciphertextValidityProofInstructionOffset,
+                                             final int rangeProofInstructionOffset) {
+    final byte[] _data = new byte[5 + newDecryptableAvailableBalance.l() + burnAmountAuditorCiphertextLo.l() + burnAmountAuditorCiphertextHi.l()];
+    int i = CONFIDENTIAL_BURN_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 4;
+    ++i;
+    i += newDecryptableAvailableBalance.write(_data, i);
+    i += burnAmountAuditorCiphertextLo.write(_data, i);
+    i += burnAmountAuditorCiphertextHi.write(_data, i);
+    _data[i] = (byte) equalityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) rangeProofInstructionOffset;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Burns tokens from a confidential balance.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
+  ///                                       offset is `0`, then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
+  ///                                                 If the offset is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
+  ///                                    `0`, then use a context state account for the proof.
+  public record ConfidentialBurnIxData(int discriminator,
+                                       int confidentialMintBurnDiscriminator,
+                                       DecryptableBalance newDecryptableAvailableBalance,
+                                       EncryptedBalance burnAmountAuditorCiphertextLo,
+                                       EncryptedBalance burnAmountAuditorCiphertextHi,
+                                       int equalityProofInstructionOffset,
+                                       int ciphertextValidityProofInstructionOffset,
+                                       int rangeProofInstructionOffset) implements SerDe {  
+
+    public static ConfidentialBurnIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 169;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int NEW_DECRYPTABLE_AVAILABLE_BALANCE_OFFSET = 2;
+    public static final int BURN_AMOUNT_AUDITOR_CIPHERTEXT_LO_OFFSET = 38;
+    public static final int BURN_AMOUNT_AUDITOR_CIPHERTEXT_HI_OFFSET = 102;
+    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 166;
+    public static final int CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 167;
+    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 168;
+
+    public static ConfidentialBurnIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var newDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
+      i += newDecryptableAvailableBalance.l();
+      final var burnAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
+      i += burnAmountAuditorCiphertextLo.l();
+      final var burnAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
+      i += burnAmountAuditorCiphertextHi.l();
+      final var equalityProofInstructionOffset = _data[i];
+      ++i;
+      final var ciphertextValidityProofInstructionOffset = _data[i];
+      ++i;
+      final var rangeProofInstructionOffset = _data[i];
+      return new ConfidentialBurnIxData(discriminator,
+                                        confidentialMintBurnDiscriminator,
+                                        newDecryptableAvailableBalance,
+                                        burnAmountAuditorCiphertextLo,
+                                        burnAmountAuditorCiphertextHi,
+                                        equalityProofInstructionOffset,
+                                        ciphertextValidityProofInstructionOffset,
+                                        rangeProofInstructionOffset);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
+      i += newDecryptableAvailableBalance.write(_data, i);
+      i += burnAmountAuditorCiphertextLo.write(_data, i);
+      i += burnAmountAuditorCiphertextHi.write(_data, i);
+      _data[i] = (byte) equalityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) rangeProofInstructionOffset;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR = toDiscriminator(42);
+
+  /// Applies the pending burn amount to the confidential supply.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The mint authority or its multisignature account.
+  public static List<AccountMeta> applyConfidentialPendingBurnKeys(final PublicKey mintKey,
+                                                                   final PublicKey authorityKey) {
+    return List.of(
+      createWrite(mintKey),
+      createReadOnlySigner(authorityKey)
+    );
+  }
+
+  /// Applies the pending burn amount to the confidential supply.
+  ///
+  /// @param mintKey The SPL Token mint.
+  /// @param authorityKey The mint authority or its multisignature account.
+  public static Instruction applyConfidentialPendingBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                         final PublicKey mintKey,
+                                                         final PublicKey authorityKey) {
+    final var keys = applyConfidentialPendingBurnKeys(
+      mintKey,
+      authorityKey
+    );
+    return applyConfidentialPendingBurn(invokedToken2022ProgramMeta, keys);
+  }
+
+  /// Applies the pending burn amount to the confidential supply.
+  ///
+  public static Instruction applyConfidentialPendingBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                         final List<AccountMeta> keys) {
+    final byte[] _data = new byte[2];
+    int i = APPLY_CONFIDENTIAL_PENDING_BURN_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 5;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Applies the pending burn amount to the confidential supply.
+  ///
+  public record ApplyConfidentialPendingBurnIxData(int discriminator, int confidentialMintBurnDiscriminator) implements SerDe {  
+
+    public static ApplyConfidentialPendingBurnIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 2;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int CONFIDENTIAL_MINT_BURN_DISCRIMINATOR_OFFSET = 1;
+
+    public static ApplyConfidentialPendingBurnIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var confidentialMintBurnDiscriminator = _data[i] & 0xFF;
+      return new ApplyConfidentialPendingBurnIxData(discriminator, confidentialMintBurnDiscriminator);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) confidentialMintBurnDiscriminator;
+      ++i;
       return i - _offset;
     }
 
@@ -10848,6 +12107,308 @@ public final class Token2022Program {
       putInt64LE(_data, i, amount);
       i += 8;
       _data[i] = (byte) decimals;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator PERMISSIONED_CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(46);
+
+  /// Burn tokens from a confidential balance when the mint has the
+  /// permissioned burn extension enabled.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
+  /// @param authorityKey The account's owner/delegate or its multisignature account.
+  public static List<AccountMeta> permissionedConfidentialBurnKeys(final PublicKey tokenKey,
+                                                                   final PublicKey mintKey,
+                                                                   final PublicKey instructionsSysvarKey,
+                                                                   final PublicKey equalityRecordKey,
+                                                                   final PublicKey ciphertextValidityRecordKey,
+                                                                   final PublicKey rangeRecordKey,
+                                                                   final PublicKey permissionedBurnAuthorityKey,
+                                                                   final PublicKey authorityKey) {
+    final var keys = new ArrayList<AccountMeta>(8);
+    keys.add(createWrite(tokenKey));
+    keys.add(createWrite(mintKey));
+    if (instructionsSysvarKey != null) {
+      keys.add(createRead(instructionsSysvarKey));
+    }
+    if (equalityRecordKey != null) {
+      keys.add(createRead(equalityRecordKey));
+    }
+    if (ciphertextValidityRecordKey != null) {
+      keys.add(createRead(ciphertextValidityRecordKey));
+    }
+    if (rangeRecordKey != null) {
+      keys.add(createRead(rangeRecordKey));
+    }
+    keys.add(createReadOnlySigner(permissionedBurnAuthorityKey));
+    keys.add(createReadOnlySigner(authorityKey));
+    return keys;
+  }
+
+  /// Burn tokens from a confidential balance when the mint has the
+  /// permissioned burn extension enabled.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param tokenKey The SPL Token account.
+  /// @param mintKey The SPL Token mint.
+  /// @param instructionsSysvarKey (Optional) Instructions sysvar if at least one of the
+  ///                              `zk_elgamal_proof` instructions are included in the same
+  ///                              transaction.
+  /// @param equalityRecordKey (Optional) The context state account containing the pre-verified
+  ///                          `VerifyCiphertextCommitmentEquality` proof.
+  /// @param ciphertextValidityRecordKey (Optional) The context state account containing the pre-verified
+  ///                                    `VerifyBatchedGroupedCiphertext3HandlesValidity` proof.
+  /// @param rangeRecordKey (Optional) The context state account containing the pre-verified
+  ///                       `VerifyBatchedRangeProofU128` proof.
+  /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
+  /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the burn instruction in the transaction. If the offset is `0`,
+  ///                                       then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the burn instruction in the transaction. If the offset
+  ///                                                 is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    burn instruction in the transaction. If the offset is `0`, then use a
+  ///                                    context state account for the proof.
+  public static Instruction permissionedConfidentialBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                         final PublicKey tokenKey,
+                                                         final PublicKey mintKey,
+                                                         final PublicKey instructionsSysvarKey,
+                                                         final PublicKey equalityRecordKey,
+                                                         final PublicKey ciphertextValidityRecordKey,
+                                                         final PublicKey rangeRecordKey,
+                                                         final PublicKey permissionedBurnAuthorityKey,
+                                                         final PublicKey authorityKey,
+                                                         final DecryptableBalance newDecryptableAvailableBalance,
+                                                         final EncryptedBalance burnAmountAuditorCiphertextLo,
+                                                         final EncryptedBalance burnAmountAuditorCiphertextHi,
+                                                         final int equalityProofInstructionOffset,
+                                                         final int ciphertextValidityProofInstructionOffset,
+                                                         final int rangeProofInstructionOffset) {
+    final var keys = permissionedConfidentialBurnKeys(
+      tokenKey,
+      mintKey,
+      instructionsSysvarKey,
+      equalityRecordKey,
+      ciphertextValidityRecordKey,
+      rangeRecordKey,
+      permissionedBurnAuthorityKey,
+      authorityKey
+    );
+    return permissionedConfidentialBurn(
+      invokedToken2022ProgramMeta,
+      keys,
+      newDecryptableAvailableBalance,
+      burnAmountAuditorCiphertextLo,
+      burnAmountAuditorCiphertextHi,
+      equalityProofInstructionOffset,
+      ciphertextValidityProofInstructionOffset,
+      rangeProofInstructionOffset
+    );
+  }
+
+  /// Burn tokens from a confidential balance when the mint has the
+  /// permissioned burn extension enabled.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the burn instruction in the transaction. If the offset is `0`,
+  ///                                       then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the burn instruction in the transaction. If the offset
+  ///                                                 is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    burn instruction in the transaction. If the offset is `0`, then use a
+  ///                                    context state account for the proof.
+  public static Instruction permissionedConfidentialBurn(final AccountMeta invokedToken2022ProgramMeta,
+                                                         final List<AccountMeta> keys,
+                                                         final DecryptableBalance newDecryptableAvailableBalance,
+                                                         final EncryptedBalance burnAmountAuditorCiphertextLo,
+                                                         final EncryptedBalance burnAmountAuditorCiphertextHi,
+                                                         final int equalityProofInstructionOffset,
+                                                         final int ciphertextValidityProofInstructionOffset,
+                                                         final int rangeProofInstructionOffset) {
+    final byte[] _data = new byte[5 + newDecryptableAvailableBalance.l() + burnAmountAuditorCiphertextLo.l() + burnAmountAuditorCiphertextHi.l()];
+    int i = PERMISSIONED_CONFIDENTIAL_BURN_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) 3;
+    ++i;
+    i += newDecryptableAvailableBalance.write(_data, i);
+    i += burnAmountAuditorCiphertextLo.write(_data, i);
+    i += burnAmountAuditorCiphertextHi.write(_data, i);
+    _data[i] = (byte) equalityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+    ++i;
+    _data[i] = (byte) rangeProofInstructionOffset;
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Burn tokens from a confidential balance when the mint has the
+  /// permissioned burn extension enabled.
+  /// 
+  /// Fails if the source account is frozen.
+  /// 
+  /// In order for this instruction to be successfully processed, it must be
+  /// accompanied by the following list of `zk_elgamal_proof` program
+  /// instructions:
+  /// - `VerifyCiphertextCommitmentEquality`
+  /// - `VerifyBatchedGroupedCiphertext3HandlesValidity`
+  /// - `VerifyBatchedRangeProofU128`
+  /// These instructions can be accompanied in the same transaction or can be
+  /// pre-verified into a context state account, in which case, only their
+  /// context state account addresses need to be provided.
+  ///
+  /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
+  /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
+  /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
+  /// @param equalityProofInstructionOffset Relative location of the
+  ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
+  ///                                       to the burn instruction in the transaction. If the offset is `0`,
+  ///                                       then use a context state account for the proof.
+  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
+  ///                                                 instruction to the burn instruction in the transaction. If the offset
+  ///                                                 is `0`, then use a context state account for the proof.
+  /// @param rangeProofInstructionOffset Relative location of the
+  ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
+  ///                                    burn instruction in the transaction. If the offset is `0`, then use a
+  ///                                    context state account for the proof.
+  public record PermissionedConfidentialBurnIxData(int discriminator,
+                                                   int permissionedBurnDiscriminator,
+                                                   DecryptableBalance newDecryptableAvailableBalance,
+                                                   EncryptedBalance burnAmountAuditorCiphertextLo,
+                                                   EncryptedBalance burnAmountAuditorCiphertextHi,
+                                                   int equalityProofInstructionOffset,
+                                                   int ciphertextValidityProofInstructionOffset,
+                                                   int rangeProofInstructionOffset) implements SerDe {  
+
+    public static PermissionedConfidentialBurnIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 169;
+
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int PERMISSIONED_BURN_DISCRIMINATOR_OFFSET = 1;
+    public static final int NEW_DECRYPTABLE_AVAILABLE_BALANCE_OFFSET = 2;
+    public static final int BURN_AMOUNT_AUDITOR_CIPHERTEXT_LO_OFFSET = 38;
+    public static final int BURN_AMOUNT_AUDITOR_CIPHERTEXT_HI_OFFSET = 102;
+    public static final int EQUALITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 166;
+    public static final int CIPHERTEXT_VALIDITY_PROOF_INSTRUCTION_OFFSET_OFFSET = 167;
+    public static final int RANGE_PROOF_INSTRUCTION_OFFSET_OFFSET = 168;
+
+    public static PermissionedConfidentialBurnIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final var discriminator = _data[i] & 0xFF;
+      ++i;
+      final var permissionedBurnDiscriminator = _data[i] & 0xFF;
+      ++i;
+      final var newDecryptableAvailableBalance = DecryptableBalance.read(_data, i);
+      i += newDecryptableAvailableBalance.l();
+      final var burnAmountAuditorCiphertextLo = EncryptedBalance.read(_data, i);
+      i += burnAmountAuditorCiphertextLo.l();
+      final var burnAmountAuditorCiphertextHi = EncryptedBalance.read(_data, i);
+      i += burnAmountAuditorCiphertextHi.l();
+      final var equalityProofInstructionOffset = _data[i];
+      ++i;
+      final var ciphertextValidityProofInstructionOffset = _data[i];
+      ++i;
+      final var rangeProofInstructionOffset = _data[i];
+      return new PermissionedConfidentialBurnIxData(discriminator,
+                                                    permissionedBurnDiscriminator,
+                                                    newDecryptableAvailableBalance,
+                                                    burnAmountAuditorCiphertextLo,
+                                                    burnAmountAuditorCiphertextHi,
+                                                    equalityProofInstructionOffset,
+                                                    ciphertextValidityProofInstructionOffset,
+                                                    rangeProofInstructionOffset);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      _data[i] = (byte) discriminator;
+      ++i;
+      _data[i] = (byte) permissionedBurnDiscriminator;
+      ++i;
+      i += newDecryptableAvailableBalance.write(_data, i);
+      i += burnAmountAuditorCiphertextLo.write(_data, i);
+      i += burnAmountAuditorCiphertextHi.write(_data, i);
+      _data[i] = (byte) equalityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) ciphertextValidityProofInstructionOffset;
+      ++i;
+      _data[i] = (byte) rangeProofInstructionOffset;
       ++i;
       return i - _offset;
     }
