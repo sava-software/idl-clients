@@ -1,5 +1,16 @@
 # Changelog
 
+## [25.12.12](https://github.com/sava-software/idl-clients/compare/25.12.11...25.12.12) (2026-06-08)
+
+
+### Features
+
+* **build:** refine settings.gradle and dependabot schedule ([673cd1b](https://github.com/sava-software/idl-clients/commit/673cd1b7b5991a4b622118b531003aebfd6ecf5c))
+* **build:** update dependencies and workflows for enhanced Gradle handling ([0c69af6](https://github.com/sava-software/idl-clients/commit/0c69af694c411170aac83a2ccd8aace9a1191b8a))
+* **idl-clients-oracles:** sync Wormhole Post Message and Verify VAA IDLs ([d0d7bf1](https://github.com/sava-software/idl-clients/commit/d0d7bf1c6e9619d57be54ab0999bf03ddd300300))
+* **spl:** Add KaminoVaultPDAs ([d128886](https://github.com/sava-software/idl-clients/commit/d128886e946d3e3dae44d80891cfd4b83f8b2c1b))
+* **spl:** sync token-2022 ([e8a748e](https://github.com/sava-software/idl-clients/commit/e8a748e3e8737d7799bc8ba830321baa0cb6f708))
+
 ## [25.12.11](https://github.com/sava-software/idl-clients/compare/25.12.10...25.12.11) (2026-05-30)
 
 
