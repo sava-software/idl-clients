@@ -1,78 +1,52 @@
-# Java / Gradle / IntelliJ project .gitignore
-# Generated: 2025-11-03
+# Whitelist .gitignore: ignore everything by default, explicitly re-include tracked content.
 
-# macOS
+# Ignore everything
+/*
+
+# Re-include explicitly
+!/.github/
+!/.gitignore
+!/.release-please-manifest.json
+!/AGENTS.md
+!/CHANGELOG.md
+!/LICENSE
+!/README.md
+!/gradle/
+!/gradle.properties
+!/gradlew
+!/gradlew.bat
+!gradle/wrapper/gradle-wrapper.jar
+!/idl-clients-*/
+!/idls/
+!/.junie/
+!/main_net_programs.json
+!/release-please-config.json
+!/settings.gradle.kts
+
+# Ignore build/IDE/temp output within re-included directories
 .DS_Store
-.AppleDouble
-.LSOverride
-Icon?
 ._*
-
-# Logs
-logs/
 *.log
 hs_err_pid*.log
 replay_pid*.log
-
-# Build output
 **/build/
 **/out/
 **/target/
-
-# Gradle
 .gradle/
-
-# Keep Gradle wrapper scripts and JAR in VCS
-!gradlew
-!gradlew.bat
-!gradle/wrapper/gradle-wrapper.jar
-
-# IntelliJ IDEA / JetBrains
-.idea/
 *.iml
-*.iws
-*.ipr
-# Rider/Android Studio caches
-.idea/caches/
-.idea/libraries/
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/assetWizardSettings.xml
-.idea/dictionaries/
-.idea/modules.xml
-.idea/compiler.xml
-.idea/jarRepositories.xml
-.idea/kotlinc.xml
-
-# Eclipse (just in case)
+.idea/
+.vscode/
 .project
 .classpath
 .settings/
-
-# VS Code (if used)
-.vscode/
-
-# Kotlin/Java annotation processors and generated sources
 **/generated/
-
-# Archive/packaging outputs
-*.tar
-*.tar.gz
-*.tgz
-
-# Temporary files
 *.swp
 *.swo
 *~
-.tmp/
-.temp/
-
-# Node/Yarn (if any tooling pulls it in locally)
 node_modules/
 **/.cache/
 Integ.*
-/markets/
-/symlinks/
 *.bin
-/.junie/
+*.tar
+*.tar.gz
+*.tgz
