@@ -18,7 +18,6 @@
 !gradle/wrapper/gradle-wrapper.jar
 !/idl-clients-*/
 !/idls/
-!/.junie/
 !/main_net_programs.json
 !/release-please-config.json
 !/settings.gradle.kts
