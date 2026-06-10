@@ -17,7 +17,7 @@
       "package": "spl.lut",
       "program": "AddressLookupTab1e1111111111111111111111111",
       "idlType": "codama",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/program/idl.json"
+      "idlURL": "https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/idl.json"
     },
     {
       "name": "CCTP Message Transmitter V2",
@@ -33,7 +33,7 @@
       "package": "spl.compute_budget",
       "program": "ComputeBudget111111111111111111111111111111",
       "idlType": "codama",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/program/idl.json"
+      "idlURL": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json"
     },
     {
       "name": "Drift",
@@ -728,7 +728,7 @@
       "package": "spl.token",
       "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
       "idlType": "codama",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/program/idl.json",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/idl.json",
       "ignoreInstructions": [
         "Batch"
       ],
