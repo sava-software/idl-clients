@@ -169,7 +169,10 @@ public sealed interface Swap extends RustEnum permits
   Swap.GoonFiV3,
   Swap.PumpWrappedBuyV5,
   Swap.PumpWrappedSellV5,
-  Swap.ZeroFiSwapV2 {
+  Swap.ZeroFiSwapV2,
+  Swap.BisonFiPredict,
+  Swap.ByrealDynamicV3,
+  Swap.Flux {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -330,6 +333,9 @@ public sealed interface Swap extends RustEnum permits
       case 152 -> PumpWrappedBuyV5.read(_data, i);
       case 153 -> PumpWrappedSellV5.read(_data, i);
       case 154 -> ZeroFiSwapV2.INSTANCE;
+      case 155 -> BisonFiPredict.read(_data, i);
+      case 156 -> ByrealDynamicV3.INSTANCE;
+      case 157 -> Flux.read(_data, i);
       default -> null;
     };
   }
@@ -2581,6 +2587,93 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 154;
+    }
+  }
+
+  record BisonFiPredict(BisonFiPredictSide side, boolean isBuy) implements Swap {
+
+    public static final int BYTES = 2;
+
+    public static final int SIDE_OFFSET = 0;
+    public static final int IS_BUY_OFFSET = 1;
+
+    public static BisonFiPredict read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var side = BisonFiPredictSide.read(_data, i);
+      i += side.l();
+      final var isBuy = _data[i] == 1;
+      return new BisonFiPredict(side, isBuy);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += side.write(_data, i);
+      _data[i] = (byte) (isBuy ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 155;
+    }
+  }
+
+  record ByrealDynamicV3() implements EnumNone, Swap {
+
+    public static final ByrealDynamicV3 INSTANCE = new ByrealDynamicV3();
+
+    @Override
+    public int ordinal() {
+      return 156;
+    }
+  }
+
+  record Flux(long swapId, boolean baseToQuote) implements Swap {
+
+    public static final int BYTES = 9;
+
+    public static final int SWAP_ID_OFFSET = 0;
+    public static final int BASE_TO_QUOTE_OFFSET = 8;
+
+    public static Flux read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var swapId = getInt64LE(_data, i);
+      i += 8;
+      final var baseToQuote = _data[i] == 1;
+      return new Flux(swapId, baseToQuote);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      putInt64LE(_data, i, swapId);
+      i += 8;
+      _data[i] = (byte) (baseToQuote ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 157;
     }
   }
 }
