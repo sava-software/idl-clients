@@ -1,4 +1,4 @@
-name: Gradle Check
+name: Gradle Check Scheduled
 
 on:
   schedule:
