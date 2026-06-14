@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.12.13](https://github.com/sava-software/idl-clients/compare/25.12.12...25.12.13) (2026-06-14)
+
+
+### Features
+
+* **idl-clients-jupiter:** add BisonFiPredict, ByrealDynamicV3, and Flux swap types ([1eda314](https://github.com/sava-software/idl-clients/commit/1eda314c3bd7c066f959b7914d0c4164023b2e15))
+* **idl-clients-loopscale:** add LoopscalePDAs utility and refactor PDA logic ([5dff911](https://github.com/sava-software/idl-clients/commit/5dff91164a8c4e370ae2c94b940eb73bb26ab299))
+
 ## [25.12.12](https://github.com/sava-software/idl-clients/compare/25.12.11...25.12.12) (2026-06-08)
 
 
