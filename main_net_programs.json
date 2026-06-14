@@ -747,7 +747,7 @@
       "package": "spl.token_2022",
       "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
       "idlType": "codama",
-      "idlURL": "https://raw.githubusercontent.com/solana-program/token-2022/refs/heads/main/interface/idl.json",
+      "idlURL": "https://raw.githubusercontent.com/solana-program/token-2022/refs/heads/main/idl.json",
       "ignoreInstructions": [
         "updateTokenMetadataField",
         "batch"

@@ -74,7 +74,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
 
   @Override
   public Instruction createLoan(final PublicKey borrower, final long nonce) {
-    final var loan = LoopscaleAccounts.loanPda(borrower, nonce, accounts.loopscaleProgram()).publicKey();
+    final var loan = LoopscalePDAs.loan(borrower, nonce, accounts.loopscaleProgram()).publicKey();
     return LoopscaleProgram.createLoan(
         accounts.invokedLoopscaleProgram(),
         accounts.bsAuth(),
