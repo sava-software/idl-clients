@@ -582,6 +582,13 @@ public final class OrcaUtil {
         : sqrtPriceFromNegativeTick(tickIndex);
   }
 
+  public static BigInteger tickIndexToSqrtPriceX64Checked(final int tickIndex) {
+    if (tickIndex < OrcaUtil.MIN_TICK_INDEX || tickIndex > OrcaUtil.MAX_TICK_INDEX) {
+      throw new IllegalArgumentException("tick index out of range: " + tickIndex);
+    }
+    return tickIndexToSqrtPriceX64(tickIndex);
+  }
+
   // log_b(2) in Q32.32 form (one bit per 2^32). Source: `LOG_B_2_X32`.
   private static final BigInteger LOG_B_2_X32 = BigInteger.valueOf(59543866431248L);
   private static final BigInteger LOG_B_P_ERR_MARGIN_LOWER_X64 =
@@ -732,10 +739,10 @@ public final class OrcaUtil {
   /// Compute the token-A delta between two sqrt-prices for a given
   /// `liquidity`. Mirrors `try_get_amount_delta_a`. Result is a u64 token
   /// amount returned as an unsigned `long`.
-  public static long tryGetAmountDeltaA(final BigInteger sqrtPrice1,
-                                        final BigInteger sqrtPrice2,
-                                        final BigInteger liquidity,
-                                        final boolean roundUp) {
+  public static BigInteger tryGetAmountDeltaA(final BigInteger sqrtPrice1,
+                                              final BigInteger sqrtPrice2,
+                                              final BigInteger liquidity,
+                                              final boolean roundUp) {
     requireU128(sqrtPrice1, "sqrtPrice1");
     requireU128(sqrtPrice2, "sqrtPrice2");
     requireU128(liquidity, "liquidity");
@@ -753,16 +760,16 @@ public final class OrcaUtil {
     if (roundUp && qr[1].signum() != 0) {
       quotient = quotient.add(BigInteger.ONE);
     }
-    return toU64(quotient);
+    return quotient;
   }
 
   /// Compute the token-B delta between two sqrt-prices for a given
   /// `liquidity`. Mirrors `try_get_amount_delta_b`. Result is a u64 token
   /// amount returned as an unsigned `long`.
-  public static long tryGetAmountDeltaB(final BigInteger sqrtPrice1,
-                                        final BigInteger sqrtPrice2,
-                                        final BigInteger liquidity,
-                                        final boolean roundUp) {
+  public static BigInteger tryGetAmountDeltaB(final BigInteger sqrtPrice1,
+                                              final BigInteger sqrtPrice2,
+                                              final BigInteger liquidity,
+                                              final boolean roundUp) {
     requireU128(sqrtPrice1, "sqrtPrice1");
     requireU128(sqrtPrice2, "sqrtPrice2");
     requireU128(liquidity, "liquidity");
@@ -775,7 +782,7 @@ public final class OrcaUtil {
     if (shouldRound) {
       quotient = quotient.add(BigInteger.ONE);
     }
-    return toU64(quotient);
+    return quotient;
   }
 
   private static BigInteger requireSqrtPriceBounds(final BigInteger result) {
