@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.12.14](https://github.com/sava-software/idl-clients/compare/25.12.13...25.12.14) (2026-06-15)
+
+
+### Features
+
+* **idl-clients-orca:** add tick index validation and support BigInteger deltas ([2d919f0](https://github.com/sava-software/idl-clients/commit/2d919f01aa3cef93532bbc801a100c150890d89d))
+
 ## [25.12.13](https://github.com/sava-software/idl-clients/compare/25.12.12...25.12.13) (2026-06-14)
 
 
