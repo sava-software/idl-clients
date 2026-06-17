@@ -7,20 +7,17 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.util.OptionalInt;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-
-import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.*;
 
 public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum permits
-  UpdateOracleMappingAndMetadataEntry.RemoveEntry,
-  UpdateOracleMappingAndMetadataEntry.MappingConfig,
-  UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
-  UpdateOracleMappingAndMetadataEntry.MappingTwapEnabledBitmask,
-  UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
-  UpdateOracleMappingAndMetadataEntry.MetadataName,
-  UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
-  UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
+    UpdateOracleMappingAndMetadataEntry.RemoveEntry,
+    UpdateOracleMappingAndMetadataEntry.MappingConfig,
+    UpdateOracleMappingAndMetadataEntry.MappingTwapEntry,
+    UpdateOracleMappingAndMetadataEntry.MappingTwapEnabledBitmask,
+    UpdateOracleMappingAndMetadataEntry.MappingRefPrice,
+    UpdateOracleMappingAndMetadataEntry.MetadataName,
+    UpdateOracleMappingAndMetadataEntry.MetadataMaxPriceAgeSlots,
+    UpdateOracleMappingAndMetadataEntry.MetadataGroupIdsBitset {
 
   static UpdateOracleMappingAndMetadataEntry read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -137,7 +134,8 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
-  record MappingRefPrice(OptionalInt refPriceIndex, OptionalInt refPriceToleranceBps) implements UpdateOracleMappingAndMetadataEntry {
+  record MappingRefPrice(OptionalInt refPriceIndex, OptionalInt refPriceToleranceBps) implements
+      UpdateOracleMappingAndMetadataEntry {
 
     public static final int REF_PRICE_INDEX_OFFSET = 1;
 
