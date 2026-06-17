@@ -3,21 +3,8 @@ plugins {
 }
 
 val idlClientModules = setOf(
-  "idl-clients-cctp",
-  "idl-clients-core",
-  "idl-clients-drift",
-  "idl-clients-jupiter",
-  "idl-clients-kamino",
-  "idl-clients-loopscale",
-  "idl-clients-marinade",
-  "idl-clients-metaplex",
-  "idl-clients-meteora",
-  "idl-clients-neutral_trade",
-  "idl-clients-oracles",
-  "idl-clients-orca",
-  "idl-clients-phoenix",
-  "idl-clients-spl",
-  "idl-clients-squads",
+  "idl-clients-bundle",
+  "idl-clients-spl"
 )
 
 dependencies {

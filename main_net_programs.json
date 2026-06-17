@@ -2,8 +2,8 @@
   "basePackage": "software.sava.idl.clients",
   "baseModuleName": "software.sava.idl.clients",
   "commons": {
-    "source": "idl-clients-core",
-    "module": "core",
+    "source": "idl-clients-spl",
+    "module": "spl",
     "package": "core.gen"
   },
   "genPackageName": "gen",
@@ -21,9 +21,9 @@
     },
     {
       "name": "CCTP Message Transmitter V2",
-      "source": "idl-clients-cctp",
+      "source": "idl-clients-bundle",
       "package": "cctp.message_transmitter.v2",
-      "module": "cctp",
+      "module": "bundle",
       "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
     },
     {
@@ -36,97 +36,67 @@
       "idlURL": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json"
     },
     {
-      "name": "Drift",
-      "source": "idl-clients-drift",
-      "package": "drift",
-      "module": "drift",
-      "program": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH"
-    },
-    {
-      "name": "Drift Merkle Distributor",
-      "source": "idl-clients-drift",
-      "module": "drift",
-      "package": "drift.merkle.distributor",
-      "program": "E7HtfkEMhmn9uwL7EFNydcXBWy5WCYN1vFmKKjipEH1x"
-    },
-    {
-      "name": "Drift Vaults",
-      "source": "idl-clients-drift",
-      "module": "drift",
-      "package": "drift.vaults",
-      "program": "vAuLTsyrvSfZRuRB3XgvkPwNGgYSs9YRYymVebLKoxR",
-      "typeRefs": [
-        {
-          "refProgram": "dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH",
-          "srcMismatch": "ERROR",
-          "matchOnTypeName": true,
-          "excludeTypes": [],
-          "explicitRules": []
-        }
-      ]
-    },
-    {
       "name": "Jupiter Governance",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.governance",
       "program": "GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY"
     },
     {
       "name": "Jupiter Locked Voter",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.voter",
       "program": "voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj"
     },
     {
       "name": "Jupiter Merkle Distributor",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.merkle_distributor",
       "program": "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R"
     },
     {
       "name": "Jupiter Lend",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.lend",
       "program": "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9",
       "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json"
     },
     {
       "name": "Jupiter Borrow",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.borrow",
       "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
       "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json"
     },
     {
       "name": "Jupiter Swap",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.swap",
       "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
     },
     {
       "name": "Jupiter Order Engine",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.order_engine",
       "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
     },
     {
       "name": "Jupiter Stable Program",
-      "source": "idl-clients-jupiter",
-      "module": "jupiter",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "jupiter.stable",
       "program": "JUPUSDecMzAVgztLe6eGhwUBj1Pn3j9WAXwmtHmfbRr"
     },
     {
       "name": "Kamino Farms",
-      "source": "idl-clients-kamino",
-      "module": "kamino",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "kamino.farms",
       "program": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
       "typeRefs": [
@@ -143,22 +113,22 @@
     },
     {
       "name": "Kamino Lend",
-      "source": "idl-clients-kamino",
-      "module": "kamino",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "kamino.lend",
       "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
     },
     {
       "name": "Kamino Scope",
-      "source": "idl-clients-kamino",
-      "module": "kamino",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "kamino.scope",
       "program": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ"
     },
     {
       "name": "Kamino Vaults",
-      "source": "idl-clients-kamino",
-      "module": "kamino",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "kamino.vaults",
       "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
       "typeRefs": [
@@ -189,22 +159,22 @@
     },
     {
       "name": "Loopscale",
-      "source": "idl-clients-loopscale",
-      "module": "loopscale",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "loopscale",
       "program": "1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"
     },
     {
       "name": "Marinade Stake Pool",
-      "source": "idl-clients-marinade",
-      "module": "marinade",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "marinade.stake_pool",
       "program": "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD"
     },
     {
       "name": "Metaplex Token Metadata",
-      "source": "idl-clients-metaplex",
-      "module": "metaplex",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "metaplex.token.metadata",
       "program": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
       "idlFile": "idls/shank/metaplex/token_metadata.json",
@@ -212,15 +182,15 @@
     },
     {
       "name": "Meteora DLMM",
-      "source": "idl-clients-meteora",
-      "module": "meteora",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "meteora.dlmm",
       "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
     },
     {
       "name": "Neutral Trade",
-      "source": "idl-clients-neutral_trade",
-      "module": "neutral_trade",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "nt.bundle",
       "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
@@ -228,16 +198,16 @@
     },
     {
       "name": "Orca Whirlpools",
-      "source": "idl-clients-orca",
-      "module": "orca",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "orca.whirlpools",
       "program": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
       "idlType": "anchor"
     },
     {
       "name": "Phoenix Ember",
-      "source": "idl-clients-phoenix",
-      "module": "phoenix",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "phoenix.ember",
       "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
@@ -245,8 +215,8 @@
     },
     {
       "name": "Phoenix Perpetuals",
-      "source": "idl-clients-phoenix",
-      "module": "phoenix",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "phoenix.perpetuals",
       "program": "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
@@ -255,8 +225,8 @@
     },
     {
       "name": "Phoenix Perpetuals Dev",
-      "source": "idl-clients-phoenix",
-      "module": "phoenix",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "phoenix.dev.perpetuals",
       "program": "phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
@@ -265,22 +235,22 @@
     },
     {
       "name": "Pyth Lazer",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.pyth.lazer",
       "program": "pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt"
     },
     {
       "name": "Pyth Push",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.pyth.push",
       "program": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT"
     },
     {
       "name": "Pyth Receiver",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.pyth.receiver",
       "program": "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ",
       "typeRefs": [
@@ -303,8 +273,8 @@
     },
     {
       "name": "Squads V4",
-      "source": "idl-clients-squads",
-      "module": "squads",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "squads.v4",
       "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf"
     },
@@ -707,8 +677,8 @@
     },
     {
       "name": "Switchboard On-Demand",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.switchboard.on_demand",
       "program": "SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv"
     },
@@ -763,16 +733,16 @@
     },
     {
       "name": "Wormhole Post Message Shim",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.wormhole.post_message",
       "program": "EtZMZM22ViKMo4r5y4Anovs3wKQ2owUmDpjygnMMcdEX",
       "idlURL": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_post_message_shim.json"
     },
     {
       "name": "Wormhole Verify Vaa Shim",
-      "source": "idl-clients-oracles",
-      "module": "oracles",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
       "package": "oracles.wormhole.verify_vaa",
       "program": "EFaNWErqAtVWufdNb7yofSHHfWFos843DFpu4JBw24at",
       "idlURL": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_verify_vaa_shim.json"

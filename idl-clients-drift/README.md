@@ -1,5 +1,9 @@
 # Drift
 
+> [!IMPORTANT]
+> Once Drift re-launches their program, this module will be updated and migrated
+> into `idl-clients-bundle`.
+
 ## Quick Start
 
 ```java

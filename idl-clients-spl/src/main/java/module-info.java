@@ -21,8 +21,8 @@ module software.sava.idl.clients.spl {
   exports software.sava.idl.clients.spl.token_2022.gen;
   exports software.sava.idl.clients.spl.token_2022;
   exports software.sava.idl.clients.spl;
+  exports software.sava.idl.clients.core.gen;
   requires java.net.http;
   requires transitive software.sava.core;
-  requires transitive software.sava.idl.clients.core;
   requires transitive software.sava.rpc;
 }
