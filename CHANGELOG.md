@@ -1,5 +1,23 @@
 # Changelog
 
+## [25.13.0](https://github.com/sava-software/idl-clients/compare/25.12.14...25.13.0) (2026-06-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* the per-program Maven artifacts and JPMS modules have been removed. Depend on software.sava.idl.clients.spl for core/SPL types and software.sava.idl.clients.bundle for all other programs. The corresponding `requires` directives in module-info.java must be updated accordingly.
+* the per-program Maven artifacts and JPMS modules have been removed. Depend on software.sava.idl.clients.spl for core/SPL types and software.sava.idl.clients.bundle for all other programs. The corresponding `requires` directives in module-info.java must be updated accordingly.
+
+### Miscellaneous Chores
+
+* release 25.13.0 ([c09e6c1](https://github.com/sava-software/idl-clients/commit/c09e6c1d6936222146d48d9c41933cacc9eba499))
+
+
+### Code Refactoring
+
+* consolidate modules into idl-clients-spl and idl-clients-bundle ([d62c489](https://github.com/sava-software/idl-clients/commit/d62c489fb18a4eebdc429dd913deed28342fcf35))
+* consolidate modules into idl-clients-spl and idl-clients-bundle ([48920b4](https://github.com/sava-software/idl-clients/commit/48920b4f3c3821b00414819b4bec3936df58017e))
+
 ## [25.12.14](https://github.com/sava-software/idl-clients/compare/25.12.13...25.12.14) (2026-06-15)
 
 
