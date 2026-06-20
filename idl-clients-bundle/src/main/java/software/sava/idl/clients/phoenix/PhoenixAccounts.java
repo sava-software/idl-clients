@@ -10,12 +10,14 @@ public interface PhoenixAccounts {
   PhoenixAccounts MAIN_NET = createAccounts(
       "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A",
-      "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih"
+      "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+      "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
   );
 
   static PhoenixAccounts createAccounts(final PublicKey emberProgram,
                                         final PublicKey emberUSDCMint,
-                                        final PublicKey eternalProgram) {
+                                        final PublicKey eternalProgram,
+                                        final PublicKey usdcMint) {
     return new PhoenixAccountsRecord(
         AccountMeta.createInvoked(emberProgram),
         EmberPDAs.statePDA(emberProgram).publicKey(),
@@ -25,17 +27,20 @@ public interface PhoenixAccounts {
         EternalPDAs.globalConfigurationPDA(eternalProgram).publicKey(),
         EternalPDAs.phoenixLogAuthorityPDA(eternalProgram).publicKey(),
         EternalPDAs.globalTraderIndexHeaderPDA(eternalProgram).publicKey(),
-        EternalPDAs.activeTraderBufferHeaderPDA(eternalProgram).publicKey()
+        EternalPDAs.activeTraderBufferHeaderPDA(eternalProgram).publicKey(),
+        usdcMint
     );
   }
 
   static PhoenixAccounts createAccounts(final String emberProgram,
                                         final String emberUSDCMint,
-                                        final String eternalProgram) {
+                                        final String eternalProgram,
+                                        final String usdcMint) {
     return createAccounts(
         PublicKey.fromBase58Encoded(emberProgram),
         PublicKey.fromBase58Encoded(emberUSDCMint),
-        PublicKey.fromBase58Encoded(eternalProgram)
+        PublicKey.fromBase58Encoded(eternalProgram),
+        PublicKey.fromBase58Encoded(usdcMint)
     );
   }
 
@@ -56,4 +61,6 @@ public interface PhoenixAccounts {
   PublicKey globalTraderIndex();
 
   PublicKey activeTraderBuffer();
+
+  PublicKey usdcMint();
 }

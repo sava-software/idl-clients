@@ -11,5 +11,6 @@ public record PhoenixAccountsRecord(AccountMeta invokedEmberProgram,
                                     PublicKey eternalGlobalConfig,
                                     PublicKey eternalLogAuthority,
                                     PublicKey globalTraderIndex,
-                                    PublicKey activeTraderBuffer) implements PhoenixAccounts {
+                                    PublicKey activeTraderBuffer,
+                                    PublicKey usdcMint) implements PhoenixAccounts {
 }
