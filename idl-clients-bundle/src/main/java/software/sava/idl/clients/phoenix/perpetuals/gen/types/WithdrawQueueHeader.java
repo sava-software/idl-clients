@@ -10,8 +10,6 @@ import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.util.function.BiFunction;
 
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -20,7 +18,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record WithdrawQueueHeader(PublicKey _address,
                                   Discriminator discriminator,
-                                  long discriminant,
                                   SequenceNumber sequenceNumber,
                                   WithdrawThrottle withdrawThrottle,
                                   QuoteLots totalQueuedAmount,
@@ -28,26 +25,19 @@ public record WithdrawQueueHeader(PublicKey _address,
                                   QuoteLots enqueueingFee,
                                   long[] reserved) implements SerDe {
 
-  public static final int BYTES = 128;
+  public static final int BYTES = 120;
   public static final int RESERVED_LEN = 5;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(125, 59, 94, 108, 171, 16, 43, 228);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 16;
-  public static final int WITHDRAW_THROTTLE_OFFSET = 32;
-  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 64;
-  public static final int WITHDRAWAL_FEE_OFFSET = 72;
-  public static final int ENQUEUEING_FEE_OFFSET = 80;
-  public static final int RESERVED_OFFSET = 88;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int SEQUENCE_NUMBER_OFFSET = 8;
+  public static final int WITHDRAW_THROTTLE_OFFSET = 24;
+  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 56;
+  public static final int WITHDRAWAL_FEE_OFFSET = 64;
+  public static final int ENQUEUEING_FEE_OFFSET = 72;
+  public static final int RESERVED_OFFSET = 80;
 
   public static Filter createSequenceNumberFilter(final SequenceNumber sequenceNumber) {
     return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
@@ -89,8 +79,6 @@ public record WithdrawQueueHeader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var sequenceNumber = SequenceNumber.read(_data, i);
     i += sequenceNumber.l();
     final var withdrawThrottle = WithdrawThrottle.read(_data, i);
@@ -105,7 +93,6 @@ public record WithdrawQueueHeader(PublicKey _address,
     SerDeUtil.readArray(reserved, _data, i);
     return new WithdrawQueueHeader(_address,
                                    discriminator,
-                                   discriminant,
                                    sequenceNumber,
                                    withdrawThrottle,
                                    totalQueuedAmount,
@@ -117,8 +104,6 @@ public record WithdrawQueueHeader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     i += sequenceNumber.write(_data, i);
     i += withdrawThrottle.write(_data, i);
     i += totalQueuedAmount.write(_data, i);

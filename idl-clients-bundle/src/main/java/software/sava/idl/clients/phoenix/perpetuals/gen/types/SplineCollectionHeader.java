@@ -12,9 +12,7 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -23,7 +21,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record SplineCollectionHeader(PublicKey _address,
                                      Discriminator discriminator,
-                                     long discriminant,
                                      PublicKey market,
                                      Symbol assetSymbol,
                                      SequenceNumber sequenceNumber,
@@ -31,26 +28,19 @@ public record SplineCollectionHeader(PublicKey _address,
                                      int numActive,
                                      byte[] padding) implements SerDe {
 
-  public static final int BYTES = 120;
+  public static final int BYTES = 112;
   public static final int PADDING_LEN = 32;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(192, 245, 182, 191, 88, 37, 79, 48);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int MARKET_OFFSET = 16;
-  public static final int ASSET_SYMBOL_OFFSET = 48;
-  public static final int SEQUENCE_NUMBER_OFFSET = 64;
-  public static final int NUM_SPLINES_OFFSET = 80;
-  public static final int NUM_ACTIVE_OFFSET = 84;
-  public static final int PADDING_OFFSET = 88;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int MARKET_OFFSET = 8;
+  public static final int ASSET_SYMBOL_OFFSET = 40;
+  public static final int SEQUENCE_NUMBER_OFFSET = 56;
+  public static final int NUM_SPLINES_OFFSET = 72;
+  public static final int NUM_ACTIVE_OFFSET = 76;
+  public static final int PADDING_OFFSET = 80;
 
   public static Filter createMarketFilter(final PublicKey market) {
     return Filter.createMemCompFilter(MARKET_OFFSET, market);
@@ -96,8 +86,6 @@ public record SplineCollectionHeader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var market = readPubKey(_data, i);
     i += 32;
     final var assetSymbol = Symbol.read(_data, i);
@@ -112,7 +100,6 @@ public record SplineCollectionHeader(PublicKey _address,
     SerDeUtil.readArray(padding, _data, i);
     return new SplineCollectionHeader(_address,
                                       discriminator,
-                                      discriminant,
                                       market,
                                       assetSymbol,
                                       sequenceNumber,
@@ -124,8 +111,6 @@ public record SplineCollectionHeader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     market.write(_data, i);
     i += 32;
     i += assetSymbol.write(_data, i);

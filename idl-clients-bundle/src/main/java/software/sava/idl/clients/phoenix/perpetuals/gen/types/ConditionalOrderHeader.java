@@ -11,8 +11,6 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -21,7 +19,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record ConditionalOrderHeader(PublicKey _address,
                                      Discriminator discriminator,
-                                     long discriminant,
                                      PublicKey traderKey,
                                      PublicKey fundingKey,
                                      SequenceNumber sequenceNumber,
@@ -29,26 +26,19 @@ public record ConditionalOrderHeader(PublicKey _address,
                                      int capacity,
                                      byte[] padding) implements SerDe {
 
-  public static final int BYTES = 104;
+  public static final int BYTES = 96;
   public static final int PADDING_LEN = 6;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(147, 116, 229, 177, 249, 200, 146, 49);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int TRADER_KEY_OFFSET = 16;
-  public static final int FUNDING_KEY_OFFSET = 48;
-  public static final int SEQUENCE_NUMBER_OFFSET = 80;
-  public static final int LEN_OFFSET = 96;
-  public static final int CAPACITY_OFFSET = 97;
-  public static final int PADDING_OFFSET = 98;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int TRADER_KEY_OFFSET = 8;
+  public static final int FUNDING_KEY_OFFSET = 40;
+  public static final int SEQUENCE_NUMBER_OFFSET = 72;
+  public static final int LEN_OFFSET = 88;
+  public static final int CAPACITY_OFFSET = 89;
+  public static final int PADDING_OFFSET = 90;
 
   public static Filter createTraderKeyFilter(final PublicKey traderKey) {
     return Filter.createMemCompFilter(TRADER_KEY_OFFSET, traderKey);
@@ -90,8 +80,6 @@ public record ConditionalOrderHeader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var traderKey = readPubKey(_data, i);
     i += 32;
     final var fundingKey = readPubKey(_data, i);
@@ -106,7 +94,6 @@ public record ConditionalOrderHeader(PublicKey _address,
     SerDeUtil.readArray(padding, _data, i);
     return new ConditionalOrderHeader(_address,
                                       discriminator,
-                                      discriminant,
                                       traderKey,
                                       fundingKey,
                                       sequenceNumber,
@@ -118,8 +105,6 @@ public record ConditionalOrderHeader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     traderKey.write(_data, i);
     i += 32;
     fundingKey.write(_data, i);

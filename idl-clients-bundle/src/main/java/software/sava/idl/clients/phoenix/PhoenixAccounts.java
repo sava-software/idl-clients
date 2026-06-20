@@ -8,18 +8,14 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.EternalPDAs;
 public interface PhoenixAccounts {
 
   PhoenixAccounts MAIN_NET = createAccounts(
-      "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
       "PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A",
-      "284iwGtA9X9aLy3KsyV8uT2pXLARhYbiSi5SiM2g47M2",
-      "HCrPXLByGqRh2szQi3gj7oRdRVBNi1gccAyn4CQCT3HK",
-      "2U32rSzzrQS3eVmGHsnbw5kcqKF3wQXpHGd3hMq5YJok"
+      "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih"
   );
 
   static PhoenixAccounts createAccounts(final PublicKey emberProgram,
                                         final PublicKey emberUSDCMint,
-                                        final PublicKey eternalProgram,
-                                        final PublicKey globalTraderIndex,
-                                        final PublicKey activeTraderBuffer) {
+                                        final PublicKey eternalProgram) {
     return new PhoenixAccountsRecord(
         AccountMeta.createInvoked(emberProgram),
         EmberPDAs.statePDA(emberProgram).publicKey(),
@@ -28,22 +24,18 @@ public interface PhoenixAccounts {
         AccountMeta.createInvoked(eternalProgram),
         EternalPDAs.globalConfigurationPDA(eternalProgram).publicKey(),
         EternalPDAs.phoenixLogAuthorityPDA(eternalProgram).publicKey(),
-        globalTraderIndex,
-        activeTraderBuffer
+        EternalPDAs.globalTraderIndexHeaderPDA(eternalProgram).publicKey(),
+        EternalPDAs.activeTraderBufferHeaderPDA(eternalProgram).publicKey()
     );
   }
 
   static PhoenixAccounts createAccounts(final String emberProgram,
                                         final String emberUSDCMint,
-                                        final String eternalProgram,
-                                        final String globalTraderIndex,
-                                        final String activeTraderBuffer) {
+                                        final String eternalProgram) {
     return createAccounts(
         PublicKey.fromBase58Encoded(emberProgram),
         PublicKey.fromBase58Encoded(emberUSDCMint),
-        PublicKey.fromBase58Encoded(eternalProgram),
-        PublicKey.fromBase58Encoded(globalTraderIndex),
-        PublicKey.fromBase58Encoded(activeTraderBuffer)
+        PublicKey.fromBase58Encoded(eternalProgram)
     );
   }
 

@@ -22,7 +22,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record StopLosses(PublicKey _address,
                          Discriminator discriminator,
-                         long discriminant,
                          StopLoss[] stopLosses,
                          long initialized,
                          SequenceNumber sequenceNumber,
@@ -32,7 +31,7 @@ public record StopLosses(PublicKey _address,
                          byte[] assetIdPadding,
                          long[] padding) implements SerDe {
 
-  public static final int BYTES = 336;
+  public static final int BYTES = 328;
   public static final int STOP_LOSSES_LEN = 2;
   public static final int ASSET_ID_PADDING_LEN = 4;
   public static final int PADDING_LEN = 8;
@@ -41,21 +40,14 @@ public record StopLosses(PublicKey _address,
   public static final Discriminator DISCRIMINATOR = toDiscriminator(127, 64, 139, 143, 70, 43, 167, 152);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int STOP_LOSSES_OFFSET = 16;
-  public static final int INITIALIZED_OFFSET = 176;
-  public static final int SEQUENCE_NUMBER_OFFSET = 184;
-  public static final int FUNDING_KEY_OFFSET = 200;
-  public static final int TRADER_KEY_OFFSET = 232;
-  public static final int ASSET_ID_OFFSET = 264;
-  public static final int ASSET_ID_PADDING_OFFSET = 268;
-  public static final int PADDING_OFFSET = 272;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int STOP_LOSSES_OFFSET = 8;
+  public static final int INITIALIZED_OFFSET = 168;
+  public static final int SEQUENCE_NUMBER_OFFSET = 176;
+  public static final int FUNDING_KEY_OFFSET = 192;
+  public static final int TRADER_KEY_OFFSET = 224;
+  public static final int ASSET_ID_OFFSET = 256;
+  public static final int ASSET_ID_PADDING_OFFSET = 260;
+  public static final int PADDING_OFFSET = 264;
 
   public static Filter createInitializedFilter(final long initialized) {
     final byte[] _data = new byte[8];
@@ -101,8 +93,6 @@ public record StopLosses(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var stopLosses = new StopLoss[2];
     i += SerDeUtil.readArray(stopLosses, StopLoss::read, _data, i);
     final var initialized = getInt64LE(_data, i);
@@ -121,7 +111,6 @@ public record StopLosses(PublicKey _address,
     SerDeUtil.readArray(padding, _data, i);
     return new StopLosses(_address,
                           discriminator,
-                          discriminant,
                           stopLosses,
                           initialized,
                           sequenceNumber,
@@ -135,8 +124,6 @@ public record StopLosses(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     i += SerDeUtil.writeArrayChecked(stopLosses, 2, _data, i);
     putInt64LE(_data, i, initialized);
     i += 8;

@@ -22,7 +22,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record OrderbookHeader(PublicKey _address,
                               Discriminator discriminator,
-                              long discriminant,
                               int marketStatus,
                               int baseLotsDecimals,
                               byte[] padding0,
@@ -38,7 +37,7 @@ public record OrderbookHeader(PublicKey _address,
                               SignedQuoteLots totalMakerQuoteLotFees,
                               QuoteLots totalTakerQuoteLotFees) implements SerDe {
 
-  public static final int BYTES = 128;
+  public static final int BYTES = 120;
   public static final int PADDING_0_LEN = 6;
   public static final int ASSET_ID_PADDING_LEN = 4;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -46,27 +45,20 @@ public record OrderbookHeader(PublicKey _address,
   public static final Discriminator DISCRIMINATOR = toDiscriminator(65, 1, 40, 241, 166, 14, 86, 188);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int MARKET_STATUS_OFFSET = 16;
-  public static final int BASE_LOTS_DECIMALS_OFFSET = 17;
-  public static final int PADDING_0_OFFSET = 18;
-  public static final int SEQUENCE_NUMBER_OFFSET = 24;
-  public static final int ASSET_ID_OFFSET = 40;
-  public static final int ASSET_ID_PADDING_OFFSET = 44;
-  public static final int ASSET_SYMBOL_OFFSET = 48;
-  public static final int TICK_SIZE_IN_QUOTE_LOTS_PER_BASE_LOT_OFFSET = 64;
-  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 72;
-  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 88;
-  public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 104;
-  public static final int DEFAULT_MAKER_FEE_MICRO_OFFSET = 108;
-  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 112;
-  public static final int TOTAL_TAKER_QUOTE_LOT_FEES_OFFSET = 120;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int MARKET_STATUS_OFFSET = 8;
+  public static final int BASE_LOTS_DECIMALS_OFFSET = 9;
+  public static final int PADDING_0_OFFSET = 10;
+  public static final int SEQUENCE_NUMBER_OFFSET = 16;
+  public static final int ASSET_ID_OFFSET = 32;
+  public static final int ASSET_ID_PADDING_OFFSET = 36;
+  public static final int ASSET_SYMBOL_OFFSET = 40;
+  public static final int TICK_SIZE_IN_QUOTE_LOTS_PER_BASE_LOT_OFFSET = 56;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 64;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 80;
+  public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 96;
+  public static final int DEFAULT_MAKER_FEE_MICRO_OFFSET = 100;
+  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 104;
+  public static final int TOTAL_TAKER_QUOTE_LOT_FEES_OFFSET = 112;
 
   public static Filter createMarketStatusFilter(final int marketStatus) {
     return Filter.createMemCompFilter(MARKET_STATUS_OFFSET, new byte[]{(byte) marketStatus});
@@ -144,8 +136,6 @@ public record OrderbookHeader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var marketStatus = _data[i] & 0xFF;
     ++i;
     final var baseLotsDecimals = _data[i];
@@ -175,7 +165,6 @@ public record OrderbookHeader(PublicKey _address,
     final var totalTakerQuoteLotFees = QuoteLots.read(_data, i);
     return new OrderbookHeader(_address,
                                discriminator,
-                               discriminant,
                                marketStatus,
                                baseLotsDecimals,
                                padding0,
@@ -195,8 +184,6 @@ public record OrderbookHeader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     _data[i] = (byte) marketStatus;
     ++i;
     _data[i] = (byte) baseLotsDecimals;

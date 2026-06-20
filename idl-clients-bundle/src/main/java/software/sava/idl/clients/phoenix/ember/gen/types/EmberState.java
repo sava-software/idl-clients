@@ -10,34 +10,24 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record EmberState(PublicKey _address,
                          Discriminator discriminator,
-                         long discriminant,
                          PublicKey authority,
                          PublicKey inputMint,
                          PublicKey outputMint) implements SerDe {
 
-  public static final int BYTES = 112;
+  public static final int BYTES = 104;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(0, 208, 11, 177, 63, 157, 55, 98);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 16;
-  public static final int INPUT_MINT_OFFSET = 48;
-  public static final int OUTPUT_MINT_OFFSET = 80;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int INPUT_MINT_OFFSET = 40;
+  public static final int OUTPUT_MINT_OFFSET = 72;
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
     return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
@@ -71,26 +61,17 @@ public record EmberState(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var inputMint = readPubKey(_data, i);
     i += 32;
     final var outputMint = readPubKey(_data, i);
-    return new EmberState(_address,
-                          discriminator,
-                          discriminant,
-                          authority,
-                          inputMint,
-                          outputMint);
+    return new EmberState(_address, discriminator, authority, inputMint, outputMint);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     authority.write(_data, i);
     i += 32;
     inputMint.write(_data, i);

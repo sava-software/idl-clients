@@ -20,31 +20,23 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record EscrowHeader(PublicKey _address,
                            Discriminator discriminator,
-                           long discriminant,
                            PublicKey authority,
                            PublicKey funderKey,
                            SequenceNumber sequenceNumber,
                            long len,
                            long capacity) implements SerDe {
 
-  public static final int BYTES = 112;
+  public static final int BYTES = 104;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(50, 4, 48, 59, 209, 138, 251, 204);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 16;
-  public static final int FUNDER_KEY_OFFSET = 48;
-  public static final int SEQUENCE_NUMBER_OFFSET = 80;
-  public static final int LEN_OFFSET = 96;
-  public static final int CAPACITY_OFFSET = 104;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int AUTHORITY_OFFSET = 8;
+  public static final int FUNDER_KEY_OFFSET = 40;
+  public static final int SEQUENCE_NUMBER_OFFSET = 72;
+  public static final int LEN_OFFSET = 88;
+  public static final int CAPACITY_OFFSET = 96;
 
   public static Filter createAuthorityFilter(final PublicKey authority) {
     return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
@@ -90,8 +82,6 @@ public record EscrowHeader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var funderKey = readPubKey(_data, i);
@@ -103,7 +93,6 @@ public record EscrowHeader(PublicKey _address,
     final var capacity = getInt64LE(_data, i);
     return new EscrowHeader(_address,
                             discriminator,
-                            discriminant,
                             authority,
                             funderKey,
                             sequenceNumber,
@@ -114,8 +103,6 @@ public record EscrowHeader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     authority.write(_data, i);
     i += 32;
     funderKey.write(_data, i);

@@ -25,7 +25,6 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record Trader(PublicKey _address,
                      Discriminator discriminator,
-                     long discriminant,
                      SequenceNumber sequenceNumber,
                      PublicKey key,
                      PublicKey authority,
@@ -42,7 +41,7 @@ public record Trader(PublicKey _address,
                      long lastDepositSlot,
                      byte[] conditionalOrderBits) implements SerDe {
 
-  public static final int BYTES = 232;
+  public static final int BYTES = 224;
   public static final int PADDING_0_LEN = 4;
   public static final int PADDING_1_LEN = 4;
   public static final int CONDITIONAL_ORDER_BITS_LEN = 24;
@@ -51,28 +50,21 @@ public record Trader(PublicKey _address,
   public static final Discriminator DISCRIMINATOR = toDiscriminator(41, 97, 73, 105, 110, 214, 112, 9);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 16;
-  public static final int KEY_OFFSET = 32;
-  public static final int AUTHORITY_OFFSET = 64;
-  public static final int TRADER_STATE_OFFSET = 96;
-  public static final int PADDING_0_OFFSET = 112;
-  public static final int WITHDRAW_QUEUE_NODE_OFFSET = 116;
-  public static final int MAX_POSITIONS_OFFSET = 120;
-  public static final int POSITION_AUTHORITY_OFFSET = 128;
-  public static final int NUM_MARKETS_WITH_SPLINES_OFFSET = 160;
-  public static final int TRADER_PDA_INDEX_OFFSET = 162;
-  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 163;
-  public static final int FUNDING_KEY_OFFSET = 164;
-  public static final int PADDING_1_OFFSET = 196;
-  public static final int LAST_DEPOSIT_SLOT_OFFSET = 200;
-  public static final int CONDITIONAL_ORDER_BITS_OFFSET = 208;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int SEQUENCE_NUMBER_OFFSET = 8;
+  public static final int KEY_OFFSET = 24;
+  public static final int AUTHORITY_OFFSET = 56;
+  public static final int TRADER_STATE_OFFSET = 88;
+  public static final int PADDING_0_OFFSET = 104;
+  public static final int WITHDRAW_QUEUE_NODE_OFFSET = 108;
+  public static final int MAX_POSITIONS_OFFSET = 112;
+  public static final int POSITION_AUTHORITY_OFFSET = 120;
+  public static final int NUM_MARKETS_WITH_SPLINES_OFFSET = 152;
+  public static final int TRADER_PDA_INDEX_OFFSET = 154;
+  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 155;
+  public static final int FUNDING_KEY_OFFSET = 156;
+  public static final int PADDING_1_OFFSET = 188;
+  public static final int LAST_DEPOSIT_SLOT_OFFSET = 192;
+  public static final int CONDITIONAL_ORDER_BITS_OFFSET = 200;
 
   public static Filter createSequenceNumberFilter(final SequenceNumber sequenceNumber) {
     return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
@@ -150,8 +142,6 @@ public record Trader(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var sequenceNumber = SequenceNumber.read(_data, i);
     i += sequenceNumber.l();
     final var key = readPubKey(_data, i);
@@ -184,7 +174,6 @@ public record Trader(PublicKey _address,
     SerDeUtil.readArray(conditionalOrderBits, _data, i);
     return new Trader(_address,
                       discriminator,
-                      discriminant,
                       sequenceNumber,
                       key,
                       authority,
@@ -205,8 +194,6 @@ public record Trader(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     i += sequenceNumber.write(_data, i);
     key.write(_data, i);
     i += 32;

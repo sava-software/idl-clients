@@ -12,15 +12,12 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
-import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record GlobalConfiguration(PublicKey _address,
                                   Discriminator discriminator,
-                                  long discriminant,
                                   PublicKey accountKey,
                                   PublicKey rootAuthority,
                                   PublicKey riskAuthority,
@@ -51,7 +48,7 @@ public record GlobalConfiguration(PublicKey _address,
                                   long[] padding7,
                                   long[] padding8) implements SerDe {
 
-  public static final int BYTES = 2568;
+  public static final int BYTES = 2560;
   public static final int PADDING_0_LEN = 4;
   public static final int PADDING_1_LEN = 32;
   public static final int PADDING_2_LEN = 32;
@@ -66,42 +63,35 @@ public record GlobalConfiguration(PublicKey _address,
   public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 146, 212, 210, 47, 136, 111, 20);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int DISCRIMINANT_OFFSET = 8;
-  public static final int ACCOUNT_KEY_OFFSET = 16;
-  public static final int ROOT_AUTHORITY_OFFSET = 48;
-  public static final int RISK_AUTHORITY_OFFSET = 80;
-  public static final int MARKET_AUTHORITY_OFFSET = 112;
-  public static final int ORACLE_AUTHORITY_OFFSET = 144;
-  public static final int SUCCESSOR_AUTHORITY_OFFSET = 176;
-  public static final int ADL_AUTHORITY_OFFSET = 208;
-  public static final int CANCEL_AUTHORITY_OFFSET = 240;
-  public static final int BACKSTOP_AUTHORITY_OFFSET = 272;
-  public static final int CANONICAL_TOKEN_MINT_KEY_OFFSET = 304;
-  public static final int GLOBAL_VAULT_KEY_OFFSET = 336;
-  public static final int PERP_ASSET_MAP_KEY_OFFSET = 368;
-  public static final int GLOBAL_TRADER_INDEX_HEADER_KEY_OFFSET = 400;
-  public static final int ACTIVE_TRADER_BUFFER_HEADER_KEY_OFFSET = 432;
-  public static final int TOTAL_QUOTE_LOT_FEES_OFFSET = 464;
-  public static final int UNCLAIMED_QUOTE_LOT_FEES_OFFSET = 472;
-  public static final int WITHDRAW_QUEUE_KEY_OFFSET = 480;
-  public static final int EXCHANGE_STATUS_OFFSET = 512;
-  public static final int QUOTE_DECIMALS_OFFSET = 513;
-  public static final int WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET = 514;
-  public static final int PADDING_0_OFFSET = 516;
-  public static final int PADDING_1_OFFSET = 520;
-  public static final int PADDING_2_OFFSET = 776;
-  public static final int PADDING_3_OFFSET = 1032;
-  public static final int PADDING_4_OFFSET = 1288;
-  public static final int PADDING_5_OFFSET = 1544;
-  public static final int PADDING_6_OFFSET = 1800;
-  public static final int PADDING_7_OFFSET = 2056;
-  public static final int PADDING_8_OFFSET = 2312;
-
-  public static Filter createDiscriminantFilter(final long discriminant) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, discriminant);
-    return Filter.createMemCompFilter(DISCRIMINANT_OFFSET, _data);
-  }
+  public static final int ACCOUNT_KEY_OFFSET = 8;
+  public static final int ROOT_AUTHORITY_OFFSET = 40;
+  public static final int RISK_AUTHORITY_OFFSET = 72;
+  public static final int MARKET_AUTHORITY_OFFSET = 104;
+  public static final int ORACLE_AUTHORITY_OFFSET = 136;
+  public static final int SUCCESSOR_AUTHORITY_OFFSET = 168;
+  public static final int ADL_AUTHORITY_OFFSET = 200;
+  public static final int CANCEL_AUTHORITY_OFFSET = 232;
+  public static final int BACKSTOP_AUTHORITY_OFFSET = 264;
+  public static final int CANONICAL_TOKEN_MINT_KEY_OFFSET = 296;
+  public static final int GLOBAL_VAULT_KEY_OFFSET = 328;
+  public static final int PERP_ASSET_MAP_KEY_OFFSET = 360;
+  public static final int GLOBAL_TRADER_INDEX_HEADER_KEY_OFFSET = 392;
+  public static final int ACTIVE_TRADER_BUFFER_HEADER_KEY_OFFSET = 424;
+  public static final int TOTAL_QUOTE_LOT_FEES_OFFSET = 456;
+  public static final int UNCLAIMED_QUOTE_LOT_FEES_OFFSET = 464;
+  public static final int WITHDRAW_QUEUE_KEY_OFFSET = 472;
+  public static final int EXCHANGE_STATUS_OFFSET = 504;
+  public static final int QUOTE_DECIMALS_OFFSET = 505;
+  public static final int WITHDRAWAL_MARGIN_FACTOR_BPS_OFFSET = 506;
+  public static final int PADDING_0_OFFSET = 508;
+  public static final int PADDING_1_OFFSET = 512;
+  public static final int PADDING_2_OFFSET = 768;
+  public static final int PADDING_3_OFFSET = 1024;
+  public static final int PADDING_4_OFFSET = 1280;
+  public static final int PADDING_5_OFFSET = 1536;
+  public static final int PADDING_6_OFFSET = 1792;
+  public static final int PADDING_7_OFFSET = 2048;
+  public static final int PADDING_8_OFFSET = 2304;
 
   public static Filter createAccountKeyFilter(final PublicKey accountKey) {
     return Filter.createMemCompFilter(ACCOUNT_KEY_OFFSET, accountKey);
@@ -205,8 +195,6 @@ public record GlobalConfiguration(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var discriminant = getInt64LE(_data, i);
-    i += 8;
     final var accountKey = readPubKey(_data, i);
     i += 32;
     final var rootAuthority = readPubKey(_data, i);
@@ -267,7 +255,6 @@ public record GlobalConfiguration(PublicKey _address,
     SerDeUtil.readArray(padding8, _data, i);
     return new GlobalConfiguration(_address,
                                    discriminator,
-                                   discriminant,
                                    accountKey,
                                    rootAuthority,
                                    riskAuthority,
@@ -302,8 +289,6 @@ public record GlobalConfiguration(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, discriminant);
-    i += 8;
     accountKey.write(_data, i);
     i += 32;
     rootAuthority.write(_data, i);
