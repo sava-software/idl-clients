@@ -53,6 +53,10 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.loopscale.gen.types;
   exports software.sava.idl.clients.loopscale.gen;
   exports software.sava.idl.clients.loopscale;
+  exports software.sava.idl.clients.marginfi.v2.gen.events;
+  exports software.sava.idl.clients.marginfi.v2.gen.types;
+  exports software.sava.idl.clients.marginfi.v2.gen;
+  exports software.sava.idl.clients.marginfi.v2;
   exports software.sava.idl.clients.marinade.stake_pool.gen.events;
   exports software.sava.idl.clients.marinade.stake_pool.gen.types;
   exports software.sava.idl.clients.marinade.stake_pool.gen;

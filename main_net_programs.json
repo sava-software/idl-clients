@@ -165,6 +165,13 @@
       "program": "1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78"
     },
     {
+      "name": "Marginfi V2",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "marginfi.v2",
+      "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA"
+    },
+    {
       "name": "Marinade Stake Pool",
       "source": "idl-clients-bundle",
       "module": "bundle",
