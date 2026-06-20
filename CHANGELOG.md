@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.13.3](https://github.com/sava-software/idl-clients/compare/25.13.2...25.13.3) (2026-06-20)
+
+
+### Features
+
+* **idl-clients-bundle:** sync Marginfi v2 IDL types ([5264a3a](https://github.com/sava-software/idl-clients/commit/5264a3a9edaf6e71e81f4bb6d2a8d8107b5f6b41))
+* **marginfi:** extend MarginfiClient with PDA account operations and conditional orders ([72a59c5](https://github.com/sava-software/idl-clients/commit/72a59c51a7942bba1ed4d541606305a375236f9f))
+
 ## [25.13.2](https://github.com/sava-software/idl-clients/compare/25.13.1...25.13.2) (2026-06-20)
 
 
