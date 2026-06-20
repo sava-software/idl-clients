@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.13.2](https://github.com/sava-software/idl-clients/compare/25.13.1...25.13.2) (2026-06-20)
+
+
+### Miscellaneous Chores
+
+* release 25.13.2 ([6d87717](https://github.com/sava-software/idl-clients/commit/6d8771797687648400d8b496b9614cecd09ff40a))
+
 ## [25.13.1](https://github.com/sava-software/idl-clients/compare/25.13.0...25.13.1) (2026-06-20)
 
 
