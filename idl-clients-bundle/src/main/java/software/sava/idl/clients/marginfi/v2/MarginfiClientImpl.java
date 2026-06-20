@@ -4,8 +4,11 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.marginfi.v2.gen.MarginfiProgram;
+import software.sava.idl.clients.marginfi.v2.gen.types.OrderTrigger;
 import software.sava.idl.clients.spl.SPLAccountClient;
 import software.sava.idl.clients.spl.SPLClient;
+
+import java.util.OptionalInt;
 
 final class MarginfiClientImpl implements MarginfiClient {
 
@@ -87,6 +90,24 @@ final class MarginfiClientImpl implements MarginfiClient {
   }
 
   @Override
+  public Instruction initializeAccountPda(final PublicKey marginfiAccount,
+                                          final PublicKey authority,
+                                          final PublicKey feePayer,
+                                          final int accountIndex,
+                                          final OptionalInt thirdPartyId) {
+    return MarginfiProgram.marginfiAccountInitializePda(
+        accounts.invokedMarginfiProgram(),
+        solanaAccounts,
+        accounts.marginfiGroup(),
+        marginfiAccount,
+        authority,
+        feePayer,
+        accountIndex,
+        thirdPartyId
+    );
+  }
+
+  @Override
   public Instruction transferToNewAccount(final PublicKey oldMarginfiAccount,
                                           final PublicKey newMarginfiAccount,
                                           final PublicKey authority,
@@ -103,6 +124,30 @@ final class MarginfiClientImpl implements MarginfiClient {
         feePayer,
         newAuthority,
         globalFeeWallet
+    );
+  }
+
+  @Override
+  public Instruction transferToNewAccountPda(final PublicKey oldMarginfiAccount,
+                                             final PublicKey newMarginfiAccount,
+                                             final PublicKey authority,
+                                             final PublicKey feePayer,
+                                             final PublicKey newAuthority,
+                                             final PublicKey globalFeeWallet,
+                                             final int accountIndex,
+                                             final OptionalInt thirdPartyId) {
+    return MarginfiProgram.transferToNewAccountPda(
+        accounts.invokedMarginfiProgram(),
+        solanaAccounts,
+        accounts.marginfiGroup(),
+        oldMarginfiAccount,
+        newMarginfiAccount,
+        authority,
+        feePayer,
+        newAuthority,
+        globalFeeWallet,
+        accountIndex,
+        thirdPartyId
     );
   }
 
@@ -214,6 +259,23 @@ final class MarginfiClientImpl implements MarginfiClient {
   }
 
   @Override
+  public Instruction clearEmissions(final PublicKey marginfiAccount, final PublicKey bank) {
+    return MarginfiProgram.lendingAccountClearEmissions(
+        accounts.invokedMarginfiProgram(),
+        marginfiAccount,
+        bank
+    );
+  }
+
+  @Override
+  public Instruction pulseHealth(final PublicKey marginfiAccount) {
+    return MarginfiProgram.lendingAccountPulseHealth(
+        accounts.invokedMarginfiProgram(),
+        marginfiAccount
+    );
+  }
+
+  @Override
   public Instruction startFlashloan(final PublicKey marginfiAccount,
                                     final PublicKey authority,
                                     final long endIndex) {
@@ -232,6 +294,44 @@ final class MarginfiClientImpl implements MarginfiClient {
         accounts.invokedMarginfiProgram(),
         marginfiAccount,
         authority
+    );
+  }
+
+  @Override
+  public Instruction placeOrder(final PublicKey marginfiAccount,
+                                final PublicKey feePayer,
+                                final PublicKey authority,
+                                final PublicKey order,
+                                final PublicKey globalFeeWallet,
+                                final PublicKey[] bankKeys,
+                                final OrderTrigger trigger) {
+    return MarginfiProgram.marginfiAccountPlaceOrder(
+        accounts.invokedMarginfiProgram(),
+        solanaAccounts,
+        accounts.marginfiGroup(),
+        marginfiAccount,
+        feePayer,
+        authority,
+        order,
+        accounts.feeState(),
+        globalFeeWallet,
+        bankKeys,
+        trigger
+    );
+  }
+
+  @Override
+  public Instruction closeOrder(final PublicKey marginfiAccount,
+                                final PublicKey authority,
+                                final PublicKey order,
+                                final PublicKey feeRecipient) {
+    return MarginfiProgram.marginfiAccountCloseOrder(
+        accounts.invokedMarginfiProgram(),
+        solanaAccounts,
+        marginfiAccount,
+        authority,
+        order,
+        feeRecipient
     );
   }
 }
