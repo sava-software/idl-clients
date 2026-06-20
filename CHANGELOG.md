@@ -1,5 +1,17 @@
 # Changelog
 
+## [25.13.1](https://github.com/sava-software/idl-clients/compare/25.13.0...25.13.1) (2026-06-20)
+
+
+### Features
+
+* **phoenix:** add support for usdcMint in PhoenixAccounts ([85d3b80](https://github.com/sava-software/idl-clients/commit/85d3b80725e1f02d724ec3f6154e8f9554a76693))
+
+
+### Bug Fixes
+
+* **phoenix:** fix duplicate discriminator serde ([fc615ef](https://github.com/sava-software/idl-clients/commit/fc615ef53177a39af7cf83111f8ce443d930f7e6))
+
 ## [25.13.0](https://github.com/sava-software/idl-clients/compare/25.12.14...25.13.0) (2026-06-17)
 
 
