@@ -16,12 +16,19 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Reserve configuration values
 ///
 /// @param status Status of the reserve Active/Obsolete/Hidden
-/// @param assetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
+/// @param paddingDeprecatedAssetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
 /// @param hostFixedInterestRateBps Flat rate that goes to the host
 /// @param minDeleveragingBonusBps Starting bonus for deleveraging-related liquidations, in bps.
 /// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
 ///                         Blocks usage of ctokens (minting or withdrawing from obligation)
 ///                         Effectively blocks deposit_reserve_liquidity and withdraw_obligation_collateral
+/// @param earlyRepayRemainingInterestPct The percentage of remaining interest over the debt term that is charged as early repay penalty.
+///                                       Only meaningful when `debt_term_seconds > 0`.
+/// @param emergencyMode Whether the reserve is in emergency mode.
+///                      Blocks most user operations involving this reserve, similar to LendingMarket::emergency_mode
+///                      but scoped to a single reserve. Also cascades to obligations using this reserve as
+///                      collateral or debt, blocking borrows and withdrawals on other reserves but still
+///                      allowing repays and deposits.
 /// @param reserved1 Past reserved space - feel free to reuse.
 /// @param protocolOrderExecutionFeePct Cut of the order execution bonus that the protocol receives, as a percentage
 /// @param protocolTakeRatePct Protocol take rate is the amount borrowed interest protocol receives, as a percentage
@@ -49,8 +56,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param autodeleverageEnabled Whether this reserve should be subject to auto-deleveraging after deposit or borrow limit is
 ///                              crossed.
 ///                              Besides this flag, the lending market's flag also needs to be enabled (logical `AND`).
-///                              **NOTE:** the manual "target LTV" deleveraging (enabled by the risk council for individual
-///                              obligations) is NOT affected by this flag.
+///                              **NOTE:** the manual "target LTV" deleveraging is NOT affected by this flag.
 /// @param proposerAuthorityLocked Boolean flag indicating whether the reserve is locked for the proposer authority.
 ///                                
 ///                                Once the proposer have finished preparing the reserve, it must be locked to prevent
@@ -65,11 +71,33 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                                         - 0 to disable borrows in this elevation group (expected value for the debt asset)
 /// @param deleveragingBonusIncreaseBpsPerDay The rate at which the deleveraging-related liquidation bonus increases, in bps per day.
 ///                                           Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
+/// @param debtMaturityTimestamp The timestamp at which all Obligation::borrows using this reserve become liquidatable
+///                              (on the same terms as reserve-wide deleveraging).
+///                              Inactive when zeroed (i.e. debt never matures).
+///                              
+///                              Note: this feature is independent of Self::debt_term_seconds - the liquidation mechanism
+///                              is based directly on the timestamp defined here, on Reserve's level.
+/// @param debtTermSeconds The duration after which any debt coming from this Reserve must be repaid.
+///                        Inactive when zeroed (i.e. funds can be borrowed indefinitely).
+///                        
+///                        Note: this feature is independent of Self::debt_maturity_timestamp - the liquidation
+///                        mechanism is based on the ObligationLiquidity::last_borrowed_at_timestamp.
+/// @param rewardsAmountPerSlot Rewards distributed per slot to depositors. Drained from
+///                             ReserveLiquidity::rewards_amount_available into
+///                             ReserveLiquidity::total_available_amount at each refresh, capped by the
+///                             market-level LendingMarket::reserve_rewards_max_apr_pct. `0` disables.
+///                             
+///                             **Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a
+///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
+///                             will eventually cross the cap and arm the autodeleverage countdown. Size
+///                             `deposit_limit` and RPS together.
 public record ReserveConfig(int status,
-                            int assetTier,
+                            int paddingDeprecatedAssetTier,
                             int hostFixedInterestRateBps,
                             int minDeleveragingBonusBps,
                             int blockCtokenUsage,
+                            int earlyRepayRemainingInterestPct,
+                            int emergencyMode,
                             byte[] reserved1,
                             int protocolOrderExecutionFeePct,
                             int protocolTakeRatePct,
@@ -96,19 +124,24 @@ public record ReserveConfig(int status,
                             int proposerAuthorityLocked,
                             long borrowLimitOutsideElevationGroup,
                             long[] borrowLimitAgainstThisCollateralInElevationGroup,
-                            long deleveragingBonusIncreaseBpsPerDay) implements SerDe {
+                            long deleveragingBonusIncreaseBpsPerDay,
+                            long debtMaturityTimestamp,
+                            long debtTermSeconds,
+                            long rewardsAmountPerSlot) implements SerDe {
 
-  public static final int BYTES = 920;
-  public static final int RESERVED_1_LEN = 6;
+  public static final int BYTES = 944;
+  public static final int RESERVED_1_LEN = 4;
   public static final int ELEVATION_GROUPS_LEN = 20;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_LEN = 32;
 
   public static final int STATUS_OFFSET = 0;
-  public static final int ASSET_TIER_OFFSET = 1;
+  public static final int PADDING_DEPRECATED_ASSET_TIER_OFFSET = 1;
   public static final int HOST_FIXED_INTEREST_RATE_BPS_OFFSET = 2;
   public static final int MIN_DELEVERAGING_BONUS_BPS_OFFSET = 4;
   public static final int BLOCK_CTOKEN_USAGE_OFFSET = 6;
-  public static final int RESERVED_1_OFFSET = 7;
+  public static final int EARLY_REPAY_REMAINING_INTEREST_PCT_OFFSET = 7;
+  public static final int EMERGENCY_MODE_OFFSET = 8;
+  public static final int RESERVED_1_OFFSET = 9;
   public static final int PROTOCOL_ORDER_EXECUTION_FEE_PCT_OFFSET = 13;
   public static final int PROTOCOL_TAKE_RATE_PCT_OFFSET = 14;
   public static final int PROTOCOL_LIQUIDATION_FEE_PCT_OFFSET = 15;
@@ -135,6 +168,9 @@ public record ReserveConfig(int status,
   public static final int BORROW_LIMIT_OUTSIDE_ELEVATION_GROUP_OFFSET = 648;
   public static final int BORROW_LIMIT_AGAINST_THIS_COLLATERAL_IN_ELEVATION_GROUP_OFFSET = 656;
   public static final int DELEVERAGING_BONUS_INCREASE_BPS_PER_DAY_OFFSET = 912;
+  public static final int DEBT_MATURITY_TIMESTAMP_OFFSET = 920;
+  public static final int DEBT_TERM_SECONDS_OFFSET = 928;
+  public static final int REWARDS_AMOUNT_PER_SLOT_OFFSET = 936;
 
   public static ReserveConfig read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -143,7 +179,7 @@ public record ReserveConfig(int status,
     int i = _offset;
     final var status = _data[i] & 0xFF;
     ++i;
-    final var assetTier = _data[i] & 0xFF;
+    final var paddingDeprecatedAssetTier = _data[i] & 0xFF;
     ++i;
     final var hostFixedInterestRateBps = getInt16LE(_data, i);
     i += 2;
@@ -151,7 +187,11 @@ public record ReserveConfig(int status,
     i += 2;
     final var blockCtokenUsage = _data[i] & 0xFF;
     ++i;
-    final var reserved1 = new byte[6];
+    final var earlyRepayRemainingInterestPct = _data[i] & 0xFF;
+    ++i;
+    final var emergencyMode = _data[i] & 0xFF;
+    ++i;
+    final var reserved1 = new byte[4];
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var protocolOrderExecutionFeePct = _data[i] & 0xFF;
     ++i;
@@ -204,11 +244,19 @@ public record ReserveConfig(int status,
     final var borrowLimitAgainstThisCollateralInElevationGroup = new long[32];
     i += SerDeUtil.readArray(borrowLimitAgainstThisCollateralInElevationGroup, _data, i);
     final var deleveragingBonusIncreaseBpsPerDay = getInt64LE(_data, i);
+    i += 8;
+    final var debtMaturityTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var debtTermSeconds = getInt64LE(_data, i);
+    i += 8;
+    final var rewardsAmountPerSlot = getInt64LE(_data, i);
     return new ReserveConfig(status,
-                             assetTier,
+                             paddingDeprecatedAssetTier,
                              hostFixedInterestRateBps,
                              minDeleveragingBonusBps,
                              blockCtokenUsage,
+                             earlyRepayRemainingInterestPct,
+                             emergencyMode,
                              reserved1,
                              protocolOrderExecutionFeePct,
                              protocolTakeRatePct,
@@ -235,7 +283,10 @@ public record ReserveConfig(int status,
                              proposerAuthorityLocked,
                              borrowLimitOutsideElevationGroup,
                              borrowLimitAgainstThisCollateralInElevationGroup,
-                             deleveragingBonusIncreaseBpsPerDay);
+                             deleveragingBonusIncreaseBpsPerDay,
+                             debtMaturityTimestamp,
+                             debtTermSeconds,
+                             rewardsAmountPerSlot);
   }
 
   @Override
@@ -243,7 +294,7 @@ public record ReserveConfig(int status,
     int i = _offset;
     _data[i] = (byte) status;
     ++i;
-    _data[i] = (byte) assetTier;
+    _data[i] = (byte) paddingDeprecatedAssetTier;
     ++i;
     putInt16LE(_data, i, hostFixedInterestRateBps);
     i += 2;
@@ -251,7 +302,11 @@ public record ReserveConfig(int status,
     i += 2;
     _data[i] = (byte) blockCtokenUsage;
     ++i;
-    i += SerDeUtil.writeArrayChecked(reserved1, 6, _data, i);
+    _data[i] = (byte) earlyRepayRemainingInterestPct;
+    ++i;
+    _data[i] = (byte) emergencyMode;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(reserved1, 4, _data, i);
     _data[i] = (byte) protocolOrderExecutionFeePct;
     ++i;
     _data[i] = (byte) protocolTakeRatePct;
@@ -296,6 +351,12 @@ public record ReserveConfig(int status,
     i += 8;
     i += SerDeUtil.writeArrayChecked(borrowLimitAgainstThisCollateralInElevationGroup, 32, _data, i);
     putInt64LE(_data, i, deleveragingBonusIncreaseBpsPerDay);
+    i += 8;
+    putInt64LE(_data, i, debtMaturityTimestamp);
+    i += 8;
+    putInt64LE(_data, i, debtTermSeconds);
+    i += 8;
+    putInt64LE(_data, i, rewardsAmountPerSlot);
     i += 8;
     return i - _offset;
   }

@@ -820,6 +820,147 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, INVEST_DISCRIMINATOR);
   }
 
+  public static final Discriminator INVEST_WITH_MAX_AMOUNT_DISCRIMINATOR = toDiscriminator(135, 92, 184, 137, 69, 72, 118, 7);
+
+  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
+  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
+  /// moving any funds; check the resulting balances rather than infer movement from success.
+  ///
+  /// @param reserveKey CPI accounts
+  public static List<AccountMeta> investWithMaxAmountKeys(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                          final PublicKey payerKey,
+                                                          final PublicKey payerTokenAccountKey,
+                                                          final PublicKey vaultStateKey,
+                                                          final PublicKey tokenVaultKey,
+                                                          final PublicKey tokenMintKey,
+                                                          final PublicKey baseVaultAuthorityKey,
+                                                          final PublicKey ctokenVaultKey,
+                                                          final PublicKey reserveKey,
+                                                          final PublicKey lendingMarketKey,
+                                                          final PublicKey lendingMarketAuthorityKey,
+                                                          final PublicKey reserveLiquiditySupplyKey,
+                                                          final PublicKey reserveCollateralMintKey,
+                                                          final PublicKey reserveWhitelistEntryKey,
+                                                          final PublicKey klendProgramKey,
+                                                          final PublicKey reserveCollateralTokenProgramKey,
+                                                          final PublicKey tokenProgramKey,
+                                                          final PublicKey instructionSysvarAccountKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createWrite(payerTokenAccountKey),
+      createWrite(vaultStateKey),
+      createWrite(tokenVaultKey),
+      createWrite(tokenMintKey),
+      createWrite(baseVaultAuthorityKey),
+      createWrite(ctokenVaultKey),
+      createWrite(reserveKey),
+      createRead(lendingMarketKey),
+      createRead(lendingMarketAuthorityKey),
+      createWrite(reserveLiquiditySupplyKey),
+      createWrite(reserveCollateralMintKey),
+      createRead(requireNonNullElse(reserveWhitelistEntryKey, invokedKaminoVaultProgramMeta.publicKey())),
+      createRead(klendProgramKey),
+      createRead(reserveCollateralTokenProgramKey),
+      createRead(tokenProgramKey),
+      createRead(instructionSysvarAccountKey)
+    );
+  }
+
+  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
+  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
+  /// moving any funds; check the resulting balances rather than infer movement from success.
+  ///
+  /// @param reserveKey CPI accounts
+  public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                final PublicKey payerKey,
+                                                final PublicKey payerTokenAccountKey,
+                                                final PublicKey vaultStateKey,
+                                                final PublicKey tokenVaultKey,
+                                                final PublicKey tokenMintKey,
+                                                final PublicKey baseVaultAuthorityKey,
+                                                final PublicKey ctokenVaultKey,
+                                                final PublicKey reserveKey,
+                                                final PublicKey lendingMarketKey,
+                                                final PublicKey lendingMarketAuthorityKey,
+                                                final PublicKey reserveLiquiditySupplyKey,
+                                                final PublicKey reserveCollateralMintKey,
+                                                final PublicKey reserveWhitelistEntryKey,
+                                                final PublicKey klendProgramKey,
+                                                final PublicKey reserveCollateralTokenProgramKey,
+                                                final PublicKey tokenProgramKey,
+                                                final PublicKey instructionSysvarAccountKey,
+                                                final long maxAmount) {
+    final var keys = investWithMaxAmountKeys(
+      invokedKaminoVaultProgramMeta,
+      payerKey,
+      payerTokenAccountKey,
+      vaultStateKey,
+      tokenVaultKey,
+      tokenMintKey,
+      baseVaultAuthorityKey,
+      ctokenVaultKey,
+      reserveKey,
+      lendingMarketKey,
+      lendingMarketAuthorityKey,
+      reserveLiquiditySupplyKey,
+      reserveCollateralMintKey,
+      reserveWhitelistEntryKey,
+      klendProgramKey,
+      reserveCollateralTokenProgramKey,
+      tokenProgramKey,
+      instructionSysvarAccountKey
+    );
+    return investWithMaxAmount(invokedKaminoVaultProgramMeta, keys, maxAmount);
+  }
+
+  /// Same as `invest` but moves at most `max_amount` liquidity towards the target allocation.
+  /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
+  /// moving any funds; check the resulting balances rather than infer movement from success.
+  ///
+  public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long maxAmount) {
+    final byte[] _data = new byte[16];
+    int i = INVEST_WITH_MAX_AMOUNT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, maxAmount);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  public record InvestWithMaxAmountIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
+
+    public static InvestWithMaxAmountIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int MAX_AMOUNT_OFFSET = 8;
+
+    public static InvestWithMaxAmountIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var maxAmount = getInt64LE(_data, i);
+      return new InvestWithMaxAmountIxData(discriminator, maxAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, maxAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator UPDATE_VAULT_CONFIG_DISCRIMINATOR = toDiscriminator(122, 3, 21, 222, 158, 255, 238, 157);
 
   public static List<AccountMeta> updateVaultConfigKeys(final PublicKey signerKey,

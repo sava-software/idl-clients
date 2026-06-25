@@ -20,6 +20,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param depositCap total vault deposit cap; 0 means uncapped for backward compatibility reasons; this is a soft cap that just blocks new deposits but the vault AUM can go above this cap because of the earned interest
 public record VaultState(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey vaultAdminAuthority,
@@ -63,6 +64,7 @@ public record VaultState(PublicKey _address,
                          int allowAllocationsInWhitelistedReservesOnly,
                          int allowInvestInWhitelistedReservesOnly,
                          byte[] padding2,
+                         long depositCap,
                          VaultRewardInfo rewardInfo,
                          BigInteger[] padding3) implements SerDe {
 
@@ -70,7 +72,7 @@ public record VaultState(PublicKey _address,
   public static final int VAULT_ALLOCATION_STRATEGY_LEN = 25;
   public static final int PADDING_1_LEN = 256;
   public static final int NAME_LEN = 40;
-  public static final int PADDING_2_LEN = 14;
+  public static final int PADDING_2_LEN = 6;
   public static final int PADDING_3_LEN = 232;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -118,6 +120,7 @@ public record VaultState(PublicKey _address,
   public static final int ALLOW_ALLOCATIONS_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58728;
   public static final int ALLOW_INVEST_IN_WHITELISTED_RESERVES_ONLY_OFFSET = 58729;
   public static final int PADDING_2_OFFSET = 58730;
+  public static final int DEPOSIT_CAP_OFFSET = 58736;
   public static final int REWARD_INFO_OFFSET = 58744;
   public static final int PADDING_3_OFFSET = 58840;
 
@@ -317,6 +320,12 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(ALLOW_INVEST_IN_WHITELISTED_RESERVES_ONLY_OFFSET, new byte[]{(byte) allowInvestInWhitelistedReservesOnly});
   }
 
+  public static Filter createDepositCapFilter(final long depositCap) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, depositCap);
+    return Filter.createMemCompFilter(DEPOSIT_CAP_OFFSET, _data);
+  }
+
   public static Filter createRewardInfoFilter(final VaultRewardInfo rewardInfo) {
     return Filter.createMemCompFilter(REWARD_INFO_OFFSET, rewardInfo.write());
   }
@@ -421,8 +430,10 @@ public record VaultState(PublicKey _address,
     ++i;
     final var allowInvestInWhitelistedReservesOnly = _data[i] & 0xFF;
     ++i;
-    final var padding2 = new byte[14];
+    final var padding2 = new byte[6];
     i += SerDeUtil.readArray(padding2, _data, i);
+    final var depositCap = getInt64LE(_data, i);
+    i += 8;
     final var rewardInfo = VaultRewardInfo.read(_data, i);
     i += rewardInfo.l();
     final var padding3 = new BigInteger[232];
@@ -470,6 +481,7 @@ public record VaultState(PublicKey _address,
                           allowAllocationsInWhitelistedReservesOnly,
                           allowInvestInWhitelistedReservesOnly,
                           padding2,
+                          depositCap,
                           rewardInfo,
                           padding3);
   }
@@ -554,7 +566,9 @@ public record VaultState(PublicKey _address,
     ++i;
     _data[i] = (byte) allowInvestInWhitelistedReservesOnly;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 14, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding2, 6, _data, i);
+    putInt64LE(_data, i, depositCap);
+    i += 8;
     i += rewardInfo.write(_data, i);
     i += SerDeUtil.write128ArrayChecked(padding3, 232, _data, i);
     return i - _offset;

@@ -65,7 +65,9 @@ public sealed interface KaminoVaultError extends ProgramError permits
     KaminoVaultError.RewardTopupAmountNotExpected,
     KaminoVaultError.RewardWithdrawAmountZero,
     KaminoVaultError.RewardWithdrawAmountNotExpected,
-    KaminoVaultError.RewardsStaleForFeeUpdate {
+    KaminoVaultError.RewardsStaleForFeeUpdate,
+    KaminoVaultError.VaultDepositCapReached,
+    KaminoVaultError.MaxInvestAmountMustBeGreaterThanZero {
 
   static KaminoVaultError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -131,6 +133,8 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7059 -> RewardWithdrawAmountZero.INSTANCE;
       case 7060 -> RewardWithdrawAmountNotExpected.INSTANCE;
       case 7061 -> RewardsStaleForFeeUpdate.INSTANCE;
+      case 7062 -> VaultDepositCapReached.INSTANCE;
+      case 7063 -> MaxInvestAmountMustBeGreaterThanZero.INSTANCE;
       default -> null;
     };
   }
@@ -566,6 +570,20 @@ public sealed interface KaminoVaultError extends ProgramError permits
 
     public static final RewardsStaleForFeeUpdate INSTANCE = new RewardsStaleForFeeUpdate(
         7061, "Rewards are stale - must be refreshed before updating fees"
+    );
+  }
+
+  record VaultDepositCapReached(int code, String msg) implements KaminoVaultError {
+
+    public static final VaultDepositCapReached INSTANCE = new VaultDepositCapReached(
+        7062, "Vault deposit cap reached"
+    );
+  }
+
+  record MaxInvestAmountMustBeGreaterThanZero(int code, String msg) implements KaminoVaultError {
+
+    public static final MaxInvestAmountMustBeGreaterThanZero INSTANCE = new MaxInvestAmountMustBeGreaterThanZero(
+        7063, "max_amount must be greater than 0"
     );
   }
 }

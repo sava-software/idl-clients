@@ -19,7 +19,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param mintPubkey Reserve liquidity mint address
 /// @param supplyVault Reserve liquidity supply address
 /// @param feeVault Reserve liquidity fee collection address
-/// @param availableAmount Reserve liquidity available
+/// @param totalAvailableAmount Total reserve liquidity available.
+///                             
+///                             Note: not all of this liquidity can be freely used for any purpose. Production code should
+///                             use the specialized getters - see e.g. Reserve::total_available_liquidity_amount(),
+///                             Reserve::freely_available_liquidity_amount().
 /// @param borrowedAmountSf Reserve liquidity borrowed (scaled fraction)
 /// @param marketPriceSf Reserve liquidity market price in quote currency (scaled fraction)
 /// @param marketPriceLastUpdatedTs Unix timestamp of the market price (from the oracle)
@@ -34,10 +38,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param pendingReferrerFeesSf Reserve pending referrer fees, to be claimed in refresh_obligation by referrer or protocol (scaled fraction)
 /// @param absoluteReferralRateSf Reserve referrer fee absolute rate calculated at each refresh_reserve operation (scaled fraction)
 /// @param tokenProgram Token program of the liquidity mint
+/// @param rewardsAmountAvailable Reserve rewards budget remaining for distribution.
+///                               
+///                               Tokens are deposited via `topup_reserve_rewards` and increase this counter (without
+///                               touching Self::total_available_amount). On every `refresh_reserve`, up to
+///                               `rewards_amount_per_slot * slots_elapsed` tokens are moved from this counter into
+///                               Self::total_available_amount, inflating the cToken exchange rate, capped by the
+///                               market-level `reserve_rewards_max_apr_pct` cap.
 public record ReserveLiquidity(PublicKey mintPubkey,
                                PublicKey supplyVault,
                                PublicKey feeVault,
-                               long availableAmount,
+                               long totalAvailableAmount,
                                BigInteger borrowedAmountSf,
                                BigInteger marketPriceSf,
                                long marketPriceLastUpdatedTs,
@@ -50,17 +61,18 @@ public record ReserveLiquidity(PublicKey mintPubkey,
                                BigInteger pendingReferrerFeesSf,
                                BigInteger absoluteReferralRateSf,
                                PublicKey tokenProgram,
+                               long rewardsAmountAvailable,
                                long[] padding2,
                                BigInteger[] padding3) implements SerDe {
 
   public static final int BYTES = 1232;
-  public static final int PADDING_2_LEN = 51;
+  public static final int PADDING_2_LEN = 50;
   public static final int PADDING_3_LEN = 32;
 
   public static final int MINT_PUBKEY_OFFSET = 0;
   public static final int SUPPLY_VAULT_OFFSET = 32;
   public static final int FEE_VAULT_OFFSET = 64;
-  public static final int AVAILABLE_AMOUNT_OFFSET = 96;
+  public static final int TOTAL_AVAILABLE_AMOUNT_OFFSET = 96;
   public static final int BORROWED_AMOUNT_SF_OFFSET = 104;
   public static final int MARKET_PRICE_SF_OFFSET = 120;
   public static final int MARKET_PRICE_LAST_UPDATED_TS_OFFSET = 136;
@@ -73,7 +85,8 @@ public record ReserveLiquidity(PublicKey mintPubkey,
   public static final int PENDING_REFERRER_FEES_SF_OFFSET = 248;
   public static final int ABSOLUTE_REFERRAL_RATE_SF_OFFSET = 264;
   public static final int TOKEN_PROGRAM_OFFSET = 280;
-  public static final int PADDING_2_OFFSET = 312;
+  public static final int REWARDS_AMOUNT_AVAILABLE_OFFSET = 312;
+  public static final int PADDING_2_OFFSET = 320;
   public static final int PADDING_3_OFFSET = 720;
 
   public static ReserveLiquidity read(final byte[] _data, final int _offset) {
@@ -87,7 +100,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 32;
     final var feeVault = readPubKey(_data, i);
     i += 32;
-    final var availableAmount = getInt64LE(_data, i);
+    final var totalAvailableAmount = getInt64LE(_data, i);
     i += 8;
     final var borrowedAmountSf = getInt128LE(_data, i);
     i += 16;
@@ -113,14 +126,16 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 16;
     final var tokenProgram = readPubKey(_data, i);
     i += 32;
-    final var padding2 = new long[51];
+    final var rewardsAmountAvailable = getInt64LE(_data, i);
+    i += 8;
+    final var padding2 = new long[50];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new BigInteger[32];
     SerDeUtil.read128Array(padding3, _data, i);
     return new ReserveLiquidity(mintPubkey,
                                 supplyVault,
                                 feeVault,
-                                availableAmount,
+                                totalAvailableAmount,
                                 borrowedAmountSf,
                                 marketPriceSf,
                                 marketPriceLastUpdatedTs,
@@ -133,6 +148,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
                                 pendingReferrerFeesSf,
                                 absoluteReferralRateSf,
                                 tokenProgram,
+                                rewardsAmountAvailable,
                                 padding2,
                                 padding3);
   }
@@ -146,7 +162,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 32;
     feeVault.write(_data, i);
     i += 32;
-    putInt64LE(_data, i, availableAmount);
+    putInt64LE(_data, i, totalAvailableAmount);
     i += 8;
     putInt128LE(_data, i, borrowedAmountSf);
     i += 16;
@@ -171,7 +187,9 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 16;
     tokenProgram.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding2, 51, _data, i);
+    putInt64LE(_data, i, rewardsAmountAvailable);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding2, 50, _data, i);
     i += SerDeUtil.write128ArrayChecked(padding3, 32, _data, i);
     return i - _offset;
   }
