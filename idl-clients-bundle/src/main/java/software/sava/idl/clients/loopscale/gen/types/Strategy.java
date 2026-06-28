@@ -8,9 +8,15 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.rpc.json.http.response.AccountInfo;
 
+import java.math.BigInteger;
+
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -32,26 +38,26 @@ public record Strategy(PublicKey _address,
                        int bump,
                        PublicKey principalMint,
                        PublicKey lender,
-                       PodBool originationsEnabled,
+                       boolean originationsEnabled,
                        int externalYieldSource,
                        PodDecimal interestPerSecond,
-                       PodU64 lastAccruedTimestamp,
-                       PodU64CBPS liquidityBuffer,
-                       PodU64 tokenBalance,
-                       PodU64CBPS interestFee,
-                       PodU64CBPS principalFee,
-                       PodU64CBPS originationFee,
-                       PodU64 originationCap,
-                       PodU64 externalYieldAmount,
-                       PodU64 currentDeployedAmount,
-                       PodU64 outstandingInterestAmount,
-                       PodU64 feeClaimable,
-                       PodU128 cumulativePrincipalOriginated,
-                       PodU128 cumulativeInterestAccrued,
-                       PodU64 cumulativeLoanCount,
-                       PodU64 activeLoanCount,
+                       long lastAccruedTimestamp,
+                       long liquidityBuffer,
+                       long tokenBalance,
+                       long interestFee,
+                       long principalFee,
+                       long originationFee,
+                       long originationCap,
+                       long externalYieldAmount,
+                       long currentDeployedAmount,
+                       long outstandingInterestAmount,
+                       long feeClaimable,
+                       BigInteger cumulativePrincipalOriginated,
+                       BigInteger cumulativeInterestAccrued,
+                       long cumulativeLoanCount,
+                       long activeLoanCount,
                        PublicKey marketInformation,
-                       PodU64[][] collateralMap,
+                       long[][] collateralMap,
                        ExternalYieldAccounts externalYieldAccounts,
                        CapMonitor supplyMonitor,
                        CapMonitor withdrawMonitor,
@@ -114,8 +120,8 @@ public record Strategy(PublicKey _address,
     return Filter.createMemCompFilter(LENDER_OFFSET, lender);
   }
 
-  public static Filter createOriginationsEnabledFilter(final PodBool originationsEnabled) {
-    return Filter.createMemCompFilter(ORIGINATIONS_ENABLED_OFFSET, originationsEnabled.write());
+  public static Filter createOriginationsEnabledFilter(final boolean originationsEnabled) {
+    return Filter.createMemCompFilter(ORIGINATIONS_ENABLED_OFFSET, new byte[]{(byte) (originationsEnabled ? 1 : 0)});
   }
 
   public static Filter createExternalYieldSourceFilter(final int externalYieldSource) {
@@ -126,64 +132,94 @@ public record Strategy(PublicKey _address,
     return Filter.createMemCompFilter(INTEREST_PER_SECOND_OFFSET, interestPerSecond.write());
   }
 
-  public static Filter createLastAccruedTimestampFilter(final PodU64 lastAccruedTimestamp) {
-    return Filter.createMemCompFilter(LAST_ACCRUED_TIMESTAMP_OFFSET, lastAccruedTimestamp.write());
+  public static Filter createLastAccruedTimestampFilter(final long lastAccruedTimestamp) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lastAccruedTimestamp);
+    return Filter.createMemCompFilter(LAST_ACCRUED_TIMESTAMP_OFFSET, _data);
   }
 
-  public static Filter createLiquidityBufferFilter(final PodU64CBPS liquidityBuffer) {
-    return Filter.createMemCompFilter(LIQUIDITY_BUFFER_OFFSET, liquidityBuffer.write());
+  public static Filter createLiquidityBufferFilter(final long liquidityBuffer) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, liquidityBuffer);
+    return Filter.createMemCompFilter(LIQUIDITY_BUFFER_OFFSET, _data);
   }
 
-  public static Filter createTokenBalanceFilter(final PodU64 tokenBalance) {
-    return Filter.createMemCompFilter(TOKEN_BALANCE_OFFSET, tokenBalance.write());
+  public static Filter createTokenBalanceFilter(final long tokenBalance) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, tokenBalance);
+    return Filter.createMemCompFilter(TOKEN_BALANCE_OFFSET, _data);
   }
 
-  public static Filter createInterestFeeFilter(final PodU64CBPS interestFee) {
-    return Filter.createMemCompFilter(INTEREST_FEE_OFFSET, interestFee.write());
+  public static Filter createInterestFeeFilter(final long interestFee) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, interestFee);
+    return Filter.createMemCompFilter(INTEREST_FEE_OFFSET, _data);
   }
 
-  public static Filter createPrincipalFeeFilter(final PodU64CBPS principalFee) {
-    return Filter.createMemCompFilter(PRINCIPAL_FEE_OFFSET, principalFee.write());
+  public static Filter createPrincipalFeeFilter(final long principalFee) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, principalFee);
+    return Filter.createMemCompFilter(PRINCIPAL_FEE_OFFSET, _data);
   }
 
-  public static Filter createOriginationFeeFilter(final PodU64CBPS originationFee) {
-    return Filter.createMemCompFilter(ORIGINATION_FEE_OFFSET, originationFee.write());
+  public static Filter createOriginationFeeFilter(final long originationFee) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, originationFee);
+    return Filter.createMemCompFilter(ORIGINATION_FEE_OFFSET, _data);
   }
 
-  public static Filter createOriginationCapFilter(final PodU64 originationCap) {
-    return Filter.createMemCompFilter(ORIGINATION_CAP_OFFSET, originationCap.write());
+  public static Filter createOriginationCapFilter(final long originationCap) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, originationCap);
+    return Filter.createMemCompFilter(ORIGINATION_CAP_OFFSET, _data);
   }
 
-  public static Filter createExternalYieldAmountFilter(final PodU64 externalYieldAmount) {
-    return Filter.createMemCompFilter(EXTERNAL_YIELD_AMOUNT_OFFSET, externalYieldAmount.write());
+  public static Filter createExternalYieldAmountFilter(final long externalYieldAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, externalYieldAmount);
+    return Filter.createMemCompFilter(EXTERNAL_YIELD_AMOUNT_OFFSET, _data);
   }
 
-  public static Filter createCurrentDeployedAmountFilter(final PodU64 currentDeployedAmount) {
-    return Filter.createMemCompFilter(CURRENT_DEPLOYED_AMOUNT_OFFSET, currentDeployedAmount.write());
+  public static Filter createCurrentDeployedAmountFilter(final long currentDeployedAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, currentDeployedAmount);
+    return Filter.createMemCompFilter(CURRENT_DEPLOYED_AMOUNT_OFFSET, _data);
   }
 
-  public static Filter createOutstandingInterestAmountFilter(final PodU64 outstandingInterestAmount) {
-    return Filter.createMemCompFilter(OUTSTANDING_INTEREST_AMOUNT_OFFSET, outstandingInterestAmount.write());
+  public static Filter createOutstandingInterestAmountFilter(final long outstandingInterestAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, outstandingInterestAmount);
+    return Filter.createMemCompFilter(OUTSTANDING_INTEREST_AMOUNT_OFFSET, _data);
   }
 
-  public static Filter createFeeClaimableFilter(final PodU64 feeClaimable) {
-    return Filter.createMemCompFilter(FEE_CLAIMABLE_OFFSET, feeClaimable.write());
+  public static Filter createFeeClaimableFilter(final long feeClaimable) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, feeClaimable);
+    return Filter.createMemCompFilter(FEE_CLAIMABLE_OFFSET, _data);
   }
 
-  public static Filter createCumulativePrincipalOriginatedFilter(final PodU128 cumulativePrincipalOriginated) {
-    return Filter.createMemCompFilter(CUMULATIVE_PRINCIPAL_ORIGINATED_OFFSET, cumulativePrincipalOriginated.write());
+  public static Filter createCumulativePrincipalOriginatedFilter(final BigInteger cumulativePrincipalOriginated) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, cumulativePrincipalOriginated);
+    return Filter.createMemCompFilter(CUMULATIVE_PRINCIPAL_ORIGINATED_OFFSET, _data);
   }
 
-  public static Filter createCumulativeInterestAccruedFilter(final PodU128 cumulativeInterestAccrued) {
-    return Filter.createMemCompFilter(CUMULATIVE_INTEREST_ACCRUED_OFFSET, cumulativeInterestAccrued.write());
+  public static Filter createCumulativeInterestAccruedFilter(final BigInteger cumulativeInterestAccrued) {
+    final byte[] _data = new byte[16];
+    putInt128LE(_data, 0, cumulativeInterestAccrued);
+    return Filter.createMemCompFilter(CUMULATIVE_INTEREST_ACCRUED_OFFSET, _data);
   }
 
-  public static Filter createCumulativeLoanCountFilter(final PodU64 cumulativeLoanCount) {
-    return Filter.createMemCompFilter(CUMULATIVE_LOAN_COUNT_OFFSET, cumulativeLoanCount.write());
+  public static Filter createCumulativeLoanCountFilter(final long cumulativeLoanCount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, cumulativeLoanCount);
+    return Filter.createMemCompFilter(CUMULATIVE_LOAN_COUNT_OFFSET, _data);
   }
 
-  public static Filter createActiveLoanCountFilter(final PodU64 activeLoanCount) {
-    return Filter.createMemCompFilter(ACTIVE_LOAN_COUNT_OFFSET, activeLoanCount.write());
+  public static Filter createActiveLoanCountFilter(final long activeLoanCount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, activeLoanCount);
+    return Filter.createMemCompFilter(ACTIVE_LOAN_COUNT_OFFSET, _data);
   }
 
   public static Filter createMarketInformationFilter(final PublicKey marketInformation) {
@@ -236,46 +272,46 @@ public record Strategy(PublicKey _address,
     i += 32;
     final var lender = readPubKey(_data, i);
     i += 32;
-    final var originationsEnabled = PodBool.read(_data, i);
-    i += originationsEnabled.l();
+    final var originationsEnabled = _data[i] == 1;
+    ++i;
     final var externalYieldSource = _data[i] & 0xFF;
     ++i;
     final var interestPerSecond = PodDecimal.read(_data, i);
     i += interestPerSecond.l();
-    final var lastAccruedTimestamp = PodU64.read(_data, i);
-    i += lastAccruedTimestamp.l();
-    final var liquidityBuffer = PodU64CBPS.read(_data, i);
-    i += liquidityBuffer.l();
-    final var tokenBalance = PodU64.read(_data, i);
-    i += tokenBalance.l();
-    final var interestFee = PodU64CBPS.read(_data, i);
-    i += interestFee.l();
-    final var principalFee = PodU64CBPS.read(_data, i);
-    i += principalFee.l();
-    final var originationFee = PodU64CBPS.read(_data, i);
-    i += originationFee.l();
-    final var originationCap = PodU64.read(_data, i);
-    i += originationCap.l();
-    final var externalYieldAmount = PodU64.read(_data, i);
-    i += externalYieldAmount.l();
-    final var currentDeployedAmount = PodU64.read(_data, i);
-    i += currentDeployedAmount.l();
-    final var outstandingInterestAmount = PodU64.read(_data, i);
-    i += outstandingInterestAmount.l();
-    final var feeClaimable = PodU64.read(_data, i);
-    i += feeClaimable.l();
-    final var cumulativePrincipalOriginated = PodU128.read(_data, i);
-    i += cumulativePrincipalOriginated.l();
-    final var cumulativeInterestAccrued = PodU128.read(_data, i);
-    i += cumulativeInterestAccrued.l();
-    final var cumulativeLoanCount = PodU64.read(_data, i);
-    i += cumulativeLoanCount.l();
-    final var activeLoanCount = PodU64.read(_data, i);
-    i += activeLoanCount.l();
+    final var lastAccruedTimestamp = getInt64LE(_data, i);
+    i += 8;
+    final var liquidityBuffer = getInt64LE(_data, i);
+    i += 8;
+    final var tokenBalance = getInt64LE(_data, i);
+    i += 8;
+    final var interestFee = getInt64LE(_data, i);
+    i += 8;
+    final var principalFee = getInt64LE(_data, i);
+    i += 8;
+    final var originationFee = getInt64LE(_data, i);
+    i += 8;
+    final var originationCap = getInt64LE(_data, i);
+    i += 8;
+    final var externalYieldAmount = getInt64LE(_data, i);
+    i += 8;
+    final var currentDeployedAmount = getInt64LE(_data, i);
+    i += 8;
+    final var outstandingInterestAmount = getInt64LE(_data, i);
+    i += 8;
+    final var feeClaimable = getInt64LE(_data, i);
+    i += 8;
+    final var cumulativePrincipalOriginated = getInt128LE(_data, i);
+    i += 16;
+    final var cumulativeInterestAccrued = getInt128LE(_data, i);
+    i += 16;
+    final var cumulativeLoanCount = getInt64LE(_data, i);
+    i += 8;
+    final var activeLoanCount = getInt64LE(_data, i);
+    i += 8;
     final var marketInformation = readPubKey(_data, i);
     i += 32;
-    final var collateralMap = new PodU64[200][5];
-    i += SerDeUtil.readArray(collateralMap, PodU64::read, _data, i);
+    final var collateralMap = new long[200][5];
+    i += SerDeUtil.readArray(collateralMap, _data, i);
     final var externalYieldAccounts = ExternalYieldAccounts.read(_data, i);
     i += externalYieldAccounts.l();
     final var supplyMonitor = CapMonitor.read(_data, i);
@@ -329,25 +365,41 @@ public record Strategy(PublicKey _address,
     i += 32;
     lender.write(_data, i);
     i += 32;
-    i += originationsEnabled.write(_data, i);
+    _data[i] = (byte) (originationsEnabled ? 1 : 0);
+    ++i;
     _data[i] = (byte) externalYieldSource;
     ++i;
     i += interestPerSecond.write(_data, i);
-    i += lastAccruedTimestamp.write(_data, i);
-    i += liquidityBuffer.write(_data, i);
-    i += tokenBalance.write(_data, i);
-    i += interestFee.write(_data, i);
-    i += principalFee.write(_data, i);
-    i += originationFee.write(_data, i);
-    i += originationCap.write(_data, i);
-    i += externalYieldAmount.write(_data, i);
-    i += currentDeployedAmount.write(_data, i);
-    i += outstandingInterestAmount.write(_data, i);
-    i += feeClaimable.write(_data, i);
-    i += cumulativePrincipalOriginated.write(_data, i);
-    i += cumulativeInterestAccrued.write(_data, i);
-    i += cumulativeLoanCount.write(_data, i);
-    i += activeLoanCount.write(_data, i);
+    putInt64LE(_data, i, lastAccruedTimestamp);
+    i += 8;
+    putInt64LE(_data, i, liquidityBuffer);
+    i += 8;
+    putInt64LE(_data, i, tokenBalance);
+    i += 8;
+    putInt64LE(_data, i, interestFee);
+    i += 8;
+    putInt64LE(_data, i, principalFee);
+    i += 8;
+    putInt64LE(_data, i, originationFee);
+    i += 8;
+    putInt64LE(_data, i, originationCap);
+    i += 8;
+    putInt64LE(_data, i, externalYieldAmount);
+    i += 8;
+    putInt64LE(_data, i, currentDeployedAmount);
+    i += 8;
+    putInt64LE(_data, i, outstandingInterestAmount);
+    i += 8;
+    putInt64LE(_data, i, feeClaimable);
+    i += 8;
+    putInt128LE(_data, i, cumulativePrincipalOriginated);
+    i += 16;
+    putInt128LE(_data, i, cumulativeInterestAccrued);
+    i += 16;
+    putInt64LE(_data, i, cumulativeLoanCount);
+    i += 8;
+    putInt64LE(_data, i, activeLoanCount);
+    i += 8;
     marketInformation.write(_data, i);
     i += 32;
     i += SerDeUtil.writeArrayChecked(collateralMap, 200, 5, _data, i);

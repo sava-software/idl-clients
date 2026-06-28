@@ -10,6 +10,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -19,12 +21,12 @@ public record VaultStake(PublicKey _address,
                          PublicKey nonce,
                          int bump,
                          PublicKey user,
-                         PodU64 amount,
+                         long amount,
                          Duration duration,
-                         PodU64 startTime,
-                         PodU64 endTime,
-                         PodU64 unstakeTime,
-                         PodU64 unstakeFeeApplied) implements SerDe {
+                         long startTime,
+                         long endTime,
+                         long unstakeTime,
+                         long unstakeFeeApplied) implements SerDe {
 
   public static final int BYTES = 150;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -59,28 +61,38 @@ public record VaultStake(PublicKey _address,
     return Filter.createMemCompFilter(USER_OFFSET, user);
   }
 
-  public static Filter createAmountFilter(final PodU64 amount) {
-    return Filter.createMemCompFilter(AMOUNT_OFFSET, amount.write());
+  public static Filter createAmountFilter(final long amount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, amount);
+    return Filter.createMemCompFilter(AMOUNT_OFFSET, _data);
   }
 
   public static Filter createDurationFilter(final Duration duration) {
     return Filter.createMemCompFilter(DURATION_OFFSET, duration.write());
   }
 
-  public static Filter createStartTimeFilter(final PodU64 startTime) {
-    return Filter.createMemCompFilter(START_TIME_OFFSET, startTime.write());
+  public static Filter createStartTimeFilter(final long startTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, startTime);
+    return Filter.createMemCompFilter(START_TIME_OFFSET, _data);
   }
 
-  public static Filter createEndTimeFilter(final PodU64 endTime) {
-    return Filter.createMemCompFilter(END_TIME_OFFSET, endTime.write());
+  public static Filter createEndTimeFilter(final long endTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, endTime);
+    return Filter.createMemCompFilter(END_TIME_OFFSET, _data);
   }
 
-  public static Filter createUnstakeTimeFilter(final PodU64 unstakeTime) {
-    return Filter.createMemCompFilter(UNSTAKE_TIME_OFFSET, unstakeTime.write());
+  public static Filter createUnstakeTimeFilter(final long unstakeTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, unstakeTime);
+    return Filter.createMemCompFilter(UNSTAKE_TIME_OFFSET, _data);
   }
 
-  public static Filter createUnstakeFeeAppliedFilter(final PodU64 unstakeFeeApplied) {
-    return Filter.createMemCompFilter(UNSTAKE_FEE_APPLIED_OFFSET, unstakeFeeApplied.write());
+  public static Filter createUnstakeFeeAppliedFilter(final long unstakeFeeApplied) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, unstakeFeeApplied);
+    return Filter.createMemCompFilter(UNSTAKE_FEE_APPLIED_OFFSET, _data);
   }
 
   public static VaultStake read(final byte[] _data, final int _offset) {
@@ -111,17 +123,17 @@ public record VaultStake(PublicKey _address,
     ++i;
     final var user = readPubKey(_data, i);
     i += 32;
-    final var amount = PodU64.read(_data, i);
-    i += amount.l();
+    final var amount = getInt64LE(_data, i);
+    i += 8;
     final var duration = Duration.read(_data, i);
     i += duration.l();
-    final var startTime = PodU64.read(_data, i);
-    i += startTime.l();
-    final var endTime = PodU64.read(_data, i);
-    i += endTime.l();
-    final var unstakeTime = PodU64.read(_data, i);
-    i += unstakeTime.l();
-    final var unstakeFeeApplied = PodU64.read(_data, i);
+    final var startTime = getInt64LE(_data, i);
+    i += 8;
+    final var endTime = getInt64LE(_data, i);
+    i += 8;
+    final var unstakeTime = getInt64LE(_data, i);
+    i += 8;
+    final var unstakeFeeApplied = getInt64LE(_data, i);
     return new VaultStake(_address,
                           discriminator,
                           vault,
@@ -147,12 +159,17 @@ public record VaultStake(PublicKey _address,
     ++i;
     user.write(_data, i);
     i += 32;
-    i += amount.write(_data, i);
+    putInt64LE(_data, i, amount);
+    i += 8;
     i += duration.write(_data, i);
-    i += startTime.write(_data, i);
-    i += endTime.write(_data, i);
-    i += unstakeTime.write(_data, i);
-    i += unstakeFeeApplied.write(_data, i);
+    putInt64LE(_data, i, startTime);
+    i += 8;
+    putInt64LE(_data, i, endTime);
+    i += 8;
+    putInt64LE(_data, i, unstakeTime);
+    i += 8;
+    putInt64LE(_data, i, unstakeFeeApplied);
+    i += 8;
     return i - _offset;
   }
 

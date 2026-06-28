@@ -5,9 +5,11 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record CollateralData(PublicKey assetMint,
-                             PodU64 amount,
+                             long amount,
                              int assetType,
                              PublicKey assetIdentifier) implements SerDe {
 
@@ -25,8 +27,8 @@ public record CollateralData(PublicKey assetMint,
     int i = _offset;
     final var assetMint = readPubKey(_data, i);
     i += 32;
-    final var amount = PodU64.read(_data, i);
-    i += amount.l();
+    final var amount = getInt64LE(_data, i);
+    i += 8;
     final var assetType = _data[i] & 0xFF;
     ++i;
     final var assetIdentifier = readPubKey(_data, i);
@@ -41,7 +43,8 @@ public record CollateralData(PublicKey assetMint,
     int i = _offset;
     assetMint.write(_data, i);
     i += 32;
-    i += amount.write(_data, i);
+    putInt64LE(_data, i, amount);
+    i += 8;
     _data[i] = (byte) assetType;
     ++i;
     assetIdentifier.write(_data, i);

@@ -3,7 +3,10 @@ package software.sava.idl.clients.loopscale.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-public record Duration(PodU32 duration, int durationType) implements SerDe {
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
+
+public record Duration(int duration, int durationType) implements SerDe {
 
   public static final int BYTES = 5;
 
@@ -15,8 +18,8 @@ public record Duration(PodU32 duration, int durationType) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var duration = PodU32.read(_data, i);
-    i += duration.l();
+    final var duration = getInt32LE(_data, i);
+    i += 4;
     final var durationType = _data[i] & 0xFF;
     return new Duration(duration, durationType);
   }
@@ -24,7 +27,8 @@ public record Duration(PodU32 duration, int durationType) implements SerDe {
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += duration.write(_data, i);
+    putInt32LE(_data, i, duration);
+    i += 4;
     _data[i] = (byte) durationType;
     ++i;
     return i - _offset;

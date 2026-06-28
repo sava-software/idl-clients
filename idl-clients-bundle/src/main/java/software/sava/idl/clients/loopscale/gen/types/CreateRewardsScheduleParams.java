@@ -4,10 +4,13 @@ package software.sava.idl.clients.loopscale.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
 public record CreateRewardsScheduleParams(PodDecimal totalWeightedStakeSupply,
-                                          PodU64 rewardStartTime,
-                                          PodU64 rewardEndTime,
-                                          PodU32CBPS[] durationStakeWeights) implements SerDe {
+                                          long rewardStartTime,
+                                          long rewardEndTime,
+                                          int[] durationStakeWeights) implements SerDe {
 
   public static final int BYTES = 60;
   public static final int DURATION_STAKE_WEIGHTS_LEN = 5;
@@ -24,12 +27,12 @@ public record CreateRewardsScheduleParams(PodDecimal totalWeightedStakeSupply,
     int i = _offset;
     final var totalWeightedStakeSupply = PodDecimal.read(_data, i);
     i += totalWeightedStakeSupply.l();
-    final var rewardStartTime = PodU64.read(_data, i);
-    i += rewardStartTime.l();
-    final var rewardEndTime = PodU64.read(_data, i);
-    i += rewardEndTime.l();
-    final var durationStakeWeights = new PodU32CBPS[5];
-    SerDeUtil.readArray(durationStakeWeights, PodU32CBPS::read, _data, i);
+    final var rewardStartTime = getInt64LE(_data, i);
+    i += 8;
+    final var rewardEndTime = getInt64LE(_data, i);
+    i += 8;
+    final var durationStakeWeights = new int[5];
+    SerDeUtil.readArray(durationStakeWeights, _data, i);
     return new CreateRewardsScheduleParams(totalWeightedStakeSupply,
                                            rewardStartTime,
                                            rewardEndTime,
@@ -40,8 +43,10 @@ public record CreateRewardsScheduleParams(PodDecimal totalWeightedStakeSupply,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += totalWeightedStakeSupply.write(_data, i);
-    i += rewardStartTime.write(_data, i);
-    i += rewardEndTime.write(_data, i);
+    putInt64LE(_data, i, rewardStartTime);
+    i += 8;
+    putInt64LE(_data, i, rewardEndTime);
+    i += 8;
     i += SerDeUtil.writeArrayChecked(durationStakeWeights, 5, _data, i);
     return i - _offset;
   }

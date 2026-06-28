@@ -3,10 +3,13 @@ package software.sava.idl.clients.loopscale.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-public record CapMonitor(PodU64 startTime1hr,
-                         PodU64 startTime24hr,
-                         PodU64 principal1hr,
-                         PodU64 principal24hr) implements SerDe {
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record CapMonitor(long startTime1hr,
+                         long startTime24hr,
+                         long principal1hr,
+                         long principal24hr) implements SerDe {
 
   public static final int BYTES = 32;
 
@@ -20,13 +23,13 @@ public record CapMonitor(PodU64 startTime1hr,
       return null;
     }
     int i = _offset;
-    final var startTime1hr = PodU64.read(_data, i);
-    i += startTime1hr.l();
-    final var startTime24hr = PodU64.read(_data, i);
-    i += startTime24hr.l();
-    final var principal1hr = PodU64.read(_data, i);
-    i += principal1hr.l();
-    final var principal24hr = PodU64.read(_data, i);
+    final var startTime1hr = getInt64LE(_data, i);
+    i += 8;
+    final var startTime24hr = getInt64LE(_data, i);
+    i += 8;
+    final var principal1hr = getInt64LE(_data, i);
+    i += 8;
+    final var principal24hr = getInt64LE(_data, i);
     return new CapMonitor(startTime1hr,
                           startTime24hr,
                           principal1hr,
@@ -36,10 +39,14 @@ public record CapMonitor(PodU64 startTime1hr,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += startTime1hr.write(_data, i);
-    i += startTime24hr.write(_data, i);
-    i += principal1hr.write(_data, i);
-    i += principal24hr.write(_data, i);
+    putInt64LE(_data, i, startTime1hr);
+    i += 8;
+    putInt64LE(_data, i, startTime24hr);
+    i += 8;
+    putInt64LE(_data, i, principal1hr);
+    i += 8;
+    putInt64LE(_data, i, principal24hr);
+    i += 8;
     return i - _offset;
   }
 

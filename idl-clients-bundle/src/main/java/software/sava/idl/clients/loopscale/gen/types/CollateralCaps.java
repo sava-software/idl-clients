@@ -3,7 +3,10 @@ package software.sava.idl.clients.loopscale.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
-public record CollateralCaps(PodU64CBPS maxAllocationPct, PodU64 currentAllocationAmount) implements SerDe {
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
+
+public record CollateralCaps(long maxAllocationPct, long currentAllocationAmount) implements SerDe {
 
   public static final int BYTES = 16;
 
@@ -15,17 +18,19 @@ public record CollateralCaps(PodU64CBPS maxAllocationPct, PodU64 currentAllocati
       return null;
     }
     int i = _offset;
-    final var maxAllocationPct = PodU64CBPS.read(_data, i);
-    i += maxAllocationPct.l();
-    final var currentAllocationAmount = PodU64.read(_data, i);
+    final var maxAllocationPct = getInt64LE(_data, i);
+    i += 8;
+    final var currentAllocationAmount = getInt64LE(_data, i);
     return new CollateralCaps(maxAllocationPct, currentAllocationAmount);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += maxAllocationPct.write(_data, i);
-    i += currentAllocationAmount.write(_data, i);
+    putInt64LE(_data, i, maxAllocationPct);
+    i += 8;
+    putInt64LE(_data, i, currentAllocationAmount);
+    i += 8;
     return i - _offset;
   }
 

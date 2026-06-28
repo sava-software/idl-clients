@@ -11,6 +11,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -19,13 +21,13 @@ public record UserRewardsInfo(PublicKey _address,
                               PublicKey vaultAddress,
                               int bump,
                               PublicKey stakeAccountAddress,
-                              PodU64 stakeTime,
+                              long stakeTime,
                               PublicKey user,
-                              PodU64 lpAmount,
+                              long lpAmount,
                               int durationIndex,
                               PodDecimal[] lastRewardIndexes,
-                              PodU64[] pendingRewards,
-                              PodU64[] lastRewardIndexUpdateTime) implements SerDe {
+                              long[] pendingRewards,
+                              long[] lastRewardIndexUpdateTime) implements SerDe {
 
   public static final int BYTES = 322;
   public static final int LAST_REWARD_INDEXES_LEN = 5;
@@ -59,16 +61,20 @@ public record UserRewardsInfo(PublicKey _address,
     return Filter.createMemCompFilter(STAKE_ACCOUNT_ADDRESS_OFFSET, stakeAccountAddress);
   }
 
-  public static Filter createStakeTimeFilter(final PodU64 stakeTime) {
-    return Filter.createMemCompFilter(STAKE_TIME_OFFSET, stakeTime.write());
+  public static Filter createStakeTimeFilter(final long stakeTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, stakeTime);
+    return Filter.createMemCompFilter(STAKE_TIME_OFFSET, _data);
   }
 
   public static Filter createUserFilter(final PublicKey user) {
     return Filter.createMemCompFilter(USER_OFFSET, user);
   }
 
-  public static Filter createLpAmountFilter(final PodU64 lpAmount) {
-    return Filter.createMemCompFilter(LP_AMOUNT_OFFSET, lpAmount.write());
+  public static Filter createLpAmountFilter(final long lpAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lpAmount);
+    return Filter.createMemCompFilter(LP_AMOUNT_OFFSET, _data);
   }
 
   public static Filter createDurationIndexFilter(final int durationIndex) {
@@ -101,20 +107,20 @@ public record UserRewardsInfo(PublicKey _address,
     ++i;
     final var stakeAccountAddress = readPubKey(_data, i);
     i += 32;
-    final var stakeTime = PodU64.read(_data, i);
-    i += stakeTime.l();
+    final var stakeTime = getInt64LE(_data, i);
+    i += 8;
     final var user = readPubKey(_data, i);
     i += 32;
-    final var lpAmount = PodU64.read(_data, i);
-    i += lpAmount.l();
+    final var lpAmount = getInt64LE(_data, i);
+    i += 8;
     final var durationIndex = _data[i] & 0xFF;
     ++i;
     final var lastRewardIndexes = new PodDecimal[5];
     i += SerDeUtil.readArray(lastRewardIndexes, PodDecimal::read, _data, i);
-    final var pendingRewards = new PodU64[5];
-    i += SerDeUtil.readArray(pendingRewards, PodU64::read, _data, i);
-    final var lastRewardIndexUpdateTime = new PodU64[5];
-    SerDeUtil.readArray(lastRewardIndexUpdateTime, PodU64::read, _data, i);
+    final var pendingRewards = new long[5];
+    i += SerDeUtil.readArray(pendingRewards, _data, i);
+    final var lastRewardIndexUpdateTime = new long[5];
+    SerDeUtil.readArray(lastRewardIndexUpdateTime, _data, i);
     return new UserRewardsInfo(_address,
                                discriminator,
                                vaultAddress,
@@ -138,10 +144,12 @@ public record UserRewardsInfo(PublicKey _address,
     ++i;
     stakeAccountAddress.write(_data, i);
     i += 32;
-    i += stakeTime.write(_data, i);
+    putInt64LE(_data, i, stakeTime);
+    i += 8;
     user.write(_data, i);
     i += 32;
-    i += lpAmount.write(_data, i);
+    putInt64LE(_data, i, lpAmount);
+    i += 8;
     _data[i] = (byte) durationIndex;
     ++i;
     i += SerDeUtil.writeArrayChecked(lastRewardIndexes, 5, _data, i);

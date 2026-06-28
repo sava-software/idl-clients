@@ -23,12 +23,12 @@ public record Loan(PublicKey _address,
                    int loanStatus,
                    PublicKey borrower,
                    long nonce,
-                   PodU64 startTime,
+                   long startTime,
                    Ledger[] ledgers,
                    CollateralData[] collateral,
-                   PodU32CBPS[][] weightMatrix,
-                   PodU32CBPS[][] ltvMatrix,
-                   PodU32CBPS[][] lqtMatrix) implements SerDe {
+                   int[][] weightMatrix,
+                   int[][] ltvMatrix,
+                   int[][] lqtMatrix) implements SerDe {
 
   public static final int BYTES = 1634;
   public static final int LEDGERS_LEN = 5;
@@ -75,8 +75,10 @@ public record Loan(PublicKey _address,
     return Filter.createMemCompFilter(NONCE_OFFSET, _data);
   }
 
-  public static Filter createStartTimeFilter(final PodU64 startTime) {
-    return Filter.createMemCompFilter(START_TIME_OFFSET, startTime.write());
+  public static Filter createStartTimeFilter(final long startTime) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, startTime);
+    return Filter.createMemCompFilter(START_TIME_OFFSET, _data);
   }
 
   public static Loan read(final byte[] _data, final int _offset) {
@@ -109,18 +111,18 @@ public record Loan(PublicKey _address,
     i += 32;
     final var nonce = getInt64LE(_data, i);
     i += 8;
-    final var startTime = PodU64.read(_data, i);
-    i += startTime.l();
+    final var startTime = getInt64LE(_data, i);
+    i += 8;
     final var ledgers = new Ledger[5];
     i += SerDeUtil.readArray(ledgers, Ledger::read, _data, i);
     final var collateral = new CollateralData[5];
     i += SerDeUtil.readArray(collateral, CollateralData::read, _data, i);
-    final var weightMatrix = new PodU32CBPS[5][5];
-    i += SerDeUtil.readArray(weightMatrix, PodU32CBPS::read, _data, i);
-    final var ltvMatrix = new PodU32CBPS[5][5];
-    i += SerDeUtil.readArray(ltvMatrix, PodU32CBPS::read, _data, i);
-    final var lqtMatrix = new PodU32CBPS[5][5];
-    SerDeUtil.readArray(lqtMatrix, PodU32CBPS::read, _data, i);
+    final var weightMatrix = new int[5][5];
+    i += SerDeUtil.readArray(weightMatrix, _data, i);
+    final var ltvMatrix = new int[5][5];
+    i += SerDeUtil.readArray(ltvMatrix, _data, i);
+    final var lqtMatrix = new int[5][5];
+    SerDeUtil.readArray(lqtMatrix, _data, i);
     return new Loan(_address,
                     discriminator,
                     version,
@@ -149,7 +151,8 @@ public record Loan(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, nonce);
     i += 8;
-    i += startTime.write(_data, i);
+    putInt64LE(_data, i, startTime);
+    i += 8;
     i += SerDeUtil.writeArrayChecked(ledgers, 5, _data, i);
     i += SerDeUtil.writeArrayChecked(collateral, 5, _data, i);
     i += SerDeUtil.writeArrayChecked(weightMatrix, 5, 5, _data, i);

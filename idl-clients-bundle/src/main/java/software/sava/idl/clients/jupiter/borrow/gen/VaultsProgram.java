@@ -72,7 +72,7 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_BRANCH_DISCRIMINATOR = toDiscriminator(162, 91, 57, 23, 228, 93, 111, 21);
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static List<AccountMeta> initBranchKeys(final SolanaAccounts solanaAccounts,
                                                  final PublicKey signerKey,
                                                  final PublicKey vaultConfigKey,
@@ -85,7 +85,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static Instruction initBranch(final AccountMeta invokedVaultsProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey signerKey,
@@ -156,7 +156,7 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_POSITION_DISCRIMINATOR = toDiscriminator(197, 20, 10, 1, 97, 160, 177, 91);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
   public static List<AccountMeta> initPositionKeys(final SolanaAccounts solanaAccounts,
                                                    final PublicKey signerKey,
                                                    final PublicKey vaultAdminKey,
@@ -184,7 +184,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
   public static Instruction initPosition(final AccountMeta invokedVaultsProgramMeta,
                                          final SolanaAccounts solanaAccounts,
                                          final PublicKey signerKey,
@@ -267,7 +267,7 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_TICK_DISCRIMINATOR = toDiscriminator(22, 13, 62, 141, 73, 89, 178, 29);
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static List<AccountMeta> initTickKeys(final SolanaAccounts solanaAccounts,
                                                final PublicKey signerKey,
                                                final PublicKey vaultConfigKey,
@@ -280,7 +280,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static Instruction initTick(final AccountMeta invokedVaultsProgramMeta,
                                      final SolanaAccounts solanaAccounts,
                                      final PublicKey signerKey,
@@ -351,7 +351,7 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_TICK_HAS_DEBT_ARRAY_DISCRIMINATOR = toDiscriminator(206, 108, 146, 245, 20, 0, 141, 208);
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static List<AccountMeta> initTickHasDebtArrayKeys(final SolanaAccounts solanaAccounts,
                                                            final PublicKey signerKey,
                                                            final PublicKey vaultConfigKey,
@@ -364,7 +364,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
   public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey signerKey,
@@ -435,7 +435,7 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_TICK_ID_LIQUIDATION_DISCRIMINATOR = toDiscriminator(56, 110, 121, 169, 152, 241, 86, 183);
 
-  /// @param tickDataKey @dev Verification inside instruction logic
+  /// @param tickDataKey _dev Verification inside instruction logic
   public static List<AccountMeta> initTickIdLiquidationKeys(final SolanaAccounts solanaAccounts,
                                                             final PublicKey signerKey,
                                                             final PublicKey tickDataKey,
@@ -448,7 +448,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param tickDataKey @dev Verification inside instruction logic
+  /// @param tickDataKey _dev Verification inside instruction logic
   public static Instruction initTickIdLiquidation(final AccountMeta invokedVaultsProgramMeta,
                                                   final SolanaAccounts solanaAccounts,
                                                   final PublicKey signerKey,
@@ -712,9 +712,9 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_VAULT_STATE_DISCRIMINATOR = toDiscriminator(96, 120, 23, 100, 153, 11, 13, 165);
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> initVaultStateKeys(final SolanaAccounts solanaAccounts,
                                                      final PublicKey authorityKey,
                                                      final PublicKey vaultAdminKey,
@@ -733,9 +733,9 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction initVaultState(final AccountMeta invokedVaultsProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey authorityKey,
@@ -803,8 +803,8 @@ public final class VaultsProgram {
 
   public static final Discriminator LIQUIDATE_DISCRIMINATOR = toDiscriminator(223, 179, 226, 125, 48, 46, 39, 74);
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
   public static List<AccountMeta> liquidateKeys(final AccountMeta invokedVaultsProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
                                                 final PublicKey signerKey,
@@ -861,8 +861,8 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
   public static Instruction liquidate(final AccountMeta invokedVaultsProgramMeta,
                                       final SolanaAccounts solanaAccounts,
                                       final PublicKey signerKey,
@@ -1029,10 +1029,10 @@ public final class VaultsProgram {
 
   public static final Discriminator OPERATE_DISCRIMINATOR = toDiscriminator(217, 106, 208, 99, 116, 151, 42, 135);
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
-  /// @param vaultStateKey @dev verification inside instruction logic
-  /// @param positionTokenAccountKey @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
+  /// @param positionTokenAccountKey _dev verification inside instruction logic
   public static List<AccountMeta> operateKeys(final AccountMeta invokedVaultsProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey signerKey,
@@ -1107,10 +1107,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
-  /// @param vaultStateKey @dev verification inside instruction logic
-  /// @param positionTokenAccountKey @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
+  /// @param positionTokenAccountKey _dev verification inside instruction logic
   public static Instruction operate(final AccountMeta invokedVaultsProgramMeta,
                                     final SolanaAccounts solanaAccounts,
                                     final PublicKey signerKey,
@@ -1279,9 +1279,9 @@ public final class VaultsProgram {
 
   public static final Discriminator REBALANCE_DISCRIMINATOR = toDiscriminator(108, 158, 77, 9, 210, 52, 88, 62);
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
-  /// @param vaultStateKey @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
   public static List<AccountMeta> rebalanceKeys(final SolanaAccounts solanaAccounts,
                                                 final PublicKey rebalancerKey,
                                                 final PublicKey rebalancerSupplyTokenAccountKey,
@@ -1327,9 +1327,9 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultConfigKey @dev mut because this PDA signs the CPI to liquidity program
-  ///                       @dev verification inside instruction logic
-  /// @param vaultStateKey @dev verification inside instruction logic
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
   public static Instruction rebalance(final AccountMeta invokedVaultsProgramMeta,
                                       final SolanaAccounts solanaAccounts,
                                       final PublicKey rebalancerKey,
@@ -1510,10 +1510,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_BORROW_FEE_DISCRIMINATOR = toDiscriminator(251, 124, 35, 148, 202, 167, 157, 65);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateBorrowFeeKeys(final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
                                                       final PublicKey vaultStateKey,
@@ -1530,10 +1530,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
                                             final PublicKey authorityKey,
                                             final PublicKey vaultAdminKey,
@@ -1608,10 +1608,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_BORROW_RATE_MAGNIFIER_DISCRIMINATOR = toDiscriminator(75, 250, 27, 176, 156, 53, 26, 112);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateBorrowRateMagnifierKeys(final PublicKey authorityKey,
                                                                 final PublicKey vaultAdminKey,
                                                                 final PublicKey vaultStateKey,
@@ -1628,10 +1628,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateBorrowRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -1706,10 +1706,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_COLLATERAL_FACTOR_DISCRIMINATOR = toDiscriminator(244, 83, 227, 215, 220, 82, 201, 221);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateCollateralFactorKeys(final PublicKey authorityKey,
                                                              final PublicKey vaultAdminKey,
                                                              final PublicKey vaultStateKey,
@@ -1726,10 +1726,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateCollateralFactor(final AccountMeta invokedVaultsProgramMeta,
                                                    final PublicKey authorityKey,
                                                    final PublicKey vaultAdminKey,
@@ -1804,10 +1804,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_CORE_SETTINGS_DISCRIMINATOR = toDiscriminator(101, 84, 9, 11, 60, 104, 149, 234);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateCoreSettingsKeys(final PublicKey authorityKey,
                                                          final PublicKey vaultAdminKey,
                                                          final PublicKey vaultStateKey,
@@ -1824,10 +1824,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateCoreSettings(final AccountMeta invokedVaultsProgramMeta,
                                                final PublicKey authorityKey,
                                                final PublicKey vaultAdminKey,
@@ -1901,10 +1901,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_EXCHANGE_PRICES_DISCRIMINATOR = toDiscriminator(209, 14, 188, 95, 242, 20, 119, 196);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateExchangePricesKeys(final PublicKey vaultStateKey,
                                                            final PublicKey vaultConfigKey,
                                                            final PublicKey supplyTokenReservesLiquidityKey,
@@ -1917,10 +1917,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateExchangePrices(final AccountMeta invokedVaultsProgramMeta,
                                                  final PublicKey vaultStateKey,
                                                  final PublicKey vaultConfigKey,
@@ -1982,10 +1982,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_LIQUIDATION_MAX_LIMIT_DISCRIMINATOR = toDiscriminator(183, 242, 152, 150, 176, 40, 65, 161);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateLiquidationMaxLimitKeys(final PublicKey authorityKey,
                                                                 final PublicKey vaultAdminKey,
                                                                 final PublicKey vaultStateKey,
@@ -2002,10 +2002,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateLiquidationMaxLimit(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -2080,10 +2080,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_LIQUIDATION_PENALTY_DISCRIMINATOR = toDiscriminator(21, 168, 167, 206, 98, 206, 69, 32);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateLiquidationPenaltyKeys(final PublicKey authorityKey,
                                                                final PublicKey vaultAdminKey,
                                                                final PublicKey vaultStateKey,
@@ -2100,10 +2100,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateLiquidationPenalty(final AccountMeta invokedVaultsProgramMeta,
                                                      final PublicKey authorityKey,
                                                      final PublicKey vaultAdminKey,
@@ -2178,10 +2178,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_LIQUIDATION_THRESHOLD_DISCRIMINATOR = toDiscriminator(53, 185, 87, 243, 138, 11, 79, 28);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateLiquidationThresholdKeys(final PublicKey authorityKey,
                                                                  final PublicKey vaultAdminKey,
                                                                  final PublicKey vaultStateKey,
@@ -2198,10 +2198,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateLiquidationThreshold(final AccountMeta invokedVaultsProgramMeta,
                                                        final PublicKey authorityKey,
                                                        final PublicKey vaultAdminKey,
@@ -2276,7 +2276,7 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_LOOKUP_TABLE_DISCRIMINATOR = toDiscriminator(221, 59, 30, 246, 106, 223, 137, 55);
 
-  /// @param vaultMetadataKey @dev Verification inside instruction logic
+  /// @param vaultMetadataKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateLookupTableKeys(final PublicKey authorityKey,
                                                         final PublicKey vaultAdminKey,
                                                         final PublicKey vaultMetadataKey) {
@@ -2287,7 +2287,7 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultMetadataKey @dev Verification inside instruction logic
+  /// @param vaultMetadataKey _dev Verification inside instruction logic
   public static Instruction updateLookupTable(final AccountMeta invokedVaultsProgramMeta,
                                               final PublicKey authorityKey,
                                               final PublicKey vaultAdminKey,
@@ -2356,10 +2356,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_ORACLE_DISCRIMINATOR = toDiscriminator(112, 41, 209, 18, 248, 226, 252, 188);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateOracleKeys(final PublicKey authorityKey,
                                                    final PublicKey vaultAdminKey,
                                                    final PublicKey vaultStateKey,
@@ -2378,10 +2378,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateOracle(final AccountMeta invokedVaultsProgramMeta,
                                          final PublicKey authorityKey,
                                          final PublicKey vaultAdminKey,
@@ -2449,10 +2449,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_REBALANCER_DISCRIMINATOR = toDiscriminator(206, 187, 54, 228, 145, 8, 203, 111);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateRebalancerKeys(final PublicKey authorityKey,
                                                        final PublicKey vaultAdminKey,
                                                        final PublicKey vaultStateKey,
@@ -2469,10 +2469,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateRebalancer(final AccountMeta invokedVaultsProgramMeta,
                                              final PublicKey authorityKey,
                                              final PublicKey vaultAdminKey,
@@ -2547,10 +2547,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_SUPPLY_RATE_MAGNIFIER_DISCRIMINATOR = toDiscriminator(175, 59, 117, 196, 211, 170, 22, 12);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateSupplyRateMagnifierKeys(final PublicKey authorityKey,
                                                                 final PublicKey vaultAdminKey,
                                                                 final PublicKey vaultStateKey,
@@ -2567,10 +2567,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateSupplyRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -2645,10 +2645,10 @@ public final class VaultsProgram {
 
   public static final Discriminator UPDATE_WITHDRAW_GAP_DISCRIMINATOR = toDiscriminator(229, 163, 76, 21, 82, 215, 25, 233);
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static List<AccountMeta> updateWithdrawGapKeys(final PublicKey authorityKey,
                                                         final PublicKey vaultAdminKey,
                                                         final PublicKey vaultStateKey,
@@ -2665,10 +2665,10 @@ public final class VaultsProgram {
     );
   }
 
-  /// @param vaultStateKey @dev Verification inside instruction logic
-  /// @param vaultConfigKey @dev Verification inside instruction logic
-  /// @param supplyTokenReservesLiquidityKey @dev Verification inside instruction logic
-  /// @param borrowTokenReservesLiquidityKey @dev Verification inside instruction logic
+  /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   public static Instruction updateWithdrawGap(final AccountMeta invokedVaultsProgramMeta,
                                               final PublicKey authorityKey,
                                               final PublicKey vaultAdminKey,

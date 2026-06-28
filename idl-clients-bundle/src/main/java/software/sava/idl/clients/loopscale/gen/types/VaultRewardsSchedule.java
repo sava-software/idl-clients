@@ -6,18 +6,20 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record VaultRewardsSchedule(PublicKey rewardMint,
                                    PodDecimal totalWeightedStakeSupply,
-                                   PodU64 rewardStartTime,
-                                   PodU64 rewardEndTime,
-                                   PodU64 totalEmissionsAmount,
+                                   long rewardStartTime,
+                                   long rewardEndTime,
+                                   long totalEmissionsAmount,
                                    PodDecimal emissionsPerSecond,
                                    PodDecimal rewardIndex,
-                                   PodU64 lastRewardIndexUpdateTime,
-                                   PodU64 emissionsClaimed,
-                                   PodU64 createdAt,
-                                   PodU32CBPS[] durationStakeWeights) implements SerDe {
+                                   long lastRewardIndexUpdateTime,
+                                   long emissionsClaimed,
+                                   long createdAt,
+                                   int[] durationStakeWeights) implements SerDe {
 
   public static final int BYTES = 172;
   public static final int DURATION_STAKE_WEIGHTS_LEN = 5;
@@ -43,24 +45,24 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     i += 32;
     final var totalWeightedStakeSupply = PodDecimal.read(_data, i);
     i += totalWeightedStakeSupply.l();
-    final var rewardStartTime = PodU64.read(_data, i);
-    i += rewardStartTime.l();
-    final var rewardEndTime = PodU64.read(_data, i);
-    i += rewardEndTime.l();
-    final var totalEmissionsAmount = PodU64.read(_data, i);
-    i += totalEmissionsAmount.l();
+    final var rewardStartTime = getInt64LE(_data, i);
+    i += 8;
+    final var rewardEndTime = getInt64LE(_data, i);
+    i += 8;
+    final var totalEmissionsAmount = getInt64LE(_data, i);
+    i += 8;
     final var emissionsPerSecond = PodDecimal.read(_data, i);
     i += emissionsPerSecond.l();
     final var rewardIndex = PodDecimal.read(_data, i);
     i += rewardIndex.l();
-    final var lastRewardIndexUpdateTime = PodU64.read(_data, i);
-    i += lastRewardIndexUpdateTime.l();
-    final var emissionsClaimed = PodU64.read(_data, i);
-    i += emissionsClaimed.l();
-    final var createdAt = PodU64.read(_data, i);
-    i += createdAt.l();
-    final var durationStakeWeights = new PodU32CBPS[5];
-    SerDeUtil.readArray(durationStakeWeights, PodU32CBPS::read, _data, i);
+    final var lastRewardIndexUpdateTime = getInt64LE(_data, i);
+    i += 8;
+    final var emissionsClaimed = getInt64LE(_data, i);
+    i += 8;
+    final var createdAt = getInt64LE(_data, i);
+    i += 8;
+    final var durationStakeWeights = new int[5];
+    SerDeUtil.readArray(durationStakeWeights, _data, i);
     return new VaultRewardsSchedule(rewardMint,
                                     totalWeightedStakeSupply,
                                     rewardStartTime,
@@ -80,14 +82,20 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     rewardMint.write(_data, i);
     i += 32;
     i += totalWeightedStakeSupply.write(_data, i);
-    i += rewardStartTime.write(_data, i);
-    i += rewardEndTime.write(_data, i);
-    i += totalEmissionsAmount.write(_data, i);
+    putInt64LE(_data, i, rewardStartTime);
+    i += 8;
+    putInt64LE(_data, i, rewardEndTime);
+    i += 8;
+    putInt64LE(_data, i, totalEmissionsAmount);
+    i += 8;
     i += emissionsPerSecond.write(_data, i);
     i += rewardIndex.write(_data, i);
-    i += lastRewardIndexUpdateTime.write(_data, i);
-    i += emissionsClaimed.write(_data, i);
-    i += createdAt.write(_data, i);
+    putInt64LE(_data, i, lastRewardIndexUpdateTime);
+    i += 8;
+    putInt64LE(_data, i, emissionsClaimed);
+    i += 8;
+    putInt64LE(_data, i, createdAt);
+    i += 8;
     i += SerDeUtil.writeArrayChecked(durationStakeWeights, 5, _data, i);
     return i - _offset;
   }

@@ -10,6 +10,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
@@ -18,12 +20,12 @@ public record Vault(PublicKey _address,
                     PublicKey manager,
                     PublicKey nonce,
                     int bump,
-                    PodU64 lpSupply,
+                    long lpSupply,
                     PublicKey lpMint,
                     PublicKey principalMint,
-                    PodU64 cumulativePrincipalDeposited,
-                    PodBool depositsEnabled,
-                    PodU64CBPS maxEarlyUnstakeFee) implements SerDe {
+                    long cumulativePrincipalDeposited,
+                    boolean depositsEnabled,
+                    long maxEarlyUnstakeFee) implements SerDe {
 
   public static final int BYTES = 162;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -53,8 +55,10 @@ public record Vault(PublicKey _address,
     return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
   }
 
-  public static Filter createLpSupplyFilter(final PodU64 lpSupply) {
-    return Filter.createMemCompFilter(LP_SUPPLY_OFFSET, lpSupply.write());
+  public static Filter createLpSupplyFilter(final long lpSupply) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, lpSupply);
+    return Filter.createMemCompFilter(LP_SUPPLY_OFFSET, _data);
   }
 
   public static Filter createLpMintFilter(final PublicKey lpMint) {
@@ -65,16 +69,20 @@ public record Vault(PublicKey _address,
     return Filter.createMemCompFilter(PRINCIPAL_MINT_OFFSET, principalMint);
   }
 
-  public static Filter createCumulativePrincipalDepositedFilter(final PodU64 cumulativePrincipalDeposited) {
-    return Filter.createMemCompFilter(CUMULATIVE_PRINCIPAL_DEPOSITED_OFFSET, cumulativePrincipalDeposited.write());
+  public static Filter createCumulativePrincipalDepositedFilter(final long cumulativePrincipalDeposited) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, cumulativePrincipalDeposited);
+    return Filter.createMemCompFilter(CUMULATIVE_PRINCIPAL_DEPOSITED_OFFSET, _data);
   }
 
-  public static Filter createDepositsEnabledFilter(final PodBool depositsEnabled) {
-    return Filter.createMemCompFilter(DEPOSITS_ENABLED_OFFSET, depositsEnabled.write());
+  public static Filter createDepositsEnabledFilter(final boolean depositsEnabled) {
+    return Filter.createMemCompFilter(DEPOSITS_ENABLED_OFFSET, new byte[]{(byte) (depositsEnabled ? 1 : 0)});
   }
 
-  public static Filter createMaxEarlyUnstakeFeeFilter(final PodU64CBPS maxEarlyUnstakeFee) {
-    return Filter.createMemCompFilter(MAX_EARLY_UNSTAKE_FEE_OFFSET, maxEarlyUnstakeFee.write());
+  public static Filter createMaxEarlyUnstakeFeeFilter(final long maxEarlyUnstakeFee) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, maxEarlyUnstakeFee);
+    return Filter.createMemCompFilter(MAX_EARLY_UNSTAKE_FEE_OFFSET, _data);
   }
 
   public static Vault read(final byte[] _data, final int _offset) {
@@ -103,17 +111,17 @@ public record Vault(PublicKey _address,
     i += 32;
     final var bump = _data[i] & 0xFF;
     ++i;
-    final var lpSupply = PodU64.read(_data, i);
-    i += lpSupply.l();
+    final var lpSupply = getInt64LE(_data, i);
+    i += 8;
     final var lpMint = readPubKey(_data, i);
     i += 32;
     final var principalMint = readPubKey(_data, i);
     i += 32;
-    final var cumulativePrincipalDeposited = PodU64.read(_data, i);
-    i += cumulativePrincipalDeposited.l();
-    final var depositsEnabled = PodBool.read(_data, i);
-    i += depositsEnabled.l();
-    final var maxEarlyUnstakeFee = PodU64CBPS.read(_data, i);
+    final var cumulativePrincipalDeposited = getInt64LE(_data, i);
+    i += 8;
+    final var depositsEnabled = _data[i] == 1;
+    ++i;
+    final var maxEarlyUnstakeFee = getInt64LE(_data, i);
     return new Vault(_address,
                      discriminator,
                      manager,
@@ -136,14 +144,18 @@ public record Vault(PublicKey _address,
     i += 32;
     _data[i] = (byte) bump;
     ++i;
-    i += lpSupply.write(_data, i);
+    putInt64LE(_data, i, lpSupply);
+    i += 8;
     lpMint.write(_data, i);
     i += 32;
     principalMint.write(_data, i);
     i += 32;
-    i += cumulativePrincipalDeposited.write(_data, i);
-    i += depositsEnabled.write(_data, i);
-    i += maxEarlyUnstakeFee.write(_data, i);
+    putInt64LE(_data, i, cumulativePrincipalDeposited);
+    i += 8;
+    _data[i] = (byte) (depositsEnabled ? 1 : 0);
+    ++i;
+    putInt64LE(_data, i, maxEarlyUnstakeFee);
+    i += 8;
     return i - _offset;
   }
 

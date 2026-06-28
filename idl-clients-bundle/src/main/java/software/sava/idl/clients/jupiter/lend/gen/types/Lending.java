@@ -17,11 +17,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param decimals @dev number of decimals for the fToken, same as ASSET
-/// @param rewardsRateModel @dev To read PDA of rewards rate model to get_rate instruction
-/// @param liquidityExchangePrice @dev exchange price for the underlying asset in the liquidity protocol (without rewards)
-/// @param tokenExchangePrice @dev exchange price between fToken and the underlying asset (with rewards)
-/// @param lastUpdateTimestamp @dev timestamp when exchange prices were updated the last time
+/// @param decimals _dev number of decimals for the fToken, same as ASSET
+/// @param rewardsRateModel _dev To read PDA of rewards rate model to get_rate instruction
+/// @param liquidityExchangePrice _dev exchange price for the underlying asset in the liquidity protocol (without rewards)
+/// @param tokenExchangePrice _dev exchange price between fToken and the underlying asset (with rewards)
+/// @param lastUpdateTimestamp _dev timestamp when exchange prices were updated the last time
 public record Lending(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey mint,

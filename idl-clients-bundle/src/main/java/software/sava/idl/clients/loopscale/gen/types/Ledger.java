@@ -5,20 +5,22 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 public record Ledger(int status,
                      PublicKey strategy,
                      PublicKey principalMint,
                      PublicKey marketInformation,
-                     PodU64 principalDue,
-                     PodU64 principalRepaid,
-                     PodU64 interestOutstanding,
-                     PodU64 lastInterestUpdatedTime,
+                     long principalDue,
+                     long principalRepaid,
+                     long interestOutstanding,
+                     long lastInterestUpdatedTime,
                      Duration duration,
                      PodDecimal interestPerSecond,
-                     PodU64 startTime,
-                     PodU64 endTime,
-                     PodU64CBPS apy) implements SerDe {
+                     long startTime,
+                     long endTime,
+                     long apy) implements SerDe {
 
   public static final int BYTES = 182;
 
@@ -49,23 +51,23 @@ public record Ledger(int status,
     i += 32;
     final var marketInformation = readPubKey(_data, i);
     i += 32;
-    final var principalDue = PodU64.read(_data, i);
-    i += principalDue.l();
-    final var principalRepaid = PodU64.read(_data, i);
-    i += principalRepaid.l();
-    final var interestOutstanding = PodU64.read(_data, i);
-    i += interestOutstanding.l();
-    final var lastInterestUpdatedTime = PodU64.read(_data, i);
-    i += lastInterestUpdatedTime.l();
+    final var principalDue = getInt64LE(_data, i);
+    i += 8;
+    final var principalRepaid = getInt64LE(_data, i);
+    i += 8;
+    final var interestOutstanding = getInt64LE(_data, i);
+    i += 8;
+    final var lastInterestUpdatedTime = getInt64LE(_data, i);
+    i += 8;
     final var duration = Duration.read(_data, i);
     i += duration.l();
     final var interestPerSecond = PodDecimal.read(_data, i);
     i += interestPerSecond.l();
-    final var startTime = PodU64.read(_data, i);
-    i += startTime.l();
-    final var endTime = PodU64.read(_data, i);
-    i += endTime.l();
-    final var apy = PodU64CBPS.read(_data, i);
+    final var startTime = getInt64LE(_data, i);
+    i += 8;
+    final var endTime = getInt64LE(_data, i);
+    i += 8;
+    final var apy = getInt64LE(_data, i);
     return new Ledger(status,
                       strategy,
                       principalMint,
@@ -92,15 +94,22 @@ public record Ledger(int status,
     i += 32;
     marketInformation.write(_data, i);
     i += 32;
-    i += principalDue.write(_data, i);
-    i += principalRepaid.write(_data, i);
-    i += interestOutstanding.write(_data, i);
-    i += lastInterestUpdatedTime.write(_data, i);
+    putInt64LE(_data, i, principalDue);
+    i += 8;
+    putInt64LE(_data, i, principalRepaid);
+    i += 8;
+    putInt64LE(_data, i, interestOutstanding);
+    i += 8;
+    putInt64LE(_data, i, lastInterestUpdatedTime);
+    i += 8;
     i += duration.write(_data, i);
     i += interestPerSecond.write(_data, i);
-    i += startTime.write(_data, i);
-    i += endTime.write(_data, i);
-    i += apy.write(_data, i);
+    putInt64LE(_data, i, startTime);
+    i += 8;
+    putInt64LE(_data, i, endTime);
+    i += 8;
+    putInt64LE(_data, i, apy);
+    i += 8;
     return i - _offset;
   }
 

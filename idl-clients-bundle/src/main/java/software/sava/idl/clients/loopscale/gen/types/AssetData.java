@@ -5,16 +5,20 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 public record AssetData(PublicKey assetIdentifier,
                         PublicKey quoteMint,
                         PublicKey oracleAccount,
                         int oracleType,
-                        PodU32CBPS maxUncertainty,
-                        PodU16 maxAge,
+                        int maxUncertainty,
+                        int maxAge,
                         int decimals,
-                        PodU32CBPS ltv,
-                        PodU32CBPS liquidationThreshold,
+                        int ltv,
+                        int liquidationThreshold,
                         CollateralCaps collateralCaps) implements SerDe {
 
   public static final int BYTES = 128;
@@ -43,16 +47,16 @@ public record AssetData(PublicKey assetIdentifier,
     i += 32;
     final var oracleType = _data[i] & 0xFF;
     ++i;
-    final var maxUncertainty = PodU32CBPS.read(_data, i);
-    i += maxUncertainty.l();
-    final var maxAge = PodU16.read(_data, i);
-    i += maxAge.l();
+    final var maxUncertainty = getInt32LE(_data, i);
+    i += 4;
+    final var maxAge = getInt16LE(_data, i);
+    i += 2;
     final var decimals = _data[i] & 0xFF;
     ++i;
-    final var ltv = PodU32CBPS.read(_data, i);
-    i += ltv.l();
-    final var liquidationThreshold = PodU32CBPS.read(_data, i);
-    i += liquidationThreshold.l();
+    final var ltv = getInt32LE(_data, i);
+    i += 4;
+    final var liquidationThreshold = getInt32LE(_data, i);
+    i += 4;
     final var collateralCaps = CollateralCaps.read(_data, i);
     return new AssetData(assetIdentifier,
                          quoteMint,
@@ -77,12 +81,16 @@ public record AssetData(PublicKey assetIdentifier,
     i += 32;
     _data[i] = (byte) oracleType;
     ++i;
-    i += maxUncertainty.write(_data, i);
-    i += maxAge.write(_data, i);
+    putInt32LE(_data, i, maxUncertainty);
+    i += 4;
+    putInt16LE(_data, i, maxAge);
+    i += 2;
     _data[i] = (byte) decimals;
     ++i;
-    i += ltv.write(_data, i);
-    i += liquidationThreshold.write(_data, i);
+    putInt32LE(_data, i, ltv);
+    i += 4;
+    putInt32LE(_data, i, liquidationThreshold);
+    i += 4;
     i += collateralCaps.write(_data, i);
     return i - _offset;
   }
