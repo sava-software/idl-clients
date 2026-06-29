@@ -19,6 +19,102 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 ./gradlew check
 ```
 
+## Rust to Java Type Conversion
+
+Solana programs are written in Rust, so an IDL describes a program's data using Rust types. The generated Java
+source maps each Rust type to the most appropriate Java type. The tables below describe how each Rust type is
+represented in Java.
+
+Because Java has no unsigned integer types, unsigned Rust types are widened to the next-larger signed Java type so
+their full value range is preserved — see [Primitive Widening](#primitive-widening) below for details and helpers.
+
+### Booleans
+
+| Rust   | Java      |
+|--------|-----------|
+| `bool` | `boolean` |
+
+### Numbers
+
+Scalar number fields map to the following Java types.
+
+| Rust            | Java                   |
+|-----------------|------------------------|
+| `i8`            | `int`                  |
+| `u8`            | `int`                  |
+| `i16`           | `int`                  |
+| `u16`           | `int`                  |
+| `i32`           | `int`                  |
+| `u32`           | `long`                 |
+| `i64`           | `long`                 |
+| `u64`           | `long`                 |
+| `usize`         | `long`                 |
+| `i128` / `u128` | `java.math.BigInteger` |
+| `i256` / `u256` | `java.math.BigInteger` |
+| `f32`           | `float`                |
+| `f64`           | `double`               |
+
+- `u64` and `usize` have no larger signed Java integer to widen into, so the `long` must be treated as unsigned
+  (see [Primitive Widening](#primitive-widening) for convenience helpers).
+
+### Strings
+
+| Rust     | Java     |
+|----------|----------|
+| `String` | `String` |
+
+- Each `String` field is paired with a generated `byte[] _name` companion holding the raw UTF-8 bytes.
+
+### Public Keys
+
+| Rust     | Java                                      |
+|----------|-------------------------------------------|
+| `pubkey` | `software.sava.core.accounts.PublicKey`   |
+
+### Bytes
+
+| Rust    | Java     |
+|---------|----------|
+| `bytes` | `byte[]` |
+
+### Collections
+
+Fixed arrays (`[T; N]`) and vectors (`Vec<T>`) are both represented as Java arrays. Element types follow the same
+widening rules as scalar fields, except that `u8` / `i8` collections preserve their compact `byte[]` representation
+rather than widening each element (they usually model raw bytes or opaque data).
+
+| Rust element            | Java collection |
+|-------------------------|-----------------|
+| `i8` / `u8`             | `byte[]`        |
+| `i16`                   | `short[]`       |
+| `u16` / `i32`           | `int[]`         |
+| `u32` / `i64` / `u64`   | `long[]`        |
+| `i128` / `u128`         | `BigInteger[]`  |
+| `f32`                   | `float[]`       |
+| `f64`                   | `double[]`      |
+| `bool`                  | `boolean[]`     |
+| `pubkey`                | `PublicKey[]`   |
+| `String`                | `String[]`      |
+| defined type `T`        | `T[]`           |
+
+### Optional Values
+
+`Option<T>` maps to a Java type that depends on the inner type:
+
+| Rust                                                                            | Java                       |
+|---------------------------------------------------------------------------------|----------------------------|
+| `Option<i8>` / `Option<u8>` / `Option<i16>` / `Option<u16>` / `Option<i32>`     | `OptionalInt`              |
+| `Option<u32>` / `Option<i64>` / `Option<u64>` / `Option<usize>`                 | `OptionalLong`             |
+| `Option<f32>` / `Option<f64>`                                                   | `OptionalDouble`           |
+| `Option<T>` for reference types (`BigInteger`, `PublicKey`, `String`, `bool`, structs, enums) | nullable `T` (`null` = `None`) |
+
+### Complex Types
+
+| Rust     | Java                                                                       |
+|----------|----------------------------------------------------------------------------|
+| `struct` | generated `record` implementing the (de)serialization interface            |
+| `enum`   | generated type modeling each variant (unit, tuple, and named variants)     |
+
 ## Primitive Widening
 
 To support the full numerical range of Rust types, the following primitive widening conversions are made:
