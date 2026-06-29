@@ -12,6 +12,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// @param vaultIndex Index of the vault this transaction belongs to.
+/// @param memo: Option<string>
 public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) implements SerDe {
 
   public static final int VAULT_INDEX_OFFSET = 0;

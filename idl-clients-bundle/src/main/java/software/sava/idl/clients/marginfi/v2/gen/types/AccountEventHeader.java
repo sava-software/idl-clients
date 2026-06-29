@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param signer: Option<publicKey>
 public record AccountEventHeader(PublicKey signer,
                                  PublicKey marginfiAccount,
                                  PublicKey marginfiAccountAuthority,

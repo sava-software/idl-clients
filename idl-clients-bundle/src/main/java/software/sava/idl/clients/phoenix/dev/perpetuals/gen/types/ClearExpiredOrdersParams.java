@@ -8,6 +8,7 @@ import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param maxOrdersPerSide: Option<u64>
 public record ClearExpiredOrdersParams(OptionalLong maxOrdersPerSide) implements SerDe {
 
   public static final int MAX_ORDERS_PER_SIDE_OFFSET = 1;

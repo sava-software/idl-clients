@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// Borsh payload for updating market default fees.
 ///
+/// @param defaultTakerFeeMicro: Option<u32>
+/// @param defaultMakerFeeMicro: Option<i32>
 public record UpdateMarketFeesParams(OptionalLong defaultTakerFeeMicro, OptionalInt defaultMakerFeeMicro) implements SerDe {
 
   public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 1;

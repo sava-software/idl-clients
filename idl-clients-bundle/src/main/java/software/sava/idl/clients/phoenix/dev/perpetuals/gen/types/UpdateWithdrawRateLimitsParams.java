@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Borsh payload for updating withdraw throttle rate limits.
 ///
+/// @param maxBudget: Option<u64>
+/// @param replenishAmountPerSlot: Option<u64>
 public record UpdateWithdrawRateLimitsParams(OptionalLong maxBudget, OptionalLong replenishAmountPerSlot) implements SerDe {
 
   public static final int MAX_BUDGET_OFFSET = 1;

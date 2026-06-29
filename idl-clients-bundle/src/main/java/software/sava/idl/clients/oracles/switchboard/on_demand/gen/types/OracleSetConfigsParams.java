@@ -7,6 +7,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param newAuthority: Option<publicKey>
+/// @param newSecpAuthority: Option<u8[]>
 public record OracleSetConfigsParams(PublicKey newAuthority, byte[] newSecpAuthority) implements SerDe {
 
   public static final int NEW_AUTHORITY_OFFSET = 1;

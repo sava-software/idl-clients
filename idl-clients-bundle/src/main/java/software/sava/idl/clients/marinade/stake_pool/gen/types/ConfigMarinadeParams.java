@@ -8,6 +8,13 @@ import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param slotsForStakeDelta: Option<u64>
+/// @param minStake: Option<u64>
+/// @param minDeposit: Option<u64>
+/// @param minWithdraw: Option<u64>
+/// @param stakingSolCap: Option<u64>
+/// @param liquiditySolCap: Option<u64>
+/// @param withdrawStakeAccountEnabled: Option<bool>
 public record ConfigMarinadeParams(Fee rewardsFee,
                                    OptionalLong slotsForStakeDelta,
                                    OptionalLong minStake,

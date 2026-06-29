@@ -18,6 +18,7 @@ public sealed interface CreateArgs extends RustEnum permits
     };
   }
 
+  /// @param decimals: Option<u8>
   record V1(AssetData assetData,
             OptionalInt decimals,
             PrintSupply printSupply) implements CreateArgs {

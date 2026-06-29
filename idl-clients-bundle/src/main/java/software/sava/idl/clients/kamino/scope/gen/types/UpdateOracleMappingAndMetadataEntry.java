@@ -138,6 +138,8 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
+  /// @param refPriceIndex: Option<u16>
+  /// @param refPriceToleranceBps: Option<u16>
   record MappingRefPrice(OptionalInt refPriceIndex, OptionalInt refPriceToleranceBps) implements UpdateOracleMappingAndMetadataEntry {
 
     public static final int REF_PRICE_INDEX_OFFSET = 1;

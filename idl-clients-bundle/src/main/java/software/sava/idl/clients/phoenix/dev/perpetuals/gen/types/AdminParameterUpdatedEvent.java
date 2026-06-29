@@ -17,6 +17,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::AdminParameterUpdated Borsh variant 48.
 /// Payload type: AdminParameterUpdatedEvent.
 ///
+/// @param assetId: Option<u32>
 public record AdminParameterUpdatedEvent(Discriminator discriminator,
                                          PublicKey authority,
                                          Symbol assetSymbol,

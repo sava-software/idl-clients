@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// Borsh payload of the LogEventLengths instruction after the 8-byte instruction discriminator.
 ///
 /// @param batchIndex: u32
-/// @param lengths: vec<u16>
+/// @param lengths: Vec<u16>
 public record OffChainMarketEventLengths(long batchIndex, int[] lengths) implements SerDe {
 
   public static final int BATCH_INDEX_OFFSET = 0;

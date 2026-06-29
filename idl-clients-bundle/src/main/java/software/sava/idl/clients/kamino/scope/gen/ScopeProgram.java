@@ -133,7 +133,7 @@ public final class ScopeProgram {
     );
   }
 
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final PublicKey oraclePricesKey,
                                              final PublicKey oracleMappingsKey,
@@ -149,7 +149,7 @@ public final class ScopeProgram {
     return refreshPriceList(invokedScopeProgramMeta, keys, tokens);
   }
 
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int[] tokens) {
@@ -160,7 +160,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   public record RefreshPriceListIxData(Discriminator discriminator, int[] tokens) implements SerDe {  
 
     public static RefreshPriceListIxData read(final Instruction instruction) {
@@ -334,7 +334,7 @@ public final class ScopeProgram {
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
   /// @param userKey The account that signs the transaction.
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   /// @param ed25519InstructionIndex: u16
   public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final PublicKey userKey,
@@ -372,7 +372,7 @@ public final class ScopeProgram {
   /// IMPORTANT: we assume the tokens passed in to this ix are in the same order in which
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   /// @param ed25519InstructionIndex: u16
   public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
@@ -388,7 +388,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  /// @param tokens: vec<u16>
+  /// @param tokens: Vec<u16>
   /// @param ed25519InstructionIndex: u16
   public record RefreshPythLazerPriceIxData(Discriminator discriminator,
                                             int[] tokens,
@@ -781,7 +781,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
-  /// @param scopeChains: vec<u16[]>
+  /// @param scopeChains: Vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final PublicKey adminKey,
                                           final PublicKey configurationKey,
@@ -808,7 +808,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
-  /// @param scopeChains: vec<u16[]>
+  /// @param scopeChains: Vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PublicKey seedPk,
@@ -829,7 +829,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
-  /// @param scopeChains: vec<u16[]>
+  /// @param scopeChains: Vec<u16[]>
   public record CreateMintMapIxData(Discriminator discriminator,
                                     PublicKey seedPk,
                                     long seedId,

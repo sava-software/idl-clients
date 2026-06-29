@@ -35,6 +35,9 @@ public sealed interface UpdateArgs extends RustEnum permits
     };
   }
 
+  /// @param newUpdateAuthority: Option<publicKey>
+  /// @param primarySaleHappened: Option<bool>
+  /// @param isMutable: Option<bool>
   record V1(PublicKey newUpdateAuthority,
             Data data,
             Boolean primarySaleHappened,
@@ -148,6 +151,9 @@ public sealed interface UpdateArgs extends RustEnum permits
     }
   }
 
+  /// @param newUpdateAuthority: Option<publicKey>
+  /// @param primarySaleHappened: Option<bool>
+  /// @param isMutable: Option<bool>
   record AsUpdateAuthorityV2(PublicKey newUpdateAuthority,
                              Data data,
                              Boolean primarySaleHappened,
@@ -274,6 +280,9 @@ public sealed interface UpdateArgs extends RustEnum permits
     }
   }
 
+  /// @param newUpdateAuthority: Option<publicKey>
+  /// @param primarySaleHappened: Option<bool>
+  /// @param isMutable: Option<bool>
   record AsAuthorityItemDelegateV2(PublicKey newUpdateAuthority,
                                    Boolean primarySaleHappened,
                                    Boolean isMutable,

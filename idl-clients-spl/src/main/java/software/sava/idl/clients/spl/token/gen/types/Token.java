@@ -22,7 +22,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param delegate If `delegate` is `Some` then `delegated_amount` represents
 ///                 the amount authorized by the delegate.
 /// @param state The account's state.
-/// @param isNative If is_native.is_some, this is a native token, and the value logs the
+/// @param isNative: Option<u64> If is_native.is_some, this is a native token, and the value logs the
 ///                 rent-exempt reserve. An Account is required to be rent-exempt, so
 ///                 the value is used by the Processor to ensure that wrapped SOL
 ///                 accounts do not drop below this threshold.

@@ -7,6 +7,11 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param admin: Option<publicKey>
+/// @param validatorManager: Option<publicKey>
+/// @param operationalSolAccount: Option<publicKey>
+/// @param treasuryMsolAccount: Option<publicKey>
+/// @param pauseAuthority: Option<publicKey>
 public record ChangeAuthorityData(PublicKey admin,
                                   PublicKey validatorManager,
                                   PublicKey operationalSolAccount,

@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param permission: u64
+/// @param expiresAtTimestamp: Option<i64>
+/// @param allowedSignerActions: Option<i64>
 public record SetPermissionInstruction(long permission,
                                        OptionalLong expiresAtTimestamp,
                                        OptionalLong allowedSignerActions) implements SerDe {

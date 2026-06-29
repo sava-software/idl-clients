@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// @param sourceEntry: u16
+/// @param capEntry: Option<u16>
+/// @param floorEntry: Option<u16>
 public record CappedFlooredData(int sourceEntry,
                                 OptionalInt capEntry,
                                 OptionalInt floorEntry) implements SerDe {

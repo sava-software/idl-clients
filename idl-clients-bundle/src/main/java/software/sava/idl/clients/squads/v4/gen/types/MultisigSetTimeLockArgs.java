@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param timeLock: u32
-/// @param memo Memo is used for indexing only.
+/// @param memo: Option<string> Memo is used for indexing only.
 public record MultisigSetTimeLockArgs(long timeLock, String memo, byte[] _memo) implements SerDe {
 
   public static final int TIME_LOCK_OFFSET = 0;

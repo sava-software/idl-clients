@@ -3315,6 +3315,7 @@ public final class WhirlpoolProgram {
   /// `UnsupportedTokenMint` - The provided token mint is not supported by the program (e.g. it has risky token extensions)
   /// 
   ///
+  /// @param tradeEnableTimestamp: Option<u64>
   public static Instruction initializePoolWithAdaptiveFee(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final SolanaAccounts solanaAccounts,
                                                           final PublicKey whirlpoolsConfigKey,
@@ -3368,6 +3369,7 @@ public final class WhirlpoolProgram {
   /// `UnsupportedTokenMint` - The provided token mint is not supported by the program (e.g. it has risky token extensions)
   /// 
   ///
+  /// @param tradeEnableTimestamp: Option<u64>
   public static Instruction initializePoolWithAdaptiveFee(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final BigInteger initialSqrtPrice,
@@ -3384,6 +3386,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tradeEnableTimestamp: Option<u64>
   public record InitializePoolWithAdaptiveFeeIxData(Discriminator discriminator, BigInteger initialSqrtPrice, OptionalLong tradeEnableTimestamp) implements SerDe {  
 
     public static InitializePoolWithAdaptiveFeeIxData read(final Instruction instruction) {
@@ -5298,6 +5301,13 @@ public final class WhirlpoolProgram {
   /// - `InvalidAdaptiveFeeConstants` - If the resulting constants are invalid for the pool's tick_spacing.
   /// - `AdaptiveFeeConstantsUnchanged` - If the provided adaptive fee constants are unchanged from the existing constants.
   ///
+  /// @param filterPeriod: Option<u16>
+  /// @param decayPeriod: Option<u16>
+  /// @param reductionFactor: Option<u16>
+  /// @param adaptiveFeeControlFactor: Option<u32>
+  /// @param maxVolatilityAccumulator: Option<u32>
+  /// @param tickGroupSize: Option<u16>
+  /// @param majorSwapThresholdTicks: Option<u16>
   public static Instruction setAdaptiveFeeConstants(final AccountMeta invokedWhirlpoolProgramMeta,
                                                     final PublicKey whirlpoolKey,
                                                     final PublicKey whirlpoolsConfigKey,
@@ -5352,6 +5362,13 @@ public final class WhirlpoolProgram {
   /// - `InvalidAdaptiveFeeConstants` - If the resulting constants are invalid for the pool's tick_spacing.
   /// - `AdaptiveFeeConstantsUnchanged` - If the provided adaptive fee constants are unchanged from the existing constants.
   ///
+  /// @param filterPeriod: Option<u16>
+  /// @param decayPeriod: Option<u16>
+  /// @param reductionFactor: Option<u16>
+  /// @param adaptiveFeeControlFactor: Option<u32>
+  /// @param maxVolatilityAccumulator: Option<u32>
+  /// @param tickGroupSize: Option<u16>
+  /// @param majorSwapThresholdTicks: Option<u16>
   public static Instruction setAdaptiveFeeConstants(final AccountMeta invokedWhirlpoolProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final OptionalInt filterPeriod,
@@ -5383,6 +5400,13 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param filterPeriod: Option<u16>
+  /// @param decayPeriod: Option<u16>
+  /// @param reductionFactor: Option<u16>
+  /// @param adaptiveFeeControlFactor: Option<u32>
+  /// @param maxVolatilityAccumulator: Option<u32>
+  /// @param tickGroupSize: Option<u16>
+  /// @param majorSwapThresholdTicks: Option<u16>
   public record SetAdaptiveFeeConstantsIxData(Discriminator discriminator,
                                               OptionalInt filterPeriod,
                                               OptionalInt decayPeriod,

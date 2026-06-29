@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Parameters for updating a spline's mid-price with anti-reordering protection.
 ///
 /// @param newMidPrice: u64
+/// @param userUpdateSlot: Option<u64>
 /// @param userSequenceNumber: u64
 public record UpdateSplinePriceParamsWithOrdering(long newMidPrice,
                                                   OptionalLong userUpdateSlot,

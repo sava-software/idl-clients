@@ -8,6 +8,7 @@ import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param liquidityTarget: Option<u64>
 public record ConfigLpParams(Fee minFee,
                              Fee maxFee,
                              OptionalLong liquidityTarget,

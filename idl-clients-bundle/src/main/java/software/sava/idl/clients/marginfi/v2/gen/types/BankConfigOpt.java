@@ -11,6 +11,15 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param depositLimit: Option<u64>
+/// @param borrowLimit: Option<u64>
+/// @param assetTag: Option<u8>
+/// @param totalAssetValueInitLimit: Option<u64>
+/// @param oracleMaxConfidence: Option<u32>
+/// @param oracleMaxAge: Option<u16>
+/// @param permissionlessBadDebtSettlement: Option<bool>
+/// @param freezeSettings: Option<bool>
+/// @param tokenlessRepaymentsAllowed: Option<bool>
 public record BankConfigOpt(WrappedI80F48 assetWeightInit,
                             WrappedI80F48 assetWeightMaint,
                             WrappedI80F48 liabilityWeightInit,

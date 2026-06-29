@@ -7,6 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param updateAuthority: Option<publicKey>
+/// @param primarySaleHappened: Option<bool>
+/// @param isMutable: Option<bool>
 public record UpdateMetadataAccountArgsV2(DataV2 data,
                                           PublicKey updateAuthority,
                                           Boolean primarySaleHappened,

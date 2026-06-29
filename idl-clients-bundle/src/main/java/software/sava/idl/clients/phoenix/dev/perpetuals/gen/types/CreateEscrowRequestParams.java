@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Borsh payload for creating an escrow request.
 ///
+/// @param lastValidSlot: Option<u64>
 public record CreateEscrowRequestParams(EscrowParticipantMetadata participantMetadata,
                                         OptionalLong lastValidSlot,
                                         EscrowAction[] actions) implements SerDe {

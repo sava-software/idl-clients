@@ -9,6 +9,7 @@ import software.sava.idl.clients.marginfi.v2.gen.types.AccountEventHeader;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bankKeys: Option<Vec<publicKey>>
 public record SetKeeperCloseFlagsEvent(Discriminator discriminator, AccountEventHeader header, PublicKey[] bankKeys) implements MarginfiEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(193, 230, 93, 128, 117, 87, 96, 21);

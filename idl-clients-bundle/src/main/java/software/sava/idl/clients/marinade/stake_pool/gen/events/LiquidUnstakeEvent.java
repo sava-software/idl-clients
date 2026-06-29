@@ -16,6 +16,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param liqPoolSolBalance: u64
 /// @param liqPoolMsolBalance: u64
+/// @param treasuryMsolBalance: Option<u64>
 /// @param userMsolBalance: u64
 /// @param userSolBalance: u64
 /// @param msolAmount: u64

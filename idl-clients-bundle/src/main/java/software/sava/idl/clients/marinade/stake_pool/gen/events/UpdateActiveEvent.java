@@ -20,7 +20,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param epoch: u64
 /// @param stakeIndex: u32
 /// @param validatorIndex: u32
+/// @param delegationGrowthMsolFees: Option<u64>
 /// @param extraLamports: u64
+/// @param extraMsolFees: Option<u64>
 /// @param validatorActiveBalance: u64
 /// @param totalActiveBalance: u64
 /// @param totalVirtualStakedLamports: u64

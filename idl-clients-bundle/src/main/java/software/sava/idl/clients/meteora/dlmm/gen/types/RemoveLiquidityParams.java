@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param minBinId: Option<i32>
+/// @param maxBinId: Option<i32>
 /// @param bps: u16
 public record RemoveLiquidityParams(OptionalInt minBinId,
                                     OptionalInt maxBinId,

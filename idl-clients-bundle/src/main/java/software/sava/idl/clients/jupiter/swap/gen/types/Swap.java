@@ -1870,6 +1870,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param bestPosition: Option<u8>
   record DynamicV1(CandidateSwap[] candidateSwaps, OptionalInt bestPosition) implements Swap {
 
     public static final int CANDIDATE_SWAPS_OFFSET = 0;

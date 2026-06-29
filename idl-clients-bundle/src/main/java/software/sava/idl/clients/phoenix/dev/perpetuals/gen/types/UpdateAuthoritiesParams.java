@@ -9,6 +9,12 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 
 /// Borsh payload for root authority updates to subordinate authorities.
 ///
+/// @param newRiskAuthority: Option<publicKey>
+/// @param newMarketAuthority: Option<publicKey>
+/// @param newOracleAuthority: Option<publicKey>
+/// @param newCancelAuthority: Option<publicKey>
+/// @param newBackstopAuthority: Option<publicKey>
+/// @param newAdlAuthority: Option<publicKey>
 public record UpdateAuthoritiesParams(PublicKey newRiskAuthority,
                                       PublicKey newMarketAuthority,
                                       PublicKey newOracleAuthority,

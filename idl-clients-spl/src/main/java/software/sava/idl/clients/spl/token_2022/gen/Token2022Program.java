@@ -11146,8 +11146,8 @@ public final class Token2022Program {
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
   ///
-  /// @param start Start of range of data to emit
-  /// @param end End of range of data to emit
+  /// @param start: Option<u64> Start of range of data to emit
+  /// @param end: Option<u64> End of range of data to emit
   public static Instruction emitTokenMetadata(final AccountMeta invokedToken2022ProgramMeta,
                                               final PublicKey metadataKey,
                                               final OptionalLong start,
@@ -11173,8 +11173,8 @@ public final class Token2022Program {
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
   ///
-  /// @param start Start of range of data to emit
-  /// @param end End of range of data to emit
+  /// @param start: Option<u64> Start of range of data to emit
+  /// @param end: Option<u64> End of range of data to emit
   public static Instruction emitTokenMetadata(final AccountMeta invokedToken2022ProgramMeta,
                                               final List<AccountMeta> keys,
                                               final OptionalLong start,
@@ -11201,8 +11201,8 @@ public final class Token2022Program {
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
   ///
-  /// @param start Start of range of data to emit
-  /// @param end End of range of data to emit
+  /// @param start: Option<u64> Start of range of data to emit
+  /// @param end: Option<u64> End of range of data to emit
   public record EmitTokenMetadataIxData(byte[] discriminator,
                                         OptionalLong start,
                                         OptionalLong end) implements SerDe {  
@@ -11707,7 +11707,7 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner or its multisignature account.
-  /// @param amount The amount of lamports to transfer.
+  /// @param amount: Option<u64> The amount of lamports to transfer.
   public static Instruction unwrapLamports(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey sourceKey,
                                            final PublicKey destinationKey,
@@ -11723,7 +11723,7 @@ public final class Token2022Program {
 
   /// Transfer lamports from a native SOL account to a destination account.
   ///
-  /// @param amount The amount of lamports to transfer.
+  /// @param amount: Option<u64> The amount of lamports to transfer.
   public static Instruction unwrapLamports(final AccountMeta invokedToken2022ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final OptionalLong amount) {
@@ -11739,7 +11739,7 @@ public final class Token2022Program {
 
   /// Transfer lamports from a native SOL account to a destination account.
   ///
-  /// @param amount The amount of lamports to transfer.
+  /// @param amount: Option<u64> The amount of lamports to transfer.
   public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {  
 
     public static UnwrapLamportsIxData read(final Instruction instruction) {

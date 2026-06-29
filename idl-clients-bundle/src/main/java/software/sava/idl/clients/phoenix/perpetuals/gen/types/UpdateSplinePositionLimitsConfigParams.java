@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// Borsh payload for updating spline position-size limits and leverage decrease configuration.
 ///
+/// @param leverageDecreaseInBps: Option<u32>
 public record UpdateSplinePositionLimitsConfigParams(PositionSizeLimit maxPositionSize, OptionalLong leverageDecreaseInBps) implements SerDe {
 
   public static final int MAX_POSITION_SIZE_OFFSET = 1;

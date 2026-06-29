@@ -11,6 +11,10 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param authority: Option<publicKey>
+/// @param reward: Option<u32>
+/// @param nodeTimeout: Option<i64>
+/// @param oracleFeeProportionBps: Option<u32>
 public record QueueSetConfigsParams(PublicKey authority,
                                     OptionalLong reward,
                                     OptionalLong nodeTimeout,

@@ -16,14 +16,14 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-/// @param configAuthority The authority that can configure the multisig: add/remove members, change the threshold, etc.
+/// @param configAuthority: Option<publicKey> The authority that can configure the multisig: add/remove members, change the threshold, etc.
 ///                        Should be set to `None` for autonomous multisigs.
 /// @param threshold: u16 The number of signatures required to execute a transaction.
 /// @param members The members of the multisig.
 /// @param timeLock: u32 How many seconds must pass between transaction voting, settlement, and execution.
-/// @param rentCollector The address where the rent for the accounts related to executed, rejected, or cancelled
+/// @param rentCollector: Option<publicKey> The address where the rent for the accounts related to executed, rejected, or cancelled
 ///                      transactions can be reclaimed. If set to `None`, the rent reclamation feature is turned off.
-/// @param memo Memo is used for indexing only.
+/// @param memo: Option<string> Memo is used for indexing only.
 public record MultisigCreateArgsV2(PublicKey configAuthority,
                                    int threshold,
                                    Member[] members,

@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::PricesUpdated Borsh variant 29.
 /// Payload type: PricesUpdatedEvent.
 ///
+/// @param oracleSigner: Option<publicKey>
 /// @param assetId: u32
 /// @param assetSequenceNumber: u64
 /// @param prevAssetSequenceNumberSlot: u64

@@ -12,6 +12,10 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param oracle: Option<publicKey>
+/// @param depositLimit: Option<u64>
+/// @param totalAssetValueInitLimit: Option<u64>
+/// @param oracleMaxAge: Option<u16>
 /// @param riskTier WARN: You almost certainly want "Collateral", using Isolated risk tier makes the asset
 ///                 worthless as collateral, making all outstanding accounts eligible to be liquidated, and is
 ///                 generally useful only when creating a staked collateral pool for rewards purposes only.

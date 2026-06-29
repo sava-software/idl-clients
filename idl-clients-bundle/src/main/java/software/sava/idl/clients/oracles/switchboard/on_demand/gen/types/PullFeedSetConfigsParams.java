@@ -12,6 +12,15 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param feedHash: Option<u8[]>
+/// @param authority: Option<publicKey>
+/// @param maxVariance: Option<u64>
+/// @param minResponses: Option<u32>
+/// @param name: Option<u8[]>
+/// @param ipfsHash: Option<u8[]>
+/// @param minSampleSize: Option<u8>
+/// @param maxStaleness: Option<u32>
+/// @param permitWriteByAuthority: Option<bool>
 public record PullFeedSetConfigsParams(byte[] feedHash,
                                        PublicKey authority,
                                        OptionalLong maxVariance,

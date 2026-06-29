@@ -35,7 +35,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param transactionIndex: u64 Last transaction index. 0 means no transactions have been created.
 /// @param staleTransactionIndex: u64 Last stale transaction index. All transactions up until this index are stale.
 ///                              This index is updated when multisig config (members/threshold/time_lock) changes.
-/// @param rentCollector The address where the rent for the accounts related to executed, rejected, or cancelled
+/// @param rentCollector: Option<publicKey> The address where the rent for the accounts related to executed, rejected, or cancelled
 ///                      transactions can be reclaimed. If set to `None`, the rent reclamation feature is turned off.
 /// @param bump Bump for the multisig PDA seed.
 /// @param members Members of the multisig.

@@ -14,6 +14,9 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param ruleSetRevision: Option<u64>
+/// @param delegate: Option<publicKey>
+/// @param lockedTransfer: Option<publicKey>
 public record TokenRecord(PublicKey _address,
                           Key key,
                           int bump,

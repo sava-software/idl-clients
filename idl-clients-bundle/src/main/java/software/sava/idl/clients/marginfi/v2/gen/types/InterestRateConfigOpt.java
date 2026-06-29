@@ -8,9 +8,9 @@ import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
-/// @param zeroUtilRate The base rate at utilization = 0
+/// @param zeroUtilRate: Option<u32> The base rate at utilization = 0
 ///                     * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
-/// @param hundredUtilRate The base rate at utilization = 100
+/// @param hundredUtilRate: Option<u32> The base rate at utilization = 100
 ///                        * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
 /// @param points The base rate at various points between 0 and 100%, exclusive. Essentially a piece-wise
 ///               linear curve.

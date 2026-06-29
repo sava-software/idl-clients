@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param signer: Option<publicKey>
 public record GroupEventHeader(PublicKey signer, PublicKey marginfiGroup) implements SerDe {
 
   public static final int SIGNER_OFFSET = 1;

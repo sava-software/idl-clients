@@ -26,7 +26,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param proposer The public key of the proposer.
 /// @param quorumVotes: u64 The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
 /// @param maxOption maximum options of the proposal
-/// @param optionVotes: vec<u64> Vote for each option
+/// @param optionVotes: Vec<u64> Vote for each option
 /// @param canceledAt The timestamp when the proposal was canceled.
 /// @param createdAt The timestamp when the proposal was created.
 /// @param activatedAt The timestamp in which the proposal was activated.

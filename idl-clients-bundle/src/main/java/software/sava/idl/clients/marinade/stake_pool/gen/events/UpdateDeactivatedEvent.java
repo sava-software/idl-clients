@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param stakeIndex: u32
 /// @param balanceWithoutRentExempt: u64
 /// @param lastUpdateDelegatedLamports: u64
+/// @param msolFees: Option<u64>
 /// @param operationalSolBalance: u64
 /// @param totalVirtualStakedLamports: u64
 /// @param msolSupply: u64

@@ -13,6 +13,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// @param vaultIndex Index of the vault this transaction belongs to.
 /// @param ephemeralSigners Number of ephemeral signing PDAs required by the transaction.
+/// @param memo: Option<string>
 public record VaultTransactionCreateArgs(int vaultIndex,
                                          int ephemeralSigners,
                                          byte[] transactionMessage,

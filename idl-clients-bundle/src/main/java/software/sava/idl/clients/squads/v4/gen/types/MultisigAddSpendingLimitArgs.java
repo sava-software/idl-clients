@@ -28,7 +28,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                (until explicitly deleted), but the removed member will not be able to use it anymore.
 /// @param destinations The destination addresses the spending limit is allowed to sent funds to.
 ///                     If empty, funds can be sent to any address.
-/// @param memo Memo is used for indexing only.
+/// @param memo: Option<string> Memo is used for indexing only.
 public record MultisigAddSpendingLimitArgs(PublicKey createKey,
                                            int vaultIndex,
                                            PublicKey mint,

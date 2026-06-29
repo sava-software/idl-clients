@@ -12,6 +12,7 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param editionNonce: Option<u8>
 public record Metadata(PublicKey _address,
                        Key key,
                        PublicKey updateAuthority,

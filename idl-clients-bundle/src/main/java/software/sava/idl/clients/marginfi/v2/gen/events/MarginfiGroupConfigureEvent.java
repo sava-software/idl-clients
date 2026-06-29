@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param admin: Option<publicKey>
 /// @param flags: u64
 public record MarginfiGroupConfigureEvent(Discriminator discriminator,
                                           GroupEventHeader header,

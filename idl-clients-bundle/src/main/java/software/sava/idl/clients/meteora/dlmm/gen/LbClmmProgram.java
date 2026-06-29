@@ -6152,6 +6152,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact(final AccountMeta invokedLbClmmProgramMeta,
                                                 final PublicKey lbPairKey,
@@ -6200,6 +6201,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact(final AccountMeta invokedLbClmmProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -6220,6 +6222,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public record SwapWithPriceImpactIxData(Discriminator discriminator,
                                           long amountIn,
@@ -6311,6 +6314,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact2(final AccountMeta invokedLbClmmProgramMeta,
                                                  final PublicKey lbPairKey,
@@ -6363,6 +6367,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact2(final AccountMeta invokedLbClmmProgramMeta,
                                                  final List<AccountMeta> keys,
@@ -6386,6 +6391,7 @@ public final class LbClmmProgram {
   }
 
   /// @param amountIn: u64
+  /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public record SwapWithPriceImpact2IxData(Discriminator discriminator,
                                            long amountIn,

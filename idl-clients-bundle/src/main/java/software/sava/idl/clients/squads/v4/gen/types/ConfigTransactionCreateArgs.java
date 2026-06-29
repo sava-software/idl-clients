@@ -11,6 +11,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
+/// @param memo: Option<string>
 public record ConfigTransactionCreateArgs(ConfigAction[] actions, String memo, byte[] _memo) implements SerDe {
 
   public static final int ACTIONS_OFFSET = 0;

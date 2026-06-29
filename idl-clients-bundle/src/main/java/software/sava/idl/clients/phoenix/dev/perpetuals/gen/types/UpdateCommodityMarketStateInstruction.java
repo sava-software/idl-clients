@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Borsh payload for updating commodity market state and mark price inputs.
 ///
 /// @param lastIndexExpiryTimestamp: u64
+/// @param emaPeriodSlots: Option<u64>
 public record UpdateCommodityMarketStateInstruction(CommodityMarketState marketState,
                                                     Ticks lastKnownIndexPrice,
                                                     long lastIndexExpiryTimestamp,

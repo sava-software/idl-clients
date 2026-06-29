@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Parameters for updating a spline's mid-price.
 ///
 /// @param newMidPrice: u64
+/// @param userUpdateSlot: Option<u64>
 public record UpdateSplinePriceParams(long newMidPrice,
                                       OptionalLong userUpdateSlot,
                                       boolean refreshRegions) implements SerDe {

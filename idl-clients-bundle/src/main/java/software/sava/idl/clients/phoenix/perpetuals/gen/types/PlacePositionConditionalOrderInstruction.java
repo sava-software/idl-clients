@@ -12,6 +12,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param assetId: u32
+/// @param sizeBaseLots: Option<u64>
+/// @param sizePercent: Option<u8>
 public record PlacePositionConditionalOrderInstruction(long assetId,
                                                        TriggerOrderParams greaterTriggerOrder,
                                                        TriggerOrderParams lessTriggerOrder,

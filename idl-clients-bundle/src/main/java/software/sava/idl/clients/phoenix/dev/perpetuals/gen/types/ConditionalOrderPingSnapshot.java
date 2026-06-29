@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalInt;
 
+/// @param coPositionSequenceNumber: Option<u8>
 public record ConditionalOrderPingSnapshot(ConditionalOrderPingStateSnapshot state,
                                            OptionalFIFOOrderId attachedOrderId,
                                            BaseLots maxSize,

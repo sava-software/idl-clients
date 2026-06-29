@@ -2719,7 +2719,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account owner or its multisignature account.
-  /// @param amount Optional amount of lamports to transfer.
+  /// @param amount: Option<u64> Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
   public static Instruction unwrapLamports(final AccountMeta invokedTokenProgramMeta,
                                            final PublicKey sourceKey,
@@ -2736,7 +2736,7 @@ public final class TokenProgram {
 
   /// Transfer lamports from a native SOL account to a destination account.
   ///
-  /// @param amount Optional amount of lamports to transfer.
+  /// @param amount: Option<u64> Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
   public static Instruction unwrapLamports(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
@@ -2753,7 +2753,7 @@ public final class TokenProgram {
 
   /// Transfer lamports from a native SOL account to a destination account.
   ///
-  /// @param amount Optional amount of lamports to transfer.
+  /// @param amount: Option<u64> Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
   public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {  
 

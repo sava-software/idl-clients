@@ -13,6 +13,15 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
+/// @param quoteMint: Option<publicKey>
+/// @param oracleAccount: Option<publicKey>
+/// @param oracleType: Option<u8>
+/// @param maxUncertainty: Option<u32>
+/// @param maxAge: Option<u16>
+/// @param ltv: Option<u32>
+/// @param liquidationThreshold: Option<u32>
+/// @param maxCollateralAllocationPct: Option<u64>
+/// @param remove: Option<bool>
 public record UpdateAssetDataParams(PublicKey assetIdentifier,
                                     PublicKey quoteMint,
                                     PublicKey oracleAccount,

@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// Batch order packet for placing multiple post-only limit orders in a single transaction.
 ///
+/// @param clientOrderId: Option<u8[]>
 public record MultipleOrderPacket(CondensedOrder[] bids,
                                   CondensedOrder[] asks,
                                   byte[] clientOrderId,

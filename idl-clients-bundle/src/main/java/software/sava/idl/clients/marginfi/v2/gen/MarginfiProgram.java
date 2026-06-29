@@ -146,6 +146,8 @@ public final class MarginfiProgram {
   /// Rate limits track net outflow in native tokens. Deposits offset withdraws.
   /// Set to 0 to disable. Hourly and daily windows are independent.
   ///
+  /// @param hourlyMaxOutflow: Option<u64>
+  /// @param dailyMaxOutflow: Option<u64>
   public static Instruction configureBankRateLimits(final AccountMeta invokedMarginfiProgramMeta,
                                                     final PublicKey groupKey,
                                                     final PublicKey adminKey,
@@ -164,6 +166,8 @@ public final class MarginfiProgram {
   /// Rate limits track net outflow in native tokens. Deposits offset withdraws.
   /// Set to 0 to disable. Hourly and daily windows are independent.
   ///
+  /// @param hourlyMaxOutflow: Option<u64>
+  /// @param dailyMaxOutflow: Option<u64>
   public static Instruction configureBankRateLimits(final AccountMeta invokedMarginfiProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final OptionalLong hourlyMaxOutflow,
@@ -180,6 +184,8 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param hourlyMaxOutflow: Option<u64>
+  /// @param dailyMaxOutflow: Option<u64>
   public record ConfigureBankRateLimitsIxData(Discriminator discriminator, OptionalLong hourlyMaxOutflow, OptionalLong dailyMaxOutflow) implements SerDe {  
 
     public static ConfigureBankRateLimitsIxData read(final Instruction instruction) {
@@ -319,6 +325,8 @@ public final class MarginfiProgram {
   /// Rate limits track aggregate net outflow in USD.
   /// Example: $10M = 10_000_000. Set to 0 to disable.
   ///
+  /// @param hourlyMaxOutflowUsd: Option<u64>
+  /// @param dailyMaxOutflowUsd: Option<u64>
   public static Instruction configureGroupRateLimits(final AccountMeta invokedMarginfiProgramMeta,
                                                      final PublicKey marginfiGroupKey,
                                                      final PublicKey adminKey,
@@ -335,6 +343,8 @@ public final class MarginfiProgram {
   /// Rate limits track aggregate net outflow in USD.
   /// Example: $10M = 10_000_000. Set to 0 to disable.
   ///
+  /// @param hourlyMaxOutflowUsd: Option<u64>
+  /// @param dailyMaxOutflowUsd: Option<u64>
   public static Instruction configureGroupRateLimits(final AccountMeta invokedMarginfiProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final OptionalLong hourlyMaxOutflowUsd,
@@ -351,6 +361,8 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param hourlyMaxOutflowUsd: Option<u64>
+  /// @param dailyMaxOutflowUsd: Option<u64>
   public record ConfigureGroupRateLimitsIxData(Discriminator discriminator, OptionalLong hourlyMaxOutflowUsd, OptionalLong dailyMaxOutflowUsd) implements SerDe {  
 
     public static ConfigureGroupRateLimitsIxData read(final Instruction instruction) {
@@ -918,6 +930,7 @@ public final class MarginfiProgram {
   /// @param driftSignerKey The Drift signer PDA
   /// @param mintKey Bank's liquidity token mint
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction driftWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey groupKey,
@@ -980,6 +993,7 @@ public final class MarginfiProgram {
   /// * withdraw_all - if true, withdraws entire position
   ///
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction driftWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long amount,
@@ -997,6 +1011,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public record DriftWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
 
     public static DriftWithdrawIxData read(final Instruction instruction) {
@@ -2140,6 +2155,7 @@ public final class MarginfiProgram {
   ///                        validated or used - you can pass any mutable account. We create the canonical PDA for consistency.
   ///                        Seeds: "user_claim", liquidity_vault_authority, mint on Liquidity program.
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction juplendWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                             final SolanaAccounts solanaAccounts,
                                             final PublicKey groupKey,
@@ -2198,6 +2214,7 @@ public final class MarginfiProgram {
   /// * amount - in the underlying token (e.g., USDC), in native decimals
   ///
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction juplendWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount,
@@ -2215,6 +2232,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public record JuplendWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
 
     public static JuplendWithdrawIxData read(final Instruction instruction) {
@@ -2901,6 +2919,7 @@ public final class MarginfiProgram {
   /// @param collateralTokenProgramKey The token program for the collateral token
   /// @param liquidityTokenProgramKey The token program for the liquidity token
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction kaminoWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey groupKey,
@@ -2961,6 +2980,7 @@ public final class MarginfiProgram {
   /// deposit and withdraw back to back may result in several lamports less)
   ///
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction kaminoWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
@@ -2978,6 +2998,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public record KaminoWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
 
     public static KaminoWithdrawIxData read(final Instruction instruction) {
@@ -3221,6 +3242,7 @@ public final class MarginfiProgram {
   /// transfers tokens from the signer's token account to the bank's liquidity vault.
   ///
   /// @param amount: u64
+  /// @param depositUpToLimit: Option<bool>
   public static Instruction lendingAccountDeposit(final AccountMeta invokedMarginfiProgramMeta,
                                                   final PublicKey groupKey,
                                                   final PublicKey marginfiAccountKey,
@@ -3247,6 +3269,7 @@ public final class MarginfiProgram {
   /// transfers tokens from the signer's token account to the bank's liquidity vault.
   ///
   /// @param amount: u64
+  /// @param depositUpToLimit: Option<bool>
   public static Instruction lendingAccountDeposit(final AccountMeta invokedMarginfiProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long amount,
@@ -3264,6 +3287,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param depositUpToLimit: Option<bool>
   public record LendingAccountDepositIxData(Discriminator discriminator, long amount, Boolean depositUpToLimit) implements SerDe {  
 
     public static LendingAccountDepositIxData read(final Instruction instruction) {
@@ -3559,6 +3583,7 @@ public final class MarginfiProgram {
   ///                     Note: during receivership and order execution, there are no signer checks whatsoever: any key can repay as
   ///                     long as the invariants checked at the end of execution are met.
   /// @param amount: u64
+  /// @param repayAll: Option<bool>
   public static Instruction lendingAccountRepay(final AccountMeta invokedMarginfiProgramMeta,
                                                 final PublicKey groupKey,
                                                 final PublicKey marginfiAccountKey,
@@ -3585,6 +3610,7 @@ public final class MarginfiProgram {
   /// interest, records repayment, and transfers tokens to the bank's liquidity vault.
   ///
   /// @param amount: u64
+  /// @param repayAll: Option<bool>
   public static Instruction lendingAccountRepay(final AccountMeta invokedMarginfiProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount,
@@ -3602,6 +3628,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param repayAll: Option<bool>
   public record LendingAccountRepayIxData(Discriminator discriminator, long amount, Boolean repayAll) implements SerDe {  
 
     public static LendingAccountRepayIxData read(final Instruction instruction) {
@@ -3764,6 +3791,7 @@ public final class MarginfiProgram {
   ///                     Note: during receivership and order execution, there are no signer checks whatsoever: any key can repay as
   ///                     long as the invariants checked at the end of execution are met.
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction lendingAccountWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                                    final PublicKey groupKey,
                                                    final PublicKey marginfiAccountKey,
@@ -3793,6 +3821,7 @@ public final class MarginfiProgram {
   /// receivership).
   ///
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction lendingAccountWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long amount,
@@ -3810,6 +3839,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public record LendingAccountWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
 
     public static LendingAccountWithdrawIxData read(final Instruction instruction) {
@@ -5471,6 +5501,9 @@ public final class MarginfiProgram {
 
   /// (delegate_limit_admin only) Update deposit/borrow/init limits only.
   ///
+  /// @param depositLimit: Option<u64>
+  /// @param borrowLimit: Option<u64>
+  /// @param totalAssetValueInitLimit: Option<u64>
   public static Instruction lendingPoolConfigureBankLimitsOnly(final AccountMeta invokedMarginfiProgramMeta,
                                                                final PublicKey groupKey,
                                                                final PublicKey delegateLimitAdminKey,
@@ -5494,6 +5527,9 @@ public final class MarginfiProgram {
 
   /// (delegate_limit_admin only) Update deposit/borrow/init limits only.
   ///
+  /// @param depositLimit: Option<u64>
+  /// @param borrowLimit: Option<u64>
+  /// @param totalAssetValueInitLimit: Option<u64>
   public static Instruction lendingPoolConfigureBankLimitsOnly(final AccountMeta invokedMarginfiProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final OptionalLong depositLimit,
@@ -5513,6 +5549,9 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param depositLimit: Option<u64>
+  /// @param borrowLimit: Option<u64>
+  /// @param totalAssetValueInitLimit: Option<u64>
   public record LendingPoolConfigureBankLimitsOnlyIxData(Discriminator discriminator,
                                                          OptionalLong depositLimit,
                                                          OptionalLong borrowLimit,
@@ -6541,6 +6580,7 @@ public final class MarginfiProgram {
   /// used freely. For a dedicated seed used by just your program (via CPI), contact us.
   ///
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public static Instruction marginfiAccountInitializePda(final AccountMeta invokedMarginfiProgramMeta,
                                                          final SolanaAccounts solanaAccounts,
                                                          final PublicKey marginfiGroupKey,
@@ -6570,6 +6610,7 @@ public final class MarginfiProgram {
   /// used freely. For a dedicated seed used by just your program (via CPI), contact us.
   ///
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public static Instruction marginfiAccountInitializePda(final AccountMeta invokedMarginfiProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int accountIndex,
@@ -6587,6 +6628,7 @@ public final class MarginfiProgram {
   }
 
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public record MarginfiAccountInitializePdaIxData(Discriminator discriminator, int accountIndex, OptionalInt thirdPartyId) implements SerDe {  
 
     public static MarginfiAccountInitializePdaIxData read(final Instruction instruction) {
@@ -6880,6 +6922,7 @@ public final class MarginfiProgram {
   /// `marginfi_account_keeper_close_order` on associated Orders. Typically, use
   /// `marginfi_account_close_order` instead if trying to close an Order.
   ///
+  /// @param bankKeysOpt: Option<Vec<publicKey>>
   public static Instruction marginfiAccountSetKeeperCloseFlags(final AccountMeta invokedMarginfiProgramMeta,
                                                                final PublicKey marginfiAccountKey,
                                                                final PublicKey authorityKey,
@@ -6895,6 +6938,7 @@ public final class MarginfiProgram {
   /// `marginfi_account_keeper_close_order` on associated Orders. Typically, use
   /// `marginfi_account_close_order` instead if trying to close an Order.
   ///
+  /// @param bankKeysOpt: Option<Vec<publicKey>>
   public static Instruction marginfiAccountSetKeeperCloseFlags(final AccountMeta invokedMarginfiProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final PublicKey[] bankKeysOpt) {
@@ -6913,6 +6957,7 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param bankKeysOpt: Option<Vec<publicKey>>
   public record MarginfiAccountSetKeeperCloseFlagsIxData(Discriminator discriminator, PublicKey[] bankKeysOpt) implements SerDe {  
 
     public static MarginfiAccountSetKeeperCloseFlagsIxData read(final Instruction instruction) {
@@ -7096,6 +7141,14 @@ public final class MarginfiProgram {
   /// provided on every call. Emode leverage caps are set if provided, otherwise the existing
   /// (non-zero) values are kept. Pass `Some(value)` to update, `None` to leave unchanged.
   ///
+  /// @param newAdmin: Option<publicKey>
+  /// @param newEmodeAdmin: Option<publicKey>
+  /// @param newCurveAdmin: Option<publicKey>
+  /// @param newLimitAdmin: Option<publicKey>
+  /// @param newFlowAdmin: Option<publicKey>
+  /// @param newEmissionsAdmin: Option<publicKey>
+  /// @param newMetadataAdmin: Option<publicKey>
+  /// @param newRiskAdmin: Option<publicKey>
   public static Instruction marginfiGroupConfigure(final AccountMeta invokedMarginfiProgramMeta,
                                                    final PublicKey marginfiGroupKey,
                                                    final PublicKey adminKey,
@@ -7133,6 +7186,14 @@ public final class MarginfiProgram {
   /// provided on every call. Emode leverage caps are set if provided, otherwise the existing
   /// (non-zero) values are kept. Pass `Some(value)` to update, `None` to leave unchanged.
   ///
+  /// @param newAdmin: Option<publicKey>
+  /// @param newEmodeAdmin: Option<publicKey>
+  /// @param newCurveAdmin: Option<publicKey>
+  /// @param newLimitAdmin: Option<publicKey>
+  /// @param newFlowAdmin: Option<publicKey>
+  /// @param newEmissionsAdmin: Option<publicKey>
+  /// @param newMetadataAdmin: Option<publicKey>
+  /// @param newRiskAdmin: Option<publicKey>
   public static Instruction marginfiGroupConfigure(final AccountMeta invokedMarginfiProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final PublicKey newAdmin,
@@ -7173,6 +7234,14 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param newAdmin: Option<publicKey>
+  /// @param newEmodeAdmin: Option<publicKey>
+  /// @param newCurveAdmin: Option<publicKey>
+  /// @param newLimitAdmin: Option<publicKey>
+  /// @param newFlowAdmin: Option<publicKey>
+  /// @param newEmissionsAdmin: Option<publicKey>
+  /// @param newMetadataAdmin: Option<publicKey>
+  /// @param newRiskAdmin: Option<publicKey>
   public record MarginfiGroupConfigureIxData(Discriminator discriminator,
                                              PublicKey newAdmin,
                                              PublicKey newEmodeAdmin,
@@ -8035,6 +8104,7 @@ public final class MarginfiProgram {
   /// @param userCollateralKey The user's destination for cTokens (collateral). This is a temporary account owned by
   ///                          liquidity_vault_authority that holds cTokens.
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction solendWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final PublicKey groupKey,
                                            final PublicKey marginfiAccountKey,
@@ -8084,6 +8154,7 @@ public final class MarginfiProgram {
   /// * withdraw_all - withdraw entire position if true
   ///
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public static Instruction solendWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
@@ -8101,6 +8172,7 @@ public final class MarginfiProgram {
   }
 
   /// @param amount: u64
+  /// @param withdrawAll: Option<bool>
   public record SolendWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
 
     public static SolendWithdrawIxData read(final Instruction instruction) {
@@ -8539,6 +8611,7 @@ public final class MarginfiProgram {
   /// used freely. For a dedicated seed used by just your program (via CPI), contact us.
   ///
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public static Instruction transferToNewAccountPda(final AccountMeta invokedMarginfiProgramMeta,
                                                     final SolanaAccounts solanaAccounts,
                                                     final PublicKey groupKey,
@@ -8573,6 +8646,7 @@ public final class MarginfiProgram {
   /// used freely. For a dedicated seed used by just your program (via CPI), contact us.
   ///
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public static Instruction transferToNewAccountPda(final AccountMeta invokedMarginfiProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final int accountIndex,
@@ -8590,6 +8664,7 @@ public final class MarginfiProgram {
   }
 
   /// @param accountIndex: u16
+  /// @param thirdPartyId: Option<u16>
   public record TransferToNewAccountPdaIxData(Discriminator discriminator, int accountIndex, OptionalInt thirdPartyId) implements SerDe {  
 
     public static TransferToNewAccountPdaIxData read(final Instruction instruction) {
@@ -8783,6 +8858,8 @@ public final class MarginfiProgram {
   /// `RateLimitFlowEvent` events off-chain, converts to USD, and calls this instruction at
   /// intervals to update group rate limiter state.
   ///
+  /// @param outflowUsd: Option<u64>
+  /// @param inflowUsd: Option<u64>
   /// @param updateSeq: u64
   /// @param eventStartSlot: u64
   /// @param eventEndSlot: u64
@@ -8814,6 +8891,8 @@ public final class MarginfiProgram {
   /// `RateLimitFlowEvent` events off-chain, converts to USD, and calls this instruction at
   /// intervals to update group rate limiter state.
   ///
+  /// @param outflowUsd: Option<u64>
+  /// @param inflowUsd: Option<u64>
   /// @param updateSeq: u64
   /// @param eventStartSlot: u64
   /// @param eventEndSlot: u64
@@ -8841,6 +8920,8 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param outflowUsd: Option<u64>
+  /// @param inflowUsd: Option<u64>
   /// @param updateSeq: u64
   /// @param eventStartSlot: u64
   /// @param eventEndSlot: u64
@@ -8938,6 +9019,8 @@ public final class MarginfiProgram {
   /// (metadata admin only) Write ticker/description information for a bank on-chain. Optional, not
   /// all Banks are guaranteed to have metadata.
   ///
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
   public static Instruction writeBankMetadata(final AccountMeta invokedMarginfiProgramMeta,
                                               final PublicKey groupKey,
                                               final PublicKey bankKey,
@@ -8957,6 +9040,8 @@ public final class MarginfiProgram {
   /// (metadata admin only) Write ticker/description information for a bank on-chain. Optional, not
   /// all Banks are guaranteed to have metadata.
   ///
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
   public static Instruction writeBankMetadata(final AccountMeta invokedMarginfiProgramMeta,
                                               final List<AccountMeta> keys,
                                               final byte[] ticker,
@@ -8983,6 +9068,8 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
   public record WriteBankMetadataIxData(Discriminator discriminator, byte[] ticker, byte[] description) implements SerDe {  
 
     public static WriteBankMetadataIxData read(final Instruction instruction) {

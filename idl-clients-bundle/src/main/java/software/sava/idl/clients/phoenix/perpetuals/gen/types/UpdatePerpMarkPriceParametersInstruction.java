@@ -12,6 +12,18 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Borsh payload for updating mark price calculation parameters for a perp asset.
 ///
+/// @param emaPeriodSlots: Option<u64>
+/// @param emaDiffRadius: Option<u64>
+/// @param bookPriceRadius: Option<u64>
+/// @param commoditiesAfterHoursRadiusBps: Option<u64>
+/// @param adjustedExchangeSpotPriceWeight: Option<u64>
+/// @param bookPriceWeight: Option<u64>
+/// @param exchangePerpPriceWeight: Option<u64>
+/// @param spotPriceStaleThreshold: Option<u64>
+/// @param bookPriceStaleThreshold: Option<u64>
+/// @param perpPriceStaleThreshold: Option<u64>
+/// @param oracleDivergenceRadius: Option<u16>
+/// @param minOracleResponses: Option<u8>
 public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
                                                        OptionalLong emaPeriodSlots,
                                                        OptionalLong emaDiffRadius,

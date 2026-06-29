@@ -15,7 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param amount: u64 Amount of tokens to transfer.
 /// @param decimals Decimals of the token mint. Used for double-checking against incorrect order of magnitude of `amount`.
-/// @param memo Memo used for indexing.
+/// @param memo: Option<string> Memo used for indexing.
 public record SpendingLimitUseArgs(long amount,
                                    int decimals,
                                    String memo, byte[] _memo) implements SerDe {

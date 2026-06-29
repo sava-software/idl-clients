@@ -4,6 +4,7 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// @param gatewayUri: Option<u8[]>
 public record OracleHeartbeatParams(byte[] gatewayUri) implements SerDe {
 
   public static final int GATEWAY_URI_OFFSET = 1;

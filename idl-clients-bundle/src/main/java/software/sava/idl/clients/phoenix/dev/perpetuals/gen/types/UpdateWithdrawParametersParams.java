@@ -10,6 +10,9 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 /// Borsh payload for updating withdraw cooldown and fee parameters.
 ///
+/// @param depositCooldownPeriodInSlots: Option<u64>
+/// @param withdrawalFee: Option<u64>
+/// @param enqueueingFee: Option<u64>
 public record UpdateWithdrawParametersParams(OptionalLong depositCooldownPeriodInSlots,
                                              OptionalLong withdrawalFee,
                                              OptionalLong enqueueingFee) implements SerDe {

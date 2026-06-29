@@ -22,6 +22,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
+/// @param leverageDecreaseInBps: Option<u32>
 /// @param prevLeverageDecreaseInBps: u32
 public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator,
                                                      PublicKey trader,

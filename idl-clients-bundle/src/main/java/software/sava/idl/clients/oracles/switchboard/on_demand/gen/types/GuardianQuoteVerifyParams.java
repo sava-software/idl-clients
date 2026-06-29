@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param reserved1: u32
 /// @param slot: u64
-/// @param advisories: vec<u32>
+/// @param advisories: Vec<u32>
 public record GuardianQuoteVerifyParams(long timestamp,
                                         byte[] mrEnclave,
                                         long reserved1,
