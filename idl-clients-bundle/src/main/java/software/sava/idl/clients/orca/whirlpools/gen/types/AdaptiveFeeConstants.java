@@ -35,19 +35,19 @@ public record AdaptiveFeeConstants(int filterPeriod,
       return null;
     }
     int i = _offset;
-    final var filterPeriod = getInt16LE(_data, i);
+    final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var decayPeriod = getInt16LE(_data, i);
+    final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var reductionFactor = getInt16LE(_data, i);
+    final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var adaptiveFeeControlFactor = getInt32LE(_data, i);
     i += 4;
     final var maxVolatilityAccumulator = getInt32LE(_data, i);
     i += 4;
-    final var tickGroupSize = getInt16LE(_data, i);
+    final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var majorSwapThresholdTicks = getInt16LE(_data, i);
+    final var majorSwapThresholdTicks = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var reserved = new byte[16];
     SerDeUtil.readArray(reserved, _data, i);

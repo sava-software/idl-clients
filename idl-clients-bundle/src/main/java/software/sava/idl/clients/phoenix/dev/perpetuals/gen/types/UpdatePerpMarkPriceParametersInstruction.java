@@ -142,7 +142,7 @@ public record UpdatePerpMarkPriceParametersInstruction(Symbol perpAssetSymbol,
       ++i;
     } else {
       ++i;
-      oracleDivergenceRadius = OptionalInt.of(getInt16LE(_data, i));
+      oracleDivergenceRadius = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       i += 2;
     }
     final OptionalInt minOracleResponses;

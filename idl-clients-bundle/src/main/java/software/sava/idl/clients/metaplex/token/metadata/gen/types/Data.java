@@ -52,7 +52,7 @@ public record Data(String name, byte[] _name,
     final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
     final var uri = new String(_uri, UTF_8);
     i += _uri.length;
-    final var sellerFeeBasisPoints = getInt16LE(_data, i);
+    final var sellerFeeBasisPoints = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final Creator[] creators;
     if (SerDeUtil.isAbsent(1, _data, i)) {

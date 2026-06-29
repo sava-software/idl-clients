@@ -158,7 +158,7 @@ public record Trader(PublicKey _address,
     i += 8;
     final var positionAuthority = readPubKey(_data, i);
     i += 32;
-    final var numMarketsWithSplines = getInt16LE(_data, i);
+    final var numMarketsWithSplines = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var traderPdaIndex = _data[i] & 0xFF;
     ++i;

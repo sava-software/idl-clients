@@ -29,11 +29,11 @@ public record CappedMostRecentOfData(short[] sourceEntries,
     int i = _offset;
     final var sourceEntries = new short[4];
     i += SerDeUtil.readArray(sourceEntries, _data, i);
-    final var maxDivergenceBps = getInt16LE(_data, i);
+    final var maxDivergenceBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var sourcesMaxAgeS = getInt64LE(_data, i);
     i += 8;
-    final var capEntry = getInt16LE(_data, i);
+    final var capEntry = Short.toUnsignedInt(getInt16LE(_data, i));
     return new CappedMostRecentOfData(sourceEntries,
                                       maxDivergenceBps,
                                       sourcesMaxAgeS,

@@ -69,9 +69,9 @@ public record FeeTier(PublicKey _address,
     int i = _offset + discriminator.length();
     final var whirlpoolsConfig = readPubKey(_data, i);
     i += 32;
-    final var tickSpacing = getInt16LE(_data, i);
+    final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var defaultFeeRate = getInt16LE(_data, i);
+    final var defaultFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     return new FeeTier(_address, discriminator, whirlpoolsConfig, tickSpacing, defaultFeeRate);
   }
 

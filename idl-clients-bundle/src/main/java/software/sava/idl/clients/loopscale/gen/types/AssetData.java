@@ -49,7 +49,7 @@ public record AssetData(PublicKey assetIdentifier,
     ++i;
     final var maxUncertainty = getInt32LE(_data, i);
     i += 4;
-    final var maxAge = getInt16LE(_data, i);
+    final var maxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var decimals = _data[i] & 0xFF;
     ++i;

@@ -69,7 +69,7 @@ public record MarkPriceConfig(long emaPeriodSlots,
     i += 8;
     final var riskActionPriceValidityRules = new ValidationRule[8][4][8];
     i += SerDeUtil.readArray(riskActionPriceValidityRules, ValidationRule::read, _data, i);
-    final var oracleDivergenceRadius = getInt16LE(_data, i);
+    final var oracleDivergenceRadius = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var minOracleResponses = _data[i] & 0xFF;
     ++i;

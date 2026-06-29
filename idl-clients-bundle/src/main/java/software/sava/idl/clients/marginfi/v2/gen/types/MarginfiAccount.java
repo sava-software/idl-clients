@@ -186,9 +186,9 @@ public record MarginfiAccount(PublicKey _address,
     i += 32;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;
-    final var accountIndex = getInt16LE(_data, i);
+    final var accountIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var thirdPartyIndex = getInt16LE(_data, i);
+    final var thirdPartyIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var bump = _data[i] & 0xFF;
     ++i;

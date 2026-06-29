@@ -78,7 +78,7 @@ public record LendingAdmin(PublicKey _address,
     i += 32;
     final var rebalancer = readPubKey(_data, i);
     i += 32;
-    final var nextLendingId = getInt16LE(_data, i);
+    final var nextLendingId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var auths = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, auths);

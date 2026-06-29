@@ -286,7 +286,7 @@ public final class PythLazerSolanaContractProgram {
       int i = _offset + discriminator.length();
       final var messageData = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, messageData);
-      final var ed25519InstructionIndex = getInt16LE(_data, i);
+      final var ed25519InstructionIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var signatureIndex = _data[i] & 0xFF;
       return new VerifyMessageIxData(discriminator, messageData, ed25519InstructionIndex, signatureIndex);

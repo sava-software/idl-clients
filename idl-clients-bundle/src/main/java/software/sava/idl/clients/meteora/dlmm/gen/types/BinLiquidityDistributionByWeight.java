@@ -24,7 +24,7 @@ public record BinLiquidityDistributionByWeight(int binId, int weight) implements
     int i = _offset;
     final var binId = getInt32LE(_data, i);
     i += 4;
-    final var weight = getInt16LE(_data, i);
+    final var weight = Short.toUnsignedInt(getInt16LE(_data, i));
     return new BinLiquidityDistributionByWeight(binId, weight);
   }
 

@@ -245,7 +245,7 @@ public record MarginfiGroup(PublicKey _address,
     i += 8;
     final var feeStateCache = FeeStateCache.read(_data, i);
     i += feeStateCache.l();
-    final var banks = getInt16LE(_data, i);
+    final var banks = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var pad0 = new byte[6];
     i += SerDeUtil.readArray(pad0, _data, i);

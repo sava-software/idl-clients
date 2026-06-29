@@ -185,13 +185,13 @@ public record Whirlpool(PublicKey _address,
     i += 32;
     final var whirlpoolBump = new byte[1];
     i += SerDeUtil.readArray(whirlpoolBump, _data, i);
-    final var tickSpacing = getInt16LE(_data, i);
+    final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var feeTierIndexSeed = new byte[2];
     i += SerDeUtil.readArray(feeTierIndexSeed, _data, i);
-    final var feeRate = getInt16LE(_data, i);
+    final var feeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var protocolFeeRate = getInt16LE(_data, i);
+    final var protocolFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var liquidity = getInt128LE(_data, i);
     i += 16;

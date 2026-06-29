@@ -35,7 +35,7 @@ public record LendingAccount(Balance[] balances,
     int i = _offset;
     final var balances = new Balance[16];
     i += SerDeUtil.readArray(balances, Balance::read, _data, i);
-    final var lastTagUsed = getInt16LE(_data, i);
+    final var lastTagUsed = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var pad1 = new byte[6];
     i += SerDeUtil.readArray(pad1, _data, i);

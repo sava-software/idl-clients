@@ -70,7 +70,7 @@ public record VaultAdmin(PublicKey _address,
     i += 32;
     final var liquidityProgram = readPubKey(_data, i);
     i += 32;
-    final var nextVaultId = getInt16LE(_data, i);
+    final var nextVaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var auths = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, auths);

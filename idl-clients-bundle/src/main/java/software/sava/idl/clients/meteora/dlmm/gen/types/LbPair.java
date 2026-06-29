@@ -282,7 +282,7 @@ public record LbPair(PublicKey _address,
     ++i;
     final var activeId = getInt32LE(_data, i);
     i += 4;
-    final var binStep = getInt16LE(_data, i);
+    final var binStep = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var status = _data[i] & 0xFF;
     ++i;

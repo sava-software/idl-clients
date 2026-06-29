@@ -20,7 +20,7 @@ public record DiscountToMaturityData(int discountPerYearBps, long maturityTimest
       return null;
     }
     int i = _offset;
-    final var discountPerYearBps = getInt16LE(_data, i);
+    final var discountPerYearBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var maturityTimestamp = getInt64LE(_data, i);
     return new DiscountToMaturityData(discountPerYearBps, maturityTimestamp);

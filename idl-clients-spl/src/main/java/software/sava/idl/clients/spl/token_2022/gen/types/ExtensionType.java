@@ -77,7 +77,7 @@ public enum ExtensionType implements SerDe {
   permissionedBurn;
 
   public static ExtensionType read(final byte[] _data, final int _offset) {
-    return ExtensionType.values()[ByteUtil.getInt16LE(_data, _offset)];
+    return ExtensionType.values()[Short.toUnsignedInt(ByteUtil.getInt16LE(_data, _offset))];
   }
   
   @Override

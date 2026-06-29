@@ -34,7 +34,7 @@ public record EmodeEntry(int collateralBankEmodeTag,
       return null;
     }
     int i = _offset;
-    final var collateralBankEmodeTag = getInt16LE(_data, i);
+    final var collateralBankEmodeTag = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var flags = _data[i] & 0xFF;
     ++i;

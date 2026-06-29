@@ -233,7 +233,7 @@ public record GlobalConfiguration(PublicKey _address,
     ++i;
     final var quoteDecimals = _data[i] & 0xFF;
     ++i;
-    final var withdrawalMarginFactorBps = getInt16LE(_data, i);
+    final var withdrawalMarginFactorBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding0 = new byte[4];
     i += SerDeUtil.readArray(padding0, _data, i);

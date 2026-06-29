@@ -177,7 +177,7 @@ public record MinimalSpotMarket(PublicKey _address,
     i += SerDeUtil.readArray(padding4, _data, i);
     final var decimals = getInt32LE(_data, i);
     i += 4;
-    final var marketIndex = getInt16LE(_data, i);
+    final var marketIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding5 = new short[24];
     i += SerDeUtil.readArray(padding5, _data, i);

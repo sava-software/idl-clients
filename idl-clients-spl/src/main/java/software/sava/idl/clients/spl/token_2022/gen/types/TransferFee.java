@@ -31,7 +31,7 @@ public record TransferFee(long epoch,
     i += 8;
     final var maximumFee = getInt64LE(_data, i);
     i += 8;
-    final var transferFeeBasisPoints = getInt16LE(_data, i);
+    final var transferFeeBasisPoints = Short.toUnsignedInt(getInt16LE(_data, i));
     return new TransferFee(epoch, maximumFee, transferFeeBasisPoints);
   }
 

@@ -125,7 +125,7 @@ public record Multisig(PublicKey _address,
     i += 32;
     final var configAuthority = readPubKey(_data, i);
     i += 32;
-    final var threshold = getInt16LE(_data, i);
+    final var threshold = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var timeLock = getInt32LE(_data, i);
     i += 4;

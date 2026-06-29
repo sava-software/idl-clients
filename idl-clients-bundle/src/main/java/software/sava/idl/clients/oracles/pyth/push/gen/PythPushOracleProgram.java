@@ -105,7 +105,7 @@ public final class PythPushOracleProgram {
       int i = _offset + discriminator.length();
       final var params = PostUpdateParams.read(_data, i);
       i += params.l();
-      final var shardId = getInt16LE(_data, i);
+      final var shardId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var feedId = new byte[32];
       SerDeUtil.readArray(feedId, _data, i);

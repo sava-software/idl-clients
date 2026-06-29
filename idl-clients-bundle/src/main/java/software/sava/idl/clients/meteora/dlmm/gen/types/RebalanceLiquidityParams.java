@@ -56,7 +56,7 @@ public record RebalanceLiquidityParams(int activeId,
     int i = _offset;
     final var activeId = getInt32LE(_data, i);
     i += 4;
-    final var maxActiveBinSlippage = getInt16LE(_data, i);
+    final var maxActiveBinSlippage = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var shouldClaimFee = _data[i] == 1;
     ++i;

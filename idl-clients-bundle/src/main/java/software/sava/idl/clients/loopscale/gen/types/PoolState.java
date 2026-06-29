@@ -356,7 +356,7 @@ public record PoolState(PublicKey _address,
     ++i;
     final var mintDecimals1 = _data[i] & 0xFF;
     ++i;
-    final var tickSpacing = getInt16LE(_data, i);
+    final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var liquidity = getInt128LE(_data, i);
     i += 16;
@@ -364,9 +364,9 @@ public record PoolState(PublicKey _address,
     i += 16;
     final var tickCurrent = getInt32LE(_data, i);
     i += 4;
-    final var padding3 = getInt16LE(_data, i);
+    final var padding3 = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var padding4 = getInt16LE(_data, i);
+    final var padding4 = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var feeGrowthGlobal0X64 = getInt128LE(_data, i);
     i += 16;

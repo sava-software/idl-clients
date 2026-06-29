@@ -34,7 +34,7 @@ public sealed interface RefPriceToleranceOrTwapSource extends RustEnum permits
   record RefPriceToleranceBps(int val) implements EnumInt16, RefPriceToleranceOrTwapSource {
 
     public static RefPriceToleranceBps read(final byte[] _data, int i) {
-      return new RefPriceToleranceBps(getInt16LE(_data, i));
+      return new RefPriceToleranceBps(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
 
     @Override
@@ -46,7 +46,7 @@ public sealed interface RefPriceToleranceOrTwapSource extends RustEnum permits
   record TwapSource(int val) implements EnumInt16, RefPriceToleranceOrTwapSource {
 
     public static TwapSource read(final byte[] _data, int i) {
-      return new TwapSource(getInt16LE(_data, i));
+      return new TwapSource(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
 
     @Override

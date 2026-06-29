@@ -21,7 +21,7 @@ public record CappedFlooredData(int sourceEntry,
       return null;
     }
     int i = _offset;
-    final var sourceEntry = getInt16LE(_data, i);
+    final var sourceEntry = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final OptionalInt capEntry;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -29,7 +29,7 @@ public record CappedFlooredData(int sourceEntry,
       ++i;
     } else {
       ++i;
-      capEntry = OptionalInt.of(getInt16LE(_data, i));
+      capEntry = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       i += 2;
     }
     final OptionalInt floorEntry;
@@ -37,7 +37,7 @@ public record CappedFlooredData(int sourceEntry,
       floorEntry = OptionalInt.empty();
     } else {
       ++i;
-      floorEntry = OptionalInt.of(getInt16LE(_data, i));
+      floorEntry = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
     return new CappedFlooredData(sourceEntry, capEntry, floorEntry);
   }

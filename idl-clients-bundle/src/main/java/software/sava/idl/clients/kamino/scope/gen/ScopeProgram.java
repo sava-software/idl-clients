@@ -275,7 +275,7 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var token = getInt16LE(_data, i);
+      final var token = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var serializedChainlinkReport = SerDeUtil.readbyteVector(4, _data, i);
       return new RefreshChainlinkPriceIxData(discriminator, token, serializedChainlinkReport);
@@ -399,7 +399,7 @@ public final class ScopeProgram {
       i += SerDeUtil.lenVector(4, tokens);
       final var serializedPythMessage = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, serializedPythMessage);
-      final var ed25519InstructionIndex = getInt16LE(_data, i);
+      final var ed25519InstructionIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       return new RefreshPythLazerPriceIxData(discriminator, tokens, serializedPythMessage, ed25519InstructionIndex);
     }
 
@@ -963,7 +963,7 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var token = getInt16LE(_data, i);
+      final var token = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
@@ -1061,7 +1061,7 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var token = getInt16LE(_data, i);
+      final var token = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;

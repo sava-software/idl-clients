@@ -101,9 +101,9 @@ public record Benefactor(PublicKey _address,
     i += status.l();
     final var padding0 = new byte[7];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var mintFeeRate = getInt16LE(_data, i);
+    final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var redeemFeeRate = getInt16LE(_data, i);
+    final var redeemFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding1 = new byte[4];
     i += SerDeUtil.readArray(padding1, _data, i);

@@ -28,7 +28,7 @@ public record LogLiquidateInfo(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var vaultId = getInt16LE(_data, i);
+    final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var startTick = getInt32LE(_data, i);
     i += 4;

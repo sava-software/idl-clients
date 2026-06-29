@@ -27,7 +27,7 @@ public record ConditionalData(int condition,
     int i = _offset;
     final var condition = _data[i] & 0xFF;
     ++i;
-    final var toleranceBps = getInt16LE(_data, i);
+    final var toleranceBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var sources = new short[3];
     SerDeUtil.readArray(sources, _data, i);

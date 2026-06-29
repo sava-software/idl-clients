@@ -76,7 +76,7 @@ public record UpdateAssetDataParams(PublicKey assetIdentifier,
       ++i;
     } else {
       ++i;
-      maxAge = OptionalInt.of(getInt16LE(_data, i));
+      maxAge = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       i += 2;
     }
     final OptionalInt ltv;

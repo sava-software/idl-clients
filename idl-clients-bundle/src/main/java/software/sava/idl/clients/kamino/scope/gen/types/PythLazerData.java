@@ -23,7 +23,7 @@ public record PythLazerData(int feedId,
       return null;
     }
     int i = _offset;
-    final var feedId = getInt16LE(_data, i);
+    final var feedId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var exponent = _data[i] & 0xFF;
     ++i;

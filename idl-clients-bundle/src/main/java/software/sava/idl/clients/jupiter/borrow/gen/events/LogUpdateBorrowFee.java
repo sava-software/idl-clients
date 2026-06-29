@@ -21,7 +21,7 @@ public record LogUpdateBorrowFee(Discriminator discriminator, int borrowFee) imp
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var borrowFee = getInt16LE(_data, i);
+    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateBorrowFee(discriminator, borrowFee);
   }
 

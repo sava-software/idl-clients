@@ -2251,7 +2251,7 @@ public final class LbClmmProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var lengthToRemove = getInt16LE(_data, i);
+      final var lengthToRemove = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var side = _data[i] & 0xFF;
       return new DecreasePositionLengthIxData(discriminator, lengthToRemove, side);
@@ -2697,7 +2697,7 @@ public final class LbClmmProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var lengthToAdd = getInt16LE(_data, i);
+      final var lengthToAdd = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var side = _data[i] & 0xFF;
       return new IncreasePositionLengthIxData(discriminator, lengthToAdd, side);
@@ -3256,7 +3256,7 @@ public final class LbClmmProgram {
       int i = _offset + discriminator.length();
       final var activeId = getInt32LE(_data, i);
       i += 4;
-      final var binStep = getInt16LE(_data, i);
+      final var binStep = Short.toUnsignedInt(getInt16LE(_data, i));
       return new InitializeLbPairIxData(discriminator, activeId, binStep);
     }
 
@@ -4913,7 +4913,7 @@ public final class LbClmmProgram {
       i += 4;
       final var toBinId = getInt32LE(_data, i);
       i += 4;
-      final var bpsToRemove = getInt16LE(_data, i);
+      final var bpsToRemove = Short.toUnsignedInt(getInt16LE(_data, i));
       return new RemoveLiquidityByRangeIxData(discriminator, fromBinId, toBinId, bpsToRemove);
     }
 
@@ -5064,7 +5064,7 @@ public final class LbClmmProgram {
       i += 4;
       final var toBinId = getInt32LE(_data, i);
       i += 4;
-      final var bpsToRemove = getInt16LE(_data, i);
+      final var bpsToRemove = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       return new RemoveLiquidityByRange2IxData(discriminator,
@@ -6175,7 +6175,7 @@ public final class LbClmmProgram {
         activeId = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
-      final var maxPriceImpactBps = getInt16LE(_data, i);
+      final var maxPriceImpactBps = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SwapWithPriceImpactIxData(discriminator, amountIn, activeId, maxPriceImpactBps);
     }
 
@@ -6336,7 +6336,7 @@ public final class LbClmmProgram {
         activeId = OptionalInt.of(getInt32LE(_data, i));
         i += 4;
       }
-      final var maxPriceImpactBps = getInt16LE(_data, i);
+      final var maxPriceImpactBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var remainingAccountsInfo = RemainingAccountsInfo.read(_data, i);
       return new SwapWithPriceImpact2IxData(discriminator,

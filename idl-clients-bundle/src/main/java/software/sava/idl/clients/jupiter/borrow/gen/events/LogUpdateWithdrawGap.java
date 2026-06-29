@@ -21,7 +21,7 @@ public record LogUpdateWithdrawGap(Discriminator discriminator, int withdrawGap)
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var withdrawGap = getInt16LE(_data, i);
+    final var withdrawGap = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateWithdrawGap(discriminator, withdrawGap);
   }
 

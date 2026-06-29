@@ -22,7 +22,7 @@ public record BinLiquidityReduction(int binId, int bpsToRemove) implements SerDe
     int i = _offset;
     final var binId = getInt32LE(_data, i);
     i += 4;
-    final var bpsToRemove = getInt16LE(_data, i);
+    final var bpsToRemove = Short.toUnsignedInt(getInt16LE(_data, i));
     return new BinLiquidityReduction(binId, bpsToRemove);
   }
 

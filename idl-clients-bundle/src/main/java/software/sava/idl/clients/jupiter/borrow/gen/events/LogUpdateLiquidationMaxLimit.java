@@ -21,7 +21,7 @@ public record LogUpdateLiquidationMaxLimit(Discriminator discriminator, int liqu
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var liquidationMaxLimit = getInt16LE(_data, i);
+    final var liquidationMaxLimit = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateLiquidationMaxLimit(discriminator, liquidationMaxLimit);
   }
 

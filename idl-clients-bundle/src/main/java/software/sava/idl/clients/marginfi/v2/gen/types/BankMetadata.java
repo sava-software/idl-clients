@@ -121,9 +121,9 @@ public record BankMetadata(PublicKey _address,
     i += SerDeUtil.readArray(description, _data, i);
     final var dataBlob = new byte[256];
     i += SerDeUtil.readArray(dataBlob, _data, i);
-    final var endDescriptionByte = getInt16LE(_data, i);
+    final var endDescriptionByte = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var endDataBlob = getInt16LE(_data, i);
+    final var endDataBlob = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var endTickerByte = _data[i] & 0xFF;
     ++i;

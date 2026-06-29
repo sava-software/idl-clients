@@ -54,7 +54,7 @@ public record PoolInitialized(Discriminator discriminator,
     i += 32;
     final var tokenMintB = readPubKey(_data, i);
     i += 32;
-    final var tickSpacing = getInt16LE(_data, i);
+    final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var tokenProgramA = readPubKey(_data, i);
     i += 32;

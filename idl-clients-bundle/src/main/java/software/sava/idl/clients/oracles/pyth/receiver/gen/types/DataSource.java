@@ -20,7 +20,7 @@ public record DataSource(int chain, PublicKey emitter) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var chain = getInt16LE(_data, i);
+    final var chain = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var emitter = readPubKey(_data, i);
     return new DataSource(chain, emitter);

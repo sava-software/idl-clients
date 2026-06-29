@@ -32,9 +32,9 @@ public record FeeParameterUpdate(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var lbPair = readPubKey(_data, i);
     i += 32;
-    final var protocolShare = getInt16LE(_data, i);
+    final var protocolShare = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var baseFactor = getInt16LE(_data, i);
+    final var baseFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     return new FeeParameterUpdate(discriminator,

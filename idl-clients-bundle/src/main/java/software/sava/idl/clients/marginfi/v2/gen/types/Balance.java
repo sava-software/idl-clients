@@ -61,7 +61,7 @@ public record Balance(int active,
     i += 32;
     final var bankAssetTag = _data[i] & 0xFF;
     ++i;
-    final var tag = getInt16LE(_data, i);
+    final var tag = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var pad0 = new byte[4];
     i += SerDeUtil.readArray(pad0, _data, i);

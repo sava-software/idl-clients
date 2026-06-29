@@ -21,7 +21,7 @@ public record LogUpdateCollateralFactor(Discriminator discriminator, int collate
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var collateralFactor = getInt16LE(_data, i);
+    final var collateralFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateCollateralFactor(discriminator, collateralFactor);
   }
 

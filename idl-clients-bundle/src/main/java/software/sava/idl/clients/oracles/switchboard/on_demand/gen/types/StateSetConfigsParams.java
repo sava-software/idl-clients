@@ -43,9 +43,9 @@ public record StateSetConfigsParams(PublicKey newAuthority,
     i += 32;
     final var teeVerifyMode = _data[i] & 0xFF;
     ++i;
-    final var addAdvisory = getInt16LE(_data, i);
+    final var addAdvisory = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var rmAdvisory = getInt16LE(_data, i);
+    final var rmAdvisory = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var switchMint = readPubKey(_data, i);
     i += 32;

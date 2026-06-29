@@ -68,7 +68,7 @@ public record PerpAssetMap(PublicKey _address,
     int i = _offset + discriminator.length();
     final var sequenceNumber = SequenceNumber.read(_data, i);
     i += sequenceNumber.l();
-    final var numAssets = getInt16LE(_data, i);
+    final var numAssets = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding0 = new byte[6];
     i += SerDeUtil.readArray(padding0, _data, i);

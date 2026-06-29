@@ -55,7 +55,7 @@ public record LiquidationTransferEvent(Discriminator discriminator,
     i += baseLotsTransferred.l();
     final var virtualQuoteLotsTransferred = SignedQuoteLots.read(_data, i);
     i += virtualQuoteLotsTransferred.l();
-    final var haircutRate = getInt16LE(_data, i);
+    final var haircutRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
     i += liquidateeCollateralChange.l();

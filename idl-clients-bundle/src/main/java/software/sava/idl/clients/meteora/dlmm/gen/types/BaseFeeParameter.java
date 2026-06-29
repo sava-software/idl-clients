@@ -24,9 +24,9 @@ public record BaseFeeParameter(int protocolShare,
       return null;
     }
     int i = _offset;
-    final var protocolShare = getInt16LE(_data, i);
+    final var protocolShare = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var baseFactor = getInt16LE(_data, i);
+    final var baseFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var baseFeePowerFactor = _data[i] & 0xFF;
     return new BaseFeeParameter(protocolShare, baseFactor, baseFeePowerFactor);

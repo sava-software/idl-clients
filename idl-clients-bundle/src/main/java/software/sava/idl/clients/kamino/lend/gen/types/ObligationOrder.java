@@ -103,9 +103,9 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
     i += 16;
     final var opportunityParameterSf = getInt128LE(_data, i);
     i += 16;
-    final var minExecutionBonusBps = getInt16LE(_data, i);
+    final var minExecutionBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var maxExecutionBonusBps = getInt16LE(_data, i);
+    final var maxExecutionBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var conditionType = _data[i] & 0xFF;
     ++i;

@@ -32,7 +32,7 @@ public record LbPairCreate(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var lbPair = readPubKey(_data, i);
     i += 32;
-    final var binStep = getInt16LE(_data, i);
+    final var binStep = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var tokenX = readPubKey(_data, i);
     i += 32;

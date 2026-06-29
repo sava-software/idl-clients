@@ -141,7 +141,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var bundleIndex = getInt16LE(_data, i);
+      final var bundleIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CloseBundledPositionIxData(discriminator, bundleIndex);
     }
 
@@ -2315,29 +2315,29 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feeTierIndex = getInt16LE(_data, i);
+      final var feeTierIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var tickSpacing = getInt16LE(_data, i);
+      final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var initializePoolAuthority = readPubKey(_data, i);
       i += 32;
       final var delegatedFeeAuthority = readPubKey(_data, i);
       i += 32;
-      final var defaultBaseFeeRate = getInt16LE(_data, i);
+      final var defaultBaseFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var filterPeriod = getInt16LE(_data, i);
+      final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var decayPeriod = getInt16LE(_data, i);
+      final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var reductionFactor = getInt16LE(_data, i);
+      final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var adaptiveFeeControlFactor = getInt32LE(_data, i);
       i += 4;
       final var maxVolatilityAccumulator = getInt32LE(_data, i);
       i += 4;
-      final var tickGroupSize = getInt16LE(_data, i);
+      final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var majorSwapThresholdTicks = getInt16LE(_data, i);
+      final var majorSwapThresholdTicks = Short.toUnsignedInt(getInt16LE(_data, i));
       return new InitializeAdaptiveFeeTierIxData(discriminator,
                                                  feeTierIndex,
                                                  tickSpacing,
@@ -2509,7 +2509,7 @@ public final class WhirlpoolProgram {
       i += 32;
       final var rewardEmissionsSuperAuthority = readPubKey(_data, i);
       i += 32;
-      final var defaultProtocolFeeRate = getInt16LE(_data, i);
+      final var defaultProtocolFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new InitializeConfigIxData(discriminator,
                                         feeAuthority,
                                         collectProtocolFeesAuthority,
@@ -2825,9 +2825,9 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tickSpacing = getInt16LE(_data, i);
+      final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var defaultFeeRate = getInt16LE(_data, i);
+      final var defaultFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new InitializeFeeTierIxData(discriminator, tickSpacing, defaultFeeRate);
     }
 
@@ -2990,7 +2990,7 @@ public final class WhirlpoolProgram {
       int i = _offset + discriminator.length();
       final var bumps = WhirlpoolBumps.read(_data, i);
       i += bumps.l();
-      final var tickSpacing = getInt16LE(_data, i);
+      final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var initialSqrtPrice = getInt128LE(_data, i);
       return new InitializePoolIxData(discriminator, bumps, tickSpacing, initialSqrtPrice);
@@ -3156,7 +3156,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tickSpacing = getInt16LE(_data, i);
+      final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var initialSqrtPrice = getInt128LE(_data, i);
       return new InitializePoolV2IxData(discriminator, tickSpacing, initialSqrtPrice);
@@ -4241,7 +4241,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var bundleIndex = getInt16LE(_data, i);
+      final var bundleIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var tickLowerIndex = getInt32LE(_data, i);
       i += 4;
@@ -5335,7 +5335,7 @@ public final class WhirlpoolProgram {
         ++i;
       } else {
         ++i;
-        filterPeriod = OptionalInt.of(getInt16LE(_data, i));
+        filterPeriod = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
       final OptionalInt decayPeriod;
@@ -5344,7 +5344,7 @@ public final class WhirlpoolProgram {
         ++i;
       } else {
         ++i;
-        decayPeriod = OptionalInt.of(getInt16LE(_data, i));
+        decayPeriod = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
       final OptionalInt reductionFactor;
@@ -5353,7 +5353,7 @@ public final class WhirlpoolProgram {
         ++i;
       } else {
         ++i;
-        reductionFactor = OptionalInt.of(getInt16LE(_data, i));
+        reductionFactor = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
       final OptionalInt adaptiveFeeControlFactor;
@@ -5380,7 +5380,7 @@ public final class WhirlpoolProgram {
         ++i;
       } else {
         ++i;
-        tickGroupSize = OptionalInt.of(getInt16LE(_data, i));
+        tickGroupSize = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
       final OptionalInt majorSwapThresholdTicks;
@@ -5388,7 +5388,7 @@ public final class WhirlpoolProgram {
         majorSwapThresholdTicks = OptionalInt.empty();
       } else {
         ++i;
-        majorSwapThresholdTicks = OptionalInt.of(getInt16LE(_data, i));
+        majorSwapThresholdTicks = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       }
       return new SetAdaptiveFeeConstantsIxData(discriminator,
                                                filterPeriod,
@@ -5715,7 +5715,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var defaultBaseFeeRate = getInt16LE(_data, i);
+      final var defaultBaseFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetDefaultBaseFeeRateIxData(discriminator, defaultBaseFeeRate);
     }
 
@@ -5827,7 +5827,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var defaultFeeRate = getInt16LE(_data, i);
+      final var defaultFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetDefaultFeeRateIxData(discriminator, defaultFeeRate);
     }
 
@@ -5935,7 +5935,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var defaultProtocolFeeRate = getInt16LE(_data, i);
+      final var defaultProtocolFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetDefaultProtocolFeeRateIxData(discriminator, defaultProtocolFeeRate);
     }
 
@@ -6162,7 +6162,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feeRate = getInt16LE(_data, i);
+      final var feeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetFeeRateIxData(discriminator, feeRate);
     }
 
@@ -6271,7 +6271,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var feeRate = getInt16LE(_data, i);
+      final var feeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetFeeRateByDelegatedFeeAuthorityIxData(discriminator, feeRate);
     }
 
@@ -6494,19 +6494,19 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var filterPeriod = getInt16LE(_data, i);
+      final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var decayPeriod = getInt16LE(_data, i);
+      final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var reductionFactor = getInt16LE(_data, i);
+      final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var adaptiveFeeControlFactor = getInt32LE(_data, i);
       i += 4;
       final var maxVolatilityAccumulator = getInt32LE(_data, i);
       i += 4;
-      final var tickGroupSize = getInt16LE(_data, i);
+      final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var majorSwapThresholdTicks = getInt16LE(_data, i);
+      final var majorSwapThresholdTicks = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetPresetAdaptiveFeeConstantsIxData(discriminator,
                                                      filterPeriod,
                                                      decayPeriod,
@@ -6637,7 +6637,7 @@ public final class WhirlpoolProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var protocolFeeRate = getInt16LE(_data, i);
+      final var protocolFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new SetProtocolFeeRateIxData(discriminator, protocolFeeRate);
     }
 

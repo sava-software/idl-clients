@@ -43,7 +43,7 @@ public record DatedPrice(Price price,
     i += SerDeUtil.readArray(reserved, _data, i);
     final var reserved2 = new short[3];
     i += SerDeUtil.readArray(reserved2, _data, i);
-    final var index = getInt16LE(_data, i);
+    final var index = Short.toUnsignedInt(getInt16LE(_data, i));
     return new DatedPrice(price,
                           lastUpdatedSlot,
                           unixTimestamp,

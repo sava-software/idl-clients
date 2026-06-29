@@ -68,9 +68,9 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
         return null;
       }
       int i = _offset;
-      final var mintFeeRate = getInt16LE(_data, i);
+      final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var redeemFeeRate = getInt16LE(_data, i);
+      final var redeemFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateFeeRates(mintFeeRate, redeemFeeRate);
     }
 
@@ -183,9 +183,9 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
       ++i;
       final var mint = readPubKey(_data, i);
       i += 32;
-      final var mintFeeRate = getInt16LE(_data, i);
+      final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var redeemFeeRate = getInt16LE(_data, i);
+      final var redeemFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateFeeOverride(index,
                                    mint,
                                    mintFeeRate,

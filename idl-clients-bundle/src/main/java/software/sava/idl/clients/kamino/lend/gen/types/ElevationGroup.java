@@ -38,7 +38,7 @@ public record ElevationGroup(int maxLiquidationBonusBps,
       return null;
     }
     int i = _offset;
-    final var maxLiquidationBonusBps = getInt16LE(_data, i);
+    final var maxLiquidationBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var id = _data[i] & 0xFF;
     ++i;

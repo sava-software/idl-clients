@@ -20,7 +20,7 @@ public record RoutePlanStepV2(Swap swap,
     int i = _offset;
     final var swap = Swap.read(_data, i);
     i += swap.l();
-    final var bps = getInt16LE(_data, i);
+    final var bps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var inputIndex = _data[i] & 0xFF;
     ++i;

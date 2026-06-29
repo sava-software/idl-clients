@@ -139,7 +139,7 @@ public record Lending(PublicKey _address,
     i += 32;
     final var fTokenMint = readPubKey(_data, i);
     i += 32;
-    final var lendingId = getInt16LE(_data, i);
+    final var lendingId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var decimals = _data[i] & 0xFF;
     ++i;

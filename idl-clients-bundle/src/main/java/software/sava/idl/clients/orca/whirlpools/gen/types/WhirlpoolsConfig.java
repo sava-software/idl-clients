@@ -85,9 +85,9 @@ public record WhirlpoolsConfig(PublicKey _address,
     i += 32;
     final var rewardEmissionsSuperAuthority = readPubKey(_data, i);
     i += 32;
-    final var defaultProtocolFeeRate = getInt16LE(_data, i);
+    final var defaultProtocolFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var featureFlags = getInt16LE(_data, i);
+    final var featureFlags = Short.toUnsignedInt(getInt16LE(_data, i));
     return new WhirlpoolsConfig(_address,
                                 discriminator,
                                 feeAuthority,

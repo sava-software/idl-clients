@@ -101,9 +101,9 @@ public final class JupStableProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var mintFeeRate = getInt16LE(_data, i);
+      final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var redeemFeeRate = getInt16LE(_data, i);
+      final var redeemFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CreateBenefactorIxData(discriminator, mintFeeRate, redeemFeeRate);
     }
 

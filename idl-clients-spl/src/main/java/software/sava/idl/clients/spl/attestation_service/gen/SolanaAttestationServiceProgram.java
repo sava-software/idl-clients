@@ -994,7 +994,7 @@ public final class SolanaAttestationServiceProgram {
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
       final var symbol = new String(_symbol, UTF_8);
       i += _symbol.length;
-      final var mintAccountSpace = getInt16LE(_data, i);
+      final var mintAccountSpace = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CreateTokenizedAttestationIxData(discriminator,
                                                   nonce,
                                                   data,

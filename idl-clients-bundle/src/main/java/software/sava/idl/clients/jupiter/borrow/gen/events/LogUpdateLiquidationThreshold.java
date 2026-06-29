@@ -21,7 +21,7 @@ public record LogUpdateLiquidationThreshold(Discriminator discriminator, int liq
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var liquidationThreshold = getInt16LE(_data, i);
+    final var liquidationThreshold = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateLiquidationThreshold(discriminator, liquidationThreshold);
   }
 

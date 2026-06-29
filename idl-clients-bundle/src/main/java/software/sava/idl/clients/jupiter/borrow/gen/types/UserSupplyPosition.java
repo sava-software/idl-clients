@@ -137,7 +137,7 @@ public record UserSupplyPosition(PublicKey _address,
     i += 16;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;
-    final var expandPct = getInt16LE(_data, i);
+    final var expandPct = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var expandDuration = getInt64LE(_data, i);
     i += 8;

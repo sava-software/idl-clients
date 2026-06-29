@@ -101,7 +101,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
       int i = _offset;
       final var priceType = OracleType.read(_data, i);
       i += priceType.l();
-      final var twapSource = getInt16LE(_data, i);
+      final var twapSource = Short.toUnsignedInt(getInt16LE(_data, i));
       return new MappingTwapEntry(priceType, twapSource);
     }
 
@@ -152,7 +152,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
         ++i;
       } else {
         ++i;
-        refPriceIndex = OptionalInt.of(getInt16LE(_data, i));
+        refPriceIndex = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
       final OptionalInt refPriceToleranceBps;
@@ -160,7 +160,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
         refPriceToleranceBps = OptionalInt.empty();
       } else {
         ++i;
-        refPriceToleranceBps = OptionalInt.of(getInt16LE(_data, i));
+        refPriceToleranceBps = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       }
       return new MappingRefPrice(refPriceIndex, refPriceToleranceBps);
     }

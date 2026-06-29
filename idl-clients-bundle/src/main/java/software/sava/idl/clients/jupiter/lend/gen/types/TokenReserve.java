@@ -183,11 +183,11 @@ public record TokenReserve(PublicKey _address,
     i += 32;
     final var vault = readPubKey(_data, i);
     i += 32;
-    final var borrowRate = getInt16LE(_data, i);
+    final var borrowRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var feeOnInterest = getInt16LE(_data, i);
+    final var feeOnInterest = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var lastUtilization = getInt16LE(_data, i);
+    final var lastUtilization = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var lastUpdateTimestamp = getInt64LE(_data, i);
     i += 8;
@@ -195,7 +195,7 @@ public record TokenReserve(PublicKey _address,
     i += 8;
     final var borrowExchangePrice = getInt64LE(_data, i);
     i += 8;
-    final var maxUtilization = getInt16LE(_data, i);
+    final var maxUtilization = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var totalSupplyWithInterest = getInt64LE(_data, i);
     i += 8;

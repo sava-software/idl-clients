@@ -36,7 +36,7 @@ public record LogClosePosition(Discriminator discriminator,
     i += 32;
     final var positionId = getInt32LE(_data, i);
     i += 4;
-    final var vaultId = getInt16LE(_data, i);
+    final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var positionMint = readPubKey(_data, i);
     return new LogClosePosition(discriminator,

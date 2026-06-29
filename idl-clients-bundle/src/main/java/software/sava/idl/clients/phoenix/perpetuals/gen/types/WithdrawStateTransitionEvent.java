@@ -51,7 +51,7 @@ public record WithdrawStateTransitionEvent(Discriminator discriminator,
     ++i;
     final var reason = _data[i] & 0xFF;
     ++i;
-    final var transitionCount = getInt16LE(_data, i);
+    final var transitionCount = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var nodeIndex = NodePointer.read(_data, i);
     return new WithdrawStateTransitionEvent(discriminator,

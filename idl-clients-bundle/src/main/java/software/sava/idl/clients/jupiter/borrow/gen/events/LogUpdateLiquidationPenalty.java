@@ -21,7 +21,7 @@ public record LogUpdateLiquidationPenalty(Discriminator discriminator, int liqui
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var liquidationPenalty = getInt16LE(_data, i);
+    final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateLiquidationPenalty(discriminator, liquidationPenalty);
   }
 

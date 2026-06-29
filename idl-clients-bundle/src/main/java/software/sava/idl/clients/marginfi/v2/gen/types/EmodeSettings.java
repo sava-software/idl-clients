@@ -45,7 +45,7 @@ public record EmodeSettings(int emodeTag,
       return null;
     }
     int i = _offset;
-    final var emodeTag = getInt16LE(_data, i);
+    final var emodeTag = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var pad0 = new byte[6];
     i += SerDeUtil.readArray(pad0, _data, i);

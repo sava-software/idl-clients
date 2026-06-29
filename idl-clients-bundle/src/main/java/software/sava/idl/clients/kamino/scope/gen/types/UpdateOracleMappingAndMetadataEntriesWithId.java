@@ -17,7 +17,7 @@ public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOra
       return null;
     }
     int i = _offset;
-    final var entryId = getInt16LE(_data, i);
+    final var entryId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var updates = SerDeUtil.readVector(4, UpdateOracleMappingAndMetadataEntry.class, UpdateOracleMappingAndMetadataEntry::read, _data, i);
     return new UpdateOracleMappingAndMetadataEntriesWithId(entryId, updates);

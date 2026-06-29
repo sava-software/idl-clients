@@ -40,17 +40,17 @@ public record LogUpdateCoreSettings(Discriminator discriminator,
     i += 2;
     final var borrowRateMagnifier = getInt16LE(_data, i);
     i += 2;
-    final var collateralFactor = getInt16LE(_data, i);
+    final var collateralFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var liquidationThreshold = getInt16LE(_data, i);
+    final var liquidationThreshold = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var liquidationMaxLimit = getInt16LE(_data, i);
+    final var liquidationMaxLimit = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var withdrawGap = getInt16LE(_data, i);
+    final var withdrawGap = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var liquidationPenalty = getInt16LE(_data, i);
+    final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var borrowFee = getInt16LE(_data, i);
+    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
     return new LogUpdateCoreSettings(discriminator,
                                      supplyRateMagnifier,
                                      borrowRateMagnifier,

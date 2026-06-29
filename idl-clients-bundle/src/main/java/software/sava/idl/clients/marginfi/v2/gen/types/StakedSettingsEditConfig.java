@@ -81,7 +81,7 @@ public record StakedSettingsEditConfig(PublicKey oracle,
       ++i;
     } else {
       ++i;
-      oracleMaxAge = OptionalInt.of(getInt16LE(_data, i));
+      oracleMaxAge = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       i += 2;
     }
     final RiskTier riskTier;

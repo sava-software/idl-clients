@@ -29,9 +29,9 @@ public record FeeOverride(PublicKey mint,
     int i = _offset;
     final var mint = readPubKey(_data, i);
     i += 32;
-    final var mintFeeRate = getInt16LE(_data, i);
+    final var mintFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var redeemFeeRate = getInt16LE(_data, i);
+    final var redeemFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding = new byte[4];
     SerDeUtil.readArray(padding, _data, i);

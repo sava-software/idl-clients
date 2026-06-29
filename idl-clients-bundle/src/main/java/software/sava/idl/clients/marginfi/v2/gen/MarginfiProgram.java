@@ -5265,7 +5265,7 @@ public final class MarginfiProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var emodeTag = getInt16LE(_data, i);
+      final var emodeTag = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var entries = new EmodeEntry[10];
       SerDeUtil.readArray(entries, EmodeEntry::read, _data, i);
@@ -6497,14 +6497,14 @@ public final class MarginfiProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var accountIndex = getInt16LE(_data, i);
+      final var accountIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final OptionalInt thirdPartyId;
       if (SerDeUtil.isAbsent(1, _data, i)) {
         thirdPartyId = OptionalInt.empty();
       } else {
         ++i;
-        thirdPartyId = OptionalInt.of(getInt16LE(_data, i));
+        thirdPartyId = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       }
       return new MarginfiAccountInitializePdaIxData(discriminator, accountIndex, thirdPartyId);
     }
@@ -8482,14 +8482,14 @@ public final class MarginfiProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var accountIndex = getInt16LE(_data, i);
+      final var accountIndex = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final OptionalInt thirdPartyId;
       if (SerDeUtil.isAbsent(1, _data, i)) {
         thirdPartyId = OptionalInt.empty();
       } else {
         ++i;
-        thirdPartyId = OptionalInt.of(getInt16LE(_data, i));
+        thirdPartyId = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       }
       return new TransferToNewAccountPdaIxData(discriminator, accountIndex, thirdPartyId);
     }

@@ -43,11 +43,11 @@ public record DynamicFeeParameterUpdate(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var lbPair = readPubKey(_data, i);
     i += 32;
-    final var filterPeriod = getInt16LE(_data, i);
+    final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var decayPeriod = getInt16LE(_data, i);
+    final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var reductionFactor = getInt16LE(_data, i);
+    final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var variableFeeControl = getInt32LE(_data, i);
     i += 4;

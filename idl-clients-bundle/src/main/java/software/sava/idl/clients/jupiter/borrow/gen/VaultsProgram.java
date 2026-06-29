@@ -132,7 +132,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var branchId = getInt32LE(_data, i);
       return new InitBranchIxData(discriminator, vaultId, branchId);
@@ -243,7 +243,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var nextPositionId = getInt32LE(_data, i);
       return new InitPositionIxData(discriminator, vaultId, nextPositionId);
@@ -327,7 +327,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var tick = getInt32LE(_data, i);
       return new InitTickIxData(discriminator, vaultId, tick);
@@ -411,7 +411,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var index = _data[i] & 0xFF;
       return new InitTickHasDebtArrayIxData(discriminator, vaultId, index);
@@ -509,7 +509,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var tick = getInt32LE(_data, i);
       i += 4;
@@ -689,7 +689,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var params = InitVaultConfigParams.read(_data, i);
       return new InitVaultConfigIxData(discriminator, vaultId, params);
@@ -783,7 +783,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       return new InitVaultStateIxData(discriminator, vaultId);
     }
 
@@ -1584,9 +1584,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var borrowFee = getInt16LE(_data, i);
+      final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateBorrowFeeIxData(discriminator, vaultId, borrowFee);
     }
 
@@ -1682,7 +1682,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var borrowRateMagnifier = getInt16LE(_data, i);
       return new UpdateBorrowRateMagnifierIxData(discriminator, vaultId, borrowRateMagnifier);
@@ -1780,9 +1780,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var collateralFactor = getInt16LE(_data, i);
+      final var collateralFactor = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateCollateralFactorIxData(discriminator, vaultId, collateralFactor);
     }
 
@@ -1878,7 +1878,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var params = UpdateCoreSettingsParams.read(_data, i);
       return new UpdateCoreSettingsIxData(discriminator, vaultId, params);
@@ -1962,7 +1962,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateExchangePricesIxData(discriminator, vaultId);
     }
 
@@ -2056,9 +2056,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var liquidationMaxLimit = getInt16LE(_data, i);
+      final var liquidationMaxLimit = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateLiquidationMaxLimitIxData(discriminator, vaultId, liquidationMaxLimit);
     }
 
@@ -2154,9 +2154,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var liquidationPenalty = getInt16LE(_data, i);
+      final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateLiquidationPenaltyIxData(discriminator, vaultId, liquidationPenalty);
     }
 
@@ -2252,9 +2252,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var liquidationThreshold = getInt16LE(_data, i);
+      final var liquidationThreshold = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateLiquidationThresholdIxData(discriminator, vaultId, liquidationThreshold);
     }
 
@@ -2332,7 +2332,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var lookupTable = readPubKey(_data, i);
       return new UpdateLookupTableIxData(discriminator, vaultId, lookupTable);
@@ -2429,7 +2429,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateOracleIxData(discriminator, vaultId);
     }
 
@@ -2523,7 +2523,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var newRebalancer = readPubKey(_data, i);
       return new UpdateRebalancerIxData(discriminator, vaultId, newRebalancer);
@@ -2621,7 +2621,7 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var supplyRateMagnifier = getInt16LE(_data, i);
       return new UpdateSupplyRateMagnifierIxData(discriminator, vaultId, supplyRateMagnifier);
@@ -2719,9 +2719,9 @@ public final class VaultsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var vaultId = getInt16LE(_data, i);
+      final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var withdrawGap = getInt16LE(_data, i);
+      final var withdrawGap = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpdateWithdrawGapIxData(discriminator, vaultId, withdrawGap);
     }
 

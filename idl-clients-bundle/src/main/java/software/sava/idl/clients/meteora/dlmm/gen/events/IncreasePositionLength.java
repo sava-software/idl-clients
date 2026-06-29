@@ -38,7 +38,7 @@ public record IncreasePositionLength(Discriminator discriminator,
     i += 32;
     final var owner = readPubKey(_data, i);
     i += 32;
-    final var lengthToAdd = getInt16LE(_data, i);
+    final var lengthToAdd = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var side = _data[i] & 0xFF;
     return new IncreasePositionLength(discriminator,

@@ -56,7 +56,7 @@ public record MultisigCreateArgs(PublicKey configAuthority,
       configAuthority = readPubKey(_data, i);
       i += 32;
     }
-    final var threshold = getInt16LE(_data, i);
+    final var threshold = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var members = SerDeUtil.readVector(4, Member.class, Member::read, _data, i);
     i += SerDeUtil.lenVector(4, members);

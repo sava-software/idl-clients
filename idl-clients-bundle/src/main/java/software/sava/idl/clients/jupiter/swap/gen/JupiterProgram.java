@@ -533,7 +533,7 @@ public final class JupiterProgram {
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new ExactOutRouteIxData(discriminator,
@@ -678,7 +678,7 @@ public final class JupiterProgram {
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new RouteIxData(discriminator,
@@ -819,7 +819,7 @@ public final class JupiterProgram {
       i += SerDeUtil.lenVector(4, routePlan);
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new RouteWithTokenLedgerIxData(discriminator,
@@ -1007,7 +1007,7 @@ public final class JupiterProgram {
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new SharedAccountsExactOutRouteIxData(discriminator,
@@ -1181,7 +1181,7 @@ public final class JupiterProgram {
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new SharedAccountsRouteIxData(discriminator,
@@ -1351,7 +1351,7 @@ public final class JupiterProgram {
       i += SerDeUtil.lenVector(4, routePlan);
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var platformFeeBps = _data[i] & 0xFF;
       return new SharedAccountsRouteWithTokenLedgerIxData(discriminator,
@@ -1510,11 +1510,11 @@ public final class JupiterProgram {
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var platformFeeBps = getInt16LE(_data, i);
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var positiveSlippageBps = getInt16LE(_data, i);
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new ExactOutRouteV2IxData(discriminator,
@@ -1677,11 +1677,11 @@ public final class JupiterProgram {
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var platformFeeBps = getInt16LE(_data, i);
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var positiveSlippageBps = getInt16LE(_data, i);
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new RouteV2IxData(discriminator,
@@ -1859,11 +1859,11 @@ public final class JupiterProgram {
       i += 8;
       final var quotedInAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var platformFeeBps = getInt16LE(_data, i);
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var positiveSlippageBps = getInt16LE(_data, i);
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new SharedAccountsExactOutRouteV2IxData(discriminator,
@@ -2045,11 +2045,11 @@ public final class JupiterProgram {
       i += 8;
       final var quotedOutAmount = getInt64LE(_data, i);
       i += 8;
-      final var slippageBps = getInt16LE(_data, i);
+      final var slippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var platformFeeBps = getInt16LE(_data, i);
+      final var platformFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var positiveSlippageBps = getInt16LE(_data, i);
+      final var positiveSlippageBps = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var routePlan = SerDeUtil.readVector(4, RoutePlanStepV2.class, RoutePlanStepV2::read, _data, i);
       return new SharedAccountsRouteV2IxData(discriminator,

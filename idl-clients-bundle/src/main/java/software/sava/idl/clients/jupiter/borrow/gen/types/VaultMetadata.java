@@ -71,7 +71,7 @@ public record VaultMetadata(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var vaultId = getInt16LE(_data, i);
+    final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var lookupTable = readPubKey(_data, i);
     i += 32;

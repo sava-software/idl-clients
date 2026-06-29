@@ -147,29 +147,29 @@ public record AdaptiveFeeTier(PublicKey _address,
     int i = _offset + discriminator.length();
     final var whirlpoolsConfig = readPubKey(_data, i);
     i += 32;
-    final var feeTierIndex = getInt16LE(_data, i);
+    final var feeTierIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var tickSpacing = getInt16LE(_data, i);
+    final var tickSpacing = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var initializePoolAuthority = readPubKey(_data, i);
     i += 32;
     final var delegatedFeeAuthority = readPubKey(_data, i);
     i += 32;
-    final var defaultBaseFeeRate = getInt16LE(_data, i);
+    final var defaultBaseFeeRate = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var filterPeriod = getInt16LE(_data, i);
+    final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var decayPeriod = getInt16LE(_data, i);
+    final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var reductionFactor = getInt16LE(_data, i);
+    final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var adaptiveFeeControlFactor = getInt32LE(_data, i);
     i += 4;
     final var maxVolatilityAccumulator = getInt32LE(_data, i);
     i += 4;
-    final var tickGroupSize = getInt16LE(_data, i);
+    final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var majorSwapThresholdTicks = getInt16LE(_data, i);
+    final var majorSwapThresholdTicks = Short.toUnsignedInt(getInt16LE(_data, i));
     return new AdaptiveFeeTier(_address,
                                discriminator,
                                whirlpoolsConfig,

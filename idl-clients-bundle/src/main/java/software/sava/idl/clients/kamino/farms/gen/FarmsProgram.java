@@ -457,7 +457,7 @@ public final class FarmsProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var mode = getInt16LE(_data, i);
+      final var mode = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var data = SerDeUtil.readbyteVector(4, _data, i);
       return new UpdateFarmConfigIxData(discriminator, mode, data);

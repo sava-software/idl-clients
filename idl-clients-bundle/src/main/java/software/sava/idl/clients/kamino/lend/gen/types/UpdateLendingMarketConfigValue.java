@@ -104,7 +104,7 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
   record U16(int val) implements EnumInt16, UpdateLendingMarketConfigValue {
 
     public static U16 read(final byte[] _data, int i) {
-      return new U16(getInt16LE(_data, i));
+      return new U16(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
 
     @Override

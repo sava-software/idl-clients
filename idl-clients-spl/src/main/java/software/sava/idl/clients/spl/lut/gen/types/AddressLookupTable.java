@@ -103,7 +103,7 @@ public record AddressLookupTable(PublicKey _address,
       authority = readPubKey(_data, i);
       i += 32;
     }
-    final var padding = getInt16LE(_data, i);
+    final var padding = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final int _addressesCount = (_data.length - i) / 32;
     final var addresses = new PublicKey[_addressesCount];

@@ -81,7 +81,7 @@ public record LimitOrder(PublicKey _address,
     i += 32;
     final var owner = readPubKey(_data, i);
     i += 32;
-    final var binCount = getInt16LE(_data, i);
+    final var binCount = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding0 = new byte[14];
     i += SerDeUtil.readArray(padding0, _data, i);

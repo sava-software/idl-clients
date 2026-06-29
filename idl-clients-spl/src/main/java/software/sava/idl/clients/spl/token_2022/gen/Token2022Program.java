@@ -2869,7 +2869,7 @@ public final class Token2022Program {
         withdrawWithheldAuthority = readPubKey(_data, i);
         i += 32;
       }
-      final var transferFeeBasisPoints = getInt16LE(_data, i);
+      final var transferFeeBasisPoints = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var maximumFee = getInt64LE(_data, i);
       return new InitializeTransferFeeConfigIxData(discriminator,
@@ -3457,7 +3457,7 @@ public final class Token2022Program {
       ++i;
       final var transferFeeDiscriminator = _data[i] & 0xFF;
       ++i;
-      final var transferFeeBasisPoints = getInt16LE(_data, i);
+      final var transferFeeBasisPoints = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
       final var maximumFee = getInt64LE(_data, i);
       return new SetTransferFeeIxData(discriminator,

@@ -22,7 +22,7 @@ public record UpdatePerpCancelRiskFactorInstruction(Symbol perpAssetSymbol, int 
     int i = _offset;
     final var perpAssetSymbol = Symbol.read(_data, i);
     i += perpAssetSymbol.l();
-    final var cancelOrderRiskFactor = getInt16LE(_data, i);
+    final var cancelOrderRiskFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     return new UpdatePerpCancelRiskFactorInstruction(perpAssetSymbol, cancelOrderRiskFactor);
   }
 

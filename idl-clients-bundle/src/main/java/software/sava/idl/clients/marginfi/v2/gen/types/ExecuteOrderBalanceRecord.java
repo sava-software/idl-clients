@@ -35,7 +35,7 @@ public record ExecuteOrderBalanceRecord(PublicKey bank,
     ++i;
     final var pad0 = new byte[5];
     i += SerDeUtil.readArray(pad0, _data, i);
-    final var tag = getInt16LE(_data, i);
+    final var tag = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var shares = WrappedI80F48.read(_data, i);
     return new ExecuteOrderBalanceRecord(bank,

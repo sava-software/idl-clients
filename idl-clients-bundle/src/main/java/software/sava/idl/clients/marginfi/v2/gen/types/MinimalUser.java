@@ -133,7 +133,7 @@ public record MinimalUser(PublicKey _address,
     i += SerDeUtil.readArray(padding6, _data, i);
     final var padding7 = new short[1];
     i += SerDeUtil.readArray(padding7, _data, i);
-    final var subAccountId = getInt16LE(_data, i);
+    final var subAccountId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var status = UserStatus.read(_data, i);
     i += status.l();

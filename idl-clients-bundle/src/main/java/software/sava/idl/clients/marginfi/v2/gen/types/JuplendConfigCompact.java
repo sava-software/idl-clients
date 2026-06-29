@@ -69,7 +69,7 @@ public record JuplendConfigCompact(PublicKey oracle,
     ++i;
     final var totalAssetValueInitLimit = getInt64LE(_data, i);
     i += 8;
-    final var oracleMaxAge = getInt16LE(_data, i);
+    final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var oracleMaxConfidence = getInt32LE(_data, i);
     return new JuplendConfigCompact(oracle,

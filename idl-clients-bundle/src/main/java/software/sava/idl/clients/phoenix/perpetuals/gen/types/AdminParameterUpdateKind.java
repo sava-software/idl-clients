@@ -60,9 +60,9 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
         return null;
       }
       int i = _offset;
-      final var previous = getInt16LE(_data, i);
+      final var previous = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var _new = getInt16LE(_data, i);
+      final var _new = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CancelRiskFactor(previous, _new);
     }
 
@@ -251,9 +251,9 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
         return null;
       }
       int i = _offset;
-      final var previous = getInt16LE(_data, i);
+      final var previous = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var _new = getInt16LE(_data, i);
+      final var _new = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpnlRiskFactor(previous, _new);
     }
 
@@ -290,9 +290,9 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
         return null;
       }
       int i = _offset;
-      final var previous = getInt16LE(_data, i);
+      final var previous = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var _new = getInt16LE(_data, i);
+      final var _new = Short.toUnsignedInt(getInt16LE(_data, i));
       return new UpnlRiskFactorForWithdrawals(previous, _new);
     }
 

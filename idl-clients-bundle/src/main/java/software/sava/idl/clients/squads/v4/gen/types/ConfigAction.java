@@ -62,7 +62,7 @@ public sealed interface ConfigAction extends RustEnum permits
   record ChangeThreshold(int val) implements EnumInt16, ConfigAction {
 
     public static ChangeThreshold read(final byte[] _data, int i) {
-      return new ChangeThreshold(getInt16LE(_data, i));
+      return new ChangeThreshold(Short.toUnsignedInt(getInt16LE(_data, i)));
     }
 
     @Override

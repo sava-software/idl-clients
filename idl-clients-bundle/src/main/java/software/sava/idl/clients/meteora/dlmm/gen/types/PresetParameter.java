@@ -136,15 +136,15 @@ public record PresetParameter(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var binStep = getInt16LE(_data, i);
+    final var binStep = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var baseFactor = getInt16LE(_data, i);
+    final var baseFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var filterPeriod = getInt16LE(_data, i);
+    final var filterPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var decayPeriod = getInt16LE(_data, i);
+    final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var reductionFactor = getInt16LE(_data, i);
+    final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var variableFeeControl = getInt32LE(_data, i);
     i += 4;
@@ -154,7 +154,7 @@ public record PresetParameter(PublicKey _address,
     i += 4;
     final var maxBinId = getInt32LE(_data, i);
     i += 4;
-    final var protocolShare = getInt16LE(_data, i);
+    final var protocolShare = Short.toUnsignedInt(getInt16LE(_data, i));
     return new PresetParameter(_address,
                                discriminator,
                                binStep,

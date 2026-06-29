@@ -53,7 +53,7 @@ public record Oracle(PublicKey _address,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var nonce = getInt16LE(_data, i);
+    final var nonce = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var sources = SerDeUtil.readVector(4, Sources.class, Sources::read, _data, i);
     i += SerDeUtil.lenVector(4, sources);

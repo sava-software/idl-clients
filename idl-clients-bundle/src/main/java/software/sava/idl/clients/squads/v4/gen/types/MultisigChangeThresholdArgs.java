@@ -28,7 +28,7 @@ public record MultisigChangeThresholdArgs(int newThreshold, String memo, byte[] 
       return null;
     }
     int i = _offset;
-    final var newThreshold = getInt16LE(_data, i);
+    final var newThreshold = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final byte[] _memo;
     final String memo;

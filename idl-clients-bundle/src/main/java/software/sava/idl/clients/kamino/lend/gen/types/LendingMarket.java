@@ -499,7 +499,7 @@ public record LendingMarket(PublicKey _address,
     i += 32;
     final var quoteCurrency = new byte[32];
     i += SerDeUtil.readArray(quoteCurrency, _data, i);
-    final var referralFeeBps = getInt16LE(_data, i);
+    final var referralFeeBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var emergencyMode = _data[i] & 0xFF;
     ++i;
@@ -573,7 +573,7 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var padding2 = new byte[1];
     i += SerDeUtil.readArray(padding2, _data, i);
-    final var reserveRewardsMaxAprBps = getInt16LE(_data, i);
+    final var reserveRewardsMaxAprBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
     i += 8;

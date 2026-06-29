@@ -16,7 +16,7 @@ public record LiquidityParams(int slippageToleranceBps) implements SerDe {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var slippageToleranceBps = getInt16LE(_data, _offset);
+    final var slippageToleranceBps = Short.toUnsignedInt(getInt16LE(_data, _offset));
     return new LiquidityParams(slippageToleranceBps);
   }
 

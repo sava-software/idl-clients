@@ -28,9 +28,9 @@ public record BinLiquidityDistribution(int binId,
     int i = _offset;
     final var binId = getInt32LE(_data, i);
     i += 4;
-    final var distributionX = getInt16LE(_data, i);
+    final var distributionX = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var distributionY = getInt16LE(_data, i);
+    final var distributionY = Short.toUnsignedInt(getInt16LE(_data, i));
     return new BinLiquidityDistribution(binId, distributionX, distributionY);
   }
 

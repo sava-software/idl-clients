@@ -41,7 +41,7 @@ public record RemoveLiquidityParams(OptionalInt minBinId,
       maxBinId = OptionalInt.of(getInt32LE(_data, i));
       i += 4;
     }
-    final var bps = getInt16LE(_data, i);
+    final var bps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding = new byte[16];
     SerDeUtil.readArray(padding, _data, i);

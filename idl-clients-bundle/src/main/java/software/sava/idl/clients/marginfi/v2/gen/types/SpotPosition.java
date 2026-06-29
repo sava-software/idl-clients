@@ -57,7 +57,7 @@ public record SpotPosition(long scaledBalance,
     i += 8;
     final var cumulativeDeposits = getInt64LE(_data, i);
     i += 8;
-    final var marketIndex = getInt16LE(_data, i);
+    final var marketIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var balanceType = SpotBalanceType.read(_data, i);
     i += balanceType.l();

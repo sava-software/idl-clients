@@ -145,7 +145,7 @@ public record StakedSettings(PublicKey _address,
     i += 8;
     final var totalAssetValueInitLimit = getInt64LE(_data, i);
     i += 8;
-    final var oracleMaxAge = getInt16LE(_data, i);
+    final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var riskTier = RiskTier.read(_data, i);
     i += riskTier.l();

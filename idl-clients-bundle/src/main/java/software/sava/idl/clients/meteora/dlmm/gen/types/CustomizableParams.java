@@ -50,9 +50,9 @@ public record CustomizableParams(int activeId,
     int i = _offset;
     final var activeId = getInt32LE(_data, i);
     i += 4;
-    final var binStep = getInt16LE(_data, i);
+    final var binStep = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var baseFactor = getInt16LE(_data, i);
+    final var baseFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var activationType = _data[i] & 0xFF;
     ++i;

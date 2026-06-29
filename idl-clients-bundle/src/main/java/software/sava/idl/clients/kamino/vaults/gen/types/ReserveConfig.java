@@ -181,9 +181,9 @@ public record ReserveConfig(int status,
     ++i;
     final var paddingDeprecatedAssetTier = _data[i] & 0xFF;
     ++i;
-    final var hostFixedInterestRateBps = getInt16LE(_data, i);
+    final var hostFixedInterestRateBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var minDeleveragingBonusBps = getInt16LE(_data, i);
+    final var minDeleveragingBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var blockCtokenUsage = _data[i] & 0xFF;
     ++i;
@@ -203,11 +203,11 @@ public record ReserveConfig(int status,
     ++i;
     final var liquidationThresholdPct = _data[i] & 0xFF;
     ++i;
-    final var minLiquidationBonusBps = getInt16LE(_data, i);
+    final var minLiquidationBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var maxLiquidationBonusBps = getInt16LE(_data, i);
+    final var maxLiquidationBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var badDebtLiquidationBonusBps = getInt16LE(_data, i);
+    final var badDebtLiquidationBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var deleveragingMarginCallPeriodSecs = getInt64LE(_data, i);
     i += 8;

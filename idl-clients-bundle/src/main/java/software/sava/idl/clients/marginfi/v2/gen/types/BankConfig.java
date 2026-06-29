@@ -144,7 +144,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += SerDeUtil.readArray(pad1, _data, i);
     final var totalAssetValueInitLimit = getInt64LE(_data, i);
     i += 8;
-    final var oracleMaxAge = getInt16LE(_data, i);
+    final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var padding0 = new byte[2];
     i += SerDeUtil.readArray(padding0, _data, i);
