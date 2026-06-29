@@ -1,5 +1,30 @@
 # Changelog
 
+## [25.14.0](https://github.com/sava-software/idl-clients/compare/25.13.3...25.14.0) (2026-06-29)
+
+
+### ⚠ BREAKING CHANGES
+
+* u32 fields and generated APIs now use Java long to represent the full unsigned 32-bit range. Widening is now consistent for both u16 and u32 types. Only u8 scalar values are widened, u8[] and vec<u8> are not. Neither u64 scalar or collections are widened as there is no larger primitive type in Java.
+* **idl-clients-bundle:** Pod wrappers have been removed; generated types now directly use primitive types. Code relying on `Pod` methods must be updated to use utility methods from `ByteUtil` or equivalent.
+
+### Features
+
+* **idl-clients-bundle:** add `investWithMaxAmount` function and `WithdrawQueue` support ([03901c2](https://github.com/sava-software/idl-clients/commit/03901c26f1b3799be28b21a30e7e4b9f8ac7252d))
+* **idl-clients-bundle:** update types to use primitives for serialization ([5e16518](https://github.com/sava-software/idl-clients/commit/5e165184a620e6cefd7151ee78e405794eb977fe))
+* widen u32 values to Java long ([8a1317d](https://github.com/sava-software/idl-clients/commit/8a1317d725b7d17f20f488e6cbd83b182df8088f))
+
+
+### Bug Fixes
+
+* **idl-clients-bundle:** use unsigned int conversion for u16 values in generated types ([3ecd4d1](https://github.com/sava-software/idl-clients/commit/3ecd4d11ea86a12b522931a214681cfad7696d27))
+* **idl-clients-spl:** correct method for writing `isNative` long values ([62c3fb2](https://github.com/sava-software/idl-clients/commit/62c3fb258f8f075ac7858124eda0c010bdbaa788))
+
+
+### Miscellaneous Chores
+
+* release 25.14.0 ([0104b3c](https://github.com/sava-software/idl-clients/commit/0104b3ccc75c0d64b7508dc27bf9978dccc9d4e6))
+
 ## [25.13.3](https://github.com/sava-software/idl-clients/compare/25.13.2...25.13.3) (2026-06-20)
 
 
