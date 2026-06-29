@@ -12,6 +12,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param feeX: u64
+/// @param feeY: u64
 public record ClaimFee2(Discriminator discriminator,
                         PublicKey lbPair,
                         PublicKey position,

@@ -8,6 +8,9 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param binStep: u16
+/// @param baseFactor: u16
+/// @param padding0: u16
 public record InitPermissionPairIx(int activeId,
                                    int binStep,
                                    int baseFactor,

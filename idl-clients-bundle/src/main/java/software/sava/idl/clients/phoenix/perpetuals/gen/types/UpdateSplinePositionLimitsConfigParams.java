@@ -4,13 +4,13 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// Borsh payload for updating spline position-size limits and leverage decrease configuration.
 ///
-public record UpdateSplinePositionLimitsConfigParams(PositionSizeLimit maxPositionSize, OptionalInt leverageDecreaseInBps) implements SerDe {
+public record UpdateSplinePositionLimitsConfigParams(PositionSizeLimit maxPositionSize, OptionalLong leverageDecreaseInBps) implements SerDe {
 
   public static final int MAX_POSITION_SIZE_OFFSET = 1;
 
@@ -28,12 +28,12 @@ public record UpdateSplinePositionLimitsConfigParams(PositionSizeLimit maxPositi
       maxPositionSize = PositionSizeLimit.read(_data, i);
       i += maxPositionSize.l();
     }
-    final OptionalInt leverageDecreaseInBps;
+    final OptionalLong leverageDecreaseInBps;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      leverageDecreaseInBps = OptionalInt.empty();
+      leverageDecreaseInBps = OptionalLong.empty();
     } else {
       ++i;
-      leverageDecreaseInBps = OptionalInt.of(getInt32LE(_data, i));
+      leverageDecreaseInBps = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
     }
     return new UpdateSplinePositionLimitsConfigParams(maxPositionSize, leverageDecreaseInBps);
   }
@@ -42,7 +42,7 @@ public record UpdateSplinePositionLimitsConfigParams(PositionSizeLimit maxPositi
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += SerDeUtil.writeOptional(1, maxPositionSize, _data, i);
-    i += SerDeUtil.writeOptional(1, leverageDecreaseInBps, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, leverageDecreaseInBps, _data, i);
     return i - _offset;
   }
 

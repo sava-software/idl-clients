@@ -12,9 +12,11 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param positionId: u32
+/// @param vaultId: u16
 public record LogClosePosition(Discriminator discriminator,
                                PublicKey signer,
-                               int positionId,
+                               long positionId,
                                int vaultId,
                                PublicKey positionMint) implements VaultsEvent {
 
@@ -34,7 +36,7 @@ public record LogClosePosition(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var signer = readPubKey(_data, i);
     i += 32;
-    final var positionId = getInt32LE(_data, i);
+    final var positionId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -51,7 +53,7 @@ public record LogClosePosition(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     signer.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, positionId);
+    putInt32LE(_data, i, (int) positionId);
     i += 4;
     putInt16LE(_data, i, vaultId);
     i += 2;

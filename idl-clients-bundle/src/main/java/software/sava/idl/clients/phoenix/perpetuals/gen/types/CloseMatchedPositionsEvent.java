@@ -15,6 +15,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::CloseMatchedPositions Borsh variant 33.
 /// Payload type: CloseMatchedPositionsEvent.
 ///
+/// @param assetId: u64
 public record CloseMatchedPositionsEvent(Discriminator discriminator,
                                          PublicKey caller,
                                          PublicKey closedShort,

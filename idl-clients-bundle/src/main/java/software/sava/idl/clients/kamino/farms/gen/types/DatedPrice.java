@@ -10,11 +10,16 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lastUpdatedSlot: u64
+/// @param unixTimestamp: u64
+/// @param reserved: u64[]
+/// @param reserved2: u16[]
+/// @param index: u16
 public record DatedPrice(Price price,
                          long lastUpdatedSlot,
                          long unixTimestamp,
                          long[] reserved,
-                         short[] reserved2,
+                         int[] reserved2,
                          int index) implements SerDe {
 
   public static final int BYTES = 56;
@@ -41,8 +46,8 @@ public record DatedPrice(Price price,
     i += 8;
     final var reserved = new long[2];
     i += SerDeUtil.readArray(reserved, _data, i);
-    final var reserved2 = new short[3];
-    i += SerDeUtil.readArray(reserved2, _data, i);
+    final var reserved2 = new int[3];
+    i += SerDeUtil.readUnsignedShortArray(reserved2, _data, i);
     final var index = Short.toUnsignedInt(getInt16LE(_data, i));
     return new DatedPrice(price,
                           lastUpdatedSlot,
@@ -61,7 +66,7 @@ public record DatedPrice(Price price,
     putInt64LE(_data, i, unixTimestamp);
     i += 8;
     i += SerDeUtil.writeArrayChecked(reserved, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved2, 3, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(reserved2, 3, _data, i);
     putInt16LE(_data, i, index);
     i += 2;
     return i - _offset;

@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lpLiquidityTarget: u64
 public record LiqPoolInitializeData(long lpLiquidityTarget,
                                     Fee lpMaxFee,
                                     Fee lpMinFee,

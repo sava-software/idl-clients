@@ -14,6 +14,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TriggerOrderCancelled Borsh variant 59.
 /// Payload type: TriggerOrderCancelledEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u64
 public record TriggerOrderCancelledEvent(Discriminator discriminator,
                                          PublicKey trader,
                                          long sequenceNumber,

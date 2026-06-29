@@ -8,6 +8,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lastRewardEpoch: u64
 public record VaultInfo(PublicKey vaultKey, long lastRewardEpoch) implements SerDe {
 
   public static final int BYTES = 40;

@@ -20,6 +20,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Fixed Phoenix Eternal StopLosses account layout.
 ///
+/// @param initialized: u64
+/// @param assetId: u32
+/// @param padding: u64[]
 public record StopLosses(PublicKey _address,
                          Discriminator discriminator,
                          StopLoss[] stopLosses,
@@ -27,7 +30,7 @@ public record StopLosses(PublicKey _address,
                          SequenceNumber sequenceNumber,
                          PublicKey fundingKey,
                          PublicKey traderKey,
-                         int assetId,
+                         long assetId,
                          byte[] assetIdPadding,
                          long[] padding) implements SerDe {
 
@@ -67,9 +70,9 @@ public record StopLosses(PublicKey _address,
     return Filter.createMemCompFilter(TRADER_KEY_OFFSET, traderKey);
   }
 
-  public static Filter createAssetIdFilter(final int assetId) {
+  public static Filter createAssetIdFilter(final long assetId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, assetId);
+    putInt32LE(_data, 0, (int) assetId);
     return Filter.createMemCompFilter(ASSET_ID_OFFSET, _data);
   }
 
@@ -103,7 +106,7 @@ public record StopLosses(PublicKey _address,
     i += 32;
     final var traderKey = readPubKey(_data, i);
     i += 32;
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var assetIdPadding = new byte[4];
     i += SerDeUtil.readArray(assetIdPadding, _data, i);
@@ -132,7 +135,7 @@ public record StopLosses(PublicKey _address,
     i += 32;
     traderKey.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += SerDeUtil.writeArrayChecked(assetIdPadding, 4, _data, i);
     i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);

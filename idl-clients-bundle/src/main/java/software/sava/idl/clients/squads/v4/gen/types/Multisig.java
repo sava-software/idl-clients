@@ -30,10 +30,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        
 ///                        However, if this parameter is set to any other key, all the config changes for this multisig
 ///                        will need to be signed by the `config_authority`. We call such a multisig a "controlled multisig".
-/// @param threshold Threshold for signatures.
-/// @param timeLock How many seconds must pass between transaction voting settlement and execution.
-/// @param transactionIndex Last transaction index. 0 means no transactions have been created.
-/// @param staleTransactionIndex Last stale transaction index. All transactions up until this index are stale.
+/// @param threshold: u16 Threshold for signatures.
+/// @param timeLock: u32 How many seconds must pass between transaction voting settlement and execution.
+/// @param transactionIndex: u64 Last transaction index. 0 means no transactions have been created.
+/// @param staleTransactionIndex: u64 Last stale transaction index. All transactions up until this index are stale.
 ///                              This index is updated when multisig config (members/threshold/time_lock) changes.
 /// @param rentCollector The address where the rent for the accounts related to executed, rejected, or cancelled
 ///                      transactions can be reclaimed. If set to `None`, the rent reclamation feature is turned off.
@@ -44,7 +44,7 @@ public record Multisig(PublicKey _address,
                        PublicKey createKey,
                        PublicKey configAuthority,
                        int threshold,
-                       int timeLock,
+                       long timeLock,
                        long transactionIndex,
                        long staleTransactionIndex,
                        PublicKey rentCollector,
@@ -76,9 +76,9 @@ public record Multisig(PublicKey _address,
     return Filter.createMemCompFilter(THRESHOLD_OFFSET, _data);
   }
 
-  public static Filter createTimeLockFilter(final int timeLock) {
+  public static Filter createTimeLockFilter(final long timeLock) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, timeLock);
+    putInt32LE(_data, 0, (int) timeLock);
     return Filter.createMemCompFilter(TIME_LOCK_OFFSET, _data);
   }
 
@@ -127,7 +127,7 @@ public record Multisig(PublicKey _address,
     i += 32;
     final var threshold = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var timeLock = getInt32LE(_data, i);
+    final var timeLock = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var transactionIndex = getInt64LE(_data, i);
     i += 8;
@@ -167,7 +167,7 @@ public record Multisig(PublicKey _address,
     i += 32;
     putInt16LE(_data, i, threshold);
     i += 2;
-    putInt32LE(_data, i, timeLock);
+    putInt32LE(_data, i, (int) timeLock);
     i += 4;
     putInt64LE(_data, i, transactionIndex);
     i += 8;

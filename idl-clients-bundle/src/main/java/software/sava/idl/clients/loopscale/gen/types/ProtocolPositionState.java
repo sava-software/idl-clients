@@ -31,9 +31,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param liquidity The amount of liquidity owned by this position
 /// @param feeGrowthInside0LastX64 The token_0 fee growth per unit of liquidity as of the last update to liquidity or fees owed
 /// @param feeGrowthInside1LastX64 The token_1 fee growth per unit of liquidity as of the last update to liquidity or fees owed
-/// @param tokenFeesOwed0 The fees owed to the position owner in token_0
-/// @param tokenFeesOwed1 The fees owed to the position owner in token_1
+/// @param tokenFeesOwed0: u64 The fees owed to the position owner in token_0
+/// @param tokenFeesOwed1: u64 The fees owed to the position owner in token_1
 /// @param rewardGrowthInside The reward growth per unit of liquidity as of the last update to liquidity
+/// @param recentEpoch: u64
+/// @param padding: u64[]
 public record ProtocolPositionState(PublicKey _address,
                                     Discriminator discriminator,
                                     int bump,

@@ -14,12 +14,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderCapabilitiesEnabled Borsh variant 42.
 /// Payload type: TraderCapabilitiesEnabledEvent.
 ///
+/// @param globalTraderIndex: u32
 public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
                                              PublicKey trader,
                                              PublicKey authority,
                                              TraderCapabilityFlags previousFlags,
                                              TraderCapabilityFlags newFlags,
-                                             int globalTraderIndex) implements EternalEvent {
+                                             long globalTraderIndex) implements EternalEvent {
 
   public static final int BYTES = 84;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(42, 0, 0, 0, 0, 0, 0, 0);
@@ -44,7 +45,7 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
     i += previousFlags.l();
     final var newFlags = TraderCapabilityFlags.read(_data, i);
     i += newFlags.l();
-    final var globalTraderIndex = getInt32LE(_data, i);
+    final var globalTraderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new TraderCapabilitiesEnabledEvent(discriminator,
                                               trader,
                                               authority,
@@ -62,7 +63,7 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
     i += 32;
     i += previousFlags.write(_data, i);
     i += newFlags.write(_data, i);
-    putInt32LE(_data, i, globalTraderIndex);
+    putInt32LE(_data, i, (int) globalTraderIndex);
     i += 4;
     return i - _offset;
   }

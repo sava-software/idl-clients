@@ -10,13 +10,17 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param minStake: u64
+/// @param additionalStakeRecordSpace: u32
+/// @param additionalValidatorRecordSpace: u32
+/// @param slotsForStakeDelta: u64
 public record InitializeData(PublicKey adminAuthority,
                              PublicKey validatorManagerAuthority,
                              long minStake,
                              Fee rewardsFee,
                              LiqPoolInitializeData liqPool,
-                             int additionalStakeRecordSpace,
-                             int additionalValidatorRecordSpace,
+                             long additionalStakeRecordSpace,
+                             long additionalValidatorRecordSpace,
                              long slotsForStakeDelta,
                              PublicKey pauseAuthority) implements SerDe {
 
@@ -47,9 +51,9 @@ public record InitializeData(PublicKey adminAuthority,
     i += rewardsFee.l();
     final var liqPool = LiqPoolInitializeData.read(_data, i);
     i += liqPool.l();
-    final var additionalStakeRecordSpace = getInt32LE(_data, i);
+    final var additionalStakeRecordSpace = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var additionalValidatorRecordSpace = getInt32LE(_data, i);
+    final var additionalValidatorRecordSpace = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var slotsForStakeDelta = getInt64LE(_data, i);
     i += 8;
@@ -76,9 +80,9 @@ public record InitializeData(PublicKey adminAuthority,
     i += 8;
     i += rewardsFee.write(_data, i);
     i += liqPool.write(_data, i);
-    putInt32LE(_data, i, additionalStakeRecordSpace);
+    putInt32LE(_data, i, (int) additionalStakeRecordSpace);
     i += 4;
-    putInt32LE(_data, i, additionalValidatorRecordSpace);
+    putInt32LE(_data, i, (int) additionalValidatorRecordSpace);
     i += 4;
     putInt64LE(_data, i, slotsForStakeDelta);
     i += 8;

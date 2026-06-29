@@ -11,8 +11,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Zero-copy ShortMapV2<Symbol, PerpAssetMetadata, 1024> layout.
 ///
-public record PerpAssetMetadataShortMapV2(int slotsUsed,
-                                          int tombstones,
+/// @param slotsUsed: u32
+/// @param tombstones: u32
+/// @param capacity: u64
+public record PerpAssetMetadataShortMapV2(long slotsUsed,
+                                          long tombstones,
                                           long capacity,
                                           PerpAssetMapEntry[] data) implements SerDe {
 
@@ -29,9 +32,9 @@ public record PerpAssetMetadataShortMapV2(int slotsUsed,
       return null;
     }
     int i = _offset;
-    final var slotsUsed = getInt32LE(_data, i);
+    final var slotsUsed = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var tombstones = getInt32LE(_data, i);
+    final var tombstones = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var capacity = getInt64LE(_data, i);
     i += 8;
@@ -46,9 +49,9 @@ public record PerpAssetMetadataShortMapV2(int slotsUsed,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, slotsUsed);
+    putInt32LE(_data, i, (int) slotsUsed);
     i += 4;
-    putInt32LE(_data, i, tombstones);
+    putInt32LE(_data, i, (int) tombstones);
     i += 4;
     putInt64LE(_data, i, capacity);
     i += 8;

@@ -17,8 +17,12 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param discriminator: u32
+/// @param deactivationSlot: u64
+/// @param lastExtendedSlot: u64
+/// @param padding: u16
 public record AddressLookupTable(PublicKey _address,
-                                 int discriminator,
+                                 long discriminator,
                                  long deactivationSlot,
                                  long lastExtendedSlot,
                                  int lastExtendedSlotStartIndex,
@@ -36,7 +40,7 @@ public record AddressLookupTable(PublicKey _address,
 
   public static Filter createDiscriminatorFilter() {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, 1);
+    putInt32LE(_data, 0, (int) 1);
     return Filter.createMemCompFilter(DISCRIMINATOR_OFFSET, _data);
   }
 
@@ -86,7 +90,7 @@ public record AddressLookupTable(PublicKey _address,
     }
 
     int i = _offset;
-    final var discriminator = getInt32LE(_data, i);
+    final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var deactivationSlot = getInt64LE(_data, i);
     i += 8;
@@ -125,7 +129,7 @@ public record AddressLookupTable(PublicKey _address,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, discriminator);
+    putInt32LE(_data, i, (int) discriminator);
     i += 4;
     putInt64LE(_data, i, deactivationSlot);
     i += 8;

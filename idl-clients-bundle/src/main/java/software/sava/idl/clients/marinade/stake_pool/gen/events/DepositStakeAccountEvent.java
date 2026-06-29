@@ -12,14 +12,23 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param delegated: u64
+/// @param stakeIndex: u32
+/// @param validatorIndex: u32
+/// @param validatorActiveBalance: u64
+/// @param totalActiveBalance: u64
+/// @param userMsolBalance: u64
+/// @param msolMinted: u64
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record DepositStakeAccountEvent(Discriminator discriminator,
                                        PublicKey state,
                                        PublicKey stake,
                                        long delegated,
                                        PublicKey withdrawer,
-                                       int stakeIndex,
+                                       long stakeIndex,
                                        PublicKey validator,
-                                       int validatorIndex,
+                                       long validatorIndex,
                                        long validatorActiveBalance,
                                        long totalActiveBalance,
                                        long userMsolBalance,
@@ -58,11 +67,11 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
     i += 8;
     final var withdrawer = readPubKey(_data, i);
     i += 32;
-    final var stakeIndex = getInt32LE(_data, i);
+    final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var validator = readPubKey(_data, i);
     i += 32;
-    final var validatorIndex = getInt32LE(_data, i);
+    final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var validatorActiveBalance = getInt64LE(_data, i);
     i += 8;
@@ -102,11 +111,11 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
     i += 8;
     withdrawer.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, stakeIndex);
+    putInt32LE(_data, i, (int) stakeIndex);
     i += 4;
     validator.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, validatorIndex);
+    putInt32LE(_data, i, (int) validatorIndex);
     i += 4;
     putInt64LE(_data, i, validatorActiveBalance);
     i += 8;

@@ -8,7 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// Pointer hint into the orderbook linked list; zero represents a null pointer.
 ///
-public record NodePointer(int value) implements SerDe {
+/// @param value: u32
+public record NodePointer(long value) implements SerDe {
 
   public static final int BYTES = 4;
 
@@ -18,14 +19,14 @@ public record NodePointer(int value) implements SerDe {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var value = getInt32LE(_data, _offset);
+    final var value = Integer.toUnsignedLong(getInt32LE(_data, _offset));
     return new NodePointer(value);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, value);
+    putInt32LE(_data, i, (int) value);
     i += 4;
     return i - _offset;
   }

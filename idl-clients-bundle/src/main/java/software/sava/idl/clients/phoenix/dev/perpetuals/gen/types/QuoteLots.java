@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Quantity wrapper representing discrete quote lots.
 ///
+/// @param inner: u64
 public record QuoteLots(long inner) implements SerDe {
 
   public static final int BYTES = 8;

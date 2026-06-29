@@ -16,6 +16,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param mintFeeRate: u16
+/// @param redeemFeeRate: u16
 public record Benefactor(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey authority,

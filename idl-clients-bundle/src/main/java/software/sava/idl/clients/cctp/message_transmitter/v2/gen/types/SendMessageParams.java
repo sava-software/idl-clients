@@ -9,10 +9,12 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record SendMessageParams(int destinationDomain,
+/// @param destinationDomain: u32
+/// @param minFinalityThreshold: u32
+public record SendMessageParams(long destinationDomain,
                                 PublicKey recipient,
                                 PublicKey destinationCaller,
-                                int minFinalityThreshold,
+                                long minFinalityThreshold,
                                 byte[] messageBody) implements SerDe {
 
   public static final int DESTINATION_DOMAIN_OFFSET = 0;
@@ -26,13 +28,13 @@ public record SendMessageParams(int destinationDomain,
       return null;
     }
     int i = _offset;
-    final var destinationDomain = getInt32LE(_data, i);
+    final var destinationDomain = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var recipient = readPubKey(_data, i);
     i += 32;
     final var destinationCaller = readPubKey(_data, i);
     i += 32;
-    final var minFinalityThreshold = getInt32LE(_data, i);
+    final var minFinalityThreshold = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var messageBody = SerDeUtil.readbyteVector(4, _data, i);
     return new SendMessageParams(destinationDomain,
@@ -45,13 +47,13 @@ public record SendMessageParams(int destinationDomain,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, destinationDomain);
+    putInt32LE(_data, i, (int) destinationDomain);
     i += 4;
     recipient.write(_data, i);
     i += 32;
     destinationCaller.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, minFinalityThreshold);
+    putInt32LE(_data, i, (int) minFinalityThreshold);
     i += 4;
     i += SerDeUtil.writeVector(4, messageBody, _data, i);
     return i - _offset;

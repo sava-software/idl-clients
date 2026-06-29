@@ -14,9 +14,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param idx Index of latest observation
-/// @param activeSize Size of active sample. Active sample is initialized observation.
-/// @param length Number of observations
+/// @param idx: u64 Index of latest observation
+/// @param activeSize: u64 Size of active sample. Active sample is initialized observation.
+/// @param length: u64 Number of observations
 public record Oracle(PublicKey _address,
                      Discriminator discriminator,
                      long idx,

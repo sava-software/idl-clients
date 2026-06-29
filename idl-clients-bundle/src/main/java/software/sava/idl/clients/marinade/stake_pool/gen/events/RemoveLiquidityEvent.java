@@ -10,6 +10,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param solLegBalance: u64
+/// @param msolLegBalance: u64
+/// @param userLpBalance: u64
+/// @param userSolBalance: u64
+/// @param userMsolBalance: u64
+/// @param lpMintSupply: u64
+/// @param lpBurned: u64
+/// @param solOutAmount: u64
+/// @param msolOutAmount: u64
 public record RemoveLiquidityEvent(Discriminator discriminator,
                                    PublicKey state,
                                    long solLegBalance,

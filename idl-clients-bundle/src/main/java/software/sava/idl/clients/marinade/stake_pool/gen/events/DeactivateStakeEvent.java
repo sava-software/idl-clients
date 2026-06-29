@@ -14,14 +14,25 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param stakeIndex: u32
+/// @param lastUpdateStakeDelegation: u64
+/// @param validatorIndex: u32
+/// @param totalStakeTarget: u64
+/// @param validatorStakeTarget: u64
+/// @param totalActiveBalance: u64
+/// @param delayedUnstakeCoolingDown: u64
+/// @param validatorActiveBalance: u64
+/// @param totalUnstakeDelta: u64
+/// @param unstakedAmount: u64
 public record DeactivateStakeEvent(Discriminator discriminator,
                                    PublicKey state,
                                    long epoch,
-                                   int stakeIndex,
+                                   long stakeIndex,
                                    PublicKey stakeAccount,
                                    long lastUpdateStakeDelegation,
                                    SplitStakeAccountInfo splitStakeAccount,
-                                   int validatorIndex,
+                                   long validatorIndex,
                                    PublicKey validatorVote,
                                    long totalStakeTarget,
                                    long validatorStakeTarget,
@@ -50,7 +61,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
     i += 32;
     final var epoch = getInt64LE(_data, i);
     i += 8;
-    final var stakeIndex = getInt32LE(_data, i);
+    final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var stakeAccount = readPubKey(_data, i);
     i += 32;
@@ -65,7 +76,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
       splitStakeAccount = SplitStakeAccountInfo.read(_data, i);
       i += splitStakeAccount.l();
     }
-    final var validatorIndex = getInt32LE(_data, i);
+    final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var validatorVote = readPubKey(_data, i);
     i += 32;
@@ -107,14 +118,14 @@ public record DeactivateStakeEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, epoch);
     i += 8;
-    putInt32LE(_data, i, stakeIndex);
+    putInt32LE(_data, i, (int) stakeIndex);
     i += 4;
     stakeAccount.write(_data, i);
     i += 32;
     putInt64LE(_data, i, lastUpdateStakeDelegation);
     i += 8;
     i += SerDeUtil.writeOptional(1, splitStakeAccount, _data, i);
-    putInt32LE(_data, i, validatorIndex);
+    putInt32LE(_data, i, (int) validatorIndex);
     i += 4;
     validatorVote.write(_data, i);
     i += 32;

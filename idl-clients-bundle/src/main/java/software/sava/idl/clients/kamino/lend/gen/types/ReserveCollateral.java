@@ -14,7 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Reserve collateral
 ///
 /// @param mintPubkey Reserve collateral mint address
-/// @param mintTotalSupply Reserve collateral mint supply, used for exchange rate
+/// @param mintTotalSupply: u64 Reserve collateral mint supply, used for exchange rate
 /// @param supplyVault Reserve collateral supply address
 public record ReserveCollateral(PublicKey mintPubkey,
                                 long mintTotalSupply,

@@ -9,6 +9,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param stake: u64
 public record Delegation(PublicKey voterPubkey,
                          long stake,
                          Epoch activationEpoch,

@@ -13,7 +13,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderActivated Borsh variant 11.
 /// Payload type: TraderActivatedEvent.
 ///
-public record TraderActivatedEvent(Discriminator discriminator, int globalTraderIndex, PublicKey authority) implements EternalEvent {
+/// @param globalTraderIndex: u32
+public record TraderActivatedEvent(Discriminator discriminator, long globalTraderIndex, PublicKey authority) implements EternalEvent {
 
   public static final int BYTES = 44;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(11, 0, 0, 0, 0, 0, 0, 0);
@@ -27,7 +28,7 @@ public record TraderActivatedEvent(Discriminator discriminator, int globalTrader
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var globalTraderIndex = getInt32LE(_data, i);
+    final var globalTraderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var authority = readPubKey(_data, i);
     return new TraderActivatedEvent(discriminator, globalTraderIndex, authority);
@@ -36,7 +37,7 @@ public record TraderActivatedEvent(Discriminator discriminator, int globalTrader
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt32LE(_data, i, globalTraderIndex);
+    putInt32LE(_data, i, (int) globalTraderIndex);
     i += 4;
     authority.write(_data, i);
     i += 32;

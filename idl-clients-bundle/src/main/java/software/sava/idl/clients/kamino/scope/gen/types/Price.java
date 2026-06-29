@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param value: u64
+/// @param exp: u64
 public record Price(long value, long exp) implements SerDe {
 
   public static final int BYTES = 16;

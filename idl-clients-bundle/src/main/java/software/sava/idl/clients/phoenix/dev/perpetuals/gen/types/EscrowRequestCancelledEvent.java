@@ -14,6 +14,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::EscrowRequestCancelled Borsh variant 55.
 /// Payload type: EscrowRequestCancelledEvent.
 ///
+/// @param sequenceNumber: u64
 public record EscrowRequestCancelledEvent(Discriminator discriminator,
                                           PublicKey receiverAuthority,
                                           long sequenceNumber,

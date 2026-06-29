@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param inputAmount: u64
+/// @param outputAmount: u64
 public record SwapEvent(Discriminator discriminator,
                         PublicKey amm,
                         PublicKey inputMint,

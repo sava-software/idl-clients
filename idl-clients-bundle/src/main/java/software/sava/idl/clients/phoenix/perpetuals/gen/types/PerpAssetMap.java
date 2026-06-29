@@ -17,6 +17,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Canonical Eternal perpetual asset map account.
 ///
+/// @param numAssets: u16
 public record PerpAssetMap(PublicKey _address,
                            Discriminator discriminator,
                            SequenceNumber sequenceNumber,

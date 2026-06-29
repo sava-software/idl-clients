@@ -9,6 +9,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param conf: u64
+/// @param emaConf: u64
 public record PriceFeedMessage(byte[] feedId,
                                long price,
                                long conf,

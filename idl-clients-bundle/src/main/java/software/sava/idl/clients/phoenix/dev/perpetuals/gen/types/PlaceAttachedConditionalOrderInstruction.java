@@ -7,8 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param assetId: u32
 public record PlaceAttachedConditionalOrderInstruction(FIFOOrderId orderId,
-                                                       int assetId,
+                                                       long assetId,
                                                        TriggerOrderParams greaterTriggerOrder,
                                                        TriggerOrderParams lessTriggerOrder) implements SerDe {
 
@@ -23,7 +24,7 @@ public record PlaceAttachedConditionalOrderInstruction(FIFOOrderId orderId,
     int i = _offset;
     final var orderId = FIFOOrderId.read(_data, i);
     i += orderId.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final TriggerOrderParams greaterTriggerOrder;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -51,7 +52,7 @@ public record PlaceAttachedConditionalOrderInstruction(FIFOOrderId orderId,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += orderId.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += SerDeUtil.writeOptional(1, greaterTriggerOrder, _data, i);
     i += SerDeUtil.writeOptional(1, lessTriggerOrder, _data, i);

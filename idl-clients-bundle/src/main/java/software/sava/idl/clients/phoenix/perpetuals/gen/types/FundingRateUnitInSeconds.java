@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Funding time unit measured in seconds.
 ///
+/// @param inner: u64
 public record FundingRateUnitInSeconds(long inner) implements SerDe {
 
   public static final int BYTES = 8;

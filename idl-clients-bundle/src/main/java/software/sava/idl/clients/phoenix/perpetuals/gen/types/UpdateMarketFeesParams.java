@@ -5,12 +5,13 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// Borsh payload for updating market default fees.
 ///
-public record UpdateMarketFeesParams(OptionalInt defaultTakerFeeMicro, OptionalInt defaultMakerFeeMicro) implements SerDe {
+public record UpdateMarketFeesParams(OptionalLong defaultTakerFeeMicro, OptionalInt defaultMakerFeeMicro) implements SerDe {
 
   public static final int DEFAULT_TAKER_FEE_MICRO_OFFSET = 1;
 
@@ -19,13 +20,13 @@ public record UpdateMarketFeesParams(OptionalInt defaultTakerFeeMicro, OptionalI
       return null;
     }
     int i = _offset;
-    final OptionalInt defaultTakerFeeMicro;
+    final OptionalLong defaultTakerFeeMicro;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      defaultTakerFeeMicro = OptionalInt.empty();
+      defaultTakerFeeMicro = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      defaultTakerFeeMicro = OptionalInt.of(getInt32LE(_data, i));
+      defaultTakerFeeMicro = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final OptionalInt defaultMakerFeeMicro;
@@ -41,7 +42,7 @@ public record UpdateMarketFeesParams(OptionalInt defaultTakerFeeMicro, OptionalI
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += SerDeUtil.writeOptional(1, defaultTakerFeeMicro, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, defaultTakerFeeMicro, _data, i);
     i += SerDeUtil.writeOptional(1, defaultMakerFeeMicro, _data, i);
     return i - _offset;
   }

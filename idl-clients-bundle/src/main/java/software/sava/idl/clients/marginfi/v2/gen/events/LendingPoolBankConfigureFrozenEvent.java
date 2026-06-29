@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param depositLimit: u64
+/// @param borrowLimit: u64
 public record LendingPoolBankConfigureFrozenEvent(Discriminator discriminator,
                                                   GroupEventHeader header,
                                                   PublicKey bank,

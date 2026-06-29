@@ -10,11 +10,12 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param totalActiveBalance sum of all active lamports staked
+/// @param totalValidatorScore: u32
+/// @param totalActiveBalance: u64 sum of all active lamports staked
 /// @param autoAddValidatorEnabled allow & auto-add validator when a user deposits a stake-account of a non-listed validator
 public record ValidatorSystem(List validatorList,
                               PublicKey managerAuthority,
-                              int totalValidatorScore,
+                              long totalValidatorScore,
                               long totalActiveBalance,
                               int autoAddValidatorEnabled) implements SerDe {
 
@@ -35,7 +36,7 @@ public record ValidatorSystem(List validatorList,
     i += validatorList.l();
     final var managerAuthority = readPubKey(_data, i);
     i += 32;
-    final var totalValidatorScore = getInt32LE(_data, i);
+    final var totalValidatorScore = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var totalActiveBalance = getInt64LE(_data, i);
     i += 8;
@@ -53,7 +54,7 @@ public record ValidatorSystem(List validatorList,
     i += validatorList.write(_data, i);
     managerAuthority.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, totalValidatorScore);
+    putInt32LE(_data, i, (int) totalValidatorScore);
     i += 4;
     putInt64LE(_data, i, totalActiveBalance);
     i += 8;

@@ -23,6 +23,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed DynamicTraderHeader prefix for a Phoenix Eternal trader account.
 /// Dynamic position map bytes follow this header and are left as trailing account data by generic decoders.
 ///
+/// @param withdrawQueueNode: u32
+/// @param maxPositions: u64
+/// @param numMarketsWithSplines: u16
+/// @param lastDepositSlot: u64
 public record Trader(PublicKey _address,
                      Discriminator discriminator,
                      SequenceNumber sequenceNumber,
@@ -30,7 +34,7 @@ public record Trader(PublicKey _address,
                      PublicKey authority,
                      TraderState traderState,
                      byte[] padding0,
-                     int withdrawQueueNode,
+                     long withdrawQueueNode,
                      long maxPositions,
                      PublicKey positionAuthority,
                      int numMarketsWithSplines,
@@ -82,9 +86,9 @@ public record Trader(PublicKey _address,
     return Filter.createMemCompFilter(TRADER_STATE_OFFSET, traderState.write());
   }
 
-  public static Filter createWithdrawQueueNodeFilter(final int withdrawQueueNode) {
+  public static Filter createWithdrawQueueNodeFilter(final long withdrawQueueNode) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, withdrawQueueNode);
+    putInt32LE(_data, 0, (int) withdrawQueueNode);
     return Filter.createMemCompFilter(WITHDRAW_QUEUE_NODE_OFFSET, _data);
   }
 
@@ -152,7 +156,7 @@ public record Trader(PublicKey _address,
     i += traderState.l();
     final var padding0 = new byte[4];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var withdrawQueueNode = getInt32LE(_data, i);
+    final var withdrawQueueNode = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var maxPositions = getInt64LE(_data, i);
     i += 8;
@@ -201,7 +205,7 @@ public record Trader(PublicKey _address,
     i += 32;
     i += traderState.write(_data, i);
     i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
-    putInt32LE(_data, i, withdrawQueueNode);
+    putInt32LE(_data, i, (int) withdrawQueueNode);
     i += 4;
     putInt64LE(_data, i, maxPositions);
     i += 8;

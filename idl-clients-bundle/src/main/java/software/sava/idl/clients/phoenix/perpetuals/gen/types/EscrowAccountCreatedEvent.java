@@ -13,6 +13,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::EscrowAccountCreated Borsh variant 52.
 /// Payload type: EscrowAccountCreatedEvent.
 ///
+/// @param capacity: u64
 public record EscrowAccountCreatedEvent(Discriminator discriminator, PublicKey authority, long capacity) implements EternalEvent {
 
   public static final int BYTES = 48;

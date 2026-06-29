@@ -14,6 +14,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::PingInvalidated Borsh variant 61.
 /// Payload type: PingInvalidatedEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u64
 public record PingInvalidatedEvent(Discriminator discriminator,
                                    PublicKey trader,
                                    long sequenceNumber,

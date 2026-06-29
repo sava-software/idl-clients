@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Zero represents None; non-zero represents Some(value).
 ///
+/// @param inner: u64
 public record OptionalNonZeroU64(long inner) implements SerDe {
 
   public static final int BYTES = 8;

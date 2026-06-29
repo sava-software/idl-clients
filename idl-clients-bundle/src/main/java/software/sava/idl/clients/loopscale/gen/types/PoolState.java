@@ -34,13 +34,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param tokenVault0 Token pair vault
 /// @param observationKey observation account key
 /// @param mintDecimals0 mint0 and mint1 decimals
-/// @param tickSpacing The minimum number of ticks between initialized ticks
+/// @param tickSpacing: u16 The minimum number of ticks between initialized ticks
 /// @param liquidity The currently in range liquidity available to the pool.
 /// @param sqrtPriceX64 The current price of the pool as a sqrt(token_1/token_0) Q64.64 value
 /// @param tickCurrent The current tick of the pool, i.e. according to the last tick transition that was run.
+/// @param padding3: u16
+/// @param padding4: u16
 /// @param feeGrowthGlobal0X64 The fee growth as a Q64.64 number, i.e. fees of token_0 and token_1 collected per
 ///                            unit of liquidity for the entire life of the pool.
-/// @param protocolFeesToken0 The amounts of token_0 and token_1 that are owed to the protocol.
+/// @param protocolFeesToken0: u64 The amounts of token_0 and token_1 that are owed to the protocol.
+/// @param protocolFeesToken1: u64
 /// @param swapInAmountToken0 The amounts in and out of swap token_0 and token_1
 /// @param status Bitwise representation of the state of the pool
 ///               bit0, 1: disable open position and increase liquidity, 0: normal
@@ -49,9 +52,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///               bit3, 1: disable collect reward, 0: normal
 ///               bit4, 1: disable swap, 0: normal
 /// @param padding Leave blank for future use
-/// @param tickArrayBitmap Packed initialized tick array state
-/// @param totalFeesToken0 except protocol_fee and fund_fee
-/// @param totalFeesClaimedToken0 except protocol_fee and fund_fee
+/// @param tickArrayBitmap: u64[] Packed initialized tick array state
+/// @param totalFeesToken0: u64 except protocol_fee and fund_fee
+/// @param totalFeesClaimedToken0: u64 except protocol_fee and fund_fee
+/// @param totalFeesToken1: u64
+/// @param totalFeesClaimedToken1: u64
+/// @param fundFeesToken0: u64
+/// @param fundFeesToken1: u64
+/// @param openTime: u64
+/// @param recentEpoch: u64
+/// @param padding1: u64[]
+/// @param padding2: u64[]
 public record PoolState(PublicKey _address,
                         Discriminator discriminator,
                         byte[] bump,

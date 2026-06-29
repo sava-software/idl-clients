@@ -69,6 +69,14 @@ public final class SerDeUtil {
     return val(optionalBytes, data, offset) != 0;
   }
 
+  // unsigned 64-bit integers
+
+  public static BigInteger toUnsignedBigInteger(final long val) {
+    return val < 0L
+        ? BigInteger.valueOf(val & Long.MAX_VALUE).setBit(Long.SIZE - 1)
+        : BigInteger.valueOf(val);
+  }
+
   // Bytes
 
   public static int readArray(final byte[] result, final byte[] data, final int offset) {
@@ -1152,6 +1160,20 @@ public final class SerDeUtil {
     }
   }
 
+  public static int writeOptionalUnsignedInt(final int optionalBytes,
+                                             final OptionalLong val,
+                                             final byte[] data,
+                                             final int offset) {
+    if (val == null || val.isEmpty()) {
+      writeVal(optionalBytes, 0, data, offset);
+      return optionalBytes;
+    } else {
+      writeVal(optionalBytes, 1, data, offset);
+      ByteUtil.putInt32LE(data, offset + optionalBytes, (int) val.getAsLong());
+      return optionalBytes + Integer.BYTES;
+    }
+  }
+
   public static int writeArray(final int[] array, final byte[] data, final int offset) {
     int i = offset;
     for (final var a : array) {
@@ -1240,6 +1262,10 @@ public final class SerDeUtil {
     return val == null || val.isEmpty() ? optionalBytes : optionalBytes + Integer.BYTES;
   }
 
+  public static int lenOptionalUnsignedInt(final int optionalBytes, final OptionalLong val) {
+    return val == null || val.isEmpty() ? optionalBytes : optionalBytes + Integer.BYTES;
+  }
+
   public static int lenArray(final int[] array) {
     return array.length * Integer.BYTES;
   }
@@ -1266,6 +1292,354 @@ public final class SerDeUtil {
 
   public static int lenVectorArray(final int prefixBytes, final int[][] array) {
     return prefixBytes + lenArray(array);
+  }
+
+  // u16 (unsigned short widened to int)
+
+  public static int readUnsignedShortArray(final int[] result, final byte[] data, final int offset) {
+    int o = offset;
+    for (int i = 0; i < result.length; ++i) {
+      result[i] = Short.toUnsignedInt(ByteUtil.getInt16LE(data, o));
+      o += Short.BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int readUnsignedShortArray(final int[][] result, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var out : result) {
+      i += readUnsignedShortArray(out, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int[] readUnsignedShortVector(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new int[len];
+    readUnsignedShortArray(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static int[][] readMultiDimensionUnsignedShortVector(final int prefixBytes, final byte[] data, int offset) {
+    final int len = val(prefixBytes, data, offset);
+    offset += prefixBytes;
+    final var result = new int[len][];
+    for (int i = 0; i < result.length; ++i) {
+      final var instance = readUnsignedShortVector(prefixBytes, data, offset);
+      result[i] = instance;
+      offset += lenUnsignedShortVector(prefixBytes, instance);
+    }
+    return result;
+  }
+
+  public static int[][] readMultiDimensionUnsignedShortVectorArray(final int prefixBytes,
+                                                                   final int fixedLength,
+                                                                   final byte[] data,
+                                                                   final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final int[][] result = new int[len][fixedLength];
+    readUnsignedShortArray(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static int writeUnsignedShortArray(final int[] array, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      ByteUtil.putInt16LE(data, i, (short) a);
+      i += Short.BYTES;
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedShortArrayChecked(final int[] array,
+                                                   final int fixedLength,
+                                                   final byte[] data,
+                                                   final int offset) {
+    if (array.length != fixedLength) {
+      throw invalidArrayLength(array, fixedLength, array.length);
+    }
+    return writeUnsignedShortArray(array, data, offset);
+  }
+
+  public static int writeUnsignedShortVector(final int prefixBytes,
+                                             final int[] array,
+                                             final byte[] data,
+                                             final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedShortArray(array, data, offset + prefixBytes);
+  }
+
+  public static int writeUnsignedShortArray(final int[][] array, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedShortArray(a, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedShortArrayChecked(final int[][] array,
+                                                   final int fixedLength,
+                                                   final byte[] data,
+                                                   final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedShortArrayChecked(a, fixedLength, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedShortArrayChecked(final int[][] array,
+                                                   final int firstDimensionLength,
+                                                   final int secondDimensionLength,
+                                                   final byte[] data,
+                                                   final int offset) {
+    if (array.length != firstDimensionLength) {
+      throw invalidArrayLength(array, firstDimensionLength, array.length);
+    }
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedShortArrayChecked(a, secondDimensionLength, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedShortVector(final int prefixBytes,
+                                             final int[][] array,
+                                             final byte[] data,
+                                             final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    int i = prefixBytes + offset;
+    for (final var a : array) {
+      i += writeUnsignedShortVector(prefixBytes, a, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedShortVectorArrayChecked(final int prefixBytes,
+                                                         final int[][] array,
+                                                         final int fixedLength,
+                                                         final byte[] data,
+                                                         final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedShortArrayChecked(array, fixedLength, data, offset + prefixBytes);
+  }
+
+  public static int writeVectorUnsignedShortArrayChecked(final int prefixBytes,
+                                                         final int[][] array,
+                                                         final int fixedLength,
+                                                         final byte[] data,
+                                                         final int offset) {
+    return writeUnsignedShortVectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeUnsignedShortVectorArray(final int prefixBytes,
+                                                  final int[][] array,
+                                                  final byte[] data,
+                                                  final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedShortArray(array, data, offset + prefixBytes);
+  }
+
+  public static int lenUnsignedShortArray(final int[] array) {
+    return array.length * Short.BYTES;
+  }
+
+  public static int lenUnsignedShortVector(final int prefixBytes, final int[] array) {
+    return prefixBytes + array.length * Short.BYTES;
+  }
+
+  public static int lenUnsignedShortArray(final int[][] array) {
+    int len = 0;
+    for (final var a : array) {
+      len += lenUnsignedShortArray(a);
+    }
+    return len;
+  }
+
+  public static int lenUnsignedShortVector(final int prefixBytes, final int[][] array) {
+    int len = prefixBytes;
+    for (final var a : array) {
+      len += lenUnsignedShortVector(prefixBytes, a);
+    }
+    return len;
+  }
+
+  public static int lenUnsignedShortVectorArray(final int prefixBytes, final int[][] array) {
+    return prefixBytes + lenUnsignedShortArray(array);
+  }
+
+  // u32 (unsigned int widened to long)
+
+  public static int readUnsignedIntArray(final long[] result, final byte[] data, final int offset) {
+    int o = offset;
+    for (int i = 0; i < result.length; ++i) {
+      result[i] = Integer.toUnsignedLong(ByteUtil.getInt32LE(data, o));
+      o += Integer.BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int readUnsignedIntArray(final long[][] result, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var out : result) {
+      i += readUnsignedIntArray(out, data, i);
+    }
+    return i - offset;
+  }
+
+  public static long[] readUnsignedIntVector(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new long[len];
+    readUnsignedIntArray(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static long[][] readMultiDimensionUnsignedIntVector(final int prefixBytes, final byte[] data, int offset) {
+    final int len = val(prefixBytes, data, offset);
+    offset += prefixBytes;
+    final var result = new long[len][];
+    for (int i = 0; i < result.length; ++i) {
+      final var instance = readUnsignedIntVector(prefixBytes, data, offset);
+      result[i] = instance;
+      offset += lenUnsignedIntVector(prefixBytes, instance);
+    }
+    return result;
+  }
+
+  public static long[][] readMultiDimensionUnsignedIntVectorArray(final int prefixBytes,
+                                                                  final int fixedLength,
+                                                                  final byte[] data,
+                                                                  final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final long[][] result = new long[len][fixedLength];
+    readUnsignedIntArray(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static int writeUnsignedIntArray(final long[] array, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      ByteUtil.putInt32LE(data, i, (int) a);
+      i += Integer.BYTES;
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedIntArrayChecked(final long[] array,
+                                                 final int fixedLength,
+                                                 final byte[] data,
+                                                 final int offset) {
+    if (array.length != fixedLength) {
+      throw invalidArrayLength(array, fixedLength, array.length);
+    }
+    return writeUnsignedIntArray(array, data, offset);
+  }
+
+  public static int writeUnsignedIntVector(final int prefixBytes,
+                                           final long[] array,
+                                           final byte[] data,
+                                           final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedIntArray(array, data, offset + prefixBytes);
+  }
+
+  public static int writeUnsignedIntArray(final long[][] array, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedIntArray(a, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedIntArrayChecked(final long[][] array,
+                                                 final int fixedLength,
+                                                 final byte[] data,
+                                                 final int offset) {
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedIntArrayChecked(a, fixedLength, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedIntArrayChecked(final long[][] array,
+                                                 final int firstDimensionLength,
+                                                 final int secondDimensionLength,
+                                                 final byte[] data,
+                                                 final int offset) {
+    if (array.length != firstDimensionLength) {
+      throw invalidArrayLength(array, firstDimensionLength, array.length);
+    }
+    int i = offset;
+    for (final var a : array) {
+      i += writeUnsignedIntArrayChecked(a, secondDimensionLength, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedIntVector(final int prefixBytes,
+                                           final long[][] array,
+                                           final byte[] data,
+                                           final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    int i = prefixBytes + offset;
+    for (final var a : array) {
+      i += writeUnsignedIntVector(prefixBytes, a, data, i);
+    }
+    return i - offset;
+  }
+
+  public static int writeUnsignedIntVectorArrayChecked(final int prefixBytes,
+                                                       final long[][] array,
+                                                       final int fixedLength,
+                                                       final byte[] data,
+                                                       final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedIntArrayChecked(array, fixedLength, data, offset + prefixBytes);
+  }
+
+  public static int writeVectorUnsignedIntArrayChecked(final int prefixBytes,
+                                                       final long[][] array,
+                                                       final int fixedLength,
+                                                       final byte[] data,
+                                                       final int offset) {
+    return writeUnsignedIntVectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeUnsignedIntVectorArray(final int prefixBytes,
+                                                final long[][] array,
+                                                final byte[] data,
+                                                final int offset) {
+    writeVal(prefixBytes, array.length, data, offset);
+    return prefixBytes + writeUnsignedIntArray(array, data, offset + prefixBytes);
+  }
+
+  public static int lenUnsignedIntArray(final long[] array) {
+    return array.length * Integer.BYTES;
+  }
+
+  public static int lenUnsignedIntVector(final int prefixBytes, final long[] array) {
+    return prefixBytes + array.length * Integer.BYTES;
+  }
+
+  public static int lenUnsignedIntArray(final long[][] array) {
+    int len = 0;
+    for (final var a : array) {
+      len += lenUnsignedIntArray(a);
+    }
+    return len;
+  }
+
+  public static int lenUnsignedIntVector(final int prefixBytes, final long[][] array) {
+    int len = prefixBytes;
+    for (final var a : array) {
+      len += lenUnsignedIntVector(prefixBytes, a);
+    }
+    return len;
+  }
+
+  public static int lenUnsignedIntVectorArray(final int prefixBytes, final long[][] array) {
+    return prefixBytes + lenUnsignedIntArray(array);
   }
 
   // long

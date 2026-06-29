@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Basis points wrapper.
 ///
+/// @param inner: u64
 public record BasisPoints(long inner) implements SerDe {
 
   public static final int BYTES = 8;

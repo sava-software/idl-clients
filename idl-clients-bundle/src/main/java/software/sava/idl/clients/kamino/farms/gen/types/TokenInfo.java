@@ -9,6 +9,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param decimals: u64
+/// @param padding: u64[]
 public record TokenInfo(PublicKey mint,
                         long decimals,
                         PublicKey tokenProgram,

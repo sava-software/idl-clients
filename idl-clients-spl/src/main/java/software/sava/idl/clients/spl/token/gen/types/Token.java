@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param mint The mint associated with this account.
 /// @param owner The owner of this account.
-/// @param amount The amount of tokens this account holds.
+/// @param amount: u64 The amount of tokens this account holds.
 /// @param delegate If `delegate` is `Some` then `delegated_amount` represents
 ///                 the amount authorized by the delegate.
 /// @param state The account's state.
@@ -26,7 +26,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                 rent-exempt reserve. An Account is required to be rent-exempt, so
 ///                 the value is used by the Processor to ensure that wrapped SOL
 ///                 accounts do not drop below this threshold.
-/// @param delegatedAmount The amount delegated.
+/// @param delegatedAmount: u64 The amount delegated.
 /// @param closeAuthority Optional authority to close the account.
 public record Token(PublicKey _address,
                     PublicKey mint,
@@ -115,7 +115,7 @@ public record Token(PublicKey _address,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final PublicKey delegate;
-    if (getInt32LE(_data, i) == 0) {
+    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
       delegate = null;
       i += 32 + 4;
     } else {
@@ -126,7 +126,7 @@ public record Token(PublicKey _address,
     final var state = AccountState.read(_data, i);
     i += state.l();
     final OptionalLong isNative;
-    if (getInt32LE(_data, i) == 0) {
+    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
       isNative = OptionalLong.empty();
       i += 8 + 4;
     } else {
@@ -137,7 +137,7 @@ public record Token(PublicKey _address,
     final var delegatedAmount = getInt64LE(_data, i);
     i += 8;
     final PublicKey closeAuthority;
-    if (getInt32LE(_data, i) == 0) {
+    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
       closeAuthority = null;
     } else {
       i += 4;
@@ -164,7 +164,7 @@ public record Token(PublicKey _address,
     putInt64LE(_data, i, amount);
     i += 8;
     if (delegate != null) {
-      putInt32LE(_data, i, 1);
+      putInt32LE(_data, i, (int) 1);
       i += 4;
       delegate.write(_data, i);
     } else {
@@ -173,7 +173,7 @@ public record Token(PublicKey _address,
     i += 32;
     i += state.write(_data, i);
     if (isNative.isPresent()) {
-      putInt32LE(_data, i, 1);
+      putInt32LE(_data, i, (int) 1);
       i += 4;
       ByteUtil.putFloat64LE(_data, i, isNative.getAsLong());
     } else {
@@ -183,7 +183,7 @@ public record Token(PublicKey _address,
     putInt64LE(_data, i, delegatedAmount);
     i += 8;
     if (closeAuthority != null) {
-      putInt32LE(_data, i, 1);
+      putInt32LE(_data, i, (int) 1);
       i += 4;
       closeAuthority.write(_data, i);
     } else {

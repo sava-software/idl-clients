@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Quantity wrapper representing discrete base lots.
 ///
+/// @param inner: u64
 public record BaseLots(long inner) implements SerDe {
 
   public static final int BYTES = 8;

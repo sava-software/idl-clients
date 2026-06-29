@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amount Amount of tokens to transfer.
+/// @param amount: u64 Amount of tokens to transfer.
 /// @param decimals Decimals of the token mint. Used for double-checking against incorrect order of magnitude of `amount`.
 /// @param memo Memo used for indexing.
 public record SpendingLimitUseArgs(long amount,

@@ -11,7 +11,8 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record PlacePositionConditionalOrderInstruction(int assetId,
+/// @param assetId: u32
+public record PlacePositionConditionalOrderInstruction(long assetId,
                                                        TriggerOrderParams greaterTriggerOrder,
                                                        TriggerOrderParams lessTriggerOrder,
                                                        OptionalLong sizeBaseLots,
@@ -25,7 +26,7 @@ public record PlacePositionConditionalOrderInstruction(int assetId,
       return null;
     }
     int i = _offset;
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final TriggerOrderParams greaterTriggerOrder;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -71,7 +72,7 @@ public record PlacePositionConditionalOrderInstruction(int assetId,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += SerDeUtil.writeOptional(1, greaterTriggerOrder, _data, i);
     i += SerDeUtil.writeOptional(1, lessTriggerOrder, _data, i);

@@ -6,7 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record PositionSizeLimits(int _long, int _short) implements SerDe {
+/// @param _long: u32
+/// @param _short: u32
+public record PositionSizeLimits(long _long, long _short) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -18,18 +20,18 @@ public record PositionSizeLimits(int _long, int _short) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var _long = getInt32LE(_data, i);
+    final var _long = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var _short = getInt32LE(_data, i);
+    final var _short = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new PositionSizeLimits(_long, _short);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, _long);
+    putInt32LE(_data, i, (int) _long);
     i += 4;
-    putInt32LE(_data, i, _short);
+    putInt32LE(_data, i, (int) _short);
     i += 4;
     return i - _offset;
   }

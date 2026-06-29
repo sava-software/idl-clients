@@ -22,12 +22,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Lending market obligation state
 ///
-/// @param tag Version of the struct
+/// @param tag: u64 Version of the struct
 /// @param lastUpdate Last update to collateral, liquidity, or their market values
 /// @param lendingMarket Lending market address
 /// @param owner Owner authority which can borrow liquidity
 /// @param deposits Deposited collateral for the obligation, unique by deposit reserve address
-/// @param lowestReserveDepositLiquidationLtv Worst LTV for the collaterals backing the loan, represented as a percentage
+/// @param lowestReserveDepositLiquidationLtv: u64 Worst LTV for the collaterals backing the loan, represented as a percentage
 /// @param depositedValueSf Market value of deposits (scaled fraction)
 /// @param borrows Borrowed liquidity for the obligation, unique by borrow reserve address
 /// @param borrowFactorAdjustedDebtValueSf Risk adjusted market value of borrows/debt (sum of price * borrowed_amount * borrow_factor) (scaled fraction)
@@ -45,7 +45,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param lowestReserveDepositMaxLtvPct The lowest max LTV found amongst the collateral deposits
 /// @param numOfObsoleteBorrowReserves The number of obsolete reserves the obligation has a borrow in
 /// @param ownershipTransferState State of ownership transfer, see OwnershipTransferState
-/// @param autodeleverageMarginCallStartedTimestamp A timestamp at which the market owner most-recently marked this obligation for deleveraging.
+/// @param highestBorrowFactorPct: u64
+/// @param autodeleverageMarginCallStartedTimestamp: u64 A timestamp at which the market owner most-recently marked this obligation for deleveraging.
 ///                                                 Zero if not currently subject to deleveraging.
 /// @param obligationOrders Owner-defined, permissionlessly-executed repay orders.
 ///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
@@ -53,6 +54,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                    Non-zeroed only on a newly-initialized fixed-rate, fixed-term obligation.
 /// @param pendingOwner Pending owner during ownership transfer process.
 ///                     Pubkey::default() means no pending owner (similar to Option::None)
+/// @param padding3: u64[]
 public record Obligation(PublicKey _address,
                          Discriminator discriminator,
                          long tag,

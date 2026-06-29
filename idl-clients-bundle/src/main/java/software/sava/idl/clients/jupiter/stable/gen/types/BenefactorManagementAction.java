@@ -56,6 +56,8 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     }
   }
 
+  /// @param mintFeeRate: u16
+  /// @param redeemFeeRate: u16
   record UpdateFeeRates(int mintFeeRate, int redeemFeeRate) implements BenefactorManagementAction {
 
     public static final int BYTES = 4;
@@ -95,6 +97,9 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     }
   }
 
+  /// @param durationSeconds: u64
+  /// @param maxMintAmount: u64
+  /// @param maxRedeemAmount: u64
   record UpdatePeriodLimit(int index,
                            long durationSeconds,
                            long maxMintAmount,
@@ -162,6 +167,8 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     }
   }
 
+  /// @param mintFeeRate: u16
+  /// @param redeemFeeRate: u16
   record UpdateFeeOverride(int index,
                            PublicKey mint,
                            int mintFeeRate,

@@ -16,6 +16,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::OrderModified Borsh variant 7.
 /// Payload type: OrderModifiedEvent.
 ///
+/// @param orderSequenceNumber: u64
 public record OrderModifiedEvent(Discriminator discriminator,
                                  long orderSequenceNumber,
                                  Ticks price,

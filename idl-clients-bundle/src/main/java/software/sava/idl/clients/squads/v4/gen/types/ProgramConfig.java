@@ -19,7 +19,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Global program configuration account.
 ///
 /// @param authority The authority which can update the config.
-/// @param multisigCreationFee The lamports amount charged for creating a new multisig account.
+/// @param multisigCreationFee: u64 The lamports amount charged for creating a new multisig account.
 ///                            This fee is sent to the `treasury` account.
 /// @param treasury The treasury account to send charged fees to.
 /// @param reserved Reserved for future use.

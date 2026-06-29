@@ -8,6 +8,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param chain: u16
 public record DataSource(int chain, PublicKey emitter) implements SerDe {
 
   public static final int BYTES = 34;

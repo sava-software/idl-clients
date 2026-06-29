@@ -69,7 +69,7 @@ final class ScopeProgramClientImpl implements ScopeProgramClient {
   public Instruction refreshPriceList(final PublicKey oraclePricesKey,
                                       final PublicKey oracleMappingsKey,
                                       final PublicKey oracleTwapsKey,
-                                      final short[] tokens) {
+                                      final int[] tokens) {
     return ScopeProgram.refreshPriceList(
         invokedScopeProgram,
         oraclePricesKey,
@@ -114,7 +114,7 @@ final class ScopeProgramClientImpl implements ScopeProgramClient {
                                            final PublicKey pythProgramKey,
                                            final PublicKey pythStorageKey,
                                            final PublicKey pythTreasuryKey,
-                                           final short[] tokens,
+                                           final int[] tokens,
                                            final byte[] serializedPythMessage,
                                            final int ed25519InstructionIndex) {
     return ScopeProgram.refreshPythLazerPrice(
@@ -184,7 +184,7 @@ final class ScopeProgramClientImpl implements ScopeProgramClient {
                                    final PublicKey seedPk,
                                    final long seedId,
                                    final int bump,
-                                   final short[][] scopeChains) {
+                                   final int[][] scopeChains) {
     return ScopeProgram.createMintMap(
         invokedScopeProgram,
         adminKey,

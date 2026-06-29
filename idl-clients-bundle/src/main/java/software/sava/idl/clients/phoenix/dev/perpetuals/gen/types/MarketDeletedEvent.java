@@ -13,7 +13,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::MarketDeleted Borsh variant 51.
 /// Payload type: MarketDeletedEvent.
 ///
-public record MarketDeletedEvent(Discriminator discriminator, int assetId, long lamportsReclaimed) implements EternalEvent {
+/// @param assetId: u32
+/// @param lamportsReclaimed: u64
+public record MarketDeletedEvent(Discriminator discriminator, long assetId, long lamportsReclaimed) implements EternalEvent {
 
   public static final int BYTES = 20;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(51, 0, 0, 0, 0, 0, 0, 0);
@@ -27,7 +29,7 @@ public record MarketDeletedEvent(Discriminator discriminator, int assetId, long 
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var lamportsReclaimed = getInt64LE(_data, i);
     return new MarketDeletedEvent(discriminator, assetId, lamportsReclaimed);
@@ -36,7 +38,7 @@ public record MarketDeletedEvent(Discriminator discriminator, int assetId, long 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     putInt64LE(_data, i, lamportsReclaimed);
     i += 8;

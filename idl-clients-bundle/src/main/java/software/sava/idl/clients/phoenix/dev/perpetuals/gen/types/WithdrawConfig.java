@@ -6,6 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param depositCooldownPeriodInSlots: u64
+/// @param withdrawalFee: u64
+/// @param enqueueingFee: u64
 public record WithdrawConfig(long depositCooldownPeriodInSlots,
                              long withdrawalFee,
                              long enqueueingFee) implements SerDe {

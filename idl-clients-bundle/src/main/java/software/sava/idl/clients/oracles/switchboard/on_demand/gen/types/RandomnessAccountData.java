@@ -16,6 +16,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param seedSlot: u64
+/// @param revealSlot: u64
+/// @param lutSlot: u64
 public record RandomnessAccountData(PublicKey _address,
                                     Discriminator discriminator,
                                     PublicKey authority,

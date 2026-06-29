@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param allowedUses: u64
 public record UseAuthorityRecord(PublicKey _address,
                                  Key key,
                                  long allowedUses,

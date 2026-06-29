@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param newObservationLength: u64
 public record IncreaseObservation(Discriminator discriminator, PublicKey oracle, long newObservationLength) implements LbClmmEvent {
 
   public static final int BYTES = 48;

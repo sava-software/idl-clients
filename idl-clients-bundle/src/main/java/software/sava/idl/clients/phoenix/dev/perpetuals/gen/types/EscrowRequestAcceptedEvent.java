@@ -13,6 +13,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::EscrowRequestAccepted Borsh variant 54.
 /// Payload type: EscrowRequestAcceptedEvent.
 ///
+/// @param sequenceNumber: u64
 public record EscrowRequestAcceptedEvent(Discriminator discriminator, PublicKey receiverAuthority, long sequenceNumber) implements EternalEvent {
 
   public static final int BYTES = 48;

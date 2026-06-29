@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultId: u16
 public record LogLiquidateInfo(Discriminator discriminator,
                                int vaultId,
                                int startTick,

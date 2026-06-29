@@ -47,11 +47,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                Cannot be enabled when Self::min_debt_term_seconds is `0` (open-term only), because
 ///                                migrating into a fixed-term reserve contradicts the open-term-only intent.
 /// @param alignmentPadding Internal alignment padding (free to reuse).
-/// @param maxBorrowRateBps A maximum allowed borrow rate of a reserve that can be used for a rollover/migration.
+/// @param maxBorrowRateBps: u32 A maximum allowed borrow rate of a reserve that can be used for a rollover/migration.
 ///                         
 ///                         Note: this must be set (i.e. non-zero) when enabling any rollover/migration flavor, but is
 ///                         of course not effective when rollover/migration is not enabled.
-/// @param minDebtTermSeconds A minimum debt term (in seconds) of a fixed-term reserve that can be used for a
+/// @param minDebtTermSeconds: u64 A minimum debt term (in seconds) of a fixed-term reserve that can be used for a
 ///                           rollover/migration.
 ///                           
 ///                           When `0`, the owner only accepts open-term reserves as rollover targets — i.e. rolling over
@@ -64,7 +64,7 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
                                             int openTermAllowed,
                                             int migrationToFixedEnabled,
                                             byte[] alignmentPadding,
-                                            int maxBorrowRateBps,
+                                            long maxBorrowRateBps,
                                             long minDebtTermSeconds) implements SerDe {
 
   public static final int BYTES = 16;
@@ -90,7 +90,7 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     ++i;
     final var alignmentPadding = new byte[1];
     i += SerDeUtil.readArray(alignmentPadding, _data, i);
-    final var maxBorrowRateBps = getInt32LE(_data, i);
+    final var maxBorrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var minDebtTermSeconds = getInt64LE(_data, i);
     return new FixedTermBorrowRolloverConfig(autoRolloverEnabled,
@@ -111,7 +111,7 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     _data[i] = (byte) migrationToFixedEnabled;
     ++i;
     i += SerDeUtil.writeArrayChecked(alignmentPadding, 1, _data, i);
-    putInt32LE(_data, i, maxBorrowRateBps);
+    putInt32LE(_data, i, (int) maxBorrowRateBps);
     i += 4;
     putInt64LE(_data, i, minDebtTermSeconds);
     i += 8;

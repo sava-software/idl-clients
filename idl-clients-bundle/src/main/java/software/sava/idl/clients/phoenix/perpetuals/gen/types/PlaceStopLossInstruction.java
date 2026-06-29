@@ -6,6 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param triggerPrice: u64
+/// @param executionPrice: u64
+/// @param tradeSize: u64
 public record PlaceStopLossInstruction(long triggerPrice,
                                        long executionPrice,
                                        long tradeSize,

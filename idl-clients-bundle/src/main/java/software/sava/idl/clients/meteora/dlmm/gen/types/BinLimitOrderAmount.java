@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param amount: u64
 public record BinLimitOrderAmount(int id, long amount) implements SerDe {
 
   public static final int BYTES = 12;

@@ -9,10 +9,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param name UTF-8 encoded name of the token (null-terminated)
 /// @param heuristic Heuristics limits of acceptable price
-/// @param maxTwapDivergenceBps Max divergence between twap and price in bps
+/// @param maxTwapDivergenceBps: u64 Max divergence between twap and price in bps
+/// @param maxAgePriceSeconds: u64
+/// @param maxAgeTwapSeconds: u64
 /// @param scopeConfiguration Scope price configuration
 /// @param switchboardConfiguration Switchboard configuration
 /// @param pythConfiguration Pyth configuration
+/// @param padding: u64[]
 public record TokenInfo(byte[] name,
                         PriceHeuristic heuristic,
                         long maxTwapDivergenceBps,

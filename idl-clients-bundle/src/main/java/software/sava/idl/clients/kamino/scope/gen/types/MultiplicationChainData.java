@@ -7,7 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record MultiplicationChainData(short[] sourceEntries, long sourcesMaxAgeS) implements SerDe {
+/// @param sourceEntries: u16[]
+/// @param sourcesMaxAgeS: u64
+public record MultiplicationChainData(int[] sourceEntries, long sourcesMaxAgeS) implements SerDe {
 
   public static final int BYTES = 20;
   public static final int SOURCE_ENTRIES_LEN = 6;
@@ -20,8 +22,8 @@ public record MultiplicationChainData(short[] sourceEntries, long sourcesMaxAgeS
       return null;
     }
     int i = _offset;
-    final var sourceEntries = new short[6];
-    i += SerDeUtil.readArray(sourceEntries, _data, i);
+    final var sourceEntries = new int[6];
+    i += SerDeUtil.readUnsignedShortArray(sourceEntries, _data, i);
     final var sourcesMaxAgeS = getInt64LE(_data, i);
     return new MultiplicationChainData(sourceEntries, sourcesMaxAgeS);
   }
@@ -29,7 +31,7 @@ public record MultiplicationChainData(short[] sourceEntries, long sourcesMaxAgeS
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += SerDeUtil.writeArrayChecked(sourceEntries, 6, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(sourceEntries, 6, _data, i);
     putInt64LE(_data, i, sourcesMaxAgeS);
     i += 8;
     return i - _offset;

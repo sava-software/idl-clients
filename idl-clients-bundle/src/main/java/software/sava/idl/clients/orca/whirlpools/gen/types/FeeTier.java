@@ -15,6 +15,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tickSpacing: u16
+/// @param defaultFeeRate: u16
 public record FeeTier(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey whirlpoolsConfig,

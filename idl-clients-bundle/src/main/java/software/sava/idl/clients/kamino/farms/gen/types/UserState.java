@@ -20,25 +20,29 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param userId: u64
 /// @param isFarmDelegated Indicate if this user state is part of a delegated farm
 /// @param rewardsTallyScaled Rewards tally used for computation of gained rewards
 ///                           (scaled from `Decimal` representation).
-/// @param rewardsIssuedUnclaimed Number of reward tokens ready for claim
+/// @param rewardsIssuedUnclaimed: u64[] Number of reward tokens ready for claim
+/// @param lastClaimTs: u64[]
 /// @param activeStakeScaled User stake deposited and usable, generating rewards and fees.
 ///                          (scaled from `Decimal` representation).
 /// @param pendingDepositStakeScaled User stake deposited but not usable and not generating rewards yet.
 ///                                  (scaled from `Decimal` representation).
-/// @param pendingDepositStakeTs After this timestamp, pending user stake can be moved to user stake
+/// @param pendingDepositStakeTs: u64 After this timestamp, pending user stake can be moved to user stake
 ///                              Initialized to now() + delayed user stake period
 /// @param pendingWithdrawalUnstakeScaled User deposits unstaked, pending for withdrawal, not usable and not generating rewards.
 ///                                       (scaled from `Decimal` representation).
-/// @param pendingWithdrawalUnstakeTs After this timestamp, user can withdraw their deposit.
-/// @param bump User bump used for account address validation
+/// @param pendingWithdrawalUnstakeTs: u64 After this timestamp, user can withdraw their deposit.
+/// @param bump: u64 User bump used for account address validation
 /// @param delegatee Delegatee used for initialisation - useful to check against
-/// @param rewardsIssuedCumulative Cumulative rewards issued to the user - ONLY used for stats/analytics
+/// @param lastStakeTs: u64
+/// @param rewardsIssuedCumulative: u64[] Cumulative rewards issued to the user - ONLY used for stats/analytics
 ///                                DO NOT USE IN ANY CALCULATIONS
 ///                                Old userStates will have this field populated only from the point of release
 ///                                not reflecting any historical data before this was released
+/// @param padding1: u64[]
 public record UserState(PublicKey _address,
                         Discriminator discriminator,
                         long userId,

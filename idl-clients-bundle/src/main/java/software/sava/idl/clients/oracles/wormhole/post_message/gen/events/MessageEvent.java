@@ -12,10 +12,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sequence: u64
+/// @param submissionTime: u32
 public record MessageEvent(Discriminator discriminator,
                            PublicKey emitter,
                            long sequence,
-                           int submissionTime) implements WormholePostMessageShimEvent {
+                           long submissionTime) implements WormholePostMessageShimEvent {
 
   public static final int BYTES = 52;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(68, 27, 143, 0, 77, 76, 137, 112);
@@ -34,7 +36,7 @@ public record MessageEvent(Discriminator discriminator,
     i += 32;
     final var sequence = getInt64LE(_data, i);
     i += 8;
-    final var submissionTime = getInt32LE(_data, i);
+    final var submissionTime = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new MessageEvent(discriminator, emitter, sequence, submissionTime);
   }
 
@@ -45,7 +47,7 @@ public record MessageEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, sequence);
     i += 8;
-    putInt32LE(_data, i, submissionTime);
+    putInt32LE(_data, i, (int) submissionTime);
     i += 4;
     return i - _offset;
   }

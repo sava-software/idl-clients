@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Density of liquidity per tick for spline market making.
 ///
+/// @param inner: u64
 public record BaseLotsPerTick(long inner) implements SerDe {
 
   public static final int BYTES = 8;

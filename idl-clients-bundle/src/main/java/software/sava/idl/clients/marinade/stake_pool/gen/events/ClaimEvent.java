@@ -10,6 +10,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param circulatingTicketBalance: u64
+/// @param circulatingTicketCount: u64
+/// @param reserveBalance: u64
+/// @param userBalance: u64
+/// @param amount: u64
 public record ClaimEvent(Discriminator discriminator,
                          PublicKey state,
                          long epoch,

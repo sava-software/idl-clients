@@ -67,6 +67,7 @@ public final class LendingProgram {
     );
   }
 
+  /// @param assets: u64
   public static Instruction deposit(final AccountMeta invokedLendingProgramMeta,
                                     final SolanaAccounts solanaAccounts,
                                     final PublicKey signerKey,
@@ -106,6 +107,7 @@ public final class LendingProgram {
     return deposit(invokedLendingProgramMeta, keys, assets);
   }
 
+  /// @param assets: u64
   public static Instruction deposit(final AccountMeta invokedLendingProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long assets) {
@@ -116,6 +118,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param assets: u64
   public record DepositIxData(Discriminator discriminator, long assets) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
@@ -189,6 +192,8 @@ public final class LendingProgram {
     );
   }
 
+  /// @param assets: u64
+  /// @param minAmountOut: u64
   public static Instruction depositWithMinAmountOut(final AccountMeta invokedLendingProgramMeta,
                                                     final SolanaAccounts solanaAccounts,
                                                     final PublicKey signerKey,
@@ -229,6 +234,8 @@ public final class LendingProgram {
     return depositWithMinAmountOut(invokedLendingProgramMeta, keys, assets, minAmountOut);
   }
 
+  /// @param assets: u64
+  /// @param minAmountOut: u64
   public static Instruction depositWithMinAmountOut(final AccountMeta invokedLendingProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long assets,
@@ -242,6 +249,8 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param assets: u64
+  /// @param minAmountOut: u64
   public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements SerDe {  
 
     public static DepositWithMinAmountOutIxData read(final Instruction instruction) {
@@ -527,6 +536,7 @@ public final class LendingProgram {
     );
   }
 
+  /// @param shares: u64
   public static Instruction mint(final AccountMeta invokedLendingProgramMeta,
                                  final SolanaAccounts solanaAccounts,
                                  final PublicKey signerKey,
@@ -566,6 +576,7 @@ public final class LendingProgram {
     return mint(invokedLendingProgramMeta, keys, shares);
   }
 
+  /// @param shares: u64
   public static Instruction mint(final AccountMeta invokedLendingProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long shares) {
@@ -576,6 +587,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param shares: u64
   public record MintIxData(Discriminator discriminator, long shares) implements SerDe {  
 
     public static MintIxData read(final Instruction instruction) {
@@ -649,6 +661,8 @@ public final class LendingProgram {
     );
   }
 
+  /// @param shares: u64
+  /// @param maxAssets: u64
   public static Instruction mintWithMaxAssets(final AccountMeta invokedLendingProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey signerKey,
@@ -689,6 +703,8 @@ public final class LendingProgram {
     return mintWithMaxAssets(invokedLendingProgramMeta, keys, shares, maxAssets);
   }
 
+  /// @param shares: u64
+  /// @param maxAssets: u64
   public static Instruction mintWithMaxAssets(final AccountMeta invokedLendingProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long shares,
@@ -702,6 +718,8 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param shares: u64
+  /// @param maxAssets: u64
   public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements SerDe {  
 
     public static MintWithMaxAssetsIxData read(final Instruction instruction) {
@@ -860,6 +878,7 @@ public final class LendingProgram {
     );
   }
 
+  /// @param shares: u64
   public static Instruction redeem(final AccountMeta invokedLendingProgramMeta,
                                    final SolanaAccounts solanaAccounts,
                                    final PublicKey signerKey,
@@ -901,6 +920,7 @@ public final class LendingProgram {
     return redeem(invokedLendingProgramMeta, keys, shares);
   }
 
+  /// @param shares: u64
   public static Instruction redeem(final AccountMeta invokedLendingProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long shares) {
@@ -911,6 +931,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param shares: u64
   public record RedeemIxData(Discriminator discriminator, long shares) implements SerDe {  
 
     public static RedeemIxData read(final Instruction instruction) {
@@ -986,6 +1007,8 @@ public final class LendingProgram {
     );
   }
 
+  /// @param shares: u64
+  /// @param minAmountOut: u64
   public static Instruction redeemWithMinAmountOut(final AccountMeta invokedLendingProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey signerKey,
@@ -1028,6 +1051,8 @@ public final class LendingProgram {
     return redeemWithMinAmountOut(invokedLendingProgramMeta, keys, shares, minAmountOut);
   }
 
+  /// @param shares: u64
+  /// @param minAmountOut: u64
   public static Instruction redeemWithMinAmountOut(final AccountMeta invokedLendingProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final long shares,
@@ -1041,6 +1066,8 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param shares: u64
+  /// @param minAmountOut: u64
   public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements SerDe {  
 
     public static RedeemWithMinAmountOutIxData read(final Instruction instruction) {
@@ -1431,6 +1458,7 @@ public final class LendingProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdraw(final AccountMeta invokedLendingProgramMeta,
                                      final SolanaAccounts solanaAccounts,
                                      final PublicKey signerKey,
@@ -1472,6 +1500,7 @@ public final class LendingProgram {
     return withdraw(invokedLendingProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdraw(final AccountMeta invokedLendingProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amount) {
@@ -1482,6 +1511,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
@@ -1557,6 +1587,8 @@ public final class LendingProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param maxSharesBurn: u64
   public static Instruction withdrawWithMaxSharesBurn(final AccountMeta invokedLendingProgramMeta,
                                                       final SolanaAccounts solanaAccounts,
                                                       final PublicKey signerKey,
@@ -1599,6 +1631,8 @@ public final class LendingProgram {
     return withdrawWithMaxSharesBurn(invokedLendingProgramMeta, keys, amount, maxSharesBurn);
   }
 
+  /// @param amount: u64
+  /// @param maxSharesBurn: u64
   public static Instruction withdrawWithMaxSharesBurn(final AccountMeta invokedLendingProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long amount,
@@ -1612,6 +1646,8 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param maxSharesBurn: u64
   public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements SerDe {  
 
     public static WithdrawWithMaxSharesBurnIxData read(final Instruction instruction) {

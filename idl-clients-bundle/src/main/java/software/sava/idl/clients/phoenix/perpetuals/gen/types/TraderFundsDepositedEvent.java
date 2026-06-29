@@ -16,6 +16,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderFundsDeposited Borsh variant 13.
 /// Payload type: TraderFundsDepositedEvent.
 ///
+/// @param traderSequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
 public record TraderFundsDepositedEvent(Discriminator discriminator,
                                         PublicKey trader,
                                         PublicKey authority,

@@ -22,7 +22,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
                             RiskTier riskTier,
                             OptionalInt assetTag,
                             OptionalLong totalAssetValueInitLimit,
-                            OptionalInt oracleMaxConfidence,
+                            OptionalLong oracleMaxConfidence,
                             OptionalInt oracleMaxAge,
                             Boolean permissionlessBadDebtSettlement,
                             Boolean freezeSettings,
@@ -134,13 +134,13 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
       totalAssetValueInitLimit = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
-    final OptionalInt oracleMaxConfidence;
+    final OptionalLong oracleMaxConfidence;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      oracleMaxConfidence = OptionalInt.empty();
+      oracleMaxConfidence = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      oracleMaxConfidence = OptionalInt.of(getInt32LE(_data, i));
+      oracleMaxConfidence = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final OptionalInt oracleMaxAge;
@@ -209,7 +209,7 @@ public record BankConfigOpt(WrappedI80F48 assetWeightInit,
     i += SerDeUtil.writeOptional(1, riskTier, _data, i);
     i += SerDeUtil.writeOptionalbyte(1, assetTag, _data, i);
     i += SerDeUtil.writeOptional(1, totalAssetValueInitLimit, _data, i);
-    i += SerDeUtil.writeOptional(1, oracleMaxConfidence, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, oracleMaxConfidence, _data, i);
     i += SerDeUtil.writeOptionalshort(1, oracleMaxAge, _data, i);
     i += SerDeUtil.writeOptional(1, permissionlessBadDebtSettlement, _data, i);
     i += SerDeUtil.writeOptional(1, freezeSettings, _data, i);

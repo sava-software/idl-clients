@@ -23,8 +23,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param base Base account used to generate signer seeds.
 /// @param bump Bump seed.
 /// @param tokenMint Mint of the token that must be locked in the Locker.
-/// @param lockedSupply Total number of tokens locked in Escrows.
-/// @param totalEscrow Total number of escrow
+/// @param lockedSupply: u64 Total number of tokens locked in Escrows.
+/// @param totalEscrow: u64 Total number of escrow
 /// @param governor Governor associated with the Locker.
 /// @param params Mutable parameters of how a Locker should behave.
 /// @param buffers buffer for further use

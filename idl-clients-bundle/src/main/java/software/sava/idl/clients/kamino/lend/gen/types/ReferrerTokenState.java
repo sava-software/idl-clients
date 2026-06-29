@@ -26,7 +26,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param mint Token mint for the account
 /// @param amountUnclaimedSf Amount that has been accumulated and not claimed yet -> available to claim (scaled fraction)
 /// @param amountCumulativeSf Amount that has been accumulated in total -> both already claimed and unclaimed (scaled fraction)
-/// @param bump Referrer token state bump, used for address validation
+/// @param bump: u64 Referrer token state bump, used for address validation
+/// @param padding: u64[]
 public record ReferrerTokenState(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey referrer,

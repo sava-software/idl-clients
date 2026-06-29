@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sharesToBurn: u64
+/// @param ctokensToSendToUser: u64
 public record RedeemInKindResultEvent(Discriminator discriminator, long sharesToBurn, long ctokensToSendToUser) implements KaminoVaultEvent {
 
   public static final int BYTES = 24;

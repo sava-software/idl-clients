@@ -455,7 +455,7 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public static Instruction transfer(final AccountMeta invokedToken2022ProgramMeta,
                                      final PublicKey sourceKey,
                                      final PublicKey destinationKey,
@@ -473,7 +473,7 @@ public final class Token2022Program {
   /// If this account is associated with the native mint then equal amounts
   /// of SOL and Tokens will be transferred to the destination account.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public static Instruction transfer(final AccountMeta invokedToken2022ProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amount) {
@@ -488,7 +488,7 @@ public final class Token2022Program {
   /// If this account is associated with the native mint then equal amounts
   /// of SOL and Tokens will be transferred to the destination account.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public record TransferIxData(int discriminator, long amount) implements SerDe {  
 
     public static TransferIxData read(final Instruction instruction) {
@@ -552,7 +552,7 @@ public final class Token2022Program {
   /// @param sourceKey The source account.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public static Instruction approve(final AccountMeta invokedToken2022ProgramMeta,
                                     final PublicKey sourceKey,
                                     final PublicKey delegateKey,
@@ -569,7 +569,7 @@ public final class Token2022Program {
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public static Instruction approve(final AccountMeta invokedToken2022ProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long amount) {
@@ -583,7 +583,7 @@ public final class Token2022Program {
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public record ApproveIxData(int discriminator, long amount) implements SerDe {  
 
     public static ApproveIxData read(final Instruction instruction) {
@@ -825,7 +825,7 @@ public final class Token2022Program {
   /// @param mintKey The mint account.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public static Instruction mintTo(final AccountMeta invokedToken2022ProgramMeta,
                                    final PublicKey mintKey,
                                    final PublicKey tokenKey,
@@ -841,7 +841,7 @@ public final class Token2022Program {
 
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public static Instruction mintTo(final AccountMeta invokedToken2022ProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long amount) {
@@ -854,7 +854,7 @@ public final class Token2022Program {
 
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public record MintToIxData(int discriminator, long amount) implements SerDe {  
 
     public static MintToIxData read(final Instruction instruction) {
@@ -918,6 +918,7 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param amount: u64
   public static Instruction burn(final AccountMeta invokedToken2022ProgramMeta,
                                  final PublicKey accountKey,
                                  final PublicKey mintKey,
@@ -934,6 +935,7 @@ public final class Token2022Program {
   /// Burns tokens by removing them from an account. `Burn` does not support
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
+  /// @param amount: u64
   public static Instruction burn(final AccountMeta invokedToken2022ProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amount) {
@@ -947,7 +949,7 @@ public final class Token2022Program {
   /// Burns tokens by removing them from an account. `Burn` does not support
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
-  /// @param discriminator The amount of tokens to burn.
+  /// @param amount: u64
   public record BurnIxData(int discriminator, long amount) implements SerDe {  
 
     public static BurnIxData read(final Instruction instruction) {
@@ -1263,7 +1265,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedToken2022ProgramMeta,
                                             final PublicKey sourceKey,
@@ -1294,7 +1296,7 @@ public final class Token2022Program {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedToken2022ProgramMeta,
                                             final List<AccountMeta> keys,
@@ -1317,7 +1319,7 @@ public final class Token2022Program {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
@@ -1401,7 +1403,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey sourceKey,
@@ -1431,7 +1433,7 @@ public final class Token2022Program {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedToken2022ProgramMeta,
                                            final List<AccountMeta> keys,
@@ -1453,7 +1455,7 @@ public final class Token2022Program {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
@@ -1531,7 +1533,7 @@ public final class Token2022Program {
   /// @param mintKey The mint.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedToken2022ProgramMeta,
                                           final PublicKey mintKey,
@@ -1558,7 +1560,7 @@ public final class Token2022Program {
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedToken2022ProgramMeta,
                                           final List<AccountMeta> keys,
@@ -1579,7 +1581,7 @@ public final class Token2022Program {
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
@@ -1659,7 +1661,7 @@ public final class Token2022Program {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                         final PublicKey accountKey,
@@ -1687,7 +1689,7 @@ public final class Token2022Program {
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                         final List<AccountMeta> keys,
@@ -1709,7 +1711,7 @@ public final class Token2022Program {
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
@@ -2431,7 +2433,7 @@ public final class Token2022Program {
   /// with `String::from_utf8`.
   ///
   /// @param mintKey The mint to calculate for.
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public static Instruction amountToUiAmount(final AccountMeta invokedToken2022ProgramMeta,
                                              final PublicKey mintKey,
                                              final long amount) {
@@ -2450,7 +2452,7 @@ public final class Token2022Program {
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public static Instruction amountToUiAmount(final AccountMeta invokedToken2022ProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
@@ -2470,7 +2472,7 @@ public final class Token2022Program {
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {  
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
@@ -2558,7 +2560,7 @@ public final class Token2022Program {
     final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
     final byte[] _data = new byte[5 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, _uiAmount.length);
+    putInt32LE(_data, i, (int) _uiAmount.length);
     i += 4;
     System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
 
@@ -2606,7 +2608,7 @@ public final class Token2022Program {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, _uiAmount.length);
+      putInt32LE(_data, i, (int) _uiAmount.length);
       i += 4;
       System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
       i += _uiAmount.length;
@@ -2756,8 +2758,8 @@ public final class Token2022Program {
   /// @param mintKey The mint to initialize.
   /// @param transferFeeConfigAuthority Pubkey that may update the fees.
   /// @param withdrawWithheldAuthority Withdraw instructions must be signed by this key.
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public static Instruction initializeTransferFeeConfig(final AccountMeta invokedToken2022ProgramMeta,
                                                         final PublicKey mintKey,
                                                         final PublicKey transferFeeConfigAuthority,
@@ -2787,8 +2789,8 @@ public final class Token2022Program {
   ///
   /// @param transferFeeConfigAuthority Pubkey that may update the fees.
   /// @param withdrawWithheldAuthority Withdraw instructions must be signed by this key.
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public static Instruction initializeTransferFeeConfig(final AccountMeta invokedToken2022ProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final PublicKey transferFeeConfigAuthority,
@@ -2822,8 +2824,8 @@ public final class Token2022Program {
   ///
   /// @param transferFeeConfigAuthority Pubkey that may update the fees.
   /// @param withdrawWithheldAuthority Withdraw instructions must be signed by this key.
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public record InitializeTransferFeeConfigIxData(int discriminator,
                                                   int transferFeeDiscriminator,
                                                   PublicKey transferFeeConfigAuthority,
@@ -2941,9 +2943,9 @@ public final class Token2022Program {
   /// @param mintKey The token mint. May include the `TransferFeeConfig` extension.
   /// @param destinationKey The destination account. May include the `TransferFeeAmount` extension.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  /// @param fee Expected fee assessed on this transfer, calculated off-chain based
+  /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
   public static Instruction transferCheckedWithFee(final AccountMeta invokedToken2022ProgramMeta,
@@ -2975,9 +2977,9 @@ public final class Token2022Program {
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  /// @param fee Expected fee assessed on this transfer, calculated off-chain based
+  /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
   public static Instruction transferCheckedWithFee(final AccountMeta invokedToken2022ProgramMeta,
@@ -3004,9 +3006,9 @@ public final class Token2022Program {
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
-  /// @param fee Expected fee assessed on this transfer, calculated off-chain based
+  /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
   public record TransferCheckedWithFeeIxData(int discriminator,
@@ -3387,8 +3389,8 @@ public final class Token2022Program {
   ///
   /// @param mintKey The mint.
   /// @param transferFeeConfigAuthorityKey The mint's fee account owner or its multisignature account.
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public static Instruction setTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey mintKey,
                                            final PublicKey transferFeeConfigAuthorityKey,
@@ -3409,8 +3411,8 @@ public final class Token2022Program {
   /// Set transfer fee. Only supported for mints that include the
   /// `TransferFeeConfig` extension.
   ///
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public static Instruction setTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int transferFeeBasisPoints,
@@ -3429,8 +3431,8 @@ public final class Token2022Program {
   /// Set transfer fee. Only supported for mints that include the
   /// `TransferFeeConfig` extension.
   ///
-  /// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the transfer amount.
-  /// @param maximumFee Maximum fee assessed on transfers.
+  /// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the transfer amount.
+  /// @param maximumFee: u64 Maximum fee assessed on transfers.
   public record SetTransferFeeIxData(int discriminator,
                                      int transferFeeDiscriminator,
                                      int transferFeeBasisPoints,
@@ -3849,7 +3851,7 @@ public final class Token2022Program {
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
-  /// @param maximumPendingBalanceCreditCounter The maximum number of despots and transfers that an account can receiver
+  /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
   /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
@@ -3897,7 +3899,7 @@ public final class Token2022Program {
   /// context state account for the proof must be provided.
   ///
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
-  /// @param maximumPendingBalanceCreditCounter The maximum number of despots and transfers that an account can receiver
+  /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
   /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
@@ -3939,7 +3941,7 @@ public final class Token2022Program {
   /// context state account for the proof must be provided.
   ///
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
-  /// @param maximumPendingBalanceCreditCounter The maximum number of despots and transfers that an account can receiver
+  /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
   /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
@@ -4334,7 +4336,7 @@ public final class Token2022Program {
   /// @param tokenKey The SPL Token account.
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to deposit.
+  /// @param amount: u64 The amount of tokens to deposit.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction confidentialDeposit(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey tokenKey,
@@ -4365,7 +4367,7 @@ public final class Token2022Program {
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
-  /// @param amount The amount of tokens to deposit.
+  /// @param amount: u64 The amount of tokens to deposit.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction confidentialDeposit(final AccountMeta invokedToken2022ProgramMeta,
                                                 final List<AccountMeta> keys,
@@ -4392,7 +4394,7 @@ public final class Token2022Program {
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
-  /// @param amount The amount of tokens to deposit.
+  /// @param amount: u64 The amount of tokens to deposit.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record ConfidentialDepositIxData(int discriminator,
                                           int confidentialTransferDiscriminator,
@@ -4519,7 +4521,7 @@ public final class Token2022Program {
   /// @param equalityRecordKey (Optional) Equality proof record account or context state account.
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to withdraw.
+  /// @param amount: u64 The amount of tokens to withdraw.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
   /// @param equalityProofInstructionOffset Relative location of the
@@ -4575,7 +4577,7 @@ public final class Token2022Program {
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
-  /// @param amount The amount of tokens to withdraw.
+  /// @param amount: u64 The amount of tokens to withdraw.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
   /// @param equalityProofInstructionOffset Relative location of the
@@ -4623,7 +4625,7 @@ public final class Token2022Program {
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
-  /// @param amount The amount of tokens to withdraw.
+  /// @param amount: u64 The amount of tokens to withdraw.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
   /// @param equalityProofInstructionOffset Relative location of the
@@ -5035,7 +5037,7 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param expectedPendingBalanceCreditCounter The expected number of pending balance credits since the last successful
+  /// @param expectedPendingBalanceCreditCounter: u64 The expected number of pending balance credits since the last successful
   ///                                            `ApplyPendingBalance` instruction
   /// @param newDecryptableAvailableBalance The new decryptable balance if the pending balance is applied
   ///                                       successfully
@@ -5068,7 +5070,7 @@ public final class Token2022Program {
   /// consistent with `ConfidentialTransferAccount::available_balance`. If
   /// they differ then there is more pending balance to be applied.
   ///
-  /// @param expectedPendingBalanceCreditCounter The expected number of pending balance credits since the last successful
+  /// @param expectedPendingBalanceCreditCounter: u64 The expected number of pending balance credits since the last successful
   ///                                            `ApplyPendingBalance` instruction
   /// @param newDecryptableAvailableBalance The new decryptable balance if the pending balance is applied
   ///                                       successfully
@@ -5099,7 +5101,7 @@ public final class Token2022Program {
   /// consistent with `ConfidentialTransferAccount::available_balance`. If
   /// they differ then there is more pending balance to be applied.
   ///
-  /// @param expectedPendingBalanceCreditCounter The expected number of pending balance credits since the last successful
+  /// @param expectedPendingBalanceCreditCounter: u64 The expected number of pending balance credits since the last successful
   ///                                            `ApplyPendingBalance` instruction
   /// @param newDecryptableAvailableBalance The new decryptable balance if the pending balance is applied
   ///                                       successfully
@@ -10761,15 +10763,15 @@ public final class Token2022Program {
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
     int i = INITIALIZE_TOKEN_METADATA_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, _name.length);
+    putInt32LE(_data, i, (int) _name.length);
     i += 4;
     System.arraycopy(_name, 0, _data, i, _name.length);
     i += _name.length;
-    putInt32LE(_data, i, _symbol.length);
+    putInt32LE(_data, i, (int) _symbol.length);
     i += 4;
     System.arraycopy(_symbol, 0, _data, i, _symbol.length);
     i += _symbol.length;
-    putInt32LE(_data, i, _uri.length);
+    putInt32LE(_data, i, (int) _uri.length);
     i += 4;
     System.arraycopy(_uri, 0, _data, i, _uri.length);
 
@@ -10850,15 +10852,15 @@ public final class Token2022Program {
       System.arraycopy(discriminator, 0, _data, i, discriminator.length);
       i += 8;
 
-      putInt32LE(_data, i, _name.length);
+      putInt32LE(_data, i, (int) _name.length);
       i += 4;
       System.arraycopy(_name, 0, _data, i, _name.length);
       i += _name.length;
-      putInt32LE(_data, i, _symbol.length);
+      putInt32LE(_data, i, (int) _symbol.length);
       i += 4;
       System.arraycopy(_symbol, 0, _data, i, _symbol.length);
       i += _symbol.length;
-      putInt32LE(_data, i, _uri.length);
+      putInt32LE(_data, i, (int) _uri.length);
       i += 4;
       System.arraycopy(_uri, 0, _data, i, _uri.length);
       i += _uri.length;
@@ -10937,7 +10939,7 @@ public final class Token2022Program {
     int i = REMOVE_TOKEN_METADATA_KEY_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) (idempotent ? 1 : 0);
     ++i;
-    putInt32LE(_data, i, _key.length);
+    putInt32LE(_data, i, (int) _key.length);
     i += 4;
     System.arraycopy(_key, 0, _data, i, _key.length);
 
@@ -11007,7 +11009,7 @@ public final class Token2022Program {
 
       _data[i] = (byte) (idempotent ? 1 : 0);
       ++i;
-      putInt32LE(_data, i, _key.length);
+      putInt32LE(_data, i, (int) _key.length);
       i += 4;
       System.arraycopy(_key, 0, _data, i, _key.length);
       i += _key.length;
@@ -11287,7 +11289,7 @@ public final class Token2022Program {
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
-  /// @param maxSize The maximum number of group members
+  /// @param maxSize: u64 The maximum number of group members
   public static Instruction initializeTokenGroup(final AccountMeta invokedToken2022ProgramMeta,
                                                  final PublicKey groupKey,
                                                  final PublicKey mintKey,
@@ -11312,7 +11314,7 @@ public final class Token2022Program {
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
-  /// @param maxSize The maximum number of group members
+  /// @param maxSize: u64 The maximum number of group members
   public static Instruction initializeTokenGroup(final AccountMeta invokedToken2022ProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final PublicKey updateAuthority,
@@ -11333,7 +11335,7 @@ public final class Token2022Program {
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
-  /// @param maxSize The maximum number of group members
+  /// @param maxSize: u64 The maximum number of group members
   public record InitializeTokenGroupIxData(byte[] discriminator,
                                            PublicKey updateAuthority,
                                            long maxSize) implements SerDe {  
@@ -11406,7 +11408,7 @@ public final class Token2022Program {
 
   /// Update the max size of a `Group`.
   ///
-  /// @param maxSize New max size for the group
+  /// @param maxSize: u64 New max size for the group
   public static Instruction updateTokenGroupMaxSize(final AccountMeta invokedToken2022ProgramMeta,
                                                     final PublicKey groupKey,
                                                     final PublicKey updateAuthorityKey,
@@ -11420,7 +11422,7 @@ public final class Token2022Program {
 
   /// Update the max size of a `Group`.
   ///
-  /// @param maxSize New max size for the group
+  /// @param maxSize: u64 New max size for the group
   public static Instruction updateTokenGroupMaxSize(final AccountMeta invokedToken2022ProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long maxSize) {
@@ -11433,7 +11435,7 @@ public final class Token2022Program {
 
   /// Update the max size of a `Group`.
   ///
-  /// @param maxSize New max size for the group
+  /// @param maxSize: u64 New max size for the group
   public record UpdateTokenGroupMaxSizeIxData(byte[] discriminator, long maxSize) implements SerDe {  
 
     public static UpdateTokenGroupMaxSizeIxData read(final Instruction instruction) {
@@ -11906,7 +11908,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   public static Instruction permissionedBurn(final AccountMeta invokedToken2022ProgramMeta,
                                              final PublicKey accountKey,
                                              final PublicKey mintKey,
@@ -11928,7 +11930,7 @@ public final class Token2022Program {
 
   /// Burn tokens when the mint has the permissioned burn extension enabled.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   public static Instruction permissionedBurn(final AccountMeta invokedToken2022ProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
@@ -11943,7 +11945,7 @@ public final class Token2022Program {
 
   /// Burn tokens when the mint has the permissioned burn extension enabled.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   public record PermissionedBurnIxData(int discriminator,
                                        int permissionedBurnDiscriminator,
                                        long amount) implements SerDe {  
@@ -12016,7 +12018,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction permissionedBurnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                                     final PublicKey accountKey,
@@ -12041,7 +12043,7 @@ public final class Token2022Program {
 
   /// Burn tokens with expected decimals when the mint has the permissioned burn extension enabled.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction permissionedBurnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                                     final List<AccountMeta> keys,
@@ -12060,7 +12062,7 @@ public final class Token2022Program {
 
   /// Burn tokens with expected decimals when the mint has the permissioned burn extension enabled.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record PermissionedBurnCheckedIxData(int discriminator,
                                               int permissionedBurnDiscriminator,

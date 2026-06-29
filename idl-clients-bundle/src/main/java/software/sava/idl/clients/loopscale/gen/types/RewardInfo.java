@@ -13,12 +13,12 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param rewardState Reward state
-/// @param openTime Reward open time
-/// @param endTime Reward end time
-/// @param lastUpdateTime Reward last update time
+/// @param openTime: u64 Reward open time
+/// @param endTime: u64 Reward end time
+/// @param lastUpdateTime: u64 Reward last update time
 /// @param emissionsPerSecondX64 Q64.64 number indicates how many tokens per second are earned per unit of liquidity.
-/// @param rewardTotalEmissioned The total amount of reward emissioned
-/// @param rewardClaimed The total amount of claimed reward
+/// @param rewardTotalEmissioned: u64 The total amount of reward emissioned
+/// @param rewardClaimed: u64 The total amount of claimed reward
 /// @param tokenMint Reward token mint.
 /// @param tokenVault Reward vault token account.
 /// @param authority The owner that has permission to set reward param

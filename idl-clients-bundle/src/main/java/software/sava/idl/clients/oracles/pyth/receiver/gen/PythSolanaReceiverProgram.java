@@ -280,6 +280,7 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
+  /// @param singleUpdateFeeInLamports: u64
   public static Instruction setFee(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                    final PublicKey payerKey,
                                    final PublicKey configKey,
@@ -291,6 +292,7 @@ public final class PythSolanaReceiverProgram {
     return setFee(invokedPythSolanaReceiverProgramMeta, keys, singleUpdateFeeInLamports);
   }
 
+  /// @param singleUpdateFeeInLamports: u64
   public static Instruction setFee(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long singleUpdateFeeInLamports) {
@@ -301,6 +303,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
+  /// @param singleUpdateFeeInLamports: u64
   public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements SerDe {  
 
     public static SetFeeIxData read(final Instruction instruction) {

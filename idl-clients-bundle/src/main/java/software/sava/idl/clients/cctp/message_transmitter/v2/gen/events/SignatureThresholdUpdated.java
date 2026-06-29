@@ -8,7 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record SignatureThresholdUpdated(Discriminator discriminator, int oldSignatureThreshold, int newSignatureThreshold) implements MessageTransmitterV2Event {
+/// @param oldSignatureThreshold: u32
+/// @param newSignatureThreshold: u32
+public record SignatureThresholdUpdated(Discriminator discriminator, long oldSignatureThreshold, long newSignatureThreshold) implements MessageTransmitterV2Event {
 
   public static final int BYTES = 16;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 99, 103, 200, 15, 38, 122, 189);
@@ -22,18 +24,18 @@ public record SignatureThresholdUpdated(Discriminator discriminator, int oldSign
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var oldSignatureThreshold = getInt32LE(_data, i);
+    final var oldSignatureThreshold = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var newSignatureThreshold = getInt32LE(_data, i);
+    final var newSignatureThreshold = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new SignatureThresholdUpdated(discriminator, oldSignatureThreshold, newSignatureThreshold);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt32LE(_data, i, oldSignatureThreshold);
+    putInt32LE(_data, i, (int) oldSignatureThreshold);
     i += 4;
-    putInt32LE(_data, i, newSignatureThreshold);
+    putInt32LE(_data, i, (int) newSignatureThreshold);
     i += 4;
     return i - _offset;
   }

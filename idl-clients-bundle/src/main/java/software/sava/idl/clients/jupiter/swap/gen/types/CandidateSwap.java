@@ -41,6 +41,7 @@ public sealed interface CandidateSwap extends RustEnum permits
     };
   }
 
+  /// @param swapId: u64
   record HumidiFi(long swapId, boolean isBaseToQuote) implements CandidateSwap {
 
     public static final int BYTES = 9;
@@ -92,6 +93,7 @@ public sealed interface CandidateSwap extends RustEnum permits
     }
   }
 
+  /// @param swapId: u64
   record HumidiFiV2(long swapId, boolean isBaseToQuote) implements CandidateSwap {
 
     public static final int BYTES = 9;

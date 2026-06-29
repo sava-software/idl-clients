@@ -8,11 +8,13 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param slotsForStakeDelta set by admin, how much slots before the end of the epoch, stake-delta can start
-/// @param lastStakeDeltaEpoch Marks the start of stake-delta operations, meaning that if somebody starts a delayed-unstake ticket
+/// @param delayedUnstakeCoolingDown: u64
+/// @param slotsForStakeDelta: u64 set by admin, how much slots before the end of the epoch, stake-delta can start
+/// @param lastStakeDeltaEpoch: u64 Marks the start of stake-delta operations, meaning that if somebody starts a delayed-unstake ticket
 ///                            after this var is set with epoch_num the ticket will have epoch_created = current_epoch+1
 ///                            (the user must wait one more epoch, because their unstake-delta will be execute in this epoch)
-/// @param extraStakeDeltaRuns can be set by validator-manager-auth to allow a second run of stake-delta to stake late stakers in the last minute of the epoch
+/// @param minStake: u64
+/// @param extraStakeDeltaRuns: u32 can be set by validator-manager-auth to allow a second run of stake-delta to stake late stakers in the last minute of the epoch
 ///                            so we maximize user's rewards
 public record StakeSystem(List stakeList,
                           long delayedUnstakeCoolingDown,
@@ -21,7 +23,7 @@ public record StakeSystem(List stakeList,
                           long slotsForStakeDelta,
                           long lastStakeDeltaEpoch,
                           long minStake,
-                          int extraStakeDeltaRuns) implements SerDe {
+                          long extraStakeDeltaRuns) implements SerDe {
 
   public static final int BYTES = 114;
 
@@ -53,7 +55,7 @@ public record StakeSystem(List stakeList,
     i += 8;
     final var minStake = getInt64LE(_data, i);
     i += 8;
-    final var extraStakeDeltaRuns = getInt32LE(_data, i);
+    final var extraStakeDeltaRuns = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new StakeSystem(stakeList,
                            delayedUnstakeCoolingDown,
                            stakeDepositBumpSeed,
@@ -80,7 +82,7 @@ public record StakeSystem(List stakeList,
     i += 8;
     putInt64LE(_data, i, minStake);
     i += 8;
-    putInt32LE(_data, i, extraStakeDeltaRuns);
+    putInt32LE(_data, i, (int) extraStakeDeltaRuns);
     i += 4;
     return i - _offset;
   }

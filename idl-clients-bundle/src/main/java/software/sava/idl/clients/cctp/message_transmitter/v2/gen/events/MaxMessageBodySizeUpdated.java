@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param newMaxMessageBodySize: u64
 public record MaxMessageBodySizeUpdated(Discriminator discriminator, long newMaxMessageBodySize) implements MessageTransmitterV2Event {
 
   public static final int BYTES = 16;

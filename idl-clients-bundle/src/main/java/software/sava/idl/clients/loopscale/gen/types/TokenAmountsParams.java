@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param tokenAAmount: u64
+/// @param tokenBAmount: u64
 public record TokenAmountsParams(long tokenAAmount, long tokenBAmount) implements SerDe {
 
   public static final int BYTES = 16;

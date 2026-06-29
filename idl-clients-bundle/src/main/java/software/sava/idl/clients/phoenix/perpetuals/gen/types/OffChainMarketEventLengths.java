@@ -9,7 +9,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// Borsh payload of the LogEventLengths instruction after the 8-byte instruction discriminator.
 ///
-public record OffChainMarketEventLengths(int batchIndex, short[] lengths) implements SerDe {
+/// @param batchIndex: u32
+/// @param lengths: vec<u16>
+public record OffChainMarketEventLengths(long batchIndex, int[] lengths) implements SerDe {
 
   public static final int BATCH_INDEX_OFFSET = 0;
   public static final int LENGTHS_OFFSET = 4;
@@ -19,23 +21,23 @@ public record OffChainMarketEventLengths(int batchIndex, short[] lengths) implem
       return null;
     }
     int i = _offset;
-    final var batchIndex = getInt32LE(_data, i);
+    final var batchIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var lengths = SerDeUtil.readshortVector(4, _data, i);
+    final var lengths = SerDeUtil.readUnsignedShortVector(4, _data, i);
     return new OffChainMarketEventLengths(batchIndex, lengths);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, batchIndex);
+    putInt32LE(_data, i, (int) batchIndex);
     i += 4;
-    i += SerDeUtil.writeVector(4, lengths, _data, i);
+    i += SerDeUtil.writeUnsignedShortVector(4, lengths, _data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 4 + SerDeUtil.lenVector(4, lengths);
+    return 4 + SerDeUtil.lenUnsignedShortVector(4, lengths);
   }
 }

@@ -15,6 +15,13 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultId: u16
+/// @param collateralFactor: u16
+/// @param liquidationThreshold: u16
+/// @param liquidationMaxLimit: u16
+/// @param withdrawGap: u16
+/// @param liquidationPenalty: u16
+/// @param borrowFee: u16
 public record VaultConfig(PublicKey _address,
                           Discriminator discriminator,
                           int vaultId,

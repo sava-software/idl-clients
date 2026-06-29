@@ -10,9 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// The lending account holds up to 16 balance positions for a user.
 ///
 /// @param balances Array of balance positions (max 16). Sorted in descending order by bank_pk.
-/// @param lastTagUsed Last allocated balance tag (u16), used to find the next unused tag.
+/// @param lastTagUsed: u16 Last allocated balance tag (u16), used to find the next unused tag.
 /// @param pad1 Reserved for future use
-/// @param padding Reserved for future use
+/// @param padding: u64[] Reserved for future use
 public record LendingAccount(Balance[] balances,
                              int lastTagUsed,
                              byte[] pad1,

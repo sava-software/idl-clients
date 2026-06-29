@@ -20,16 +20,22 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Branch data structure
 ///
+/// @param vaultId: u16
+/// @param branchId: u32
+/// @param minimaTickPartials: u32
+/// @param debtLiquidity: u64
+/// @param debtFactor: u64
+/// @param connectedBranchId: u32
 public record Branch(PublicKey _address,
                      Discriminator discriminator,
                      int vaultId,
-                     int branchId,
+                     long branchId,
                      int status,
                      int minimaTick,
-                     int minimaTickPartials,
+                     long minimaTickPartials,
                      long debtLiquidity,
                      long debtFactor,
-                     int connectedBranchId,
+                     long connectedBranchId,
                      int connectedMinimaTick) implements SerDe {
 
   public static final int BYTES = 47;
@@ -54,9 +60,9 @@ public record Branch(PublicKey _address,
     return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
   }
 
-  public static Filter createBranchIdFilter(final int branchId) {
+  public static Filter createBranchIdFilter(final long branchId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, branchId);
+    putInt32LE(_data, 0, (int) branchId);
     return Filter.createMemCompFilter(BRANCH_ID_OFFSET, _data);
   }
 
@@ -70,9 +76,9 @@ public record Branch(PublicKey _address,
     return Filter.createMemCompFilter(MINIMA_TICK_OFFSET, _data);
   }
 
-  public static Filter createMinimaTickPartialsFilter(final int minimaTickPartials) {
+  public static Filter createMinimaTickPartialsFilter(final long minimaTickPartials) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, minimaTickPartials);
+    putInt32LE(_data, 0, (int) minimaTickPartials);
     return Filter.createMemCompFilter(MINIMA_TICK_PARTIALS_OFFSET, _data);
   }
 
@@ -88,9 +94,9 @@ public record Branch(PublicKey _address,
     return Filter.createMemCompFilter(DEBT_FACTOR_OFFSET, _data);
   }
 
-  public static Filter createConnectedBranchIdFilter(final int connectedBranchId) {
+  public static Filter createConnectedBranchIdFilter(final long connectedBranchId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, connectedBranchId);
+    putInt32LE(_data, 0, (int) connectedBranchId);
     return Filter.createMemCompFilter(CONNECTED_BRANCH_ID_OFFSET, _data);
   }
 
@@ -122,19 +128,19 @@ public record Branch(PublicKey _address,
     int i = _offset + discriminator.length();
     final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var branchId = getInt32LE(_data, i);
+    final var branchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var status = _data[i] & 0xFF;
     ++i;
     final var minimaTick = getInt32LE(_data, i);
     i += 4;
-    final var minimaTickPartials = getInt32LE(_data, i);
+    final var minimaTickPartials = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var debtLiquidity = getInt64LE(_data, i);
     i += 8;
     final var debtFactor = getInt64LE(_data, i);
     i += 8;
-    final var connectedBranchId = getInt32LE(_data, i);
+    final var connectedBranchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var connectedMinimaTick = getInt32LE(_data, i);
     return new Branch(_address,
@@ -155,19 +161,19 @@ public record Branch(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     putInt16LE(_data, i, vaultId);
     i += 2;
-    putInt32LE(_data, i, branchId);
+    putInt32LE(_data, i, (int) branchId);
     i += 4;
     _data[i] = (byte) status;
     ++i;
     putInt32LE(_data, i, minimaTick);
     i += 4;
-    putInt32LE(_data, i, minimaTickPartials);
+    putInt32LE(_data, i, (int) minimaTickPartials);
     i += 4;
     putInt64LE(_data, i, debtLiquidity);
     i += 8;
     putInt64LE(_data, i, debtFactor);
     i += 8;
-    putInt32LE(_data, i, connectedBranchId);
+    putInt32LE(_data, i, (int) connectedBranchId);
     i += 4;
     putInt32LE(_data, i, connectedMinimaTick);
     i += 4;

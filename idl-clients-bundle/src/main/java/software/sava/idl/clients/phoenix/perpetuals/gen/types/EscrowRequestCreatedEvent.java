@@ -17,6 +17,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::EscrowRequestCreated Borsh variant 53.
 /// Payload type: EscrowRequestCreatedEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param expirationOffset: u32
+/// @param initialSlot: u64
 public record EscrowRequestCreatedEvent(Discriminator discriminator,
                                         PublicKey receiverAuthority,
                                         PublicKey senderAuthority,
@@ -25,7 +28,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
                                         int senderSubaccountIndex,
                                         int receiverPdaIndex,
                                         int receiverSubaccountIndex,
-                                        int expirationOffset,
+                                        long expirationOffset,
                                         long initialSlot,
                                         EscrowAction[] actions) implements EternalEvent {
 
@@ -63,7 +66,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
     ++i;
     final var receiverSubaccountIndex = _data[i] & 0xFF;
     ++i;
-    final var expirationOffset = getInt32LE(_data, i);
+    final var expirationOffset = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var initialSlot = getInt64LE(_data, i);
     i += 8;
@@ -99,7 +102,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
     ++i;
     _data[i] = (byte) receiverSubaccountIndex;
     ++i;
-    putInt32LE(_data, i, expirationOffset);
+    putInt32LE(_data, i, (int) expirationOffset);
     i += 4;
     putInt64LE(_data, i, initialSlot);
     i += 8;

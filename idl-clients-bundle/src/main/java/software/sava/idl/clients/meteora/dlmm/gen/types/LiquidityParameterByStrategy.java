@@ -8,8 +8,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amountX Amount of X token to deposit
-/// @param amountY Amount of Y token to deposit
+/// @param amountX: u64 Amount of X token to deposit
+/// @param amountY: u64 Amount of Y token to deposit
 /// @param activeId Active bin that integrator observe off-chain
 /// @param maxActiveBinSlippage max active bin slippage allowed
 /// @param strategyParameters strategy parameters

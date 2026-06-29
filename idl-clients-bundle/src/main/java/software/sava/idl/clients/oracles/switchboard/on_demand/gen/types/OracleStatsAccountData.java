@@ -20,6 +20,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                       staking program.
 /// @param currentEpoch The current epoch info being used by the oracle. for stake. Will moved
 ///                     to finalized_epoch as soon as the epoch is over.
+/// @param lastTransferSlot: u64
 /// @param ebuf Reserved.
 public record OracleStatsAccountData(PublicKey _address,
                                      Discriminator discriminator,

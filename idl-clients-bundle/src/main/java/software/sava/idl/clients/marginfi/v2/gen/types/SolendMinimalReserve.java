@@ -16,9 +16,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param lastUpdateSlot Last slot when supply and rates updated
+/// @param lastUpdateSlot: u64 Last slot when supply and rates updated
 /// @param lastUpdateStale True when marked stale
 /// @param lendingMarket Lending market address
+/// @param liquidityAvailableAmount: u64
+/// @param collateralMintTotalSupply: u64
 public record SolendMinimalReserve(PublicKey _address,
                                    Discriminator discriminator,
                                    long lastUpdateSlot,

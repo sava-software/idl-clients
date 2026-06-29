@@ -9,6 +9,18 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param emaPeriodSlots: u64
+/// @param emaDiffRadius: u64
+/// @param bookPriceRadius: u64
+/// @param commoditiesAfterHoursRadius: u64
+/// @param spotPriceWeight: u64
+/// @param bookPriceWeight: u64
+/// @param perpPriceWeight: u64
+/// @param spotPriceStaleThreshold: u64
+/// @param bookPriceStaleThreshold: u64
+/// @param perpPriceStaleThreshold: u64
+/// @param oracleDivergenceRadius: u16
+/// @param commoditiesAfterHoursRadiusBps: u64
 public record MarkPriceConfig(long emaPeriodSlots,
                               long emaDiffRadius,
                               long bookPriceRadius,

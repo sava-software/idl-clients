@@ -6,8 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
-/// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
-/// @param baseFactor Base factor for base fee rate
+/// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
+/// @param baseFactor: u16 Base factor for base fee rate
 /// @param baseFeePowerFactor Base fee power factor
 public record BaseFeeParameter(int protocolShare,
                                int baseFactor,

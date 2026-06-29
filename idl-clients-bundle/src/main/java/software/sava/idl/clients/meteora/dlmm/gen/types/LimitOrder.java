@@ -18,9 +18,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lbPair The LB pair of this LO
 /// @param owner Owner of the LO. Client rely on this to to fetch their LOs.
-/// @param binCount Bin count
+/// @param binCount: u16 Bin count
 /// @param padding0 Padding
-/// @param padding1 Reserved space for future use
+/// @param padding1: u64[] Reserved space for future use
 public record LimitOrder(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey lbPair,

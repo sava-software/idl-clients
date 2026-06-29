@@ -14,6 +14,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param netAmount: u64
+/// @param feeAmount: u64
+/// @param grossAmount: u64
 public record Redeemed(Discriminator discriminator,
                        PublicKey from,
                        PublicKey to,

@@ -14,6 +14,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::OrderPacket Borsh variant 44.
 /// Payload type: OrderPacketEvent.
 ///
+/// @param nextOrderSequenceNumber: u64
 public record OrderPacketEvent(Discriminator discriminator,
                                OrderPacket orderPacket,
                                PublicKey trader,

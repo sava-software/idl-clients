@@ -11,12 +11,14 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sourceDomain: u32
+/// @param finalityThresholdExecuted: u32
 public record MessageReceived(Discriminator discriminator,
                               PublicKey caller,
-                              int sourceDomain,
+                              long sourceDomain,
                               byte[] nonce,
                               PublicKey sender,
-                              int finalityThresholdExecuted,
+                              long finalityThresholdExecuted,
                               byte[] messageBody) implements MessageTransmitterV2Event {
 
   public static final int NONCE_LEN = 32;
@@ -37,13 +39,13 @@ public record MessageReceived(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var caller = readPubKey(_data, i);
     i += 32;
-    final var sourceDomain = getInt32LE(_data, i);
+    final var sourceDomain = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var nonce = new byte[32];
     i += SerDeUtil.readArray(nonce, _data, i);
     final var sender = readPubKey(_data, i);
     i += 32;
-    final var finalityThresholdExecuted = getInt32LE(_data, i);
+    final var finalityThresholdExecuted = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var messageBody = SerDeUtil.readbyteVector(4, _data, i);
     return new MessageReceived(discriminator,
@@ -60,12 +62,12 @@ public record MessageReceived(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     caller.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, sourceDomain);
+    putInt32LE(_data, i, (int) sourceDomain);
     i += 4;
     i += SerDeUtil.writeArrayChecked(nonce, 32, _data, i);
     sender.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, finalityThresholdExecuted);
+    putInt32LE(_data, i, (int) finalityThresholdExecuted);
     i += 4;
     i += SerDeUtil.writeVector(4, messageBody, _data, i);
     return i - _offset;

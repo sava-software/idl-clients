@@ -11,6 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amounts: u64[]
 public record CancelLimitOrderEvt(Discriminator discriminator,
                                   PublicKey lbPair,
                                   PublicKey from,

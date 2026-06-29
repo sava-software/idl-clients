@@ -8,6 +8,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param amount: u64
 public record CollateralData(PublicKey assetMint,
                              long amount,
                              int assetType,

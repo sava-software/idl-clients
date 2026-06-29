@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Trigger and execution parameters for one half of a conditional order.
 ///
+/// @param triggerPrice: u64
+/// @param executionPrice: u64
 public record TriggerOrderParams(Direction triggerDirection,
                                  Side tradeSide,
                                  StopLossOrderKind orderKind,

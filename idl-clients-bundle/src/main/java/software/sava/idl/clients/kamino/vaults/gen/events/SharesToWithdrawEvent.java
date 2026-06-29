@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sharesAmount: u64
+/// @param userSharesBefore: u64
 public record SharesToWithdrawEvent(Discriminator discriminator, long sharesAmount, long userSharesBefore) implements KaminoVaultEvent {
 
   public static final int BYTES = 24;

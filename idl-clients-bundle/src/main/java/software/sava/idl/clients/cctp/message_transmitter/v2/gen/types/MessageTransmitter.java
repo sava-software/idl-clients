@@ -20,6 +20,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Main state of the MessageTransmitter program
 ///
+/// @param localDomain: u32
+/// @param version: u32
+/// @param signatureThreshold: u32
+/// @param maxMessageBodySize: u64
 public record MessageTransmitter(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey owner,
@@ -27,9 +31,9 @@ public record MessageTransmitter(PublicKey _address,
                                  PublicKey attesterManager,
                                  PublicKey pauser,
                                  boolean paused,
-                                 int localDomain,
-                                 int version,
-                                 int signatureThreshold,
+                                 long localDomain,
+                                 long version,
+                                 long signatureThreshold,
                                  PublicKey[] enabledAttesters,
                                  long maxMessageBodySize) implements SerDe {
 
@@ -66,21 +70,21 @@ public record MessageTransmitter(PublicKey _address,
     return Filter.createMemCompFilter(PAUSED_OFFSET, new byte[]{(byte) (paused ? 1 : 0)});
   }
 
-  public static Filter createLocalDomainFilter(final int localDomain) {
+  public static Filter createLocalDomainFilter(final long localDomain) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, localDomain);
+    putInt32LE(_data, 0, (int) localDomain);
     return Filter.createMemCompFilter(LOCAL_DOMAIN_OFFSET, _data);
   }
 
-  public static Filter createVersionFilter(final int version) {
+  public static Filter createVersionFilter(final long version) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, version);
+    putInt32LE(_data, 0, (int) version);
     return Filter.createMemCompFilter(VERSION_OFFSET, _data);
   }
 
-  public static Filter createSignatureThresholdFilter(final int signatureThreshold) {
+  public static Filter createSignatureThresholdFilter(final long signatureThreshold) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, signatureThreshold);
+    putInt32LE(_data, 0, (int) signatureThreshold);
     return Filter.createMemCompFilter(SIGNATURE_THRESHOLD_OFFSET, _data);
   }
 
@@ -114,11 +118,11 @@ public record MessageTransmitter(PublicKey _address,
     i += 32;
     final var paused = _data[i] == 1;
     ++i;
-    final var localDomain = getInt32LE(_data, i);
+    final var localDomain = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var version = getInt32LE(_data, i);
+    final var version = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var signatureThreshold = getInt32LE(_data, i);
+    final var signatureThreshold = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var enabledAttesters = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, enabledAttesters);
@@ -150,11 +154,11 @@ public record MessageTransmitter(PublicKey _address,
     i += 32;
     _data[i] = (byte) (paused ? 1 : 0);
     ++i;
-    putInt32LE(_data, i, localDomain);
+    putInt32LE(_data, i, (int) localDomain);
     i += 4;
-    putInt32LE(_data, i, version);
+    putInt32LE(_data, i, (int) version);
     i += 4;
-    putInt32LE(_data, i, signatureThreshold);
+    putInt32LE(_data, i, (int) signatureThreshold);
     i += 4;
     i += SerDeUtil.writeVector(4, enabledAttesters, _data, i);
     putInt64LE(_data, i, maxMessageBodySize);

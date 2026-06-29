@@ -13,13 +13,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// and referral fee. The fees are paid out as a percentage of liquidity token amounts during
 /// repayments and liquidations.
 ///
-/// @param originationFeeSf Fee assessed on `BorrowObligationLiquidity`, as scaled fraction (60 bits fractional part)
+/// @param originationFeeSf: u64 Fee assessed on `BorrowObligationLiquidity`, as scaled fraction (60 bits fractional part)
 ///                         Must be between `0` and `2^60`, such that `2^60 = 1`.  A few examples for
 ///                         clarity:
 ///                         1% = (1 << 60) / 100 = 11529215046068470
 ///                         0.01% (1 basis point) = 115292150460685
 ///                         0.00001% (Aave origination fee) = 115292150461
-/// @param flashLoanFeeSf Fee for flash loan, expressed as scaled fraction.
+/// @param flashLoanFeeSf: u64 Fee for flash loan, expressed as scaled fraction.
 ///                       0.3% (Aave flash loan fee) = 0.003 * 2^60 = 3458764513820541
 /// @param padding Used for allignment
 public record ReserveFees(long originationFeeSf,

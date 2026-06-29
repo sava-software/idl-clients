@@ -25,7 +25,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Account to store infor for partial unstaking
 ///
 /// @param escrow The Escrow pubkey.
-/// @param amount Amount of this partial unstaking
+/// @param amount: u64 Amount of this partial unstaking
 /// @param expiration Timestamp when owner can withdraw the partial unstaking amount
 /// @param buffers buffer for further use
 /// @param memo Memo

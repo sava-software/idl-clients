@@ -11,10 +11,11 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param index: u32
 public record SetValidatorScoreEvent(Discriminator discriminator,
                                      PublicKey state,
                                      PublicKey validator,
-                                     int index,
+                                     long index,
                                      U32ValueChange scoreChange) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 84;
@@ -35,7 +36,7 @@ public record SetValidatorScoreEvent(Discriminator discriminator,
     i += 32;
     final var validator = readPubKey(_data, i);
     i += 32;
-    final var index = getInt32LE(_data, i);
+    final var index = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var scoreChange = U32ValueChange.read(_data, i);
     return new SetValidatorScoreEvent(discriminator,
@@ -52,7 +53,7 @@ public record SetValidatorScoreEvent(Discriminator discriminator,
     i += 32;
     validator.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, index);
+    putInt32LE(_data, i, (int) index);
     i += 4;
     i += scoreChange.write(_data, i);
     return i - _offset;

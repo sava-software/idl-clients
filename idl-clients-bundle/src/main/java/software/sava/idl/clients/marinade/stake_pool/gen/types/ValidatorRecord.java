@@ -11,10 +11,12 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param validatorAccount Validator vote pubkey
-/// @param activeBalance Validator total balance in lamports
+/// @param activeBalance: u64 Validator total balance in lamports
+/// @param score: u32
+/// @param lastStakeDeltaEpoch: u64
 public record ValidatorRecord(PublicKey validatorAccount,
                               long activeBalance,
-                              int score,
+                              long score,
                               long lastStakeDeltaEpoch,
                               int duplicationFlagBumpSeed) implements SerDe {
 
@@ -35,7 +37,7 @@ public record ValidatorRecord(PublicKey validatorAccount,
     i += 32;
     final var activeBalance = getInt64LE(_data, i);
     i += 8;
-    final var score = getInt32LE(_data, i);
+    final var score = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var lastStakeDeltaEpoch = getInt64LE(_data, i);
     i += 8;
@@ -54,7 +56,7 @@ public record ValidatorRecord(PublicKey validatorAccount,
     i += 32;
     putInt64LE(_data, i, activeBalance);
     i += 8;
-    putInt32LE(_data, i, score);
+    putInt32LE(_data, i, (int) score);
     i += 4;
     putInt64LE(_data, i, lastStakeDeltaEpoch);
     i += 8;

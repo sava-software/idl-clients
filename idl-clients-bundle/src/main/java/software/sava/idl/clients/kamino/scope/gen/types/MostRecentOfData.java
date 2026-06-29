@@ -9,7 +9,10 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record MostRecentOfData(short[] sourceEntries,
+/// @param sourceEntries: u16[]
+/// @param maxDivergenceBps: u16
+/// @param sourcesMaxAgeS: u64
+public record MostRecentOfData(int[] sourceEntries,
                                int maxDivergenceBps,
                                long sourcesMaxAgeS) implements SerDe {
 
@@ -25,8 +28,8 @@ public record MostRecentOfData(short[] sourceEntries,
       return null;
     }
     int i = _offset;
-    final var sourceEntries = new short[4];
-    i += SerDeUtil.readArray(sourceEntries, _data, i);
+    final var sourceEntries = new int[4];
+    i += SerDeUtil.readUnsignedShortArray(sourceEntries, _data, i);
     final var maxDivergenceBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var sourcesMaxAgeS = getInt64LE(_data, i);
@@ -36,7 +39,7 @@ public record MostRecentOfData(short[] sourceEntries,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += SerDeUtil.writeArrayChecked(sourceEntries, 4, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(sourceEntries, 4, _data, i);
     putInt16LE(_data, i, maxDivergenceBps);
     i += 2;
     putInt64LE(_data, i, sourcesMaxAgeS);

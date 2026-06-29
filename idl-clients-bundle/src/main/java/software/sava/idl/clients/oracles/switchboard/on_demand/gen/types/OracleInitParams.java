@@ -9,6 +9,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param recentSlot: u64
 public record OracleInitParams(long recentSlot,
                                PublicKey authority,
                                PublicKey queue,

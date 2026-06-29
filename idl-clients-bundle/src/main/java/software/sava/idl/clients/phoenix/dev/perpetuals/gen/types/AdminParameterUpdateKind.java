@@ -48,6 +48,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     };
   }
 
+  /// @param previous: u16
+  /// @param _new: u16
   record CancelRiskFactor(int previous, int _new) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 4;
@@ -200,6 +202,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     }
   }
 
+  /// @param previous: u64
+  /// @param _new: u64
   record OpenInterestCap(long previous, long _new) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 16;
@@ -239,6 +243,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     }
   }
 
+  /// @param previous: u16
+  /// @param _new: u16
   record UpnlRiskFactor(int previous, int _new) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 4;
@@ -278,6 +284,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     }
   }
 
+  /// @param previous: u16
+  /// @param _new: u16
   record UpnlRiskFactorForWithdrawals(int previous, int _new) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 4;
@@ -509,6 +517,8 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     }
   }
 
+  /// @param previousOpenInterest: u64
+  /// @param newOpenInterest: u64
   record OpenInterestAdjustment(long previousOpenInterest, long newOpenInterest) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 16;

@@ -17,27 +17,27 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param binStep Bin step. Represent the price increment / decrement.
-/// @param baseFactor Used for base fee calculation. base_fee_rate = base_factor * bin_step * 10 * 10^base_fee_power_factor
-/// @param filterPeriod Filter period determine high frequency trading time window.
-/// @param decayPeriod Decay period determine when the volatile fee start decay / decrease.
-/// @param variableFeeControl Used to scale the variable fee component depending on the dynamic of the market
-/// @param maxVolatilityAccumulator Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
-/// @param reductionFactor Reduction factor controls the volatile fee rate decrement rate.
-/// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
-/// @param index index
+/// @param binStep: u16 Bin step. Represent the price increment / decrement.
+/// @param baseFactor: u16 Used for base fee calculation. base_fee_rate = base_factor * bin_step * 10 * 10^base_fee_power_factor
+/// @param filterPeriod: u16 Filter period determine high frequency trading time window.
+/// @param decayPeriod: u16 Decay period determine when the volatile fee start decay / decrease.
+/// @param variableFeeControl: u32 Used to scale the variable fee component depending on the dynamic of the market
+/// @param maxVolatilityAccumulator: u32 Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
+/// @param reductionFactor: u16 Reduction factor controls the volatile fee rate decrement rate.
+/// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
+/// @param index: u16 index
 /// @param baseFeePowerFactor Base fee power factor
 /// @param concreteFunctionType function type, to check whether the pool should have LM farming or other functions in the future, refer ConcreteFunctionType
 /// @param collectFeeMode collect fee mode
-/// @param padding1 Padding 1 for future use
+/// @param padding1: u64[] Padding 1 for future use
 public record PresetParameter2(PublicKey _address,
                                Discriminator discriminator,
                                int binStep,
                                int baseFactor,
                                int filterPeriod,
                                int decayPeriod,
-                               int variableFeeControl,
-                               int maxVolatilityAccumulator,
+                               long variableFeeControl,
+                               long maxVolatilityAccumulator,
                                int reductionFactor,
                                int protocolShare,
                                int index,
@@ -94,15 +94,15 @@ public record PresetParameter2(PublicKey _address,
     return Filter.createMemCompFilter(DECAY_PERIOD_OFFSET, _data);
   }
 
-  public static Filter createVariableFeeControlFilter(final int variableFeeControl) {
+  public static Filter createVariableFeeControlFilter(final long variableFeeControl) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, variableFeeControl);
+    putInt32LE(_data, 0, (int) variableFeeControl);
     return Filter.createMemCompFilter(VARIABLE_FEE_CONTROL_OFFSET, _data);
   }
 
-  public static Filter createMaxVolatilityAccumulatorFilter(final int maxVolatilityAccumulator) {
+  public static Filter createMaxVolatilityAccumulatorFilter(final long maxVolatilityAccumulator) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, maxVolatilityAccumulator);
+    putInt32LE(_data, 0, (int) maxVolatilityAccumulator);
     return Filter.createMemCompFilter(MAX_VOLATILITY_ACCUMULATOR_OFFSET, _data);
   }
 
@@ -164,9 +164,9 @@ public record PresetParameter2(PublicKey _address,
     i += 2;
     final var decayPeriod = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var variableFeeControl = getInt32LE(_data, i);
+    final var variableFeeControl = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var maxVolatilityAccumulator = getInt32LE(_data, i);
+    final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -213,9 +213,9 @@ public record PresetParameter2(PublicKey _address,
     i += 2;
     putInt16LE(_data, i, decayPeriod);
     i += 2;
-    putInt32LE(_data, i, variableFeeControl);
+    putInt32LE(_data, i, (int) variableFeeControl);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt16LE(_data, i, reductionFactor);
     i += 2;

@@ -30,8 +30,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param liquidity The amount of liquidity owned by this position
 /// @param feeGrowthInside0LastX64 The token_0 fee growth of the aggregate position as of the last action on the individual position
 /// @param feeGrowthInside1LastX64 The token_1 fee growth of the aggregate position as of the last action on the individual position
-/// @param tokenFeesOwed0 The fees owed to the position owner in token_0, as of the last computation
-/// @param tokenFeesOwed1 The fees owed to the position owner in token_1, as of the last computation
+/// @param tokenFeesOwed0: u64 The fees owed to the position owner in token_0, as of the last computation
+/// @param tokenFeesOwed1: u64 The fees owed to the position owner in token_1, as of the last computation
+/// @param recentEpoch: u64
+/// @param padding: u64[]
 public record PersonalPositionState(PublicKey _address,
                                     Discriminator discriminator,
                                     byte[] bump,

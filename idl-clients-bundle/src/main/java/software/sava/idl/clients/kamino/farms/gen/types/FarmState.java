@@ -22,9 +22,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param numUsers Data used to calculate the rewards of the user
-/// @param totalStakedAmount The number of token in the `farm_vault` staked (getting rewards and fees)
+/// @param numRewardTokens: u64
+/// @param numUsers: u64 Data used to calculate the rewards of the user
+/// @param totalStakedAmount: u64 The number of token in the `farm_vault` staked (getting rewards and fees)
 ///                          Set such as `farm_vault.amount = total_staked_amount + total_pending_amount`
+/// @param farmVaultsAuthorityBump: u64
 /// @param delegateAuthority Only used for delegate farms
 ///                          Set to `default()` otherwise
 /// @param timeUnit Raw representation of a `TimeUnit`
@@ -36,15 +38,23 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param isRewardUserOnceEnabled If set to 1, indicates that the "reward user once" feature is enabled
 /// @param withdrawAuthority Withdraw authority for the farm, allowed to lock deposited funds and withdraw them
 ///                          Set to `default()` if unused (only the depositors can withdraw their funds)
-/// @param depositWarmupPeriod Delay between a user deposit and the moment it is considered as staked
+/// @param depositWarmupPeriod: u32 Delay between a user deposit and the moment it is considered as staked
 ///                            0 if unused
-/// @param withdrawalCooldownPeriod Delay between a user unstake and the ability to withdraw his deposit.
+/// @param withdrawalCooldownPeriod: u32 Delay between a user unstake and the ability to withdraw his deposit.
 /// @param totalActiveStakeScaled Total active stake of tokens in the farm (scaled from `Decimal` representation).
 /// @param totalPendingStakeScaled Total pending stake of tokens in the farm (scaled from `Decimal` representation).
 ///                                (can be used by `withdraw_authority` but don't get rewards or fees)
-/// @param totalPendingAmount Total pending amount of tokens in the farm
-/// @param slashedAmountCurrent Slashed amounts from early withdrawal
-/// @param lockingMode Locking stake
+/// @param totalPendingAmount: u64 Total pending amount of tokens in the farm
+/// @param slashedAmountCurrent: u64 Slashed amounts from early withdrawal
+/// @param slashedAmountCumulative: u64
+/// @param lockingMode: u64 Locking stake
+/// @param lockingStartTimestamp: u64
+/// @param lockingDuration: u64
+/// @param lockingEarlyWithdrawalPenaltyBps: u64
+/// @param depositCapAmount: u64
+/// @param scopeOraclePriceId: u64
+/// @param scopeOracleMaxAge: u64
+/// @param padding: u64[]
 public record FarmState(PublicKey _address,
                         Discriminator discriminator,
                         PublicKey farmAdmin,
@@ -65,8 +75,8 @@ public record FarmState(PublicKey _address,
                         int isHarvestingPermissionless,
                         byte[] padding0,
                         PublicKey withdrawAuthority,
-                        int depositWarmupPeriod,
-                        int withdrawalCooldownPeriod,
+                        long depositWarmupPeriod,
+                        long withdrawalCooldownPeriod,
                         BigInteger totalActiveStakeScaled,
                         BigInteger totalPendingStakeScaled,
                         long totalPendingAmount,
@@ -210,15 +220,15 @@ public record FarmState(PublicKey _address,
     return Filter.createMemCompFilter(WITHDRAW_AUTHORITY_OFFSET, withdrawAuthority);
   }
 
-  public static Filter createDepositWarmupPeriodFilter(final int depositWarmupPeriod) {
+  public static Filter createDepositWarmupPeriodFilter(final long depositWarmupPeriod) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, depositWarmupPeriod);
+    putInt32LE(_data, 0, (int) depositWarmupPeriod);
     return Filter.createMemCompFilter(DEPOSIT_WARMUP_PERIOD_OFFSET, _data);
   }
 
-  public static Filter createWithdrawalCooldownPeriodFilter(final int withdrawalCooldownPeriod) {
+  public static Filter createWithdrawalCooldownPeriodFilter(final long withdrawalCooldownPeriod) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, withdrawalCooldownPeriod);
+    putInt32LE(_data, 0, (int) withdrawalCooldownPeriod);
     return Filter.createMemCompFilter(WITHDRAWAL_COOLDOWN_PERIOD_OFFSET, _data);
   }
 
@@ -378,9 +388,9 @@ public record FarmState(PublicKey _address,
     i += SerDeUtil.readArray(padding0, _data, i);
     final var withdrawAuthority = readPubKey(_data, i);
     i += 32;
-    final var depositWarmupPeriod = getInt32LE(_data, i);
+    final var depositWarmupPeriod = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var withdrawalCooldownPeriod = getInt32LE(_data, i);
+    final var withdrawalCooldownPeriod = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var totalActiveStakeScaled = getInt128LE(_data, i);
     i += 16;
@@ -502,9 +512,9 @@ public record FarmState(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(padding0, 3, _data, i);
     withdrawAuthority.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, depositWarmupPeriod);
+    putInt32LE(_data, i, (int) depositWarmupPeriod);
     i += 4;
-    putInt32LE(_data, i, withdrawalCooldownPeriod);
+    putInt32LE(_data, i, (int) withdrawalCooldownPeriod);
     i += 4;
     putInt128LE(_data, i, totalActiveStakeScaled);
     i += 16;

@@ -61,6 +61,7 @@ public sealed interface EscrowAction extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record Cash(long amount, byte[] padding0) implements EscrowAction {
 
     public static final int BYTES = 136;

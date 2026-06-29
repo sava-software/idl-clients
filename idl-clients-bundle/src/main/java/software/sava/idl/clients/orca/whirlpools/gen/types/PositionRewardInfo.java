@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param amountOwed: u64
 public record PositionRewardInfo(BigInteger growthInsideCheckpoint, long amountOwed) implements SerDe {
 
   public static final int BYTES = 24;

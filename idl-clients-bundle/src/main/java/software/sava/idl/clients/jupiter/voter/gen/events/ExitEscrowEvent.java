@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param lockerSupply: u64
+/// @param releasedAmount: u64
 public record ExitEscrowEvent(Discriminator discriminator,
                               PublicKey escrowOwner,
                               PublicKey locker,

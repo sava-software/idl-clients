@@ -8,9 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Governance parameters.
 ///
-/// @param votingDelay The delay before voting on a proposal may take place, once proposed, in seconds
-/// @param votingPeriod The duration of voting on a proposal, in seconds
-/// @param quorumVotes The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
+/// @param votingDelay: u64 The delay before voting on a proposal may take place, once proposed, in seconds
+/// @param votingPeriod: u64 The duration of voting on a proposal, in seconds
+/// @param quorumVotes: u64 The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
 /// @param timelockDelaySeconds The timelock delay of the DAO's created proposals.
 public record GovernanceParameters(long votingDelay,
                                    long votingPeriod,

@@ -8,9 +8,9 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param epoch First epoch where the transfer fee takes effect.
-/// @param maximumFee Maximum fee assessed on transfers, expressed as an amount of tokens.
-/// @param transferFeeBasisPoints Amount of transfer collected as fees, expressed as basis points of the
+/// @param epoch: u64 First epoch where the transfer fee takes effect.
+/// @param maximumFee: u64 Maximum fee assessed on transfers, expressed as an amount of tokens.
+/// @param transferFeeBasisPoints: u16 Amount of transfer collected as fees, expressed as basis points of the
 ///                               transfer amount, ie. increments of 0.01%.
 public record TransferFee(long epoch,
                           long maximumFee,

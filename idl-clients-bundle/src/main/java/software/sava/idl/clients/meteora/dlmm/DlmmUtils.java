@@ -9,10 +9,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 
-import static software.sava.idl.clients.meteora.dlmm.gen.LbClmmConstants.BIN_ARRAY_BITMAP_SIZE;
-import static software.sava.idl.clients.meteora.dlmm.gen.LbClmmConstants.FEE_DENOMINATOR;
-import static software.sava.idl.clients.meteora.dlmm.gen.LbClmmConstants.MAX_BIN_PER_ARRAY;
-import static software.sava.idl.clients.meteora.dlmm.gen.LbClmmConstants.MAX_FEE_RATE;
+import static software.sava.idl.clients.meteora.dlmm.gen.LbClmmConstants.*;
 
 
 public final class DlmmUtils {
@@ -363,7 +360,7 @@ public final class DlmmUtils {
   }
 
   /// Variable fee component for the given volatility accumulator.
-  public static BigInteger computeVariableFee(final LbPair lbPair, final int volatilityAccumulator) {
+  public static BigInteger computeVariableFee(final LbPair lbPair, final long volatilityAccumulator) {
     final var p = lbPair.parameters();
     if (p.variableFeeControl() <= 0) {
       return BigInteger.ZERO;

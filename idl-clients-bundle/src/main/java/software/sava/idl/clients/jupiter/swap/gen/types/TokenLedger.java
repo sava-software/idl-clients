@@ -15,6 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
 public record TokenLedger(PublicKey _address, Discriminator discriminator, PublicKey tokenAccount, long amount) implements SerDe {
 
   public static final int BYTES = 48;

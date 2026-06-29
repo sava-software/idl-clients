@@ -129,6 +129,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param mode: u64
   public static Instruction updateLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final PublicKey signerKey,
                                                 final PublicKey lendingMarketKey,
@@ -141,6 +142,7 @@ public final class KaminoLendingProgram {
     return updateLendingMarket(invokedKaminoLendingProgramMeta, keys, mode, value);
   }
 
+  /// @param mode: u64
   public static Instruction updateLendingMarket(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long mode,
@@ -154,6 +156,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param mode: u64
   public record UpdateLendingMarketIxData(Discriminator discriminator, long mode, byte[] value) implements SerDe {  
 
     public static UpdateLendingMarketIxData read(final Instruction instruction) {
@@ -631,6 +634,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdrawProtocolFee(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final PublicKey globalConfigKey,
                                                 final PublicKey lendingMarketKey,
@@ -654,6 +658,7 @@ public final class KaminoLendingProgram {
     return withdrawProtocolFee(invokedKaminoLendingProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdrawProtocolFee(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount) {
@@ -664,6 +669,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawProtocolFeeIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawProtocolFeeIxData read(final Instruction instruction) {
@@ -767,6 +773,7 @@ public final class KaminoLendingProgram {
 
   /// Sponsor a reserve's rewards distribution by topping up its `rewards_amount_available` budget.
   ///
+  /// @param amount: u64
   public static Instruction topupReserveRewards(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final PublicKey signerKey,
                                                 final PublicKey lendingMarketKey,
@@ -790,6 +797,7 @@ public final class KaminoLendingProgram {
 
   /// Sponsor a reserve's rewards distribution by topping up its `rewards_amount_available` budget.
   ///
+  /// @param amount: u64
   public static Instruction topupReserveRewards(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount) {
@@ -800,6 +808,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record TopupReserveRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static TopupReserveRewardsIxData read(final Instruction instruction) {
@@ -850,6 +859,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction socializeLoss(final AccountMeta invokedKaminoLendingProgramMeta,
                                           final PublicKey lendingMarketOwnerKey,
                                           final PublicKey obligationKey,
@@ -867,6 +877,7 @@ public final class KaminoLendingProgram {
     return socializeLoss(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction socializeLoss(final AccountMeta invokedKaminoLendingProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long liquidityAmount) {
@@ -877,6 +888,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record SocializeLossIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static SocializeLossIxData read(final Instruction instruction) {
@@ -936,6 +948,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction socializeLossV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                             final PublicKey socializeLossAccountsLendingMarketOwnerKey,
                                             final PublicKey socializeLossAccountsObligationKey,
@@ -962,6 +975,7 @@ public final class KaminoLendingProgram {
     return socializeLossV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction socializeLossV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long liquidityAmount) {
@@ -972,6 +986,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record SocializeLossV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static SocializeLossV2IxData read(final Instruction instruction) {
@@ -1193,6 +1208,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final PublicKey ownerKey,
                                                     final PublicKey reserveKey,
@@ -1224,6 +1240,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long liquidityAmount) {
@@ -1234,6 +1251,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record DepositReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static DepositReserveLiquidityIxData read(final Instruction instruction) {
@@ -1298,6 +1316,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction redeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final PublicKey ownerKey,
                                                     final PublicKey lendingMarketKey,
@@ -1329,6 +1348,7 @@ public final class KaminoLendingProgram {
     return redeemReserveCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction redeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long collateralAmount) {
@@ -1339,6 +1359,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record RedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static RedeemReserveCollateralIxData read(final Instruction instruction) {
@@ -1716,6 +1737,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction depositObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final PublicKey ownerKey,
                                                         final PublicKey obligationKey,
@@ -1739,6 +1761,7 @@ public final class KaminoLendingProgram {
     return depositObligationCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction depositObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long collateralAmount) {
@@ -1749,6 +1772,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record DepositObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static DepositObligationCollateralIxData read(final Instruction instruction) {
@@ -1814,6 +1838,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction depositObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final PublicKey depositAccountsOwnerKey,
                                                           final PublicKey depositAccountsObligationKey,
@@ -1846,6 +1871,7 @@ public final class KaminoLendingProgram {
     return depositObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction depositObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final long collateralAmount) {
@@ -1856,6 +1882,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record DepositObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static DepositObligationCollateralV2IxData read(final Instruction instruction) {
@@ -1914,6 +1941,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final PublicKey ownerKey,
                                                          final PublicKey obligationKey,
@@ -1939,6 +1967,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final long collateralAmount) {
@@ -1949,6 +1978,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record WithdrawObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static WithdrawObligationCollateralIxData read(final Instruction instruction) {
@@ -2014,6 +2044,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final PublicKey withdrawAccountsOwnerKey,
                                                            final PublicKey withdrawAccountsObligationKey,
@@ -2046,6 +2077,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final long collateralAmount) {
@@ -2056,6 +2088,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record WithdrawObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static WithdrawObligationCollateralV2IxData read(final Instruction instruction) {
@@ -2121,6 +2154,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction borrowObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final PublicKey ownerKey,
                                                       final PublicKey obligationKey,
@@ -2153,6 +2187,7 @@ public final class KaminoLendingProgram {
     return borrowObligationLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction borrowObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long liquidityAmount) {
@@ -2163,6 +2198,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record BorrowObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static BorrowObligationLiquidityIxData read(final Instruction instruction) {
@@ -2234,6 +2270,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction borrowObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final PublicKey borrowAccountsOwnerKey,
                                                         final PublicKey borrowAccountsObligationKey,
@@ -2272,6 +2309,7 @@ public final class KaminoLendingProgram {
     return borrowObligationLiquidityV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction borrowObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long liquidityAmount) {
@@ -2282,6 +2320,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record BorrowObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static BorrowObligationLiquidityV2IxData read(final Instruction instruction) {
@@ -2340,6 +2379,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction repayObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                      final PublicKey ownerKey,
                                                      final PublicKey obligationKey,
@@ -2365,6 +2405,7 @@ public final class KaminoLendingProgram {
     return repayObligationLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction repayObligationLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final long liquidityAmount) {
@@ -2375,6 +2416,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record RepayObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static RepayObligationLiquidityIxData read(final Instruction instruction) {
@@ -2442,6 +2484,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction repayObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final PublicKey repayAccountsOwnerKey,
                                                        final PublicKey repayAccountsObligationKey,
@@ -2476,6 +2519,7 @@ public final class KaminoLendingProgram {
     return repayObligationLiquidityV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction repayObligationLiquidityV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long liquidityAmount) {
@@ -2486,6 +2530,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record RepayObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static RepayObligationLiquidityV2IxData read(final Instruction instruction) {
@@ -2583,6 +2628,8 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param repayAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public static Instruction repayAndWithdrawAndRedeem(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final PublicKey repayAccountsOwnerKey,
                                                       final PublicKey repayAccountsObligationKey,
@@ -2648,6 +2695,8 @@ public final class KaminoLendingProgram {
     return repayAndWithdrawAndRedeem(invokedKaminoLendingProgramMeta, keys, repayAmount, withdrawCollateralAmount);
   }
 
+  /// @param repayAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public static Instruction repayAndWithdrawAndRedeem(final AccountMeta invokedKaminoLendingProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long repayAmount,
@@ -2661,6 +2710,8 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param repayAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public record RepayAndWithdrawAndRedeemIxData(Discriminator discriminator, long repayAmount, long withdrawCollateralAmount) implements SerDe {  
 
     public static RepayAndWithdrawAndRedeemIxData read(final Instruction instruction) {
@@ -2773,6 +2824,8 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public static Instruction depositAndWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final PublicKey depositAccountsOwnerKey,
                                                final PublicKey depositAccountsObligationKey,
@@ -2848,6 +2901,8 @@ public final class KaminoLendingProgram {
     return depositAndWithdraw(invokedKaminoLendingProgramMeta, keys, liquidityAmount, withdrawCollateralAmount);
   }
 
+  /// @param liquidityAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public static Instruction depositAndWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long liquidityAmount,
@@ -2861,6 +2916,8 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
+  /// @param withdrawCollateralAmount: u64
   public record DepositAndWithdrawIxData(Discriminator discriminator, long liquidityAmount, long withdrawCollateralAmount) implements SerDe {  
 
     public static DepositAndWithdrawIxData read(final Instruction instruction) {
@@ -2935,6 +2992,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidityAndObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                            final PublicKey ownerKey,
                                                                            final PublicKey obligationKey,
@@ -2971,6 +3029,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidityAndObligationCollateral(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidityAndObligationCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                            final List<AccountMeta> keys,
                                                                            final long liquidityAmount) {
@@ -2981,6 +3040,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record DepositReserveLiquidityAndObligationCollateralIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static DepositReserveLiquidityAndObligationCollateralIxData read(final Instruction instruction) {
@@ -3056,6 +3116,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidityAndObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                              final PublicKey depositAccountsOwnerKey,
                                                                              final PublicKey depositAccountsObligationKey,
@@ -3098,6 +3159,7 @@ public final class KaminoLendingProgram {
     return depositReserveLiquidityAndObligationCollateralV2(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction depositReserveLiquidityAndObligationCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                              final List<AccountMeta> keys,
                                                                              final long liquidityAmount) {
@@ -3108,6 +3170,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record DepositReserveLiquidityAndObligationCollateralV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static DepositReserveLiquidityAndObligationCollateralV2IxData read(final Instruction instruction) {
@@ -3177,6 +3240,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                    final PublicKey ownerKey,
                                                                                    final PublicKey obligationKey,
@@ -3213,6 +3277,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralAndRedeemReserveCollateral(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                    final List<AccountMeta> keys,
                                                                                    final long collateralAmount) {
@@ -3223,6 +3288,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record WithdrawObligationCollateralAndRedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static WithdrawObligationCollateralAndRedeemReserveCollateralIxData read(final Instruction instruction) {
@@ -3298,6 +3364,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                      final PublicKey withdrawAccountsOwnerKey,
                                                                                      final PublicKey withdrawAccountsObligationKey,
@@ -3340,6 +3407,7 @@ public final class KaminoLendingProgram {
     return withdrawObligationCollateralAndRedeemReserveCollateralV2(invokedKaminoLendingProgramMeta, keys, collateralAmount);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction withdrawObligationCollateralAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                                      final List<AccountMeta> keys,
                                                                                      final long collateralAmount) {
@@ -3350,6 +3418,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record WithdrawObligationCollateralAndRedeemReserveCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
 
     public static WithdrawObligationCollateralAndRedeemReserveCollateralV2IxData read(final Instruction instruction) {
@@ -3430,6 +3499,9 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                           final PublicKey liquidatorKey,
                                                                           final PublicKey obligationKey,
@@ -3485,6 +3557,9 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                           final List<AccountMeta> keys,
                                                                           final long liquidityAmount,
@@ -3501,6 +3576,9 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public record LiquidateObligationAndRedeemReserveCollateralIxData(Discriminator discriminator,
                                                                     long liquidityAmount,
                                                                     long minAcceptableReceivedLiquidityAmount,
@@ -3605,6 +3683,9 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                             final PublicKey liquidationAccountsLiquidatorKey,
                                                                             final PublicKey liquidationAccountsObligationKey,
@@ -3671,6 +3752,9 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public static Instruction liquidateObligationAndRedeemReserveCollateralV2(final AccountMeta invokedKaminoLendingProgramMeta,
                                                                             final List<AccountMeta> keys,
                                                                             final long liquidityAmount,
@@ -3687,6 +3771,9 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
+  /// @param minAcceptableReceivedLiquidityAmount: u64
+  /// @param maxAllowedLtvOverridePercent: u64
   public record LiquidateObligationAndRedeemReserveCollateralV2IxData(Discriminator discriminator,
                                                                       long liquidityAmount,
                                                                       long minAcceptableReceivedLiquidityAmount,
@@ -3765,6 +3852,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final PublicKey userTransferAuthorityKey,
                                                        final PublicKey lendingMarketAuthorityKey,
@@ -3798,6 +3886,7 @@ public final class KaminoLendingProgram {
     return flashRepayReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount, borrowInstructionIndex);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long liquidityAmount,
@@ -3811,6 +3900,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record FlashRepayReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount, int borrowInstructionIndex) implements SerDe {  
 
     public static FlashRepayReserveLiquidityIxData read(final Instruction instruction) {
@@ -3881,6 +3971,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction flashBorrowReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final PublicKey userTransferAuthorityKey,
                                                         final PublicKey lendingMarketAuthorityKey,
@@ -3913,6 +4004,7 @@ public final class KaminoLendingProgram {
     return flashBorrowReserveLiquidity(invokedKaminoLendingProgramMeta, keys, liquidityAmount);
   }
 
+  /// @param liquidityAmount: u64
   public static Instruction flashBorrowReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final long liquidityAmount) {
@@ -3923,6 +4015,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param liquidityAmount: u64
   public record FlashBorrowReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
 
     public static FlashBorrowReserveLiquidityIxData read(final Instruction instruction) {
@@ -4453,6 +4546,7 @@ public final class KaminoLendingProgram {
   /// @param debtLiquidityMintKey The BorrowOrder::debt_liquidity_mint to set on order creation. Not editable on order
   ///                             updates.
   ///                             Ignored when cancelling the order.
+  /// @param minExpectedCurrentRemainingDebtAmount: u64
   public static Instruction setBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
                                            final PublicKey ownerKey,
                                            final PublicKey obligationKey,
@@ -4479,6 +4573,7 @@ public final class KaminoLendingProgram {
     return setBorrowOrder(invokedKaminoLendingProgramMeta, keys, orderConfig, minExpectedCurrentRemainingDebtAmount);
   }
 
+  /// @param minExpectedCurrentRemainingDebtAmount: u64
   public static Instruction setBorrowOrder(final AccountMeta invokedKaminoLendingProgramMeta,
                                            final List<AccountMeta> keys,
                                            final BorrowOrderConfigArgs orderConfig,
@@ -4491,6 +4586,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param minExpectedCurrentRemainingDebtAmount: u64
   public record SetBorrowOrderIxData(Discriminator discriminator, BorrowOrderConfigArgs orderConfig, long minExpectedCurrentRemainingDebtAmount) implements SerDe {  
 
     public static SetBorrowOrderIxData read(final Instruction instruction) {
@@ -5119,6 +5215,7 @@ public final class KaminoLendingProgram {
   ///                                          associated with the vault indicated by `_0` (needed to prove that Kvault is CPI'ing this
   ///                                          handler).
   /// @param progressCallbackCustomAccount1Key The second possible account (see the `progress_callback_custom_account_0` above).
+  /// @param collateralAmount: u64
   public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final PublicKey ownerKey,
                                               final PublicKey lendingMarketKey,
@@ -5158,6 +5255,7 @@ public final class KaminoLendingProgram {
     return enqueueToWithdraw(invokedKaminoLendingProgramMeta, keys, collateralAmount, progressCallbackType);
   }
 
+  /// @param collateralAmount: u64
   public static Instruction enqueueToWithdraw(final AccountMeta invokedKaminoLendingProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long collateralAmount,
@@ -5171,6 +5269,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param collateralAmount: u64
   public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount, ProgressCallbackType progressCallbackType) implements SerDe {  
 
     public static EnqueueToWithdrawIxData read(final Instruction instruction) {
@@ -5434,6 +5533,7 @@ public final class KaminoLendingProgram {
   ///                          `handler_withdraw_queued_liquidity`).
   /// @param withdrawTicketOwnerKey The owner of the Self::withdraw_ticket; needed only to return the rent of the
   ///                               WithdrawTicket account.
+  /// @param ticketSequenceNumber: u64
   public static Instruction recoverInvalidTicketCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final PublicKey payerKey,
                                                            final PublicKey lendingMarketKey,
@@ -5463,6 +5563,7 @@ public final class KaminoLendingProgram {
     return recoverInvalidTicketCollateral(invokedKaminoLendingProgramMeta, keys, ticketSequenceNumber);
   }
 
+  /// @param ticketSequenceNumber: u64
   public static Instruction recoverInvalidTicketCollateral(final AccountMeta invokedKaminoLendingProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final long ticketSequenceNumber) {
@@ -5473,6 +5574,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param ticketSequenceNumber: u64
   public record RecoverInvalidTicketCollateralIxData(Discriminator discriminator, long ticketSequenceNumber) implements SerDe {  
 
     public static RecoverInvalidTicketCollateralIxData read(final Instruction instruction) {
@@ -5553,6 +5655,8 @@ public final class KaminoLendingProgram {
   /// @param userDestinationCollateralKey Destination for returned ctokens (owner's token account).
   /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
   /// @param withdrawTicketKey Ticket to cancel - remains as tombstone until queue processes it.
+  /// @param ticketSequenceNumber: u64
+  /// @param collateralAmountToCancel: u64
   public static Instruction cancelWithdrawTicket(final AccountMeta invokedKaminoLendingProgramMeta,
                                                  final PublicKey ownerKey,
                                                  final PublicKey lendingMarketKey,
@@ -5579,6 +5683,8 @@ public final class KaminoLendingProgram {
     return cancelWithdrawTicket(invokedKaminoLendingProgramMeta, keys, ticketSequenceNumber, collateralAmountToCancel);
   }
 
+  /// @param ticketSequenceNumber: u64
+  /// @param collateralAmountToCancel: u64
   public static Instruction cancelWithdrawTicket(final AccountMeta invokedKaminoLendingProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long ticketSequenceNumber,
@@ -5592,6 +5698,8 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param ticketSequenceNumber: u64
+  /// @param collateralAmountToCancel: u64
   public record CancelWithdrawTicketIxData(Discriminator discriminator, long ticketSequenceNumber, long collateralAmountToCancel) implements SerDe {  
 
     public static CancelWithdrawTicketIxData read(final Instruction instruction) {

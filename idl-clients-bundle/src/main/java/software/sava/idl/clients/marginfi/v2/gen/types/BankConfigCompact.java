@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param depositLimit: u64
+/// @param borrowLimit: u64
 /// @param assetTag Determines what kinds of assets users of this bank can interact with. Options:
 ///                 * `ASSET_TAG_DEFAULT` (0) - A regular asset that can be comingled with any other regular
 ///                 asset or with `ASSET_TAG_SOL`
@@ -25,7 +27,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                    * 1 - Always set if bank created in 0.1.4 or later, or if migrated to the new oracle setup
 ///                    from a prior version. Not set in 0.1.3 or earlier banks that have not yet migrated.
 ///                    * 2, 4, 8, 16, etc - reserved for future use.
-/// @param totalAssetValueInitLimit USD denominated limit for calculating asset value for initialization margin requirements.
+/// @param totalAssetValueInitLimit: u64 USD denominated limit for calculating asset value for initialization margin requirements.
 ///                                 Example, if total SOL deposits are equal to $1M and the limit it set to $500K, then SOL
 ///                                 assets will be discounted by 50%.
 ///                                 
@@ -33,8 +35,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                 is useful for limiting the damage of oracle attacks.
 ///                                 
 ///                                 Value is UI USD value, for example value 100 -> $100
-/// @param oracleMaxAge Time window in seconds for the oracle price feed to be considered live.
-/// @param oracleMaxConfidence From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
+/// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
+/// @param oracleMaxConfidence: u32 From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
 ///                            the confidence adjustment is capped at 5% regardless of this value.
 ///                            * 0% = use the default (10%)
 ///                            * A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
@@ -52,7 +54,7 @@ public record BankConfigCompact(WrappedI80F48 assetWeightInit,
                                 byte[] pad0,
                                 long totalAssetValueInitLimit,
                                 int oracleMaxAge,
-                                int oracleMaxConfidence) implements SerDe {
+                                long oracleMaxConfidence) implements SerDe {
 
   public static final int BYTES = 231;
   public static final int PAD_0_LEN = 5;
@@ -106,7 +108,7 @@ public record BankConfigCompact(WrappedI80F48 assetWeightInit,
     i += 8;
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var oracleMaxConfidence = getInt32LE(_data, i);
+    final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new BankConfigCompact(assetWeightInit,
                                  assetWeightMaint,
                                  liabilityWeightInit,
@@ -147,7 +149,7 @@ public record BankConfigCompact(WrappedI80F48 assetWeightInit,
     i += 8;
     putInt16LE(_data, i, oracleMaxAge);
     i += 2;
-    putInt32LE(_data, i, oracleMaxConfidence);
+    putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     return i - _offset;
   }

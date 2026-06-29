@@ -11,7 +11,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param flowDirection 0 = outflow (withdraw/borrow), 1 = inflow (deposit/repay)
-/// @param nativeAmount Amount in native tokens
+/// @param nativeAmount: u64 Amount in native tokens
 /// @param currentTimestamp Unix timestamp when the flow was recorded
 public record RateLimitFlowEvent(Discriminator discriminator,
                                  PublicKey group,

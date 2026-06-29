@@ -28,6 +28,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param feedHash SHA-256 hash of the job schema oracles will execute to produce data
 ///                 for this feed.
 /// @param initializedAt The slot at which this account was initialized.
+/// @param permissions: u64
+/// @param maxVariance: u64
+/// @param minResponses: u32
+/// @param lutSlot: u64
+/// @param maxStaleness: u32
 public record PullFeedAccountData(PublicKey _address,
                                   Discriminator discriminator,
                                   OracleSubmission[] submissions,
@@ -37,7 +42,7 @@ public record PullFeedAccountData(PublicKey _address,
                                   long initializedAt,
                                   long permissions,
                                   long maxVariance,
-                                  int minResponses,
+                                  long minResponses,
                                   byte[] name,
                                   byte[] padding1,
                                   int permitWriteByAuthority,
@@ -47,7 +52,7 @@ public record PullFeedAccountData(PublicKey _address,
                                   long lutSlot,
                                   byte[] reserved1,
                                   CurrentResult result,
-                                  int maxStaleness,
+                                  long maxStaleness,
                                   byte[] padding2,
                                   CompactResult[] historicalResults,
                                   byte[] ebuf4,
@@ -120,9 +125,9 @@ public record PullFeedAccountData(PublicKey _address,
     return Filter.createMemCompFilter(MAX_VARIANCE_OFFSET, _data);
   }
 
-  public static Filter createMinResponsesFilter(final int minResponses) {
+  public static Filter createMinResponsesFilter(final long minResponses) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, minResponses);
+    putInt32LE(_data, 0, (int) minResponses);
     return Filter.createMemCompFilter(MIN_RESPONSES_OFFSET, _data);
   }
 
@@ -154,9 +159,9 @@ public record PullFeedAccountData(PublicKey _address,
     return Filter.createMemCompFilter(RESULT_OFFSET, result.write());
   }
 
-  public static Filter createMaxStalenessFilter(final int maxStaleness) {
+  public static Filter createMaxStalenessFilter(final long maxStaleness) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, maxStaleness);
+    putInt32LE(_data, 0, (int) maxStaleness);
     return Filter.createMemCompFilter(MAX_STALENESS_OFFSET, _data);
   }
 
@@ -194,7 +199,7 @@ public record PullFeedAccountData(PublicKey _address,
     i += 8;
     final var maxVariance = getInt64LE(_data, i);
     i += 8;
-    final var minResponses = getInt32LE(_data, i);
+    final var minResponses = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var name = new byte[32];
     i += SerDeUtil.readArray(name, _data, i);
@@ -214,7 +219,7 @@ public record PullFeedAccountData(PublicKey _address,
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var result = CurrentResult.read(_data, i);
     i += result.l();
-    final var maxStaleness = getInt32LE(_data, i);
+    final var maxStaleness = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding2 = new byte[12];
     i += SerDeUtil.readArray(padding2, _data, i);
@@ -268,7 +273,7 @@ public record PullFeedAccountData(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, maxVariance);
     i += 8;
-    putInt32LE(_data, i, minResponses);
+    putInt32LE(_data, i, (int) minResponses);
     i += 4;
     i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding1, 1, _data, i);
@@ -284,7 +289,7 @@ public record PullFeedAccountData(PublicKey _address,
     i += 8;
     i += SerDeUtil.writeArrayChecked(reserved1, 32, _data, i);
     i += result.write(_data, i);
-    putInt32LE(_data, i, maxStaleness);
+    putInt32LE(_data, i, (int) maxStaleness);
     i += 4;
     i += SerDeUtil.writeArrayChecked(padding2, 12, _data, i);
     i += SerDeUtil.writeArrayChecked(historicalResults, 32, _data, i);

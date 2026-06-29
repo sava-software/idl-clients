@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param redemptionAmount: u64
 public record ManagerWithdrawal(Discriminator discriminator, BigInteger managerShares, long redemptionAmount) implements NtbundleEvent {
 
   public static final int BYTES = 32;

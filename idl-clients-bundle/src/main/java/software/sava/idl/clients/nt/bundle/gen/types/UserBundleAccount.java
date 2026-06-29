@@ -20,6 +20,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param pendingDeposit: u64
+/// @param estimatedPendingWithdrawalValue: u64
+/// @param totalFeeCharged: u64
 public record UserBundleAccount(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey owner,

@@ -7,7 +7,11 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param rewardsAvailable Rewards available to distribute (topped up but not yet moved to vault.token_available)
+/// @param rewardPerSecond: u64
+/// @param lastIssuanceTs: u64
+/// @param rewardsAvailable: u64 Rewards available to distribute (topped up but not yet moved to vault.token_available)
+/// @param cumulativeRewardsDistributedAnalytics: u64
+/// @param padding: u64[]
 public record VaultRewardInfo(long rewardPerSecond,
                               long lastIssuanceTs,
                               long rewardsAvailable,

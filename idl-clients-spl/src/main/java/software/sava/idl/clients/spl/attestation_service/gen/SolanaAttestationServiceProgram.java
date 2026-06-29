@@ -742,6 +742,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param credentialKey Credential the Schema is associated with
   /// @param mintKey Mint of Schema Token
   /// @param sasPdaKey Program derived address used as program signer authority
+  /// @param maxSize: u64
   public static Instruction tokenizeSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                            final PublicKey payerKey,
                                            final PublicKey authorityKey,
@@ -765,6 +766,7 @@ public final class SolanaAttestationServiceProgram {
     return tokenizeSchema(invokedSolanaAttestationServiceProgramMeta, keys, maxSize);
   }
 
+  /// @param maxSize: u64
   public static Instruction tokenizeSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long maxSize) {
@@ -775,6 +777,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
+  /// @param maxSize: u64
   public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements SerDe {  
 
     public static TokenizeSchemaIxData read(final Instruction instruction) {
@@ -857,6 +860,7 @@ public final class SolanaAttestationServiceProgram {
   /// @param sasPdaKey Program derived address used as program signer authority
   /// @param recipientTokenAccountKey Associated token account of Recipient for Attestation Token
   /// @param recipientKey Wallet to receive Attestation Token
+  /// @param mintAccountSpace: u16
   public static Instruction createTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                        final PublicKey payerKey,
                                                        final PublicKey authorityKey,
@@ -906,6 +910,7 @@ public final class SolanaAttestationServiceProgram {
     );
   }
 
+  /// @param mintAccountSpace: u16
   public static Instruction createTokenizedAttestation(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final PublicKey nonce,
@@ -933,6 +938,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
+  /// @param mintAccountSpace: u16
   public record CreateTokenizedAttestationIxData(Discriminator discriminator,
                                                  PublicKey nonce,
                                                  byte[] data,

@@ -17,6 +17,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::LiquidationTransfer Borsh variant 31.
 /// Payload type: LiquidationTransferEvent.
 ///
+/// @param assetId: u64
+/// @param haircutRate: u16
 public record LiquidationTransferEvent(Discriminator discriminator,
                                        PublicKey liquidatee,
                                        PublicKey liquidator,

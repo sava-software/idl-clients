@@ -6,7 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param transactionIndex Index of the multisig transaction this proposal is associated with.
+/// @param transactionIndex: u64 Index of the multisig transaction this proposal is associated with.
 /// @param draft Whether the proposal should be initialized with status `Draft`.
 public record ProposalCreateArgs(long transactionIndex, boolean draft) implements SerDe {
 

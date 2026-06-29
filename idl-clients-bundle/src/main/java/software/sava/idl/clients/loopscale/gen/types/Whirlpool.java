@@ -24,6 +24,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tickSpacing: u16
+/// @param feeRate: u16
+/// @param protocolFeeRate: u16
+/// @param protocolFeeOwedA: u64
+/// @param protocolFeeOwedB: u64
+/// @param rewardLastUpdatedTimestamp: u64
 public record Whirlpool(PublicKey _address,
                         Discriminator discriminator,
                         PublicKey whirlpoolsConfig,

@@ -71,7 +71,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(int discriminator,
+  public record InitializeIxData(long discriminator,
                                  Authorized arg0,
                                  Lockup arg1) implements SerDe {  
 
@@ -91,7 +91,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = Authorized.read(_data, i);
       i += arg0.l();
@@ -102,7 +102,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += arg0.write(_data, i);
       i += arg1.write(_data, i);
@@ -171,7 +171,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeIxData(int discriminator,
+  public record AuthorizeIxData(long discriminator,
                                 PublicKey arg0,
                                 StakeAuthorize arg1) implements SerDe {  
 
@@ -191,7 +191,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = readPubKey(_data, i);
       i += 32;
@@ -202,7 +202,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       arg0.write(_data, i);
       i += 32;
@@ -265,7 +265,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DelegateStakeIxData(int discriminator) implements SerDe {  
+  public record DelegateStakeIxData(long discriminator) implements SerDe {  
 
     public static DelegateStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -279,14 +279,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new DelegateStakeIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -315,6 +315,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Stake account to be split; must be in the Initialized or Stake state
   /// @param splitStakeKey Uninitialized stake account that will take the split-off amount
   /// @param stakeAuthorityKey Stake authority
+  /// @param args: u64
   public static Instruction split(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                   final PublicKey stakeKey,
                                   final PublicKey splitStakeKey,
@@ -328,6 +329,7 @@ public final class SolanaStakeInterfaceProgram {
     return split(invokedSolanaStakeInterfaceProgramMeta, keys, args);
   }
 
+  /// @param args: u64
   public static Instruction split(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                   final List<AccountMeta> keys,
                                   final long args) {
@@ -338,7 +340,8 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record SplitIxData(int discriminator, long args) implements SerDe {  
+  /// @param args: u64
+  public record SplitIxData(long discriminator, long args) implements SerDe {  
 
     public static SplitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -355,7 +358,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var args = getInt64LE(_data, i);
       return new SplitIxData(discriminator, args);
@@ -364,7 +367,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, args);
       i += 8;
@@ -404,6 +407,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param recipientKey Recipient account
   /// @param withdrawAuthorityKey Withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if before lockup expiration
+  /// @param args: u64
   public static Instruction withdraw(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                      final SolanaAccounts solanaAccounts,
                                      final PublicKey stakeKey,
@@ -421,6 +425,7 @@ public final class SolanaStakeInterfaceProgram {
     return withdraw(invokedSolanaStakeInterfaceProgramMeta, keys, args);
   }
 
+  /// @param args: u64
   public static Instruction withdraw(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long args) {
@@ -431,7 +436,8 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record WithdrawIxData(int discriminator, long args) implements SerDe {  
+  /// @param args: u64
+  public record WithdrawIxData(long discriminator, long args) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -448,7 +454,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var args = getInt64LE(_data, i);
       return new WithdrawIxData(discriminator, args);
@@ -457,7 +463,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, args);
       i += 8;
@@ -506,7 +512,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DeactivateIxData(int discriminator) implements SerDe {  
+  public record DeactivateIxData(long discriminator) implements SerDe {  
 
     public static DeactivateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -520,14 +526,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new DeactivateIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -573,7 +579,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record SetLockupIxData(int discriminator, LockupArgs arg0) implements SerDe {  
+  public record SetLockupIxData(long discriminator, LockupArgs arg0) implements SerDe {  
 
     public static SetLockupIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -588,7 +594,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = LockupArgs.read(_data, i);
       return new SetLockupIxData(discriminator, arg0);
@@ -597,7 +603,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += arg0.write(_data, i);
       return i - _offset;
@@ -652,7 +658,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record MergeIxData(int discriminator) implements SerDe {  
+  public record MergeIxData(long discriminator) implements SerDe {  
 
     public static MergeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -666,14 +672,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new MergeIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -731,7 +737,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeWithSeedIxData(int discriminator, AuthorizeWithSeedArgs arg0) implements SerDe {  
+  public record AuthorizeWithSeedIxData(long discriminator, AuthorizeWithSeedArgs arg0) implements SerDe {  
 
     public static AuthorizeWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -746,7 +752,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = AuthorizeWithSeedArgs.read(_data, i);
       return new AuthorizeWithSeedIxData(discriminator, arg0);
@@ -755,7 +761,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += arg0.write(_data, i);
       return i - _offset;
@@ -809,7 +815,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record InitializeCheckedIxData(int discriminator) implements SerDe {  
+  public record InitializeCheckedIxData(long discriminator) implements SerDe {  
 
     public static InitializeCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -823,14 +829,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new InitializeCheckedIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -894,7 +900,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeCheckedIxData(int discriminator, StakeAuthorize stakeAuthorize) implements SerDe {  
+  public record AuthorizeCheckedIxData(long discriminator, StakeAuthorize stakeAuthorize) implements SerDe {  
 
     public static AuthorizeCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -911,7 +917,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var stakeAuthorize = StakeAuthorize.read(_data, i);
       return new AuthorizeCheckedIxData(discriminator, stakeAuthorize);
@@ -920,7 +926,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += stakeAuthorize.write(_data, i);
       return i - _offset;
@@ -985,7 +991,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeCheckedWithSeedIxData(int discriminator, AuthorizeCheckedWithSeedArgs arg0) implements SerDe {  
+  public record AuthorizeCheckedWithSeedIxData(long discriminator, AuthorizeCheckedWithSeedArgs arg0) implements SerDe {  
 
     public static AuthorizeCheckedWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1000,7 +1006,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = AuthorizeCheckedWithSeedArgs.read(_data, i);
       return new AuthorizeCheckedWithSeedIxData(discriminator, arg0);
@@ -1009,7 +1015,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += arg0.write(_data, i);
       return i - _offset;
@@ -1064,7 +1070,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record SetLockupCheckedIxData(int discriminator, LockupCheckedArgs arg0) implements SerDe {  
+  public record SetLockupCheckedIxData(long discriminator, LockupCheckedArgs arg0) implements SerDe {  
 
     public static SetLockupCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1079,7 +1085,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var arg0 = LockupCheckedArgs.read(_data, i);
       return new SetLockupCheckedIxData(discriminator, arg0);
@@ -1088,7 +1094,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += arg0.write(_data, i);
       return i - _offset;
@@ -1109,7 +1115,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
   }
 
-  public record GetMinimumDelegationIxData(int discriminator) implements SerDe {  
+  public record GetMinimumDelegationIxData(long discriminator) implements SerDe {  
 
     public static GetMinimumDelegationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1123,14 +1129,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new GetMinimumDelegationIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -1179,7 +1185,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DeactivateDelinquentIxData(int discriminator) implements SerDe {  
+  public record DeactivateDelinquentIxData(long discriminator) implements SerDe {  
 
     public static DeactivateDelinquentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1193,14 +1199,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new DeactivateDelinquentIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -1220,7 +1226,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
   }
 
-  public record RedelegateIxData(int discriminator) implements SerDe {  
+  public record RedelegateIxData(long discriminator) implements SerDe {  
 
     public static RedelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1234,14 +1240,14 @@ public final class SolanaStakeInterfaceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new RedelegateIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -1270,6 +1276,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param sourceStakeKey Active source stake account
   /// @param destinationStakeKey Active or inactive destination stake account
   /// @param stakeAuthorityKey Stake authority
+  /// @param args: u64
   public static Instruction moveStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                       final PublicKey sourceStakeKey,
                                       final PublicKey destinationStakeKey,
@@ -1283,6 +1290,7 @@ public final class SolanaStakeInterfaceProgram {
     return moveStake(invokedSolanaStakeInterfaceProgramMeta, keys, args);
   }
 
+  /// @param args: u64
   public static Instruction moveStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long args) {
@@ -1293,7 +1301,8 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record MoveStakeIxData(int discriminator, long args) implements SerDe {  
+  /// @param args: u64
+  public record MoveStakeIxData(long discriminator, long args) implements SerDe {  
 
     public static MoveStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1310,7 +1319,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var args = getInt64LE(_data, i);
       return new MoveStakeIxData(discriminator, args);
@@ -1319,7 +1328,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, args);
       i += 8;
@@ -1350,6 +1359,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param sourceStakeKey Active or inactive source stake account
   /// @param destinationStakeKey Mergeable destination stake account
   /// @param stakeAuthorityKey Stake authority
+  /// @param args: u64
   public static Instruction moveLamports(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                          final PublicKey sourceStakeKey,
                                          final PublicKey destinationStakeKey,
@@ -1363,6 +1373,7 @@ public final class SolanaStakeInterfaceProgram {
     return moveLamports(invokedSolanaStakeInterfaceProgramMeta, keys, args);
   }
 
+  /// @param args: u64
   public static Instruction moveLamports(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long args) {
@@ -1373,7 +1384,8 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record MoveLamportsIxData(int discriminator, long args) implements SerDe {  
+  /// @param args: u64
+  public record MoveLamportsIxData(long discriminator, long args) implements SerDe {  
 
     public static MoveLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1390,7 +1402,7 @@ public final class SolanaStakeInterfaceProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var args = getInt64LE(_data, i);
       return new MoveLamportsIxData(discriminator, args);
@@ -1399,7 +1411,7 @@ public final class SolanaStakeInterfaceProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, args);
       i += 8;

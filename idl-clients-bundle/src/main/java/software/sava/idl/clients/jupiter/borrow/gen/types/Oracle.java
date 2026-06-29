@@ -15,6 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param nonce: u16
 public record Oracle(PublicKey _address,
                      Discriminator discriminator,
                      int nonce,

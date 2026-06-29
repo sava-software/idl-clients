@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Minimal representation of a spot position within a User account
 ///
-/// @param scaledBalance The scaled balance of the position.
+/// @param scaledBalance: u64 The scaled balance of the position.
 ///                      * Precision: SPOT_BALANCE_PRECISION
 /// @param openBids How many spot bids the user has open
 ///                 * Precision: token mint precision
@@ -19,7 +19,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                 * Precision: token mint precision
 /// @param cumulativeDeposits The cumulative deposits/borrows a user has made
 ///                           * Precision: token mint precision
-/// @param marketIndex The market index of the corresponding spot market
+/// @param marketIndex: u16 The market index of the corresponding spot market
 /// @param balanceType Whether the position is deposit or borrow
 /// @param openOrders Number of open orders
 /// @param padding Padding

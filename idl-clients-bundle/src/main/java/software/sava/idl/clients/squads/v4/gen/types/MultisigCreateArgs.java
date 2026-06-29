@@ -18,14 +18,14 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param configAuthority The authority that can configure the multisig: add/remove members, change the threshold, etc.
 ///                        Should be set to `None` for autonomous multisigs.
-/// @param threshold The number of signatures required to execute a transaction.
+/// @param threshold: u16 The number of signatures required to execute a transaction.
 /// @param members The members of the multisig.
-/// @param timeLock How many seconds must pass between transaction voting, settlement, and execution.
+/// @param timeLock: u32 How many seconds must pass between transaction voting, settlement, and execution.
 /// @param memo Memo is used for indexing only.
 public record MultisigCreateArgs(PublicKey configAuthority,
                                  int threshold,
                                  Member[] members,
-                                 int timeLock,
+                                 long timeLock,
                                  String memo, byte[] _memo) implements SerDe {
 
   public static final int CONFIG_AUTHORITY_OFFSET = 1;
@@ -33,7 +33,7 @@ public record MultisigCreateArgs(PublicKey configAuthority,
   public static MultisigCreateArgs createRecord(final PublicKey configAuthority,
                                                 final int threshold,
                                                 final Member[] members,
-                                                final int timeLock,
+                                                final long timeLock,
                                                 final String memo) {
     return new MultisigCreateArgs(configAuthority,
                                   threshold,
@@ -60,7 +60,7 @@ public record MultisigCreateArgs(PublicKey configAuthority,
     i += 2;
     final var members = SerDeUtil.readVector(4, Member.class, Member::read, _data, i);
     i += SerDeUtil.lenVector(4, members);
-    final var timeLock = getInt32LE(_data, i);
+    final var timeLock = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final byte[] _memo;
     final String memo;
@@ -89,7 +89,7 @@ public record MultisigCreateArgs(PublicKey configAuthority,
     putInt16LE(_data, i, threshold);
     i += 2;
     i += SerDeUtil.writeVector(4, members, _data, i);
-    putInt32LE(_data, i, timeLock);
+    putInt32LE(_data, i, (int) timeLock);
     i += 4;
     i += SerDeUtil.writeOptionalVector(1, 4, _memo, _data, i);
     return i - _offset;

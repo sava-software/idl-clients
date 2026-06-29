@@ -12,11 +12,12 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param reward: u32
 public record CostWhitelistEvent(Discriminator discriminator,
                                  PublicKey[] feeds,
                                  PublicKey[] oracles,
                                  BigInteger[][] values,
-                                 int reward) implements SbOnDemandEvent {
+                                 long reward) implements SbOnDemandEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(56, 107, 191, 127, 116, 6, 138, 149);
 
@@ -34,7 +35,7 @@ public record CostWhitelistEvent(Discriminator discriminator,
     i += SerDeUtil.lenVector(4, oracles);
     final var values = SerDeUtil.readMultiDimension128Vector(4, _data, i);
     i += SerDeUtil.len128Vector(4, values);
-    final var reward = getInt32LE(_data, i);
+    final var reward = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new CostWhitelistEvent(discriminator,
                                   feeds,
                                   oracles,
@@ -48,7 +49,7 @@ public record CostWhitelistEvent(Discriminator discriminator,
     i += SerDeUtil.writeVector(4, feeds, _data, i);
     i += SerDeUtil.writeVector(4, oracles, _data, i);
     i += SerDeUtil.write128Vector(4, values, _data, i);
-    putInt32LE(_data, i, reward);
+    putInt32LE(_data, i, (int) reward);
     i += 4;
     return i - _offset;
   }

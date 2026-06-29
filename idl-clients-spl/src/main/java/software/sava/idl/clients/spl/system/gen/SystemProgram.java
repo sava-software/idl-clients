@@ -37,6 +37,8 @@ public final class SystemProgram {
     );
   }
 
+  /// @param lamports: u64
+  /// @param space: u64
   public static Instruction createAccount(final AccountMeta invokedSystemProgramMeta,
                                           final PublicKey payerKey,
                                           final PublicKey newAccountKey,
@@ -56,6 +58,8 @@ public final class SystemProgram {
     );
   }
 
+  /// @param lamports: u64
+  /// @param space: u64
   public static Instruction createAccount(final AccountMeta invokedSystemProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long lamports,
@@ -72,7 +76,9 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record CreateAccountIxData(int discriminator,
+  /// @param lamports: u64
+  /// @param space: u64
+  public record CreateAccountIxData(long discriminator,
                                     long lamports,
                                     long space,
                                     PublicKey programAddress) implements SerDe {  
@@ -94,7 +100,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var lamports = getInt64LE(_data, i);
       i += 8;
@@ -110,7 +116,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, lamports);
       i += 8;
@@ -154,7 +160,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AssignIxData(int discriminator, PublicKey programAddress) implements SerDe {  
+  public record AssignIxData(long discriminator, PublicKey programAddress) implements SerDe {  
 
     public static AssignIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -171,7 +177,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var programAddress = readPubKey(_data, i);
       return new AssignIxData(discriminator, programAddress);
@@ -180,7 +186,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       programAddress.write(_data, i);
       i += 32;
@@ -203,6 +209,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction transferSol(final AccountMeta invokedSystemProgramMeta,
                                         final PublicKey sourceKey,
                                         final PublicKey destinationKey,
@@ -214,6 +221,7 @@ public final class SystemProgram {
     return transferSol(invokedSystemProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction transferSol(final AccountMeta invokedSystemProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long amount) {
@@ -224,7 +232,8 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record TransferSolIxData(int discriminator, long amount) implements SerDe {  
+  /// @param amount: u64
+  public record TransferSolIxData(long discriminator, long amount) implements SerDe {  
 
     public static TransferSolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -241,7 +250,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var amount = getInt64LE(_data, i);
       return new TransferSolIxData(discriminator, amount);
@@ -250,7 +259,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, amount);
       i += 8;
@@ -277,6 +286,8 @@ public final class SystemProgram {
     return keys;
   }
 
+  /// @param amount: u64
+  /// @param space: u64
   public static Instruction createAccountWithSeed(final AccountMeta invokedSystemProgramMeta,
                                                   final PublicKey payerKey,
                                                   final PublicKey newAccountKey,
@@ -302,6 +313,8 @@ public final class SystemProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param space: u64
   public static Instruction createAccountWithSeed(final AccountMeta invokedSystemProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final PublicKey base,
@@ -327,7 +340,9 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record CreateAccountWithSeedIxData(int discriminator,
+  /// @param amount: u64
+  /// @param space: u64
+  public record CreateAccountWithSeedIxData(long discriminator,
                                             PublicKey base,
                                             String seed, byte[] _seed,
                                             long amount,
@@ -342,7 +357,7 @@ public final class SystemProgram {
     public static final int BASE_OFFSET = 4;
     public static final int SEED_OFFSET = 36;
 
-    public static CreateAccountWithSeedIxData createRecord(final int discriminator,
+    public static CreateAccountWithSeedIxData createRecord(final long discriminator,
                                                            final PublicKey base,
                                                            final String seed,
                                                            final long amount,
@@ -362,7 +377,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
@@ -387,7 +402,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       base.write(_data, i);
       i += 32;
@@ -447,7 +462,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AdvanceNonceAccountIxData(int discriminator) implements SerDe {  
+  public record AdvanceNonceAccountIxData(long discriminator) implements SerDe {  
 
     public static AdvanceNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -461,14 +476,14 @@ public final class SystemProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new AdvanceNonceAccountIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -494,6 +509,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param withdrawAmount: u64
   public static Instruction withdrawNonceAccount(final AccountMeta invokedSystemProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey nonceAccountKey,
@@ -509,6 +525,7 @@ public final class SystemProgram {
     return withdrawNonceAccount(invokedSystemProgramMeta, keys, withdrawAmount);
   }
 
+  /// @param withdrawAmount: u64
   public static Instruction withdrawNonceAccount(final AccountMeta invokedSystemProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long withdrawAmount) {
@@ -519,7 +536,8 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record WithdrawNonceAccountIxData(int discriminator, long withdrawAmount) implements SerDe {  
+  /// @param withdrawAmount: u64
+  public record WithdrawNonceAccountIxData(long discriminator, long withdrawAmount) implements SerDe {  
 
     public static WithdrawNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -536,7 +554,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var withdrawAmount = getInt64LE(_data, i);
       return new WithdrawNonceAccountIxData(discriminator, withdrawAmount);
@@ -545,7 +563,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, withdrawAmount);
       i += 8;
@@ -590,7 +608,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record InitializeNonceAccountIxData(int discriminator, PublicKey nonceAuthority) implements SerDe {  
+  public record InitializeNonceAccountIxData(long discriminator, PublicKey nonceAuthority) implements SerDe {  
 
     public static InitializeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -607,7 +625,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var nonceAuthority = readPubKey(_data, i);
       return new InitializeNonceAccountIxData(discriminator, nonceAuthority);
@@ -616,7 +634,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       nonceAuthority.write(_data, i);
       i += 32;
@@ -660,7 +678,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AuthorizeNonceAccountIxData(int discriminator, PublicKey newNonceAuthority) implements SerDe {  
+  public record AuthorizeNonceAccountIxData(long discriminator, PublicKey newNonceAuthority) implements SerDe {  
 
     public static AuthorizeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -677,7 +695,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var newNonceAuthority = readPubKey(_data, i);
       return new AuthorizeNonceAccountIxData(discriminator, newNonceAuthority);
@@ -686,7 +704,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       newNonceAuthority.write(_data, i);
       i += 32;
@@ -707,6 +725,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param space: u64
   public static Instruction allocate(final AccountMeta invokedSystemProgramMeta,
                                      final PublicKey newAccountKey,
                                      final long space) {
@@ -716,6 +735,7 @@ public final class SystemProgram {
     return allocate(invokedSystemProgramMeta, keys, space);
   }
 
+  /// @param space: u64
   public static Instruction allocate(final AccountMeta invokedSystemProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long space) {
@@ -726,7 +746,8 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AllocateIxData(int discriminator, long space) implements SerDe {  
+  /// @param space: u64
+  public record AllocateIxData(long discriminator, long space) implements SerDe {  
 
     public static AllocateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -743,7 +764,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var space = getInt64LE(_data, i);
       return new AllocateIxData(discriminator, space);
@@ -752,7 +773,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, space);
       i += 8;
@@ -775,6 +796,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param space: u64
   public static Instruction allocateWithSeed(final AccountMeta invokedSystemProgramMeta,
                                              final PublicKey newAccountKey,
                                              final PublicKey baseAccountKey,
@@ -796,6 +818,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param space: u64
   public static Instruction allocateWithSeed(final AccountMeta invokedSystemProgramMeta,
                                              final List<AccountMeta> keys,
                                              final PublicKey base,
@@ -818,7 +841,8 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AllocateWithSeedIxData(int discriminator,
+  /// @param space: u64
+  public record AllocateWithSeedIxData(long discriminator,
                                        PublicKey base,
                                        String seed, byte[] _seed,
                                        long space,
@@ -832,7 +856,7 @@ public final class SystemProgram {
     public static final int BASE_OFFSET = 4;
     public static final int SEED_OFFSET = 36;
 
-    public static AllocateWithSeedIxData createRecord(final int discriminator,
+    public static AllocateWithSeedIxData createRecord(final long discriminator,
                                                       final PublicKey base,
                                                       final String seed,
                                                       final long space,
@@ -850,7 +874,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
@@ -872,7 +896,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       base.write(_data, i);
       i += 32;
@@ -945,7 +969,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AssignWithSeedIxData(int discriminator,
+  public record AssignWithSeedIxData(long discriminator,
                                      PublicKey base,
                                      String seed, byte[] _seed,
                                      PublicKey programAddress) implements SerDe {  
@@ -958,7 +982,7 @@ public final class SystemProgram {
     public static final int BASE_OFFSET = 4;
     public static final int SEED_OFFSET = 36;
 
-    public static AssignWithSeedIxData createRecord(final int discriminator,
+    public static AssignWithSeedIxData createRecord(final long discriminator,
                                                     final PublicKey base,
                                                     final String seed,
                                                     final PublicKey programAddress) {
@@ -974,7 +998,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var base = readPubKey(_data, i);
       i += 32;
@@ -993,7 +1017,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       base.write(_data, i);
       i += 32;
@@ -1024,6 +1048,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction transferSolWithSeed(final AccountMeta invokedSystemProgramMeta,
                                                 final PublicKey sourceKey,
                                                 final PublicKey baseAccountKey,
@@ -1045,6 +1070,7 @@ public final class SystemProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction transferSolWithSeed(final AccountMeta invokedSystemProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount,
@@ -1064,7 +1090,8 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record TransferSolWithSeedIxData(int discriminator,
+  /// @param amount: u64
+  public record TransferSolWithSeedIxData(long discriminator,
                                           long amount,
                                           String fromSeed, byte[] _fromSeed,
                                           PublicKey fromOwner) implements SerDe {  
@@ -1077,7 +1104,7 @@ public final class SystemProgram {
     public static final int AMOUNT_OFFSET = 4;
     public static final int FROM_SEED_OFFSET = 12;
 
-    public static TransferSolWithSeedIxData createRecord(final int discriminator,
+    public static TransferSolWithSeedIxData createRecord(final long discriminator,
                                                          final long amount,
                                                          final String fromSeed,
                                                          final PublicKey fromOwner) {
@@ -1093,7 +1120,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var amount = getInt64LE(_data, i);
       i += 8;
@@ -1112,7 +1139,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, amount);
       i += 8;
@@ -1155,7 +1182,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record UpgradeNonceAccountIxData(int discriminator) implements SerDe {  
+  public record UpgradeNonceAccountIxData(long discriminator) implements SerDe {  
 
     public static UpgradeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1169,14 +1196,14 @@ public final class SystemProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new UpgradeNonceAccountIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -1199,6 +1226,8 @@ public final class SystemProgram {
     return keys;
   }
 
+  /// @param lamports: u64
+  /// @param space: u64
   public static Instruction createAccountAllowPrefund(final AccountMeta invokedSystemProgramMeta,
                                                       final PublicKey newAccountKey,
                                                       final PublicKey payerKey,
@@ -1218,6 +1247,8 @@ public final class SystemProgram {
     );
   }
 
+  /// @param lamports: u64
+  /// @param space: u64
   public static Instruction createAccountAllowPrefund(final AccountMeta invokedSystemProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final long lamports,
@@ -1234,7 +1265,9 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record CreateAccountAllowPrefundIxData(int discriminator,
+  /// @param lamports: u64
+  /// @param space: u64
+  public record CreateAccountAllowPrefundIxData(long discriminator,
                                                 long lamports,
                                                 long space,
                                                 PublicKey programAddress) implements SerDe {  
@@ -1256,7 +1289,7 @@ public final class SystemProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var lamports = getInt64LE(_data, i);
       i += 8;
@@ -1272,7 +1305,7 @@ public final class SystemProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, lamports);
       i += 8;

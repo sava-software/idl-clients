@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param rewardIndex: u64
+/// @param rewardDuration: u64
 public record InitializeReward(Discriminator discriminator,
                                PublicKey lbPair,
                                PublicKey rewardMint,

@@ -18,25 +18,25 @@ public final class ComputeBudgetProgram {
 
   public static final Discriminator REQUEST_UNITS_DISCRIMINATOR = toDiscriminator(0);
 
-  /// @param units Units to request for transaction-wide compute.
-  /// @param additionalFee Prioritization fee lamports.
+  /// @param units: u32 Units to request for transaction-wide compute.
+  /// @param additionalFee: u32 Prioritization fee lamports.
   public static Instruction requestUnits(final AccountMeta invokedComputeBudgetProgramMeta,
-                                         final int units,
-                                         final int additionalFee) {
+                                         final long units,
+                                         final long additionalFee) {
     final byte[] _data = new byte[9];
     int i = REQUEST_UNITS_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, units);
+    putInt32LE(_data, i, (int) units);
     i += 4;
-    putInt32LE(_data, i, additionalFee);
+    putInt32LE(_data, i, (int) additionalFee);
 
     return Instruction.createInstruction(invokedComputeBudgetProgramMeta, List.of(), _data);
   }
 
-  /// @param units Units to request for transaction-wide compute.
-  /// @param additionalFee Prioritization fee lamports.
+  /// @param units: u32 Units to request for transaction-wide compute.
+  /// @param additionalFee: u32 Prioritization fee lamports.
   public record RequestUnitsIxData(int discriminator,
-                                   int units,
-                                   int additionalFee) implements SerDe {  
+                                   long units,
+                                   long additionalFee) implements SerDe {  
 
     public static RequestUnitsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -56,9 +56,9 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       final var discriminator = _data[i] & 0xFF;
       ++i;
-      final var units = getInt32LE(_data, i);
+      final var units = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var additionalFee = getInt32LE(_data, i);
+      final var additionalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new RequestUnitsIxData(discriminator, units, additionalFee);
     }
 
@@ -67,9 +67,9 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, units);
+      putInt32LE(_data, i, (int) units);
       i += 4;
-      putInt32LE(_data, i, additionalFee);
+      putInt32LE(_data, i, (int) additionalFee);
       i += 4;
       return i - _offset;
     }
@@ -82,20 +82,20 @@ public final class ComputeBudgetProgram {
 
   public static final Discriminator REQUEST_HEAP_FRAME_DISCRIMINATOR = toDiscriminator(1);
 
-  /// @param bytes Requested transaction-wide program heap size in bytes.
+  /// @param bytes: u32 Requested transaction-wide program heap size in bytes.
   ///              Must be multiple of 1024. Applies to each program, including CPIs.
   public static Instruction requestHeapFrame(final AccountMeta invokedComputeBudgetProgramMeta,
-                                             final int bytes) {
+                                             final long bytes) {
     final byte[] _data = new byte[5];
     int i = REQUEST_HEAP_FRAME_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, bytes);
+    putInt32LE(_data, i, (int) bytes);
 
     return Instruction.createInstruction(invokedComputeBudgetProgramMeta, List.of(), _data);
   }
 
-  /// @param bytes Requested transaction-wide program heap size in bytes.
+  /// @param bytes: u32 Requested transaction-wide program heap size in bytes.
   ///              Must be multiple of 1024. Applies to each program, including CPIs.
-  public record RequestHeapFrameIxData(int discriminator, int bytes) implements SerDe {  
+  public record RequestHeapFrameIxData(int discriminator, long bytes) implements SerDe {  
 
     public static RequestHeapFrameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -114,7 +114,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       final var discriminator = _data[i] & 0xFF;
       ++i;
-      final var bytes = getInt32LE(_data, i);
+      final var bytes = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new RequestHeapFrameIxData(discriminator, bytes);
     }
 
@@ -123,7 +123,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, bytes);
+      putInt32LE(_data, i, (int) bytes);
       i += 4;
       return i - _offset;
     }
@@ -136,18 +136,18 @@ public final class ComputeBudgetProgram {
 
   public static final Discriminator SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR = toDiscriminator(2);
 
-  /// @param units Transaction-wide compute unit limit.
+  /// @param units: u32 Transaction-wide compute unit limit.
   public static Instruction setComputeUnitLimit(final AccountMeta invokedComputeBudgetProgramMeta,
-                                                final int units) {
+                                                final long units) {
     final byte[] _data = new byte[5];
     int i = SET_COMPUTE_UNIT_LIMIT_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, units);
+    putInt32LE(_data, i, (int) units);
 
     return Instruction.createInstruction(invokedComputeBudgetProgramMeta, List.of(), _data);
   }
 
-  /// @param units Transaction-wide compute unit limit.
-  public record SetComputeUnitLimitIxData(int discriminator, int units) implements SerDe {  
+  /// @param units: u32 Transaction-wide compute unit limit.
+  public record SetComputeUnitLimitIxData(int discriminator, long units) implements SerDe {  
 
     public static SetComputeUnitLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -166,7 +166,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       final var discriminator = _data[i] & 0xFF;
       ++i;
-      final var units = getInt32LE(_data, i);
+      final var units = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SetComputeUnitLimitIxData(discriminator, units);
     }
 
@@ -175,7 +175,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, units);
+      putInt32LE(_data, i, (int) units);
       i += 4;
       return i - _offset;
     }
@@ -188,7 +188,7 @@ public final class ComputeBudgetProgram {
 
   public static final Discriminator SET_COMPUTE_UNIT_PRICE_DISCRIMINATOR = toDiscriminator(3);
 
-  /// @param microLamports Transaction compute unit price used for prioritization fees.
+  /// @param microLamports: u64 Transaction compute unit price used for prioritization fees.
   public static Instruction setComputeUnitPrice(final AccountMeta invokedComputeBudgetProgramMeta,
                                                 final long microLamports) {
     final byte[] _data = new byte[9];
@@ -198,7 +198,7 @@ public final class ComputeBudgetProgram {
     return Instruction.createInstruction(invokedComputeBudgetProgramMeta, List.of(), _data);
   }
 
-  /// @param microLamports Transaction compute unit price used for prioritization fees.
+  /// @param microLamports: u64 Transaction compute unit price used for prioritization fees.
   public record SetComputeUnitPriceIxData(int discriminator, long microLamports) implements SerDe {  
 
     public static SetComputeUnitPriceIxData read(final Instruction instruction) {
@@ -240,16 +240,18 @@ public final class ComputeBudgetProgram {
 
   public static final Discriminator SET_LOADED_ACCOUNTS_DATA_SIZE_LIMIT_DISCRIMINATOR = toDiscriminator(4);
 
+  /// @param accountDataSizeLimit: u32
   public static Instruction setLoadedAccountsDataSizeLimit(final AccountMeta invokedComputeBudgetProgramMeta,
-                                                           final int accountDataSizeLimit) {
+                                                           final long accountDataSizeLimit) {
     final byte[] _data = new byte[5];
     int i = SET_LOADED_ACCOUNTS_DATA_SIZE_LIMIT_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, accountDataSizeLimit);
+    putInt32LE(_data, i, (int) accountDataSizeLimit);
 
     return Instruction.createInstruction(invokedComputeBudgetProgramMeta, List.of(), _data);
   }
 
-  public record SetLoadedAccountsDataSizeLimitIxData(int discriminator, int accountDataSizeLimit) implements SerDe {  
+  /// @param accountDataSizeLimit: u32
+  public record SetLoadedAccountsDataSizeLimitIxData(int discriminator, long accountDataSizeLimit) implements SerDe {  
 
     public static SetLoadedAccountsDataSizeLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -268,7 +270,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       final var discriminator = _data[i] & 0xFF;
       ++i;
-      final var accountDataSizeLimit = getInt32LE(_data, i);
+      final var accountDataSizeLimit = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SetLoadedAccountsDataSizeLimitIxData(discriminator, accountDataSizeLimit);
     }
 
@@ -277,7 +279,7 @@ public final class ComputeBudgetProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, accountDataSizeLimit);
+      putInt32LE(_data, i, (int) accountDataSizeLimit);
       i += 4;
       return i - _offset;
     }

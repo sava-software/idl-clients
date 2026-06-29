@@ -4,7 +4,7 @@ package software.sava.idl.clients.marginfi.v2.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
@@ -22,8 +22,8 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
                                     WrappedI80F48 protocolFixedFeeApr,
                                     WrappedI80F48 protocolIrFee,
                                     WrappedI80F48 protocolOriginationFee,
-                                    OptionalInt zeroUtilRate,
-                                    OptionalInt hundredUtilRate,
+                                    OptionalLong zeroUtilRate,
+                                    OptionalLong hundredUtilRate,
                                     RatePoint[] points) implements SerDe {
 
   public static final int INSURANCE_FEE_FIXED_APR_OFFSET = 1;
@@ -78,22 +78,22 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
       protocolOriginationFee = WrappedI80F48.read(_data, i);
       i += protocolOriginationFee.l();
     }
-    final OptionalInt zeroUtilRate;
+    final OptionalLong zeroUtilRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      zeroUtilRate = OptionalInt.empty();
+      zeroUtilRate = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      zeroUtilRate = OptionalInt.of(getInt32LE(_data, i));
+      zeroUtilRate = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
-    final OptionalInt hundredUtilRate;
+    final OptionalLong hundredUtilRate;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      hundredUtilRate = OptionalInt.empty();
+      hundredUtilRate = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      hundredUtilRate = OptionalInt.of(getInt32LE(_data, i));
+      hundredUtilRate = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final RatePoint[] points;
@@ -122,8 +122,8 @@ public record InterestRateConfigOpt(WrappedI80F48 insuranceFeeFixedApr,
     i += SerDeUtil.writeOptional(1, protocolFixedFeeApr, _data, i);
     i += SerDeUtil.writeOptional(1, protocolIrFee, _data, i);
     i += SerDeUtil.writeOptional(1, protocolOriginationFee, _data, i);
-    i += SerDeUtil.writeOptional(1, zeroUtilRate, _data, i);
-    i += SerDeUtil.writeOptional(1, hundredUtilRate, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, zeroUtilRate, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, hundredUtilRate, _data, i);
     if (points == null || points.length == 0) {
       _data[i++] = 0;
     } else {

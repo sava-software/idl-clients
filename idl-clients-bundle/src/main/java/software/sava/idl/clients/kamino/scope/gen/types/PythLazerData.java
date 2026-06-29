@@ -8,9 +8,11 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param feedId: u16
+/// @param confidenceFactor: u32
 public record PythLazerData(int feedId,
                             int exponent,
-                            int confidenceFactor) implements SerDe {
+                            long confidenceFactor) implements SerDe {
 
   public static final int BYTES = 7;
 
@@ -27,7 +29,7 @@ public record PythLazerData(int feedId,
     i += 2;
     final var exponent = _data[i] & 0xFF;
     ++i;
-    final var confidenceFactor = getInt32LE(_data, i);
+    final var confidenceFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new PythLazerData(feedId, exponent, confidenceFactor);
   }
 
@@ -38,7 +40,7 @@ public record PythLazerData(int feedId,
     i += 2;
     _data[i] = (byte) exponent;
     ++i;
-    putInt32LE(_data, i, confidenceFactor);
+    putInt32LE(_data, i, (int) confidenceFactor);
     i += 4;
     return i - _offset;
   }

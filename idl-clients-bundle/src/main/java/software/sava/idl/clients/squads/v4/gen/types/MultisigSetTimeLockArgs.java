@@ -12,13 +12,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param timeLock: u32
 /// @param memo Memo is used for indexing only.
-public record MultisigSetTimeLockArgs(int timeLock, String memo, byte[] _memo) implements SerDe {
+public record MultisigSetTimeLockArgs(long timeLock, String memo, byte[] _memo) implements SerDe {
 
   public static final int TIME_LOCK_OFFSET = 0;
   public static final int MEMO_OFFSET = 5;
 
-  public static MultisigSetTimeLockArgs createRecord(final int timeLock, final String memo) {
+  public static MultisigSetTimeLockArgs createRecord(final long timeLock, final String memo) {
     return new MultisigSetTimeLockArgs(timeLock, memo, memo == null ? null : memo.getBytes(UTF_8));
   }
 
@@ -27,7 +28,7 @@ public record MultisigSetTimeLockArgs(int timeLock, String memo, byte[] _memo) i
       return null;
     }
     int i = _offset;
-    final var timeLock = getInt32LE(_data, i);
+    final var timeLock = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final byte[] _memo;
     final String memo;
@@ -48,7 +49,7 @@ public record MultisigSetTimeLockArgs(int timeLock, String memo, byte[] _memo) i
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, timeLock);
+    putInt32LE(_data, i, (int) timeLock);
     i += 4;
     i += SerDeUtil.writeOptionalVector(1, 4, _memo, _data, i);
     return i - _offset;

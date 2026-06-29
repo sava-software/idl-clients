@@ -14,8 +14,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param positiveBinArrayBitmap Packed initialized bin array state for start_bin_index is positive
-/// @param negativeBinArrayBitmap Packed initialized bin array state for start_bin_index is negative
+/// @param positiveBinArrayBitmap: u64[][] Packed initialized bin array state for start_bin_index is positive
+/// @param negativeBinArrayBitmap: u64[][] Packed initialized bin array state for start_bin_index is negative
 public record BinArrayBitmapExtension(PublicKey _address,
                                       Discriminator discriminator,
                                       PublicKey lbPair,

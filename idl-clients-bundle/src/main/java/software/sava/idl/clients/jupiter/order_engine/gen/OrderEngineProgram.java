@@ -51,6 +51,8 @@ public final class OrderEngineProgram {
     );
   }
 
+  /// @param inputAmount: u64
+  /// @param outputAmount: u64
   public static Instruction fill(final AccountMeta invokedOrderEngineProgramMeta,
                                  final SolanaAccounts solanaAccounts,
                                  final PublicKey takerKey,
@@ -89,6 +91,8 @@ public final class OrderEngineProgram {
     );
   }
 
+  /// @param inputAmount: u64
+  /// @param outputAmount: u64
   public static Instruction fill(final AccountMeta invokedOrderEngineProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long inputAmount,
@@ -105,6 +109,8 @@ public final class OrderEngineProgram {
     return Instruction.createInstruction(invokedOrderEngineProgramMeta, keys, _data);
   }
 
+  /// @param inputAmount: u64
+  /// @param outputAmount: u64
   public record FillIxData(Discriminator discriminator,
                            long inputAmount,
                            long outputAmount,

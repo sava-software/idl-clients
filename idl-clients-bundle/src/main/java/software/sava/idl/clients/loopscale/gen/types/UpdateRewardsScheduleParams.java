@@ -9,6 +9,7 @@ import java.util.OptionalLong;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param amountToTransfer: u64
 public record UpdateRewardsScheduleParams(long amountToTransfer,
                                           OptionalLong extendEndTime,
                                           int scheduleIndex) implements SerDe {

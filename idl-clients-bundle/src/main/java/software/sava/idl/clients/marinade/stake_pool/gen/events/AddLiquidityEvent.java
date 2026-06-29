@@ -10,6 +10,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param userSolBalance: u64
+/// @param userLpBalance: u64
+/// @param solLegBalance: u64
+/// @param lpSupply: u64
+/// @param solAddedAmount: u64
+/// @param lpMinted: u64
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record AddLiquidityEvent(Discriminator discriminator,
                                 PublicKey state,
                                 PublicKey solOwner,

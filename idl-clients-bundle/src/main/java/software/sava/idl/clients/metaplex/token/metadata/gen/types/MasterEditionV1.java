@@ -14,6 +14,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param supply: u64
 public record MasterEditionV1(PublicKey _address,
                               Key key,
                               long supply,

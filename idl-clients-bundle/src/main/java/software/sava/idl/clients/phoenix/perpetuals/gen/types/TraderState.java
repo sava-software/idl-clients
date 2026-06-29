@@ -11,8 +11,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Fixed trader state embedded in the Phoenix Eternal DynamicTraderHeader.
 ///
+/// @param flags: u32
 public record TraderState(long quoteLotCollateral,
-                          int flags,
+                          long flags,
                           byte[] padding,
                           int globalPositionSequenceNumber,
                           int makerFeeOverrideMultiplier,
@@ -35,7 +36,7 @@ public record TraderState(long quoteLotCollateral,
     int i = _offset;
     final var quoteLotCollateral = getInt64LE(_data, i);
     i += 8;
-    final var flags = getInt32LE(_data, i);
+    final var flags = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding = new byte[1];
     i += SerDeUtil.readArray(padding, _data, i);
@@ -57,7 +58,7 @@ public record TraderState(long quoteLotCollateral,
     int i = _offset;
     putInt64LE(_data, i, quoteLotCollateral);
     i += 8;
-    putInt32LE(_data, i, flags);
+    putInt32LE(_data, i, (int) flags);
     i += 4;
     i += SerDeUtil.writeArrayChecked(padding, 1, _data, i);
     _data[i] = (byte) globalPositionSequenceNumber;

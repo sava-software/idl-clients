@@ -14,6 +14,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param estimatedPendingWithdrawalValue: u64
+/// @param estimatedNetAmount: u64
 public record WithdrawalRequested(Discriminator discriminator,
                                   PublicKey user,
                                   BigInteger amount,

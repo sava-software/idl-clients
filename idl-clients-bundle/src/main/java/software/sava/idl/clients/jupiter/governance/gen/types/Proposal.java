@@ -21,12 +21,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// A Yes/No Proposal is a pending transaction that may or may not be executed by the DAO.
 ///
 /// @param governor The public key of the governor.
-/// @param index The unique ID of the proposal, auto-incremented.
+/// @param index: u64 The unique ID of the proposal, auto-incremented.
 /// @param bump Bump seed
 /// @param proposer The public key of the proposer.
-/// @param quorumVotes The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
+/// @param quorumVotes: u64 The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
 /// @param maxOption maximum options of the proposal
-/// @param optionVotes Vote for each option
+/// @param optionVotes: vec<u64> Vote for each option
 /// @param canceledAt The timestamp when the proposal was canceled.
 /// @param createdAt The timestamp when the proposal was created.
 /// @param activatedAt The timestamp in which the proposal was activated.
@@ -37,7 +37,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                 approved for execution on the Smart Wallet.
 /// @param queuedTransaction If the transaction was queued, this is the associated Smart Wallet transaction.
 /// @param votingReward optional reward
-/// @param totalClaimedReward total claimed reward
+/// @param totalClaimedReward: u64 total claimed reward
 /// @param buffers buffers for future use
 /// @param instructions The instructions associated with the proposal.
 public record Proposal(PublicKey _address,

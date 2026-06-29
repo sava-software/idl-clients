@@ -20,7 +20,26 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param depositCap total vault deposit cap; 0 means uncapped for backward compatibility reasons; this is a soft cap that just blocks new deposits but the vault AUM can go above this cap because of the earned interest
+/// @param baseVaultAuthorityBump: u64
+/// @param tokenMintDecimals: u64
+/// @param sharesMintDecimals: u64
+/// @param tokenAvailable: u64
+/// @param sharesIssued: u64
+/// @param availableCrankFunds: u64
+/// @param unallocatedWeight: u64
+/// @param performanceFeeBps: u64
+/// @param managementFeeBps: u64
+/// @param lastFeeChargeTimestamp: u64
+/// @param minDepositAmount: u64
+/// @param minWithdrawAmount: u64
+/// @param minInvestAmount: u64
+/// @param minInvestDelaySlots: u64
+/// @param crankFundFeePerReserve: u64
+/// @param creationTimestamp: u64
+/// @param unallocatedTokensCap: u64
+/// @param withdrawalPenaltyLamports: u64
+/// @param withdrawalPenaltyBps: u64
+/// @param depositCap: u64 total vault deposit cap; 0 means uncapped for backward compatibility reasons; this is a soft cap that just blocks new deposits but the vault AUM can go above this cap because of the earned interest
 public record VaultState(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey vaultAdminAuthority,

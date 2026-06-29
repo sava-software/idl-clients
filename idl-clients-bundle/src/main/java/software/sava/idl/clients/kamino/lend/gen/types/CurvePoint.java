@@ -6,7 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record CurvePoint(int utilizationRateBps, int borrowRateBps) implements SerDe {
+/// @param utilizationRateBps: u32
+/// @param borrowRateBps: u32
+public record CurvePoint(long utilizationRateBps, long borrowRateBps) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -18,18 +20,18 @@ public record CurvePoint(int utilizationRateBps, int borrowRateBps) implements S
       return null;
     }
     int i = _offset;
-    final var utilizationRateBps = getInt32LE(_data, i);
+    final var utilizationRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var borrowRateBps = getInt32LE(_data, i);
+    final var borrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new CurvePoint(utilizationRateBps, borrowRateBps);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, utilizationRateBps);
+    putInt32LE(_data, i, (int) utilizationRateBps);
     i += 4;
-    putInt32LE(_data, i, borrowRateBps);
+    putInt32LE(_data, i, (int) borrowRateBps);
     i += 4;
     return i - _offset;
   }

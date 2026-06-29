@@ -18,8 +18,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::OrderPlaced Borsh variant 2.
 /// Payload type: OrderPlacedEvent.
 ///
+/// @param orderId: u32
+/// @param orderSequenceNumber: u64
+/// @param prevOrderSequenceNumberSlot: u64
+/// @param initialSlot: u64
 public record OrderPlacedEvent(Discriminator discriminator,
-                               int orderId,
+                               long orderId,
                                OrderFlags orderFlags,
                                long orderSequenceNumber,
                                long prevOrderSequenceNumberSlot,
@@ -49,7 +53,7 @@ public record OrderPlacedEvent(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var orderId = getInt32LE(_data, i);
+    final var orderId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var orderFlags = OrderFlags.read(_data, i);
     i += orderFlags.l();
@@ -81,7 +85,7 @@ public record OrderPlacedEvent(Discriminator discriminator,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt32LE(_data, i, orderId);
+    putInt32LE(_data, i, (int) orderId);
     i += 4;
     i += orderFlags.write(_data, i);
     putInt64LE(_data, i, orderSequenceNumber);

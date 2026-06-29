@@ -16,6 +16,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param nextVaultId: u16
 public record VaultAdmin(PublicKey _address,
                          Discriminator discriminator,
                          PublicKey authority,

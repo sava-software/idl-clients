@@ -9,14 +9,18 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param maxVariance: u64
+/// @param minResponses: u32
+/// @param recentSlot: u64
+/// @param maxStaleness: u32
 public record PullFeedInitParams(byte[] feedHash,
                                  long maxVariance,
-                                 int minResponses,
+                                 long minResponses,
                                  byte[] name,
                                  long recentSlot,
                                  byte[] ipfsHash,
                                  int minSampleSize,
-                                 int maxStaleness,
+                                 long maxStaleness,
                                  Boolean permitWriteByAuthority) implements SerDe {
 
   public static final int FEED_HASH_LEN = 32;
@@ -41,7 +45,7 @@ public record PullFeedInitParams(byte[] feedHash,
     i += SerDeUtil.readArray(feedHash, _data, i);
     final var maxVariance = getInt64LE(_data, i);
     i += 8;
-    final var minResponses = getInt32LE(_data, i);
+    final var minResponses = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var name = new byte[32];
     i += SerDeUtil.readArray(name, _data, i);
@@ -51,7 +55,7 @@ public record PullFeedInitParams(byte[] feedHash,
     i += SerDeUtil.readArray(ipfsHash, _data, i);
     final var minSampleSize = _data[i] & 0xFF;
     ++i;
-    final var maxStaleness = getInt32LE(_data, i);
+    final var maxStaleness = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final Boolean permitWriteByAuthority;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -77,7 +81,7 @@ public record PullFeedInitParams(byte[] feedHash,
     i += SerDeUtil.writeArrayChecked(feedHash, 32, _data, i);
     putInt64LE(_data, i, maxVariance);
     i += 8;
-    putInt32LE(_data, i, minResponses);
+    putInt32LE(_data, i, (int) minResponses);
     i += 4;
     i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     putInt64LE(_data, i, recentSlot);
@@ -85,7 +89,7 @@ public record PullFeedInitParams(byte[] feedHash,
     i += SerDeUtil.writeArrayChecked(ipfsHash, 32, _data, i);
     _data[i] = (byte) minSampleSize;
     ++i;
-    putInt32LE(_data, i, maxStaleness);
+    putInt32LE(_data, i, (int) maxStaleness);
     i += 4;
     i += SerDeUtil.writeOptional(1, permitWriteByAuthority, _data, i);
     return i - _offset;

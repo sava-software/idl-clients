@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
 public record RefundedDeposit(Discriminator discriminator,
                               PublicKey user,
                               long amount,

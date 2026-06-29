@@ -9,6 +9,10 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param x0: u64
+/// @param y0: u64
+/// @param deltaX: u64
+/// @param deltaY: u64
 public record AddLiquidityParams(int minDeltaId,
                                  int maxDeltaId,
                                  long x0,

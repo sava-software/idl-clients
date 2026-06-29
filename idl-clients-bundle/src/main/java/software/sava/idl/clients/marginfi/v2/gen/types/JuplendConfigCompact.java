@@ -18,12 +18,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Note: JupLend banks do not take an Operational State, they always start in `Paused` state and
 /// are set to `Operational` via `juplend_init_position` (seed deposit + protocol fToken vault).
 ///
+/// @param depositLimit: u64
 /// @param oracleSetup Either `JuplendPythPull` or `JuplendSwitchboardPull`
 /// @param riskTier Isolated or Collateral
 /// @param configFlags Config flags for future-proofing, currently ignored
-/// @param totalAssetValueInitLimit In $
-/// @param oracleMaxAge In seconds
-/// @param oracleMaxConfidence Oracle confidence threshold (0 = use default 10%)
+/// @param totalAssetValueInitLimit: u64 In $
+/// @param oracleMaxAge: u16 In seconds
+/// @param oracleMaxConfidence: u32 Oracle confidence threshold (0 = use default 10%)
 public record JuplendConfigCompact(PublicKey oracle,
                                    WrappedI80F48 assetWeightInit,
                                    WrappedI80F48 assetWeightMaint,
@@ -33,7 +34,7 @@ public record JuplendConfigCompact(PublicKey oracle,
                                    int configFlags,
                                    long totalAssetValueInitLimit,
                                    int oracleMaxAge,
-                                   int oracleMaxConfidence) implements SerDe {
+                                   long oracleMaxConfidence) implements SerDe {
 
   public static final int BYTES = 89;
 
@@ -71,7 +72,7 @@ public record JuplendConfigCompact(PublicKey oracle,
     i += 8;
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var oracleMaxConfidence = getInt32LE(_data, i);
+    final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new JuplendConfigCompact(oracle,
                                     assetWeightInit,
                                     assetWeightMaint,
@@ -101,7 +102,7 @@ public record JuplendConfigCompact(PublicKey oracle,
     i += 8;
     putInt16LE(_data, i, oracleMaxAge);
     i += 2;
-    putInt32LE(_data, i, oracleMaxConfidence);
+    putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     return i - _offset;
   }

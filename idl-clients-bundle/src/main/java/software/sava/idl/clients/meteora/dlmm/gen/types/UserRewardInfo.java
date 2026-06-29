@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
+/// @param rewardPendings: u64[]
 public record UserRewardInfo(BigInteger[] rewardPerTokenCompletes, long[] rewardPendings) implements SerDe {
 
   public static final int BYTES = 48;

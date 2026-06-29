@@ -7,11 +7,12 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
-/// @param sources Extension-prone source list is stored last so future versioned layouts can
+/// @param toleranceBps: u16
+/// @param sources: u16[] Extension-prone source list is stored last so future versioned layouts can
 ///                add more sources without shifting earlier scalar fields.
 public record ConditionalData(int condition,
                               int toleranceBps,
-                              short[] sources) implements SerDe {
+                              int[] sources) implements SerDe {
 
   public static final int BYTES = 9;
   public static final int SOURCES_LEN = 3;
@@ -29,8 +30,8 @@ public record ConditionalData(int condition,
     ++i;
     final var toleranceBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var sources = new short[3];
-    SerDeUtil.readArray(sources, _data, i);
+    final var sources = new int[3];
+    SerDeUtil.readUnsignedShortArray(sources, _data, i);
     return new ConditionalData(condition, toleranceBps, sources);
   }
 
@@ -41,7 +42,7 @@ public record ConditionalData(int condition,
     ++i;
     putInt16LE(_data, i, toleranceBps);
     i += 2;
-    i += SerDeUtil.writeArrayChecked(sources, 3, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(sources, 3, _data, i);
     return i - _offset;
   }
 

@@ -6,11 +6,11 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param durationSeconds Window duration in seconds (0 = disabled)
-/// @param maxMintAmount Maximum mint amount in this window
-/// @param maxRedeemAmount Maximum redeem amount in this window
-/// @param mintedAmount Amount minted in current window
-/// @param redeemedAmount Amount redeemed in current window
+/// @param durationSeconds: u64 Window duration in seconds (0 = disabled)
+/// @param maxMintAmount: u64 Maximum mint amount in this window
+/// @param maxRedeemAmount: u64 Maximum redeem amount in this window
+/// @param mintedAmount: u64 Amount minted in current window
+/// @param redeemedAmount: u64 Amount redeemed in current window
 /// @param windowStart Window start timestamp
 public record PeriodLimit(long durationSeconds,
                           long maxMintAmount,

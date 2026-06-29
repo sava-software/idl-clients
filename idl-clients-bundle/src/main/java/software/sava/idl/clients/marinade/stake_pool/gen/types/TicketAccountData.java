@@ -15,6 +15,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param lamportsAmount: u64
+/// @param createdEpoch: u64
 public record TicketAccountData(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey stateAddress,

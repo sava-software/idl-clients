@@ -24,12 +24,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param multisig The multisig this belongs to.
 /// @param creator Member of the Multisig who submitted the batch.
-/// @param index Index of this batch within the multisig transactions.
+/// @param index: u64 Index of this batch within the multisig transactions.
 /// @param bump PDA bump.
 /// @param vaultIndex Index of the vault this batch belongs to.
 /// @param vaultBump Derivation bump of the vault PDA this batch belongs to.
-/// @param size Number of transactions in the batch.
-/// @param executedTransactionIndex Index of the last executed transaction within the batch.
+/// @param size: u32 Number of transactions in the batch.
+/// @param executedTransactionIndex: u32 Index of the last executed transaction within the batch.
 ///                                 0 means that no transactions have been executed yet.
 public record Batch(PublicKey _address,
                     Discriminator discriminator,
@@ -39,8 +39,8 @@ public record Batch(PublicKey _address,
                     int bump,
                     int vaultIndex,
                     int vaultBump,
-                    int size,
-                    int executedTransactionIndex) implements SerDe {
+                    long size,
+                    long executedTransactionIndex) implements SerDe {
 
   public static final int BYTES = 91;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -83,15 +83,15 @@ public record Batch(PublicKey _address,
     return Filter.createMemCompFilter(VAULT_BUMP_OFFSET, new byte[]{(byte) vaultBump});
   }
 
-  public static Filter createSizeFilter(final int size) {
+  public static Filter createSizeFilter(final long size) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, size);
+    putInt32LE(_data, 0, (int) size);
     return Filter.createMemCompFilter(SIZE_OFFSET, _data);
   }
 
-  public static Filter createExecutedTransactionIndexFilter(final int executedTransactionIndex) {
+  public static Filter createExecutedTransactionIndexFilter(final long executedTransactionIndex) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, executedTransactionIndex);
+    putInt32LE(_data, 0, (int) executedTransactionIndex);
     return Filter.createMemCompFilter(EXECUTED_TRANSACTION_INDEX_OFFSET, _data);
   }
 
@@ -127,9 +127,9 @@ public record Batch(PublicKey _address,
     ++i;
     final var vaultBump = _data[i] & 0xFF;
     ++i;
-    final var size = getInt32LE(_data, i);
+    final var size = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var executedTransactionIndex = getInt32LE(_data, i);
+    final var executedTransactionIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new Batch(_address,
                      discriminator,
                      multisig,
@@ -157,9 +157,9 @@ public record Batch(PublicKey _address,
     ++i;
     _data[i] = (byte) vaultBump;
     ++i;
-    putInt32LE(_data, i, size);
+    putInt32LE(_data, i, (int) size);
     i += 4;
-    putInt32LE(_data, i, executedTransactionIndex);
+    putInt32LE(_data, i, (int) executedTransactionIndex);
     i += 4;
     return i - _offset;
   }

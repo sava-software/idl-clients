@@ -17,7 +17,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param mintAuthority Optional authority used to mint new tokens. The mint authority may only
 ///                      be provided during mint creation. If no mint authority is present
 ///                      then the mint has a fixed supply and no further tokens may be minted.
-/// @param supply Total supply of tokens.
+/// @param supply: u64 Total supply of tokens.
 /// @param decimals Number of base 10 digits to the right of the decimal place.
 /// @param isInitialized Is `true` if this structure has been initialized.
 /// @param freezeAuthority Optional authority to freeze token accounts.
@@ -80,7 +80,7 @@ public record Mint(PublicKey _address,
 
     int i = _offset;
     final PublicKey mintAuthority;
-    if (getInt32LE(_data, i) == 0) {
+    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
       mintAuthority = null;
       i += 32 + 4;
     } else {
@@ -95,7 +95,7 @@ public record Mint(PublicKey _address,
     final var isInitialized = _data[i] == 1;
     ++i;
     final PublicKey freezeAuthority;
-    if (getInt32LE(_data, i) == 0) {
+    if (Integer.toUnsignedLong(getInt32LE(_data, i)) == 0) {
       freezeAuthority = null;
     } else {
       i += 4;
@@ -113,7 +113,7 @@ public record Mint(PublicKey _address,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     if (mintAuthority != null) {
-      putInt32LE(_data, i, 1);
+      putInt32LE(_data, i, (int) 1);
       i += 4;
       mintAuthority.write(_data, i);
     } else {
@@ -127,7 +127,7 @@ public record Mint(PublicKey _address,
     _data[i] = (byte) (isInitialized ? 1 : 0);
     ++i;
     if (freezeAuthority != null) {
-      putInt32LE(_data, i, 1);
+      putInt32LE(_data, i, (int) 1);
       i += 4;
       freezeAuthority.write(_data, i);
     } else {

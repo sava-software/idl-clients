@@ -11,7 +11,7 @@ public final class AddressLookupTablePDAs {
 
   ///
   /// @param authority The address of the LUT's authority
-  /// @param recentSlot The recent slot associated with the LUT
+  /// @param recentSlot: u64 The recent slot associated with the LUT
   public static ProgramDerivedAddress addressLookupTablePDA(final PublicKey programOwner,
                                                             final PublicKey authority,
                                                             final long recentSlot) {

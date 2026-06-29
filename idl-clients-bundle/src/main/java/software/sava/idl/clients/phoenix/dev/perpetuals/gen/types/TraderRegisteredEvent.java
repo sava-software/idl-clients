@@ -13,6 +13,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderRegistered Borsh variant 9.
 /// Payload type: TraderRegisteredEvent.
 ///
+/// @param traderSequenceNumber: u64
+/// @param maxPositions: u64
 public record TraderRegisteredEvent(Discriminator discriminator,
                                     long traderSequenceNumber,
                                     PublicKey trader,

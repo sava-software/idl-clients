@@ -1547,6 +1547,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction claimReward(final AccountMeta invokedLbClmmProgramMeta,
                                         final PublicKey lbPairKey,
                                         final PublicKey positionKey,
@@ -1576,6 +1577,7 @@ public final class LbClmmProgram {
     return claimReward(invokedLbClmmProgramMeta, keys, rewardIndex);
   }
 
+  /// @param rewardIndex: u64
   public static Instruction claimReward(final AccountMeta invokedLbClmmProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long rewardIndex) {
@@ -1586,6 +1588,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
   public record ClaimRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {  
 
     public static ClaimRewardIxData read(final Instruction instruction) {
@@ -1646,6 +1649,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction claimReward2(final AccountMeta invokedLbClmmProgramMeta,
                                          final PublicKey lbPairKey,
                                          final PublicKey positionKey,
@@ -1683,6 +1687,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction claimReward2(final AccountMeta invokedLbClmmProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long rewardIndex,
@@ -1702,6 +1707,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
   public record ClaimReward2IxData(Discriminator discriminator,
                                    long rewardIndex,
                                    int minBinId,
@@ -2201,6 +2207,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param lengthToRemove: u16
   public static Instruction decreasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey rentReceiverKey,
@@ -2221,6 +2228,7 @@ public final class LbClmmProgram {
     return decreasePositionLength(invokedLbClmmProgramMeta, keys, lengthToRemove, side);
   }
 
+  /// @param lengthToRemove: u16
   public static Instruction decreasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int lengthToRemove,
@@ -2234,6 +2242,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param lengthToRemove: u16
   public record DecreasePositionLengthIxData(Discriminator discriminator, int lengthToRemove, int side) implements SerDe {  
 
     public static DecreasePositionLengthIxData read(final Instruction instruction) {
@@ -2357,6 +2366,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
   public static Instruction fundReward(final AccountMeta invokedLbClmmProgramMeta,
                                        final PublicKey lbPairKey,
                                        final PublicKey rewardVaultKey,
@@ -2392,6 +2403,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
   public static Instruction fundReward(final AccountMeta invokedLbClmmProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long rewardIndex,
@@ -2411,6 +2424,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
   public record FundRewardIxData(Discriminator discriminator,
                                  long rewardIndex,
                                  long amount,
@@ -2564,6 +2579,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param lengthToAdd: u64
   public static Instruction increaseOracleLength(final AccountMeta invokedLbClmmProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey oracleKey,
@@ -2581,6 +2597,7 @@ public final class LbClmmProgram {
     return increaseOracleLength(invokedLbClmmProgramMeta, keys, lengthToAdd);
   }
 
+  /// @param lengthToAdd: u64
   public static Instruction increaseOracleLength(final AccountMeta invokedLbClmmProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long lengthToAdd) {
@@ -2591,6 +2608,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param lengthToAdd: u64
   public record IncreaseOracleLengthIxData(Discriminator discriminator, long lengthToAdd) implements SerDe {  
 
     public static IncreaseOracleLengthIxData read(final Instruction instruction) {
@@ -2645,6 +2663,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param lengthToAdd: u16
   public static Instruction increasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey funderKey,
@@ -2667,6 +2686,7 @@ public final class LbClmmProgram {
     return increasePositionLength(invokedLbClmmProgramMeta, keys, lengthToAdd, side);
   }
 
+  /// @param lengthToAdd: u16
   public static Instruction increasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int lengthToAdd,
@@ -2680,6 +2700,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param lengthToAdd: u16
   public record IncreasePositionLengthIxData(Discriminator discriminator, int lengthToAdd, int side) implements SerDe {  
 
     public static IncreasePositionLengthIxData read(final Instruction instruction) {
@@ -3187,6 +3208,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param binStep: u16
   public static Instruction initializeLbPair(final AccountMeta invokedLbClmmProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey lbPairKey,
@@ -3224,6 +3246,7 @@ public final class LbClmmProgram {
     return initializeLbPair(invokedLbClmmProgramMeta, keys, activeId, binStep);
   }
 
+  /// @param binStep: u16
   public static Instruction initializeLbPair(final AccountMeta invokedLbClmmProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int activeId,
@@ -3237,6 +3260,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param binStep: u16
   public record InitializeLbPairIxData(Discriminator discriminator, int activeId, int binStep) implements SerDe {  
 
     public static InitializeLbPairIxData read(final Instruction instruction) {
@@ -3750,6 +3774,7 @@ public final class LbClmmProgram {
   }
 
   /// @param operatorKey operator
+  /// @param lockReleasePoint: u64
   public static Instruction initializePositionByOperator(final AccountMeta invokedLbClmmProgramMeta,
                                                          final SolanaAccounts solanaAccounts,
                                                          final PublicKey payerKey,
@@ -3789,6 +3814,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param lockReleasePoint: u64
   public static Instruction initializePositionByOperator(final AccountMeta invokedLbClmmProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final int lowerBinId,
@@ -3808,6 +3834,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param lockReleasePoint: u64
   public record InitializePositionByOperatorIxData(Discriminator discriminator,
                                                    int lowerBinId,
                                                    int width,
@@ -4074,6 +4101,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param rewardDuration: u64
   public static Instruction initializeReward(final AccountMeta invokedLbClmmProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey lbPairKey,
@@ -4112,6 +4141,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param rewardDuration: u64
   public static Instruction initializeReward(final AccountMeta invokedLbClmmProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long rewardIndex,
@@ -4128,6 +4159,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
+  /// @param rewardDuration: u64
   public record InitializeRewardIxData(Discriminator discriminator,
                                        long rewardIndex,
                                        long rewardDuration,
@@ -4824,6 +4857,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param bpsToRemove: u16
   public static Instruction removeLiquidityByRange(final AccountMeta invokedLbClmmProgramMeta,
                                                    final PublicKey positionKey,
                                                    final PublicKey lbPairKey,
@@ -4872,6 +4906,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param bpsToRemove: u16
   public static Instruction removeLiquidityByRange(final AccountMeta invokedLbClmmProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int fromBinId,
@@ -4888,6 +4923,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param bpsToRemove: u16
   public record RemoveLiquidityByRangeIxData(Discriminator discriminator,
                                              int fromBinId,
                                              int toBinId,
@@ -4972,6 +5008,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param bpsToRemove: u16
   public static Instruction removeLiquidityByRange2(final AccountMeta invokedLbClmmProgramMeta,
                                                     final PublicKey positionKey,
                                                     final PublicKey lbPairKey,
@@ -5020,6 +5057,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param bpsToRemove: u16
   public static Instruction removeLiquidityByRange2(final AccountMeta invokedLbClmmProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final int fromBinId,
@@ -5039,6 +5077,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param bpsToRemove: u16
   public record RemoveLiquidityByRange2IxData(Discriminator discriminator,
                                               int fromBinId,
                                               int toBinId,
@@ -5103,6 +5142,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param activationPoint: u64
   public static Instruction setActivationPoint(final AccountMeta invokedLbClmmProgramMeta,
                                                final PublicKey lbPairKey,
                                                final PublicKey signerKey,
@@ -5114,6 +5154,7 @@ public final class LbClmmProgram {
     return setActivationPoint(invokedLbClmmProgramMeta, keys, activationPoint);
   }
 
+  /// @param activationPoint: u64
   public static Instruction setActivationPoint(final AccountMeta invokedLbClmmProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long activationPoint) {
@@ -5124,6 +5165,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param activationPoint: u64
   public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {  
 
     public static SetActivationPointIxData read(final Instruction instruction) {
@@ -5375,6 +5417,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param preActivationDuration: u64
   public static Instruction setPreActivationDuration(final AccountMeta invokedLbClmmProgramMeta,
                                                      final PublicKey lbPairKey,
                                                      final PublicKey signerKey,
@@ -5386,6 +5429,7 @@ public final class LbClmmProgram {
     return setPreActivationDuration(invokedLbClmmProgramMeta, keys, preActivationDuration);
   }
 
+  /// @param preActivationDuration: u64
   public static Instruction setPreActivationDuration(final AccountMeta invokedLbClmmProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final long preActivationDuration) {
@@ -5396,6 +5440,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param preActivationDuration: u64
   public record SetPreActivationDurationIxData(Discriminator discriminator, long preActivationDuration) implements SerDe {  
 
     public static SetPreActivationDurationIxData read(final Instruction instruction) {
@@ -5532,6 +5577,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public static Instruction swap(final AccountMeta invokedLbClmmProgramMeta,
                                  final PublicKey lbPairKey,
                                  final PublicKey binArrayBitmapExtensionKey,
@@ -5571,6 +5618,8 @@ public final class LbClmmProgram {
     return swap(invokedLbClmmProgramMeta, keys, amountIn, minAmountOut);
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public static Instruction swap(final AccountMeta invokedLbClmmProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amountIn,
@@ -5584,6 +5633,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public record SwapIxData(Discriminator discriminator, long amountIn, long minAmountOut) implements SerDe {  
 
     public static SwapIxData read(final Instruction instruction) {
@@ -5662,6 +5713,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public static Instruction swap2(final AccountMeta invokedLbClmmProgramMeta,
                                   final PublicKey lbPairKey,
                                   final PublicKey binArrayBitmapExtensionKey,
@@ -5710,6 +5763,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public static Instruction swap2(final AccountMeta invokedLbClmmProgramMeta,
                                   final List<AccountMeta> keys,
                                   final long amountIn,
@@ -5726,6 +5781,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param amountIn: u64
+  /// @param minAmountOut: u64
   public record Swap2IxData(Discriminator discriminator,
                             long amountIn,
                             long minAmountOut,
@@ -5807,6 +5864,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public static Instruction swapExactOut(final AccountMeta invokedLbClmmProgramMeta,
                                          final PublicKey lbPairKey,
                                          final PublicKey binArrayBitmapExtensionKey,
@@ -5846,6 +5905,8 @@ public final class LbClmmProgram {
     return swapExactOut(invokedLbClmmProgramMeta, keys, maxInAmount, outAmount);
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public static Instruction swapExactOut(final AccountMeta invokedLbClmmProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long maxInAmount,
@@ -5859,6 +5920,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public record SwapExactOutIxData(Discriminator discriminator, long maxInAmount, long outAmount) implements SerDe {  
 
     public static SwapExactOutIxData read(final Instruction instruction) {
@@ -5937,6 +6000,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public static Instruction swapExactOut2(final AccountMeta invokedLbClmmProgramMeta,
                                           final PublicKey lbPairKey,
                                           final PublicKey binArrayBitmapExtensionKey,
@@ -5985,6 +6050,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public static Instruction swapExactOut2(final AccountMeta invokedLbClmmProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long maxInAmount,
@@ -6001,6 +6068,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param maxInAmount: u64
+  /// @param outAmount: u64
   public record SwapExactOut2IxData(Discriminator discriminator,
                                     long maxInAmount,
                                     long outAmount,
@@ -6082,6 +6151,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact(final AccountMeta invokedLbClmmProgramMeta,
                                                 final PublicKey lbPairKey,
                                                 final PublicKey binArrayBitmapExtensionKey,
@@ -6128,6 +6199,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact(final AccountMeta invokedLbClmmProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amountIn,
@@ -6146,6 +6219,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public record SwapWithPriceImpactIxData(Discriminator discriminator,
                                           long amountIn,
                                           OptionalInt activeId,
@@ -6235,6 +6310,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact2(final AccountMeta invokedLbClmmProgramMeta,
                                                  final PublicKey lbPairKey,
                                                  final PublicKey binArrayBitmapExtensionKey,
@@ -6285,6 +6362,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact2(final AccountMeta invokedLbClmmProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long amountIn,
@@ -6306,6 +6385,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param amountIn: u64
+  /// @param maxPriceImpactBps: u16
   public record SwapWithPriceImpact2IxData(Discriminator discriminator,
                                            long amountIn,
                                            OptionalInt activeId,
@@ -6722,6 +6803,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param newDuration: u64
   public static Instruction updateRewardDuration(final AccountMeta invokedLbClmmProgramMeta,
                                                  final PublicKey lbPairKey,
                                                  final PublicKey operatorKey,
@@ -6742,6 +6825,8 @@ public final class LbClmmProgram {
     return updateRewardDuration(invokedLbClmmProgramMeta, keys, rewardIndex, newDuration);
   }
 
+  /// @param rewardIndex: u64
+  /// @param newDuration: u64
   public static Instruction updateRewardDuration(final AccountMeta invokedLbClmmProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long rewardIndex,
@@ -6755,6 +6840,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
+  /// @param newDuration: u64
   public record UpdateRewardDurationIxData(Discriminator discriminator, long rewardIndex, long newDuration) implements SerDe {  
 
     public static UpdateRewardDurationIxData read(final Instruction instruction) {
@@ -6810,6 +6897,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction updateRewardFunder(final AccountMeta invokedLbClmmProgramMeta,
                                                final PublicKey lbPairKey,
                                                final PublicKey operatorKey,
@@ -6828,6 +6916,7 @@ public final class LbClmmProgram {
     return updateRewardFunder(invokedLbClmmProgramMeta, keys, rewardIndex, newFunder);
   }
 
+  /// @param rewardIndex: u64
   public static Instruction updateRewardFunder(final AccountMeta invokedLbClmmProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long rewardIndex,
@@ -6841,6 +6930,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
   public record UpdateRewardFunderIxData(Discriminator discriminator, long rewardIndex, PublicKey newFunder) implements SerDe {  
 
     public static UpdateRewardFunderIxData read(final Instruction instruction) {
@@ -6906,6 +6996,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction withdrawIneligibleReward(final AccountMeta invokedLbClmmProgramMeta,
                                                      final PublicKey lbPairKey,
                                                      final PublicKey rewardVaultKey,
@@ -6934,6 +7025,7 @@ public final class LbClmmProgram {
     return withdrawIneligibleReward(invokedLbClmmProgramMeta, keys, rewardIndex, remainingAccountsInfo);
   }
 
+  /// @param rewardIndex: u64
   public static Instruction withdrawIneligibleReward(final AccountMeta invokedLbClmmProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final long rewardIndex,
@@ -6947,6 +7039,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
   public record WithdrawIneligibleRewardIxData(Discriminator discriminator, long rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static WithdrawIneligibleRewardIxData read(final Instruction instruction) {
@@ -7013,6 +7106,8 @@ public final class LbClmmProgram {
   }
 
   /// @param signerKey operator
+  /// @param maxAmountX: u64
+  /// @param maxAmountY: u64
   public static Instruction withdrawProtocolFee(final AccountMeta invokedLbClmmProgramMeta,
                                                 final PublicKey lbPairKey,
                                                 final PublicKey reserveXKey,
@@ -7050,6 +7145,8 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param maxAmountX: u64
+  /// @param maxAmountY: u64
   public static Instruction withdrawProtocolFee(final AccountMeta invokedLbClmmProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long maxAmountX,
@@ -7066,6 +7163,8 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param maxAmountX: u64
+  /// @param maxAmountY: u64
   public record WithdrawProtocolFeeIxData(Discriminator discriminator,
                                           long maxAmountX,
                                           long maxAmountY,
@@ -7134,6 +7233,7 @@ public final class LbClmmProgram {
   }
 
   /// @param signerKey operator
+  /// @param maxAmount: u64
   public static Instruction zapProtocolFee(final AccountMeta invokedLbClmmProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey lbPairKey,
@@ -7158,6 +7258,7 @@ public final class LbClmmProgram {
     return zapProtocolFee(invokedLbClmmProgramMeta, keys, maxAmount, remainingAccountsInfo);
   }
 
+  /// @param maxAmount: u64
   public static Instruction zapProtocolFee(final AccountMeta invokedLbClmmProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long maxAmount,
@@ -7171,6 +7272,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param maxAmount: u64
   public record ZapProtocolFeeIxData(Discriminator discriminator, long maxAmount, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static ZapProtocolFeeIxData read(final Instruction instruction) {

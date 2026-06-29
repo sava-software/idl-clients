@@ -18,9 +18,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param placeholder Reserved for future use
-/// @param maxSlippage * a %, as u32, out of 100%, e.g. 50% = .5 * u32::MAX
-/// @param tags Active tags (currently 2). Remaining capacity is stored in padding for layout compatibility.
+/// @param placeholder: u64 Reserved for future use
+/// @param maxSlippage: u32 * a %, as u32, out of 100%, e.g. 50% = .5 * u32::MAX
+/// @param tags: u16[] Active tags (currently 2). Remaining capacity is stored in padding for layout compatibility.
 ///             Padding byte `ORDER_TAG_PADDING - 1` stores the tag count for forward compatibility. (u16 *
 ///             2 = 4 bytes)
 /// @param trigger Stop Loss (0), Take Profit (1), or Both (2)
@@ -31,9 +31,9 @@ public record Order(PublicKey _address,
                     WrappedI80F48 stopLoss,
                     WrappedI80F48 takeProfit,
                     long placeholder,
-                    int maxSlippage,
+                    long maxSlippage,
                     byte[] pad0,
-                    short[] tags,
+                    int[] tags,
                     byte[] pad1,
                     byte[] tagsPadding,
                     OrderTriggerType trigger,
@@ -85,9 +85,9 @@ public record Order(PublicKey _address,
     return Filter.createMemCompFilter(PLACEHOLDER_OFFSET, _data);
   }
 
-  public static Filter createMaxSlippageFilter(final int maxSlippage) {
+  public static Filter createMaxSlippageFilter(final long maxSlippage) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, maxSlippage);
+    putInt32LE(_data, 0, (int) maxSlippage);
     return Filter.createMemCompFilter(MAX_SLIPPAGE_OFFSET, _data);
   }
 
@@ -127,12 +127,12 @@ public record Order(PublicKey _address,
     i += takeProfit.l();
     final var placeholder = getInt64LE(_data, i);
     i += 8;
-    final var maxSlippage = getInt32LE(_data, i);
+    final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var pad0 = new byte[4];
     i += SerDeUtil.readArray(pad0, _data, i);
-    final var tags = new short[2];
-    i += SerDeUtil.readArray(tags, _data, i);
+    final var tags = new int[2];
+    i += SerDeUtil.readUnsignedShortArray(tags, _data, i);
     final var pad1 = new byte[4];
     i += SerDeUtil.readArray(pad1, _data, i);
     final var tagsPadding = new byte[32];
@@ -171,10 +171,10 @@ public record Order(PublicKey _address,
     i += takeProfit.write(_data, i);
     putInt64LE(_data, i, placeholder);
     i += 8;
-    putInt32LE(_data, i, maxSlippage);
+    putInt32LE(_data, i, (int) maxSlippage);
     i += 4;
     i += SerDeUtil.writeArrayChecked(pad0, 4, _data, i);
-    i += SerDeUtil.writeArrayChecked(tags, 2, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(tags, 2, _data, i);
     i += SerDeUtil.writeArrayChecked(pad1, 4, _data, i);
     i += SerDeUtil.writeArrayChecked(tagsPadding, 32, _data, i);
     i += trigger.write(_data, i);

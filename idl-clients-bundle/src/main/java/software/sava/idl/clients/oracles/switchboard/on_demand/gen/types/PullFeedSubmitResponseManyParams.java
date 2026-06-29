@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param slot: u64
 public record PullFeedSubmitResponseManyParams(long slot, MultiSubmission[] submissions) implements SerDe {
 
   public static final int SLOT_OFFSET = 0;

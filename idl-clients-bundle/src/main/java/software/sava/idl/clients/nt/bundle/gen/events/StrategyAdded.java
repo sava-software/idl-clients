@@ -10,7 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record StrategyAdded(Discriminator discriminator, PublicKey receiverAddress, int allocationBps) implements NtbundleEvent {
+/// @param allocationBps: u32
+public record StrategyAdded(Discriminator discriminator, PublicKey receiverAddress, long allocationBps) implements NtbundleEvent {
 
   public static final int BYTES = 44;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(248, 59, 8, 90, 242, 168, 247, 204);
@@ -26,7 +27,7 @@ public record StrategyAdded(Discriminator discriminator, PublicKey receiverAddre
     int i = _offset + discriminator.length();
     final var receiverAddress = readPubKey(_data, i);
     i += 32;
-    final var allocationBps = getInt32LE(_data, i);
+    final var allocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new StrategyAdded(discriminator, receiverAddress, allocationBps);
   }
 
@@ -35,7 +36,7 @@ public record StrategyAdded(Discriminator discriminator, PublicKey receiverAddre
     int i = _offset + discriminator.write(_data, _offset);
     receiverAddress.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, allocationBps);
+    putInt32LE(_data, i, (int) allocationBps);
     i += 4;
     return i - _offset;
   }

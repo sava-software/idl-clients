@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param protocolShare: u16
+/// @param baseFactor: u16
 public record FeeParameterUpdate(Discriminator discriminator,
                                  PublicKey lbPair,
                                  int protocolShare,

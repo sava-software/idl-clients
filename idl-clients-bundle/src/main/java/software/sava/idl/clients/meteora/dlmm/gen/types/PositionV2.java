@@ -28,11 +28,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param lowerBinId Lower bin ID
 /// @param upperBinId Upper bin ID
 /// @param lastUpdatedAt Last updated timestamp
-/// @param totalClaimedFeeXAmount Total claimed token fee X
-/// @param totalClaimedFeeYAmount Total claimed token fee Y
-/// @param totalClaimedRewards Total claimed rewards
+/// @param totalClaimedFeeXAmount: u64 Total claimed token fee X
+/// @param totalClaimedFeeYAmount: u64 Total claimed token fee Y
+/// @param totalClaimedRewards: u64[] Total claimed rewards
 /// @param operator Operator of position
-/// @param lockReleasePoint Time point which the locked liquidity can be withdraw
+/// @param lockReleasePoint: u64 Time point which the locked liquidity can be withdraw
 /// @param padding0 _padding_0, previous subjected_to_bootstrap_liquidity_locking, BE CAREFUL FOR TOMBSTONE WHEN REUSE !!
 /// @param feeOwner Address is able to claim fee in this position, only valid for bootstrap_liquidity_position
 /// @param version version to know whether we have reset tombstone fields

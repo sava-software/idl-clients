@@ -8,16 +8,16 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-/// @param filterPeriod Filter period determine high frequency trading time window.
-/// @param decayPeriod Decay period determine when the volatile fee start decay / decrease.
-/// @param reductionFactor Reduction factor controls the volatile fee rate decrement rate.
-/// @param variableFeeControl Used to scale the variable fee component depending on the dynamic of the market
-/// @param maxVolatilityAccumulator Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
+/// @param filterPeriod: u16 Filter period determine high frequency trading time window.
+/// @param decayPeriod: u16 Decay period determine when the volatile fee start decay / decrease.
+/// @param reductionFactor: u16 Reduction factor controls the volatile fee rate decrement rate.
+/// @param variableFeeControl: u32 Used to scale the variable fee component depending on the dynamic of the market
+/// @param maxVolatilityAccumulator: u32 Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
 public record DynamicFeeParameter(int filterPeriod,
                                   int decayPeriod,
                                   int reductionFactor,
-                                  int variableFeeControl,
-                                  int maxVolatilityAccumulator) implements SerDe {
+                                  long variableFeeControl,
+                                  long maxVolatilityAccumulator) implements SerDe {
 
   public static final int BYTES = 14;
 
@@ -38,9 +38,9 @@ public record DynamicFeeParameter(int filterPeriod,
     i += 2;
     final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var variableFeeControl = getInt32LE(_data, i);
+    final var variableFeeControl = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var maxVolatilityAccumulator = getInt32LE(_data, i);
+    final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new DynamicFeeParameter(filterPeriod,
                                    decayPeriod,
                                    reductionFactor,
@@ -57,9 +57,9 @@ public record DynamicFeeParameter(int filterPeriod,
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, variableFeeControl);
+    putInt32LE(_data, i, (int) variableFeeControl);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     return i - _offset;
   }

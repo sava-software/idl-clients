@@ -8,6 +8,13 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param principalDue: u64
+/// @param principalRepaid: u64
+/// @param interestOutstanding: u64
+/// @param lastInterestUpdatedTime: u64
+/// @param startTime: u64
+/// @param endTime: u64
+/// @param apy: u64
 public record Ledger(int status,
                      PublicKey strategy,
                      PublicKey principalMint,

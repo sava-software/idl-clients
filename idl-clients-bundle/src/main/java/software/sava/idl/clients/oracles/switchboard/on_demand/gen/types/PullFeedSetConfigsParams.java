@@ -15,11 +15,11 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 public record PullFeedSetConfigsParams(byte[] feedHash,
                                        PublicKey authority,
                                        OptionalLong maxVariance,
-                                       OptionalInt minResponses,
+                                       OptionalLong minResponses,
                                        byte[] name,
                                        byte[] ipfsHash,
                                        OptionalInt minSampleSize,
-                                       OptionalInt maxStaleness,
+                                       OptionalLong maxStaleness,
                                        Boolean permitWriteByAuthority) implements SerDe {
 
   public static final int FEED_HASH_OFFSET = 1;
@@ -56,13 +56,13 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       maxVariance = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
-    final OptionalInt minResponses;
+    final OptionalLong minResponses;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      minResponses = OptionalInt.empty();
+      minResponses = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      minResponses = OptionalInt.of(getInt32LE(_data, i));
+      minResponses = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final byte[] name;
@@ -92,13 +92,13 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       minSampleSize = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
-    final OptionalInt maxStaleness;
+    final OptionalLong maxStaleness;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      maxStaleness = OptionalInt.empty();
+      maxStaleness = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      maxStaleness = OptionalInt.of(getInt32LE(_data, i));
+      maxStaleness = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final Boolean permitWriteByAuthority;
@@ -130,7 +130,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
     }
     i += SerDeUtil.writeOptional(1, authority, _data, i);
     i += SerDeUtil.writeOptional(1, maxVariance, _data, i);
-    i += SerDeUtil.writeOptional(1, minResponses, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, minResponses, _data, i);
     if (name == null || name.length == 0) {
       _data[i++] = 0;
     } else {
@@ -144,7 +144,7 @@ public record PullFeedSetConfigsParams(byte[] feedHash,
       i += SerDeUtil.writeArrayChecked(ipfsHash, 32, _data, i);
     }
     i += SerDeUtil.writeOptionalbyte(1, minSampleSize, _data, i);
-    i += SerDeUtil.writeOptional(1, maxStaleness, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, maxStaleness, _data, i);
     i += SerDeUtil.writeOptional(1, permitWriteByAuthority, _data, i);
     return i - _offset;
   }

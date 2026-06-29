@@ -11,6 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultOutflowAmount: u64
 public record LendingPoolSuperAdminWithdrawEvent(Discriminator discriminator,
                                                  GroupEventHeader header,
                                                  PublicKey bank,

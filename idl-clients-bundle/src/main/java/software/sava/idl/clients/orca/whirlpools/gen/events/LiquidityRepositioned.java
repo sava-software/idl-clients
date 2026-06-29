@@ -16,6 +16,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param existingRangeTokenAAmount: u64
+/// @param existingRangeTokenBAmount: u64
+/// @param newRangeTokenAAmount: u64
+/// @param newRangeTokenBAmount: u64
+/// @param tokenATransferAmount: u64
+/// @param tokenATransferFee: u64
+/// @param tokenBTransferAmount: u64
+/// @param tokenBTransferFee: u64
 public record LiquidityRepositioned(Discriminator discriminator,
                                     PublicKey whirlpool,
                                     PublicKey position,

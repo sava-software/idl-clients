@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
 public record ClaimedEvent(Discriminator discriminator, PublicKey claimant, long amount) implements MerkleDistributorEvent {
 
   public static final int BYTES = 48;

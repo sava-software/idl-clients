@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// Borsh payload for updating cancel-order risk factor for a perp asset.
 ///
+/// @param cancelOrderRiskFactor: u16
 public record UpdatePerpCancelRiskFactorInstruction(Symbol perpAssetSymbol, int cancelOrderRiskFactor) implements SerDe {
 
   public static final int BYTES = 18;

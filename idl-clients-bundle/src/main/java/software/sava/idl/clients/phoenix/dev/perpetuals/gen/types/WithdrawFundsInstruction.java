@@ -6,7 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amount Amount in quote lots to withdraw.
+/// @param amount: u64 Amount in quote lots to withdraw.
 public record WithdrawFundsInstruction(long amount) implements SerDe {
 
   public static final int BYTES = 8;

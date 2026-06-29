@@ -11,14 +11,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A read-only cache of the bank's key metrics, e.g. spot interest/fee rates.
 ///
-/// @param baseRate Actual (spot) interest/fee rates of the bank, based on utilization
+/// @param baseRate: u32 Actual (spot) interest/fee rates of the bank, based on utilization
 ///                 * APR (annual percentage rate) values
 ///                 * From 0-1000%, as u32, e.g. u32::MAX = 1000%, u32::MAX/2 = 500%, etc
-/// @param lendingRate Equivalent to `base_rate` * utilization
+/// @param lendingRate: u32 Equivalent to `base_rate` * utilization
 ///                    * From 0-1000%, as u32, e.g. u32::MAX = 1000%, u32::MAX/2 = 500%, etc
-/// @param borrowingRate Equivalent to `base_rate` * (1 + ir_fees) + fixed_fees
+/// @param borrowingRate: u32 Equivalent to `base_rate` * (1 + ir_fees) + fixed_fees
 ///                      * From 0-1000%, as u32, e.g. u32::MAX = 1000%, u32::MAX/2 = 500%, etc
-/// @param interestAccumulatedFor * in seconds
+/// @param interestAccumulatedFor: u32 * in seconds
 /// @param accumulatedSinceLastUpdate equivalent to (share value increase in the last `interest_accumulated_for` seconds *
 ///                                   shares), i.e. the delta in `asset_share_value`, in token.
 ///                                   * Note: if the tx that triggered this cache update increased or decreased the net shares,
@@ -50,10 +50,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param liquidationPriceRtConfidence Cached real-time price confidence for receivership liquidation.
 /// @param liquidationPriceTwap Cached TWAP price for receivership liquidation.
 /// @param liquidationPriceTwapConfidence Cached TWAP price confidence for receivership liquidation.
-public record BankCache(int baseRate,
-                        int lendingRate,
-                        int borrowingRate,
-                        int interestAccumulatedFor,
+public record BankCache(long baseRate,
+                        long lendingRate,
+                        long borrowingRate,
+                        long interestAccumulatedFor,
                         WrappedI80F48 accumulatedSinceLastUpdate,
                         WrappedI80F48 lastOraclePrice,
                         long lastOraclePriceTimestamp,
@@ -88,13 +88,13 @@ public record BankCache(int baseRate,
       return null;
     }
     int i = _offset;
-    final var baseRate = getInt32LE(_data, i);
+    final var baseRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var lendingRate = getInt32LE(_data, i);
+    final var lendingRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var borrowingRate = getInt32LE(_data, i);
+    final var borrowingRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var interestAccumulatedFor = getInt32LE(_data, i);
+    final var interestAccumulatedFor = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var accumulatedSinceLastUpdate = WrappedI80F48.read(_data, i);
     i += accumulatedSinceLastUpdate.l();
@@ -134,13 +134,13 @@ public record BankCache(int baseRate,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, baseRate);
+    putInt32LE(_data, i, (int) baseRate);
     i += 4;
-    putInt32LE(_data, i, lendingRate);
+    putInt32LE(_data, i, (int) lendingRate);
     i += 4;
-    putInt32LE(_data, i, borrowingRate);
+    putInt32LE(_data, i, (int) borrowingRate);
     i += 4;
-    putInt32LE(_data, i, interestAccumulatedFor);
+    putInt32LE(_data, i, (int) interestAccumulatedFor);
     i += 4;
     i += accumulatedSinceLastUpdate.write(_data, i);
     i += lastOraclePrice.write(_data, i);

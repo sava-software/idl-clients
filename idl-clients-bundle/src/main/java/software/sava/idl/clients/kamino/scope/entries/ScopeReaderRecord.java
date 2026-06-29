@@ -12,9 +12,9 @@ import static software.sava.idl.clients.kamino.scope.gen.types.OracleType.*;
 record ScopeReaderRecord(ScopeEntry[] entries,
                          PublicKey[] priceInfoAccounts,
                          byte[] priceTypes,
-                         short[] twapSource,
+                         int[] twapSource,
                          TwapEnabledBitmask[] twapEnabledBitmasks,
-                         short[] refPrice,
+                         int[] refPrice,
                          byte[][] generic,
                          OracleType[] oracleTypes) implements ScopeReader {
 
@@ -29,7 +29,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     return i.isPresent() ? entry(i.getAsInt()) : null;
   }
 
-  private ScopeEntry[] parseEntries(final short[] entryIndices) {
+  private ScopeEntry[] parseEntries(final int[] entryIndices) {
     final var entries = new ScopeEntry[entryIndices.length];
     int j = 0;
     for (; j < entryIndices.length; ++j) {
@@ -117,7 +117,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
           default -> 2;
         };
         final var sourceIndices = data.sources();
-        final var slice = new short[numSources];
+        final var slice = new int[numSources];
         System.arraycopy(sourceIndices, 0, slice, 0, numSources);
         final var sources = parseEntries(slice);
         yield new Conditional(i, condition, data.toleranceBps(), sources);

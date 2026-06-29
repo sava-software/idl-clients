@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param edition: u64
 public record MintNewEditionFromMasterEditionViaTokenArgs(long edition) implements SerDe {
 
   public static final int BYTES = 8;

@@ -18,6 +18,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param reserved1: u64
+/// @param epochLength: u64
+/// @param sgxAdvisories: u16[]
+/// @param padding3: u32
+/// @param lutSlot: u64
+/// @param baseReward: u32
+/// @param subsidyAmount: u64
 /// @param costWhitelist Cost whitelist by authority
 public record State(PublicKey _address,
                     Discriminator discriminator,
@@ -31,14 +38,14 @@ public record State(PublicKey _address,
                     long epochLength,
                     byte[] reserved2,
                     PublicKey switchMint,
-                    short[] sgxAdvisories,
+                    int[] sgxAdvisories,
                     int advisoriesLen,
                     int padding2,
                     int flatRewardCutPercentage,
                     int enableSlashing,
-                    int padding3,
+                    long padding3,
                     long lutSlot,
-                    int baseReward,
+                    long baseReward,
                     byte[] padding4,
                     long subsidyAmount,
                     byte[] ebuf6,
@@ -143,9 +150,9 @@ public record State(PublicKey _address,
     return Filter.createMemCompFilter(ENABLE_SLASHING_OFFSET, new byte[]{(byte) enableSlashing});
   }
 
-  public static Filter createPadding3Filter(final int padding3) {
+  public static Filter createPadding3Filter(final long padding3) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, padding3);
+    putInt32LE(_data, 0, (int) padding3);
     return Filter.createMemCompFilter(PADDING_3_OFFSET, _data);
   }
 
@@ -155,9 +162,9 @@ public record State(PublicKey _address,
     return Filter.createMemCompFilter(LUT_SLOT_OFFSET, _data);
   }
 
-  public static Filter createBaseRewardFilter(final int baseReward) {
+  public static Filter createBaseRewardFilter(final long baseReward) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, baseReward);
+    putInt32LE(_data, 0, (int) baseReward);
     return Filter.createMemCompFilter(BASE_REWARD_OFFSET, _data);
   }
 
@@ -207,8 +214,8 @@ public record State(PublicKey _address,
     i += SerDeUtil.readArray(reserved2, _data, i);
     final var switchMint = readPubKey(_data, i);
     i += 32;
-    final var sgxAdvisories = new short[32];
-    i += SerDeUtil.readArray(sgxAdvisories, _data, i);
+    final var sgxAdvisories = new int[32];
+    i += SerDeUtil.readUnsignedShortArray(sgxAdvisories, _data, i);
     final var advisoriesLen = _data[i] & 0xFF;
     ++i;
     final var padding2 = _data[i] & 0xFF;
@@ -217,11 +224,11 @@ public record State(PublicKey _address,
     ++i;
     final var enableSlashing = _data[i] & 0xFF;
     ++i;
-    final var padding3 = getInt32LE(_data, i);
+    final var padding3 = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var lutSlot = getInt64LE(_data, i);
     i += 8;
-    final var baseReward = getInt32LE(_data, i);
+    final var baseReward = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding4 = new byte[4];
     i += SerDeUtil.readArray(padding4, _data, i);
@@ -290,7 +297,7 @@ public record State(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(reserved2, 136, _data, i);
     switchMint.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(sgxAdvisories, 32, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(sgxAdvisories, 32, _data, i);
     _data[i] = (byte) advisoriesLen;
     ++i;
     _data[i] = (byte) padding2;
@@ -299,11 +306,11 @@ public record State(PublicKey _address,
     ++i;
     _data[i] = (byte) enableSlashing;
     ++i;
-    putInt32LE(_data, i, padding3);
+    putInt32LE(_data, i, (int) padding3);
     i += 4;
     putInt64LE(_data, i, lutSlot);
     i += 8;
-    putInt32LE(_data, i, baseReward);
+    putInt32LE(_data, i, (int) baseReward);
     i += 4;
     i += SerDeUtil.writeArrayChecked(padding4, 4, _data, i);
     putInt64LE(_data, i, subsidyAmount);

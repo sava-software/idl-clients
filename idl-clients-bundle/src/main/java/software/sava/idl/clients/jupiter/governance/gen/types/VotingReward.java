@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param rewardMint Reward mint
 /// @param rewardVault Reward vault
-/// @param rewardPerProposal Total reward per proposal
+/// @param rewardPerProposal: u64 Total reward per proposal
 public record VotingReward(PublicKey rewardMint,
                            PublicKey rewardVault,
                            long rewardPerProposal) implements SerDe {

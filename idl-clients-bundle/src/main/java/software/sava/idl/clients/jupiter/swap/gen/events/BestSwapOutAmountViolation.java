@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param expectedOutAmount: u64
+/// @param outAmount: u64
 public record BestSwapOutAmountViolation(Discriminator discriminator, long expectedOutAmount, long outAmount) implements JupiterEvent {
 
   public static final int BYTES = 24;

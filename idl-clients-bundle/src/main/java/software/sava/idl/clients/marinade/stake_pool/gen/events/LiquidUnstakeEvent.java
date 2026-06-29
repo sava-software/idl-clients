@@ -14,6 +14,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param liqPoolSolBalance: u64
+/// @param liqPoolMsolBalance: u64
+/// @param userMsolBalance: u64
+/// @param userSolBalance: u64
+/// @param msolAmount: u64
+/// @param msolFee: u64
+/// @param treasuryMsolCut: u64
+/// @param solAmount: u64
+/// @param lpLiquidityTarget: u64
 public record LiquidUnstakeEvent(Discriminator discriminator,
                                  PublicKey state,
                                  PublicKey msolOwner,

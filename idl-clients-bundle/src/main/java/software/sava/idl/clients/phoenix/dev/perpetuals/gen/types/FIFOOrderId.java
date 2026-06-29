@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Stable identifier for a resting order composed of price ticks and sequence number.
 ///
+/// @param orderSequenceNumber: u64
 public record FIFOOrderId(Ticks priceInTicks, long orderSequenceNumber) implements SerDe {
 
   public static final int BYTES = 16;

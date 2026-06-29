@@ -9,6 +9,12 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param version: u64
+/// @param totalClaim: u64
+/// @param maxNumNodes: u64
+/// @param activationPoint: u64
+/// @param totalBonus: u64
+/// @param bonusVestingDuration: u64
 public record NewDistributorParams(long version,
                                    byte[] root,
                                    long totalClaim,

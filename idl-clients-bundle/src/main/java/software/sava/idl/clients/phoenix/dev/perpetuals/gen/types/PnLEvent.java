@@ -16,9 +16,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::PnL Borsh variant 37.
 /// Payload type: PnLEvent.
 ///
+/// @param assetId: u32
 public record PnLEvent(Discriminator discriminator,
                        PublicKey trader,
-                       int assetId,
+                       long assetId,
                        Symbol assetSymbol,
                        SignedQuoteLots realizedPnl,
                        SignedQuoteLots fundingPayment,
@@ -48,7 +49,7 @@ public record PnLEvent(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
@@ -80,7 +81,7 @@ public record PnLEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     trader.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += assetSymbol.write(_data, i);
     i += realizedPnl.write(_data, i);

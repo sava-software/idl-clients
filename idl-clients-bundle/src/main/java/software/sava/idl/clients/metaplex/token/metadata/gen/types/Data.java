@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param sellerFeeBasisPoints: u16
 public record Data(String name, byte[] _name,
                    String symbol, byte[] _symbol,
                    String uri, byte[] _uri,

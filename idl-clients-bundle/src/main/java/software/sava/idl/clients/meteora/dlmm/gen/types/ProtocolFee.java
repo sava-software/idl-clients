@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param amountX: u64
+/// @param amountY: u64
 public record ProtocolFee(long amountX, long amountY) implements SerDe {
 
   public static final int BYTES = 16;

@@ -8,7 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record SplitStakeAccountInfo(PublicKey account, int index) implements SerDe {
+/// @param index: u32
+public record SplitStakeAccountInfo(PublicKey account, long index) implements SerDe {
 
   public static final int BYTES = 36;
 
@@ -22,7 +23,7 @@ public record SplitStakeAccountInfo(PublicKey account, int index) implements Ser
     int i = _offset;
     final var account = readPubKey(_data, i);
     i += 32;
-    final var index = getInt32LE(_data, i);
+    final var index = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new SplitStakeAccountInfo(account, index);
   }
 
@@ -31,7 +32,7 @@ public record SplitStakeAccountInfo(PublicKey account, int index) implements Ser
     int i = _offset;
     account.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, index);
+    putInt32LE(_data, i, (int) index);
     i += 4;
     return i - _offset;
   }

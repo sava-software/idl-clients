@@ -10,12 +10,17 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record QueueInitSVMParams(int allowAuthorityOverrideAfter,
+/// @param allowAuthorityOverrideAfter: u32
+/// @param maxQuoteVerificationAge: u32
+/// @param reward: u32
+/// @param nodeTimeout: u32
+/// @param recentSlot: u64
+public record QueueInitSVMParams(long allowAuthorityOverrideAfter,
                                  boolean requireAuthorityHeartbeatPermission,
                                  boolean requireUsagePermissions,
-                                 int maxQuoteVerificationAge,
-                                 int reward,
-                                 int nodeTimeout,
+                                 long maxQuoteVerificationAge,
+                                 long reward,
+                                 long nodeTimeout,
                                  long recentSlot,
                                  PublicKey sourceQueueKey) implements SerDe {
 
@@ -35,17 +40,17 @@ public record QueueInitSVMParams(int allowAuthorityOverrideAfter,
       return null;
     }
     int i = _offset;
-    final var allowAuthorityOverrideAfter = getInt32LE(_data, i);
+    final var allowAuthorityOverrideAfter = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var requireAuthorityHeartbeatPermission = _data[i] == 1;
     ++i;
     final var requireUsagePermissions = _data[i] == 1;
     ++i;
-    final var maxQuoteVerificationAge = getInt32LE(_data, i);
+    final var maxQuoteVerificationAge = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var reward = getInt32LE(_data, i);
+    final var reward = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var nodeTimeout = getInt32LE(_data, i);
+    final var nodeTimeout = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var recentSlot = getInt64LE(_data, i);
     i += 8;
@@ -63,17 +68,17 @@ public record QueueInitSVMParams(int allowAuthorityOverrideAfter,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, allowAuthorityOverrideAfter);
+    putInt32LE(_data, i, (int) allowAuthorityOverrideAfter);
     i += 4;
     _data[i] = (byte) (requireAuthorityHeartbeatPermission ? 1 : 0);
     ++i;
     _data[i] = (byte) (requireUsagePermissions ? 1 : 0);
     ++i;
-    putInt32LE(_data, i, maxQuoteVerificationAge);
+    putInt32LE(_data, i, (int) maxQuoteVerificationAge);
     i += 4;
-    putInt32LE(_data, i, reward);
+    putInt32LE(_data, i, (int) reward);
     i += 4;
-    putInt32LE(_data, i, nodeTimeout);
+    putInt32LE(_data, i, (int) nodeTimeout);
     i += 4;
     putInt64LE(_data, i, recentSlot);
     i += 8;

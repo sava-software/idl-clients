@@ -10,6 +10,9 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param depositLimit: u64
+/// @param totalAssetValueInitLimit: u64
+/// @param oracleMaxAge: u16
 /// @param riskTier WARN: You almost certainly want "Collateral", using Isolated risk tier makes the asset
 ///                 worthless as collateral, and is generally useful only when creating a staked collateral pool
 ///                 for rewards purposes only.

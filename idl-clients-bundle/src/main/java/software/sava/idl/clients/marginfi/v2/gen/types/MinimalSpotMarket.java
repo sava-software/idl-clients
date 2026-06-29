@@ -28,10 +28,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param oracle The oracle used to price the markets deposits/borrows
 /// @param mint The token mint of the market
 /// @param vault The vault used to store the market's deposits
+/// @param padding1: u64[][]
 /// @param depositBalance All the fields we need for testing (stored as raw bytes for simplicity)
-/// @param lastInterestTs Last time the cumulative deposit and borrow interest was updated
+/// @param padding3: u64[]
+/// @param lastInterestTs: u64 Last time the cumulative deposit and borrow interest was updated
 ///                       Offset: 568 bytes from start of struct (including discriminator)
-/// @param padding7 Padding to reach 776 bytes total (including discriminator)
+/// @param padding4: u64[]
+/// @param decimals: u32
+/// @param marketIndex: u16
+/// @param padding5: u16[]
+/// @param padding7: u64[] Padding to reach 776 bytes total (including discriminator)
 public record MinimalSpotMarket(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey pubkey,
@@ -47,9 +53,9 @@ public record MinimalSpotMarket(PublicKey _address,
                                 long[] padding3,
                                 long lastInterestTs,
                                 long[] padding4,
-                                int decimals,
+                                long decimals,
                                 int marketIndex,
-                                short[] padding5,
+                                int[] padding5,
                                 byte[] padding6,
                                 int poolId,
                                 long[] padding7) implements SerDe {
@@ -113,9 +119,9 @@ public record MinimalSpotMarket(PublicKey _address,
     return Filter.createMemCompFilter(LAST_INTEREST_TS_OFFSET, _data);
   }
 
-  public static Filter createDecimalsFilter(final int decimals) {
+  public static Filter createDecimalsFilter(final long decimals) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, decimals);
+    putInt32LE(_data, 0, (int) decimals);
     return Filter.createMemCompFilter(DECIMALS_OFFSET, _data);
   }
 
@@ -175,12 +181,12 @@ public record MinimalSpotMarket(PublicKey _address,
     i += 8;
     final var padding4 = new long[13];
     i += SerDeUtil.readArray(padding4, _data, i);
-    final var decimals = getInt32LE(_data, i);
+    final var decimals = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var marketIndex = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var padding5 = new short[24];
-    i += SerDeUtil.readArray(padding5, _data, i);
+    final var padding5 = new int[24];
+    i += SerDeUtil.readUnsignedShortArray(padding5, _data, i);
     final var padding6 = new byte[1];
     i += SerDeUtil.readArray(padding6, _data, i);
     final var poolId = _data[i] & 0xFF;
@@ -231,11 +237,11 @@ public record MinimalSpotMarket(PublicKey _address,
     putInt64LE(_data, i, lastInterestTs);
     i += 8;
     i += SerDeUtil.writeArrayChecked(padding4, 13, _data, i);
-    putInt32LE(_data, i, decimals);
+    putInt32LE(_data, i, (int) decimals);
     i += 4;
     putInt16LE(_data, i, marketIndex);
     i += 2;
-    i += SerDeUtil.writeArrayChecked(padding5, 24, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(padding5, 24, _data, i);
     i += SerDeUtil.writeArrayChecked(padding6, 1, _data, i);
     _data[i] = (byte) poolId;
     ++i;

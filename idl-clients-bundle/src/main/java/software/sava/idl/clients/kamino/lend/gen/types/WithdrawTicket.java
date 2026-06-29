@@ -34,13 +34,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// 7. The handler transfers the liquidity amount according to the current exchange rate.
 /// 8. The handler closes the ticket account.
 ///
-/// @param sequenceNumber This ticket's place in the queue; the same as used for PDA derivation.
+/// @param sequenceNumber: u64 This ticket's place in the queue; the same as used for PDA derivation.
 /// @param owner The funds' owner (the user who called the `enqueue_to_withdraw` handler).
 /// @param reserve The reserve to withdraw from.
 /// @param userDestinationLiquidityTa The token account to which the finally-available liquidity should be transferred (by the
 ///                                   `withdraw_queued_liquidity` handler).
-/// @param queuedCollateralAmount The amount of collateral still waiting to be withdrawn using this ticket.
-/// @param createdAtTimestamp The timestamp at which the queue was entered.
+/// @param queuedCollateralAmount: u64 The amount of collateral still waiting to be withdrawn using this ticket.
+/// @param createdAtTimestamp: u64 The timestamp at which the queue was entered.
 ///                           
 ///                           This is currently only a piece of metadata, not used by the logic.
 /// @param invalid Whether the ticket has been found to be invalid (e.g. the Self::user_destination_liquidity
@@ -52,7 +52,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param progressCallbackType One of the valid ProgressCallbackType representations.
 /// @param alignmentPadding Inner padding, for alignment.
 /// @param progressCallbackCustomAccounts The (optional) accounts to be used by Self::progress_callback_types.
-/// @param endPadding Trailing padding, for future developments.
+/// @param endPadding: u64[] Trailing padding, for future developments.
 public record WithdrawTicket(PublicKey _address,
                              Discriminator discriminator,
                              long sequenceNumber,

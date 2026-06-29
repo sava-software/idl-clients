@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param oracleBuffer: u64
 public record OracleBufferSet(Discriminator discriminator, long oracleBuffer) implements NtbundleEvent {
 
   public static final int BYTES = 16;

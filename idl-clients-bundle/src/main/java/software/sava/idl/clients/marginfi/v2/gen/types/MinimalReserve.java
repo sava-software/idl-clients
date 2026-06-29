@@ -16,7 +16,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param slot Kamino reserves are only good for one slot, e.g. `refresh_reserve` must have run within the
+/// @param version: u64
+/// @param slot: u64 Kamino reserves are only good for one slot, e.g. `refresh_reserve` must have run within the
 ///             same slot as any ix that needs a non-stale reserve e.g. withdraw.
 /// @param stale True if the reserve is stale, which will cause various ixes like withdraw to fail. Typically
 ///              set to true in any tx that modifies reserve balance, and set to false at the end of a
@@ -34,11 +35,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                    * PRICE_USAGE_ALLOWED = 0b_0010_0000; // 32
 /// @param supplyVault * A PDA
 /// @param feeVault * A PDA
-/// @param availableAmount In simple terms: (amount in supply vault - outstanding borrows)
+/// @param availableAmount: u64 In simple terms: (amount in supply vault - outstanding borrows)
 ///                        * In token, with `mint_decimals`
 /// @param borrowedAmountSf * In token, with `mint_decimals`
 ///                         * Actually an I68F60, stored as a u128 (i.e. BN) in Kamino.
 /// @param marketPriceSf * Actually an I68F60, stored as a u128 (i.e. BN) in Kamino.
+/// @param marketPriceLastUpdatedTs: u64
+/// @param mintDecimals: u64
+/// @param depositLimitCrossedTimestamp: u64
+/// @param borrowLimitCrossedTimestamp: u64
 /// @param accumulatedProtocolFeesSf * In token, with `mint_decimals`
 ///                                  * Actually an I68F60, stored as a u128 (i.e. BN) in Kamino.
 /// @param accumulatedReferrerFeesSf * In token, with `mint_decimals`
@@ -52,7 +57,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                             * A PDA
 ///                             * technically 6 decimals, but uses `mint_decimals` regardless for all purposes
 ///                             * authority = lending_market_authority
-/// @param mintTotalSupply Total number of collateral tokens
+/// @param mintTotalSupply: u64 Total number of collateral tokens
 ///                        * uses `mint_decimals`, even though it's technically 6 decimals under the hood
 /// @param collateralSupplyVault * A PDA
 public record MinimalReserve(PublicKey _address,

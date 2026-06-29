@@ -12,13 +12,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param outflowUsd Equity-denominated outflow value in USD, rounded to integer.
+/// @param outflowUsd: u32 Equity-denominated outflow value in USD, rounded to integer.
 /// @param currentTimestamp Unix timestamp when the flow was recorded
 public record DeleverageWithdrawFlowEvent(Discriminator discriminator,
                                           PublicKey group,
                                           PublicKey bank,
                                           PublicKey mint,
-                                          int outflowUsd,
+                                          long outflowUsd,
                                           long currentTimestamp) implements MarginfiEvent {
 
   public static final int BYTES = 116;
@@ -42,7 +42,7 @@ public record DeleverageWithdrawFlowEvent(Discriminator discriminator,
     i += 32;
     final var mint = readPubKey(_data, i);
     i += 32;
-    final var outflowUsd = getInt32LE(_data, i);
+    final var outflowUsd = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var currentTimestamp = getInt64LE(_data, i);
     return new DeleverageWithdrawFlowEvent(discriminator,
@@ -62,7 +62,7 @@ public record DeleverageWithdrawFlowEvent(Discriminator discriminator,
     i += 32;
     mint.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, outflowUsd);
+    putInt32LE(_data, i, (int) outflowUsd);
     i += 4;
     putInt64LE(_data, i, currentTimestamp);
     i += 8;

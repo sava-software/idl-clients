@@ -8,6 +8,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sharesToBurn: u64
+/// @param availableToSendToUser: u64
+/// @param investedToDisinvestCtokens: u64
+/// @param investedLiquidityToSendToUser: u64
 public record WithdrawResultEvent(Discriminator discriminator,
                                   long sharesToBurn,
                                   long availableToSendToUser,

@@ -10,11 +10,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Tracks deleverage withdrawal limits to protect against compromised risk admin
 ///
-/// @param dailyLimit Maximum USD value that can be withdrawn per day via deleverage (0 = no limit)
-/// @param withdrawnToday USD value withdrawn today via deleverage (approximate, rounded)
+/// @param dailyLimit: u32 Maximum USD value that can be withdrawn per day via deleverage (0 = no limit)
+/// @param withdrawnToday: u32 USD value withdrawn today via deleverage (approximate, rounded)
 /// @param lastDailyResetTimestamp Unix timestamp of the last daily counter reset
-public record WithdrawWindowCache(int dailyLimit,
-                                  int withdrawnToday,
+public record WithdrawWindowCache(long dailyLimit,
+                                  long withdrawnToday,
                                   long lastDailyResetTimestamp) implements SerDe {
 
   public static final int BYTES = 16;
@@ -28,9 +28,9 @@ public record WithdrawWindowCache(int dailyLimit,
       return null;
     }
     int i = _offset;
-    final var dailyLimit = getInt32LE(_data, i);
+    final var dailyLimit = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var withdrawnToday = getInt32LE(_data, i);
+    final var withdrawnToday = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var lastDailyResetTimestamp = getInt64LE(_data, i);
     return new WithdrawWindowCache(dailyLimit, withdrawnToday, lastDailyResetTimestamp);
@@ -39,9 +39,9 @@ public record WithdrawWindowCache(int dailyLimit,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, dailyLimit);
+    putInt32LE(_data, i, (int) dailyLimit);
     i += 4;
-    putInt32LE(_data, i, withdrawnToday);
+    putInt32LE(_data, i, (int) withdrawnToday);
     i += 4;
     putInt64LE(_data, i, lastDailyResetTimestamp);
     i += 8;

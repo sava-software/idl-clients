@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param inputAmount: u64
+/// @param outputAmount: u64
 public record SwapEventV2(PublicKey inputMint,
                           long inputAmount,
                           PublicKey outputMint,

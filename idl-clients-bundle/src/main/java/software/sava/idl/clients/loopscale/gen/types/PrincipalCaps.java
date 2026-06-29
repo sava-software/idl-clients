@@ -6,7 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param maxOutstanding This is the global supply/borrow cap. Always disabled for withdraw caps.
+/// @param max1hr: u64
+/// @param max24hr: u64
+/// @param maxOutstanding: u64 This is the global supply/borrow cap. Always disabled for withdraw caps.
 public record PrincipalCaps(long max1hr,
                             long max24hr,
                             long maxOutstanding) implements SerDe {

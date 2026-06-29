@@ -15,9 +15,20 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param circulatingTicketCount count tickets for delayed-unstake
-/// @param circulatingTicketBalance total lamports amount of generated and not claimed yet tickets
+/// @param rentExemptForTokenAcc: u64
+/// @param availableReserveBalance: u64
+/// @param msolSupply: u64
+/// @param msolPrice: u64
+/// @param circulatingTicketCount: u64 count tickets for delayed-unstake
+/// @param circulatingTicketBalance: u64 total lamports amount of generated and not claimed yet tickets
+/// @param lentFromReserve: u64
+/// @param minDeposit: u64
+/// @param minWithdraw: u64
+/// @param stakingSolCap: u64
+/// @param emergencyCoolingDown: u64
 /// @param pauseAuthority emergency pause
+/// @param lastStakeMoveEpoch: u64
+/// @param stakeMoved: u64
 public record State(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey msolMint,

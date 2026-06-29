@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param feeXPending: u64
+/// @param feeYPending: u64
 public record FeeInfo(BigInteger feeXPerTokenComplete,
                       BigInteger feeYPerTokenComplete,
                       long feeXPending,

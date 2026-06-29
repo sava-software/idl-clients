@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param minDepositAmount: u64
 public record MinDepositAmountSet(Discriminator discriminator, long minDepositAmount, PublicKey bundleAccountKey) implements NtbundleEvent {
 
   public static final int BYTES = 48;

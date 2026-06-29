@@ -6,7 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record Duration(int duration, int durationType) implements SerDe {
+/// @param duration: u32
+public record Duration(long duration, int durationType) implements SerDe {
 
   public static final int BYTES = 5;
 
@@ -18,7 +19,7 @@ public record Duration(int duration, int durationType) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var duration = getInt32LE(_data, i);
+    final var duration = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var durationType = _data[i] & 0xFF;
     return new Duration(duration, durationType);
@@ -27,7 +28,7 @@ public record Duration(int duration, int durationType) implements SerDe {
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, duration);
+    putInt32LE(_data, i, (int) duration);
     i += 4;
     _data[i] = (byte) durationType;
     ++i;

@@ -8,7 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// u32-backed spline liquidity density wrapper.
 ///
-public record BaseLotsPerTickU32(int inner) implements SerDe {
+/// @param inner: u32
+public record BaseLotsPerTickU32(long inner) implements SerDe {
 
   public static final int BYTES = 4;
 
@@ -18,14 +19,14 @@ public record BaseLotsPerTickU32(int inner) implements SerDe {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var inner = getInt32LE(_data, _offset);
+    final var inner = Integer.toUnsignedLong(getInt32LE(_data, _offset));
     return new BaseLotsPerTickU32(inner);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, inner);
+    putInt32LE(_data, i, (int) inner);
     i += 4;
     return i - _offset;
   }

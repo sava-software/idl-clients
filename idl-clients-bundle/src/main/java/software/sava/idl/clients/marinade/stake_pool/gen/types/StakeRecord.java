@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lastUpdateDelegatedLamports: u64
+/// @param lastUpdateEpoch: u64
 public record StakeRecord(PublicKey stakeAccount,
                           long lastUpdateDelegatedLamports,
                           long lastUpdateEpoch,

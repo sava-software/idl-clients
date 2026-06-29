@@ -16,6 +16,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed WithdrawQueueHeader prefix for the Phoenix Eternal withdraw queue account.
 /// The deque of pending withdrawal requests follows this header and is left as trailing account data by generic decoders.
 ///
+/// @param reserved: u64[]
 public record WithdrawQueueHeader(PublicKey _address,
                                   Discriminator discriminator,
                                   SequenceNumber sequenceNumber,

@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Dimensionless constant wrapper.
 ///
+/// @param inner: u64
 public record Constant(long inner) implements SerDe {
 
   public static final int BYTES = 8;

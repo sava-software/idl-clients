@@ -23,6 +23,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// User supply position
 ///
+/// @param amount: u64
+/// @param lastUpdate: u64
+/// @param expandPct: u16
+/// @param expandDuration: u64
+/// @param baseWithdrawalLimit: u64
 public record UserSupplyPosition(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey protocol,

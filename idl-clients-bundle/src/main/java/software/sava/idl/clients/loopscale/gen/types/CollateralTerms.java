@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param terms: u64[]
 public record CollateralTerms(PublicKey assetIdentifier, long[] terms) implements SerDe {
 
   public static final int BYTES = 72;

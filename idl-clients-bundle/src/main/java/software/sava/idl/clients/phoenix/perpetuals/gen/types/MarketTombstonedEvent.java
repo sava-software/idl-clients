@@ -12,6 +12,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::MarketTombstoned Borsh variant 64.
 /// Payload type: MarketTombstonedEvent.
 ///
+/// @param finalSequenceNumber: u64
+/// @param finalTradeSequenceNumber: u64
+/// @param finalOrderSequenceNumber: u64
 public record MarketTombstonedEvent(Discriminator discriminator,
                                     MarketStatus previousMarketStatus,
                                     long finalSequenceNumber,

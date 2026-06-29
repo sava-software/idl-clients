@@ -10,7 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param stdDev The standard deviation of the submissions needed for quorom size
 /// @param mean The mean of the submissions needed for quorom size
-/// @param slot The slot at which this value was signed.
+/// @param slot: u64 The slot at which this value was signed.
 public record CompactResult(float stdDev,
                             float mean,
                             long slot) implements SerDe {

@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param votingReward: u64
 public record ClaimRewardEvent(Discriminator discriminator,
                                PublicKey governor,
                                PublicKey voter,

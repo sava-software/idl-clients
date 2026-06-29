@@ -7,8 +7,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amountX Amount of X token to deposit
-/// @param amountY Amount of Y token to deposit
+/// @param amountX: u64 Amount of X token to deposit
+/// @param amountY: u64 Amount of Y token to deposit
 /// @param binLiquidityDist Liquidity distribution to each bins
 public record LiquidityParameter(long amountX,
                                  long amountY,

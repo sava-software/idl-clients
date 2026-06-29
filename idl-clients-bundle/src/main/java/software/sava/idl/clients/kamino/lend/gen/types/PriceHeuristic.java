@@ -6,9 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param lower Lower value of acceptable price
-/// @param upper Upper value of acceptable price
-/// @param exp Number of decimals of the previously defined values
+/// @param lower: u64 Lower value of acceptable price
+/// @param upper: u64 Upper value of acceptable price
+/// @param exp: u64 Number of decimals of the previously defined values
 public record PriceHeuristic(long lower,
                              long upper,
                              long exp) implements SerDe {

@@ -7,9 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-/// @param zeroUtilRate The base rate at utilization = 0
+/// @param zeroUtilRate: u32 The base rate at utilization = 0
 ///                     * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
-/// @param hundredUtilRate The base rate at utilization = 100
+/// @param hundredUtilRate: u32 The base rate at utilization = 100
 ///                        * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
 /// @param points The base rate at various points between 0 and 100%, exclusive. Essentially a piece-wise
 ///               linear curve.
@@ -21,8 +21,8 @@ public record InterestRateConfigCompact(WrappedI80F48 insuranceFeeFixedApr,
                                         WrappedI80F48 protocolFixedFeeApr,
                                         WrappedI80F48 protocolIrFee,
                                         WrappedI80F48 protocolOriginationFee,
-                                        int zeroUtilRate,
-                                        int hundredUtilRate,
+                                        long zeroUtilRate,
+                                        long hundredUtilRate,
                                         RatePoint[] points) implements SerDe {
 
   public static final int BYTES = 128;
@@ -52,9 +52,9 @@ public record InterestRateConfigCompact(WrappedI80F48 insuranceFeeFixedApr,
     i += protocolIrFee.l();
     final var protocolOriginationFee = WrappedI80F48.read(_data, i);
     i += protocolOriginationFee.l();
-    final var zeroUtilRate = getInt32LE(_data, i);
+    final var zeroUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var hundredUtilRate = getInt32LE(_data, i);
+    final var hundredUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var points = new RatePoint[5];
     SerDeUtil.readArray(points, RatePoint::read, _data, i);
@@ -76,9 +76,9 @@ public record InterestRateConfigCompact(WrappedI80F48 insuranceFeeFixedApr,
     i += protocolFixedFeeApr.write(_data, i);
     i += protocolIrFee.write(_data, i);
     i += protocolOriginationFee.write(_data, i);
-    putInt32LE(_data, i, zeroUtilRate);
+    putInt32LE(_data, i, (int) zeroUtilRate);
     i += 4;
-    putInt32LE(_data, i, hundredUtilRate);
+    putInt32LE(_data, i, (int) hundredUtilRate);
     i += 4;
     i += SerDeUtil.writeArrayChecked(points, 5, _data, i);
     return i - _offset;

@@ -55,10 +55,9 @@ public interface ScopeProgramClient {
   Instruction refreshPriceList(final PublicKey oraclePricesKey,
                                final PublicKey oracleMappingsKey,
                                final PublicKey oracleTwapsKey,
-                               final short[] tokens);
+                               final int[] tokens);
 
-  default Instruction refreshPriceList(final Configuration configuration,
-                                       final short[] tokens) {
+  default Instruction refreshPriceList(final Configuration configuration, final int[] tokens) {
     return refreshPriceList(
         configuration.oraclePrices(),
         configuration.oracleMappings(),
@@ -67,7 +66,7 @@ public interface ScopeProgramClient {
     );
   }
 
-  static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final short[] tokens) {
+  static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
     final var priceInfoAccounts = oracleMappings.priceInfoAccounts();
     final var oracleTypes = oracleMappings.priceTypes();
     final var oracleTypeEnums = OracleType.values();
@@ -89,7 +88,7 @@ public interface ScopeProgramClient {
 
   default Instruction refreshPriceList(final Configuration configuration,
                                        final OracleMappings oracleMappings,
-                                       final short[] tokens) {
+                                       final int[] tokens) {
     return refreshPriceList(
         configuration.oraclePrices(),
         configuration.oracleMappings(),
@@ -138,7 +137,7 @@ public interface ScopeProgramClient {
                                     final PublicKey pythProgramKey,
                                     final PublicKey pythStorageKey,
                                     final PublicKey pythTreasuryKey,
-                                    final short[] tokens,
+                                    final int[] tokens,
                                     final byte[] serializedPythMessage,
                                     final int ed25519InstructionIndex);
 
@@ -147,7 +146,7 @@ public interface ScopeProgramClient {
                                             final PublicKey pythProgramKey,
                                             final PublicKey pythStorageKey,
                                             final PublicKey pythTreasuryKey,
-                                            final short[] tokens,
+                                            final int[] tokens,
                                             final byte[] serializedPythMessage,
                                             final int ed25519InstructionIndex) {
     return refreshPythLazerPrice(
@@ -213,13 +212,13 @@ public interface ScopeProgramClient {
                             final PublicKey seedPk,
                             final long seedId,
                             final int bump,
-                            final short[][] scopeChains);
+                            final int[][] scopeChains);
 
   default Instruction createMintMap(final Configuration configuration,
                                     final PublicKey seedPk,
                                     final long seedId,
                                     final int bump,
-                                    final short[][] scopeChains) {
+                                    final int[][] scopeChains) {
     return createMintMap(
         configuration.admin(),
         configuration._address(),

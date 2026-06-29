@@ -12,14 +12,25 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param lastUpdateStakeDelegation: u64
+/// @param stakeIndex: u32
+/// @param validatorIndex: u32
+/// @param userMsolBalance: u64
+/// @param msolBurned: u64
+/// @param msolFees: u64
+/// @param splitLamports: u64
+/// @param feeBpCents: u32
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record WithdrawStakeAccountEvent(Discriminator discriminator,
                                         PublicKey state,
                                         long epoch,
                                         PublicKey stake,
                                         long lastUpdateStakeDelegation,
-                                        int stakeIndex,
+                                        long stakeIndex,
                                         PublicKey validator,
-                                        int validatorIndex,
+                                        long validatorIndex,
                                         long userMsolBalance,
                                         PublicKey userMsolAuth,
                                         long msolBurned,
@@ -27,7 +38,7 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
                                         PublicKey splitStake,
                                         PublicKey beneficiary,
                                         long splitLamports,
-                                        int feeBpCents,
+                                        long feeBpCents,
                                         long totalVirtualStakedLamports,
                                         long msolSupply) implements MarinadeFinanceEvent {
 
@@ -66,11 +77,11 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
     i += 32;
     final var lastUpdateStakeDelegation = getInt64LE(_data, i);
     i += 8;
-    final var stakeIndex = getInt32LE(_data, i);
+    final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var validator = readPubKey(_data, i);
     i += 32;
-    final var validatorIndex = getInt32LE(_data, i);
+    final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var userMsolBalance = getInt64LE(_data, i);
     i += 8;
@@ -86,7 +97,7 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
     i += 32;
     final var splitLamports = getInt64LE(_data, i);
     i += 8;
-    final var feeBpCents = getInt32LE(_data, i);
+    final var feeBpCents = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var totalVirtualStakedLamports = getInt64LE(_data, i);
     i += 8;
@@ -122,11 +133,11 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, lastUpdateStakeDelegation);
     i += 8;
-    putInt32LE(_data, i, stakeIndex);
+    putInt32LE(_data, i, (int) stakeIndex);
     i += 4;
     validator.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, validatorIndex);
+    putInt32LE(_data, i, (int) validatorIndex);
     i += 4;
     putInt64LE(_data, i, userMsolBalance);
     i += 8;
@@ -142,7 +153,7 @@ public record WithdrawStakeAccountEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, splitLamports);
     i += 8;
-    putInt32LE(_data, i, feeBpCents);
+    putInt32LE(_data, i, (int) feeBpCents);
     i += 4;
     putInt64LE(_data, i, totalVirtualStakedLamports);
     i += 8;

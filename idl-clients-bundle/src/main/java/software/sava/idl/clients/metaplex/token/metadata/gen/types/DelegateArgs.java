@@ -59,6 +59,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record SaleV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
     public static final int AMOUNT_OFFSET = 0;
@@ -101,6 +102,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record TransferV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
     public static final int AMOUNT_OFFSET = 0;
@@ -155,6 +157,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record UtilityV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
     public static final int AMOUNT_OFFSET = 0;
@@ -197,6 +200,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record StakingV1(long amount, AuthorizationData authorizationData) implements DelegateArgs {
 
     public static final int AMOUNT_OFFSET = 0;
@@ -251,6 +255,7 @@ public sealed interface DelegateArgs extends RustEnum permits
     }
   }
 
+  /// @param amount: u64
   record LockedTransferV1(long amount,
                           PublicKey lockedAddress,
                           AuthorizationData authorizationData) implements DelegateArgs {

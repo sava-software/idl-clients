@@ -20,17 +20,20 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param lastAccruedTimestamp timestamp interest per second's interest was last accrued
-/// @param liquidityBuffer the is the amount of liquidity % that always needs to be in the strategy
-/// @param tokenBalance amount of principal in the strategy
-/// @param interestFee this is the fee charged by and accrued to the manager on the interest accrued via external yield and loans
-/// @param principalFee this is the fee charged by and accrued to the manager on the origination fee
-/// @param originationFee fee charged on origination of new loans
-/// @param originationCap the maximum size of a loan that can be originated
-/// @param externalYieldAmount this is the amount of principal currently in external yield. has to always be updated on any new nav action
-/// @param currentDeployedAmount this is the amount of principal currently deployed in loans
-/// @param outstandingInterestAmount this is the interest that has not been repaid yet but accrued
-/// @param feeClaimable this is the amount that has accrued to the manager
+/// @param lastAccruedTimestamp: u64 timestamp interest per second's interest was last accrued
+/// @param liquidityBuffer: u64 the is the amount of liquidity % that always needs to be in the strategy
+/// @param tokenBalance: u64 amount of principal in the strategy
+/// @param interestFee: u64 this is the fee charged by and accrued to the manager on the interest accrued via external yield and loans
+/// @param principalFee: u64 this is the fee charged by and accrued to the manager on the origination fee
+/// @param originationFee: u64 fee charged on origination of new loans
+/// @param originationCap: u64 the maximum size of a loan that can be originated
+/// @param externalYieldAmount: u64 this is the amount of principal currently in external yield. has to always be updated on any new nav action
+/// @param currentDeployedAmount: u64 this is the amount of principal currently deployed in loans
+/// @param outstandingInterestAmount: u64 this is the interest that has not been repaid yet but accrued
+/// @param feeClaimable: u64 this is the amount that has accrued to the manager
+/// @param cumulativeLoanCount: u64
+/// @param activeLoanCount: u64
+/// @param collateralMap: u64[][]
 public record Strategy(PublicKey _address,
                        Discriminator discriminator,
                        int version,

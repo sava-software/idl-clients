@@ -11,10 +11,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// A definition of optional customizations that should be applied after cloning the config.
 ///
 /// @param overrideFixedRateBps A gate for Self::fixed_borrow_rate_bps.
-/// @param fixedBorrowRateBps If Self::override_fixed_rate_bps is non-zero, this borrow rate will be used to override
+/// @param fixedBorrowRateBps: u32 If Self::override_fixed_rate_bps is non-zero, this borrow rate will be used to override
 ///                           the ReserveConfig::borrow_rate_curve with a fixed one.
 /// @param overrideDebtTermSeconds A gate for Self::debt_term_seconds.
-/// @param debtTermSeconds If Self::override_debt_term_seconds is non-zero, this value will be used to override the
+/// @param debtTermSeconds: u64 If Self::override_debt_term_seconds is non-zero, this value will be used to override the
 ///                        ReserveConfig::debt_term_seconds.
 /// @param clearElevationGroups Whether the target reserve should have zeroed ReserveConfig::elevation_groups (i.e. not
 ///                             cloned from source).
@@ -22,7 +22,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                             This customization is mandatory when cloning a reserve (with some elevation groups) into a
 ///                             different market (where those elevation group indices would have different meaning).
 public record ReserveConfigCustomizationArgs(int overrideFixedRateBps,
-                                             int fixedBorrowRateBps,
+                                             long fixedBorrowRateBps,
                                              int overrideDebtTermSeconds,
                                              long debtTermSeconds,
                                              int clearElevationGroups) implements SerDe {
@@ -42,7 +42,7 @@ public record ReserveConfigCustomizationArgs(int overrideFixedRateBps,
     int i = _offset;
     final var overrideFixedRateBps = _data[i] & 0xFF;
     ++i;
-    final var fixedBorrowRateBps = getInt32LE(_data, i);
+    final var fixedBorrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var overrideDebtTermSeconds = _data[i] & 0xFF;
     ++i;
@@ -61,7 +61,7 @@ public record ReserveConfigCustomizationArgs(int overrideFixedRateBps,
     int i = _offset;
     _data[i] = (byte) overrideFixedRateBps;
     ++i;
-    putInt32LE(_data, i, fixedBorrowRateBps);
+    putInt32LE(_data, i, (int) fixedBorrowRateBps);
     i += 4;
     _data[i] = (byte) overrideDebtTermSeconds;
     ++i;

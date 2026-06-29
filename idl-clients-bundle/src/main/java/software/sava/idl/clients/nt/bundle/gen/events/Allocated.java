@@ -14,6 +14,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
+/// @param netAmount: u64
 public record Allocated(Discriminator discriminator,
                         PublicKey from,
                         PublicKey to,

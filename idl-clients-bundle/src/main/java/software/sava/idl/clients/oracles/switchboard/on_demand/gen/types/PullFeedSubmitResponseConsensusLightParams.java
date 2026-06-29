@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param slot: u64
 public record PullFeedSubmitResponseConsensusLightParams(long slot, BigInteger[] values) implements SerDe {
 
   public static final int SLOT_OFFSET = 0;

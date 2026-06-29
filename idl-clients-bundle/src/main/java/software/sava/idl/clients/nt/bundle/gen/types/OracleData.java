@@ -15,6 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param averageExternalEquity: u64
 public record OracleData(PublicKey _address,
                          Discriminator discriminator,
                          long averageExternalEquity,

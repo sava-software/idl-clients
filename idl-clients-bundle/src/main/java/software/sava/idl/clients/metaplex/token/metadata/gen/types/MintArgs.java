@@ -19,6 +19,7 @@ public sealed interface MintArgs extends RustEnum permits
     };
   }
 
+  /// @param amount: u64
   record V1(long amount, AuthorizationData authorizationData) implements MintArgs {
 
     public static final int AMOUNT_OFFSET = 0;

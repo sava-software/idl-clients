@@ -11,9 +11,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param insuranceIrFee Goes to insurance, funds `collected_insurance_fees_outstanding`
 /// @param protocolFixedFeeApr Earned by the group, goes to `collected_group_fees_outstanding`
 /// @param protocolIrFee Earned by the group, goes to `collected_group_fees_outstanding`
-/// @param zeroUtilRate The base rate at utilization = 0
+/// @param zeroUtilRate: u32 The base rate at utilization = 0
 ///                     * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
-/// @param hundredUtilRate The base rate at utilization = 100
+/// @param hundredUtilRate: u32 The base rate at utilization = 100
 ///                        * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
 /// @param points The base rate at various points between 0 and 100%, exclusive. Essentially a piece-wise
 ///               linear curve.
@@ -30,8 +30,8 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
                                  WrappedI80F48 protocolFixedFeeApr,
                                  WrappedI80F48 protocolIrFee,
                                  WrappedI80F48 protocolOriginationFee,
-                                 int zeroUtilRate,
-                                 int hundredUtilRate,
+                                 long zeroUtilRate,
+                                 long hundredUtilRate,
                                  RatePoint[] points,
                                  int curveType,
                                  byte[] pad0,
@@ -84,9 +84,9 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
     i += protocolIrFee.l();
     final var protocolOriginationFee = WrappedI80F48.read(_data, i);
     i += protocolOriginationFee.l();
-    final var zeroUtilRate = getInt32LE(_data, i);
+    final var zeroUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var hundredUtilRate = getInt32LE(_data, i);
+    final var hundredUtilRate = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var points = new RatePoint[5];
     i += SerDeUtil.readArray(points, RatePoint::read, _data, i);
@@ -129,9 +129,9 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
     i += protocolFixedFeeApr.write(_data, i);
     i += protocolIrFee.write(_data, i);
     i += protocolOriginationFee.write(_data, i);
-    putInt32LE(_data, i, zeroUtilRate);
+    putInt32LE(_data, i, (int) zeroUtilRate);
     i += 4;
-    putInt32LE(_data, i, hundredUtilRate);
+    putInt32LE(_data, i, (int) hundredUtilRate);
     i += 4;
     i += SerDeUtil.writeArrayChecked(points, 5, _data, i);
     _data[i] = (byte) curveType;

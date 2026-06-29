@@ -16,6 +16,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amountIn: u64
+/// @param amountOut: u64
+/// @param fee: u64
+/// @param protocolFee: u64
+/// @param hostFee: u64
 public record Swap(Discriminator discriminator,
                    PublicKey lbPair,
                    PublicKey from,

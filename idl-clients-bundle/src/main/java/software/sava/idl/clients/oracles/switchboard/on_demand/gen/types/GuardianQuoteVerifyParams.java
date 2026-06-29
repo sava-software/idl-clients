@@ -11,15 +11,18 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param reserved1: u32
+/// @param slot: u64
+/// @param advisories: vec<u32>
 public record GuardianQuoteVerifyParams(long timestamp,
                                         byte[] mrEnclave,
-                                        int reserved1,
+                                        long reserved1,
                                         PublicKey ed25519Key,
                                         byte[] secp256k1Key,
                                         long slot,
                                         byte[] signature,
                                         int recoveryId,
-                                        int[] advisories) implements SerDe {
+                                        long[] advisories) implements SerDe {
 
   public static final int MR_ENCLAVE_LEN = 32;
   public static final int SECP_222K_1_KEY_LEN = 64;
@@ -43,7 +46,7 @@ public record GuardianQuoteVerifyParams(long timestamp,
     i += 8;
     final var mrEnclave = new byte[32];
     i += SerDeUtil.readArray(mrEnclave, _data, i);
-    final var reserved1 = getInt32LE(_data, i);
+    final var reserved1 = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var ed25519Key = readPubKey(_data, i);
     i += 32;
@@ -55,7 +58,7 @@ public record GuardianQuoteVerifyParams(long timestamp,
     i += SerDeUtil.readArray(signature, _data, i);
     final var recoveryId = _data[i] & 0xFF;
     ++i;
-    final var advisories = SerDeUtil.readintVector(4, _data, i);
+    final var advisories = SerDeUtil.readUnsignedIntVector(4, _data, i);
     return new GuardianQuoteVerifyParams(timestamp,
                                          mrEnclave,
                                          reserved1,
@@ -73,7 +76,7 @@ public record GuardianQuoteVerifyParams(long timestamp,
     putInt64LE(_data, i, timestamp);
     i += 8;
     i += SerDeUtil.writeArrayChecked(mrEnclave, 32, _data, i);
-    putInt32LE(_data, i, reserved1);
+    putInt32LE(_data, i, (int) reserved1);
     i += 4;
     ed25519Key.write(_data, i);
     i += 32;
@@ -83,7 +86,7 @@ public record GuardianQuoteVerifyParams(long timestamp,
     i += SerDeUtil.writeArrayChecked(signature, 64, _data, i);
     _data[i] = (byte) recoveryId;
     ++i;
-    i += SerDeUtil.writeVector(4, advisories, _data, i);
+    i += SerDeUtil.writeUnsignedIntVector(4, advisories, _data, i);
     return i - _offset;
   }
 
@@ -97,6 +100,6 @@ public record GuardianQuoteVerifyParams(long timestamp,
          + 8
          + SerDeUtil.lenArray(signature)
          + 1
-         + SerDeUtil.lenVector(4, advisories);
+         + SerDeUtil.lenUnsignedIntVector(4, advisories);
   }
 }

@@ -41,6 +41,7 @@ public final class PythPushOracleProgram {
     );
   }
 
+  /// @param shardId: u16
   public static Instruction updatePriceFeed(final AccountMeta invokedPythPushOracleProgramMeta,
                                             final PublicKey payerKey,
                                             final PublicKey pythSolanaReceiverKey,
@@ -70,6 +71,7 @@ public final class PythPushOracleProgram {
     );
   }
 
+  /// @param shardId: u16
   public static Instruction updatePriceFeed(final AccountMeta invokedPythPushOracleProgramMeta,
                                             final List<AccountMeta> keys,
                                             final PostUpdateParams params,
@@ -85,6 +87,7 @@ public final class PythPushOracleProgram {
     return Instruction.createInstruction(invokedPythPushOracleProgramMeta, keys, _data);
   }
 
+  /// @param shardId: u16
   public record UpdatePriceFeedIxData(Discriminator discriminator,
                                       PostUpdateParams params,
                                       int shardId,

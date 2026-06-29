@@ -12,13 +12,17 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param addAdvisory: u16
+/// @param rmAdvisory: u16
+/// @param subsidyAmount: u64
+/// @param baseReward: u32
 public record StateSetConfigsParams(PublicKey newAuthority,
                                     int teeVerifyMode,
                                     int addAdvisory,
                                     int rmAdvisory,
                                     PublicKey switchMint,
                                     long subsidyAmount,
-                                    int baseReward,
+                                    long baseReward,
                                     PublicKey addCostWl,
                                     PublicKey rmCostWl) implements SerDe {
 
@@ -51,7 +55,7 @@ public record StateSetConfigsParams(PublicKey newAuthority,
     i += 32;
     final var subsidyAmount = getInt64LE(_data, i);
     i += 8;
-    final var baseReward = getInt32LE(_data, i);
+    final var baseReward = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var addCostWl = readPubKey(_data, i);
     i += 32;
@@ -82,7 +86,7 @@ public record StateSetConfigsParams(PublicKey newAuthority,
     i += 32;
     putInt64LE(_data, i, subsidyAmount);
     i += 8;
-    putInt32LE(_data, i, baseReward);
+    putInt32LE(_data, i, (int) baseReward);
     i += 4;
     addCostWl.write(_data, i);
     i += 32;

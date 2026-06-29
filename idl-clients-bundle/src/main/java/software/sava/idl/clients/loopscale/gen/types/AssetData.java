@@ -10,15 +10,19 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param maxUncertainty: u32
+/// @param maxAge: u16
+/// @param ltv: u32
+/// @param liquidationThreshold: u32
 public record AssetData(PublicKey assetIdentifier,
                         PublicKey quoteMint,
                         PublicKey oracleAccount,
                         int oracleType,
-                        int maxUncertainty,
+                        long maxUncertainty,
                         int maxAge,
                         int decimals,
-                        int ltv,
-                        int liquidationThreshold,
+                        long ltv,
+                        long liquidationThreshold,
                         CollateralCaps collateralCaps) implements SerDe {
 
   public static final int BYTES = 128;
@@ -47,15 +51,15 @@ public record AssetData(PublicKey assetIdentifier,
     i += 32;
     final var oracleType = _data[i] & 0xFF;
     ++i;
-    final var maxUncertainty = getInt32LE(_data, i);
+    final var maxUncertainty = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var maxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var decimals = _data[i] & 0xFF;
     ++i;
-    final var ltv = getInt32LE(_data, i);
+    final var ltv = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var liquidationThreshold = getInt32LE(_data, i);
+    final var liquidationThreshold = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var collateralCaps = CollateralCaps.read(_data, i);
     return new AssetData(assetIdentifier,
@@ -81,15 +85,15 @@ public record AssetData(PublicKey assetIdentifier,
     i += 32;
     _data[i] = (byte) oracleType;
     ++i;
-    putInt32LE(_data, i, maxUncertainty);
+    putInt32LE(_data, i, (int) maxUncertainty);
     i += 4;
     putInt16LE(_data, i, maxAge);
     i += 2;
     _data[i] = (byte) decimals;
     ++i;
-    putInt32LE(_data, i, ltv);
+    putInt32LE(_data, i, (int) ltv);
     i += 4;
-    putInt32LE(_data, i, liquidationThreshold);
+    putInt32LE(_data, i, (int) liquidationThreshold);
     i += 4;
     i += collateralCaps.write(_data, i);
     return i - _offset;

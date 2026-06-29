@@ -22,12 +22,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param mint The token mint the spending limit is for.
 ///             Pubkey::default() means SOL.
 ///             use NATIVE_MINT for Wrapped SOL.
-/// @param amount The amount of tokens that can be spent in a period.
+/// @param amount: u64 The amount of tokens that can be spent in a period.
 ///               This amount is in decimals of the mint,
 ///               so 1 SOL would be `1_000_000_000` and 1 USDC would be `1_000_000`.
 /// @param period The reset period of the spending limit.
 ///               When it passes, the remaining amount is reset, unless it's `Period::OneTime`.
-/// @param remainingAmount The remaining amount of tokens that can be spent in the current period.
+/// @param remainingAmount: u64 The remaining amount of tokens that can be spent in the current period.
 ///                        When reaches 0, the spending limit cannot be used anymore until the period reset.
 /// @param lastReset Unix timestamp marking the last time the spending limit was reset (or created).
 /// @param bump PDA bump.

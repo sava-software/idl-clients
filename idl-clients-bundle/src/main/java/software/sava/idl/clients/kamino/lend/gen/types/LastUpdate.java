@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Last update state
 ///
-/// @param slot Last slot when updated
+/// @param slot: u64 Last slot when updated
 /// @param stale True when marked stale, false when slot updated
 /// @param priceStatus Status of the prices used to calculate the last update
 public record LastUpdate(long slot,

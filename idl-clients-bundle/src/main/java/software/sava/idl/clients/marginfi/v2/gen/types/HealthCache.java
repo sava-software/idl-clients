@@ -42,7 +42,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                             * Uses EMA price
 ///                             * In dollars
 /// @param timestamp Unix timestamp from the system clock when this cache was last updated
-/// @param flags The flags that indicate the state of the health cache. This is a u32 bitfield, where each
+/// @param flags: u32 The flags that indicate the state of the health cache. This is a u32 bitfield, where each
 ///              bit represents a flag.
 ///              
 ///              * HEALTHY = 1 - If set, the account cannot be liquidated. If 0, the account is unhealthy and
@@ -57,17 +57,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///              in some circumstances. Invalid if generated after borrow/withdraw (these instructions will
 ///              ignore oracle issues if health is still satisfactory with some balance zeroed out).
 ///              * 8, 16, 32, 64, 128, etc - reserved for future use
-/// @param mrgnErr If the engine errored, look here for the error code. If the engine returns ok, you may also
+/// @param mrgnErr: u32 If the engine errored, look here for the error code. If the engine returns ok, you may also
 ///                check here to see if the risk engine rejected this tx (3009).
 /// @param prices Each price corresponds to that index of Balances in the LendingAccount. Useful for debugging
 ///               or liquidator consumption, to determine how a user's position is priced internally.
 ///               * An f64 stored as bytes
-/// @param internalErr Errors in asset oracles are ignored (with prices treated as zero). If you see a zero price
+/// @param internalErr: u32 Errors in asset oracles are ignored (with prices treated as zero). If you see a zero price
 ///                    and the `ORACLE_OK` flag is not set, check here to see what error was ignored internally.
 /// @param errIndex Index in `balances` where `internal_err` appeared
 /// @param programVersion Since 0.1.3, the version will be encoded here. See PROGRAM_VERSION.
-/// @param internalLiqErr Error code from the liquidation health check during the last health pulse (0 if none)
-/// @param internalBankruptcyErr Error code from the bankruptcy check during the last health pulse (0 if none)
+/// @param internalLiqErr: u32 Error code from the liquidation health check during the last health pulse (0 if none)
+/// @param internalBankruptcyErr: u32 Error code from the bankruptcy check during the last health pulse (0 if none)
 public record HealthCache(WrappedI80F48 assetValue,
                           WrappedI80F48 liabilityValue,
                           WrappedI80F48 assetValueMaint,
@@ -75,15 +75,15 @@ public record HealthCache(WrappedI80F48 assetValue,
                           WrappedI80F48 assetValueEquity,
                           WrappedI80F48 liabilityValueEquity,
                           long timestamp,
-                          int flags,
-                          int mrgnErr,
+                          long flags,
+                          long mrgnErr,
                           byte[][] prices,
-                          int internalErr,
+                          long internalErr,
                           int errIndex,
                           int programVersion,
                           byte[] pad0,
-                          int internalLiqErr,
-                          int internalBankruptcyErr,
+                          long internalLiqErr,
+                          long internalBankruptcyErr,
                           byte[] reserved0,
                           byte[] reserved1) implements SerDe {
 
@@ -131,13 +131,13 @@ public record HealthCache(WrappedI80F48 assetValue,
     i += liabilityValueEquity.l();
     final var timestamp = getInt64LE(_data, i);
     i += 8;
-    final var flags = getInt32LE(_data, i);
+    final var flags = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var mrgnErr = getInt32LE(_data, i);
+    final var mrgnErr = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var prices = new byte[16][8];
     i += SerDeUtil.readArray(prices, _data, i);
-    final var internalErr = getInt32LE(_data, i);
+    final var internalErr = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var errIndex = _data[i] & 0xFF;
     ++i;
@@ -145,9 +145,9 @@ public record HealthCache(WrappedI80F48 assetValue,
     ++i;
     final var pad0 = new byte[2];
     i += SerDeUtil.readArray(pad0, _data, i);
-    final var internalLiqErr = getInt32LE(_data, i);
+    final var internalLiqErr = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var internalBankruptcyErr = getInt32LE(_data, i);
+    final var internalBankruptcyErr = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var reserved0 = new byte[32];
     i += SerDeUtil.readArray(reserved0, _data, i);
@@ -184,21 +184,21 @@ public record HealthCache(WrappedI80F48 assetValue,
     i += liabilityValueEquity.write(_data, i);
     putInt64LE(_data, i, timestamp);
     i += 8;
-    putInt32LE(_data, i, flags);
+    putInt32LE(_data, i, (int) flags);
     i += 4;
-    putInt32LE(_data, i, mrgnErr);
+    putInt32LE(_data, i, (int) mrgnErr);
     i += 4;
     i += SerDeUtil.writeArrayChecked(prices, 16, 8, _data, i);
-    putInt32LE(_data, i, internalErr);
+    putInt32LE(_data, i, (int) internalErr);
     i += 4;
     _data[i] = (byte) errIndex;
     ++i;
     _data[i] = (byte) programVersion;
     ++i;
     i += SerDeUtil.writeArrayChecked(pad0, 2, _data, i);
-    putInt32LE(_data, i, internalLiqErr);
+    putInt32LE(_data, i, (int) internalLiqErr);
     i += 4;
-    putInt32LE(_data, i, internalBankruptcyErr);
+    putInt32LE(_data, i, (int) internalBankruptcyErr);
     i += 4;
     i += SerDeUtil.writeArrayChecked(reserved0, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(reserved1, 16, _data, i);

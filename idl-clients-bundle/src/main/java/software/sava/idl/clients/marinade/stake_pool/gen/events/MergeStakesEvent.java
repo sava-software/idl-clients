@@ -12,16 +12,27 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param destinationStakeIndex: u32
+/// @param lastUpdateDestinationStakeDelegation: u64
+/// @param sourceStakeIndex: u32
+/// @param lastUpdateSourceStakeDelegation: u64
+/// @param validatorIndex: u32
+/// @param extraDelegated: u64
+/// @param returnedStakeRent: u64
+/// @param validatorActiveBalance: u64
+/// @param totalActiveBalance: u64
+/// @param operationalSolBalance: u64
 public record MergeStakesEvent(Discriminator discriminator,
                                PublicKey state,
                                long epoch,
-                               int destinationStakeIndex,
+                               long destinationStakeIndex,
                                PublicKey destinationStakeAccount,
                                long lastUpdateDestinationStakeDelegation,
-                               int sourceStakeIndex,
+                               long sourceStakeIndex,
                                PublicKey sourceStakeAccount,
                                long lastUpdateSourceStakeDelegation,
-                               int validatorIndex,
+                               long validatorIndex,
                                PublicKey validatorVote,
                                long extraDelegated,
                                long returnedStakeRent,
@@ -58,19 +69,19 @@ public record MergeStakesEvent(Discriminator discriminator,
     i += 32;
     final var epoch = getInt64LE(_data, i);
     i += 8;
-    final var destinationStakeIndex = getInt32LE(_data, i);
+    final var destinationStakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var destinationStakeAccount = readPubKey(_data, i);
     i += 32;
     final var lastUpdateDestinationStakeDelegation = getInt64LE(_data, i);
     i += 8;
-    final var sourceStakeIndex = getInt32LE(_data, i);
+    final var sourceStakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var sourceStakeAccount = readPubKey(_data, i);
     i += 32;
     final var lastUpdateSourceStakeDelegation = getInt64LE(_data, i);
     i += 8;
-    final var validatorIndex = getInt32LE(_data, i);
+    final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var validatorVote = readPubKey(_data, i);
     i += 32;
@@ -108,19 +119,19 @@ public record MergeStakesEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, epoch);
     i += 8;
-    putInt32LE(_data, i, destinationStakeIndex);
+    putInt32LE(_data, i, (int) destinationStakeIndex);
     i += 4;
     destinationStakeAccount.write(_data, i);
     i += 32;
     putInt64LE(_data, i, lastUpdateDestinationStakeDelegation);
     i += 8;
-    putInt32LE(_data, i, sourceStakeIndex);
+    putInt32LE(_data, i, (int) sourceStakeIndex);
     i += 4;
     sourceStakeAccount.write(_data, i);
     i += 32;
     putInt64LE(_data, i, lastUpdateSourceStakeDelegation);
     i += 8;
-    putInt32LE(_data, i, validatorIndex);
+    putInt32LE(_data, i, (int) validatorIndex);
     i += 4;
     validatorVote.write(_data, i);
     i += 32;

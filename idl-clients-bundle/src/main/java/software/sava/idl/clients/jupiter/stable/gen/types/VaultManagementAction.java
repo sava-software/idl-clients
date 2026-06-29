@@ -94,6 +94,9 @@ public sealed interface VaultManagementAction extends RustEnum permits
     }
   }
 
+  /// @param durationSeconds: u64
+  /// @param maxMintAmount: u64
+  /// @param maxRedeemAmount: u64
   record UpdatePeriodLimit(int index,
                            long durationSeconds,
                            long maxMintAmount,

@@ -10,8 +10,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A subset of BorrowOrderConfig excluding the accounts passed via SetBorrowOrder.
 ///
+/// @param remainingDebtAmount: u64
+/// @param maxBorrowRateBps: u32
+/// @param minDebtTermSeconds: u64
+/// @param fillableUntilTimestamp: u64
 public record BorrowOrderConfigArgs(long remainingDebtAmount,
-                                    int maxBorrowRateBps,
+                                    long maxBorrowRateBps,
                                     long minDebtTermSeconds,
                                     long fillableUntilTimestamp,
                                     boolean enableAutoRolloverOnFilledBorrows) implements SerDe {
@@ -31,7 +35,7 @@ public record BorrowOrderConfigArgs(long remainingDebtAmount,
     int i = _offset;
     final var remainingDebtAmount = getInt64LE(_data, i);
     i += 8;
-    final var maxBorrowRateBps = getInt32LE(_data, i);
+    final var maxBorrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var minDebtTermSeconds = getInt64LE(_data, i);
     i += 8;
@@ -50,7 +54,7 @@ public record BorrowOrderConfigArgs(long remainingDebtAmount,
     int i = _offset;
     putInt64LE(_data, i, remainingDebtAmount);
     i += 8;
-    putInt32LE(_data, i, maxBorrowRateBps);
+    putInt32LE(_data, i, (int) maxBorrowRateBps);
     i += 4;
     putInt64LE(_data, i, minDebtTermSeconds);
     i += 8;

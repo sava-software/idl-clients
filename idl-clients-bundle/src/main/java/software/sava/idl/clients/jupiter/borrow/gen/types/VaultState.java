@@ -22,16 +22,29 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultId: u16
+/// @param currentBranchId: u32
+/// @param totalBranchId: u32
+/// @param totalSupply: u64
+/// @param totalBorrow: u64
+/// @param totalPositions: u32
+/// @param absorbedDustDebt: u64
+/// @param liquiditySupplyExchangePrice: u64
+/// @param liquidityBorrowExchangePrice: u64
+/// @param vaultSupplyExchangePrice: u64
+/// @param vaultBorrowExchangePrice: u64
+/// @param nextPositionId: u32
+/// @param lastUpdateTimestamp: u64
 public record VaultState(PublicKey _address,
                          Discriminator discriminator,
                          int vaultId,
                          int branchLiquidated,
                          int topmostTick,
-                         int currentBranchId,
-                         int totalBranchId,
+                         long currentBranchId,
+                         long totalBranchId,
                          long totalSupply,
                          long totalBorrow,
-                         int totalPositions,
+                         long totalPositions,
                          BigInteger absorbedDebtAmount,
                          BigInteger absorbedColAmount,
                          long absorbedDustDebt,
@@ -39,7 +52,7 @@ public record VaultState(PublicKey _address,
                          long liquidityBorrowExchangePrice,
                          long vaultSupplyExchangePrice,
                          long vaultBorrowExchangePrice,
-                         int nextPositionId,
+                         long nextPositionId,
                          long lastUpdateTimestamp) implements SerDe {
 
   public static final int BYTES = 127;
@@ -82,15 +95,15 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(TOPMOST_TICK_OFFSET, _data);
   }
 
-  public static Filter createCurrentBranchIdFilter(final int currentBranchId) {
+  public static Filter createCurrentBranchIdFilter(final long currentBranchId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, currentBranchId);
+    putInt32LE(_data, 0, (int) currentBranchId);
     return Filter.createMemCompFilter(CURRENT_BRANCH_ID_OFFSET, _data);
   }
 
-  public static Filter createTotalBranchIdFilter(final int totalBranchId) {
+  public static Filter createTotalBranchIdFilter(final long totalBranchId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, totalBranchId);
+    putInt32LE(_data, 0, (int) totalBranchId);
     return Filter.createMemCompFilter(TOTAL_BRANCH_ID_OFFSET, _data);
   }
 
@@ -106,9 +119,9 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(TOTAL_BORROW_OFFSET, _data);
   }
 
-  public static Filter createTotalPositionsFilter(final int totalPositions) {
+  public static Filter createTotalPositionsFilter(final long totalPositions) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, totalPositions);
+    putInt32LE(_data, 0, (int) totalPositions);
     return Filter.createMemCompFilter(TOTAL_POSITIONS_OFFSET, _data);
   }
 
@@ -154,9 +167,9 @@ public record VaultState(PublicKey _address,
     return Filter.createMemCompFilter(VAULT_BORROW_EXCHANGE_PRICE_OFFSET, _data);
   }
 
-  public static Filter createNextPositionIdFilter(final int nextPositionId) {
+  public static Filter createNextPositionIdFilter(final long nextPositionId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, nextPositionId);
+    putInt32LE(_data, 0, (int) nextPositionId);
     return Filter.createMemCompFilter(NEXT_POSITION_ID_OFFSET, _data);
   }
 
@@ -192,15 +205,15 @@ public record VaultState(PublicKey _address,
     ++i;
     final var topmostTick = getInt32LE(_data, i);
     i += 4;
-    final var currentBranchId = getInt32LE(_data, i);
+    final var currentBranchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var totalBranchId = getInt32LE(_data, i);
+    final var totalBranchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var totalSupply = getInt64LE(_data, i);
     i += 8;
     final var totalBorrow = getInt64LE(_data, i);
     i += 8;
-    final var totalPositions = getInt32LE(_data, i);
+    final var totalPositions = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var absorbedDebtAmount = getInt128LE(_data, i);
     i += 16;
@@ -216,7 +229,7 @@ public record VaultState(PublicKey _address,
     i += 8;
     final var vaultBorrowExchangePrice = getInt64LE(_data, i);
     i += 8;
-    final var nextPositionId = getInt32LE(_data, i);
+    final var nextPositionId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var lastUpdateTimestamp = getInt64LE(_data, i);
     return new VaultState(_address,
@@ -249,15 +262,15 @@ public record VaultState(PublicKey _address,
     ++i;
     putInt32LE(_data, i, topmostTick);
     i += 4;
-    putInt32LE(_data, i, currentBranchId);
+    putInt32LE(_data, i, (int) currentBranchId);
     i += 4;
-    putInt32LE(_data, i, totalBranchId);
+    putInt32LE(_data, i, (int) totalBranchId);
     i += 4;
     putInt64LE(_data, i, totalSupply);
     i += 8;
     putInt64LE(_data, i, totalBorrow);
     i += 8;
-    putInt32LE(_data, i, totalPositions);
+    putInt32LE(_data, i, (int) totalPositions);
     i += 4;
     putInt128LE(_data, i, absorbedDebtAmount);
     i += 16;
@@ -273,7 +286,7 @@ public record VaultState(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, vaultBorrowExchangePrice);
     i += 8;
-    putInt32LE(_data, i, nextPositionId);
+    putInt32LE(_data, i, (int) nextPositionId);
     i += 4;
     putInt64LE(_data, i, lastUpdateTimestamp);
     i += 8;

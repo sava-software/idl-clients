@@ -22,7 +22,8 @@ public sealed interface OrderTrigger extends RustEnum permits
     };
   }
 
-  record StopLoss(WrappedI80F48 threshold, int maxSlippage) implements OrderTrigger {
+  /// @param maxSlippage: u32
+  record StopLoss(WrappedI80F48 threshold, long maxSlippage) implements OrderTrigger {
 
     public static final int BYTES = 20;
 
@@ -36,7 +37,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       int i = _offset;
       final var threshold = WrappedI80F48.read(_data, i);
       i += threshold.l();
-      final var maxSlippage = getInt32LE(_data, i);
+      final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new StopLoss(threshold, maxSlippage);
     }
 
@@ -44,7 +45,7 @@ public sealed interface OrderTrigger extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + writeOrdinal(_data, _offset);
       i += threshold.write(_data, i);
-      putInt32LE(_data, i, maxSlippage);
+      putInt32LE(_data, i, (int) maxSlippage);
       i += 4;
       return i - _offset;
     }
@@ -60,7 +61,8 @@ public sealed interface OrderTrigger extends RustEnum permits
     }
   }
 
-  record TakeProfit(WrappedI80F48 threshold, int maxSlippage) implements OrderTrigger {
+  /// @param maxSlippage: u32
+  record TakeProfit(WrappedI80F48 threshold, long maxSlippage) implements OrderTrigger {
 
     public static final int BYTES = 20;
 
@@ -74,7 +76,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       int i = _offset;
       final var threshold = WrappedI80F48.read(_data, i);
       i += threshold.l();
-      final var maxSlippage = getInt32LE(_data, i);
+      final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new TakeProfit(threshold, maxSlippage);
     }
 
@@ -82,7 +84,7 @@ public sealed interface OrderTrigger extends RustEnum permits
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + writeOrdinal(_data, _offset);
       i += threshold.write(_data, i);
-      putInt32LE(_data, i, maxSlippage);
+      putInt32LE(_data, i, (int) maxSlippage);
       i += 4;
       return i - _offset;
     }
@@ -98,9 +100,10 @@ public sealed interface OrderTrigger extends RustEnum permits
     }
   }
 
+  /// @param maxSlippage: u32
   record Both(WrappedI80F48 stopLoss,
               WrappedI80F48 takeProfit,
-              int maxSlippage) implements OrderTrigger {
+              long maxSlippage) implements OrderTrigger {
 
     public static final int BYTES = 36;
 
@@ -117,7 +120,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       i += stopLoss.l();
       final var takeProfit = WrappedI80F48.read(_data, i);
       i += takeProfit.l();
-      final var maxSlippage = getInt32LE(_data, i);
+      final var maxSlippage = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new Both(stopLoss, takeProfit, maxSlippage);
     }
 
@@ -126,7 +129,7 @@ public sealed interface OrderTrigger extends RustEnum permits
       int i = _offset + writeOrdinal(_data, _offset);
       i += stopLoss.write(_data, i);
       i += takeProfit.write(_data, i);
-      putInt32LE(_data, i, maxSlippage);
+      putInt32LE(_data, i, (int) maxSlippage);
       i += 4;
       return i - _offset;
     }

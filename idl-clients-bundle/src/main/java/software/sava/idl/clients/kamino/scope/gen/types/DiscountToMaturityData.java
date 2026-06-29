@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param discountPerYearBps: u16
 public record DiscountToMaturityData(int discountPerYearBps, long maturityTimestamp) implements SerDe {
 
   public static final int BYTES = 10;

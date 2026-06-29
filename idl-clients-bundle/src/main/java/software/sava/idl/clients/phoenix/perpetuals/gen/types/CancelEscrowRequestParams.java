@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Borsh payload for cancelling an escrow request by sequence number.
 ///
+/// @param sequenceNumber: u64
 public record CancelEscrowRequestParams(long sequenceNumber) implements SerDe {
 
   public static final int BYTES = 8;

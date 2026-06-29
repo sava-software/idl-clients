@@ -7,6 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param maxAgePriceSlots: u64
+/// @param groupIdsBitset: u64
+/// @param reserved: u64[]
 public record TokenMetadata(byte[] name,
                             long maxAgePriceSlots,
                             long groupIdsBitset,

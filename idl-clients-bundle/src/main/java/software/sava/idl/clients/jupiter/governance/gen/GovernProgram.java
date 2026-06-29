@@ -557,6 +557,7 @@ public final class GovernProgram {
   /// @param proposalKey The Proposal.
   /// @param voteKey The Vote.
   /// @param lockerKey The Governor::locker.
+  /// @param weight: u64
   public static Instruction setVote(final AccountMeta invokedGovernProgramMeta,
                                     final PublicKey governorKey,
                                     final PublicKey proposalKey,
@@ -576,6 +577,7 @@ public final class GovernProgram {
   /// Sets a Vote weight and side.
   /// This may only be called by the Governor::voter.
   ///
+  /// @param weight: u64
   public static Instruction setVote(final AccountMeta invokedGovernProgramMeta,
                                     final List<AccountMeta> keys,
                                     final int side,
@@ -589,6 +591,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param weight: u64
   public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {  
 
     public static SetVoteIxData read(final Instruction instruction) {
@@ -729,6 +732,7 @@ public final class GovernProgram {
   /// @param governorKey The Governor
   /// @param rewardMintKey reward mint
   /// @param smartWalletKey The Smart Wallet.
+  /// @param rewardPerProposal: u64
   public static Instruction setVotingReward(final AccountMeta invokedGovernProgramMeta,
                                             final PublicKey governorKey,
                                             final PublicKey rewardMintKey,
@@ -745,6 +749,7 @@ public final class GovernProgram {
   /// Sets Voting Reward.
   /// This may only be called by the Governor::smart_wallet.
   ///
+  /// @param rewardPerProposal: u64
   public static Instruction setVotingReward(final AccountMeta invokedGovernProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long rewardPerProposal) {
@@ -755,6 +760,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param rewardPerProposal: u64
   public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements SerDe {  
 
     public static SetVotingRewardIxData read(final Instruction instruction) {

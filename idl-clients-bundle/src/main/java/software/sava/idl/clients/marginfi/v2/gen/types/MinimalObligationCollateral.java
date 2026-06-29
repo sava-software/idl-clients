@@ -9,12 +9,14 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param depositedAmount In collateral token (NOT liquidity token), use `collateral_to_liquidity` to convert back to
+/// @param depositedAmount: u64 In collateral token (NOT liquidity token), use `collateral_to_liquidity` to convert back to
 ///                        liquidity token!
 ///                        * Always 6 decimals
 /// @param marketValueSf * In dollars, based on last oracle price update
 ///                      * Actually an I68F60, stored as a u128 (i.e. BN) in Kamino.
 ///                      * A float (arbitrary decimals)
+/// @param borrowedAmountAgainstThisCollateralInElevationGroup: u64
+/// @param padding: u64[]
 public record MinimalObligationCollateral(PublicKey depositReserve,
                                           long depositedAmount,
                                           byte[] marketValueSf,

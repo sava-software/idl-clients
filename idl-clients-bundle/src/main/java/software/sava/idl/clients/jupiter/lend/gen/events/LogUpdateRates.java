@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tokenExchangePrice: u64
+/// @param liquidityExchangePrice: u64
 public record LogUpdateRates(Discriminator discriminator, long tokenExchangePrice, long liquidityExchangePrice) implements LendingEvent {
 
   public static final int BYTES = 24;

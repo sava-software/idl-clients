@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param lengthToRemove: u16
 public record DecreasePositionLength(Discriminator discriminator,
                                      PublicKey lbPair,
                                      PublicKey position,

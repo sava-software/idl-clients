@@ -16,10 +16,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderFundingSettled Borsh variant 18.
 /// Payload type: TraderFundingSettledEvent.
 ///
+/// @param assetId: u32
 public record TraderFundingSettledEvent(Discriminator discriminator,
                                         PublicKey trader,
                                         Symbol assetSymbol,
-                                        int assetId,
+                                        long assetId,
                                         SignedQuoteLots fundingPayment,
                                         SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot,
                                         SignedQuoteLots newCollateralBalance) implements EternalEvent {
@@ -44,7 +45,7 @@ public record TraderFundingSettledEvent(Discriminator discriminator,
     i += 32;
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var fundingPayment = SignedQuoteLots.read(_data, i);
     i += fundingPayment.l();
@@ -66,7 +67,7 @@ public record TraderFundingSettledEvent(Discriminator discriminator,
     trader.write(_data, i);
     i += 32;
     i += assetSymbol.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += fundingPayment.write(_data, i);
     i += cumulativeFundingSnapshot.write(_data, i);

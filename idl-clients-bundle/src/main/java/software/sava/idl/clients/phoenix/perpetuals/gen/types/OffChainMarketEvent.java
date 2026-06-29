@@ -9,7 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// Borsh payload of the Log instruction after the 8-byte instruction discriminator.
 ///
-public record OffChainMarketEvent(int batchIndex, MarketEvent[] events) implements SerDe {
+/// @param batchIndex: u32
+public record OffChainMarketEvent(long batchIndex, MarketEvent[] events) implements SerDe {
 
   public static final int BATCH_INDEX_OFFSET = 0;
   public static final int EVENTS_OFFSET = 4;
@@ -19,7 +20,7 @@ public record OffChainMarketEvent(int batchIndex, MarketEvent[] events) implemen
       return null;
     }
     int i = _offset;
-    final var batchIndex = getInt32LE(_data, i);
+    final var batchIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var events = SerDeUtil.readVector(4, MarketEvent.class, MarketEvent::read, _data, i);
     return new OffChainMarketEvent(batchIndex, events);
@@ -28,7 +29,7 @@ public record OffChainMarketEvent(int batchIndex, MarketEvent[] events) implemen
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, batchIndex);
+    putInt32LE(_data, i, (int) batchIndex);
     i += 4;
     i += SerDeUtil.writeVector(4, events, _data, i);
     return i - _offset;

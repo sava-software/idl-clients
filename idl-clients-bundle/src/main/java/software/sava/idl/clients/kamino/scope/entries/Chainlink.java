@@ -8,7 +8,7 @@ import java.util.Set;
 
 public record Chainlink(int index,
                         PublicKey oracle,
-                        int confidenceFactor,
+                        long confidenceFactor,
                         Set<EmaType> emaTypes,
                         ScopeEntry refPrice) implements ReferencesEntry {
 

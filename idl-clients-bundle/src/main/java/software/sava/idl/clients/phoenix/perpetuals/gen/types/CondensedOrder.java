@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Condensed order representation for batch order placement (price, size, and optional TiF).
 ///
+/// @param priceInTicks: u64
+/// @param sizeInBaseLots: u64
 public record CondensedOrder(long priceInTicks,
                              long sizeInBaseLots,
                              OptionalLong lastValidSlot) implements SerDe {

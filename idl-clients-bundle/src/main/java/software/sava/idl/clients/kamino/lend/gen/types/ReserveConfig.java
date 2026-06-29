@@ -13,8 +13,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param status Status of the reserve Active/Obsolete/Hidden
 /// @param paddingDeprecatedAssetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
-/// @param hostFixedInterestRateBps Flat rate that goes to the host
-/// @param minDeleveragingBonusBps Starting bonus for deleveraging-related liquidations, in bps.
+/// @param hostFixedInterestRateBps: u16 Flat rate that goes to the host
+/// @param minDeleveragingBonusBps: u16 Starting bonus for deleveraging-related liquidations, in bps.
 /// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
 ///                         Blocks usage of ctokens (minting or withdrawing from obligation)
 ///                         Effectively blocks deposit_reserve_liquidity and withdraw_obligation_collateral
@@ -32,19 +32,19 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param loanToValuePct Target ratio of the value of borrows to deposits, as a percentage
 ///                       0 if use as collateral is disabled
 /// @param liquidationThresholdPct Loan to value ratio at which an obligation can be liquidated, as percentage
-/// @param minLiquidationBonusBps Minimum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
-/// @param maxLiquidationBonusBps Maximum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
-/// @param badDebtLiquidationBonusBps Bad debt liquidation bonus for an undercollateralized obligation, as bps
-/// @param deleveragingMarginCallPeriodSecs Time in seconds that must pass before redemptions are enabled after the deposit limit is
+/// @param minLiquidationBonusBps: u16 Minimum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
+/// @param maxLiquidationBonusBps: u16 Maximum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
+/// @param badDebtLiquidationBonusBps: u16 Bad debt liquidation bonus for an undercollateralized obligation, as bps
+/// @param deleveragingMarginCallPeriodSecs: u64 Time in seconds that must pass before redemptions are enabled after the deposit limit is
 ///                                         crossed.
 ///                                         Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
-/// @param deleveragingThresholdDecreaseBpsPerDay The rate at which the deleveraging threshold decreases, in bps per day.
+/// @param deleveragingThresholdDecreaseBpsPerDay: u64 The rate at which the deleveraging threshold decreases, in bps per day.
 ///                                               Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
 /// @param fees Program owner fees assessed, separate from gains due to interest accrual
 /// @param borrowRateCurve Borrow rate curve based on utilization
-/// @param borrowFactorPct Borrow factor in percentage - used for risk adjustment
-/// @param depositLimit Maximum deposit limit of liquidity in native units, u64::MAX for inf
-/// @param borrowLimit Maximum amount borrowed, u64::MAX for inf, 0 to disable borrows (protected deposits)
+/// @param borrowFactorPct: u64 Borrow factor in percentage - used for risk adjustment
+/// @param depositLimit: u64 Maximum deposit limit of liquidity in native units, u64::MAX for inf
+/// @param borrowLimit: u64 Maximum amount borrowed, u64::MAX for inf, 0 to disable borrows (protected deposits)
 /// @param tokenInfo Token id from TokenInfos struct
 /// @param depositWithdrawalCap Deposit withdrawal caps - deposit & redeem
 /// @param debtWithdrawalCap Debt withdrawal caps - borrow & repay
@@ -58,27 +58,27 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                Once the proposer have finished preparing the reserve, it must be locked to prevent
 ///                                further changes to the reserve configuration allowing review and voting on the proposal
 ///                                without alteration during the voting period.
-/// @param borrowLimitOutsideElevationGroup Maximum amount liquidity of this reserve borrowed outside all elevation groups
+/// @param borrowLimitOutsideElevationGroup: u64 Maximum amount liquidity of this reserve borrowed outside all elevation groups
 ///                                         - u64::MAX for inf
 ///                                         - 0 to disable borrows outside elevation groups
-/// @param borrowLimitAgainstThisCollateralInElevationGroup Defines the maximum amount (in lamports of elevation group debt asset)
+/// @param borrowLimitAgainstThisCollateralInElevationGroup: u64[] Defines the maximum amount (in lamports of elevation group debt asset)
 ///                                                         that can be borrowed when this reserve is used as collateral.
 ///                                                         - u64::MAX for inf
 ///                                                         - 0 to disable borrows in this elevation group (expected value for the debt asset)
-/// @param deleveragingBonusIncreaseBpsPerDay The rate at which the deleveraging-related liquidation bonus increases, in bps per day.
+/// @param deleveragingBonusIncreaseBpsPerDay: u64 The rate at which the deleveraging-related liquidation bonus increases, in bps per day.
 ///                                           Only relevant when `autodeleverage_enabled == 1`, and must not be 0 in such case.
-/// @param debtMaturityTimestamp The timestamp at which all Obligation::borrows using this reserve become liquidatable
+/// @param debtMaturityTimestamp: u64 The timestamp at which all Obligation::borrows using this reserve become liquidatable
 ///                              (on the same terms as reserve-wide deleveraging).
 ///                              Inactive when zeroed (i.e. debt never matures).
 ///                              
 ///                              Note: this feature is independent of Self::debt_term_seconds - the liquidation mechanism
 ///                              is based directly on the timestamp defined here, on Reserve's level.
-/// @param debtTermSeconds The duration after which any debt coming from this Reserve must be repaid.
+/// @param debtTermSeconds: u64 The duration after which any debt coming from this Reserve must be repaid.
 ///                        Inactive when zeroed (i.e. funds can be borrowed indefinitely).
 ///                        
 ///                        Note: this feature is independent of Self::debt_maturity_timestamp - the liquidation
 ///                        mechanism is based on the ObligationLiquidity::last_borrowed_at_timestamp.
-/// @param rewardsAmountPerSlot Rewards distributed per slot to depositors. Drained from
+/// @param rewardsAmountPerSlot: u64 Rewards distributed per slot to depositors. Drained from
 ///                             ReserveLiquidity::rewards_amount_available into
 ///                             ReserveLiquidity::total_available_amount at each refresh, capped by the
 ///                             market-level LendingMarket::reserve_rewards_max_apr_bps. `0` disables.
@@ -87,7 +87,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
 ///                             will eventually cross the cap and arm the autodeleverage countdown. Size
 ///                             `deposit_limit` and RPS together.
-/// @param permissionedOps Bitmask of PermissionedOps gated by the parent market's `permissioning_authority`
+/// @param permissionedOps: u64 Bitmask of PermissionedOps gated by the parent market's `permissioning_authority`
 ///                        when this reserve is the operation's target. `0` = no operation is restricted at the
 ///                        reserve level. Use Reserve::get_permissioned_ops for a typed view.
 public record ReserveConfig(int status,

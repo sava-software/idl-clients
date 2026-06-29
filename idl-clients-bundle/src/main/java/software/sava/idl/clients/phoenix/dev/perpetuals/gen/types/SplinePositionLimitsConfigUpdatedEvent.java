@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.PositionSizeLimit;
 import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -20,6 +20,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::SplinePositionLimitsConfigUpdated Borsh variant 63.
 /// Payload type: SplinePositionLimitsConfigUpdatedEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param prevLeverageDecreaseInBps: u32
 public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator,
                                                      PublicKey trader,
                                                      long sequenceNumber,
@@ -29,8 +32,8 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
                                                      Symbol symbol,
                                                      PositionSizeLimit maxPositionSize,
                                                      PositionSizeLimit prevMaxPositionSize,
-                                                     OptionalInt leverageDecreaseInBps,
-                                                     int prevLeverageDecreaseInBps) implements EternalEvent {
+                                                     OptionalLong leverageDecreaseInBps,
+                                                     long prevLeverageDecreaseInBps) implements EternalEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(63, 0, 0, 0, 0, 0, 0, 0);
 
@@ -71,16 +74,16 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
     }
     final var prevMaxPositionSize = PositionSizeLimit.read(_data, i);
     i += prevMaxPositionSize.l();
-    final OptionalInt leverageDecreaseInBps;
+    final OptionalLong leverageDecreaseInBps;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      leverageDecreaseInBps = OptionalInt.empty();
+      leverageDecreaseInBps = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      leverageDecreaseInBps = OptionalInt.of(getInt32LE(_data, i));
+      leverageDecreaseInBps = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
-    final var prevLeverageDecreaseInBps = getInt32LE(_data, i);
+    final var prevLeverageDecreaseInBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new SplinePositionLimitsConfigUpdatedEvent(discriminator,
                                                       trader,
                                                       sequenceNumber,
@@ -110,8 +113,8 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
     i += symbol.write(_data, i);
     i += SerDeUtil.writeOptional(1, maxPositionSize, _data, i);
     i += prevMaxPositionSize.write(_data, i);
-    i += SerDeUtil.writeOptional(1, leverageDecreaseInBps, _data, i);
-    putInt32LE(_data, i, prevLeverageDecreaseInBps);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, leverageDecreaseInBps, _data, i);
+    putInt32LE(_data, i, (int) prevLeverageDecreaseInBps);
     i += 4;
     return i - _offset;
   }

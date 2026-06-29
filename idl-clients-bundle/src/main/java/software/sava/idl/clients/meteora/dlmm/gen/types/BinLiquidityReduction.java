@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param bpsToRemove: u16
 public record BinLiquidityReduction(int binId, int bpsToRemove) implements SerDe {
 
   public static final int BYTES = 6;

@@ -19,13 +19,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed SplineCollectionHeader prefix for a Phoenix Eternal spline collection account.
 /// Dynamic spline map bytes follow this header and are left as trailing account data by generic decoders.
 ///
+/// @param numSplines: u32
+/// @param numActive: u32
 public record SplineCollectionHeader(PublicKey _address,
                                      Discriminator discriminator,
                                      PublicKey market,
                                      Symbol assetSymbol,
                                      SequenceNumber sequenceNumber,
-                                     int numSplines,
-                                     int numActive,
+                                     long numSplines,
+                                     long numActive,
                                      byte[] padding) implements SerDe {
 
   public static final int BYTES = 112;
@@ -54,15 +56,15 @@ public record SplineCollectionHeader(PublicKey _address,
     return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
   }
 
-  public static Filter createNumSplinesFilter(final int numSplines) {
+  public static Filter createNumSplinesFilter(final long numSplines) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, numSplines);
+    putInt32LE(_data, 0, (int) numSplines);
     return Filter.createMemCompFilter(NUM_SPLINES_OFFSET, _data);
   }
 
-  public static Filter createNumActiveFilter(final int numActive) {
+  public static Filter createNumActiveFilter(final long numActive) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, numActive);
+    putInt32LE(_data, 0, (int) numActive);
     return Filter.createMemCompFilter(NUM_ACTIVE_OFFSET, _data);
   }
 
@@ -92,9 +94,9 @@ public record SplineCollectionHeader(PublicKey _address,
     i += assetSymbol.l();
     final var sequenceNumber = SequenceNumber.read(_data, i);
     i += sequenceNumber.l();
-    final var numSplines = getInt32LE(_data, i);
+    final var numSplines = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var numActive = getInt32LE(_data, i);
+    final var numActive = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding = new byte[32];
     SerDeUtil.readArray(padding, _data, i);
@@ -115,9 +117,9 @@ public record SplineCollectionHeader(PublicKey _address,
     i += 32;
     i += assetSymbol.write(_data, i);
     i += sequenceNumber.write(_data, i);
-    putInt32LE(_data, i, numSplines);
+    putInt32LE(_data, i, (int) numSplines);
     i += 4;
-    putInt32LE(_data, i, numActive);
+    putInt32LE(_data, i, (int) numActive);
     i += 4;
     i += SerDeUtil.writeArrayChecked(padding, 32, _data, i);
     return i - _offset;

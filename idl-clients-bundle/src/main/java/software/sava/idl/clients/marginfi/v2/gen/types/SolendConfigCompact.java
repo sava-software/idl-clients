@@ -15,11 +15,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Used to configure Solend banks. A simplified version of `BankConfigCompact` which omits most
 /// values related to interest since Solend banks cannot earn interest or be borrowed against.
 ///
+/// @param depositLimit: u64
 /// @param oracleSetup Either `SolendPythPull` or `SolendSwitchboardPull`
 /// @param operationalState Bank operational state - allows starting banks in paused state
 /// @param riskTier Risk tier - determines if assets can be borrowed in isolation
 /// @param configFlags Config flags for future-proofing
-/// @param oracleMaxConfidence Oracle confidence threshold (0 = use default 10%)
+/// @param totalAssetValueInitLimit: u64
+/// @param oracleMaxAge: u16
+/// @param oracleMaxConfidence: u32 Oracle confidence threshold (0 = use default 10%)
 public record SolendConfigCompact(PublicKey oracle,
                                   WrappedI80F48 assetWeightInit,
                                   WrappedI80F48 assetWeightMaint,
@@ -30,7 +33,7 @@ public record SolendConfigCompact(PublicKey oracle,
                                   int configFlags,
                                   long totalAssetValueInitLimit,
                                   int oracleMaxAge,
-                                  int oracleMaxConfidence) implements SerDe {
+                                  long oracleMaxConfidence) implements SerDe {
 
   public static final int BYTES = 90;
 
@@ -71,7 +74,7 @@ public record SolendConfigCompact(PublicKey oracle,
     i += 8;
     final var oracleMaxAge = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var oracleMaxConfidence = getInt32LE(_data, i);
+    final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new SolendConfigCompact(oracle,
                                    assetWeightInit,
                                    assetWeightMaint,
@@ -103,7 +106,7 @@ public record SolendConfigCompact(PublicKey oracle,
     i += 8;
     putInt16LE(_data, i, oracleMaxAge);
     i += 2;
-    putInt32LE(_data, i, oracleMaxConfidence);
+    putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     return i - _offset;
   }

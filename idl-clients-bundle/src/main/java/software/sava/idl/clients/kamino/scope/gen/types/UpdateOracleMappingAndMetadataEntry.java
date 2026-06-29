@@ -87,6 +87,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
     }
   }
 
+  /// @param twapSource: u16
   record MappingTwapEntry(OracleType priceType, int twapSource) implements UpdateOracleMappingAndMetadataEntry {
 
     public static final int BYTES = 3;

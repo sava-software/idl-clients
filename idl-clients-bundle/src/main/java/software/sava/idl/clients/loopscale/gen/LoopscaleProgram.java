@@ -786,6 +786,7 @@ public final class LoopscaleProgram {
   /// 9.5 reward management instructions
   /// 9.5.1 create rewards schedule
   ///
+  /// @param amountToTransfer: u64
   public static Instruction createRewardsSchedule(final AccountMeta invokedLoopscaleProgramMeta,
                                                   final PublicKey bsAuthKey,
                                                   final PublicKey payerKey,
@@ -825,6 +826,7 @@ public final class LoopscaleProgram {
   /// 9.5 reward management instructions
   /// 9.5.1 create rewards schedule
   ///
+  /// @param amountToTransfer: u64
   public static Instruction createRewardsSchedule(final AccountMeta invokedLoopscaleProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final CreateRewardsScheduleParams params,
@@ -837,6 +839,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
+  /// @param amountToTransfer: u64
   public record CreateRewardsScheduleIxData(Discriminator discriminator, CreateRewardsScheduleParams params, long amountToTransfer) implements SerDe {  
 
     public static CreateRewardsScheduleIxData read(final Instruction instruction) {
@@ -1341,6 +1344,7 @@ public final class LoopscaleProgram {
 
   /// 8.2 deposit strategy
   ///
+  /// @param amount: u64
   public static Instruction depositStrategy(final AccountMeta invokedLoopscaleProgramMeta,
                                             final PublicKey bsAuthKey,
                                             final PublicKey payerKey,
@@ -1376,6 +1380,7 @@ public final class LoopscaleProgram {
 
   /// 8.2 deposit strategy
   ///
+  /// @param amount: u64
   public static Instruction depositStrategy(final AccountMeta invokedLoopscaleProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount) {
@@ -1386,6 +1391,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record DepositStrategyIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositStrategyIxData read(final Instruction instruction) {
@@ -4438,6 +4444,7 @@ public final class LoopscaleProgram {
 
   /// 8.4 withdraw strategy
   ///
+  /// @param amount: u64
   public static Instruction withdrawStrategy(final AccountMeta invokedLoopscaleProgramMeta,
                                              final PublicKey bsAuthKey,
                                              final PublicKey payerKey,
@@ -4474,6 +4481,7 @@ public final class LoopscaleProgram {
 
   /// 8.4 withdraw strategy
   ///
+  /// @param amount: u64
   public static Instruction withdrawStrategy(final AccountMeta invokedLoopscaleProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount,
@@ -4487,6 +4495,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawStrategyIxData(Discriminator discriminator, long amount, boolean withdrawAll) implements SerDe {  
 
     public static WithdrawStrategyIxData read(final Instruction instruction) {

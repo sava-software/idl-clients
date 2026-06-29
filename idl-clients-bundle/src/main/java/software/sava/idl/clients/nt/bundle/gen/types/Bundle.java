@@ -24,6 +24,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bundleUnderlyingBalance: u64
+/// @param maxDepositAmount: u64
+/// @param withdrawalDelay: u64
+/// @param performanceFee: u32
+/// @param managementFeeBps: u32
+/// @param depositFee: u32
+/// @param withdrawalFee: u32
+/// @param currentAllocationBps: u32
+/// @param oracleBuffer: u64
+/// @param assetPrecision: u64
+/// @param minDepositAmount: u64
 public record Bundle(PublicKey _address,
                      Discriminator discriminator,
                      byte[] name,
@@ -34,12 +45,12 @@ public record Bundle(PublicKey _address,
                      long bundleUnderlyingBalance,
                      long maxDepositAmount,
                      long withdrawalDelay,
-                     int performanceFee,
-                     int managementFeeBps,
-                     int depositFee,
-                     int withdrawalFee,
+                     long performanceFee,
+                     long managementFeeBps,
+                     long depositFee,
+                     long withdrawalFee,
                      BigInteger managerPfeeShares,
-                     int currentAllocationBps,
+                     long currentAllocationBps,
                      long oracleBuffer,
                      BigInteger totalShares,
                      long assetPrecision,
@@ -117,17 +128,17 @@ public record Bundle(PublicKey _address,
     i += 8;
     final var withdrawalDelay = getInt64LE(_data, i);
     i += 8;
-    final var performanceFee = getInt32LE(_data, i);
+    final var performanceFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var managementFeeBps = getInt32LE(_data, i);
+    final var managementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var depositFee = getInt32LE(_data, i);
+    final var depositFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var withdrawalFee = getInt32LE(_data, i);
+    final var withdrawalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var managerPfeeShares = getInt128LE(_data, i);
     i += 16;
-    final var currentAllocationBps = getInt32LE(_data, i);
+    final var currentAllocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var oracleBuffer = getInt64LE(_data, i);
     i += 8;
@@ -215,17 +226,17 @@ public record Bundle(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, withdrawalDelay);
     i += 8;
-    putInt32LE(_data, i, performanceFee);
+    putInt32LE(_data, i, (int) performanceFee);
     i += 4;
-    putInt32LE(_data, i, managementFeeBps);
+    putInt32LE(_data, i, (int) managementFeeBps);
     i += 4;
-    putInt32LE(_data, i, depositFee);
+    putInt32LE(_data, i, (int) depositFee);
     i += 4;
-    putInt32LE(_data, i, withdrawalFee);
+    putInt32LE(_data, i, (int) withdrawalFee);
     i += 4;
     putInt128LE(_data, i, managerPfeeShares);
     i += 16;
-    putInt32LE(_data, i, currentAllocationBps);
+    putInt32LE(_data, i, (int) currentAllocationBps);
     i += 4;
     putInt64LE(_data, i, oracleBuffer);
     i += 8;

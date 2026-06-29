@@ -83,7 +83,7 @@ public interface MarinadeProgramClient {
   static int stakeAccountIndex(final byte[] stakeAccountKey,
                                final byte[] stakeListData,
                                final State state) {
-    return accountIndex(stakeAccountKey, stakeListData, state.stakeSystem().stakeList().itemSize());
+    return accountIndex(stakeAccountKey, stakeListData, Math.toIntExact(state.stakeSystem().stakeList().itemSize()));
   }
 
   static int stakeAccountIndex(final StakeAccount stakeAccount,
@@ -95,7 +95,7 @@ public interface MarinadeProgramClient {
   static int validatorIndex(final byte[] validatorKey,
                             final byte[] validatorListData,
                             final State state) {
-    return accountIndex(validatorKey, validatorListData, state.validatorSystem().validatorList().itemSize());
+    return accountIndex(validatorKey, validatorListData, Math.toIntExact(state.validatorSystem().validatorList().itemSize()));
   }
 
   static int validatorIndex(final StakeAccount stakeAccount,

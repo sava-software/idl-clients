@@ -241,6 +241,7 @@ public final class MerkleDistributorProgram {
 
   /// @param distributorKey MerkleDistributor.
   /// @param adminKey Payer to create the distributor.
+  /// @param activationPoint: u64
   public static Instruction setActivationPoint(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                final PublicKey distributorKey,
                                                final PublicKey adminKey,
@@ -252,6 +253,7 @@ public final class MerkleDistributorProgram {
     return setActivationPoint(invokedMerkleDistributorProgramMeta, keys, activationPoint);
   }
 
+  /// @param activationPoint: u64
   public static Instruction setActivationPoint(final AccountMeta invokedMerkleDistributorProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long activationPoint) {
@@ -262,6 +264,7 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
+  /// @param activationPoint: u64
   public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {  
 
     public static SetActivationPointIxData read(final Instruction instruction) {
@@ -519,6 +522,8 @@ public final class MerkleDistributorProgram {
   /// @param operatorKey operator
   /// @param tokenProgramKey SPL Token program.
   /// @param systemProgramKey The System program.
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public static Instruction newClaim(final AccountMeta invokedMerkleDistributorProgramMeta,
                                      final PublicKey distributorKey,
                                      final PublicKey claimStatusKey,
@@ -553,6 +558,8 @@ public final class MerkleDistributorProgram {
 
   /// USER FUNCTIONS /////
   ///
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public static Instruction newClaim(final AccountMeta invokedMerkleDistributorProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amountUnlocked,
@@ -569,6 +576,8 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public record NewClaimIxData(Discriminator discriminator,
                                long amountUnlocked,
                                long amountLocked,
@@ -719,6 +728,8 @@ public final class MerkleDistributorProgram {
   /// @param tokenProgramKey SPL Token program.
   /// @param systemProgramKey The System program.
   /// @param voterProgramKey Voter program
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public static Instruction newClaimAndStake(final AccountMeta invokedMerkleDistributorProgramMeta,
                                              final PublicKey distributorKey,
                                              final PublicKey claimStatusKey,
@@ -757,6 +768,8 @@ public final class MerkleDistributorProgram {
     );
   }
 
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public static Instruction newClaimAndStake(final AccountMeta invokedMerkleDistributorProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amountUnlocked,
@@ -773,6 +786,8 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
+  /// @param amountUnlocked: u64
+  /// @param amountLocked: u64
   public record NewClaimAndStakeIxData(Discriminator discriminator,
                                        long amountUnlocked,
                                        long amountLocked,

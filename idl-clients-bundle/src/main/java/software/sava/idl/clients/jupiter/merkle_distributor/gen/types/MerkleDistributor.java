@@ -28,15 +28,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param admin Admin wallet
 /// @param locker locker, for claim type claim and stake
 /// @param operator operator for signing in permissioned merkle tree
-/// @param version Version of the airdrop
-/// @param maxTotalClaim Maximum number of tokens that can ever be claimed from this MerkleDistributor.
-/// @param maxNumNodes Maximum number of nodes in MerkleDistributor.
-/// @param totalAmountClaimed Total amount of tokens that have been claimed.
-/// @param numNodesClaimed Number of nodes that have been claimed.
+/// @param version: u64 Version of the airdrop
+/// @param maxTotalClaim: u64 Maximum number of tokens that can ever be claimed from this MerkleDistributor.
+/// @param maxNumNodes: u64 Maximum number of nodes in MerkleDistributor.
+/// @param totalAmountClaimed: u64 Total amount of tokens that have been claimed.
+/// @param numNodesClaimed: u64 Number of nodes that have been claimed.
 /// @param startTs Lockup time start (Unix Timestamp)
 /// @param endTs Lockup time end (Unix Timestamp)
 /// @param clawbackStartTs Clawback start (Unix Timestamp)
-/// @param activationPoint this merkle tree is activated from this slot or timestamp
+/// @param activationPoint: u64 this merkle tree is activated from this slot or timestamp
 /// @param activationType activation type, 0 means slot, 1 means timestamp
 /// @param claimType claim type
 /// @param bump Bump seed.

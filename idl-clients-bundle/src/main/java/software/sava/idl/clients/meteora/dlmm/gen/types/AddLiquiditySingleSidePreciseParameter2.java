@@ -7,6 +7,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param decompressMultiplier: u64
+/// @param maxAmount: u64
 public record AddLiquiditySingleSidePreciseParameter2(CompressedBinDepositAmount[] bins,
                                                       long decompressMultiplier,
                                                       long maxAmount) implements SerDe {

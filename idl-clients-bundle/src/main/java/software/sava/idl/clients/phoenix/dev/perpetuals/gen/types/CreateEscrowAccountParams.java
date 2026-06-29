@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Borsh payload for creating an escrow account.
 ///
+/// @param capacity: u64
 public record CreateEscrowAccountParams(long capacity) implements SerDe {
 
   public static final int BYTES = 8;

@@ -15,8 +15,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::OrderRejected Borsh variant 4.
 /// Payload type: OrderRejectedEvent.
 ///
+/// @param orderIndex: u32
 public record OrderRejectedEvent(Discriminator discriminator,
-                                 int orderIndex,
+                                 long orderIndex,
                                  byte[] clientOrderId,
                                  Ticks price,
                                  Side side,
@@ -41,7 +42,7 @@ public record OrderRejectedEvent(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var orderIndex = getInt32LE(_data, i);
+    final var orderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var clientOrderId = new byte[16];
     i += SerDeUtil.readArray(clientOrderId, _data, i);
@@ -65,7 +66,7 @@ public record OrderRejectedEvent(Discriminator discriminator,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt32LE(_data, i, orderIndex);
+    putInt32LE(_data, i, (int) orderIndex);
     i += 4;
     i += SerDeUtil.writeArrayChecked(clientOrderId, 16, _data, i);
     i += price.write(_data, i);

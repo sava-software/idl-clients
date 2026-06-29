@@ -6,9 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-/// @param logBatchIndex Index of this log batch for tracking event sequences.
-/// @param totalEvents Number of events serialized in this log batch.
-public record LogHeader(int logBatchIndex, int totalEvents) implements SerDe {
+/// @param logBatchIndex: u32 Index of this log batch for tracking event sequences.
+/// @param totalEvents: u32 Number of events serialized in this log batch.
+public record LogHeader(long logBatchIndex, long totalEvents) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -20,18 +20,18 @@ public record LogHeader(int logBatchIndex, int totalEvents) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var logBatchIndex = getInt32LE(_data, i);
+    final var logBatchIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var totalEvents = getInt32LE(_data, i);
+    final var totalEvents = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new LogHeader(logBatchIndex, totalEvents);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, logBatchIndex);
+    putInt32LE(_data, i, (int) logBatchIndex);
     i += 4;
-    putInt32LE(_data, i, totalEvents);
+    putInt32LE(_data, i, (int) totalEvents);
     i += 4;
     return i - _offset;
   }

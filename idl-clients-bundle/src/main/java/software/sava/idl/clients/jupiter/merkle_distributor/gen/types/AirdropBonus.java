@@ -6,8 +6,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param totalBonus total bonus
-/// @param totalClaimedBonus total bonus
+/// @param totalBonus: u64 total bonus
+/// @param vestingDuration: u64
+/// @param totalClaimedBonus: u64 total bonus
 public record AirdropBonus(long totalBonus,
                            long vestingDuration,
                            long totalClaimedBonus) implements SerDe {

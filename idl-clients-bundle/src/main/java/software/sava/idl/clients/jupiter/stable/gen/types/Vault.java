@@ -16,6 +16,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param stalesnessThreshold: u64
+/// @param minOraclePriceUsd: u64
+/// @param maxOraclePriceUsd: u64
 public record Vault(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey mint,

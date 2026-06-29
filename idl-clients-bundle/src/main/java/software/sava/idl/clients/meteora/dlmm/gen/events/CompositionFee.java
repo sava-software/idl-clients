@@ -12,6 +12,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tokenXFeeAmount: u64
+/// @param tokenYFeeAmount: u64
+/// @param protocolTokenXFeeAmount: u64
+/// @param protocolTokenYFeeAmount: u64
 public record CompositionFee(Discriminator discriminator,
                              PublicKey from,
                              int binId,

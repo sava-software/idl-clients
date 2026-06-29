@@ -6,7 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record CompressedBinDepositAmount(int binId, int amount) implements SerDe {
+/// @param amount: u32
+public record CompressedBinDepositAmount(int binId, long amount) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -20,7 +21,7 @@ public record CompressedBinDepositAmount(int binId, int amount) implements SerDe
     int i = _offset;
     final var binId = getInt32LE(_data, i);
     i += 4;
-    final var amount = getInt32LE(_data, i);
+    final var amount = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new CompressedBinDepositAmount(binId, amount);
   }
 
@@ -29,7 +30,7 @@ public record CompressedBinDepositAmount(int binId, int amount) implements SerDe
     int i = _offset;
     putInt32LE(_data, i, binId);
     i += 4;
-    putInt32LE(_data, i, amount);
+    putInt32LE(_data, i, (int) amount);
     i += 4;
     return i - _offset;
   }

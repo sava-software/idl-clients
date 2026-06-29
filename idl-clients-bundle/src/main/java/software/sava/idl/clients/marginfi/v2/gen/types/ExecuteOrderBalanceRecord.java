@@ -9,6 +9,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param tag: u16
 public record ExecuteOrderBalanceRecord(PublicKey bank,
                                         int isAsset,
                                         byte[] pad0,

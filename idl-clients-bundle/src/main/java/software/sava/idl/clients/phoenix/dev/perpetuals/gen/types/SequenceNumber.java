@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Pair of sequence number and last update slot.
 ///
+/// @param sequenceNumber: u64
+/// @param lastUpdateSlot: u64
 public record SequenceNumber(long sequenceNumber, long lastUpdateSlot) implements SerDe {
 
   public static final int BYTES = 16;

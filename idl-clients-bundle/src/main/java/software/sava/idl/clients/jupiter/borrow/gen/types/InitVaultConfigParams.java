@@ -8,6 +8,12 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param collateralFactor: u16
+/// @param liquidationThreshold: u16
+/// @param liquidationMaxLimit: u16
+/// @param withdrawGap: u16
+/// @param liquidationPenalty: u16
+/// @param borrowFee: u16
 public record InitVaultConfigParams(int supplyRateMagnifier,
                                     int borrowRateMagnifier,
                                     int collateralFactor,

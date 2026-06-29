@@ -11,8 +11,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param transferAmount Amount requested in SPL transfer instruction.
-/// @param vaultInflowAmount Assumed vault inflow. Token-2022 transfer fees are not handled by this instruction path.
+/// @param transferAmount: u64 Amount requested in SPL transfer instruction.
+/// @param vaultInflowAmount: u64 Assumed vault inflow. Token-2022 transfer fees are not handled by this instruction path.
 public record LendingPoolSuperAdminDepositEvent(Discriminator discriminator,
                                                 GroupEventHeader header,
                                                 PublicKey bank,

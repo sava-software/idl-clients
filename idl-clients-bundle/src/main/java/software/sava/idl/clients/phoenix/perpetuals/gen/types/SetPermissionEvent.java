@@ -13,6 +13,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::SetPermission Borsh variant 45.
 /// Payload type: SetPermissionEvent.
 ///
+/// @param previousPermission: u64
+/// @param newPermission: u64
 public record SetPermissionEvent(Discriminator discriminator,
                                  PublicKey authority,
                                  PublicKey user,

@@ -8,6 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param candidateIndex: u64
+/// @param inAmount: u64
+/// @param errorCode: u64
 public record CandidateSwapQuoteError(Discriminator discriminator,
                                       long candidateIndex,
                                       long inAmount,

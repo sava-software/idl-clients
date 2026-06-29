@@ -25,6 +25,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                             * Liquidator is allowed to seize up to this amount - `asset_value_equity`
 ///                             * Uses EMA price
 ///                             * In dollars
+/// @param placeholder: u64
 public record LiquidationCache(WrappedI80F48 assetValueMaint,
                                WrappedI80F48 liabilityValueMaint,
                                WrappedI80F48 assetValueEquity,

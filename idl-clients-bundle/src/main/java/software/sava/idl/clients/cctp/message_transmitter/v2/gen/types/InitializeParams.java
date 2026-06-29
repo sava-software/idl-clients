@@ -10,10 +10,13 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-public record InitializeParams(int localDomain,
+/// @param localDomain: u32
+/// @param maxMessageBodySize: u64
+/// @param version: u32
+public record InitializeParams(long localDomain,
                                PublicKey attester,
                                long maxMessageBodySize,
-                               int version) implements SerDe {
+                               long version) implements SerDe {
 
   public static final int BYTES = 48;
 
@@ -27,13 +30,13 @@ public record InitializeParams(int localDomain,
       return null;
     }
     int i = _offset;
-    final var localDomain = getInt32LE(_data, i);
+    final var localDomain = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var attester = readPubKey(_data, i);
     i += 32;
     final var maxMessageBodySize = getInt64LE(_data, i);
     i += 8;
-    final var version = getInt32LE(_data, i);
+    final var version = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new InitializeParams(localDomain,
                                 attester,
                                 maxMessageBodySize,
@@ -43,13 +46,13 @@ public record InitializeParams(int localDomain,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, localDomain);
+    putInt32LE(_data, i, (int) localDomain);
     i += 4;
     attester.write(_data, i);
     i += 32;
     putInt64LE(_data, i, maxMessageBodySize);
     i += 8;
-    putInt32LE(_data, i, version);
+    putInt32LE(_data, i, (int) version);
     i += 4;
     return i - _offset;
   }

@@ -13,6 +13,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param xWithdrawnAmount: u64
+/// @param xAddedAmount: u64
+/// @param yWithdrawnAmount: u64
+/// @param yAddedAmount: u64
+/// @param xFeeAmount: u64
+/// @param yFeeAmount: u64
+/// @param rewards: u64[]
 public record Rebalancing(Discriminator discriminator,
                           PublicKey lbPair,
                           PublicKey position,

@@ -8,11 +8,14 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param itemSize: u32
+/// @param count: u32
+/// @param copiedCount: u32
 public record List(PublicKey account,
-                   int itemSize,
-                   int count,
+                   long itemSize,
+                   long count,
                    PublicKey newAccount,
-                   int copiedCount) implements SerDe {
+                   long copiedCount) implements SerDe {
 
   public static final int BYTES = 76;
 
@@ -29,13 +32,13 @@ public record List(PublicKey account,
     int i = _offset;
     final var account = readPubKey(_data, i);
     i += 32;
-    final var itemSize = getInt32LE(_data, i);
+    final var itemSize = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var count = getInt32LE(_data, i);
+    final var count = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var newAccount = readPubKey(_data, i);
     i += 32;
-    final var copiedCount = getInt32LE(_data, i);
+    final var copiedCount = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new List(account,
                     itemSize,
                     count,
@@ -48,13 +51,13 @@ public record List(PublicKey account,
     int i = _offset;
     account.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, itemSize);
+    putInt32LE(_data, i, (int) itemSize);
     i += 4;
-    putInt32LE(_data, i, count);
+    putInt32LE(_data, i, (int) count);
     i += 4;
     newAccount.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, copiedCount);
+    putInt32LE(_data, i, (int) copiedCount);
     i += 4;
     return i - _offset;
   }

@@ -17,6 +17,16 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param feeTierIndex: u16
+/// @param tickSpacing: u16
+/// @param defaultBaseFeeRate: u16
+/// @param filterPeriod: u16
+/// @param decayPeriod: u16
+/// @param reductionFactor: u16
+/// @param adaptiveFeeControlFactor: u32
+/// @param maxVolatilityAccumulator: u32
+/// @param tickGroupSize: u16
+/// @param majorSwapThresholdTicks: u16
 public record AdaptiveFeeTier(PublicKey _address,
                               Discriminator discriminator,
                               PublicKey whirlpoolsConfig,
@@ -28,8 +38,8 @@ public record AdaptiveFeeTier(PublicKey _address,
                               int filterPeriod,
                               int decayPeriod,
                               int reductionFactor,
-                              int adaptiveFeeControlFactor,
-                              int maxVolatilityAccumulator,
+                              long adaptiveFeeControlFactor,
+                              long maxVolatilityAccumulator,
                               int tickGroupSize,
                               int majorSwapThresholdTicks) implements SerDe {
 
@@ -101,15 +111,15 @@ public record AdaptiveFeeTier(PublicKey _address,
     return Filter.createMemCompFilter(REDUCTION_FACTOR_OFFSET, _data);
   }
 
-  public static Filter createAdaptiveFeeControlFactorFilter(final int adaptiveFeeControlFactor) {
+  public static Filter createAdaptiveFeeControlFactorFilter(final long adaptiveFeeControlFactor) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, adaptiveFeeControlFactor);
+    putInt32LE(_data, 0, (int) adaptiveFeeControlFactor);
     return Filter.createMemCompFilter(ADAPTIVE_FEE_CONTROL_FACTOR_OFFSET, _data);
   }
 
-  public static Filter createMaxVolatilityAccumulatorFilter(final int maxVolatilityAccumulator) {
+  public static Filter createMaxVolatilityAccumulatorFilter(final long maxVolatilityAccumulator) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, maxVolatilityAccumulator);
+    putInt32LE(_data, 0, (int) maxVolatilityAccumulator);
     return Filter.createMemCompFilter(MAX_VOLATILITY_ACCUMULATOR_OFFSET, _data);
   }
 
@@ -163,9 +173,9 @@ public record AdaptiveFeeTier(PublicKey _address,
     i += 2;
     final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var adaptiveFeeControlFactor = getInt32LE(_data, i);
+    final var adaptiveFeeControlFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var maxVolatilityAccumulator = getInt32LE(_data, i);
+    final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -208,9 +218,9 @@ public record AdaptiveFeeTier(PublicKey _address,
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, adaptiveFeeControlFactor);
+    putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt16LE(_data, i, tickGroupSize);
     i += 2;

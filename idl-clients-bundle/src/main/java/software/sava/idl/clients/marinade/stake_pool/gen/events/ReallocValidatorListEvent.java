@@ -10,10 +10,12 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param count: u32
+/// @param newCapacity: u32
 public record ReallocValidatorListEvent(Discriminator discriminator,
                                         PublicKey state,
-                                        int count,
-                                        int newCapacity) implements MarinadeFinanceEvent {
+                                        long count,
+                                        long newCapacity) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 48;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
@@ -30,9 +32,9 @@ public record ReallocValidatorListEvent(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
-    final var count = getInt32LE(_data, i);
+    final var count = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var newCapacity = getInt32LE(_data, i);
+    final var newCapacity = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new ReallocValidatorListEvent(discriminator, state, count, newCapacity);
   }
 
@@ -41,9 +43,9 @@ public record ReallocValidatorListEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     state.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, count);
+    putInt32LE(_data, i, (int) count);
     i += 4;
-    putInt32LE(_data, i, newCapacity);
+    putInt32LE(_data, i, (int) newCapacity);
     i += 4;
     return i - _offset;
   }

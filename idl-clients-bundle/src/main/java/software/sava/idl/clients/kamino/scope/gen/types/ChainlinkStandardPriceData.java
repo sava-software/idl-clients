@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Price data for standard Chainlink types (v3, v7, v8, v9)
 ///
+/// @param observationsTimestamp: u64
 public record ChainlinkStandardPriceData(long observationsTimestamp) implements SerDe {
 
   public static final int BYTES = 8;

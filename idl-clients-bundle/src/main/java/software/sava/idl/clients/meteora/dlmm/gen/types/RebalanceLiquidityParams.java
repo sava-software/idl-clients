@@ -12,13 +12,13 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param activeId active id
-/// @param maxActiveBinSlippage max active bin slippage allowed
+/// @param maxActiveBinSlippage: u16 max active bin slippage allowed
 /// @param shouldClaimFee a flag to indicate that whether fee should be harvested
 /// @param shouldClaimReward a flag to indicate that whether rewards should be harvested
-/// @param minWithdrawXAmount threshold for withdraw token x
-/// @param maxDepositXAmount threshold for deposit token x
-/// @param minWithdrawYAmount threshold for withdraw token y
-/// @param maxDepositYAmount threshold for deposit token y
+/// @param minWithdrawXAmount: u64 threshold for withdraw token x
+/// @param maxDepositXAmount: u64 threshold for deposit token x
+/// @param minWithdrawYAmount: u64 threshold for withdraw token y
+/// @param maxDepositYAmount: u64 threshold for deposit token y
 /// @param shrinkMode shrink mode
 /// @param padding padding 32 bytes for future usage
 /// @param removes removes

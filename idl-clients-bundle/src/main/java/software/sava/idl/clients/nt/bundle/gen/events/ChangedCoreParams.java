@@ -10,12 +10,16 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param depositFee: u32
+/// @param withdrawalFee: u32
+/// @param performanceFee: u32
+/// @param managementFeeBps: u32
 public record ChangedCoreParams(Discriminator discriminator,
                                 PublicKey treasury,
-                                int depositFee,
-                                int withdrawalFee,
-                                int performanceFee,
-                                int managementFeeBps) implements NtbundleEvent {
+                                long depositFee,
+                                long withdrawalFee,
+                                long performanceFee,
+                                long managementFeeBps) implements NtbundleEvent {
 
   public static final int BYTES = 56;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 119, 46, 221, 22, 121, 186, 53);
@@ -34,13 +38,13 @@ public record ChangedCoreParams(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var treasury = readPubKey(_data, i);
     i += 32;
-    final var depositFee = getInt32LE(_data, i);
+    final var depositFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var withdrawalFee = getInt32LE(_data, i);
+    final var withdrawalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var performanceFee = getInt32LE(_data, i);
+    final var performanceFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var managementFeeBps = getInt32LE(_data, i);
+    final var managementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new ChangedCoreParams(discriminator,
                                  treasury,
                                  depositFee,
@@ -54,13 +58,13 @@ public record ChangedCoreParams(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     treasury.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, depositFee);
+    putInt32LE(_data, i, (int) depositFee);
     i += 4;
-    putInt32LE(_data, i, withdrawalFee);
+    putInt32LE(_data, i, (int) withdrawalFee);
     i += 4;
-    putInt32LE(_data, i, performanceFee);
+    putInt32LE(_data, i, (int) performanceFee);
     i += 4;
-    putInt32LE(_data, i, managementFeeBps);
+    putInt32LE(_data, i, (int) managementFeeBps);
     i += 4;
     return i - _offset;
   }

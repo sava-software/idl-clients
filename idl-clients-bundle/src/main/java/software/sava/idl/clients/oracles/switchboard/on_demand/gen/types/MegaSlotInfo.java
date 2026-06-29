@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param reserved1: u64
+/// @param slotEnd: u64
 public record MegaSlotInfo(long reserved1,
                            long slotEnd,
                            long perfGoal,

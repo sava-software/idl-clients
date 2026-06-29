@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param slippageToleranceBps: u16
 public record LiquidityParams(int slippageToleranceBps) implements SerDe {
 
   public static final int BYTES = 2;

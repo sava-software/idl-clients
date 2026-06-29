@@ -33,13 +33,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                   verification status and have heartbeated on-chain recently.
 /// @param maxQuoteVerificationAge The maximum allowable time until a EnclaveAccount needs to be re-verified on-chain.
 /// @param lastHeartbeat The unix timestamp when the last quote oracle heartbeated on-chain.
-/// @param oracleMinStake The minimum number of lamports a quote oracle needs to lock-up in order to heartbeat and verify other quotes.
-/// @param mrEnclavesLen The number of allowed enclave measurements.
-/// @param oracleKeysLen The length of valid quote oracles for the given attestation queue.
-/// @param reward The reward paid to quote oracles for attesting on-chain.
-/// @param currIdx Incrementer used to track the current quote oracle permitted to run any available functions.
-/// @param gcIdx Incrementer used to garbage collect and remove stale quote oracles.
-/// @param oracleFeeProportionBps The proportion of subsidy rewards that go to oracle operators (in basis points, 5000 = 50%)
+/// @param oracleMinStake: u64 The minimum number of lamports a quote oracle needs to lock-up in order to heartbeat and verify other quotes.
+/// @param mrEnclavesLen: u32 The number of allowed enclave measurements.
+/// @param oracleKeysLen: u32 The length of valid quote oracles for the given attestation queue.
+/// @param reward: u32 The reward paid to quote oracles for attesting on-chain.
+/// @param currIdx: u32 Incrementer used to track the current quote oracle permitted to run any available functions.
+/// @param gcIdx: u32 Incrementer used to garbage collect and remove stale quote oracles.
+/// @param lutSlot: u64
+/// @param resrved: u64
+/// @param lastRewardEpoch: u64
+/// @param oracleFeeProportionBps: u32 The proportion of subsidy rewards that go to oracle operators (in basis points, 5000 = 50%)
 public record QueueAccountData(PublicKey _address,
                                Discriminator discriminator,
                                PublicKey authority,
@@ -53,11 +56,11 @@ public record QueueAccountData(PublicKey _address,
                                long nodeTimeout,
                                long oracleMinStake,
                                long allowAuthorityOverrideAfter,
-                               int mrEnclavesLen,
-                               int oracleKeysLen,
-                               int reward,
-                               int currIdx,
-                               int gcIdx,
+                               long mrEnclavesLen,
+                               long oracleKeysLen,
+                               long reward,
+                               long currIdx,
+                               long gcIdx,
                                int requireAuthorityHeartbeatPermission,
                                int requireAuthorityVerifyPermission,
                                int requireUsagePermissions,
@@ -70,7 +73,7 @@ public record QueueAccountData(PublicKey _address,
                                long resrved,
                                VaultInfo[] vaults,
                                long lastRewardEpoch,
-                               int oracleFeeProportionBps,
+                               long oracleFeeProportionBps,
                                byte[] ebuf4,
                                byte[] ebuf2,
                                byte[] ebuf1) implements SerDe {
@@ -158,33 +161,33 @@ public record QueueAccountData(PublicKey _address,
     return Filter.createMemCompFilter(ALLOW_AUTHORITY_OVERRIDE_AFTER_OFFSET, _data);
   }
 
-  public static Filter createMrEnclavesLenFilter(final int mrEnclavesLen) {
+  public static Filter createMrEnclavesLenFilter(final long mrEnclavesLen) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, mrEnclavesLen);
+    putInt32LE(_data, 0, (int) mrEnclavesLen);
     return Filter.createMemCompFilter(MR_ENCLAVES_LEN_OFFSET, _data);
   }
 
-  public static Filter createOracleKeysLenFilter(final int oracleKeysLen) {
+  public static Filter createOracleKeysLenFilter(final long oracleKeysLen) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, oracleKeysLen);
+    putInt32LE(_data, 0, (int) oracleKeysLen);
     return Filter.createMemCompFilter(ORACLE_KEYS_LEN_OFFSET, _data);
   }
 
-  public static Filter createRewardFilter(final int reward) {
+  public static Filter createRewardFilter(final long reward) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, reward);
+    putInt32LE(_data, 0, (int) reward);
     return Filter.createMemCompFilter(REWARD_OFFSET, _data);
   }
 
-  public static Filter createCurrIdxFilter(final int currIdx) {
+  public static Filter createCurrIdxFilter(final long currIdx) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, currIdx);
+    putInt32LE(_data, 0, (int) currIdx);
     return Filter.createMemCompFilter(CURR_IDX_OFFSET, _data);
   }
 
-  public static Filter createGcIdxFilter(final int gcIdx) {
+  public static Filter createGcIdxFilter(final long gcIdx) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, gcIdx);
+    putInt32LE(_data, 0, (int) gcIdx);
     return Filter.createMemCompFilter(GC_IDX_OFFSET, _data);
   }
 
@@ -234,9 +237,9 @@ public record QueueAccountData(PublicKey _address,
     return Filter.createMemCompFilter(LAST_REWARD_EPOCH_OFFSET, _data);
   }
 
-  public static Filter createOracleFeeProportionBpsFilter(final int oracleFeeProportionBps) {
+  public static Filter createOracleFeeProportionBpsFilter(final long oracleFeeProportionBps) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, oracleFeeProportionBps);
+    putInt32LE(_data, 0, (int) oracleFeeProportionBps);
     return Filter.createMemCompFilter(ORACLE_FEE_PROPORTION_BPS_OFFSET, _data);
   }
 
@@ -282,15 +285,15 @@ public record QueueAccountData(PublicKey _address,
     i += 8;
     final var allowAuthorityOverrideAfter = getInt64LE(_data, i);
     i += 8;
-    final var mrEnclavesLen = getInt32LE(_data, i);
+    final var mrEnclavesLen = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var oracleKeysLen = getInt32LE(_data, i);
+    final var oracleKeysLen = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var reward = getInt32LE(_data, i);
+    final var reward = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var currIdx = getInt32LE(_data, i);
+    final var currIdx = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var gcIdx = getInt32LE(_data, i);
+    final var gcIdx = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var requireAuthorityHeartbeatPermission = _data[i] & 0xFF;
     ++i;
@@ -316,7 +319,7 @@ public record QueueAccountData(PublicKey _address,
     i += SerDeUtil.readArray(vaults, VaultInfo::read, _data, i);
     final var lastRewardEpoch = getInt64LE(_data, i);
     i += 8;
-    final var oracleFeeProportionBps = getInt32LE(_data, i);
+    final var oracleFeeProportionBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var ebuf4 = new byte[32];
     i += SerDeUtil.readArray(ebuf4, _data, i);
@@ -380,15 +383,15 @@ public record QueueAccountData(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, allowAuthorityOverrideAfter);
     i += 8;
-    putInt32LE(_data, i, mrEnclavesLen);
+    putInt32LE(_data, i, (int) mrEnclavesLen);
     i += 4;
-    putInt32LE(_data, i, oracleKeysLen);
+    putInt32LE(_data, i, (int) oracleKeysLen);
     i += 4;
-    putInt32LE(_data, i, reward);
+    putInt32LE(_data, i, (int) reward);
     i += 4;
-    putInt32LE(_data, i, currIdx);
+    putInt32LE(_data, i, (int) currIdx);
     i += 4;
-    putInt32LE(_data, i, gcIdx);
+    putInt32LE(_data, i, (int) gcIdx);
     i += 4;
     _data[i] = (byte) requireAuthorityHeartbeatPermission;
     ++i;
@@ -412,7 +415,7 @@ public record QueueAccountData(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(vaults, 4, _data, i);
     putInt64LE(_data, i, lastRewardEpoch);
     i += 8;
-    putInt32LE(_data, i, oracleFeeProportionBps);
+    putInt32LE(_data, i, (int) oracleFeeProportionBps);
     i += 4;
     i += SerDeUtil.writeArrayChecked(ebuf4, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(ebuf2, 256, _data, i);

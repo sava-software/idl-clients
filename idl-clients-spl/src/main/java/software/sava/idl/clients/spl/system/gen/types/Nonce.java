@@ -12,6 +12,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lamportsPerSignature: u64
 public record Nonce(PublicKey _address,
                     NonceVersion version,
                     NonceState state,

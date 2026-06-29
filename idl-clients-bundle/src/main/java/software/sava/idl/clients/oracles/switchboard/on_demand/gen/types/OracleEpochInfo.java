@@ -6,6 +6,12 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param id: u64
+/// @param reserved1: u64
+/// @param reserved: u64
+/// @param slashScore: u64
+/// @param rewardScore: u64
+/// @param stakeScore: u64
 public record OracleEpochInfo(long id,
                               long reserved1,
                               long reserved,

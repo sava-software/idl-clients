@@ -10,9 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param maxStakeVoteMultiplier The weight of a maximum vote lock relative to the total number of tokens locked.
 ///                               For example, veCRV is 10 because 1 CRV locked for 4 years = 10 veCRV.
-/// @param minStakeDuration Minimum staking duration.
-/// @param maxStakeDuration Maximum staking duration.
-/// @param proposalActivationMinVotes Minimum number of votes required to activate a proposal.
+/// @param minStakeDuration: u64 Minimum staking duration.
+/// @param maxStakeDuration: u64 Maximum staking duration.
+/// @param proposalActivationMinVotes: u64 Minimum number of votes required to activate a proposal.
 public record LockerParams(int maxStakeVoteMultiplier,
                            long minStakeDuration,
                            long maxStakeDuration,

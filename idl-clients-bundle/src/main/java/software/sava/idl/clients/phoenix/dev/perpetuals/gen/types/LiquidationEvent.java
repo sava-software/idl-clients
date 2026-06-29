@@ -16,10 +16,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::Liquidation Borsh variant 32.
 /// Payload type: LiquidationEvent.
 ///
+/// @param assetId: u32
 public record LiquidationEvent(Discriminator discriminator,
                                PublicKey liquidator,
                                PublicKey liquidatedTrader,
-                               int assetId,
+                               long assetId,
                                BaseLots liquidationSize,
                                Ticks markPrice,
                                BaseLots baseLotsFilled,
@@ -48,7 +49,7 @@ public record LiquidationEvent(Discriminator discriminator,
     i += 32;
     final var liquidatedTrader = readPubKey(_data, i);
     i += 32;
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var liquidationSize = BaseLots.read(_data, i);
     i += liquidationSize.l();
@@ -77,7 +78,7 @@ public record LiquidationEvent(Discriminator discriminator,
     i += 32;
     liquidatedTrader.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += liquidationSize.write(_data, i);
     i += markPrice.write(_data, i);

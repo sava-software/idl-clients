@@ -17,10 +17,10 @@ public record UpdateAssetDataParams(PublicKey assetIdentifier,
                                     PublicKey quoteMint,
                                     PublicKey oracleAccount,
                                     OptionalInt oracleType,
-                                    OptionalInt maxUncertainty,
+                                    OptionalLong maxUncertainty,
                                     OptionalInt maxAge,
-                                    OptionalInt ltv,
-                                    OptionalInt liquidationThreshold,
+                                    OptionalLong ltv,
+                                    OptionalLong liquidationThreshold,
                                     OptionalLong maxCollateralAllocationPct,
                                     Boolean remove) implements SerDe {
 
@@ -61,13 +61,13 @@ public record UpdateAssetDataParams(PublicKey assetIdentifier,
       oracleType = OptionalInt.of(_data[i] & 0xFF);
       ++i;
     }
-    final OptionalInt maxUncertainty;
+    final OptionalLong maxUncertainty;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      maxUncertainty = OptionalInt.empty();
+      maxUncertainty = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      maxUncertainty = OptionalInt.of(getInt32LE(_data, i));
+      maxUncertainty = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final OptionalInt maxAge;
@@ -79,22 +79,22 @@ public record UpdateAssetDataParams(PublicKey assetIdentifier,
       maxAge = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
       i += 2;
     }
-    final OptionalInt ltv;
+    final OptionalLong ltv;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      ltv = OptionalInt.empty();
+      ltv = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      ltv = OptionalInt.of(getInt32LE(_data, i));
+      ltv = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
-    final OptionalInt liquidationThreshold;
+    final OptionalLong liquidationThreshold;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      liquidationThreshold = OptionalInt.empty();
+      liquidationThreshold = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      liquidationThreshold = OptionalInt.of(getInt32LE(_data, i));
+      liquidationThreshold = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final OptionalLong maxCollateralAllocationPct;
@@ -133,10 +133,10 @@ public record UpdateAssetDataParams(PublicKey assetIdentifier,
     i += SerDeUtil.writeOptional(1, quoteMint, _data, i);
     i += SerDeUtil.writeOptional(1, oracleAccount, _data, i);
     i += SerDeUtil.writeOptionalbyte(1, oracleType, _data, i);
-    i += SerDeUtil.writeOptional(1, maxUncertainty, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, maxUncertainty, _data, i);
     i += SerDeUtil.writeOptionalshort(1, maxAge, _data, i);
-    i += SerDeUtil.writeOptional(1, ltv, _data, i);
-    i += SerDeUtil.writeOptional(1, liquidationThreshold, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, ltv, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationThreshold, _data, i);
     i += SerDeUtil.writeOptional(1, maxCollateralAllocationPct, _data, i);
     i += SerDeUtil.writeOptional(1, remove, _data, i);
     return i - _offset;

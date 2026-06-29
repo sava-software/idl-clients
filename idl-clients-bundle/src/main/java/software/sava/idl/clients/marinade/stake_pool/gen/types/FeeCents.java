@@ -9,7 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// FeeCents, same as Fee but / 1_000_000 instead of 10_000
 /// 1 FeeCent = 0.0001%, 10_000 FeeCent = 1%, 1_000_000 FeeCent = 100%
 ///
-public record FeeCents(int bpCents) implements SerDe {
+/// @param bpCents: u32
+public record FeeCents(long bpCents) implements SerDe {
 
   public static final int BYTES = 4;
 
@@ -19,14 +20,14 @@ public record FeeCents(int bpCents) implements SerDe {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var bpCents = getInt32LE(_data, _offset);
+    final var bpCents = Integer.toUnsignedLong(getInt32LE(_data, _offset));
     return new FeeCents(bpCents);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, bpCents);
+    putInt32LE(_data, i, (int) bpCents);
     i += 4;
     return i - _offset;
   }

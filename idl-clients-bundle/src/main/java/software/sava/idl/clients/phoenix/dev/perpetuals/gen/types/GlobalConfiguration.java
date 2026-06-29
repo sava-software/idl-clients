@@ -16,6 +16,15 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param withdrawalMarginFactorBps: u16
+/// @param padding1: u64[]
+/// @param padding2: u64[]
+/// @param padding3: u64[]
+/// @param padding4: u64[]
+/// @param padding5: u64[]
+/// @param padding6: u64[]
+/// @param padding7: u64[]
+/// @param padding8: u64[]
 public record GlobalConfiguration(PublicKey _address,
                                   Discriminator discriminator,
                                   PublicKey accountKey,

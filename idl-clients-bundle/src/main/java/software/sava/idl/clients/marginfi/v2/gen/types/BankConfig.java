@@ -20,12 +20,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                            E.g., 1.2 means liabilities count as 120% of their value for borrowing purposes.
 /// @param liabilityWeightMaint Premium factor for liability values in maintenance margin calculation (>= 1).
 ///                             Used for liquidation eligibility. Generally <= liability_weight_init.
-/// @param depositLimit Maximum total deposits allowed in this bank, in native token units (0 = no limit)
+/// @param depositLimit: u64 Maximum total deposits allowed in this bank, in native token units (0 = no limit)
 /// @param interestRateConfig Interest rate model configuration
 /// @param operationalState Current operational state of the bank (Paused, Operational, ReduceOnly, KilledByBankruptcy)
 /// @param oracleSetup Oracle type used for price feeds
 /// @param oracleKeys Oracle account keys (usage depends on oracle_setup type)
-/// @param borrowLimit Maximum total borrows allowed in this bank, in native token units (0 = no limit)
+/// @param borrowLimit: u64 Maximum total borrows allowed in this bank, in native token units (0 = no limit)
 /// @param riskTier Risk tier for this bank (Collateral or Isolated)
 /// @param assetTag Determines what kinds of assets users of this bank can interact with. Options:
 ///                 * `ASSET_TAG_DEFAULT` (0) - A regular asset that can be comingled with any other regular
@@ -42,7 +42,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                    setup from a prior version. Not set in 0.1.3 or earlier banks using pyth that have not yet
 ///                    migrated. Does nothing for banks that use switchboard.
 ///                    * 2, 4, 8, 16, etc - reserved for future use.
-/// @param totalAssetValueInitLimit USD denominated limit for calculating asset value for initialization margin requirements.
+/// @param totalAssetValueInitLimit: u64 USD denominated limit for calculating asset value for initialization margin requirements.
 ///                                 Example, if total SOL deposits are equal to $1M and the limit it set to $500K, then SOL
 ///                                 assets will be discounted by 50%.
 ///                                 
@@ -50,8 +50,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                 is useful for limiting the damage of oracle attacks.
 ///                                 
 ///                                 Value is UI USD value, for example value 100 -> $100
-/// @param oracleMaxAge Time window in seconds for the oracle price feed to be considered live.
-/// @param oracleMaxConfidence From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
+/// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
+/// @param oracleMaxConfidence: u32 From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:
 ///                            the confidence adjustment is capped at 5% regardless of this value.
 ///                            * 0 falls back to using the default 10% instead, i.e., U32_MAX_DIV_10
 ///                            * A %, as u32, e.g. 100% = u32::MAX, 50% = u32::MAX/2, etc.
@@ -74,7 +74,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
                          long totalAssetValueInitLimit,
                          int oracleMaxAge,
                          byte[] padding0,
-                         int oracleMaxConfidence,
+                         long oracleMaxConfidence,
                          WrappedI80F48 fixedPrice,
                          byte[] padding1) implements SerDe {
 
@@ -148,7 +148,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     i += 2;
     final var padding0 = new byte[2];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var oracleMaxConfidence = getInt32LE(_data, i);
+    final var oracleMaxConfidence = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var fixedPrice = WrappedI80F48.read(_data, i);
     i += fixedPrice.l();
@@ -204,7 +204,7 @@ public record BankConfig(WrappedI80F48 assetWeightInit,
     putInt16LE(_data, i, oracleMaxAge);
     i += 2;
     i += SerDeUtil.writeArrayChecked(padding0, 2, _data, i);
-    putInt32LE(_data, i, oracleMaxConfidence);
+    putInt32LE(_data, i, (int) oracleMaxConfidence);
     i += 4;
     i += fixedPrice.write(_data, i);
     i += SerDeUtil.writeArrayChecked(padding1, 16, _data, i);

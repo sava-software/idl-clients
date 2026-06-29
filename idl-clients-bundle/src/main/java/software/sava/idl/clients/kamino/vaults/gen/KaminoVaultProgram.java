@@ -118,6 +118,8 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param weight: u64
+  /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
                                                     final PublicKey signerKey,
                                                     final PublicKey vaultStateKey,
@@ -147,6 +149,8 @@ public final class KaminoVaultProgram {
     return updateReserveAllocation(invokedKaminoVaultProgramMeta, keys, weight, cap);
   }
 
+  /// @param weight: u64
+  /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long weight,
@@ -160,6 +164,8 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param weight: u64
+  /// @param cap: u64
   public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements SerDe {  
 
     public static UpdateReserveAllocationIxData read(final Instruction instruction) {
@@ -231,6 +237,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param maxAmount: u64
   public static Instruction deposit(final AccountMeta invokedKaminoVaultProgramMeta,
                                     final PublicKey userKey,
                                     final PublicKey vaultStateKey,
@@ -264,6 +271,7 @@ public final class KaminoVaultProgram {
     return deposit(invokedKaminoVaultProgramMeta, keys, maxAmount);
   }
 
+  /// @param maxAmount: u64
   public static Instruction deposit(final AccountMeta invokedKaminoVaultProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long maxAmount) {
@@ -274,6 +282,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param maxAmount: u64
   public record DepositIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
 
     public static DepositIxData read(final Instruction instruction) {
@@ -340,6 +349,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param maxAmount: u64
   public static Instruction buy(final AccountMeta invokedKaminoVaultProgramMeta,
                                 final PublicKey userKey,
                                 final PublicKey vaultStateKey,
@@ -373,6 +383,7 @@ public final class KaminoVaultProgram {
     return buy(invokedKaminoVaultProgramMeta, keys, maxAmount);
   }
 
+  /// @param maxAmount: u64
   public static Instruction buy(final AccountMeta invokedKaminoVaultProgramMeta,
                                 final List<AccountMeta> keys,
                                 final long maxAmount) {
@@ -383,6 +394,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param maxAmount: u64
   public record BuyIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
 
     public static BuyIxData read(final Instruction instruction) {
@@ -473,6 +485,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param sharesAmount: u64
   public static Instruction withdraw(final AccountMeta invokedKaminoVaultProgramMeta,
                                      final PublicKey withdrawFromAvailableUserKey,
                                      final PublicKey withdrawFromAvailableVaultStateKey,
@@ -530,6 +543,7 @@ public final class KaminoVaultProgram {
     return withdraw(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
+  /// @param sharesAmount: u64
   public static Instruction withdraw(final AccountMeta invokedKaminoVaultProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long sharesAmount) {
@@ -540,6 +554,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param sharesAmount: u64
   public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {
@@ -630,6 +645,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param sharesAmount: u64
   public static Instruction sell(final AccountMeta invokedKaminoVaultProgramMeta,
                                  final PublicKey withdrawFromAvailableUserKey,
                                  final PublicKey withdrawFromAvailableVaultStateKey,
@@ -687,6 +703,7 @@ public final class KaminoVaultProgram {
     return sell(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
+  /// @param sharesAmount: u64
   public static Instruction sell(final AccountMeta invokedKaminoVaultProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long sharesAmount) {
@@ -697,6 +714,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param sharesAmount: u64
   public record SellIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static SellIxData read(final Instruction instruction) {
@@ -871,6 +889,7 @@ public final class KaminoVaultProgram {
   /// moving any funds; check the resulting balances rather than infer movement from success.
   ///
   /// @param reserveKey CPI accounts
+  /// @param maxAmount: u64
   public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final PublicKey payerKey,
                                                 final PublicKey payerTokenAccountKey,
@@ -917,6 +936,7 @@ public final class KaminoVaultProgram {
   /// If `max_amount` is below the liquidity value of one ctoken, the call succeeds without
   /// moving any funds; check the resulting balances rather than infer movement from success.
   ///
+  /// @param maxAmount: u64
   public static Instruction investWithMaxAmount(final AccountMeta invokedKaminoVaultProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long maxAmount) {
@@ -927,6 +947,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param maxAmount: u64
   public record InvestWithMaxAmountIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
 
     public static InvestWithMaxAmountIxData read(final Instruction instruction) {
@@ -1158,6 +1179,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param maxAmountToGiveUp: u64
   public static Instruction giveUpPendingFees(final AccountMeta invokedKaminoVaultProgramMeta,
                                               final PublicKey vaultAdminAuthorityKey,
                                               final PublicKey vaultStateKey,
@@ -1171,6 +1193,7 @@ public final class KaminoVaultProgram {
     return giveUpPendingFees(invokedKaminoVaultProgramMeta, keys, maxAmountToGiveUp);
   }
 
+  /// @param maxAmountToGiveUp: u64
   public static Instruction giveUpPendingFees(final AccountMeta invokedKaminoVaultProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long maxAmountToGiveUp) {
@@ -1181,6 +1204,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param maxAmountToGiveUp: u64
   public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements SerDe {  
 
     public static GiveUpPendingFeesIxData read(final Instruction instruction) {
@@ -1489,6 +1513,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param sharesAmount: u64
   public static Instruction withdrawFromAvailable(final AccountMeta invokedKaminoVaultProgramMeta,
                                                   final PublicKey userKey,
                                                   final PublicKey vaultStateKey,
@@ -1524,6 +1549,7 @@ public final class KaminoVaultProgram {
     return withdrawFromAvailable(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
+  /// @param sharesAmount: u64
   public static Instruction withdrawFromAvailable(final AccountMeta invokedKaminoVaultProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long sharesAmount) {
@@ -1534,6 +1560,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param sharesAmount: u64
   public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static WithdrawFromAvailableIxData read(final Instruction instruction) {
@@ -1813,6 +1840,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction topupRewards(final AccountMeta invokedKaminoVaultProgramMeta,
                                          final PublicKey payerKey,
                                          final PublicKey vaultStateKey,
@@ -1832,6 +1860,7 @@ public final class KaminoVaultProgram {
     return topupRewards(invokedKaminoVaultProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction topupRewards(final AccountMeta invokedKaminoVaultProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long amount) {
@@ -1842,6 +1871,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record TopupRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static TopupRewardsIxData read(final Instruction instruction) {
@@ -1896,6 +1926,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdrawRewards(final AccountMeta invokedKaminoVaultProgramMeta,
                                             final PublicKey vaultAdminAuthorityKey,
                                             final PublicKey vaultStateKey,
@@ -1917,6 +1948,7 @@ public final class KaminoVaultProgram {
     return withdrawRewards(invokedKaminoVaultProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdrawRewards(final AccountMeta invokedKaminoVaultProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount) {
@@ -1927,6 +1959,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawRewardsIxData read(final Instruction instruction) {
@@ -1997,6 +2030,7 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// @param sharesAmount: u64
   public static Instruction redeemInKind(final AccountMeta invokedKaminoVaultProgramMeta,
                                          final PublicKey userKey,
                                          final PublicKey vaultStateKey,
@@ -2034,6 +2068,7 @@ public final class KaminoVaultProgram {
     return redeemInKind(invokedKaminoVaultProgramMeta, keys, sharesAmount);
   }
 
+  /// @param sharesAmount: u64
   public static Instruction redeemInKind(final AccountMeta invokedKaminoVaultProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long sharesAmount) {
@@ -2044,6 +2079,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
+  /// @param sharesAmount: u64
   public record RedeemInKindIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
 
     public static RedeemInKindIxData read(final Instruction instruction) {

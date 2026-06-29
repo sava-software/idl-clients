@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param borrowFee: u16
 public record LogUpdateBorrowFee(Discriminator discriminator, int borrowFee) implements VaultsEvent {
 
   public static final int BYTES = 10;

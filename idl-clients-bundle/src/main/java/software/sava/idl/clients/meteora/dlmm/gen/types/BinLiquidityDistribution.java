@@ -9,8 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param binId Define the bin ID wish to deposit to.
-/// @param distributionX DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin.
-/// @param distributionY DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin.
+/// @param distributionX: u16 DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin.
+/// @param distributionY: u16 DistributionX (or distributionY) is the percentages of amountX (or amountY) you want to add to each bin.
 public record BinLiquidityDistribution(int binId,
                                        int distributionX,
                                        int distributionY) implements SerDe {

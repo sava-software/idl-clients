@@ -16,13 +16,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param amountIn Total amount, user transfer out
-/// @param amountLeft Leftover amount
-/// @param amountOut Total amount transfer to user, including transfer fee
-/// @param mmFee Market maker fee
-/// @param protocolFee Total protocol fee
-/// @param limitOrderFee Total limit order fee
-/// @param hostFee Total host fee
+/// @param amountIn: u64 Total amount, user transfer out
+/// @param amountLeft: u64 Leftover amount
+/// @param amountOut: u64 Total amount transfer to user, including transfer fee
+/// @param mmFee: u64 Market maker fee
+/// @param protocolFee: u64 Total protocol fee
+/// @param limitOrderFee: u64 Total limit order fee
+/// @param hostFee: u64 Total host fee
 /// @param feesOnInput check if fees on input
 /// @param feesOnTokenX check if fees is on token x
 public record Swap2Evt(Discriminator discriminator,

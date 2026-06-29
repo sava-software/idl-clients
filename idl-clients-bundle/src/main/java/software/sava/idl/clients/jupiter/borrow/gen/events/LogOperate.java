@@ -14,9 +14,10 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param nftId: u32
 public record LogOperate(Discriminator discriminator,
                          PublicKey signer,
-                         int nftId,
+                         long nftId,
                          BigInteger newCol,
                          BigInteger newDebt,
                          PublicKey to) implements VaultsEvent {
@@ -38,7 +39,7 @@ public record LogOperate(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var signer = readPubKey(_data, i);
     i += 32;
-    final var nftId = getInt32LE(_data, i);
+    final var nftId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var newCol = getInt128LE(_data, i);
     i += 16;
@@ -58,7 +59,7 @@ public record LogOperate(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     signer.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, nftId);
+    putInt32LE(_data, i, (int) nftId);
     i += 4;
     putInt128LE(_data, i, newCol);
     i += 16;

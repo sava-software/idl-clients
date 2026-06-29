@@ -21,14 +21,19 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Position data structure
 ///
+/// @param vaultId: u16
+/// @param nftId: u32
+/// @param tickId: u32
+/// @param supplyAmount: u64
+/// @param dustDebtAmount: u64
 public record Position(PublicKey _address,
                        Discriminator discriminator,
                        int vaultId,
-                       int nftId,
+                       long nftId,
                        PublicKey positionMint,
                        int isSupplyOnlyPosition,
                        int tick,
-                       int tickId,
+                       long tickId,
                        long supplyAmount,
                        long dustDebtAmount) implements SerDe {
 
@@ -53,9 +58,9 @@ public record Position(PublicKey _address,
     return Filter.createMemCompFilter(VAULT_ID_OFFSET, _data);
   }
 
-  public static Filter createNftIdFilter(final int nftId) {
+  public static Filter createNftIdFilter(final long nftId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, nftId);
+    putInt32LE(_data, 0, (int) nftId);
     return Filter.createMemCompFilter(NFT_ID_OFFSET, _data);
   }
 
@@ -73,9 +78,9 @@ public record Position(PublicKey _address,
     return Filter.createMemCompFilter(TICK_OFFSET, _data);
   }
 
-  public static Filter createTickIdFilter(final int tickId) {
+  public static Filter createTickIdFilter(final long tickId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, tickId);
+    putInt32LE(_data, 0, (int) tickId);
     return Filter.createMemCompFilter(TICK_ID_OFFSET, _data);
   }
 
@@ -113,7 +118,7 @@ public record Position(PublicKey _address,
     int i = _offset + discriminator.length();
     final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var nftId = getInt32LE(_data, i);
+    final var nftId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var positionMint = readPubKey(_data, i);
     i += 32;
@@ -121,7 +126,7 @@ public record Position(PublicKey _address,
     ++i;
     final var tick = getInt32LE(_data, i);
     i += 4;
-    final var tickId = getInt32LE(_data, i);
+    final var tickId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var supplyAmount = getInt64LE(_data, i);
     i += 8;
@@ -143,7 +148,7 @@ public record Position(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     putInt16LE(_data, i, vaultId);
     i += 2;
-    putInt32LE(_data, i, nftId);
+    putInt32LE(_data, i, (int) nftId);
     i += 4;
     positionMint.write(_data, i);
     i += 32;
@@ -151,7 +156,7 @@ public record Position(PublicKey _address,
     ++i;
     putInt32LE(_data, i, tick);
     i += 4;
-    putInt32LE(_data, i, tickId);
+    putInt32LE(_data, i, (int) tickId);
     i += 4;
     putInt64LE(_data, i, supplyAmount);
     i += 8;

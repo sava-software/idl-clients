@@ -14,6 +14,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TriggerOrderExecuted Borsh variant 60.
 /// Payload type: TriggerOrderExecutedEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u64
+/// @param orderSequenceNumber: u64
 public record TriggerOrderExecutedEvent(Discriminator discriminator,
                                         PublicKey trader,
                                         long sequenceNumber,

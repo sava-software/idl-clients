@@ -445,7 +445,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public static Instruction transfer(final AccountMeta invokedTokenProgramMeta,
                                      final PublicKey sourceKey,
                                      final PublicKey destinationKey,
@@ -463,7 +463,7 @@ public final class TokenProgram {
   /// If this account is associated with the native mint then equal amounts
   /// of SOL and Tokens will be transferred to the destination account.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public static Instruction transfer(final AccountMeta invokedTokenProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amount) {
@@ -478,7 +478,7 @@ public final class TokenProgram {
   /// If this account is associated with the native mint then equal amounts
   /// of SOL and Tokens will be transferred to the destination account.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   public record TransferIxData(int discriminator, long amount) implements SerDe {  
 
     public static TransferIxData read(final Instruction instruction) {
@@ -542,7 +542,7 @@ public final class TokenProgram {
   /// @param sourceKey The source account.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public static Instruction approve(final AccountMeta invokedTokenProgramMeta,
                                     final PublicKey sourceKey,
                                     final PublicKey delegateKey,
@@ -559,7 +559,7 @@ public final class TokenProgram {
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public static Instruction approve(final AccountMeta invokedTokenProgramMeta,
                                     final List<AccountMeta> keys,
                                     final long amount) {
@@ -573,7 +573,7 @@ public final class TokenProgram {
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   public record ApproveIxData(int discriminator, long amount) implements SerDe {  
 
     public static ApproveIxData read(final Instruction instruction) {
@@ -815,7 +815,7 @@ public final class TokenProgram {
   /// @param mintKey The mint account.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public static Instruction mintTo(final AccountMeta invokedTokenProgramMeta,
                                    final PublicKey mintKey,
                                    final PublicKey tokenKey,
@@ -831,7 +831,7 @@ public final class TokenProgram {
 
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public static Instruction mintTo(final AccountMeta invokedTokenProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long amount) {
@@ -844,7 +844,7 @@ public final class TokenProgram {
 
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   public record MintToIxData(int discriminator, long amount) implements SerDe {  
 
     public static MintToIxData read(final Instruction instruction) {
@@ -908,6 +908,7 @@ public final class TokenProgram {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
+  /// @param amount: u64
   public static Instruction burn(final AccountMeta invokedTokenProgramMeta,
                                  final PublicKey accountKey,
                                  final PublicKey mintKey,
@@ -924,6 +925,7 @@ public final class TokenProgram {
   /// Burns tokens by removing them from an account. `Burn` does not support
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
+  /// @param amount: u64
   public static Instruction burn(final AccountMeta invokedTokenProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amount) {
@@ -937,7 +939,7 @@ public final class TokenProgram {
   /// Burns tokens by removing them from an account. `Burn` does not support
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
-  /// @param discriminator The amount of tokens to burn.
+  /// @param amount: u64
   public record BurnIxData(int discriminator, long amount) implements SerDe {  
 
     public static BurnIxData read(final Instruction instruction) {
@@ -1253,7 +1255,7 @@ public final class TokenProgram {
   /// @param mintKey The token mint.
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta,
                                             final PublicKey sourceKey,
@@ -1284,7 +1286,7 @@ public final class TokenProgram {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta,
                                             final List<AccountMeta> keys,
@@ -1307,7 +1309,7 @@ public final class TokenProgram {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to transfer.
+  /// @param amount: u64 The amount of tokens to transfer.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
@@ -1391,7 +1393,7 @@ public final class TokenProgram {
   /// @param mintKey The token mint.
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta,
                                            final PublicKey sourceKey,
@@ -1421,7 +1423,7 @@ public final class TokenProgram {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
@@ -1443,7 +1445,7 @@ public final class TokenProgram {
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
   ///
-  /// @param amount The amount of tokens the delegate is approved for.
+  /// @param amount: u64 The amount of tokens the delegate is approved for.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
@@ -1521,7 +1523,7 @@ public final class TokenProgram {
   /// @param mintKey The mint.
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta,
                                           final PublicKey mintKey,
@@ -1548,7 +1550,7 @@ public final class TokenProgram {
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta,
                                           final List<AccountMeta> keys,
@@ -1569,7 +1571,7 @@ public final class TokenProgram {
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
   ///
-  /// @param amount The amount of new tokens to mint.
+  /// @param amount: u64 The amount of new tokens to mint.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
@@ -1649,7 +1651,7 @@ public final class TokenProgram {
   /// @param accountKey The account to burn from.
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta,
                                         final PublicKey accountKey,
@@ -1677,7 +1679,7 @@ public final class TokenProgram {
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta,
                                         final List<AccountMeta> keys,
@@ -1699,7 +1701,7 @@ public final class TokenProgram {
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
   ///
-  /// @param amount The amount of tokens to burn.
+  /// @param amount: u64 The amount of tokens to burn.
   /// @param decimals Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
@@ -2421,7 +2423,7 @@ public final class TokenProgram {
   /// with `String::from_utf8`.
   ///
   /// @param mintKey The mint to calculate for.
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public static Instruction amountToUiAmount(final AccountMeta invokedTokenProgramMeta,
                                              final PublicKey mintKey,
                                              final long amount) {
@@ -2440,7 +2442,7 @@ public final class TokenProgram {
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public static Instruction amountToUiAmount(final AccountMeta invokedTokenProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
@@ -2460,7 +2462,7 @@ public final class TokenProgram {
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
-  /// @param amount The amount of tokens to reformat.
+  /// @param amount: u64 The amount of tokens to reformat.
   public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {  
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
@@ -2548,7 +2550,7 @@ public final class TokenProgram {
     final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
     final byte[] _data = new byte[5 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, _uiAmount.length);
+    putInt32LE(_data, i, (int) _uiAmount.length);
     i += 4;
     System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
 
@@ -2596,7 +2598,7 @@ public final class TokenProgram {
       int i = _offset;
       _data[i] = (byte) discriminator;
       ++i;
-      putInt32LE(_data, i, _uiAmount.length);
+      putInt32LE(_data, i, (int) _uiAmount.length);
       i += 4;
       System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
       i += _uiAmount.length;

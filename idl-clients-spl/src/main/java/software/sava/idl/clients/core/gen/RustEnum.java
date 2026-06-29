@@ -138,6 +138,21 @@ public interface RustEnum extends SerDe {
     }
   }
 
+  interface EnumUInt32 extends RustEnum {
+
+    long val();
+
+    default int l() {
+      return ordinalBytes() + Integer.BYTES;
+    }
+
+    default int write(final byte[] data, final int offset) {
+      int i = offset + writeOrdinal(data, offset);
+      ByteUtil.putInt32LE(data, i, (int) val());
+      return (i + Integer.BYTES) - offset;
+    }
+  }
+
   interface EnumInt64 extends RustEnum {
 
     long val();
@@ -398,6 +413,21 @@ public interface RustEnum extends SerDe {
     default int write(final byte[] data, final int offset) {
       int i = offset + writeOrdinal(data, offset);
       i += SerDeUtil.writeOptional(optionalBytes(), val(), data, i);
+      return i - offset;
+    }
+  }
+
+  interface OptionalEnumUInt32 extends OptionalEnum {
+
+    OptionalLong val();
+
+    default int l() {
+      return ordinalBytes() + SerDeUtil.lenOptionalUnsignedInt(optionalBytes(), val());
+    }
+
+    default int write(final byte[] data, final int offset) {
+      int i = offset + writeOrdinal(data, offset);
+      i += SerDeUtil.writeOptionalUnsignedInt(optionalBytes(), val(), data, i);
       return i - offset;
     }
   }

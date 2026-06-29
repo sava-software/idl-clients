@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lastIndexExpiryTimestamp: u64
 public record CommodityMarketStateConfig(CommodityMarketState marketState,
                                          boolean isCommodity,
                                          Ticks lastKnownIndexPrice,

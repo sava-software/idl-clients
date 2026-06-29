@@ -16,6 +16,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::SplineParametersUpdatedWithOrdering Borsh variant 57.
 /// Payload type: SplineParametersUpdatedWithOrderingEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param midPrice: u64
+/// @param userSequenceNumber: u64
 public record SplineParametersUpdatedWithOrderingEvent(Discriminator discriminator,
                                                        PublicKey trader,
                                                        long sequenceNumber,

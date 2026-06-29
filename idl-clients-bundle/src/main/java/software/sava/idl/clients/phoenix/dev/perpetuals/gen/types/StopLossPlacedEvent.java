@@ -18,6 +18,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::StopLossPlaced Borsh variant 38.
 /// Payload type: StopLossPlacedEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u64
+/// @param placeSlot: u64
 public record StopLossPlacedEvent(Discriminator discriminator,
                                   PublicKey trader,
                                   long sequenceNumber,

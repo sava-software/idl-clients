@@ -9,6 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Parameters for closing matched positions between at-loss and in-profit traders.
 ///
+/// @param assetId: u64
 public record ClosePositionsParams(long assetId,
                                    BaseLots amount,
                                    QuoteLots atLossCloseValue,

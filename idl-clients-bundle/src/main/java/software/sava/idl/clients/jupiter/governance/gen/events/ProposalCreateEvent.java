@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param index: u64
 public record ProposalCreateEvent(Discriminator discriminator,
                                   PublicKey governor,
                                   PublicKey proposal,

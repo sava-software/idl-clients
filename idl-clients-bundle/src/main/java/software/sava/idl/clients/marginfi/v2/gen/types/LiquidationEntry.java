@@ -13,6 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                          * An f64 stored as bytes
 /// @param liabAmountRepaid Dollar amount repaid
 ///                         * An f64 stored as bytes
+/// @param placeholder0: u64
 public record LiquidationEntry(byte[] assetAmountSeized,
                                byte[] liabAmountRepaid,
                                long placeholder0,

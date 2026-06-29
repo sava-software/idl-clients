@@ -13,6 +13,13 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param rewardsAvailable: u64
+/// @param minClaimDurationSeconds: u64
+/// @param lastIssuanceTs: u64
+/// @param rewardsIssuedUnclaimed: u64
+/// @param rewardsIssuedCumulative: u64
+/// @param placeholder0: u64
+/// @param padding1: u64[]
 public record RewardInfo(TokenInfo token,
                          PublicKey rewardsVault,
                          long rewardsAvailable,

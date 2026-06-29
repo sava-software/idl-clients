@@ -17,11 +17,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param mint Reward token mint.
 /// @param vault Reward vault token account.
 /// @param funder Authority account that allows to fund rewards
-/// @param rewardDuration LM reward duration in seconds.
-/// @param rewardDurationEnd LM reward duration end time.
+/// @param rewardDuration: u64 LM reward duration in seconds.
+/// @param rewardDurationEnd: u64 LM reward duration end time.
 /// @param rewardRate LM reward rate
-/// @param lastUpdateTime The last time reward states were updated.
-/// @param cumulativeSecondsWithEmptyLiquidityReward Accumulated seconds where when farm distribute rewards, but the bin is empty. The reward will be accumulated for next reward time window.
+/// @param lastUpdateTime: u64 The last time reward states were updated.
+/// @param cumulativeSecondsWithEmptyLiquidityReward: u64 Accumulated seconds where when farm distribute rewards, but the bin is empty. The reward will be accumulated for next reward time window.
 public record RewardInfo(PublicKey mint,
                          PublicKey vault,
                          PublicKey funder,

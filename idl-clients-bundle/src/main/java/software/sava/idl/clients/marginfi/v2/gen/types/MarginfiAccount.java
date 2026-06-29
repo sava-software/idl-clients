@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param accountFlags The flags that indicate the state of the account. This is u64 bitfield, where each bit
+/// @param accountFlags: u64 The flags that indicate the state of the account. This is u64 bitfield, where each bit
 ///                     represents a flag.
 ///                     
 ///                     Flags:MarginfiAccount
@@ -38,10 +38,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param emissionsDestinationAccount Wallet whose canonical ATA receives off-chain emissions distributions.
 /// @param migratedFrom If this account was migrated from another one, store the original account key
 /// @param migratedTo If this account has been migrated to another one, store the destination account key
-/// @param lastUpdate Unix timestamp (u64) of the last account interaction. Note: Bank.last_update uses i64.
-/// @param accountIndex If a PDA-based account, the account index, a seed used to derive the PDA that can be chosen
+/// @param lastUpdate: u64 Unix timestamp (u64) of the last account interaction. Note: Bank.last_update uses i64.
+/// @param accountIndex: u16 If a PDA-based account, the account index, a seed used to derive the PDA that can be chosen
 ///                     arbitrarily (0.1.5 or later). Otherwise, does nothing.
-/// @param thirdPartyIndex If a PDA-based account (0.1.5 or later), a "vendor specific" id. Values < PDA_FREE_THRESHOLD
+/// @param thirdPartyIndex: u16 If a PDA-based account (0.1.5 or later), a "vendor specific" id. Values < PDA_FREE_THRESHOLD
 ///                        can be used by anyone with no restrictions. Values >= PDA_FREE_THRESHOLD can only be used by
 ///                        a particular program via CPI. These values require being added to a list, contact us for
 ///                        more details. For legacy non-pda accounts, does nothing.
@@ -54,6 +54,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          * Typically pubkey default if this account has never been liquidated or close to liquidation
 ///                          * Opening this account is permissionless. Typically the liquidator pays, but e.g. we may
 ///                          also charge the user if they are opening a risky position on the front end.
+/// @param padding0: u64[]
 public record MarginfiAccount(PublicKey _address,
                               Discriminator discriminator,
                               PublicKey group,

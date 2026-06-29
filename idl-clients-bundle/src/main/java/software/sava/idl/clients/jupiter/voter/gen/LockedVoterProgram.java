@@ -222,6 +222,7 @@ public final class LockedVoterProgram {
   /// @param payerKey Authority Self::source_tokens, Anyone can increase amount for user
   /// @param sourceTokensKey The source of deposited tokens.
   /// @param tokenProgramKey Token program.
+  /// @param amount: u64
   public static Instruction increaseLockedAmount(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final PublicKey lockerKey,
                                                  final PublicKey escrowKey,
@@ -243,6 +244,7 @@ public final class LockedVoterProgram {
 
   /// increase locked amount Escrow.
   ///
+  /// @param amount: u64
   public static Instruction increaseLockedAmount(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long amount) {
@@ -253,6 +255,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static IncreaseLockedAmountIxData read(final Instruction instruction) {
@@ -855,6 +858,7 @@ public final class LockedVoterProgram {
   /// @param escrowKey Escrow.
   /// @param partialUnstakeKey Escrow.
   /// @param systemProgramKey System program.
+  /// @param amount: u64
   public static Instruction openPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final PublicKey lockerKey,
                                                  final PublicKey escrowKey,
@@ -875,6 +879,7 @@ public final class LockedVoterProgram {
 
   /// Open partial unstaking
   ///
+  /// @param amount: u64
   public static Instruction openPartialUnstaking(final AccountMeta invokedLockedVoterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final long amount,
@@ -889,6 +894,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements SerDe {  
 
     public static OpenPartialUnstakingIxData read(final Instruction instruction) {

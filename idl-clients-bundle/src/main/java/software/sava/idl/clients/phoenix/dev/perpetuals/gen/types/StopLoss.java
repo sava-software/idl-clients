@@ -9,6 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// One fixed trigger order slot stored inside the StopLosses account.
 ///
+/// @param sequenceNumber: u64
+/// @param slot: u64
 public record StopLoss(long sequenceNumber,
                        Ticks triggerPrice,
                        Ticks executionPrice,

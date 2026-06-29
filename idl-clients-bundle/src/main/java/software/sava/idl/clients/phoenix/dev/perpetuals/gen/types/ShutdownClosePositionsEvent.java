@@ -17,10 +17,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::ShutdownClosePositions Borsh variant 65.
 /// Payload type: ShutdownClosePositionsEvent.
 ///
+/// @param assetId: u32
+/// @param tradeSequenceNumber: u64
+/// @param sequenceNumber: u64
 public record ShutdownClosePositionsEvent(Discriminator discriminator,
                                           PublicKey longTrader,
                                           PublicKey shortTrader,
-                                          int assetId,
+                                          long assetId,
                                           BaseLots baseLotsClosed,
                                           Ticks settlementPrice,
                                           long tradeSequenceNumber,
@@ -47,7 +50,7 @@ public record ShutdownClosePositionsEvent(Discriminator discriminator,
     i += 32;
     final var shortTrader = readPubKey(_data, i);
     i += 32;
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var baseLotsClosed = BaseLots.read(_data, i);
     i += baseLotsClosed.l();
@@ -73,7 +76,7 @@ public record ShutdownClosePositionsEvent(Discriminator discriminator,
     i += 32;
     shortTrader.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += baseLotsClosed.write(_data, i);
     i += settlementPrice.write(_data, i);

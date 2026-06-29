@@ -21,7 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// the latter can be executed only after the `Proposal` has been approved and its time lock is released.
 ///
 /// @param multisig The multisig this belongs to.
-/// @param transactionIndex Index of the multisig transaction this proposal is associated with.
+/// @param transactionIndex: u64 Index of the multisig transaction this proposal is associated with.
 /// @param status The status of the transaction.
 /// @param bump PDA bump.
 /// @param approved Keys that have approved/signed.

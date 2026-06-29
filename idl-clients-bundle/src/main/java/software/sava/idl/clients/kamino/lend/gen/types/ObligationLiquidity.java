@@ -17,7 +17,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param borrowReserve Reserve liquidity is borrowed from
 /// @param cumulativeBorrowRateBsf Borrow rate used for calculating interest (big scaled fraction)
-/// @param lastBorrowedAtTimestamp The timestamp at which this debt was taken.
+/// @param lastBorrowedAtTimestamp: u64 The timestamp at which this debt was taken.
 ///                                
 ///                                Conceptually, every borrow can be interpreted as "closing the previous loan and starting a
 ///                                new one" (which would make a plain ` borrowed_at ` an even better name). But in terms of
@@ -29,10 +29,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param borrowedAmountSf Amount of liquidity borrowed plus interest (scaled fraction)
 /// @param marketValueSf Liquidity market value in quote currency (scaled fraction)
 /// @param borrowFactorAdjustedMarketValueSf Risk adjusted liquidity market value in quote currency - DEBUG ONLY - use market_value instead
-/// @param borrowedAmountOutsideElevationGroups Amount of liquidity borrowed outside of an elevation group
+/// @param borrowedAmountOutsideElevationGroups: u64 Amount of liquidity borrowed outside of an elevation group
 /// @param fixedTermBorrowRolloverConfig The user's auto-rollover/migration opt-ins. Some settings are effective only for fixed-term
 ///                                      borrows, while others only for open-term borrows - see individual field docs.
-/// @param borrowedAmountAtExpiration An amount of liquidity that was borrowed when this fixed-term borrow expired (i.e. zeroed if
+/// @param borrowedAmountAtExpiration: u64 An amount of liquidity that was borrowed when this fixed-term borrow expired (i.e. zeroed if
 ///                                   this borrow is not fixed-term, or if it did not yet expire).
 ///                                   
 ///                                   Needed to honor the LendingMarket::term_based_full_liquidation_duration_secs.
@@ -42,6 +42,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                   
 ///                                   Note on precision: we use a `u64` field, since the remaining space within this struct is
 ///                                   rather scarce, and we do not need sub-lamport precision for the liquidation throttling rate.
+/// @param padding2: u64[]
 public record ObligationLiquidity(PublicKey borrowReserve,
                                   BigFractionBytes cumulativeBorrowRateBsf,
                                   long lastBorrowedAtTimestamp,

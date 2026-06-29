@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Reserve Withdrawal Caps State
 ///
+/// @param lastIntervalStartTimestamp: u64
+/// @param configIntervalLengthSeconds: u64
 public record WithdrawalCaps(long configCapacity,
                              long currentTotal,
                              long lastIntervalStartTimestamp,

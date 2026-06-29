@@ -11,6 +11,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::FeesClaimed Borsh variant 28.
 /// Payload type: FeesClaimedEvent.
 ///
+/// @param amount: u64
 public record FeesClaimedEvent(Discriminator discriminator, long amount) implements EternalEvent {
 
   public static final int BYTES = 16;

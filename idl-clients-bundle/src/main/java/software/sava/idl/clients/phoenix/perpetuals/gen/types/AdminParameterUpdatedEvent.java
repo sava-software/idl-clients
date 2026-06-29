@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.AdminParameterUpdateKind;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
 
-import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
@@ -20,7 +20,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 public record AdminParameterUpdatedEvent(Discriminator discriminator,
                                          PublicKey authority,
                                          Symbol assetSymbol,
-                                         OptionalInt assetId,
+                                         OptionalLong assetId,
                                          AdminParameterUpdateKind updateKind) implements EternalEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(48, 0, 0, 0, 0, 0, 0, 0);
@@ -45,13 +45,13 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
       assetSymbol = Symbol.read(_data, i);
       i += assetSymbol.l();
     }
-    final OptionalInt assetId;
+    final OptionalLong assetId;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      assetId = OptionalInt.empty();
+      assetId = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      assetId = OptionalInt.of(getInt32LE(_data, i));
+      assetId = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final var updateKind = AdminParameterUpdateKind.read(_data, i);
@@ -68,7 +68,7 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
     authority.write(_data, i);
     i += 32;
     i += SerDeUtil.writeOptional(1, assetSymbol, _data, i);
-    i += SerDeUtil.writeOptional(1, assetId, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, assetId, _data, i);
     i += updateKind.write(_data, i);
     return i - _offset;
   }

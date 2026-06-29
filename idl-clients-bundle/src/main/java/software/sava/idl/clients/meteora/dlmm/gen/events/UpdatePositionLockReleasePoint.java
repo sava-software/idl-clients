@@ -10,6 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param currentPoint: u64
+/// @param newLockReleasePoint: u64
+/// @param oldLockReleasePoint: u64
 public record UpdatePositionLockReleasePoint(Discriminator discriminator,
                                              PublicKey position,
                                              long currentPoint,

@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
 public record DistributionEnded(Discriminator discriminator, long amount, long timestamp) implements NtbundleEvent {
 
   public static final int BYTES = 24;

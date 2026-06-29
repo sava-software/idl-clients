@@ -19,13 +19,14 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param bank Bank this metadata corresponds to
+/// @param placeholder: u64
 /// @param ticker The token's ticker name, e.g. USDC
 ///               * utf-8
 /// @param description The token's plain english description, e.g US Dollar Coin
 ///                    * utf-8
 /// @param dataBlob Reserved for future use. Room for a very small icon or something else cool
-/// @param endDescriptionByte The last data byte in description (padding follows)
-/// @param endDataBlob The last data byte in data_blob (padding follows)
+/// @param endDescriptionByte: u16 The last data byte in description (padding follows)
+/// @param endDataBlob: u16 The last data byte in data_blob (padding follows)
 /// @param endTickerByte The last data byte in ticker (padding follows)
 public record BankMetadata(PublicKey _address,
                            Discriminator discriminator,

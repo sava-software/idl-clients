@@ -14,9 +14,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param nftId: u32
+/// @param vaultId: u16
+/// @param col: u64
+/// @param borrow: u64
 public record LogUserPosition(Discriminator discriminator,
                               PublicKey user,
-                              int nftId,
+                              long nftId,
                               int vaultId,
                               PublicKey positionMint,
                               int tick,
@@ -42,7 +46,7 @@ public record LogUserPosition(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var user = readPubKey(_data, i);
     i += 32;
-    final var nftId = getInt32LE(_data, i);
+    final var nftId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -68,7 +72,7 @@ public record LogUserPosition(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     user.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, nftId);
+    putInt32LE(_data, i, (int) nftId);
     i += 4;
     putInt16LE(_data, i, vaultId);
     i += 2;

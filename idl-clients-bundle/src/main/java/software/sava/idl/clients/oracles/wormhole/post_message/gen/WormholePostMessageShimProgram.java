@@ -154,6 +154,7 @@ public final class WormholePostMessageShimProgram {
   /// @param feeCollectorKey Wormhole Core Bridge fee collector. Wormhole Core Bridge program's post
   ///                        message instruction requires this account to be mutable.
   /// @param wormholeProgramKey Wormhole Core Bridge program.
+  /// @param nonce: u32
   public static Instruction postMessage(final AccountMeta invokedWormholePostMessageShimProgramMeta,
                                         final SolanaAccounts solanaAccounts,
                                         final PublicKey bridgeKey,
@@ -165,7 +166,7 @@ public final class WormholePostMessageShimProgram {
                                         final PublicKey wormholeProgramKey,
                                         final PublicKey eventAuthorityKey,
                                         final PublicKey programKey,
-                                        final int nonce,
+                                        final long nonce,
                                         final Finality consistencyLevel,
                                         final byte[] payload) {
     final var keys = postMessageKeys(
@@ -221,14 +222,15 @@ public final class WormholePostMessageShimProgram {
   /// - post message unreliable (Wormhole Core Bridge)
   /// - Anchor event of `MesssageEvent` (Wormhole Post Message Shim)
   ///
+  /// @param nonce: u32
   public static Instruction postMessage(final AccountMeta invokedWormholePostMessageShimProgramMeta,
                                         final List<AccountMeta> keys,
-                                        final int nonce,
+                                        final long nonce,
                                         final Finality consistencyLevel,
                                         final byte[] payload) {
     final byte[] _data = new byte[12 + consistencyLevel.l() + SerDeUtil.lenVector(4, payload)];
     int i = POST_MESSAGE_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, nonce);
+    putInt32LE(_data, i, (int) nonce);
     i += 4;
     i += consistencyLevel.write(_data, i);
     SerDeUtil.writeVector(4, payload, _data, i);
@@ -236,8 +238,9 @@ public final class WormholePostMessageShimProgram {
     return Instruction.createInstruction(invokedWormholePostMessageShimProgramMeta, keys, _data);
   }
 
+  /// @param nonce: u32
   public record PostMessageIxData(Discriminator discriminator,
-                                  int nonce,
+                                  long nonce,
                                   Finality consistencyLevel,
                                   byte[] payload) implements SerDe {  
 
@@ -255,7 +258,7 @@ public final class WormholePostMessageShimProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var nonce = getInt32LE(_data, i);
+      final var nonce = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var consistencyLevel = Finality.read(_data, i);
       i += consistencyLevel.l();
@@ -266,7 +269,7 @@ public final class WormholePostMessageShimProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      putInt32LE(_data, i, nonce);
+      putInt32LE(_data, i, (int) nonce);
       i += 4;
       i += consistencyLevel.write(_data, i);
       i += SerDeUtil.writeVector(4, payload, _data, i);

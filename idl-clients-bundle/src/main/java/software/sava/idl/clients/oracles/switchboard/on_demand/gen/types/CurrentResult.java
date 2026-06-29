@@ -19,9 +19,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param maxValue The maximum value of the submissions needed for quorom size
 /// @param numSamples The number of samples used to calculate this result
 /// @param submissionIdx The index of the submission that was used to calculate this result
-/// @param slot The slot at which this value was signed.
-/// @param minSlot The slot at which the first considered submission was made
-/// @param maxSlot The slot at which the last considered submission was made
+/// @param slot: u64 The slot at which this value was signed.
+/// @param minSlot: u64 The slot at which the first considered submission was made
+/// @param maxSlot: u64 The slot at which the last considered submission was made
 public record CurrentResult(BigInteger value,
                             BigInteger stdDev,
                             BigInteger mean,

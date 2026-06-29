@@ -4,6 +4,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.KaminoAccounts;
 import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.lend.gen.types.ScopeConfiguration;
+import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Arrays;
@@ -48,12 +49,12 @@ record ScopeEntriesRecord(PublicKey pubKey, long slot, ScopeEntry[] scopeEntries
     }).toList();
   }
 
-  private ScopeEntry[] parseChain(final short[] priceChain, final ScopeEntry[] scopeEntries) {
+  private ScopeEntry[] parseChain(final int[] priceChain, final ScopeEntry[] scopeEntries) {
     final var entries = new ScopeEntry[priceChain.length];
     int j = 0;
     for (int i = 0, entryIndex; i < priceChain.length; ++i) {
       entryIndex = priceChain[i];
-      if (entryIndex < 0) {
+      if (entryIndex >= OracleMappings.PRICE_INFO_ACCOUNTS_LEN) {
         break;
       }
       final var entry = scopeEntries[entryIndex];

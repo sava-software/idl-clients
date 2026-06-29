@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param authority The authority that can configure the program config: change the treasury, etc.
-/// @param multisigCreationFee The fee that is charged for creating a new multisig.
+/// @param multisigCreationFee: u64 The fee that is charged for creating a new multisig.
 /// @param treasury The treasury where the creation fee is transferred to.
 public record ProgramConfigInitArgs(PublicKey authority,
                                     long multisigCreationFee,

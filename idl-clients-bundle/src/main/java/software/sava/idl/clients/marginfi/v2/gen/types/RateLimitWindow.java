@@ -12,10 +12,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Net outflow = (withdraws + borrows) - (deposits + repays).
 /// A negative net outflow increases remaining capacity for subsequent outflows.
 ///
-/// @param maxOutflow Maximum net outflow allowed per window (0 = disabled).
+/// @param maxOutflow: u64 Maximum net outflow allowed per window (0 = disabled).
 ///                   For bank-level: denominated in native tokens.
 ///                   For group-level: denominated in USD.
-/// @param windowDuration Window duration in seconds (e.g., 3600 for hourly, 86400 for daily).
+/// @param windowDuration: u64 Window duration in seconds (e.g., 3600 for hourly, 86400 for daily).
 /// @param windowStart Unix timestamp when the current window started.
 /// @param prevWindowOutflow Net outflow accumulated in the previous window.
 ///                          Signed to allow tracking when inflows exceed outflows.

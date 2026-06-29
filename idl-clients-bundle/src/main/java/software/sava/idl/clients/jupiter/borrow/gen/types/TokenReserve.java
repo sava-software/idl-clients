@@ -19,6 +19,20 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Token configuration and exchange prices
 ///
+/// @param borrowRate: u16
+/// @param feeOnInterest: u16
+/// @param lastUtilization: u16
+/// @param lastUpdateTimestamp: u64
+/// @param supplyExchangePrice: u64
+/// @param borrowExchangePrice: u64
+/// @param maxUtilization: u16
+/// @param totalSupplyWithInterest: u64
+/// @param totalSupplyInterestFree: u64
+/// @param totalBorrowWithInterest: u64
+/// @param totalBorrowInterestFree: u64
+/// @param totalClaimAmount: u64
+/// @param interactingTimestamp: u64
+/// @param interactingBalance: u64
 public record TokenReserve(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey mint,

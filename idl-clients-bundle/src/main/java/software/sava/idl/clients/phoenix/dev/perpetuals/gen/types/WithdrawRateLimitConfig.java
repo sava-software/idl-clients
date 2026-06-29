@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param maxBudget: u64
+/// @param replenishAmountPerSlot: u64
 public record WithdrawRateLimitConfig(long maxBudget, long replenishAmountPerSlot) implements SerDe {
 
   public static final int BYTES = 16;

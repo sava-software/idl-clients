@@ -20,19 +20,22 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed metadata prefix for a Phoenix Eternal orderbook account.
 /// The large recent-trade buffer and dynamic orderbook bytes follow this prefix and are left as trailing account data by generic decoders.
 ///
+/// @param assetId: u32
+/// @param tickSizeInQuoteLotsPerBaseLot: u64
+/// @param defaultTakerFeeMicro: u32
 public record OrderbookHeader(PublicKey _address,
                               Discriminator discriminator,
                               int marketStatus,
                               int baseLotsDecimals,
                               byte[] padding0,
                               SequenceNumber sequenceNumber,
-                              int assetId,
+                              long assetId,
                               byte[] assetIdPadding,
                               Symbol assetSymbol,
                               long tickSizeInQuoteLotsPerBaseLot,
                               SequenceNumber orderSequenceNumber,
                               SequenceNumber tradeSequenceNumber,
-                              int defaultTakerFeeMicro,
+                              long defaultTakerFeeMicro,
                               int defaultMakerFeeMicro,
                               SignedQuoteLots totalMakerQuoteLotFees,
                               QuoteLots totalTakerQuoteLotFees) implements SerDe {
@@ -72,9 +75,9 @@ public record OrderbookHeader(PublicKey _address,
     return Filter.createMemCompFilter(SEQUENCE_NUMBER_OFFSET, sequenceNumber.write());
   }
 
-  public static Filter createAssetIdFilter(final int assetId) {
+  public static Filter createAssetIdFilter(final long assetId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, assetId);
+    putInt32LE(_data, 0, (int) assetId);
     return Filter.createMemCompFilter(ASSET_ID_OFFSET, _data);
   }
 
@@ -96,9 +99,9 @@ public record OrderbookHeader(PublicKey _address,
     return Filter.createMemCompFilter(TRADE_SEQUENCE_NUMBER_OFFSET, tradeSequenceNumber.write());
   }
 
-  public static Filter createDefaultTakerFeeMicroFilter(final int defaultTakerFeeMicro) {
+  public static Filter createDefaultTakerFeeMicroFilter(final long defaultTakerFeeMicro) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, defaultTakerFeeMicro);
+    putInt32LE(_data, 0, (int) defaultTakerFeeMicro);
     return Filter.createMemCompFilter(DEFAULT_TAKER_FEE_MICRO_OFFSET, _data);
   }
 
@@ -144,7 +147,7 @@ public record OrderbookHeader(PublicKey _address,
     i += SerDeUtil.readArray(padding0, _data, i);
     final var sequenceNumber = SequenceNumber.read(_data, i);
     i += sequenceNumber.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var assetIdPadding = new byte[4];
     i += SerDeUtil.readArray(assetIdPadding, _data, i);
@@ -156,7 +159,7 @@ public record OrderbookHeader(PublicKey _address,
     i += orderSequenceNumber.l();
     final var tradeSequenceNumber = SequenceNumber.read(_data, i);
     i += tradeSequenceNumber.l();
-    final var defaultTakerFeeMicro = getInt32LE(_data, i);
+    final var defaultTakerFeeMicro = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var defaultMakerFeeMicro = getInt32LE(_data, i);
     i += 4;
@@ -190,7 +193,7 @@ public record OrderbookHeader(PublicKey _address,
     ++i;
     i += SerDeUtil.writeArrayChecked(padding0, 6, _data, i);
     i += sequenceNumber.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += SerDeUtil.writeArrayChecked(assetIdPadding, 4, _data, i);
     i += assetSymbol.write(_data, i);
@@ -198,7 +201,7 @@ public record OrderbookHeader(PublicKey _address,
     i += 8;
     i += orderSequenceNumber.write(_data, i);
     i += tradeSequenceNumber.write(_data, i);
-    putInt32LE(_data, i, defaultTakerFeeMicro);
+    putInt32LE(_data, i, (int) defaultTakerFeeMicro);
     i += 4;
     putInt32LE(_data, i, defaultMakerFeeMicro);
     i += 4;

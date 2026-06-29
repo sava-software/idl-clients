@@ -13,6 +13,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderWithdrawCancelled Borsh variant 17.
 /// Payload type: TraderWithdrawCancelledEvent.
 ///
+/// @param amount: u64
+/// @param traderSequenceNumber: u64
+/// @param traderPrevSequenceNumberSlot: u64
+/// @param withdrawQueueSequenceNumber: u64
+/// @param withdrawQueuePrevSequenceNumberSlot: u64
 public record TraderWithdrawCancelledEvent(Discriminator discriminator,
                                            PublicKey trader,
                                            PublicKey authority,

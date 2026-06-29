@@ -9,11 +9,18 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param filterPeriod: u16
+/// @param decayPeriod: u16
+/// @param reductionFactor: u16
+/// @param adaptiveFeeControlFactor: u32
+/// @param maxVolatilityAccumulator: u32
+/// @param tickGroupSize: u16
+/// @param majorSwapThresholdTicks: u16
 public record AdaptiveFeeConstants(int filterPeriod,
                                    int decayPeriod,
                                    int reductionFactor,
-                                   int adaptiveFeeControlFactor,
-                                   int maxVolatilityAccumulator,
+                                   long adaptiveFeeControlFactor,
+                                   long maxVolatilityAccumulator,
                                    int tickGroupSize,
                                    int majorSwapThresholdTicks,
                                    byte[] reserved) implements SerDe {
@@ -41,9 +48,9 @@ public record AdaptiveFeeConstants(int filterPeriod,
     i += 2;
     final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var adaptiveFeeControlFactor = getInt32LE(_data, i);
+    final var adaptiveFeeControlFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var maxVolatilityAccumulator = getInt32LE(_data, i);
+    final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -70,9 +77,9 @@ public record AdaptiveFeeConstants(int filterPeriod,
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, adaptiveFeeControlFactor);
+    putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt16LE(_data, i, tickGroupSize);
     i += 2;

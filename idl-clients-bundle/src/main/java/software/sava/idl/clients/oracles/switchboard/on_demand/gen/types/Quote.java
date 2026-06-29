@@ -17,6 +17,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param quoteRegistry The off-chain registry where the verifiers quote can be located.
 /// @param registryKey Key to lookup the buffer data on IPFS or an alternative decentralized storage solution.
 /// @param secp256k1Signer The secp256k1 public key of the enclave signer. Derived from the enclave_signer.
+/// @param lastRotateSlot: u64
 /// @param ebuf3 Reserved.
 public record Quote(PublicKey enclaveSigner,
                     byte[] mrEnclave,

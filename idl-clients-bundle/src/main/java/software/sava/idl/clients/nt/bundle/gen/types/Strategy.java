@@ -16,10 +16,11 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param allocationBps: u32
 public record Strategy(PublicKey _address,
                        Discriminator discriminator,
                        PublicKey receiverAddress,
-                       int allocationBps,
+                       long allocationBps,
                        boolean allowed,
                        byte[] padding) implements SerDe {
 
@@ -39,9 +40,9 @@ public record Strategy(PublicKey _address,
     return Filter.createMemCompFilter(RECEIVER_ADDRESS_OFFSET, receiverAddress);
   }
 
-  public static Filter createAllocationBpsFilter(final int allocationBps) {
+  public static Filter createAllocationBpsFilter(final long allocationBps) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, allocationBps);
+    putInt32LE(_data, 0, (int) allocationBps);
     return Filter.createMemCompFilter(ALLOCATION_BPS_OFFSET, _data);
   }
 
@@ -71,7 +72,7 @@ public record Strategy(PublicKey _address,
     int i = _offset + discriminator.length();
     final var receiverAddress = readPubKey(_data, i);
     i += 32;
-    final var allocationBps = getInt32LE(_data, i);
+    final var allocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var allowed = _data[i] == 1;
     ++i;
@@ -90,7 +91,7 @@ public record Strategy(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     receiverAddress.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, allocationBps);
+    putInt32LE(_data, i, (int) allocationBps);
     i += 4;
     _data[i] = (byte) (allowed ? 1 : 0);
     ++i;

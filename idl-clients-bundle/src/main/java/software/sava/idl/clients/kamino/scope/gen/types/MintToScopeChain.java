@@ -7,7 +7,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
-public record MintToScopeChain(PublicKey mint, short[] scopeChain) implements SerDe {
+/// @param scopeChain: u16[]
+public record MintToScopeChain(PublicKey mint, int[] scopeChain) implements SerDe {
 
   public static final int BYTES = 40;
   public static final int SCOPE_CHAIN_LEN = 4;
@@ -22,8 +23,8 @@ public record MintToScopeChain(PublicKey mint, short[] scopeChain) implements Se
     int i = _offset;
     final var mint = readPubKey(_data, i);
     i += 32;
-    final var scopeChain = new short[4];
-    SerDeUtil.readArray(scopeChain, _data, i);
+    final var scopeChain = new int[4];
+    SerDeUtil.readUnsignedShortArray(scopeChain, _data, i);
     return new MintToScopeChain(mint, scopeChain);
   }
 
@@ -32,7 +33,7 @@ public record MintToScopeChain(PublicKey mint, short[] scopeChain) implements Se
     int i = _offset;
     mint.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(scopeChain, 4, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(scopeChain, 4, _data, i);
     return i - _offset;
   }
 

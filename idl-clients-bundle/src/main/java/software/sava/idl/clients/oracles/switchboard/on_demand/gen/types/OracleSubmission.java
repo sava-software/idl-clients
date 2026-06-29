@@ -13,8 +13,8 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param oracle The public key of the oracle that submitted this value.
-/// @param slot The slot at which this value was signed.
-/// @param landedAt The slot at which this value was landed on chain.
+/// @param slot: u64 The slot at which this value was signed.
+/// @param landedAt: u64 The slot at which this value was landed on chain.
 /// @param value The value that was submitted.
 public record OracleSubmission(PublicKey oracle,
                                long slot,

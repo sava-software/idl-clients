@@ -8,10 +8,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A tracker of ticket-based withdrawals.
 ///
-/// @param queuedCollateralAmount The part of ReserveLiquidity::total_available_amount locked for ticketed withdrawals.
-/// @param nextIssuedTicketSequenceNumber The sequence number of the next ticket to be issued when enqueueing to withdraw.
+/// @param queuedCollateralAmount: u64 The part of ReserveLiquidity::total_available_amount locked for ticketed withdrawals.
+/// @param nextIssuedTicketSequenceNumber: u64 The sequence number of the next ticket to be issued when enqueueing to withdraw.
 ///                                       Note: it is also a number of tickets issued so far.
-/// @param nextWithdrawableTicketSequenceNumber The sequence number of the next ticket to be used for actually transferring the withdrawn
+/// @param nextWithdrawableTicketSequenceNumber: u64 The sequence number of the next ticket to be used for actually transferring the withdrawn
 ///                                             liquidity (assuming it is available in the reserve).
 ///                                             Note: it is also a number of fully-consumed tickets so far.
 public record WithdrawQueue(long queuedCollateralAmount,

@@ -9,6 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Oracle instruction payload containing ordered price updates and timestamp reset policy.
 ///
+/// @param updateTimestamp: u64
 public record UpdateOraclePricesWithOrderingInstruction(long updateTimestamp,
                                                         OraclePriceUpdate[] updates,
                                                         boolean shouldResetTimestamp) implements SerDe {

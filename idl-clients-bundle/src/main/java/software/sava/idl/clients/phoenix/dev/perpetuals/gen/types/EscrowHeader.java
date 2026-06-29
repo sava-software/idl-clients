@@ -18,6 +18,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed EscrowHeader prefix for a Phoenix Eternal escrow account.
 /// The dynamic escrow request list follows this header and is left as trailing account data by generic decoders.
 ///
+/// @param len: u64
+/// @param capacity: u64
 public record EscrowHeader(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey authority,

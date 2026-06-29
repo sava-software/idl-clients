@@ -14,6 +14,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::StopLossCancelled Borsh variant 39.
 /// Payload type: StopLossCancelledEvent.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u64
 public record StopLossCancelledEvent(Discriminator discriminator,
                                      PublicKey trader,
                                      long sequenceNumber,

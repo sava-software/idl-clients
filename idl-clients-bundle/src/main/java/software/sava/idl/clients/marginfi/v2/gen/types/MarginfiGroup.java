@@ -21,11 +21,11 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param admin Broadly able to modify anything, and can set/remove other admins at will.
-/// @param groupFlags Bitmask for group settings flags.
+/// @param groupFlags: u64 Bitmask for group settings flags.
 ///                   * Bit 0 (1): `PROGRAM_FEES_ENABLED` — If set, program-level fees are enabled.
 ///                   * Bits 1-63: Reserved for future use.
 /// @param feeStateCache Caches information from the global `FeeState` so the FeeState can be omitted on certain ixes
-/// @param banks For groups initialized in versions 0.1.2 or greater, this is an authoritative count
+/// @param banks: u16 For groups initialized in versions 0.1.2 or greater, this is an authoritative count
 ///              of the number of banks under this group. For groups initialized prior to 0.1.2,
 ///              a non-authoritative count of the number of banks initiated after 0.1.2 went live.
 /// @param emodeAdmin This admin can configure collateral ratios above (but not below) the collateral ratio of
@@ -44,23 +44,25 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                      when the risk admin is compromised).
 /// @param riskAdmin Can run bankruptcy and forced deleverage ixes to e.g. sunset risky/illiquid assets
 /// @param metadataAdmin Can modify a Bank's metadata, and nothing else.
-/// @param emodeMaxInitLeverage Maximum leverage allowed for emode positions (initial margin), stored as u32 basis.
+/// @param emodeMaxInitLeverage: u32 Maximum leverage allowed for emode positions (initial margin), stored as u32 basis.
 ///                             Use `u32_to_basis` to convert to I80F48. Range: 1-100.
-/// @param emodeMaxMaintLeverage Maximum leverage allowed for emode positions (maintenance margin), stored as u32 basis.
+/// @param emodeMaxMaintLeverage: u32 Maximum leverage allowed for emode positions (maintenance margin), stored as u32 basis.
 ///                              Must be > emode_max_init_leverage. Range: 1-100.
 /// @param padding Reserved for future use
 /// @param rateLimiter Rate limiter for controlling aggregate withdraw/borrow outflow across all banks.
 ///                    Tracks net outflow in USD.
-/// @param rateLimiterLastAdminUpdateSlot Last slot covered by an admin group rate limiter aggregation update.
-/// @param rateLimiterLastAdminUpdateSeq Monotonic sequence number for admin group rate limiter updates.
+/// @param rateLimiterLastAdminUpdateSlot: u64 Last slot covered by an admin group rate limiter aggregation update.
+/// @param rateLimiterLastAdminUpdateSeq: u64 Monotonic sequence number for admin group rate limiter updates.
 ///                                      This is used to enforce strict ordering and prevent duplicate/replayed batches
 ///                                      when slot ranges overlap or multiple updates happen in the same slot.
-/// @param deleverageWithdrawLastAdminUpdateSlot Last slot covered by an admin deleverage withdraw-limit aggregation update.
-/// @param deleverageWithdrawLastAdminUpdateSeq Monotonic sequence number for admin deleverage withdraw-limit updates.
+/// @param deleverageWithdrawLastAdminUpdateSlot: u64 Last slot covered by an admin deleverage withdraw-limit aggregation update.
+/// @param deleverageWithdrawLastAdminUpdateSeq: u64 Monotonic sequence number for admin deleverage withdraw-limit updates.
 /// @param delegateFlowAdmin Can modify flow-control status for the group, i.e. update the withdraw caches with flow
 ///                          information from banks. Typically this is a hot wallet that lives in e.g. some cron job. If
 ///                          compromised, flow control can be effectively disabled until the admin is restored, which
 ///                          does not itself compromise any funds, and is merely annoying.
+/// @param padding0: u64[][]
+/// @param padding1: u64[][]
 public record MarginfiGroup(PublicKey _address,
                             Discriminator discriminator,
                             PublicKey admin,
@@ -76,8 +78,8 @@ public record MarginfiGroup(PublicKey _address,
                             WithdrawWindowCache deleverageWithdrawWindowCache,
                             PublicKey riskAdmin,
                             PublicKey metadataAdmin,
-                            int emodeMaxInitLeverage,
-                            int emodeMaxMaintLeverage,
+                            long emodeMaxInitLeverage,
+                            long emodeMaxMaintLeverage,
                             byte[] padding,
                             GroupRateLimiter rateLimiter,
                             long rateLimiterLastAdminUpdateSlot,
@@ -175,15 +177,15 @@ public record MarginfiGroup(PublicKey _address,
     return Filter.createMemCompFilter(METADATA_ADMIN_OFFSET, metadataAdmin);
   }
 
-  public static Filter createEmodeMaxInitLeverageFilter(final int emodeMaxInitLeverage) {
+  public static Filter createEmodeMaxInitLeverageFilter(final long emodeMaxInitLeverage) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, emodeMaxInitLeverage);
+    putInt32LE(_data, 0, (int) emodeMaxInitLeverage);
     return Filter.createMemCompFilter(EMODE_MAX_INIT_LEVERAGE_OFFSET, _data);
   }
 
-  public static Filter createEmodeMaxMaintLeverageFilter(final int emodeMaxMaintLeverage) {
+  public static Filter createEmodeMaxMaintLeverageFilter(final long emodeMaxMaintLeverage) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, emodeMaxMaintLeverage);
+    putInt32LE(_data, 0, (int) emodeMaxMaintLeverage);
     return Filter.createMemCompFilter(EMODE_MAX_MAINT_LEVERAGE_OFFSET, _data);
   }
 
@@ -265,9 +267,9 @@ public record MarginfiGroup(PublicKey _address,
     i += 32;
     final var metadataAdmin = readPubKey(_data, i);
     i += 32;
-    final var emodeMaxInitLeverage = getInt32LE(_data, i);
+    final var emodeMaxInitLeverage = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var emodeMaxMaintLeverage = getInt32LE(_data, i);
+    final var emodeMaxMaintLeverage = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var padding = new byte[8];
     i += SerDeUtil.readArray(padding, _data, i);
@@ -340,9 +342,9 @@ public record MarginfiGroup(PublicKey _address,
     i += 32;
     metadataAdmin.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, emodeMaxInitLeverage);
+    putInt32LE(_data, i, (int) emodeMaxInitLeverage);
     i += 4;
-    putInt32LE(_data, i, emodeMaxMaintLeverage);
+    putInt32LE(_data, i, (int) emodeMaxMaintLeverage);
     i += 4;
     i += SerDeUtil.writeArrayChecked(padding, 8, _data, i);
     i += rateLimiter.write(_data, i);

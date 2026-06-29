@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param rewardAmountOwed: u64
 public record RaydiumAmmV3StatesPersonalPositionPositionRewardInfo(BigInteger growthInsideLastX64, long rewardAmountOwed) implements SerDe {
 
   public static final int BYTES = 24;

@@ -18,7 +18,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// A minimal copy of Kamino's Obligation for zero-copy deserialization
 ///
-/// @param lastUpdateSlot Kamino obligations are only good for one slot, e.g. `refresh_obligation` must have run within the
+/// @param tag: u64
+/// @param lastUpdateSlot: u64 Kamino obligations are only good for one slot, e.g. `refresh_obligation` must have run within the
 ///                       same slot as any ix that needs a non-stale obligation e.g. withdraw.
 /// @param lastUpdateStale True if the obligation is stale, which will cause various ixes like withdraw to fail. Typically
 ///                        set to true in any tx that modifies obligation balance, and set to false at the end of a
@@ -36,6 +37,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                              * PRICE_USAGE_ALLOWED = 0b_0010_0000; // 32
 /// @param owner For mrgn banks, the bank's Liquidity Vault Authority (a pda which can be derived if the bank
 ///              key is known)
+/// @param lowestReserveDepositLiquidationLtv: u64
 public record MinimalObligation(PublicKey _address,
                                 Discriminator discriminator,
                                 long tag,

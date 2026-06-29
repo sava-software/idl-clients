@@ -22,13 +22,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param version Version of lending market
-/// @param bumpSeed Bump seed for derived authority address
+/// @param version: u64 Version of lending market
+/// @param bumpSeed: u64 Bump seed for derived authority address
 /// @param lendingMarketOwner Owner authority which can add new reserves
 /// @param lendingMarketOwnerCached Temporary cache of the lending market owner, used in update_lending_market_owner
 /// @param quoteCurrency Currency market prices are quoted in
 ///                      e.g. "USD" null padded (`*b"USD\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"`) or a SPL token mint pubkey
-/// @param referralFeeBps Referral fee for the lending market, as bps out of the total protocol fee
+/// @param referralFeeBps: u16 Referral fee for the lending market, as bps out of the total protocol fee
 /// @param autodeleverageEnabled Whether the obligations on this market should be subject to auto-deleveraging after deposit
 ///                              or borrow limit is crossed.
 ///                              Besides this flag, the particular reserve's flag also needs to be enabled (logical `AND`).
@@ -38,21 +38,22 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                       Price is always refreshed if this set to 0.
 /// @param liquidationMaxDebtCloseFactorPct Percentage of the total borrowed value in an obligation available for liquidation
 /// @param insolvencyRiskUnhealthyLtvPct Minimum acceptable unhealthy LTV before max_debt_close_factor_pct becomes 100%
-/// @param minFullLiquidationValueThreshold Minimum liquidation value threshold triggering full liquidation for an obligation, in full
+/// @param minFullLiquidationValueThreshold: u64 Minimum liquidation value threshold triggering full liquidation for an obligation, in full
 ///                                         units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
-/// @param maxLiquidatableDebtMarketValueAtOnce Max allowed liquidation value in one ix call
+/// @param maxLiquidatableDebtMarketValueAtOnce: u64 Max allowed liquidation value in one ix call
 /// @param reserved0 DEPRECATED Global maximum unhealthy borrow value allowed for any obligation
-/// @param globalAllowedBorrowValue Global maximum allowed borrow value allowed for any obligation
+/// @param globalAllowedBorrowValue: u64 Global maximum allowed borrow value allowed for any obligation
 /// @param emergencyCouncil The address of the emergency council, in charge of taking emergency actions on the market (e.g., enabling emergency mode)
 /// @param reserved1 DEPRECATED Reward points multiplier per obligation type
 /// @param elevationGroups Elevation groups are used to group together reserves that have the same risk parameters and can bump the ltv and liquidation threshold
+/// @param elevationGroupPadding: u64[]
 /// @param minNetValueInObligationSf Min net value accepted to be found in a position after any lending action in an obligation (scaled by quote currency decimals)
-/// @param minValueSkipLiquidationLtvChecks Minimum value to enforce smallest ltv priority checks on the collateral reserves on liquidation
+/// @param minValueSkipLiquidationLtvChecks: u64 Minimum value to enforce smallest ltv priority checks on the collateral reserves on liquidation
 /// @param name Market name, zero-padded.
-/// @param minValueSkipLiquidationBfChecks Minimum value to enforce highest borrow factor priority checks on the debt reserves on liquidation
-/// @param individualAutodeleverageMarginCallPeriodSecs Time (in seconds) that must pass before liquidation is allowed on an obligation that has
+/// @param minValueSkipLiquidationBfChecks: u64 Minimum value to enforce highest borrow factor priority checks on the debt reserves on liquidation
+/// @param individualAutodeleverageMarginCallPeriodSecs: u64 Time (in seconds) that must pass before liquidation is allowed on an obligation that has
 ///                                                     been individually marked for auto-deleveraging.
-/// @param minInitialDepositAmount Minimum amount of deposit at creation of a reserve to prevent artificial inflation
+/// @param minInitialDepositAmount: u64 Minimum amount of deposit at creation of a reserve to prevent artificial inflation
 ///                                Note: this amount cannot be recovered, the ctoken associated are never minted
 /// @param obligationOrderExecutionEnabled Whether the obligation orders should be evaluated during liquidations.
 /// @param immutable Whether the lending market is set as immutable.
@@ -72,7 +73,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                   Note: updating or cancelling existing orders is *not* affected by this flag.
 /// @param borrowOrderExecutionEnabled Whether the existing borrow orders can be filled.
 /// @param proposerAuthority Authority that can propose creating of new reserves but cannot enable them.
-/// @param minBorrowOrderFillValue Minimum value that can be filled in a single `fill_borrow_order()` call, in full units of
+/// @param minBorrowOrderFillValue: u64 Minimum value that can be filled in a single `fill_borrow_order()` call, in full units of
 ///                                the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param withdrawTicketIssuanceEnabled Whether any new withdraw tickets can be issued (i.e. whether new requests can enter the
 ///                                      withdraw queue).
@@ -92,20 +93,20 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
 /// @param withdrawTicketCancellationEnabled Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
 ///                                          queued collateral vault back to their wallet).
-/// @param reserveRewardsMaxAprBps Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
+/// @param reserveRewardsMaxAprBps: u16 Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
 ///                                may distribute their `rewards_amount_per_slot`. `0` disables rewards on this market
 ///                                entirely (`topup_reserve_rewards` is rejected). Bounded by `FULL_BPS` (100% APR) when set.
 ///                                See ReserveConfig::rewards_amount_per_slot for the depositor-cap interaction.
-/// @param minWithdrawQueuedLiquidityValue Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
+/// @param minWithdrawQueuedLiquidityValue: u64 Minimum value that can be withdrawn in a single `withdraw_queued_liquidity()` call, in full
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
-/// @param fixedTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
+/// @param fixedTermRolloverWindowDurationSeconds: u64 A configurable time window (right before the end of a fixed debt term) during which an
 ///                                               auto-rollover into another *fixed* rate/term can happen.
 ///                                               
 ///                                               When zeroed, this rollover mode is effectively disabled.
 ///                                               Can only be enabled when Self::min_partial_rollover_value is configured.
 ///                                               
 ///                                               See FixedTermBorrowRolloverConfig.
-/// @param openTermRolloverWindowDurationSeconds A configurable time window (right before the end of a fixed debt term) during which an
+/// @param openTermRolloverWindowDurationSeconds: u64 A configurable time window (right before the end of a fixed debt term) during which an
 ///                                              auto-rollover into a *variable* (indefinite) rate/term can happen.
 ///                                              
 ///                                              When zeroed, this rollover mode is effectively disabled.
@@ -113,12 +114,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                              
 ///                                              This will typically be shorter than Self::fixed_term_rollover_window_duration_seconds,
 ///                                              acting as a fallback if a fixed reserve liquidity remains unavailable for considerable time.
-/// @param minPartialRolloverValue Minimum dollar value for a partial rollover into a different reserve.
+/// @param minPartialRolloverValue: u64 Minimum dollar value for a partial rollover into a different reserve.
 ///                                When the achievable rollover amount is below this threshold (and it's not a full rollover),
 ///                                the rollover is rejected.
 ///                                
 ///                                In full units of the quote currency (e.g. `2` means "$2").
-/// @param termBasedFullLiquidationDurationSecs The time that must pass before an entire expired debt becomes liquidatable.
+/// @param termBasedFullLiquidationDurationSecs: u64 The time that must pass before an entire expired debt becomes liquidatable.
 ///                                             
 ///                                             For example:
 ///                                             Let's assume this duration is configured as 100 seconds; then:
@@ -138,7 +139,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                             When zeroed, an entire expired debt can be liquidated right after expiration (i.e. no
 ///                                             throttling).
 /// @param permissioningAuthority If not NULL, operations encoded in permissioned_ops require a signature from this authority
-/// @param permissionedOps Bitmap of operations that require permissioning authority signature
+/// @param permissionedOps: u64 Bitmap of operations that require permissioning authority signature
+/// @param padding1: u64[]
 public record LendingMarket(PublicKey _address,
                             Discriminator discriminator,
                             long version,

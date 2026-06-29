@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Discrete price unit measured in quote lots per base lot.
 ///
+/// @param inner: u64
 public record Ticks(long inner) implements SerDe {
 
   public static final int BYTES = 8;

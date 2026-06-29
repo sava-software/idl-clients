@@ -12,12 +12,13 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param lampsFeePaid: u32
 public record LiquidationReceiverEvent(Discriminator discriminator,
                                        PublicKey marginfiAccount,
                                        PublicKey liquidationReceiver,
                                        double liquidateeAssetsSeized,
                                        double liquidateeLiabilityRepaid,
-                                       int lampsFeePaid) implements MarginfiEvent {
+                                       long lampsFeePaid) implements MarginfiEvent {
 
   public static final int BYTES = 92;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(40, 131, 224, 220, 151, 83, 24, 230);
@@ -42,7 +43,7 @@ public record LiquidationReceiverEvent(Discriminator discriminator,
     i += 8;
     final var liquidateeLiabilityRepaid = getFloat64LE(_data, i);
     i += 8;
-    final var lampsFeePaid = getInt32LE(_data, i);
+    final var lampsFeePaid = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new LiquidationReceiverEvent(discriminator,
                                         marginfiAccount,
                                         liquidationReceiver,
@@ -62,7 +63,7 @@ public record LiquidationReceiverEvent(Discriminator discriminator,
     i += 8;
     putFloat64LE(_data, i, liquidateeLiabilityRepaid);
     i += 8;
-    putInt32LE(_data, i, lampsFeePaid);
+    putInt32LE(_data, i, (int) lampsFeePaid);
     i += 4;
     return i - _offset;
   }

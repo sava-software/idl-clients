@@ -16,12 +16,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::Header Borsh variant 1.
 /// Payload type: MarketEventHeader.
 ///
+/// @param sequenceNumber: u64
+/// @param prevSequenceNumberSlot: u64
+/// @param assetId: u32
+/// @param tickSize: u32
 public record MarketEventHeader(Discriminator discriminator,
                                 long sequenceNumber,
                                 long prevSequenceNumberSlot,
                                 Symbol assetSymbol,
-                                int assetId,
-                                int tickSize,
+                                long assetId,
+                                long tickSize,
                                 int baseLotDecimals,
                                 int quoteLotDecimals,
                                 PublicKey signer,
@@ -52,9 +56,9 @@ public record MarketEventHeader(Discriminator discriminator,
     i += 8;
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var tickSize = getInt32LE(_data, i);
+    final var tickSize = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var baseLotDecimals = _data[i];
     ++i;
@@ -83,9 +87,9 @@ public record MarketEventHeader(Discriminator discriminator,
     putInt64LE(_data, i, prevSequenceNumberSlot);
     i += 8;
     i += assetSymbol.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
-    putInt32LE(_data, i, tickSize);
+    putInt32LE(_data, i, (int) tickSize);
     i += 4;
     _data[i] = (byte) baseLotDecimals;
     ++i;

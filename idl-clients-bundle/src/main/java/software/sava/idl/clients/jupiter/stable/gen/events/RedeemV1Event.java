@@ -10,6 +10,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param amount: u64
+/// @param netAmount: u64
+/// @param oraclePrice: u64
+/// @param oneToOneAmount: u64
+/// @param oracleAmount: u64
+/// @param redeemAmount: u64
 public record RedeemV1Event(Discriminator discriminator,
                             long amount,
                             long netAmount,

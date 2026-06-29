@@ -76,7 +76,7 @@ final class StakeProgramTests {
     assertArrayEquals(data, ix.data());
   }
 
-  private static byte[] discriminatorBytes(final int discriminator) {
+  private static byte[] discriminatorBytes(final long discriminator) {
     return new byte[]{
         (byte) discriminator,
         (byte) (discriminator >> 8),

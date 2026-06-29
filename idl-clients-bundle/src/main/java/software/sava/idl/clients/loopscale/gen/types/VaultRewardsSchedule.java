@@ -9,6 +9,13 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param rewardStartTime: u64
+/// @param rewardEndTime: u64
+/// @param totalEmissionsAmount: u64
+/// @param lastRewardIndexUpdateTime: u64
+/// @param emissionsClaimed: u64
+/// @param createdAt: u64
+/// @param durationStakeWeights: u32[]
 public record VaultRewardsSchedule(PublicKey rewardMint,
                                    PodDecimal totalWeightedStakeSupply,
                                    long rewardStartTime,
@@ -19,7 +26,7 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
                                    long lastRewardIndexUpdateTime,
                                    long emissionsClaimed,
                                    long createdAt,
-                                   int[] durationStakeWeights) implements SerDe {
+                                   long[] durationStakeWeights) implements SerDe {
 
   public static final int BYTES = 172;
   public static final int DURATION_STAKE_WEIGHTS_LEN = 5;
@@ -61,8 +68,8 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     i += 8;
     final var createdAt = getInt64LE(_data, i);
     i += 8;
-    final var durationStakeWeights = new int[5];
-    SerDeUtil.readArray(durationStakeWeights, _data, i);
+    final var durationStakeWeights = new long[5];
+    SerDeUtil.readUnsignedIntArray(durationStakeWeights, _data, i);
     return new VaultRewardsSchedule(rewardMint,
                                     totalWeightedStakeSupply,
                                     rewardStartTime,
@@ -96,7 +103,7 @@ public record VaultRewardsSchedule(PublicKey rewardMint,
     i += 8;
     putInt64LE(_data, i, createdAt);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(durationStakeWeights, 5, _data, i);
+    i += SerDeUtil.writeUnsignedIntArrayChecked(durationStakeWeights, 5, _data, i);
     return i - _offset;
   }
 

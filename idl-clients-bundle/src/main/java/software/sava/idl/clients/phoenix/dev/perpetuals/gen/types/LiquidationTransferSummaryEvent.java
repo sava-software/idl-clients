@@ -15,10 +15,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::LiquidationTransferSummary Borsh variant 30.
 /// Payload type: LiquidationTransferSummaryEvent.
 ///
+/// @param totalTransfers: u32
 public record LiquidationTransferSummaryEvent(Discriminator discriminator,
                                               PublicKey liquidatee,
                                               PublicKey liquidator,
-                                              int totalTransfers,
+                                              long totalTransfers,
                                               SignedQuoteLots liquidateeCollateralChange,
                                               SignedQuoteLots liquidatorCollateralChange,
                                               QuoteLots haircutCollected) implements EternalEvent {
@@ -43,7 +44,7 @@ public record LiquidationTransferSummaryEvent(Discriminator discriminator,
     i += 32;
     final var liquidator = readPubKey(_data, i);
     i += 32;
-    final var totalTransfers = getInt32LE(_data, i);
+    final var totalTransfers = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var liquidateeCollateralChange = SignedQuoteLots.read(_data, i);
     i += liquidateeCollateralChange.l();
@@ -66,7 +67,7 @@ public record LiquidationTransferSummaryEvent(Discriminator discriminator,
     i += 32;
     liquidator.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, totalTransfers);
+    putInt32LE(_data, i, (int) totalTransfers);
     i += 4;
     i += liquidateeCollateralChange.write(_data, i);
     i += liquidatorCollateralChange.write(_data, i);

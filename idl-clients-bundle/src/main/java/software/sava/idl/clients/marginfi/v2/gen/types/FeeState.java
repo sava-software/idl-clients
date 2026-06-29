@@ -24,7 +24,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param globalFeeAdmin Can modify fees
 /// @param globalFeeWallet The base wallet for all protocol fees. All SOL fees go to this wallet. All non-SOL fees go
 ///                        to the cannonical ATA of this wallet for that asset.
-/// @param bankInitFlatSolFee Flat fee assessed when a new bank is initialized, in lamports.
+/// @param placeholder0: u64
+/// @param bankInitFlatSolFee: u32 Flat fee assessed when a new bank is initialized, in lamports.
 ///                           * In SOL, in native decimals.
 /// @param liquidationMaxFee Liquidators can claim at this premium, when liquidating an asset in receivership
 ///                          liquidation, e.g. (1 + this) * amount repaid >= asset seized
@@ -35,9 +36,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                       * A percentage
 /// @param panicState When the global admin pauses the protocol in the event of an emergency, information about
 ///                   the pause duration will be stored here and propagated to groups.
-/// @param liquidationFlatSolFee Flat fee assessed for insurance/program use when a liquidation is executed
+/// @param placeholder1: u64
+/// @param liquidationFlatSolFee: u32 Flat fee assessed for insurance/program use when a liquidation is executed
 ///                              * In SOL, in native decimals.
-/// @param orderInitFlatSolFee Flat fee assessed for preventing spam use when creating an order
+/// @param orderInitFlatSolFee: u32 Flat fee assessed for preventing spam use when creating an order
 ///                            * In SOL, in native decimals.
 /// @param orderExecutionMaxFee Take-profit Orders can be executed at this premium, which Keepers are allowed to keep (no
 ///                             pun intended) e.g. (1 + this) * amount repaid >= asset seized
@@ -48,7 +50,7 @@ public record FeeState(PublicKey _address,
                        PublicKey globalFeeAdmin,
                        PublicKey globalFeeWallet,
                        long placeholder0,
-                       int bankInitFlatSolFee,
+                       long bankInitFlatSolFee,
                        int bumpSeed,
                        byte[] padding0,
                        WrappedI80F48 liquidationMaxFee,
@@ -56,8 +58,8 @@ public record FeeState(PublicKey _address,
                        WrappedI80F48 programFeeRate,
                        PanicState panicState,
                        long placeholder1,
-                       int liquidationFlatSolFee,
-                       int orderInitFlatSolFee,
+                       long liquidationFlatSolFee,
+                       long orderInitFlatSolFee,
                        WrappedI80F48 orderExecutionMaxFee,
                        byte[] reserved1) implements SerDe {
 
@@ -104,9 +106,9 @@ public record FeeState(PublicKey _address,
     return Filter.createMemCompFilter(PLACEHOLDER_0_OFFSET, _data);
   }
 
-  public static Filter createBankInitFlatSolFeeFilter(final int bankInitFlatSolFee) {
+  public static Filter createBankInitFlatSolFeeFilter(final long bankInitFlatSolFee) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, bankInitFlatSolFee);
+    putInt32LE(_data, 0, (int) bankInitFlatSolFee);
     return Filter.createMemCompFilter(BANK_INIT_FLAT_SOL_FEE_OFFSET, _data);
   }
 
@@ -136,15 +138,15 @@ public record FeeState(PublicKey _address,
     return Filter.createMemCompFilter(PLACEHOLDER_1_OFFSET, _data);
   }
 
-  public static Filter createLiquidationFlatSolFeeFilter(final int liquidationFlatSolFee) {
+  public static Filter createLiquidationFlatSolFeeFilter(final long liquidationFlatSolFee) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, liquidationFlatSolFee);
+    putInt32LE(_data, 0, (int) liquidationFlatSolFee);
     return Filter.createMemCompFilter(LIQUIDATION_FLAT_SOL_FEE_OFFSET, _data);
   }
 
-  public static Filter createOrderInitFlatSolFeeFilter(final int orderInitFlatSolFee) {
+  public static Filter createOrderInitFlatSolFeeFilter(final long orderInitFlatSolFee) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, orderInitFlatSolFee);
+    putInt32LE(_data, 0, (int) orderInitFlatSolFee);
     return Filter.createMemCompFilter(ORDER_INIT_FLAT_SOL_FEE_OFFSET, _data);
   }
 
@@ -180,7 +182,7 @@ public record FeeState(PublicKey _address,
     i += 32;
     final var placeholder0 = getInt64LE(_data, i);
     i += 8;
-    final var bankInitFlatSolFee = getInt32LE(_data, i);
+    final var bankInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var bumpSeed = _data[i] & 0xFF;
     ++i;
@@ -196,9 +198,9 @@ public record FeeState(PublicKey _address,
     i += panicState.l();
     final var placeholder1 = getInt64LE(_data, i);
     i += 8;
-    final var liquidationFlatSolFee = getInt32LE(_data, i);
+    final var liquidationFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var orderInitFlatSolFee = getInt32LE(_data, i);
+    final var orderInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var orderExecutionMaxFee = WrappedI80F48.read(_data, i);
     i += orderExecutionMaxFee.l();
@@ -235,7 +237,7 @@ public record FeeState(PublicKey _address,
     i += 32;
     putInt64LE(_data, i, placeholder0);
     i += 8;
-    putInt32LE(_data, i, bankInitFlatSolFee);
+    putInt32LE(_data, i, (int) bankInitFlatSolFee);
     i += 4;
     _data[i] = (byte) bumpSeed;
     ++i;
@@ -246,9 +248,9 @@ public record FeeState(PublicKey _address,
     i += panicState.write(_data, i);
     putInt64LE(_data, i, placeholder1);
     i += 8;
-    putInt32LE(_data, i, liquidationFlatSolFee);
+    putInt32LE(_data, i, (int) liquidationFlatSolFee);
     i += 4;
-    putInt32LE(_data, i, orderInitFlatSolFee);
+    putInt32LE(_data, i, (int) orderInitFlatSolFee);
     i += 4;
     i += orderExecutionMaxFee.write(_data, i);
     i += SerDeUtil.writeArrayChecked(reserved1, 32, _data, i);

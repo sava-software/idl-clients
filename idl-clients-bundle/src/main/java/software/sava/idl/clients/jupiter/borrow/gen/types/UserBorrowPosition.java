@@ -21,6 +21,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// User borrow position
 ///
+/// @param amount: u64
+/// @param debtCeiling: u64
+/// @param lastUpdate: u64
+/// @param expandPct: u16
+/// @param expandDuration: u32
+/// @param baseDebtCeiling: u64
+/// @param maxDebtCeiling: u64
 public record UserBorrowPosition(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey protocol,
@@ -30,7 +37,7 @@ public record UserBorrowPosition(PublicKey _address,
                                  long debtCeiling,
                                  long lastUpdate,
                                  int expandPct,
-                                 int expandDuration,
+                                 long expandDuration,
                                  long baseDebtCeiling,
                                  long maxDebtCeiling,
                                  int status) implements SerDe {
@@ -89,9 +96,9 @@ public record UserBorrowPosition(PublicKey _address,
     return Filter.createMemCompFilter(EXPAND_PCT_OFFSET, _data);
   }
 
-  public static Filter createExpandDurationFilter(final int expandDuration) {
+  public static Filter createExpandDurationFilter(final long expandDuration) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, expandDuration);
+    putInt32LE(_data, 0, (int) expandDuration);
     return Filter.createMemCompFilter(EXPAND_DURATION_OFFSET, _data);
   }
 
@@ -145,7 +152,7 @@ public record UserBorrowPosition(PublicKey _address,
     i += 8;
     final var expandPct = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var expandDuration = getInt32LE(_data, i);
+    final var expandDuration = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var baseDebtCeiling = getInt64LE(_data, i);
     i += 8;
@@ -184,7 +191,7 @@ public record UserBorrowPosition(PublicKey _address,
     i += 8;
     putInt16LE(_data, i, expandPct);
     i += 2;
-    putInt32LE(_data, i, expandDuration);
+    putInt32LE(_data, i, (int) expandDuration);
     i += 4;
     putInt64LE(_data, i, baseDebtCeiling);
     i += 8;

@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::OrderFilled Borsh variant 3.
 /// Payload type: OrderFilledEvent.
 ///
+/// @param orderSequenceNumber: u64
 public record OrderFilledEvent(Discriminator discriminator,
                                long orderSequenceNumber,
                                Side side,

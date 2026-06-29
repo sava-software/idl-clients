@@ -6,7 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-public record MarketFeeConfig(int defaultTakerFeeMicro, int defaultMakerFeeMicro) implements SerDe {
+/// @param defaultTakerFeeMicro: u32
+public record MarketFeeConfig(long defaultTakerFeeMicro, int defaultMakerFeeMicro) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -18,7 +19,7 @@ public record MarketFeeConfig(int defaultTakerFeeMicro, int defaultMakerFeeMicro
       return null;
     }
     int i = _offset;
-    final var defaultTakerFeeMicro = getInt32LE(_data, i);
+    final var defaultTakerFeeMicro = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var defaultMakerFeeMicro = getInt32LE(_data, i);
     return new MarketFeeConfig(defaultTakerFeeMicro, defaultMakerFeeMicro);
@@ -27,7 +28,7 @@ public record MarketFeeConfig(int defaultTakerFeeMicro, int defaultMakerFeeMicro
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, defaultTakerFeeMicro);
+    putInt32LE(_data, i, (int) defaultTakerFeeMicro);
     i += 4;
     putInt32LE(_data, i, defaultMakerFeeMicro);
     i += 4;

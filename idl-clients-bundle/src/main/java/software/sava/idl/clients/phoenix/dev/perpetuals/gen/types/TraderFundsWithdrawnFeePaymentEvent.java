@@ -13,6 +13,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderFundsWithdrawnFeePayment Borsh variant 43.
 /// Payload type: TraderFundsWithdrawnFeePaymentEvent.
 ///
+/// @param fee: u64
+/// @param traderSequenceNumber: u64
+/// @param traderPrevSequenceNumberSlot: u64
+/// @param withdrawQueueSequenceNumber: u64
+/// @param withdrawQueuePrevSequenceNumberSlot: u64
 public record TraderFundsWithdrawnFeePaymentEvent(Discriminator discriminator,
                                                   PublicKey trader,
                                                   PublicKey authority,

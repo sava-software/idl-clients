@@ -217,6 +217,7 @@ public final class PythLazerSolanaContractProgram {
   ///
   /// @param instructionsSysvarKey (e.g. in `sysvar::instructions::load_instruction_at_checked`).
   ///                              This account is not usable with anchor's `Program` account type because it's not executable.
+  /// @param ed25519InstructionIndex: u16
   public static Instruction verifyMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey payerKey,
@@ -252,6 +253,7 @@ public final class PythLazerSolanaContractProgram {
   /// - `message_offset` is the offset of the signed message within the
   /// input data for the current instruction.
   ///
+  /// @param ed25519InstructionIndex: u16
   public static Instruction verifyMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
                                           final List<AccountMeta> keys,
                                           final byte[] messageData,
@@ -267,6 +269,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
+  /// @param ed25519InstructionIndex: u16
   public record VerifyMessageIxData(Discriminator discriminator,
                                     byte[] messageData,
                                     int ed25519InstructionIndex,

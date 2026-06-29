@@ -24,14 +24,14 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param owner The key of the account that is authorized to stake into/withdraw from this Escrow.
 /// @param bump Bump seed.
 /// @param tokens The token account holding the escrow tokens.
-/// @param amount Amount of tokens staked.
+/// @param amount: u64 Amount of tokens staked.
 /// @param escrowStartedAt When the Escrow::owner started their escrow.
 /// @param escrowEndsAt When the escrow unlocks; i.e. the Escrow::owner is scheduled to be allowed to withdraw their tokens.
 /// @param voteDelegate Account that is authorized to vote on behalf of this Escrow.
 ///                     Defaults to the Escrow::owner.
 /// @param isMaxLock Max lock
-/// @param partialUnstakingAmount total amount of partial unstaking amount
-/// @param padding padding for further use
+/// @param partialUnstakingAmount: u64 total amount of partial unstaking amount
+/// @param padding: u64 padding for further use
 /// @param buffers buffer for further use
 public record Escrow(PublicKey _address,
                      Discriminator discriminator,

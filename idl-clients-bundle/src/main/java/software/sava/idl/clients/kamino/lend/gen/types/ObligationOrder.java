@@ -37,14 +37,14 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///                               - when `opportunity_type == 1 (DeleverageAllDebtAmount)`:
 ///                               The only allowed value in this case is Fraction::MAX (to emphasize that *all* debt
 ///                               should be repaid).
-/// @param minExecutionBonusBps A *minimum* additional fraction of collateral transferred to the liquidator, in bps.
+/// @param minExecutionBonusBps: u16 A *minimum* additional fraction of collateral transferred to the liquidator, in bps.
 ///                             
 ///                             The minimum bonus is applied exactly when the Self::condition_threshold_sf is met, and
 ///                             grows linearly towards the Self::max_execution_bonus_bps.
 ///                             
 ///                             Example: a value of `50` here means 50bps == 0.5% bonus for an "LTV > 65%" order, when
 ///                             executed precisely at the moment LTV exceeds 65%.
-/// @param maxExecutionBonusBps A *maximum* additional fraction of collateral transferred to the liquidator, in bps.
+/// @param maxExecutionBonusBps: u16 A *maximum* additional fraction of collateral transferred to the liquidator, in bps.
 ///                             
 ///                             The maximum bonus is applied at the relevant "extreme" state of the obligation, i.e.:
 ///                             - for a stop-loss condition, it is a point at which the obligation becomes liquidatable;

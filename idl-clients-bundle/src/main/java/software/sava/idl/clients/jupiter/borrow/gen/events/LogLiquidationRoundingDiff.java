@@ -10,6 +10,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultId: u16
+/// @param actualDebtAmt: u64
+/// @param debtAmount: u64
+/// @param diff: u64
 public record LogLiquidationRoundingDiff(Discriminator discriminator,
                                          int vaultId,
                                          long actualDebtAmt,

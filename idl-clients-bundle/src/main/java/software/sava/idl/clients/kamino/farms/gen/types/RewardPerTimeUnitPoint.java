@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param tsStart: u64
+/// @param rewardPerTimeUnit: u64
 public record RewardPerTimeUnitPoint(long tsStart, long rewardPerTimeUnit) implements SerDe {
 
   public static final int BYTES = 16;

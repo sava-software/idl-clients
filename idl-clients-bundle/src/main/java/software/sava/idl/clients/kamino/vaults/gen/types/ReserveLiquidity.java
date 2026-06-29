@@ -19,18 +19,18 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param mintPubkey Reserve liquidity mint address
 /// @param supplyVault Reserve liquidity supply address
 /// @param feeVault Reserve liquidity fee collection address
-/// @param totalAvailableAmount Total reserve liquidity available.
+/// @param totalAvailableAmount: u64 Total reserve liquidity available.
 ///                             
 ///                             Note: not all of this liquidity can be freely used for any purpose. Production code should
 ///                             use the specialized getters - see e.g. Reserve::total_available_liquidity_amount(),
 ///                             Reserve::freely_available_liquidity_amount().
 /// @param borrowedAmountSf Reserve liquidity borrowed (scaled fraction)
 /// @param marketPriceSf Reserve liquidity market price in quote currency (scaled fraction)
-/// @param marketPriceLastUpdatedTs Unix timestamp of the market price (from the oracle)
-/// @param mintDecimals Reserve liquidity mint decimals
-/// @param depositLimitCrossedTimestamp Timestamp when the last refresh reserve detected that the liquidity amount is above the deposit cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
+/// @param marketPriceLastUpdatedTs: u64 Unix timestamp of the market price (from the oracle)
+/// @param mintDecimals: u64 Reserve liquidity mint decimals
+/// @param depositLimitCrossedTimestamp: u64 Timestamp when the last refresh reserve detected that the liquidity amount is above the deposit cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
 ///                                     If the threshold is not crossed, then the timestamp is set to 0
-/// @param borrowLimitCrossedTimestamp Timestamp when the last refresh reserve detected that the borrowed amount is above the borrow cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
+/// @param borrowLimitCrossedTimestamp: u64 Timestamp when the last refresh reserve detected that the borrowed amount is above the borrow cap. When this threshold is crossed, then redemptions (auto-deleverage) are enabled.
 ///                                    If the threshold is not crossed, then the timestamp is set to 0
 /// @param cumulativeBorrowRateBsf Reserve liquidity cumulative borrow rate (scaled fraction)
 /// @param accumulatedProtocolFeesSf Reserve cumulative protocol fees (scaled fraction)
@@ -38,13 +38,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param pendingReferrerFeesSf Reserve pending referrer fees, to be claimed in refresh_obligation by referrer or protocol (scaled fraction)
 /// @param absoluteReferralRateSf Reserve referrer fee absolute rate calculated at each refresh_reserve operation (scaled fraction)
 /// @param tokenProgram Token program of the liquidity mint
-/// @param rewardsAmountAvailable Reserve rewards budget remaining for distribution.
+/// @param rewardsAmountAvailable: u64 Reserve rewards budget remaining for distribution.
 ///                               
 ///                               Tokens are deposited via `topup_reserve_rewards` and increase this counter (without
 ///                               touching Self::total_available_amount). On every `refresh_reserve`, up to
 ///                               `rewards_amount_per_slot * slots_elapsed` tokens are moved from this counter into
 ///                               Self::total_available_amount, inflating the cToken exchange rate, capped by the
 ///                               market-level `reserve_rewards_max_apr_pct` cap.
+/// @param padding2: u64[]
 public record ReserveLiquidity(PublicKey mintPubkey,
                                PublicKey supplyVault,
                                PublicKey feeVault,

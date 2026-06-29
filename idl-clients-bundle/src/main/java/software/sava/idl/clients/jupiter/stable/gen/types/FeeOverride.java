@@ -9,6 +9,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param mintFeeRate: u16
+/// @param redeemFeeRate: u16
 public record FeeOverride(PublicKey mint,
                           int mintFeeRate,
                           int redeemFeeRate,

@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Transfer payload describing how many base lots of an asset should move from the liquidatee to the liquidator.
 ///
+/// @param assetId: u64
 public record TransferRequest(long assetId, BaseLots amount) implements SerDe {
 
   public static final int BYTES = 16;

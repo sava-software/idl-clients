@@ -8,6 +8,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param vaultSupplyExchangePrice: u64
+/// @param vaultBorrowExchangePrice: u64
+/// @param liquiditySupplyExchangePrice: u64
+/// @param liquidityBorrowExchangePrice: u64
 public record LogUpdateExchangePrices(Discriminator discriminator,
                                       long vaultSupplyExchangePrice,
                                       long vaultBorrowExchangePrice,

@@ -26,11 +26,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// (i.e. no implicit padding). This is important because `Pubkey` has alignment=1 while `u64`
 /// has alignment=8; using plain `repr(C)` would insert padding before the first `u64`.
 ///
+/// @param lendingId: u16
 /// @param decimals number of decimals for the fToken, same as underlying mint
 /// @param rewardsRateModel PDA of rewards rate model (LRRM)
-/// @param liquidityExchangePrice exchange price in the liquidity layer (no rewards)
-/// @param tokenExchangePrice exchange price between fToken and underlying (with rewards)
-/// @param lastUpdateTimestamp unix timestamp when exchange prices were updated last
+/// @param liquidityExchangePrice: u64 exchange price in the liquidity layer (no rewards)
+/// @param tokenExchangePrice: u64 exchange price between fToken and underlying (with rewards)
+/// @param lastUpdateTimestamp: u64 unix timestamp when exchange prices were updated last
 public record Lending(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey mint,

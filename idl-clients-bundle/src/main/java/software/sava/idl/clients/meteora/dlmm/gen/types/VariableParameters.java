@@ -11,15 +11,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Parameters that changes based on dynamic of the market
 ///
-/// @param volatilityAccumulator Volatility accumulator measure the number of bin crossed since reference bin ID. Normally (without filter period taken into consideration), reference bin ID is the active bin of last swap.
+/// @param volatilityAccumulator: u32 Volatility accumulator measure the number of bin crossed since reference bin ID. Normally (without filter period taken into consideration), reference bin ID is the active bin of last swap.
 ///                              It affects the variable fee rate
-/// @param volatilityReference Volatility reference is decayed volatility accumulator. It is always <= volatility_accumulator
+/// @param volatilityReference: u32 Volatility reference is decayed volatility accumulator. It is always <= volatility_accumulator
 /// @param indexReference Active bin id of last swap.
 /// @param padding Padding for bytemuck safe alignment
 /// @param lastUpdateTimestamp Last timestamp the variable parameters was updated
 /// @param padding1 Padding for bytemuck safe alignment
-public record VariableParameters(int volatilityAccumulator,
-                                 int volatilityReference,
+public record VariableParameters(long volatilityAccumulator,
+                                 long volatilityReference,
                                  int indexReference,
                                  byte[] padding,
                                  long lastUpdateTimestamp,
@@ -41,9 +41,9 @@ public record VariableParameters(int volatilityAccumulator,
       return null;
     }
     int i = _offset;
-    final var volatilityAccumulator = getInt32LE(_data, i);
+    final var volatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var volatilityReference = getInt32LE(_data, i);
+    final var volatilityReference = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var indexReference = getInt32LE(_data, i);
     i += 4;
@@ -64,9 +64,9 @@ public record VariableParameters(int volatilityAccumulator,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, volatilityAccumulator);
+    putInt32LE(_data, i, (int) volatilityAccumulator);
     i += 4;
-    putInt32LE(_data, i, volatilityReference);
+    putInt32LE(_data, i, (int) volatilityReference);
     i += 4;
     putInt32LE(_data, i, indexReference);
     i += 4;

@@ -16,13 +16,13 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param mint _dev mint address
-/// @param startTvl _dev tvl below which rewards rate is 0. If current TVL is below this value, triggering `update_rate()` on the fToken
+/// @param startTvl: u64 _dev tvl below which rewards rate is 0. If current TVL is below this value, triggering `update_rate()` on the fToken
 ///                 might bring the total TVL above this cut-off.
-/// @param duration _dev for how long current rewards should run
-/// @param startTime _dev when current rewards got started
-/// @param yearlyReward _dev current annualized reward based on input params (duration, rewardAmount)
-/// @param nextDuration _dev Duration for the next rewards phase
-/// @param nextRewardAmount _dev Amount of rewards for the next phase
+/// @param duration: u64 _dev for how long current rewards should run
+/// @param startTime: u64 _dev when current rewards got started
+/// @param yearlyReward: u64 _dev current annualized reward based on input params (duration, rewardAmount)
+/// @param nextDuration: u64 _dev Duration for the next rewards phase
+/// @param nextRewardAmount: u64 _dev Amount of rewards for the next phase
 public record LendingRewardsRateModel(PublicKey _address,
                                       Discriminator discriminator,
                                       PublicKey mint,

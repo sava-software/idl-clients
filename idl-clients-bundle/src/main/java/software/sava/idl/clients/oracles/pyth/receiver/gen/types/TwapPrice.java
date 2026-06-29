@@ -12,7 +12,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// The time weighted average price & conf for a feed over the window start_time, end_time.
 /// This type is used to persist the calculated TWAP in TwapUpdate accounts on Solana.
 ///
-/// @param downSlotsRatio Ratio out of 1_000_000, where a value of 1_000_000 represents
+/// @param conf: u64
+/// @param downSlotsRatio: u32 Ratio out of 1_000_000, where a value of 1_000_000 represents
 ///                       all slots were missed and 0 represents no slots were missed.
 public record TwapPrice(byte[] feedId,
                         long startTime,
@@ -20,7 +21,7 @@ public record TwapPrice(byte[] feedId,
                         long price,
                         long conf,
                         int exponent,
-                        int downSlotsRatio) implements SerDe {
+                        long downSlotsRatio) implements SerDe {
 
   public static final int BYTES = 72;
   public static final int FEED_ID_LEN = 32;
@@ -50,7 +51,7 @@ public record TwapPrice(byte[] feedId,
     i += 8;
     final var exponent = getInt32LE(_data, i);
     i += 4;
-    final var downSlotsRatio = getInt32LE(_data, i);
+    final var downSlotsRatio = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new TwapPrice(feedId,
                          startTime,
                          endTime,
@@ -74,7 +75,7 @@ public record TwapPrice(byte[] feedId,
     i += 8;
     putInt32LE(_data, i, exponent);
     i += 4;
-    putInt32LE(_data, i, downSlotsRatio);
+    putInt32LE(_data, i, (int) downSlotsRatio);
     i += 4;
     return i - _offset;
   }

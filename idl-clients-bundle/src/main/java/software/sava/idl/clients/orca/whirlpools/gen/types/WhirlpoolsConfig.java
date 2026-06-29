@@ -15,6 +15,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param defaultProtocolFeeRate: u16
+/// @param featureFlags: u16
 public record WhirlpoolsConfig(PublicKey _address,
                                Discriminator discriminator,
                                PublicKey feeAuthority,

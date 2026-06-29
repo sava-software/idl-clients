@@ -17,9 +17,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::MarketSummary Borsh variant 8.
 /// Payload type: MarketSummaryEvent.
 ///
+/// @param assetId: u32
 public record MarketSummaryEvent(Discriminator discriminator,
                                  Symbol assetSymbol,
-                                 int assetId,
+                                 long assetId,
                                  BaseLots openInterest,
                                  SignedQuoteLots totalMakerQuoteLotFees,
                                  QuoteLots totalTakerQuoteLotFees,
@@ -41,7 +42,7 @@ public record MarketSummaryEvent(Discriminator discriminator,
     int i = _offset + discriminator.length();
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var openInterest = BaseLots.read(_data, i);
     i += openInterest.l();
@@ -80,7 +81,7 @@ public record MarketSummaryEvent(Discriminator discriminator,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
     i += assetSymbol.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += openInterest.write(_data, i);
     i += SerDeUtil.writeOptional(1, totalMakerQuoteLotFees, _data, i);

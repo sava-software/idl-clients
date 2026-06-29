@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param supply: u64
 public record MasterEditionV2(PublicKey _address,
                               Key key,
                               long supply,

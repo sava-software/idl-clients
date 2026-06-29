@@ -5,7 +5,6 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.util.OptionalInt;
 import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -13,9 +12,9 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 
 public record QueueSetConfigsParams(PublicKey authority,
-                                    OptionalInt reward,
+                                    OptionalLong reward,
                                     OptionalLong nodeTimeout,
-                                    OptionalInt oracleFeeProportionBps) implements SerDe {
+                                    OptionalLong oracleFeeProportionBps) implements SerDe {
 
   public static final int AUTHORITY_OFFSET = 1;
 
@@ -33,13 +32,13 @@ public record QueueSetConfigsParams(PublicKey authority,
       authority = readPubKey(_data, i);
       i += 32;
     }
-    final OptionalInt reward;
+    final OptionalLong reward;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      reward = OptionalInt.empty();
+      reward = OptionalLong.empty();
       ++i;
     } else {
       ++i;
-      reward = OptionalInt.of(getInt32LE(_data, i));
+      reward = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
       i += 4;
     }
     final OptionalLong nodeTimeout;
@@ -51,12 +50,12 @@ public record QueueSetConfigsParams(PublicKey authority,
       nodeTimeout = OptionalLong.of(getInt64LE(_data, i));
       i += 8;
     }
-    final OptionalInt oracleFeeProportionBps;
+    final OptionalLong oracleFeeProportionBps;
     if (SerDeUtil.isAbsent(1, _data, i)) {
-      oracleFeeProportionBps = OptionalInt.empty();
+      oracleFeeProportionBps = OptionalLong.empty();
     } else {
       ++i;
-      oracleFeeProportionBps = OptionalInt.of(getInt32LE(_data, i));
+      oracleFeeProportionBps = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
     }
     return new QueueSetConfigsParams(authority,
                                      reward,
@@ -68,9 +67,9 @@ public record QueueSetConfigsParams(PublicKey authority,
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
     i += SerDeUtil.writeOptional(1, authority, _data, i);
-    i += SerDeUtil.writeOptional(1, reward, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, reward, _data, i);
     i += SerDeUtil.writeOptional(1, nodeTimeout, _data, i);
-    i += SerDeUtil.writeOptional(1, oracleFeeProportionBps, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, oracleFeeProportionBps, _data, i);
     return i - _offset;
   }
 

@@ -16,6 +16,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param nonce: u64
+/// @param startTime: u64
+/// @param weightMatrix: u32[][]
+/// @param ltvMatrix: u32[][]
+/// @param lqtMatrix: u32[][]
 public record Loan(PublicKey _address,
                    Discriminator discriminator,
                    int version,
@@ -26,9 +31,9 @@ public record Loan(PublicKey _address,
                    long startTime,
                    Ledger[] ledgers,
                    CollateralData[] collateral,
-                   int[][] weightMatrix,
-                   int[][] ltvMatrix,
-                   int[][] lqtMatrix) implements SerDe {
+                   long[][] weightMatrix,
+                   long[][] ltvMatrix,
+                   long[][] lqtMatrix) implements SerDe {
 
   public static final int BYTES = 1634;
   public static final int LEDGERS_LEN = 5;
@@ -117,12 +122,12 @@ public record Loan(PublicKey _address,
     i += SerDeUtil.readArray(ledgers, Ledger::read, _data, i);
     final var collateral = new CollateralData[5];
     i += SerDeUtil.readArray(collateral, CollateralData::read, _data, i);
-    final var weightMatrix = new int[5][5];
-    i += SerDeUtil.readArray(weightMatrix, _data, i);
-    final var ltvMatrix = new int[5][5];
-    i += SerDeUtil.readArray(ltvMatrix, _data, i);
-    final var lqtMatrix = new int[5][5];
-    SerDeUtil.readArray(lqtMatrix, _data, i);
+    final var weightMatrix = new long[5][5];
+    i += SerDeUtil.readUnsignedIntArray(weightMatrix, _data, i);
+    final var ltvMatrix = new long[5][5];
+    i += SerDeUtil.readUnsignedIntArray(ltvMatrix, _data, i);
+    final var lqtMatrix = new long[5][5];
+    SerDeUtil.readUnsignedIntArray(lqtMatrix, _data, i);
     return new Loan(_address,
                     discriminator,
                     version,

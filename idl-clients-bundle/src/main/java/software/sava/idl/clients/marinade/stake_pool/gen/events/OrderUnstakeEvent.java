@@ -12,6 +12,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param ticketEpoch: u64
+/// @param circulatingTicketBalance: u64
+/// @param circulatingTicketCount: u64
+/// @param userMsolBalance: u64
+/// @param burnedMsolAmount: u64
+/// @param solAmount: u64
+/// @param feeBpCents: u32
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record OrderUnstakeEvent(Discriminator discriminator,
                                 PublicKey state,
                                 long ticketEpoch,
@@ -22,7 +31,7 @@ public record OrderUnstakeEvent(Discriminator discriminator,
                                 long userMsolBalance,
                                 long burnedMsolAmount,
                                 long solAmount,
-                                int feeBpCents,
+                                long feeBpCents,
                                 long totalVirtualStakedLamports,
                                 long msolSupply) implements MarinadeFinanceEvent {
 
@@ -66,7 +75,7 @@ public record OrderUnstakeEvent(Discriminator discriminator,
     i += 8;
     final var solAmount = getInt64LE(_data, i);
     i += 8;
-    final var feeBpCents = getInt32LE(_data, i);
+    final var feeBpCents = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var totalVirtualStakedLamports = getInt64LE(_data, i);
     i += 8;
@@ -107,7 +116,7 @@ public record OrderUnstakeEvent(Discriminator discriminator,
     i += 8;
     putInt64LE(_data, i, solAmount);
     i += 8;
-    putInt32LE(_data, i, feeBpCents);
+    putInt32LE(_data, i, (int) feeBpCents);
     i += 4;
     putInt64LE(_data, i, totalVirtualStakedLamports);
     i += 8;

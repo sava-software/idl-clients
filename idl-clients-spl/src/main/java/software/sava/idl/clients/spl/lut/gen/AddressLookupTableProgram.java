@@ -37,6 +37,7 @@ public final class AddressLookupTableProgram {
     );
   }
 
+  /// @param recentSlot: u64
   public static Instruction createLookupTable(final AccountMeta invokedAddressLookupTableProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey addressKey,
@@ -58,6 +59,7 @@ public final class AddressLookupTableProgram {
     );
   }
 
+  /// @param recentSlot: u64
   public static Instruction createLookupTable(final AccountMeta invokedAddressLookupTableProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long recentSlot,
@@ -71,7 +73,8 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record CreateLookupTableIxData(int discriminator,
+  /// @param recentSlot: u64
+  public record CreateLookupTableIxData(long discriminator,
                                         long recentSlot,
                                         int bump) implements SerDe {  
 
@@ -91,7 +94,7 @@ public final class AddressLookupTableProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var recentSlot = getInt64LE(_data, i);
       i += 8;
@@ -102,7 +105,7 @@ public final class AddressLookupTableProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       putInt64LE(_data, i, recentSlot);
       i += 8;
@@ -145,7 +148,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record FreezeLookupTableIxData(int discriminator) implements SerDe {  
+  public record FreezeLookupTableIxData(long discriminator) implements SerDe {  
 
     public static FreezeLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -159,14 +162,14 @@ public final class AddressLookupTableProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new FreezeLookupTableIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -216,7 +219,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record ExtendLookupTableIxData(int discriminator, PublicKey[] addresses) implements SerDe {  
+  public record ExtendLookupTableIxData(long discriminator, PublicKey[] addresses) implements SerDe {  
 
     public static ExtendLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -231,7 +234,7 @@ public final class AddressLookupTableProgram {
       }
 
       int i = _offset;
-      final var discriminator = getInt32LE(_data, i);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var addresses = SerDeUtil.readPublicKeyVector(8, _data, i);
       return new ExtendLookupTableIxData(discriminator, addresses);
@@ -240,7 +243,7 @@ public final class AddressLookupTableProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       i += SerDeUtil.writeVector(8, addresses, _data, i);
       return i - _offset;
@@ -280,7 +283,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record DeactivateLookupTableIxData(int discriminator) implements SerDe {  
+  public record DeactivateLookupTableIxData(long discriminator) implements SerDe {  
 
     public static DeactivateLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -294,14 +297,14 @@ public final class AddressLookupTableProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new DeactivateLookupTableIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }
@@ -344,7 +347,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record CloseLookupTableIxData(int discriminator) implements SerDe {  
+  public record CloseLookupTableIxData(long discriminator) implements SerDe {  
 
     public static CloseLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -358,14 +361,14 @@ public final class AddressLookupTableProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = getInt32LE(_data, _offset);
+      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new CloseLookupTableIxData(discriminator);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset;
-      putInt32LE(_data, i, discriminator);
+      putInt32LE(_data, i, (int) discriminator);
       i += 4;
       return i - _offset;
     }

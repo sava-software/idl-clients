@@ -22,7 +22,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param voter The voter.
 /// @param bump Bump seed
 /// @param side The side of the vote taken.
-/// @param votingPower The number of votes this vote holds.
+/// @param votingPower: u64 The number of votes this vote holds.
 /// @param claimed Flag to check whether voter has claim the reward or not
 /// @param buffers buffers for future use
 public record Vote(PublicKey _address,

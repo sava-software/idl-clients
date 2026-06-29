@@ -86,13 +86,15 @@ public final class VaultsProgram {
   }
 
   /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param branchId: u32
   public static Instruction initBranch(final AccountMeta invokedVaultsProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey signerKey,
                                        final PublicKey vaultConfigKey,
                                        final PublicKey branchKey,
                                        final int vaultId,
-                                       final int branchId) {
+                                       final long branchId) {
     final var keys = initBranchKeys(
       solanaAccounts,
       signerKey,
@@ -102,20 +104,24 @@ public final class VaultsProgram {
     return initBranch(invokedVaultsProgramMeta, keys, vaultId, branchId);
   }
 
+  /// @param vaultId: u16
+  /// @param branchId: u32
   public static Instruction initBranch(final AccountMeta invokedVaultsProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int vaultId,
-                                       final int branchId) {
+                                       final long branchId) {
     final byte[] _data = new byte[14];
     int i = INIT_BRANCH_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, vaultId);
     i += 2;
-    putInt32LE(_data, i, branchId);
+    putInt32LE(_data, i, (int) branchId);
 
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
-  public record InitBranchIxData(Discriminator discriminator, int vaultId, int branchId) implements SerDe {  
+  /// @param vaultId: u16
+  /// @param branchId: u32
+  public record InitBranchIxData(Discriminator discriminator, int vaultId, long branchId) implements SerDe {  
 
     public static InitBranchIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -134,7 +140,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.length();
       final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var branchId = getInt32LE(_data, i);
+      final var branchId = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new InitBranchIxData(discriminator, vaultId, branchId);
     }
 
@@ -143,7 +149,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, vaultId);
       i += 2;
-      putInt32LE(_data, i, branchId);
+      putInt32LE(_data, i, (int) branchId);
       i += 4;
       return i - _offset;
     }
@@ -185,6 +191,8 @@ public final class VaultsProgram {
   }
 
   /// @param vaultStateKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param nextPositionId: u32
   public static Instruction initPosition(final AccountMeta invokedVaultsProgramMeta,
                                          final SolanaAccounts solanaAccounts,
                                          final PublicKey signerKey,
@@ -197,7 +205,7 @@ public final class VaultsProgram {
                                          final PublicKey tokenProgramKey,
                                          final PublicKey metadataProgramKey,
                                          final int vaultId,
-                                         final int nextPositionId) {
+                                         final long nextPositionId) {
     final var keys = initPositionKeys(
       solanaAccounts,
       signerKey,
@@ -213,20 +221,24 @@ public final class VaultsProgram {
     return initPosition(invokedVaultsProgramMeta, keys, vaultId, nextPositionId);
   }
 
+  /// @param vaultId: u16
+  /// @param nextPositionId: u32
   public static Instruction initPosition(final AccountMeta invokedVaultsProgramMeta,
                                          final List<AccountMeta> keys,
                                          final int vaultId,
-                                         final int nextPositionId) {
+                                         final long nextPositionId) {
     final byte[] _data = new byte[14];
     int i = INIT_POSITION_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, vaultId);
     i += 2;
-    putInt32LE(_data, i, nextPositionId);
+    putInt32LE(_data, i, (int) nextPositionId);
 
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
-  public record InitPositionIxData(Discriminator discriminator, int vaultId, int nextPositionId) implements SerDe {  
+  /// @param vaultId: u16
+  /// @param nextPositionId: u32
+  public record InitPositionIxData(Discriminator discriminator, int vaultId, long nextPositionId) implements SerDe {  
 
     public static InitPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -245,7 +257,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.length();
       final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var nextPositionId = getInt32LE(_data, i);
+      final var nextPositionId = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new InitPositionIxData(discriminator, vaultId, nextPositionId);
     }
 
@@ -254,7 +266,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, vaultId);
       i += 2;
-      putInt32LE(_data, i, nextPositionId);
+      putInt32LE(_data, i, (int) nextPositionId);
       i += 4;
       return i - _offset;
     }
@@ -281,6 +293,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction initTick(final AccountMeta invokedVaultsProgramMeta,
                                      final SolanaAccounts solanaAccounts,
                                      final PublicKey signerKey,
@@ -297,6 +310,7 @@ public final class VaultsProgram {
     return initTick(invokedVaultsProgramMeta, keys, vaultId, tick);
   }
 
+  /// @param vaultId: u16
   public static Instruction initTick(final AccountMeta invokedVaultsProgramMeta,
                                      final List<AccountMeta> keys,
                                      final int vaultId,
@@ -310,6 +324,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record InitTickIxData(Discriminator discriminator, int vaultId, int tick) implements SerDe {  
 
     public static InitTickIxData read(final Instruction instruction) {
@@ -365,6 +380,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultConfigKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey signerKey,
@@ -381,6 +397,7 @@ public final class VaultsProgram {
     return initTickHasDebtArray(invokedVaultsProgramMeta, keys, vaultId, index);
   }
 
+  /// @param vaultId: u16
   public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int vaultId,
@@ -394,6 +411,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {  
 
     public static InitTickHasDebtArrayIxData read(final Instruction instruction) {
@@ -449,6 +467,8 @@ public final class VaultsProgram {
   }
 
   /// @param tickDataKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param totalIds: u32
   public static Instruction initTickIdLiquidation(final AccountMeta invokedVaultsProgramMeta,
                                                   final SolanaAccounts solanaAccounts,
                                                   final PublicKey signerKey,
@@ -456,7 +476,7 @@ public final class VaultsProgram {
                                                   final PublicKey tickIdLiquidationKey,
                                                   final int vaultId,
                                                   final int tick,
-                                                  final int totalIds) {
+                                                  final long totalIds) {
     final var keys = initTickIdLiquidationKeys(
       solanaAccounts,
       signerKey,
@@ -472,26 +492,30 @@ public final class VaultsProgram {
     );
   }
 
+  /// @param vaultId: u16
+  /// @param totalIds: u32
   public static Instruction initTickIdLiquidation(final AccountMeta invokedVaultsProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int vaultId,
                                                   final int tick,
-                                                  final int totalIds) {
+                                                  final long totalIds) {
     final byte[] _data = new byte[18];
     int i = INIT_TICK_ID_LIQUIDATION_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, vaultId);
     i += 2;
     putInt32LE(_data, i, tick);
     i += 4;
-    putInt32LE(_data, i, totalIds);
+    putInt32LE(_data, i, (int) totalIds);
 
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param totalIds: u32
   public record InitTickIdLiquidationIxData(Discriminator discriminator,
                                             int vaultId,
                                             int tick,
-                                            int totalIds) implements SerDe {  
+                                            long totalIds) implements SerDe {  
 
     public static InitTickIdLiquidationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -513,7 +537,7 @@ public final class VaultsProgram {
       i += 2;
       final var tick = getInt32LE(_data, i);
       i += 4;
-      final var totalIds = getInt32LE(_data, i);
+      final var totalIds = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new InitTickIdLiquidationIxData(discriminator, vaultId, tick, totalIds);
     }
 
@@ -524,7 +548,7 @@ public final class VaultsProgram {
       i += 2;
       putInt32LE(_data, i, tick);
       i += 4;
-      putInt32LE(_data, i, totalIds);
+      putInt32LE(_data, i, (int) totalIds);
       i += 4;
       return i - _offset;
     }
@@ -635,6 +659,7 @@ public final class VaultsProgram {
     );
   }
 
+  /// @param vaultId: u16
   public static Instruction initVaultConfig(final AccountMeta invokedVaultsProgramMeta,
                                             final SolanaAccounts solanaAccounts,
                                             final PublicKey authorityKey,
@@ -659,6 +684,7 @@ public final class VaultsProgram {
     return initVaultConfig(invokedVaultsProgramMeta, keys, vaultId, params);
   }
 
+  /// @param vaultId: u16
   public static Instruction initVaultConfig(final AccountMeta invokedVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int vaultId,
@@ -672,6 +698,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record InitVaultConfigIxData(Discriminator discriminator, int vaultId, InitVaultConfigParams params) implements SerDe {  
 
     public static InitVaultConfigIxData read(final Instruction instruction) {
@@ -736,6 +763,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction initVaultState(final AccountMeta invokedVaultsProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey authorityKey,
@@ -757,6 +785,7 @@ public final class VaultsProgram {
     return initVaultState(invokedVaultsProgramMeta, keys, vaultId);
   }
 
+  /// @param vaultId: u16
   public static Instruction initVaultState(final AccountMeta invokedVaultsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int vaultId) {
@@ -767,6 +796,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record InitVaultStateIxData(Discriminator discriminator, int vaultId) implements SerDe {  
 
     public static InitVaultStateIxData read(final Instruction instruction) {
@@ -863,6 +893,7 @@ public final class VaultsProgram {
 
   /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
   ///                       _dev verification inside instruction logic
+  /// @param debtAmt: u64
   public static Instruction liquidate(final AccountMeta invokedVaultsProgramMeta,
                                       final SolanaAccounts solanaAccounts,
                                       final PublicKey signerKey,
@@ -933,6 +964,7 @@ public final class VaultsProgram {
     );
   }
 
+  /// @param debtAmt: u64
   public static Instruction liquidate(final AccountMeta invokedVaultsProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long debtAmt,
@@ -957,6 +989,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param debtAmt: u64
   public record LiquidateIxData(Discriminator discriminator,
                                 long debtAmt,
                                 BigInteger colPerUnitDebt,
@@ -1534,6 +1567,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param borrowFee: u16
   public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
                                             final PublicKey authorityKey,
                                             final PublicKey vaultAdminKey,
@@ -1554,6 +1589,8 @@ public final class VaultsProgram {
     return updateBorrowFee(invokedVaultsProgramMeta, keys, vaultId, borrowFee);
   }
 
+  /// @param vaultId: u16
+  /// @param borrowFee: u16
   public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int vaultId,
@@ -1567,6 +1604,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param borrowFee: u16
   public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {  
 
     public static UpdateBorrowFeeIxData read(final Instruction instruction) {
@@ -1632,6 +1671,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateBorrowRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -1652,6 +1692,7 @@ public final class VaultsProgram {
     return updateBorrowRateMagnifier(invokedVaultsProgramMeta, keys, vaultId, borrowRateMagnifier);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateBorrowRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int vaultId,
@@ -1665,6 +1706,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateBorrowRateMagnifierIxData(Discriminator discriminator, int vaultId, int borrowRateMagnifier) implements SerDe {  
 
     public static UpdateBorrowRateMagnifierIxData read(final Instruction instruction) {
@@ -1730,6 +1772,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param collateralFactor: u16
   public static Instruction updateCollateralFactor(final AccountMeta invokedVaultsProgramMeta,
                                                    final PublicKey authorityKey,
                                                    final PublicKey vaultAdminKey,
@@ -1750,6 +1794,8 @@ public final class VaultsProgram {
     return updateCollateralFactor(invokedVaultsProgramMeta, keys, vaultId, collateralFactor);
   }
 
+  /// @param vaultId: u16
+  /// @param collateralFactor: u16
   public static Instruction updateCollateralFactor(final AccountMeta invokedVaultsProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int vaultId,
@@ -1763,6 +1809,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param collateralFactor: u16
   public record UpdateCollateralFactorIxData(Discriminator discriminator, int vaultId, int collateralFactor) implements SerDe {  
 
     public static UpdateCollateralFactorIxData read(final Instruction instruction) {
@@ -1828,6 +1876,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateCoreSettings(final AccountMeta invokedVaultsProgramMeta,
                                                final PublicKey authorityKey,
                                                final PublicKey vaultAdminKey,
@@ -1848,6 +1897,7 @@ public final class VaultsProgram {
     return updateCoreSettings(invokedVaultsProgramMeta, keys, vaultId, params);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateCoreSettings(final AccountMeta invokedVaultsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int vaultId,
@@ -1861,6 +1911,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateCoreSettingsIxData(Discriminator discriminator, int vaultId, UpdateCoreSettingsParams params) implements SerDe {  
 
     public static UpdateCoreSettingsIxData read(final Instruction instruction) {
@@ -1921,6 +1972,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateExchangePrices(final AccountMeta invokedVaultsProgramMeta,
                                                  final PublicKey vaultStateKey,
                                                  final PublicKey vaultConfigKey,
@@ -1936,6 +1988,7 @@ public final class VaultsProgram {
     return updateExchangePrices(invokedVaultsProgramMeta, keys, vaultId);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateExchangePrices(final AccountMeta invokedVaultsProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int vaultId) {
@@ -1946,6 +1999,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateExchangePricesIxData(Discriminator discriminator, int vaultId) implements SerDe {  
 
     public static UpdateExchangePricesIxData read(final Instruction instruction) {
@@ -2006,6 +2060,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param liquidationMaxLimit: u16
   public static Instruction updateLiquidationMaxLimit(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -2026,6 +2082,8 @@ public final class VaultsProgram {
     return updateLiquidationMaxLimit(invokedVaultsProgramMeta, keys, vaultId, liquidationMaxLimit);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationMaxLimit: u16
   public static Instruction updateLiquidationMaxLimit(final AccountMeta invokedVaultsProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int vaultId,
@@ -2039,6 +2097,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationMaxLimit: u16
   public record UpdateLiquidationMaxLimitIxData(Discriminator discriminator, int vaultId, int liquidationMaxLimit) implements SerDe {  
 
     public static UpdateLiquidationMaxLimitIxData read(final Instruction instruction) {
@@ -2104,6 +2164,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param liquidationPenalty: u16
   public static Instruction updateLiquidationPenalty(final AccountMeta invokedVaultsProgramMeta,
                                                      final PublicKey authorityKey,
                                                      final PublicKey vaultAdminKey,
@@ -2124,6 +2186,8 @@ public final class VaultsProgram {
     return updateLiquidationPenalty(invokedVaultsProgramMeta, keys, vaultId, liquidationPenalty);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationPenalty: u16
   public static Instruction updateLiquidationPenalty(final AccountMeta invokedVaultsProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int vaultId,
@@ -2137,6 +2201,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationPenalty: u16
   public record UpdateLiquidationPenaltyIxData(Discriminator discriminator, int vaultId, int liquidationPenalty) implements SerDe {  
 
     public static UpdateLiquidationPenaltyIxData read(final Instruction instruction) {
@@ -2202,6 +2268,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param liquidationThreshold: u16
   public static Instruction updateLiquidationThreshold(final AccountMeta invokedVaultsProgramMeta,
                                                        final PublicKey authorityKey,
                                                        final PublicKey vaultAdminKey,
@@ -2222,6 +2290,8 @@ public final class VaultsProgram {
     return updateLiquidationThreshold(invokedVaultsProgramMeta, keys, vaultId, liquidationThreshold);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationThreshold: u16
   public static Instruction updateLiquidationThreshold(final AccountMeta invokedVaultsProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final int vaultId,
@@ -2235,6 +2305,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param liquidationThreshold: u16
   public record UpdateLiquidationThresholdIxData(Discriminator discriminator, int vaultId, int liquidationThreshold) implements SerDe {  
 
     public static UpdateLiquidationThresholdIxData read(final Instruction instruction) {
@@ -2288,6 +2360,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultMetadataKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateLookupTable(final AccountMeta invokedVaultsProgramMeta,
                                               final PublicKey authorityKey,
                                               final PublicKey vaultAdminKey,
@@ -2302,6 +2375,7 @@ public final class VaultsProgram {
     return updateLookupTable(invokedVaultsProgramMeta, keys, vaultId, lookupTable);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateLookupTable(final AccountMeta invokedVaultsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int vaultId,
@@ -2315,6 +2389,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateLookupTableIxData(Discriminator discriminator, int vaultId, PublicKey lookupTable) implements SerDe {  
 
     public static UpdateLookupTableIxData read(final Instruction instruction) {
@@ -2382,6 +2457,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateOracle(final AccountMeta invokedVaultsProgramMeta,
                                          final PublicKey authorityKey,
                                          final PublicKey vaultAdminKey,
@@ -2403,6 +2479,7 @@ public final class VaultsProgram {
     return updateOracle(invokedVaultsProgramMeta, keys, vaultId);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateOracle(final AccountMeta invokedVaultsProgramMeta,
                                          final List<AccountMeta> keys,
                                          final int vaultId) {
@@ -2413,6 +2490,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateOracleIxData(Discriminator discriminator, int vaultId) implements SerDe {  
 
     public static UpdateOracleIxData read(final Instruction instruction) {
@@ -2473,6 +2551,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateRebalancer(final AccountMeta invokedVaultsProgramMeta,
                                              final PublicKey authorityKey,
                                              final PublicKey vaultAdminKey,
@@ -2493,6 +2572,7 @@ public final class VaultsProgram {
     return updateRebalancer(invokedVaultsProgramMeta, keys, vaultId, newRebalancer);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateRebalancer(final AccountMeta invokedVaultsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int vaultId,
@@ -2506,6 +2586,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateRebalancerIxData(Discriminator discriminator, int vaultId, PublicKey newRebalancer) implements SerDe {  
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
@@ -2571,6 +2652,7 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
   public static Instruction updateSupplyRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
@@ -2591,6 +2673,7 @@ public final class VaultsProgram {
     return updateSupplyRateMagnifier(invokedVaultsProgramMeta, keys, vaultId, supplyRateMagnifier);
   }
 
+  /// @param vaultId: u16
   public static Instruction updateSupplyRateMagnifier(final AccountMeta invokedVaultsProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int vaultId,
@@ -2604,6 +2687,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
   public record UpdateSupplyRateMagnifierIxData(Discriminator discriminator, int vaultId, int supplyRateMagnifier) implements SerDe {  
 
     public static UpdateSupplyRateMagnifierIxData read(final Instruction instruction) {
@@ -2669,6 +2753,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
+  /// @param vaultId: u16
+  /// @param withdrawGap: u16
   public static Instruction updateWithdrawGap(final AccountMeta invokedVaultsProgramMeta,
                                               final PublicKey authorityKey,
                                               final PublicKey vaultAdminKey,
@@ -2689,6 +2775,8 @@ public final class VaultsProgram {
     return updateWithdrawGap(invokedVaultsProgramMeta, keys, vaultId, withdrawGap);
   }
 
+  /// @param vaultId: u16
+  /// @param withdrawGap: u16
   public static Instruction updateWithdrawGap(final AccountMeta invokedVaultsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int vaultId,
@@ -2702,6 +2790,8 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
+  /// @param vaultId: u16
+  /// @param withdrawGap: u16
   public record UpdateWithdrawGapIxData(Discriminator discriminator, int vaultId, int withdrawGap) implements SerDe {  
 
     public static UpdateWithdrawGapIxData read(final Instruction instruction) {

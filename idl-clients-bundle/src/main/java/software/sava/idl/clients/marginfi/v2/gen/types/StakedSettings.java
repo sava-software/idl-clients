@@ -27,6 +27,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param key This account's own key. A PDA derived from `marginfi_group` and `STAKED_SETTINGS_SEED`
 /// @param marginfiGroup Group for which these settings apply
 /// @param oracle Generally, the Pyth push oracle for SOL
+/// @param depositLimit: u64
+/// @param totalAssetValueInitLimit: u64
+/// @param oracleMaxAge: u16
 /// @param reserved0 The following values are irrelevant because staked collateral positions do not support
 ///                  borrowing.
 public record StakedSettings(PublicKey _address,

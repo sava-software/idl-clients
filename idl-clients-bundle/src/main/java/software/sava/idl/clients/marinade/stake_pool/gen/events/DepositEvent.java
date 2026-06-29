@@ -10,6 +10,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param userSolBalance: u64
+/// @param userMsolBalance: u64
+/// @param solLegBalance: u64
+/// @param msolLegBalance: u64
+/// @param reserveBalance: u64
+/// @param solSwapped: u64
+/// @param msolSwapped: u64
+/// @param solDeposited: u64
+/// @param msolMinted: u64
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record DepositEvent(Discriminator discriminator,
                            PublicKey state,
                            PublicKey solOwner,

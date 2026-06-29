@@ -20,6 +20,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param userId: u64
+/// @param rewardsIssuedUnclaimed: u64[]
+/// @param lastClaimTs: u64[]
+/// @param pendingDepositStakeTs: u64
+/// @param pendingWithdrawalUnstakeTs: u64
+/// @param bump: u64
+/// @param lastStakeTs: u64
+/// @param padding1: u64[]
 public record UserState(PublicKey _address,
                         Discriminator discriminator,
                         long userId,

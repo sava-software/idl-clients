@@ -49,7 +49,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                         exactly (i.e Kamino ignores this and treats it as if it was using `mint_decimals`)
 /// @param lastUpdate Unix timestamp (i64) of the last interest accrual
 /// @param config The bank's configuration parameters (weights, limits, oracle setup, interest rate config)
-/// @param flags Bank flags bitfield (u64).
+/// @param flags: u64 Bank flags bitfield (u64).
 ///              
 ///              - Bit 0 (1): `EMISSIONS_FLAG_BORROW_ACTIVE` — borrow-side emissions are active
 ///              - Bit 1 (2): `EMISSIONS_FLAG_LENDING_ACTIVE` — lending-side emissions are active
@@ -58,7 +58,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///              - Bit 4 (16): `CLOSE_ENABLED_FLAG` — bank can be closed (set at creation for banks >= 0.1.4)
 ///              - Bit 5 (32): `TOKENLESS_REPAYMENTS_ALLOWED` — risk admin can repay debt without tokens
 ///              - Bit 6 (64): `TOKENLESS_REPAYMENTS_COMPLETE` — all debt cleared, lender purge enabled
-/// @param emissionsRate Emissions APR. Number of emitted tokens (emissions_mint) per 1e(bank.mint_decimal) tokens
+/// @param emissionsRate: u64 Emissions APR. Number of emitted tokens (emissions_mint) per 1e(bank.mint_decimal) tokens
 ///                      (bank mint) (native amount) per 1 YEAR.
 /// @param emissionsRemaining Remaining emissions tokens available for distribution
 /// @param emissionsMint The SPL token mint used for emissions rewards
@@ -95,6 +95,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        - JupLend: withdraw intermediary ATA (ATA of liquidity_vault_authority for bank mint)
 /// @param rateLimiter Rate limiter for controlling withdraw/borrow outflow.
 ///                    Tracks net outflow (outflows - inflows) in native tokens.
+/// @param padding1: u64[][]
 public record Bank(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey mint,

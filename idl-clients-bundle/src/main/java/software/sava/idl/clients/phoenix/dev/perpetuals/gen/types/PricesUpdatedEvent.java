@@ -21,10 +21,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::PricesUpdated Borsh variant 29.
 /// Payload type: PricesUpdatedEvent.
 ///
+/// @param assetId: u32
+/// @param assetSequenceNumber: u64
+/// @param prevAssetSequenceNumberSlot: u64
 public record PricesUpdatedEvent(Discriminator discriminator,
                                  PublicKey oracleSigner,
                                  Symbol assetSymbol,
-                                 int assetId,
+                                 long assetId,
                                  Ticks newBestBid,
                                  Ticks newBestAsk,
                                  Ticks newLastTrade,
@@ -59,7 +62,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     }
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
-    final var assetId = getInt32LE(_data, i);
+    final var assetId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final Ticks newBestBid;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -170,7 +173,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
     int i = _offset + discriminator.write(_data, _offset);
     i += SerDeUtil.writeOptional(1, oracleSigner, _data, i);
     i += assetSymbol.write(_data, i);
-    putInt32LE(_data, i, assetId);
+    putInt32LE(_data, i, (int) assetId);
     i += 4;
     i += SerDeUtil.writeOptional(1, newBestBid, _data, i);
     i += SerDeUtil.writeOptional(1, newBestAsk, _data, i);

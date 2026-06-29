@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::SplineFilled Borsh variant 5.
 /// Payload type: SplineFilledEvent.
 ///
+/// @param splineSequenceNumber: u64
 public record SplineFilledEvent(Discriminator discriminator,
                                 long splineSequenceNumber,
                                 Side side,

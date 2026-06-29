@@ -19,23 +19,23 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param debtLiquidityMint The asset to be borrowed.
 ///                          The reserves used for Obligation::borrows *must* all provide exactly this asset.
-/// @param remainingDebtAmount The amount of debt that still needs to be filled, in lamports.
+/// @param remainingDebtAmount: u64 The amount of debt that still needs to be filled, in lamports.
 /// @param filledDebtDestination The token account owned by the Obligation::owner and holding Self::debt_liquidity_mint,
 ///                              where the filled funds should be transferred to.
-/// @param minDebtTermSeconds The minimum allowed debt term that the obligation owner agrees to.
+/// @param minDebtTermSeconds: u64 The minimum allowed debt term that the obligation owner agrees to.
 ///                           The reserves used to fill this order *cannot* define their debt term *lower* than this.
 ///                           
 ///                           If zeroed, then only open-term reserves may be used.
-/// @param fillableUntilTimestamp The time until which the borrow order can still be filled.
-/// @param placedAtTimestamp The time at which this order was placed.
+/// @param fillableUntilTimestamp: u64 The time until which the borrow order can still be filled.
+/// @param placedAtTimestamp: u64 The time at which this order was placed.
 ///                          Currently, this is only a piece of metadata.
-/// @param lastUpdatedAtTimestamp The time at which this order was most-recently updated (including: created).
+/// @param lastUpdatedAtTimestamp: u64 The time at which this order was most-recently updated (including: created).
 ///                               Currently, this is only a piece of metadata.
-/// @param requestedDebtAmount The amount of debt that was originally requested when this order was most-recently updated.
+/// @param requestedDebtAmount: u64 The amount of debt that was originally requested when this order was most-recently updated.
 ///                            In other words: this field holds a value of Self::remaining_debt_amount captured at
 ///                            Self::last_updated_at_timestamp.
 ///                            Currently, this is only a piece of metadata.
-/// @param maxBorrowRateBps The maximum borrow rate that the obligation owner agrees to.
+/// @param maxBorrowRateBps: u32 The maximum borrow rate that the obligation owner agrees to.
 ///                         The reserves used for Obligation::borrows *cannot* define their maximum borrow rate
 ///                         *higher* than this.
 /// @param active Whether the Self::remaining_debt_amount is non-zero.
@@ -62,7 +62,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                          disabled, this setting has no effect on any borrow (i.e. the fill will be successful, but
 ///                                          the borrow will not be marked for auto-rollover.
 /// @param padding1 Alignment padding.
-/// @param endPadding End padding.
+/// @param endPadding: u64[] End padding.
 public record BorrowOrder(PublicKey debtLiquidityMint,
                           long remainingDebtAmount,
                           PublicKey filledDebtDestination,
@@ -71,7 +71,7 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
                           long placedAtTimestamp,
                           long lastUpdatedAtTimestamp,
                           long requestedDebtAmount,
-                          int maxBorrowRateBps,
+                          long maxBorrowRateBps,
                           int active,
                           int enableAutoRolloverOnFilledBorrows,
                           byte[] padding1,
@@ -116,7 +116,7 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
     i += 8;
     final var requestedDebtAmount = getInt64LE(_data, i);
     i += 8;
-    final var maxBorrowRateBps = getInt32LE(_data, i);
+    final var maxBorrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var active = _data[i] & 0xFF;
     ++i;
@@ -160,7 +160,7 @@ public record BorrowOrder(PublicKey debtLiquidityMint,
     i += 8;
     putInt64LE(_data, i, requestedDebtAmount);
     i += 8;
-    putInt32LE(_data, i, maxBorrowRateBps);
+    putInt32LE(_data, i, (int) maxBorrowRateBps);
     i += 4;
     _data[i] = (byte) active;
     ++i;

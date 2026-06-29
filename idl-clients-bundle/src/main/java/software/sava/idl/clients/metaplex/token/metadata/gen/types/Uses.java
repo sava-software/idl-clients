@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param remaining: u64
+/// @param total: u64
 public record Uses(UseMethod useMethod,
                    long remaining,
                    long total) implements SerDe {

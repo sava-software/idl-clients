@@ -9,11 +9,15 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lastReferenceUpdateTimestamp: u64
+/// @param lastMajorSwapTimestamp: u64
+/// @param volatilityReference: u32
+/// @param volatilityAccumulator: u32
 public record AdaptiveFeeVariables(long lastReferenceUpdateTimestamp,
                                    long lastMajorSwapTimestamp,
-                                   int volatilityReference,
+                                   long volatilityReference,
                                    int tickGroupIndexReference,
-                                   int volatilityAccumulator,
+                                   long volatilityAccumulator,
                                    byte[] reserved) implements SerDe {
 
   public static final int BYTES = 44;
@@ -35,11 +39,11 @@ public record AdaptiveFeeVariables(long lastReferenceUpdateTimestamp,
     i += 8;
     final var lastMajorSwapTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var volatilityReference = getInt32LE(_data, i);
+    final var volatilityReference = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var tickGroupIndexReference = getInt32LE(_data, i);
     i += 4;
-    final var volatilityAccumulator = getInt32LE(_data, i);
+    final var volatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var reserved = new byte[16];
     SerDeUtil.readArray(reserved, _data, i);
@@ -58,11 +62,11 @@ public record AdaptiveFeeVariables(long lastReferenceUpdateTimestamp,
     i += 8;
     putInt64LE(_data, i, lastMajorSwapTimestamp);
     i += 8;
-    putInt32LE(_data, i, volatilityReference);
+    putInt32LE(_data, i, (int) volatilityReference);
     i += 4;
     putInt32LE(_data, i, tickGroupIndexReference);
     i += 4;
-    putInt32LE(_data, i, volatilityAccumulator);
+    putInt32LE(_data, i, (int) volatilityAccumulator);
     i += 4;
     i += SerDeUtil.writeArrayChecked(reserved, 16, _data, i);
     return i - _offset;

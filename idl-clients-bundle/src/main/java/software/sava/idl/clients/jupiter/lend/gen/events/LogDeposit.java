@@ -10,6 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param assets: u64
+/// @param sharesMinted: u64
 public record LogDeposit(Discriminator discriminator,
                          PublicKey sender,
                          PublicKey receiver,

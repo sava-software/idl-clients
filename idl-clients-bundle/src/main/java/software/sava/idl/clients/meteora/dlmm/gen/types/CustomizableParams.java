@@ -13,8 +13,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param activeId Pool price
-/// @param binStep Bin step
-/// @param baseFactor Base factor
+/// @param binStep: u16 Bin step
+/// @param baseFactor: u16 Base factor
 /// @param activationType Activation type. 0 = Slot, 1 = Time. Check ActivationType enum
 /// @param hasAlphaVault Whether the pool has an alpha vault
 /// @param activationPoint Decide when does the pool start trade. None = Now

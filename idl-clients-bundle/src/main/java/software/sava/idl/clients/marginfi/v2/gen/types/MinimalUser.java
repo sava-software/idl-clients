@@ -23,8 +23,14 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param delegate An addresses that can control the account on the authority's behalf
 /// @param name Encoded display name for the account
 /// @param spotPositions The user's spot positions (8 positions)
-/// @param padding1 Skip to the fields we need at the end
-/// @param subAccountId Sub account id for this user account
+/// @param padding1: u64[] Skip to the fields we need at the end
+/// @param padding2: u64[]
+/// @param padding3: u64[]
+/// @param padding4: u64[]
+/// @param padding5: u64[]
+/// @param padding6: u64[]
+/// @param padding7: u16[]
+/// @param subAccountId: u16 Sub account id for this user account
 public record MinimalUser(PublicKey _address,
                           Discriminator discriminator,
                           PublicKey authority,
@@ -37,7 +43,7 @@ public record MinimalUser(PublicKey _address,
                           long[] padding4,
                           long[] padding5,
                           long[] padding6,
-                          short[] padding7,
+                          int[] padding7,
                           int subAccountId,
                           UserStatus status,
                           byte[] padding8) implements SerDe {
@@ -131,8 +137,8 @@ public record MinimalUser(PublicKey _address,
     i += SerDeUtil.readArray(padding5, _data, i);
     final var padding6 = new long[2];
     i += SerDeUtil.readArray(padding6, _data, i);
-    final var padding7 = new short[1];
-    i += SerDeUtil.readArray(padding7, _data, i);
+    final var padding7 = new int[1];
+    i += SerDeUtil.readUnsignedShortArray(padding7, _data, i);
     final var subAccountId = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var status = UserStatus.read(_data, i);
@@ -172,7 +178,7 @@ public record MinimalUser(PublicKey _address,
     i += SerDeUtil.writeArrayChecked(padding4, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(padding5, 8, _data, i);
     i += SerDeUtil.writeArrayChecked(padding6, 2, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding7, 1, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(padding7, 1, _data, i);
     putInt16LE(_data, i, subAccountId);
     i += 2;
     i += status.write(_data, i);

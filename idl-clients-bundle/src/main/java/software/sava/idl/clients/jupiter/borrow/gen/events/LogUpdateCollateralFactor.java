@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param collateralFactor: u16
 public record LogUpdateCollateralFactor(Discriminator discriminator, int collateralFactor) implements VaultsEvent {
 
   public static final int BYTES = 10;

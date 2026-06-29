@@ -6,6 +6,10 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param startTime1hr: u64
+/// @param startTime24hr: u64
+/// @param principal1hr: u64
+/// @param principal24hr: u64
 public record CapMonitor(long startTime1hr,
                          long startTime24hr,
                          long principal1hr,

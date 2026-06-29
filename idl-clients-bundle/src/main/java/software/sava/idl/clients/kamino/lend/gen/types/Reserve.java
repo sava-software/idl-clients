@@ -16,15 +16,20 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param version Version of the reserve
+/// @param version: u64 Version of the reserve
 /// @param lastUpdate Last slot when supply and rates updated
 /// @param lendingMarket Lending market address
 /// @param liquidity Reserve liquidity
+/// @param reserveLiquidityPadding: u64[]
 /// @param collateral Reserve collateral
+/// @param reserveCollateralPadding: u64[]
 /// @param config Reserve configuration values
-/// @param borrowedAmountsAgainstThisReserveInElevationGroups Amount of token borrowed in lamport of debt asset in the given
+/// @param configPadding: u64[]
+/// @param borrowedAmountOutsideElevationGroup: u64
+/// @param borrowedAmountsAgainstThisReserveInElevationGroups: u64[] Amount of token borrowed in lamport of debt asset in the given
 ///                                                           elevation group when this reserve is part of the collaterals.
 /// @param withdrawQueue The tracker of ticket-based withdrawals.
+/// @param padding: u64[]
 public record Reserve(PublicKey _address,
                       Discriminator discriminator,
                       long version,

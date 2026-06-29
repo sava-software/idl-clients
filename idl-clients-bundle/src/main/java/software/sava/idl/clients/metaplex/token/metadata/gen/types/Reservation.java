@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param spotsRemaining: u64
+/// @param totalSpots: u64
 public record Reservation(PublicKey address,
                           long spotsRemaining,
                           long totalSpots) implements SerDe {

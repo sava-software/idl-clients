@@ -17,10 +17,17 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param stakeIndex: u32
+/// @param balanceWithoutRentExempt: u64
+/// @param lastUpdateDelegatedLamports: u64
+/// @param operationalSolBalance: u64
+/// @param totalVirtualStakedLamports: u64
+/// @param msolSupply: u64
 public record UpdateDeactivatedEvent(Discriminator discriminator,
                                      PublicKey state,
                                      long epoch,
-                                     int stakeIndex,
+                                     long stakeIndex,
                                      PublicKey stakeAccount,
                                      long balanceWithoutRentExempt,
                                      long lastUpdateDelegatedLamports,
@@ -51,7 +58,7 @@ public record UpdateDeactivatedEvent(Discriminator discriminator,
     i += 32;
     final var epoch = getInt64LE(_data, i);
     i += 8;
-    final var stakeIndex = getInt32LE(_data, i);
+    final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var stakeAccount = readPubKey(_data, i);
     i += 32;
@@ -99,7 +106,7 @@ public record UpdateDeactivatedEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, epoch);
     i += 8;
-    putInt32LE(_data, i, stakeIndex);
+    putInt32LE(_data, i, (int) stakeIndex);
     i += 4;
     stakeAccount.write(_data, i);
     i += 32;

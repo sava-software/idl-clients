@@ -105,11 +105,12 @@ public final class WormholeVerifyVaaShimProgram {
   /// The guardian signatures account can be closed by the initial payer via
   /// the close signatures instruction, which will refund this payer.
   ///
+  /// @param guardianSetIndex: u32
   public static Instruction postSignatures(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey payerKey,
                                            final PublicKey guardianSignaturesKey,
-                                           final int guardianSetIndex,
+                                           final long guardianSetIndex,
                                            final int totalSignatures,
                                            final byte[][] guardianSignatures) {
     final var keys = postSignaturesKeys(
@@ -145,14 +146,15 @@ public final class WormholeVerifyVaaShimProgram {
   /// The guardian signatures account can be closed by the initial payer via
   /// the close signatures instruction, which will refund this payer.
   ///
+  /// @param guardianSetIndex: u32
   public static Instruction postSignatures(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                            final List<AccountMeta> keys,
-                                           final int guardianSetIndex,
+                                           final long guardianSetIndex,
                                            final int totalSignatures,
                                            final byte[][] guardianSignatures) {
     final byte[] _data = new byte[13 + SerDeUtil.lenVectorArray(4, guardianSignatures)];
     int i = POST_SIGNATURES_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, guardianSetIndex);
+    putInt32LE(_data, i, (int) guardianSetIndex);
     i += 4;
     _data[i] = (byte) totalSignatures;
     ++i;
@@ -161,8 +163,9 @@ public final class WormholeVerifyVaaShimProgram {
     return Instruction.createInstruction(invokedWormholeVerifyVaaShimProgramMeta, keys, _data);
   }
 
+  /// @param guardianSetIndex: u32
   public record PostSignaturesIxData(Discriminator discriminator,
-                                     int guardianSetIndex,
+                                     long guardianSetIndex,
                                      int totalSignatures,
                                      byte[][] guardianSignatures) implements SerDe {  
 
@@ -180,7 +183,7 @@ public final class WormholeVerifyVaaShimProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var guardianSetIndex = getInt32LE(_data, i);
+      final var guardianSetIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var totalSignatures = _data[i] & 0xFF;
       ++i;
@@ -191,7 +194,7 @@ public final class WormholeVerifyVaaShimProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      putInt32LE(_data, i, guardianSetIndex);
+      putInt32LE(_data, i, (int) guardianSetIndex);
       i += 4;
       _data[i] = (byte) totalSignatures;
       ++i;

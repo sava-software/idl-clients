@@ -19,9 +19,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Referrer account -> each owner can have multiple accounts for specific reserves
 ///
 /// @param referrer Pubkey of the referrer/owner - pubkey::default if no referrer
-/// @param bump Bump used for validation of account address
+/// @param bump: u64 Bump used for validation of account address
 /// @param userLookupTable User lookup table - used to store all user accounts - atas for each reserve mint, each obligation PDA, UserMetadata itself and all referrer_token_states if there is a referrer
 /// @param owner User metadata account owner
+/// @param padding1: u64[]
+/// @param padding2: u64[]
 public record UserMetadata(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey referrer,

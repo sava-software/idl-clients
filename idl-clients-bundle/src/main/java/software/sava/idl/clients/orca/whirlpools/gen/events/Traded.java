@@ -14,6 +14,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param inputAmount: u64
+/// @param outputAmount: u64
+/// @param inputTransferFee: u64
+/// @param outputTransferFee: u64
+/// @param lpFee: u64
+/// @param protocolFee: u64
 public record Traded(Discriminator discriminator,
                      PublicKey whirlpool,
                      boolean aToB,

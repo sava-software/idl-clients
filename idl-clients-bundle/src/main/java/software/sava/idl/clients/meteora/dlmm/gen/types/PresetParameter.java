@@ -16,16 +16,16 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param binStep Bin step. Represent the price increment / decrement.
-/// @param baseFactor Used for base fee calculation. base_fee_rate = base_factor * bin_step * 10 * 10^base_fee_power_factor
-/// @param filterPeriod Filter period determine high frequency trading time window.
-/// @param decayPeriod Decay period determine when the volatile fee start decay / decrease.
-/// @param reductionFactor Reduction factor controls the volatile fee rate decrement rate.
-/// @param variableFeeControl Used to scale the variable fee component depending on the dynamic of the market
-/// @param maxVolatilityAccumulator Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
+/// @param binStep: u16 Bin step. Represent the price increment / decrement.
+/// @param baseFactor: u16 Used for base fee calculation. base_fee_rate = base_factor * bin_step * 10 * 10^base_fee_power_factor
+/// @param filterPeriod: u16 Filter period determine high frequency trading time window.
+/// @param decayPeriod: u16 Decay period determine when the volatile fee start decay / decrease.
+/// @param reductionFactor: u16 Reduction factor controls the volatile fee rate decrement rate.
+/// @param variableFeeControl: u32 Used to scale the variable fee component depending on the dynamic of the market
+/// @param maxVolatilityAccumulator: u32 Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
 /// @param minBinId Min bin id supported by the pool based on the configured bin step.
 /// @param maxBinId Max bin id supported by the pool based on the configured bin step.
-/// @param protocolShare Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
+/// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 public record PresetParameter(PublicKey _address,
                               Discriminator discriminator,
                               int binStep,
@@ -33,8 +33,8 @@ public record PresetParameter(PublicKey _address,
                               int filterPeriod,
                               int decayPeriod,
                               int reductionFactor,
-                              int variableFeeControl,
-                              int maxVolatilityAccumulator,
+                              long variableFeeControl,
+                              long maxVolatilityAccumulator,
                               int minBinId,
                               int maxBinId,
                               int protocolShare) implements SerDe {
@@ -86,15 +86,15 @@ public record PresetParameter(PublicKey _address,
     return Filter.createMemCompFilter(REDUCTION_FACTOR_OFFSET, _data);
   }
 
-  public static Filter createVariableFeeControlFilter(final int variableFeeControl) {
+  public static Filter createVariableFeeControlFilter(final long variableFeeControl) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, variableFeeControl);
+    putInt32LE(_data, 0, (int) variableFeeControl);
     return Filter.createMemCompFilter(VARIABLE_FEE_CONTROL_OFFSET, _data);
   }
 
-  public static Filter createMaxVolatilityAccumulatorFilter(final int maxVolatilityAccumulator) {
+  public static Filter createMaxVolatilityAccumulatorFilter(final long maxVolatilityAccumulator) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, maxVolatilityAccumulator);
+    putInt32LE(_data, 0, (int) maxVolatilityAccumulator);
     return Filter.createMemCompFilter(MAX_VOLATILITY_ACCUMULATOR_OFFSET, _data);
   }
 
@@ -146,9 +146,9 @@ public record PresetParameter(PublicKey _address,
     i += 2;
     final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var variableFeeControl = getInt32LE(_data, i);
+    final var variableFeeControl = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var maxVolatilityAccumulator = getInt32LE(_data, i);
+    final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var minBinId = getInt32LE(_data, i);
     i += 4;
@@ -182,9 +182,9 @@ public record PresetParameter(PublicKey _address,
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, variableFeeControl);
+    putInt32LE(_data, i, (int) variableFeeControl);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt32LE(_data, i, minBinId);
     i += 4;

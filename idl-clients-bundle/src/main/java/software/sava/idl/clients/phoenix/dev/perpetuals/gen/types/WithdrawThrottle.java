@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Fixed WithdrawThrottle payload embedded in WithdrawQueueHeader.
 ///
+/// @param lastUpdateSlot: u64
 public record WithdrawThrottle(QuoteLots maxBudget,
                                QuoteLots remainingBudget,
                                QuoteLots replenishAmountPerSlot,

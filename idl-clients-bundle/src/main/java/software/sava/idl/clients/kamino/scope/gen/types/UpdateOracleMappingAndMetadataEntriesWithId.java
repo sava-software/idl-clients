@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param entryId: u16
 public record UpdateOracleMappingAndMetadataEntriesWithId(int entryId, UpdateOracleMappingAndMetadataEntry[] updates) implements SerDe {
 
   public static final int ENTRY_ID_OFFSET = 0;

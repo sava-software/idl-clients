@@ -11,7 +11,12 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param updatesTracker1h The sample tracker is a 64 bit number where each bit represents a point in time.
+/// @param lastUpdateSlot: u64
+/// @param lastUpdateUnixTimestamp: u64
+/// @param updatesTracker1h: u64 The sample tracker is a 64 bit number where each bit represents a point in time.
+/// @param updatesTracker7d: u64
+/// @param updatesTracker8h: u64
+/// @param updatesTracker24h: u64
 public record EmaTwap(long lastUpdateSlot,
                       long lastUpdateUnixTimestamp,
                       BigInteger currentEma1h,

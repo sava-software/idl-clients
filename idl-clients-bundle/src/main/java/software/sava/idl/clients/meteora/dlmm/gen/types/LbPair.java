@@ -23,7 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param binStepSeed Bin step signer seed
 /// @param pairType Type of the pair
 /// @param activeId Active bin id
-/// @param binStep Bin step. Represent the price increment / decrement.
+/// @param binStep: u16 Bin step. Represent the price increment / decrement.
 /// @param status Status of the pair. Check PairStatus enum.
 /// @param requireBaseFactorSeed Require base factor seed
 /// @param baseFactorSeed Base factor seed
@@ -37,15 +37,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param padding1 padding 1
 /// @param rewardInfos Farming reward information
 /// @param oracle Oracle pubkey
-/// @param binArrayBitmap Packed initialized bin array state
+/// @param binArrayBitmap: u64[] Packed initialized bin array state
 /// @param lastUpdatedAt Last time the pool fee parameter was updated
 /// @param padding2 _padding_2
 /// @param preActivationSwapAddress Address allowed to swap when the current point is greater than or equal to the pre-activation point. The pre-activation point is calculated as `activation_point - pre_activation_duration`.
 /// @param baseKey Base keypair. Only required for permission pair
-/// @param activationPoint Time point to enable the pair. Only applicable for permission pair.
-/// @param preActivationDuration Duration before activation activation_point. Used to calculate pre-activation time point for pre_activation_swap_address
+/// @param activationPoint: u64 Time point to enable the pair. Only applicable for permission pair.
+/// @param preActivationDuration: u64 Duration before activation activation_point. Used to calculate pre-activation time point for pre_activation_swap_address
 /// @param padding3 _padding 3
-/// @param padding4 _padding_4
+/// @param padding4: u64 _padding_4
 /// @param creator Pool creator
 /// @param tokenMintXProgramFlag token_mint_x_program_flag
 /// @param tokenMintYProgramFlag token_mint_y_program_flag

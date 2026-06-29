@@ -11,6 +11,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::SlotContext Borsh variant 0.
 /// Payload type: SlotContextEvent.
 ///
+/// @param timestamp: u64
+/// @param slot: u64
 public record SlotContextEvent(Discriminator discriminator, long timestamp, long slot) implements EternalEvent {
 
   public static final int BYTES = 24;

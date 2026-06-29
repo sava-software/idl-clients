@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Parameters for depositing collateral into the global vault.
 ///
+/// @param amount: u64
 public record DepositFundsInstruction(long amount) implements SerDe {
 
   public static final int BYTES = 8;

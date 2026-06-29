@@ -667,6 +667,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param fromTokenId: u64
+  /// @param toTokenId: u64
   record Symmetry(long fromTokenId, long toTokenId) implements Swap {
 
     public static final int BYTES = 16;
@@ -736,10 +738,10 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record StakeDexSwapViaStake(int val) implements EnumInt32, Swap {
+  record StakeDexSwapViaStake(long val) implements EnumUInt32, Swap {
 
     public static StakeDexSwapViaStake read(final byte[] _data, int i) {
-      return new StakeDexSwapViaStake(getInt32LE(_data, i));
+      return new StakeDexSwapViaStake(Integer.toUnsignedLong(getInt32LE(_data, i)));
     }
 
     @Override
@@ -820,10 +822,10 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record StakeDexPrefundWithdrawStakeAndDepositStake(int val) implements EnumInt32, Swap {
+  record StakeDexPrefundWithdrawStakeAndDepositStake(long val) implements EnumUInt32, Swap {
 
     public static StakeDexPrefundWithdrawStakeAndDepositStake read(final byte[] _data, int i) {
-      return new StakeDexPrefundWithdrawStakeAndDepositStake(getInt32LE(_data, i));
+      return new StakeDexPrefundWithdrawStakeAndDepositStake(Integer.toUnsignedLong(getInt32LE(_data, i)));
     }
 
     @Override
@@ -878,10 +880,12 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param srcLstIndex: u32
+  /// @param dstLstIndex: u32
   record SanctumS(int srcLstValueCalcAccs,
                   int dstLstValueCalcAccs,
-                  int srcLstIndex,
-                  int dstLstIndex) implements Swap {
+                  long srcLstIndex,
+                  long dstLstIndex) implements Swap {
 
     public static final int BYTES = 10;
 
@@ -899,9 +903,9 @@ public sealed interface Swap extends RustEnum permits
       ++i;
       final var dstLstValueCalcAccs = _data[i] & 0xFF;
       ++i;
-      final var srcLstIndex = getInt32LE(_data, i);
+      final var srcLstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var dstLstIndex = getInt32LE(_data, i);
+      final var dstLstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SanctumS(srcLstValueCalcAccs,
                           dstLstValueCalcAccs,
                           srcLstIndex,
@@ -915,9 +919,9 @@ public sealed interface Swap extends RustEnum permits
       ++i;
       _data[i] = (byte) dstLstValueCalcAccs;
       ++i;
-      putInt32LE(_data, i, srcLstIndex);
+      putInt32LE(_data, i, (int) srcLstIndex);
       i += 4;
-      putInt32LE(_data, i, dstLstIndex);
+      putInt32LE(_data, i, (int) dstLstIndex);
       i += 4;
       return i - _offset;
     }
@@ -933,7 +937,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record SanctumSAddLiquidity(int lstValueCalcAccs, int lstIndex) implements Swap {
+  /// @param lstIndex: u32
+  record SanctumSAddLiquidity(int lstValueCalcAccs, long lstIndex) implements Swap {
 
     public static final int BYTES = 5;
 
@@ -947,7 +952,7 @@ public sealed interface Swap extends RustEnum permits
       int i = _offset;
       final var lstValueCalcAccs = _data[i] & 0xFF;
       ++i;
-      final var lstIndex = getInt32LE(_data, i);
+      final var lstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SanctumSAddLiquidity(lstValueCalcAccs, lstIndex);
     }
 
@@ -956,7 +961,7 @@ public sealed interface Swap extends RustEnum permits
       int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) lstValueCalcAccs;
       ++i;
-      putInt32LE(_data, i, lstIndex);
+      putInt32LE(_data, i, (int) lstIndex);
       i += 4;
       return i - _offset;
     }
@@ -972,7 +977,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
-  record SanctumSRemoveLiquidity(int lstValueCalcAccs, int lstIndex) implements Swap {
+  /// @param lstIndex: u32
+  record SanctumSRemoveLiquidity(int lstValueCalcAccs, long lstIndex) implements Swap {
 
     public static final int BYTES = 5;
 
@@ -986,7 +992,7 @@ public sealed interface Swap extends RustEnum permits
       int i = _offset;
       final var lstValueCalcAccs = _data[i] & 0xFF;
       ++i;
-      final var lstIndex = getInt32LE(_data, i);
+      final var lstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SanctumSRemoveLiquidity(lstValueCalcAccs, lstIndex);
     }
 
@@ -995,7 +1001,7 @@ public sealed interface Swap extends RustEnum permits
       int i = _offset + writeOrdinal(_data, _offset);
       _data[i] = (byte) lstValueCalcAccs;
       ++i;
-      putInt32LE(_data, i, lstIndex);
+      putInt32LE(_data, i, (int) lstIndex);
       i += 4;
       return i - _offset;
     }
@@ -1536,6 +1542,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param swapId: u64
   record HumidiFi(long swapId, boolean isBaseToQuote) implements Swap {
 
     public static final int BYTES = 9;
@@ -1970,6 +1977,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param swapId: u64
   record HumidiFiV2(long swapId, boolean isBaseToQuote) implements Swap {
 
     public static final int BYTES = 9;
@@ -2086,6 +2094,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param lstAmounts: u64[]
+  /// @param seed: u64
   record VaultLiquidUnstake(long[] lstAmounts, long seed) implements Swap {
 
     public static final int BYTES = 48;
@@ -2147,6 +2157,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param authAmountIn: u64
+  /// @param auth: u64
   record WhaleStreetV2(Side side,
                        long authAmountIn,
                        long auth) implements Swap {
@@ -2284,10 +2296,12 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param srcLstIndex: u32
+  /// @param dstLstIndex: u32
   record SanctumSV2(int srcLstValueCalcAccs,
                     int dstLstValueCalcAccs,
-                    int srcLstIndex,
-                    int dstLstIndex) implements Swap {
+                    long srcLstIndex,
+                    long dstLstIndex) implements Swap {
 
     public static final int BYTES = 10;
 
@@ -2305,9 +2319,9 @@ public sealed interface Swap extends RustEnum permits
       ++i;
       final var dstLstValueCalcAccs = _data[i] & 0xFF;
       ++i;
-      final var srcLstIndex = getInt32LE(_data, i);
+      final var srcLstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var dstLstIndex = getInt32LE(_data, i);
+      final var dstLstIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SanctumSV2(srcLstValueCalcAccs,
                             dstLstValueCalcAccs,
                             srcLstIndex,
@@ -2321,9 +2335,9 @@ public sealed interface Swap extends RustEnum permits
       ++i;
       _data[i] = (byte) dstLstValueCalcAccs;
       ++i;
-      putInt32LE(_data, i, srcLstIndex);
+      putInt32LE(_data, i, (int) srcLstIndex);
       i += 4;
-      putInt32LE(_data, i, dstLstIndex);
+      putInt32LE(_data, i, (int) dstLstIndex);
       i += 4;
       return i - _offset;
     }
@@ -2638,6 +2652,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param swapId: u64
   record Flux(long swapId, boolean baseToQuote) implements Swap {
 
     public static final int BYTES = 9;

@@ -84,6 +84,7 @@ public final class WhirlpoolProgram {
   /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
   /// - `ClosePositionNotEmpty` - The provided position account is not empty.
   ///
+  /// @param bundleIndex: u16
   public static Instruction closeBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey bundledPositionKey,
                                                  final PublicKey positionBundleKey,
@@ -115,6 +116,7 @@ public final class WhirlpoolProgram {
   /// - `InvalidBundleIndex` - If the provided bundle index is out of bounds.
   /// - `ClosePositionNotEmpty` - The provided position account is not empty.
   ///
+  /// @param bundleIndex: u16
   public static Instruction closeBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int bundleIndex) {
@@ -125,6 +127,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param bundleIndex: u16
   public record CloseBundledPositionIxData(Discriminator discriminator, int bundleIndex) implements SerDe {  
 
     public static CloseBundledPositionIxData read(final Instruction instruction) {
@@ -1004,6 +1007,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
   ///
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public static Instruction decreaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final PublicKey whirlpoolKey,
                                               final PublicKey tokenProgramKey,
@@ -1058,6 +1063,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
   ///
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public static Instruction decreaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final List<AccountMeta> keys,
                                               final BigInteger liquidityAmount,
@@ -1074,6 +1081,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public record DecreaseLiquidityIxData(Discriminator discriminator,
                                         BigInteger liquidityAmount,
                                         long tokenMinA,
@@ -1191,6 +1200,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
   ///
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public static Instruction decreaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey tokenProgramAKey,
@@ -1256,6 +1267,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
   ///
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public static Instruction decreaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final BigInteger liquidityAmount,
@@ -1278,6 +1291,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tokenMinA: u64
+  /// @param tokenMinB: u64
   public record DecreaseLiquidityV2IxData(Discriminator discriminator,
                                           BigInteger liquidityAmount,
                                           long tokenMinA,
@@ -1565,6 +1580,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public static Instruction increaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final PublicKey whirlpoolKey,
                                               final PublicKey tokenProgramKey,
@@ -1619,6 +1636,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public static Instruction increaseLiquidity(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final List<AccountMeta> keys,
                                               final BigInteger liquidityAmount,
@@ -1635,6 +1654,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public record IncreaseLiquidityIxData(Discriminator discriminator,
                                         BigInteger liquidityAmount,
                                         long tokenMaxA,
@@ -1945,6 +1966,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public static Instruction increaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey tokenProgramAKey,
@@ -2010,6 +2033,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public static Instruction increaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final BigInteger liquidityAmount,
@@ -2032,6 +2057,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tokenMaxA: u64
+  /// @param tokenMaxB: u64
   public record IncreaseLiquidityV2IxData(Discriminator discriminator,
                                           BigInteger liquidityAmount,
                                           long tokenMaxA,
@@ -2162,6 +2189,16 @@ public final class WhirlpoolProgram {
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   /// - `InvalidAdaptiveFeeConstants` - If the provided adaptive fee constants are invalid.
   ///
+  /// @param feeTierIndex: u16
+  /// @param tickSpacing: u16
+  /// @param defaultBaseFeeRate: u16
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public static Instruction initializeAdaptiveFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final SolanaAccounts solanaAccounts,
                                                       final PublicKey whirlpoolsConfigKey,
@@ -2177,8 +2214,8 @@ public final class WhirlpoolProgram {
                                                       final int filterPeriod,
                                                       final int decayPeriod,
                                                       final int reductionFactor,
-                                                      final int adaptiveFeeControlFactor,
-                                                      final int maxVolatilityAccumulator,
+                                                      final long adaptiveFeeControlFactor,
+                                                      final long maxVolatilityAccumulator,
                                                       final int tickGroupSize,
                                                       final int majorSwapThresholdTicks) {
     final var keys = initializeAdaptiveFeeTierKeys(
@@ -2233,6 +2270,16 @@ public final class WhirlpoolProgram {
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   /// - `InvalidAdaptiveFeeConstants` - If the provided adaptive fee constants are invalid.
   ///
+  /// @param feeTierIndex: u16
+  /// @param tickSpacing: u16
+  /// @param defaultBaseFeeRate: u16
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public static Instruction initializeAdaptiveFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int feeTierIndex,
@@ -2243,8 +2290,8 @@ public final class WhirlpoolProgram {
                                                       final int filterPeriod,
                                                       final int decayPeriod,
                                                       final int reductionFactor,
-                                                      final int adaptiveFeeControlFactor,
-                                                      final int maxVolatilityAccumulator,
+                                                      final long adaptiveFeeControlFactor,
+                                                      final long maxVolatilityAccumulator,
                                                       final int tickGroupSize,
                                                       final int majorSwapThresholdTicks) {
     final byte[] _data = new byte[96];
@@ -2265,9 +2312,9 @@ public final class WhirlpoolProgram {
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, adaptiveFeeControlFactor);
+    putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt16LE(_data, i, tickGroupSize);
     i += 2;
@@ -2276,6 +2323,16 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param feeTierIndex: u16
+  /// @param tickSpacing: u16
+  /// @param defaultBaseFeeRate: u16
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public record InitializeAdaptiveFeeTierIxData(Discriminator discriminator,
                                                 int feeTierIndex,
                                                 int tickSpacing,
@@ -2285,8 +2342,8 @@ public final class WhirlpoolProgram {
                                                 int filterPeriod,
                                                 int decayPeriod,
                                                 int reductionFactor,
-                                                int adaptiveFeeControlFactor,
-                                                int maxVolatilityAccumulator,
+                                                long adaptiveFeeControlFactor,
+                                                long maxVolatilityAccumulator,
                                                 int tickGroupSize,
                                                 int majorSwapThresholdTicks) implements SerDe {  
 
@@ -2331,9 +2388,9 @@ public final class WhirlpoolProgram {
       i += 2;
       final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var adaptiveFeeControlFactor = getInt32LE(_data, i);
+      final var adaptiveFeeControlFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var maxVolatilityAccumulator = getInt32LE(_data, i);
+      final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
@@ -2372,9 +2429,9 @@ public final class WhirlpoolProgram {
       i += 2;
       putInt16LE(_data, i, reductionFactor);
       i += 2;
-      putInt32LE(_data, i, adaptiveFeeControlFactor);
+      putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
       i += 4;
-      putInt32LE(_data, i, maxVolatilityAccumulator);
+      putInt32LE(_data, i, (int) maxVolatilityAccumulator);
       i += 4;
       putInt16LE(_data, i, tickGroupSize);
       i += 2;
@@ -2425,6 +2482,7 @@ public final class WhirlpoolProgram {
   /// - `collect_protocol_fees_authority` - Authority authorized to collect protocol fees.
   /// - `reward_emissions_super_authority` - Authority authorized to set reward authorities in pools.
   ///
+  /// @param defaultProtocolFeeRate: u16
   public static Instruction initializeConfig(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey configKey,
@@ -2461,6 +2519,7 @@ public final class WhirlpoolProgram {
   /// - `collect_protocol_fees_authority` - Authority authorized to collect protocol fees.
   /// - `reward_emissions_super_authority` - Authority authorized to set reward authorities in pools.
   ///
+  /// @param defaultProtocolFeeRate: u16
   public static Instruction initializeConfig(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
                                              final PublicKey feeAuthority,
@@ -2480,6 +2539,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param defaultProtocolFeeRate: u16
   public record InitializeConfigIxData(Discriminator discriminator,
                                        PublicKey feeAuthority,
                                        PublicKey collectProtocolFeesAuthority,
@@ -2761,6 +2821,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param tickSpacing: u16
+  /// @param defaultFeeRate: u16
   public static Instruction initializeFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey configKey,
@@ -2795,6 +2857,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidTickSpacing` - If the provided tick_spacing is 0.
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param tickSpacing: u16
+  /// @param defaultFeeRate: u16
   public static Instruction initializeFeeTier(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int tickSpacing,
@@ -2808,6 +2872,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tickSpacing: u16
+  /// @param defaultFeeRate: u16
   public record InitializeFeeTierIxData(Discriminator discriminator, int tickSpacing, int defaultFeeRate) implements SerDe {  
 
     public static InitializeFeeTierIxData read(final Instruction instruction) {
@@ -2902,6 +2968,7 @@ public final class WhirlpoolProgram {
   /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
   /// 
   ///
+  /// @param tickSpacing: u16
   public static Instruction initializePool(final AccountMeta invokedWhirlpoolProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey whirlpoolsConfigKey,
@@ -2952,6 +3019,7 @@ public final class WhirlpoolProgram {
   /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
   /// 
   ///
+  /// @param tickSpacing: u16
   public static Instruction initializePool(final AccountMeta invokedWhirlpoolProgramMeta,
                                            final List<AccountMeta> keys,
                                            final WhirlpoolBumps bumps,
@@ -2967,6 +3035,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tickSpacing: u16
   public record InitializePoolIxData(Discriminator discriminator,
                                      WhirlpoolBumps bumps,
                                      int tickSpacing,
@@ -3076,6 +3145,7 @@ public final class WhirlpoolProgram {
   /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
   /// 
   ///
+  /// @param tickSpacing: u16
   public static Instruction initializePoolV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey whirlpoolsConfigKey,
@@ -3126,6 +3196,7 @@ public final class WhirlpoolProgram {
   /// `SqrtPriceOutOfBounds` - provided initial_sqrt_price is not between 2^-64 to 2^64
   /// 
   ///
+  /// @param tickSpacing: u16
   public static Instruction initializePoolV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int tickSpacing,
@@ -3139,6 +3210,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param tickSpacing: u16
   public record InitializePoolV2IxData(Discriminator discriminator, int tickSpacing, BigInteger initialSqrtPrice) implements SerDe {  
 
     public static InitializePoolV2IxData read(final Instruction instruction) {
@@ -4156,6 +4228,7 @@ public final class WhirlpoolProgram {
   /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
   /// the tick-spacing in this pool.
   ///
+  /// @param bundleIndex: u16
   public static Instruction openBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final SolanaAccounts solanaAccounts,
                                                 final PublicKey bundledPositionKey,
@@ -4204,6 +4277,7 @@ public final class WhirlpoolProgram {
   /// - `InvalidTickIndex` - If a provided tick is out of bounds, out of order or not a multiple of
   /// the tick-spacing in this pool.
   ///
+  /// @param bundleIndex: u16
   public static Instruction openBundledPosition(final AccountMeta invokedWhirlpoolProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int bundleIndex,
@@ -4220,6 +4294,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param bundleIndex: u16
   public record OpenBundledPositionIxData(Discriminator discriminator,
                                           int bundleIndex,
                                           int tickLowerIndex,
@@ -5232,8 +5307,8 @@ public final class WhirlpoolProgram {
                                                     final OptionalInt filterPeriod,
                                                     final OptionalInt decayPeriod,
                                                     final OptionalInt reductionFactor,
-                                                    final OptionalInt adaptiveFeeControlFactor,
-                                                    final OptionalInt maxVolatilityAccumulator,
+                                                    final OptionalLong adaptiveFeeControlFactor,
+                                                    final OptionalLong maxVolatilityAccumulator,
                                                     final OptionalInt tickGroupSize,
                                                     final OptionalInt majorSwapThresholdTicks) {
     final var keys = setAdaptiveFeeConstantsKeys(
@@ -5282,8 +5357,8 @@ public final class WhirlpoolProgram {
                                                     final OptionalInt filterPeriod,
                                                     final OptionalInt decayPeriod,
                                                     final OptionalInt reductionFactor,
-                                                    final OptionalInt adaptiveFeeControlFactor,
-                                                    final OptionalInt maxVolatilityAccumulator,
+                                                    final OptionalLong adaptiveFeeControlFactor,
+                                                    final OptionalLong maxVolatilityAccumulator,
                                                     final OptionalInt tickGroupSize,
                                                     final OptionalInt majorSwapThresholdTicks) {
     final byte[] _data = new byte[
@@ -5300,8 +5375,8 @@ public final class WhirlpoolProgram {
     i += SerDeUtil.writeOptionalshort(1, filterPeriod, _data, i);
     i += SerDeUtil.writeOptionalshort(1, decayPeriod, _data, i);
     i += SerDeUtil.writeOptionalshort(1, reductionFactor, _data, i);
-    i += SerDeUtil.writeOptional(1, adaptiveFeeControlFactor, _data, i);
-    i += SerDeUtil.writeOptional(1, maxVolatilityAccumulator, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, adaptiveFeeControlFactor, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, maxVolatilityAccumulator, _data, i);
     i += SerDeUtil.writeOptionalshort(1, tickGroupSize, _data, i);
     SerDeUtil.writeOptionalshort(1, majorSwapThresholdTicks, _data, i);
 
@@ -5312,8 +5387,8 @@ public final class WhirlpoolProgram {
                                               OptionalInt filterPeriod,
                                               OptionalInt decayPeriod,
                                               OptionalInt reductionFactor,
-                                              OptionalInt adaptiveFeeControlFactor,
-                                              OptionalInt maxVolatilityAccumulator,
+                                              OptionalLong adaptiveFeeControlFactor,
+                                              OptionalLong maxVolatilityAccumulator,
                                               OptionalInt tickGroupSize,
                                               OptionalInt majorSwapThresholdTicks) implements SerDe {  
 
@@ -5356,22 +5431,22 @@ public final class WhirlpoolProgram {
         reductionFactor = OptionalInt.of(Short.toUnsignedInt(getInt16LE(_data, i)));
         i += 2;
       }
-      final OptionalInt adaptiveFeeControlFactor;
+      final OptionalLong adaptiveFeeControlFactor;
       if (SerDeUtil.isAbsent(1, _data, i)) {
-        adaptiveFeeControlFactor = OptionalInt.empty();
+        adaptiveFeeControlFactor = OptionalLong.empty();
         ++i;
       } else {
         ++i;
-        adaptiveFeeControlFactor = OptionalInt.of(getInt32LE(_data, i));
+        adaptiveFeeControlFactor = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
         i += 4;
       }
-      final OptionalInt maxVolatilityAccumulator;
+      final OptionalLong maxVolatilityAccumulator;
       if (SerDeUtil.isAbsent(1, _data, i)) {
-        maxVolatilityAccumulator = OptionalInt.empty();
+        maxVolatilityAccumulator = OptionalLong.empty();
         ++i;
       } else {
         ++i;
-        maxVolatilityAccumulator = OptionalInt.of(getInt32LE(_data, i));
+        maxVolatilityAccumulator = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
         i += 4;
       }
       final OptionalInt tickGroupSize;
@@ -5406,8 +5481,8 @@ public final class WhirlpoolProgram {
       i += SerDeUtil.writeOptionalshort(1, filterPeriod, _data, i);
       i += SerDeUtil.writeOptionalshort(1, decayPeriod, _data, i);
       i += SerDeUtil.writeOptionalshort(1, reductionFactor, _data, i);
-      i += SerDeUtil.writeOptional(1, adaptiveFeeControlFactor, _data, i);
-      i += SerDeUtil.writeOptional(1, maxVolatilityAccumulator, _data, i);
+      i += SerDeUtil.writeOptionalUnsignedInt(1, adaptiveFeeControlFactor, _data, i);
+      i += SerDeUtil.writeOptionalUnsignedInt(1, maxVolatilityAccumulator, _data, i);
       i += SerDeUtil.writeOptionalshort(1, tickGroupSize, _data, i);
       i += SerDeUtil.writeOptionalshort(1, majorSwapThresholdTicks, _data, i);
       return i - _offset;
@@ -5661,6 +5736,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param defaultBaseFeeRate: u16
   public static Instruction setDefaultBaseFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final PublicKey whirlpoolsConfigKey,
                                                   final PublicKey adaptiveFeeTierKey,
@@ -5689,6 +5765,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param defaultBaseFeeRate: u16
   public static Instruction setDefaultBaseFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int defaultBaseFeeRate) {
@@ -5699,6 +5776,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param defaultBaseFeeRate: u16
   public record SetDefaultBaseFeeRateIxData(Discriminator discriminator, int defaultBaseFeeRate) implements SerDe {  
 
     public static SetDefaultBaseFeeRateIxData read(final Instruction instruction) {
@@ -5773,6 +5851,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param defaultFeeRate: u16
   public static Instruction setDefaultFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final PublicKey whirlpoolsConfigKey,
                                               final PublicKey feeTierKey,
@@ -5801,6 +5880,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided default_fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param defaultFeeRate: u16
   public static Instruction setDefaultFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                               final List<AccountMeta> keys,
                                               final int defaultFeeRate) {
@@ -5811,6 +5891,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param defaultFeeRate: u16
   public record SetDefaultFeeRateIxData(Discriminator discriminator, int defaultFeeRate) implements SerDe {  
 
     public static SetDefaultFeeRateIxData read(final Instruction instruction) {
@@ -5883,6 +5964,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
   ///
+  /// @param defaultProtocolFeeRate: u16
   public static Instruction setDefaultProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final PublicKey whirlpoolsConfigKey,
                                                       final PublicKey feeAuthorityKey,
@@ -5909,6 +5991,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
   ///
+  /// @param defaultProtocolFeeRate: u16
   public static Instruction setDefaultProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                       final List<AccountMeta> keys,
                                                       final int defaultProtocolFeeRate) {
@@ -5919,6 +6002,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param defaultProtocolFeeRate: u16
   public record SetDefaultProtocolFeeRateIxData(Discriminator discriminator, int defaultProtocolFeeRate) implements SerDe {  
 
     public static SetDefaultProtocolFeeRateIxData read(final Instruction instruction) {
@@ -6108,6 +6192,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param feeRate: u16
   public static Instruction setFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final PublicKey whirlpoolsConfigKey,
                                        final PublicKey whirlpoolKey,
@@ -6136,6 +6221,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param feeRate: u16
   public static Instruction setFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int feeRate) {
@@ -6146,6 +6232,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param feeRate: u16
   public record SetFeeRateIxData(Discriminator discriminator, int feeRate) implements SerDe {  
 
     public static SetFeeRateIxData read(final Instruction instruction) {
@@ -6218,6 +6305,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param feeRate: u16
   public static Instruction setFeeRateByDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final PublicKey whirlpoolKey,
                                                               final PublicKey adaptiveFeeTierKey,
@@ -6245,6 +6333,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `FeeRateMaxExceeded` - If the provided fee_rate exceeds MAX_FEE_RATE.
   ///
+  /// @param feeRate: u16
   public static Instruction setFeeRateByDelegatedFeeAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                               final List<AccountMeta> keys,
                                                               final int feeRate) {
@@ -6255,6 +6344,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param feeRate: u16
   public record SetFeeRateByDelegatedFeeAuthorityIxData(Discriminator discriminator, int feeRate) implements SerDe {  
 
     public static SetFeeRateByDelegatedFeeAuthorityIxData read(final Instruction instruction) {
@@ -6391,6 +6481,13 @@ public final class WhirlpoolProgram {
   /// - `tick_group_size` - Tick group size to define tick group index.
   /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
   ///
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public static Instruction setPresetAdaptiveFeeConstants(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final PublicKey whirlpoolsConfigKey,
                                                           final PublicKey adaptiveFeeTierKey,
@@ -6399,8 +6496,8 @@ public final class WhirlpoolProgram {
                                                           final int filterPeriod,
                                                           final int decayPeriod,
                                                           final int reductionFactor,
-                                                          final int adaptiveFeeControlFactor,
-                                                          final int maxVolatilityAccumulator,
+                                                          final long adaptiveFeeControlFactor,
+                                                          final long maxVolatilityAccumulator,
                                                           final int tickGroupSize,
                                                           final int majorSwapThresholdTicks) {
     final var keys = setPresetAdaptiveFeeConstantsKeys(
@@ -6437,13 +6534,20 @@ public final class WhirlpoolProgram {
   /// - `tick_group_size` - Tick group size to define tick group index.
   /// - `major_swap_threshold_ticks` - Major swap threshold ticks to define major swap.
   ///
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public static Instruction setPresetAdaptiveFeeConstants(final AccountMeta invokedWhirlpoolProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int filterPeriod,
                                                           final int decayPeriod,
                                                           final int reductionFactor,
-                                                          final int adaptiveFeeControlFactor,
-                                                          final int maxVolatilityAccumulator,
+                                                          final long adaptiveFeeControlFactor,
+                                                          final long maxVolatilityAccumulator,
                                                           final int tickGroupSize,
                                                           final int majorSwapThresholdTicks) {
     final byte[] _data = new byte[26];
@@ -6454,9 +6558,9 @@ public final class WhirlpoolProgram {
     i += 2;
     putInt16LE(_data, i, reductionFactor);
     i += 2;
-    putInt32LE(_data, i, adaptiveFeeControlFactor);
+    putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
     i += 4;
-    putInt32LE(_data, i, maxVolatilityAccumulator);
+    putInt32LE(_data, i, (int) maxVolatilityAccumulator);
     i += 4;
     putInt16LE(_data, i, tickGroupSize);
     i += 2;
@@ -6465,12 +6569,19 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param filterPeriod: u16
+  /// @param decayPeriod: u16
+  /// @param reductionFactor: u16
+  /// @param adaptiveFeeControlFactor: u32
+  /// @param maxVolatilityAccumulator: u32
+  /// @param tickGroupSize: u16
+  /// @param majorSwapThresholdTicks: u16
   public record SetPresetAdaptiveFeeConstantsIxData(Discriminator discriminator,
                                                     int filterPeriod,
                                                     int decayPeriod,
                                                     int reductionFactor,
-                                                    int adaptiveFeeControlFactor,
-                                                    int maxVolatilityAccumulator,
+                                                    long adaptiveFeeControlFactor,
+                                                    long maxVolatilityAccumulator,
                                                     int tickGroupSize,
                                                     int majorSwapThresholdTicks) implements SerDe {  
 
@@ -6500,9 +6611,9 @@ public final class WhirlpoolProgram {
       i += 2;
       final var reductionFactor = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var adaptiveFeeControlFactor = getInt32LE(_data, i);
+      final var adaptiveFeeControlFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var maxVolatilityAccumulator = getInt32LE(_data, i);
+      final var maxVolatilityAccumulator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var tickGroupSize = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
@@ -6526,9 +6637,9 @@ public final class WhirlpoolProgram {
       i += 2;
       putInt16LE(_data, i, reductionFactor);
       i += 2;
-      putInt32LE(_data, i, adaptiveFeeControlFactor);
+      putInt32LE(_data, i, (int) adaptiveFeeControlFactor);
       i += 4;
-      putInt32LE(_data, i, maxVolatilityAccumulator);
+      putInt32LE(_data, i, (int) maxVolatilityAccumulator);
       i += 4;
       putInt16LE(_data, i, tickGroupSize);
       i += 2;
@@ -6583,6 +6694,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
   ///
+  /// @param protocolFeeRate: u16
   public static Instruction setProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolsConfigKey,
                                                final PublicKey whirlpoolKey,
@@ -6611,6 +6723,7 @@ public final class WhirlpoolProgram {
   /// #### Special Errors
   /// - `ProtocolFeeRateMaxExceeded` - If the provided default_protocol_fee_rate exceeds MAX_PROTOCOL_FEE_RATE.
   ///
+  /// @param protocolFeeRate: u16
   public static Instruction setProtocolFeeRate(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int protocolFeeRate) {
@@ -6621,6 +6734,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param protocolFeeRate: u16
   public record SetProtocolFeeRateIxData(Discriminator discriminator, int protocolFeeRate) implements SerDe {  
 
     public static SetProtocolFeeRateIxData read(final Instruction instruction) {
@@ -7440,6 +7554,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
   /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction swap(final AccountMeta invokedWhirlpoolProgramMeta,
                                  final PublicKey tokenProgramKey,
                                  final PublicKey tokenAuthorityKey,
@@ -7505,6 +7621,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
   /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction swap(final AccountMeta invokedWhirlpoolProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amount,
@@ -7527,6 +7645,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public record SwapIxData(Discriminator discriminator,
                            long amount,
                            long otherAmountThreshold,
@@ -7675,6 +7795,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
   /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction swapV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                    final PublicKey tokenProgramAKey,
                                    final PublicKey tokenProgramBKey,
@@ -7751,6 +7873,8 @@ public final class WhirlpoolProgram {
   /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
   /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction swapV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long amount,
@@ -7779,6 +7903,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public record SwapV2IxData(Discriminator discriminator,
                              long amount,
                              long otherAmountThreshold,
@@ -8026,6 +8152,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
   /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwap(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final PublicKey tokenProgramKey,
                                        final PublicKey tokenAuthorityKey,
@@ -8117,6 +8245,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
   /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwap(final AccountMeta invokedWhirlpoolProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long amount,
@@ -8145,6 +8275,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public record TwoHopSwapIxData(Discriminator discriminator,
                                  long amount,
                                  long otherAmountThreshold,
@@ -8333,6 +8465,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
   /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwapV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final PublicKey whirlpoolOneKey,
                                          final PublicKey whirlpoolTwoKey,
@@ -8435,6 +8569,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
   /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
   ///
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwapV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long amount,
@@ -8469,6 +8605,8 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param otherAmountThreshold: u64
   public record TwoHopSwapV2IxData(Discriminator discriminator,
                                    long amount,
                                    long otherAmountThreshold,

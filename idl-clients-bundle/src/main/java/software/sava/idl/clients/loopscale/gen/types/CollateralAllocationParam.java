@@ -8,6 +8,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param currentAllocationAmount: u64
 public record CollateralAllocationParam(PublicKey assetIdentifier, long currentAllocationAmount) implements SerDe {
 
   public static final int BYTES = 40;

@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param maxDepositAmount: u64
 public record MaxDepositAmountSet(Discriminator discriminator, long maxDepositAmount) implements NtbundleEvent {
 
   public static final int BYTES = 16;

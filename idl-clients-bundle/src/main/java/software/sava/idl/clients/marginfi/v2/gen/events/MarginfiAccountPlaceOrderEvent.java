@@ -12,13 +12,14 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tags: u16[]
 public record MarginfiAccountPlaceOrderEvent(Discriminator discriminator,
                                              AccountEventHeader header,
                                              PublicKey order,
                                              OrderTriggerType trigger,
                                              WrappedI80F48 stopLoss,
                                              WrappedI80F48 takeProfit,
-                                             short[] tags) implements MarginfiEvent {
+                                             int[] tags) implements MarginfiEvent {
 
   public static final int TAGS_LEN = 2;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(1, 105, 79, 28, 142, 242, 99, 145);
@@ -41,8 +42,8 @@ public record MarginfiAccountPlaceOrderEvent(Discriminator discriminator,
     i += stopLoss.l();
     final var takeProfit = WrappedI80F48.read(_data, i);
     i += takeProfit.l();
-    final var tags = new short[2];
-    SerDeUtil.readArray(tags, _data, i);
+    final var tags = new int[2];
+    SerDeUtil.readUnsignedShortArray(tags, _data, i);
     return new MarginfiAccountPlaceOrderEvent(discriminator,
                                               header,
                                               order,
@@ -61,7 +62,7 @@ public record MarginfiAccountPlaceOrderEvent(Discriminator discriminator,
     i += trigger.write(_data, i);
     i += stopLoss.write(_data, i);
     i += takeProfit.write(_data, i);
-    i += SerDeUtil.writeArrayChecked(tags, 2, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(tags, 2, _data, i);
     return i - _offset;
   }
 
@@ -72,6 +73,6 @@ public record MarginfiAccountPlaceOrderEvent(Discriminator discriminator,
          + trigger.l()
          + stopLoss.l()
          + takeProfit.l()
-         + SerDeUtil.lenArray(tags);
+         + SerDeUtil.lenUnsignedShortArray(tags);
   }
 }

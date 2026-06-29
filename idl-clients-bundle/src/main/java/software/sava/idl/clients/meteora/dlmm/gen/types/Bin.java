@@ -13,20 +13,20 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param amountX Amount of token X in the bin for market making. This already excluded protocol fees.
-/// @param amountY Amount of token Y in the bin for market making. This already excluded protocol fees.
+/// @param amountX: u64 Amount of token X in the bin for market making. This already excluded protocol fees.
+/// @param amountY: u64 Amount of token Y in the bin for market making. This already excluded protocol fees.
 /// @param price Bin price
 /// @param liquiditySupply Bin MM liquidity supply.
-/// @param fulfilledOrderAmountX Total fulfilled order amount x
-/// @param fulfilledOrderAmountY Total fulfilled order amount y
-/// @param limitOrderFeeAskSide Limit order fee collected by ask side orders
-/// @param limitOrderFeeBidSide Limit order fee collected by bid side orders
+/// @param fulfilledOrderAmountX: u64 Total fulfilled order amount x
+/// @param fulfilledOrderAmountY: u64 Total fulfilled order amount y
+/// @param limitOrderFeeAskSide: u64 Limit order fee collected by ask side orders
+/// @param limitOrderFeeBidSide: u64 Limit order fee collected by bid side orders
 /// @param feeAmountXPerTokenStored Swap fee amount of token X per liquidity deposited.
 /// @param feeAmountYPerTokenStored Swap fee amount of token Y per liquidity deposited.
-/// @param openOrderAmount Pending open limit orders amount in the bin.
-/// @param totalProcessingOrderAmount Total processing order amount
-/// @param processedOrderRemainingAmount Remaining in processing open limit orders amount in the bin.
-/// @param orderAge Age
+/// @param openOrderAmount: u64 Pending open limit orders amount in the bin.
+/// @param totalProcessingOrderAmount: u64 Total processing order amount
+/// @param processedOrderRemainingAmount: u64 Remaining in processing open limit orders amount in the bin.
+/// @param orderAge: u32 Age
 /// @param limitOrderAskSide limit order flag
 /// @param padding1 padding
 public record Bin(long amountX,
@@ -42,7 +42,7 @@ public record Bin(long amountX,
                   long openOrderAmount,
                   long totalProcessingOrderAmount,
                   long processedOrderRemainingAmount,
-                  int orderAge,
+                  long orderAge,
                   int limitOrderAskSide,
                   byte[] padding1) implements SerDe {
 
@@ -97,7 +97,7 @@ public record Bin(long amountX,
     i += 8;
     final var processedOrderRemainingAmount = getInt64LE(_data, i);
     i += 8;
-    final var orderAge = getInt32LE(_data, i);
+    final var orderAge = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var limitOrderAskSide = _data[i] & 0xFF;
     ++i;
@@ -150,7 +150,7 @@ public record Bin(long amountX,
     i += 8;
     putInt64LE(_data, i, processedOrderRemainingAmount);
     i += 8;
-    putInt32LE(_data, i, orderAge);
+    putInt32LE(_data, i, (int) orderAge);
     i += 4;
     _data[i] = (byte) limitOrderAskSide;
     ++i;

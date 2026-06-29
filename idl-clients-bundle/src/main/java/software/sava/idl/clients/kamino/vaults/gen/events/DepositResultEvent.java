@@ -8,6 +8,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param sharesToMint: u64
+/// @param tokenToDeposit: u64
+/// @param crankFundsToDeposit: u64
 public record DepositResultEvent(Discriminator discriminator,
                                  long sharesToMint,
                                  long tokenToDeposit,

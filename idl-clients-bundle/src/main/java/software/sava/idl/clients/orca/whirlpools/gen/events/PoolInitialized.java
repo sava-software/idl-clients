@@ -14,6 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param tickSpacing: u16
 public record PoolInitialized(Discriminator discriminator,
                               PublicKey whirlpool,
                               PublicKey whirlpoolsConfig,

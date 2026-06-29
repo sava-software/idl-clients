@@ -4,6 +4,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// @param value: u64[]
+/// @param padding: u64[]
 public record BigFractionBytes(long[] value, long[] padding) implements SerDe {
 
   public static final int BYTES = 48;

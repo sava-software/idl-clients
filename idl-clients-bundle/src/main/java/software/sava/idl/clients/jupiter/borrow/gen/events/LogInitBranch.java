@@ -10,7 +10,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record LogInitBranch(Discriminator discriminator, PublicKey branch, int branchId) implements VaultsEvent {
+/// @param branchId: u32
+public record LogInitBranch(Discriminator discriminator, PublicKey branch, long branchId) implements VaultsEvent {
 
   public static final int BYTES = 44;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(127, 182, 211, 219, 140, 189, 193, 101);
@@ -26,7 +27,7 @@ public record LogInitBranch(Discriminator discriminator, PublicKey branch, int b
     int i = _offset + discriminator.length();
     final var branch = readPubKey(_data, i);
     i += 32;
-    final var branchId = getInt32LE(_data, i);
+    final var branchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new LogInitBranch(discriminator, branch, branchId);
   }
 
@@ -35,7 +36,7 @@ public record LogInitBranch(Discriminator discriminator, PublicKey branch, int b
     int i = _offset + discriminator.write(_data, _offset);
     branch.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, branchId);
+    putInt32LE(_data, i, (int) branchId);
     i += 4;
     return i - _offset;
   }

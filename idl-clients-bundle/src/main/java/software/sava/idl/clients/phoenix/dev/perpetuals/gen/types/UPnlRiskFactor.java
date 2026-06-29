@@ -8,6 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// uPnL risk factor encoded as basis points.
 ///
+/// @param inner: u64
 public record UPnlRiskFactor(long inner) implements SerDe {
 
   public static final int BYTES = 8;

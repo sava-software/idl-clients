@@ -20,15 +20,20 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Tick data structure
 ///
+/// @param vaultId: u16
+/// @param totalIds: u32
+/// @param rawDebt: u64
+/// @param liquidationBranchId: u32
+/// @param debtFactor: u64
 public record Tick(PublicKey _address,
                    Discriminator discriminator,
                    int vaultId,
                    int tick,
                    int isLiquidated,
-                   int totalIds,
+                   long totalIds,
                    long rawDebt,
                    int isFullyLiquidated,
-                   int liquidationBranchId,
+                   long liquidationBranchId,
                    long debtFactor) implements SerDe {
 
   public static final int BYTES = 40;
@@ -62,9 +67,9 @@ public record Tick(PublicKey _address,
     return Filter.createMemCompFilter(IS_LIQUIDATED_OFFSET, new byte[]{(byte) isLiquidated});
   }
 
-  public static Filter createTotalIdsFilter(final int totalIds) {
+  public static Filter createTotalIdsFilter(final long totalIds) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, totalIds);
+    putInt32LE(_data, 0, (int) totalIds);
     return Filter.createMemCompFilter(TOTAL_IDS_OFFSET, _data);
   }
 
@@ -78,9 +83,9 @@ public record Tick(PublicKey _address,
     return Filter.createMemCompFilter(IS_FULLY_LIQUIDATED_OFFSET, new byte[]{(byte) isFullyLiquidated});
   }
 
-  public static Filter createLiquidationBranchIdFilter(final int liquidationBranchId) {
+  public static Filter createLiquidationBranchIdFilter(final long liquidationBranchId) {
     final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, liquidationBranchId);
+    putInt32LE(_data, 0, (int) liquidationBranchId);
     return Filter.createMemCompFilter(LIQUIDATION_BRANCH_ID_OFFSET, _data);
   }
 
@@ -116,13 +121,13 @@ public record Tick(PublicKey _address,
     i += 4;
     final var isLiquidated = _data[i] & 0xFF;
     ++i;
-    final var totalIds = getInt32LE(_data, i);
+    final var totalIds = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var rawDebt = getInt64LE(_data, i);
     i += 8;
     final var isFullyLiquidated = _data[i] & 0xFF;
     ++i;
-    final var liquidationBranchId = getInt32LE(_data, i);
+    final var liquidationBranchId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var debtFactor = getInt64LE(_data, i);
     return new Tick(_address,
@@ -146,13 +151,13 @@ public record Tick(PublicKey _address,
     i += 4;
     _data[i] = (byte) isLiquidated;
     ++i;
-    putInt32LE(_data, i, totalIds);
+    putInt32LE(_data, i, (int) totalIds);
     i += 4;
     putInt64LE(_data, i, rawDebt);
     i += 8;
     _data[i] = (byte) isFullyLiquidated;
     ++i;
-    putInt32LE(_data, i, liquidationBranchId);
+    putInt32LE(_data, i, (int) liquidationBranchId);
     i += 4;
     putInt64LE(_data, i, debtFactor);
     i += 8;

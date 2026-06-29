@@ -46,13 +46,14 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param allocationBps: u32
   public static Instruction addStrategy(final AccountMeta invokedNtbundleProgramMeta,
                                         final SolanaAccounts solanaAccounts,
                                         final PublicKey managerKey,
                                         final PublicKey strategyAccountKey,
                                         final PublicKey bundleAccountKey,
                                         final PublicKey receiverAddressKey,
-                                        final int allocationBps) {
+                                        final long allocationBps) {
     final var keys = addStrategyKeys(
       solanaAccounts,
       managerKey,
@@ -63,17 +64,19 @@ public final class NtbundleProgram {
     return addStrategy(invokedNtbundleProgramMeta, keys, allocationBps);
   }
 
+  /// @param allocationBps: u32
   public static Instruction addStrategy(final AccountMeta invokedNtbundleProgramMeta,
                                         final List<AccountMeta> keys,
-                                        final int allocationBps) {
+                                        final long allocationBps) {
     final byte[] _data = new byte[12];
     int i = ADD_STRATEGY_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, allocationBps);
+    putInt32LE(_data, i, (int) allocationBps);
 
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record AddStrategyIxData(Discriminator discriminator, int allocationBps) implements SerDe {  
+  /// @param allocationBps: u32
+  public record AddStrategyIxData(Discriminator discriminator, long allocationBps) implements SerDe {  
 
     public static AddStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -89,14 +92,14 @@ public final class NtbundleProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var allocationBps = getInt32LE(_data, i);
+      final var allocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new AddStrategyIxData(discriminator, allocationBps);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      putInt32LE(_data, i, allocationBps);
+      putInt32LE(_data, i, (int) allocationBps);
       i += 4;
       return i - _offset;
     }
@@ -460,6 +463,14 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
+  /// @param oracleBuffer: u64
+  /// @param maxDepositAmount: u64
+  /// @param minDepositAmount: u64
+  /// @param withdrawalDelay: u64
   public static Instruction initializeBundle(final AccountMeta invokedNtbundleProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey creatorKey,
@@ -471,10 +482,10 @@ public final class NtbundleProgram {
                                              final PublicKey oracleDataKey,
                                              final byte[] name,
                                              final PublicKey keeper,
-                                             final int depositFee,
-                                             final int withdrawalFee,
-                                             final int performanceFee,
-                                             final int managementFeeBps,
+                                             final long depositFee,
+                                             final long withdrawalFee,
+                                             final long performanceFee,
+                                             final long managementFeeBps,
                                              final long oracleBuffer,
                                              final long maxDepositAmount,
                                              final long minDepositAmount,
@@ -523,14 +534,22 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
+  /// @param oracleBuffer: u64
+  /// @param maxDepositAmount: u64
+  /// @param minDepositAmount: u64
+  /// @param withdrawalDelay: u64
   public static Instruction initializeBundle(final AccountMeta invokedNtbundleProgramMeta,
                                              final List<AccountMeta> keys,
                                              final byte[] name,
                                              final PublicKey keeper,
-                                             final int depositFee,
-                                             final int withdrawalFee,
-                                             final int performanceFee,
-                                             final int managementFeeBps,
+                                             final long depositFee,
+                                             final long withdrawalFee,
+                                             final long performanceFee,
+                                             final long managementFeeBps,
                                              final long oracleBuffer,
                                              final long maxDepositAmount,
                                              final long minDepositAmount,
@@ -549,13 +568,13 @@ public final class NtbundleProgram {
     i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
     keeper.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, depositFee);
+    putInt32LE(_data, i, (int) depositFee);
     i += 4;
-    putInt32LE(_data, i, withdrawalFee);
+    putInt32LE(_data, i, (int) withdrawalFee);
     i += 4;
-    putInt32LE(_data, i, performanceFee);
+    putInt32LE(_data, i, (int) performanceFee);
     i += 4;
-    putInt32LE(_data, i, managementFeeBps);
+    putInt32LE(_data, i, (int) managementFeeBps);
     i += 4;
     putInt64LE(_data, i, oracleBuffer);
     i += 8;
@@ -586,13 +605,21 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
+  /// @param oracleBuffer: u64
+  /// @param maxDepositAmount: u64
+  /// @param minDepositAmount: u64
+  /// @param withdrawalDelay: u64
   public record InitializeBundleIxData(Discriminator discriminator,
                                        byte[] name,
                                        PublicKey keeper,
-                                       int depositFee,
-                                       int withdrawalFee,
-                                       int performanceFee,
-                                       int managementFeeBps,
+                                       long depositFee,
+                                       long withdrawalFee,
+                                       long performanceFee,
+                                       long managementFeeBps,
                                        long oracleBuffer,
                                        long maxDepositAmount,
                                        long minDepositAmount,
@@ -644,13 +671,13 @@ public final class NtbundleProgram {
       i += SerDeUtil.readArray(name, _data, i);
       final var keeper = readPubKey(_data, i);
       i += 32;
-      final var depositFee = getInt32LE(_data, i);
+      final var depositFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var withdrawalFee = getInt32LE(_data, i);
+      final var withdrawalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var performanceFee = getInt32LE(_data, i);
+      final var performanceFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var managementFeeBps = getInt32LE(_data, i);
+      final var managementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
       final var oracleBuffer = getInt64LE(_data, i);
       i += 8;
@@ -705,13 +732,13 @@ public final class NtbundleProgram {
       i += SerDeUtil.writeArrayChecked(name, 32, _data, i);
       keeper.write(_data, i);
       i += 32;
-      putInt32LE(_data, i, depositFee);
+      putInt32LE(_data, i, (int) depositFee);
       i += 4;
-      putInt32LE(_data, i, withdrawalFee);
+      putInt32LE(_data, i, (int) withdrawalFee);
       i += 4;
-      putInt32LE(_data, i, performanceFee);
+      putInt32LE(_data, i, (int) performanceFee);
       i += 4;
-      putInt32LE(_data, i, managementFeeBps);
+      putInt32LE(_data, i, (int) managementFeeBps);
       i += 4;
       putInt64LE(_data, i, oracleBuffer);
       i += 8;
@@ -1058,6 +1085,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param refillAmount: u64
   public static Instruction performRefill(final AccountMeta invokedNtbundleProgramMeta,
                                           final PublicKey receiverAddressKey,
                                           final PublicKey bundleAssetAccountKey,
@@ -1083,6 +1111,7 @@ public final class NtbundleProgram {
     return performRefill(invokedNtbundleProgramMeta, keys, refillAmount);
   }
 
+  /// @param refillAmount: u64
   public static Instruction performRefill(final AccountMeta invokedNtbundleProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long refillAmount) {
@@ -1093,6 +1122,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param refillAmount: u64
   public record PerformRefillIxData(Discriminator discriminator, long refillAmount) implements SerDe {  
 
     public static PerformRefillIxData read(final Instruction instruction) {
@@ -1405,6 +1435,7 @@ public final class NtbundleProgram {
   }
 
   /// @param userTokenAccountKey user token account (source of funds)
+  /// @param amount: u64
   public static Instruction requestDeposit(final AccountMeta invokedNtbundleProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey userKey,
@@ -1436,6 +1467,7 @@ public final class NtbundleProgram {
     return requestDeposit(invokedNtbundleProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction requestDeposit(final AccountMeta invokedNtbundleProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount) {
@@ -1446,6 +1478,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record RequestDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static RequestDepositIxData read(final Instruction instruction) {
@@ -1655,6 +1688,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param withdrawalDelay: u64
   public static Instruction setDelays(final AccountMeta invokedNtbundleProgramMeta,
                                       final PublicKey managerKey,
                                       final PublicKey bundleAccountKey,
@@ -1676,6 +1710,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param withdrawalDelay: u64
   public static Instruction setDelays(final AccountMeta invokedNtbundleProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long withdrawalDelay,
@@ -1695,6 +1730,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param withdrawalDelay: u64
   public record SetDelaysIxData(Discriminator discriminator,
                                 long withdrawalDelay,
                                 long withdrawalTMin,
@@ -1762,14 +1798,18 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
   public static Instruction setFees(final AccountMeta invokedNtbundleProgramMeta,
                                     final PublicKey managerKey,
                                     final PublicKey bundleAccountKey,
                                     final PublicKey treasury,
-                                    final int depositFee,
-                                    final int withdrawalFee,
-                                    final int performanceFee,
-                                    final int managementFeeBps) {
+                                    final long depositFee,
+                                    final long withdrawalFee,
+                                    final long performanceFee,
+                                    final long managementFeeBps) {
     final var keys = setFeesKeys(
       managerKey,
       bundleAccountKey
@@ -1785,34 +1825,42 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
   public static Instruction setFees(final AccountMeta invokedNtbundleProgramMeta,
                                     final List<AccountMeta> keys,
                                     final PublicKey treasury,
-                                    final int depositFee,
-                                    final int withdrawalFee,
-                                    final int performanceFee,
-                                    final int managementFeeBps) {
+                                    final long depositFee,
+                                    final long withdrawalFee,
+                                    final long performanceFee,
+                                    final long managementFeeBps) {
     final byte[] _data = new byte[56];
     int i = SET_FEES_DISCRIMINATOR.write(_data, 0);
     treasury.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, depositFee);
+    putInt32LE(_data, i, (int) depositFee);
     i += 4;
-    putInt32LE(_data, i, withdrawalFee);
+    putInt32LE(_data, i, (int) withdrawalFee);
     i += 4;
-    putInt32LE(_data, i, performanceFee);
+    putInt32LE(_data, i, (int) performanceFee);
     i += 4;
-    putInt32LE(_data, i, managementFeeBps);
+    putInt32LE(_data, i, (int) managementFeeBps);
 
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param depositFee: u32
+  /// @param withdrawalFee: u32
+  /// @param performanceFee: u32
+  /// @param managementFeeBps: u32
   public record SetFeesIxData(Discriminator discriminator,
                               PublicKey treasury,
-                              int depositFee,
-                              int withdrawalFee,
-                              int performanceFee,
-                              int managementFeeBps) implements SerDe {  
+                              long depositFee,
+                              long withdrawalFee,
+                              long performanceFee,
+                              long managementFeeBps) implements SerDe {  
 
     public static SetFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1834,13 +1882,13 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.length();
       final var treasury = readPubKey(_data, i);
       i += 32;
-      final var depositFee = getInt32LE(_data, i);
+      final var depositFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var withdrawalFee = getInt32LE(_data, i);
+      final var withdrawalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var performanceFee = getInt32LE(_data, i);
+      final var performanceFee = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var managementFeeBps = getInt32LE(_data, i);
+      final var managementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new SetFeesIxData(discriminator,
                                treasury,
                                depositFee,
@@ -1854,13 +1902,13 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.write(_data, _offset);
       treasury.write(_data, i);
       i += 32;
-      putInt32LE(_data, i, depositFee);
+      putInt32LE(_data, i, (int) depositFee);
       i += 4;
-      putInt32LE(_data, i, withdrawalFee);
+      putInt32LE(_data, i, (int) withdrawalFee);
       i += 4;
-      putInt32LE(_data, i, performanceFee);
+      putInt32LE(_data, i, (int) performanceFee);
       i += 4;
-      putInt32LE(_data, i, managementFeeBps);
+      putInt32LE(_data, i, (int) managementFeeBps);
       i += 4;
       return i - _offset;
     }
@@ -1946,6 +1994,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param maxDepositAmount: u64
   public static Instruction setMaxDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
                                                 final PublicKey managerKey,
                                                 final PublicKey bundleAccountKey,
@@ -1957,6 +2006,7 @@ public final class NtbundleProgram {
     return setMaxDepositAmount(invokedNtbundleProgramMeta, keys, maxDepositAmount);
   }
 
+  /// @param maxDepositAmount: u64
   public static Instruction setMaxDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long maxDepositAmount) {
@@ -1967,6 +2017,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param maxDepositAmount: u64
   public record SetMaxDepositAmountIxData(Discriminator discriminator, long maxDepositAmount) implements SerDe {  
 
     public static SetMaxDepositAmountIxData read(final Instruction instruction) {
@@ -2011,6 +2062,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param minDepositAmount: u64
   public static Instruction setMinDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
                                                 final PublicKey managerKey,
                                                 final PublicKey bundleAccountKey,
@@ -2022,6 +2074,7 @@ public final class NtbundleProgram {
     return setMinDepositAmount(invokedNtbundleProgramMeta, keys, minDepositAmount);
   }
 
+  /// @param minDepositAmount: u64
   public static Instruction setMinDepositAmount(final AccountMeta invokedNtbundleProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long minDepositAmount) {
@@ -2032,6 +2085,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param minDepositAmount: u64
   public record SetMinDepositAmountIxData(Discriminator discriminator, long minDepositAmount) implements SerDe {  
 
     public static SetMinDepositAmountIxData read(final Instruction instruction) {
@@ -2076,6 +2130,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param oracleBuffer: u64
   public static Instruction setOracleBuffer(final AccountMeta invokedNtbundleProgramMeta,
                                             final PublicKey managerKey,
                                             final PublicKey bundleAccountKey,
@@ -2087,6 +2142,7 @@ public final class NtbundleProgram {
     return setOracleBuffer(invokedNtbundleProgramMeta, keys, oracleBuffer);
   }
 
+  /// @param oracleBuffer: u64
   public static Instruction setOracleBuffer(final AccountMeta invokedNtbundleProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long oracleBuffer) {
@@ -2097,6 +2153,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param oracleBuffer: u64
   public record SetOracleBufferIxData(Discriminator discriminator, long oracleBuffer) implements SerDe {  
 
     public static SetOracleBufferIxData read(final Instruction instruction) {
@@ -2400,12 +2457,13 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param newAllocationBps: u32
   public static Instruction updateAllocations(final AccountMeta invokedNtbundleProgramMeta,
                                               final PublicKey managerKey,
                                               final PublicKey receiverAddressKey,
                                               final PublicKey bundleAccountKey,
                                               final PublicKey strategyAccountKey,
-                                              final int newAllocationBps) {
+                                              final long newAllocationBps) {
     final var keys = updateAllocationsKeys(
       managerKey,
       receiverAddressKey,
@@ -2415,17 +2473,19 @@ public final class NtbundleProgram {
     return updateAllocations(invokedNtbundleProgramMeta, keys, newAllocationBps);
   }
 
+  /// @param newAllocationBps: u32
   public static Instruction updateAllocations(final AccountMeta invokedNtbundleProgramMeta,
                                               final List<AccountMeta> keys,
-                                              final int newAllocationBps) {
+                                              final long newAllocationBps) {
     final byte[] _data = new byte[12];
     int i = UPDATE_ALLOCATIONS_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, newAllocationBps);
+    putInt32LE(_data, i, (int) newAllocationBps);
 
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record UpdateAllocationsIxData(Discriminator discriminator, int newAllocationBps) implements SerDe {  
+  /// @param newAllocationBps: u32
+  public record UpdateAllocationsIxData(Discriminator discriminator, long newAllocationBps) implements SerDe {  
 
     public static UpdateAllocationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2441,14 +2501,14 @@ public final class NtbundleProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var newAllocationBps = getInt32LE(_data, i);
+      final var newAllocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
       return new UpdateAllocationsIxData(discriminator, newAllocationBps);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      putInt32LE(_data, i, newAllocationBps);
+      putInt32LE(_data, i, (int) newAllocationBps);
       i += 4;
       return i - _offset;
     }
@@ -2473,6 +2533,7 @@ public final class NtbundleProgram {
     );
   }
 
+  /// @param newEquity: u64
   public static Instruction updateOracle(final AccountMeta invokedNtbundleProgramMeta,
                                          final PublicKey keeperKey,
                                          final PublicKey bundleAccountKey,
@@ -2488,6 +2549,7 @@ public final class NtbundleProgram {
     return updateOracle(invokedNtbundleProgramMeta, keys, newEquity);
   }
 
+  /// @param newEquity: u64
   public static Instruction updateOracle(final AccountMeta invokedNtbundleProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long newEquity) {
@@ -2498,6 +2560,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
+  /// @param newEquity: u64
   public record UpdateOracleIxData(Discriminator discriminator, long newEquity) implements SerDe {  
 
     public static UpdateOracleIxData read(final Instruction instruction) {

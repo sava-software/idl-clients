@@ -15,15 +15,15 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param bankPk The bank this balance corresponds to
 /// @param bankAssetTag Inherited from the bank when the position is first created and CANNOT BE CHANGED after that.
 ///                     Note that all balances created before the addition of this feature use `ASSET_TAG_DEFAULT`
-/// @param tag Tag used by orders to reference this balance (0 means unused/unassigned).
+/// @param tag: u16 Tag used by orders to reference this balance (0 means unused/unassigned).
 ///            A tag may also have a non-zero value while having no orders.
 /// @param assetShares The user's asset (deposit) shares in the bank. Multiply by `bank.asset_share_value` for
 ///                    the token amount.
 /// @param liabilityShares The user's liability (borrow) shares in the bank. Multiply by `bank.liability_share_value`
 ///                        for the token amount.
 /// @param emissionsOutstanding Unclaimed emissions rewards for this position
-/// @param lastUpdate Unix timestamp (u64) of the last emissions calculation for this position
-/// @param padding Reserved for future use
+/// @param lastUpdate: u64 Unix timestamp (u64) of the last emissions calculation for this position
+/// @param padding: u64[] Reserved for future use
 public record Balance(int active,
                       PublicKey bankPk,
                       int bankAssetTag,

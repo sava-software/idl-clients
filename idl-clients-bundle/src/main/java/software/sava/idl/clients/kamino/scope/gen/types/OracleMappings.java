@@ -13,13 +13,15 @@ import java.util.function.BiFunction;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param twapSourceOrRefPriceToleranceBps: u16[]
+/// @param refPrice: u16[]
 public record OracleMappings(PublicKey _address,
                              Discriminator discriminator,
                              PublicKey[] priceInfoAccounts,
                              byte[] priceTypes,
-                             short[] twapSourceOrRefPriceToleranceBps,
+                             int[] twapSourceOrRefPriceToleranceBps,
                              TwapEnabledBitmask[] twapEnabledBitmask,
-                             short[] refPrice,
+                             int[] refPrice,
                              byte[][] generic) implements SerDe {
 
   public static final int BYTES = 29704;
@@ -65,12 +67,12 @@ public record OracleMappings(PublicKey _address,
     i += SerDeUtil.readArray(priceInfoAccounts, _data, i);
     final var priceTypes = new byte[512];
     i += SerDeUtil.readArray(priceTypes, _data, i);
-    final var twapSourceOrRefPriceToleranceBps = new short[512];
-    i += SerDeUtil.readArray(twapSourceOrRefPriceToleranceBps, _data, i);
+    final var twapSourceOrRefPriceToleranceBps = new int[512];
+    i += SerDeUtil.readUnsignedShortArray(twapSourceOrRefPriceToleranceBps, _data, i);
     final var twapEnabledBitmask = new TwapEnabledBitmask[512];
     i += SerDeUtil.readArray(twapEnabledBitmask, TwapEnabledBitmask::read, _data, i);
-    final var refPrice = new short[512];
-    i += SerDeUtil.readArray(refPrice, _data, i);
+    final var refPrice = new int[512];
+    i += SerDeUtil.readUnsignedShortArray(refPrice, _data, i);
     final var generic = new byte[512][20];
     SerDeUtil.readArray(generic, _data, i);
     return new OracleMappings(_address,
@@ -88,9 +90,9 @@ public record OracleMappings(PublicKey _address,
     int i = _offset + discriminator.write(_data, _offset);
     i += SerDeUtil.writeArrayChecked(priceInfoAccounts, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(priceTypes, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(twapSourceOrRefPriceToleranceBps, 512, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(twapSourceOrRefPriceToleranceBps, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(twapEnabledBitmask, 512, _data, i);
-    i += SerDeUtil.writeArrayChecked(refPrice, 512, _data, i);
+    i += SerDeUtil.writeUnsignedShortArrayChecked(refPrice, 512, _data, i);
     i += SerDeUtil.writeArrayChecked(generic, 512, 20, _data, i);
     return i - _offset;
   }

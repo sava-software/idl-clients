@@ -324,6 +324,8 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public static Instruction addRewards(final AccountMeta invokedFarmsProgramMeta,
                                        final PublicKey payerKey,
                                        final PublicKey farmStateKey,
@@ -349,6 +351,8 @@ public final class FarmsProgram {
     return addRewards(invokedFarmsProgramMeta, keys, amount, rewardIndex);
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public static Instruction addRewards(final AccountMeta invokedFarmsProgramMeta,
                                        final List<AccountMeta> keys,
                                        final long amount,
@@ -362,6 +366,8 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
 
     public static AddRewardsIxData read(final Instruction instruction) {
@@ -414,6 +420,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param mode: u16
   public static Instruction updateFarmConfig(final AccountMeta invokedFarmsProgramMeta,
                                              final PublicKey signerKey,
                                              final PublicKey farmStateKey,
@@ -429,6 +436,7 @@ public final class FarmsProgram {
     return updateFarmConfig(invokedFarmsProgramMeta, keys, mode, data);
   }
 
+  /// @param mode: u16
   public static Instruction updateFarmConfig(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int mode,
@@ -442,6 +450,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param mode: u16
   public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements SerDe {  
 
     public static UpdateFarmConfigIxData read(final Instruction instruction) {
@@ -594,6 +603,9 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
+  /// @param expectedRewardIssuedUnclaimed: u64
   public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
                                            final PublicKey delegateAuthorityKey,
                                            final PublicKey farmStateKey,
@@ -615,6 +627,9 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
+  /// @param expectedRewardIssuedUnclaimed: u64
   public static Instruction rewardUserOnce(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long rewardIndex,
@@ -631,6 +646,9 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
+  /// @param amount: u64
+  /// @param expectedRewardIssuedUnclaimed: u64
   public record RewardUserOnceIxData(Discriminator discriminator,
                                      long rewardIndex,
                                      long amount,
@@ -728,6 +746,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction stake(final AccountMeta invokedFarmsProgramMeta,
                                   final PublicKey ownerKey,
                                   final PublicKey userStateKey,
@@ -752,6 +771,7 @@ public final class FarmsProgram {
     return stake(invokedFarmsProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction stake(final AccountMeta invokedFarmsProgramMeta,
                                   final List<AccountMeta> keys,
                                   final long amount) {
@@ -762,6 +782,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record StakeIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static StakeIxData read(final Instruction instruction) {
@@ -808,6 +829,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param newAmount: u64
   public static Instruction setStakeDelegated(final AccountMeta invokedFarmsProgramMeta,
                                               final PublicKey delegateAuthorityKey,
                                               final PublicKey userStateKey,
@@ -821,6 +843,7 @@ public final class FarmsProgram {
     return setStakeDelegated(invokedFarmsProgramMeta, keys, newAmount);
   }
 
+  /// @param newAmount: u64
   public static Instruction setStakeDelegated(final AccountMeta invokedFarmsProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long newAmount) {
@@ -831,6 +854,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param newAmount: u64
   public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements SerDe {  
 
     public static SetStakeDelegatedIxData read(final Instruction instruction) {
@@ -894,6 +918,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param rewardIndex: u64
   public static Instruction harvestReward(final AccountMeta invokedFarmsProgramMeta,
                                           final PublicKey payerKey,
                                           final PublicKey userStateKey,
@@ -924,6 +949,7 @@ public final class FarmsProgram {
     return harvestReward(invokedFarmsProgramMeta, keys, rewardIndex);
   }
 
+  /// @param rewardIndex: u64
   public static Instruction harvestReward(final AccountMeta invokedFarmsProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long rewardIndex) {
@@ -934,6 +960,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u64
   public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {  
 
     public static HarvestRewardIxData read(final Instruction instruction) {
@@ -1139,6 +1166,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdrawTreasury(final AccountMeta invokedFarmsProgramMeta,
                                              final PublicKey globalAdminKey,
                                              final PublicKey globalConfigKey,
@@ -1160,6 +1188,7 @@ public final class FarmsProgram {
     return withdrawTreasury(invokedFarmsProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdrawTreasury(final AccountMeta invokedFarmsProgramMeta,
                                              final List<AccountMeta> keys,
                                              final long amount) {
@@ -1170,6 +1199,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawTreasuryIxData read(final Instruction instruction) {
@@ -1220,6 +1250,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction depositToFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                final PublicKey depositorKey,
                                                final PublicKey farmStateKey,
@@ -1237,6 +1268,7 @@ public final class FarmsProgram {
     return depositToFarmVault(invokedFarmsProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction depositToFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final long amount) {
@@ -1247,6 +1279,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static DepositToFarmVaultIxData read(final Instruction instruction) {
@@ -1299,6 +1332,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdrawFromFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                   final PublicKey withdrawAuthorityKey,
                                                   final PublicKey farmStateKey,
@@ -1318,6 +1352,7 @@ public final class FarmsProgram {
     return withdrawFromFarmVault(invokedFarmsProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdrawFromFarmVault(final AccountMeta invokedFarmsProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final long amount) {
@@ -1328,6 +1363,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawFromFarmVaultIxData read(final Instruction instruction) {
@@ -1476,6 +1512,8 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public static Instruction withdrawReward(final AccountMeta invokedFarmsProgramMeta,
                                            final PublicKey farmAdminKey,
                                            final PublicKey farmStateKey,
@@ -1501,6 +1539,8 @@ public final class FarmsProgram {
     return withdrawReward(invokedFarmsProgramMeta, keys, amount, rewardIndex);
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public static Instruction withdrawReward(final AccountMeta invokedFarmsProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
@@ -1514,6 +1554,8 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param rewardIndex: u64
   public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
 
     public static WithdrawRewardIxData read(final Instruction instruction) {

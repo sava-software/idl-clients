@@ -51,6 +51,8 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param mintFeeRate: u16
+  /// @param redeemFeeRate: u16
   public static Instruction createBenefactor(final AccountMeta invokedJupStableProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey operatorAuthorityKey,
@@ -71,6 +73,8 @@ public final class JupStableProgram {
     return createBenefactor(invokedJupStableProgramMeta, keys, mintFeeRate, redeemFeeRate);
   }
 
+  /// @param mintFeeRate: u16
+  /// @param redeemFeeRate: u16
   public static Instruction createBenefactor(final AccountMeta invokedJupStableProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int mintFeeRate,
@@ -84,6 +88,8 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
+  /// @param mintFeeRate: u16
+  /// @param redeemFeeRate: u16
   public record CreateBenefactorIxData(Discriminator discriminator, int mintFeeRate, int redeemFeeRate) implements SerDe {  
 
     public static CreateBenefactorIxData read(final Instruction instruction) {
@@ -796,6 +802,8 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public static Instruction mint(final AccountMeta invokedJupStableProgramMeta,
                                  final SolanaAccounts solanaAccounts,
                                  final PublicKey userKey,
@@ -836,6 +844,8 @@ public final class JupStableProgram {
     return mint(invokedJupStableProgramMeta, keys, amount, minAmountOut);
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public static Instruction mint(final AccountMeta invokedJupStableProgramMeta,
                                  final List<AccountMeta> keys,
                                  final long amount,
@@ -849,6 +859,8 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public record MintIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {  
 
     public static MintIxData read(final Instruction instruction) {
@@ -924,6 +936,8 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public static Instruction redeem(final AccountMeta invokedJupStableProgramMeta,
                                    final SolanaAccounts solanaAccounts,
                                    final PublicKey userKey,
@@ -962,6 +976,8 @@ public final class JupStableProgram {
     return redeem(invokedJupStableProgramMeta, keys, amount, minAmountOut);
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public static Instruction redeem(final AccountMeta invokedJupStableProgramMeta,
                                    final List<AccountMeta> keys,
                                    final long amount,
@@ -975,6 +991,8 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
+  /// @param minAmountOut: u64
   public record RedeemIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {  
 
     public static RedeemIxData read(final Instruction instruction) {
@@ -1040,6 +1058,7 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param amount: u64
   public static Instruction withdraw(final AccountMeta invokedJupStableProgramMeta,
                                      final PublicKey operatorAuthorityKey,
                                      final PublicKey operatorKey,
@@ -1067,6 +1086,7 @@ public final class JupStableProgram {
     return withdraw(invokedJupStableProgramMeta, keys, amount);
   }
 
+  /// @param amount: u64
   public static Instruction withdraw(final AccountMeta invokedJupStableProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long amount) {
@@ -1077,6 +1097,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
+  /// @param amount: u64
   public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
 
     public static WithdrawIxData read(final Instruction instruction) {

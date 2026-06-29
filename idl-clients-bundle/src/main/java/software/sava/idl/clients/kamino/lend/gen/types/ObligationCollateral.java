@@ -16,12 +16,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Obligation collateral state
 ///
 /// @param depositReserve Reserve collateral is deposited to
-/// @param depositedAmount Amount of collateral deposited
+/// @param depositedAmount: u64 Amount of collateral deposited
 /// @param marketValueSf Collateral market value in quote currency (scaled fraction)
-/// @param borrowedAmountAgainstThisCollateralInElevationGroup Debt amount (lamport) taken against this collateral.
+/// @param borrowedAmountAgainstThisCollateralInElevationGroup: u64 Debt amount (lamport) taken against this collateral.
 ///                                                            (only meaningful if this obligation is part of an elevation group, otherwise 0)
 ///                                                            This is only indicative of the debt computed on the last refresh obligation.
 ///                                                            If the obligation have multiple collateral this value is the same for all of them.
+/// @param padding: u64[]
 public record ObligationCollateral(PublicKey depositReserve,
                                    long depositedAmount,
                                    BigInteger marketValueSf,

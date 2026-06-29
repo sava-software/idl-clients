@@ -14,25 +14,38 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param epoch: u64
+/// @param stakeIndex: u32
+/// @param lastUpdateDelegation: u64
+/// @param sourceValidatorIndex: u32
+/// @param sourceValidatorScore: u32
+/// @param sourceValidatorBalance: u64
+/// @param sourceValidatorStakeTarget: u64
+/// @param destValidatorIndex: u32
+/// @param destValidatorScore: u32
+/// @param destValidatorBalance: u64
+/// @param destValidatorStakeTarget: u64
+/// @param redelegateAmount: u64
+/// @param redelegateStakeIndex: u32
 public record RedelegateEvent(Discriminator discriminator,
                               PublicKey state,
                               long epoch,
-                              int stakeIndex,
+                              long stakeIndex,
                               PublicKey stakeAccount,
                               long lastUpdateDelegation,
-                              int sourceValidatorIndex,
+                              long sourceValidatorIndex,
                               PublicKey sourceValidatorVote,
-                              int sourceValidatorScore,
+                              long sourceValidatorScore,
                               long sourceValidatorBalance,
                               long sourceValidatorStakeTarget,
-                              int destValidatorIndex,
+                              long destValidatorIndex,
                               PublicKey destValidatorVote,
-                              int destValidatorScore,
+                              long destValidatorScore,
                               long destValidatorBalance,
                               long destValidatorStakeTarget,
                               long redelegateAmount,
                               SplitStakeAccountInfo splitStakeAccount,
-                              int redelegateStakeIndex,
+                              long redelegateStakeIndex,
                               PublicKey redelegateStakeAccount) implements MarinadeFinanceEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
@@ -65,27 +78,27 @@ public record RedelegateEvent(Discriminator discriminator,
     i += 32;
     final var epoch = getInt64LE(_data, i);
     i += 8;
-    final var stakeIndex = getInt32LE(_data, i);
+    final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var stakeAccount = readPubKey(_data, i);
     i += 32;
     final var lastUpdateDelegation = getInt64LE(_data, i);
     i += 8;
-    final var sourceValidatorIndex = getInt32LE(_data, i);
+    final var sourceValidatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var sourceValidatorVote = readPubKey(_data, i);
     i += 32;
-    final var sourceValidatorScore = getInt32LE(_data, i);
+    final var sourceValidatorScore = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var sourceValidatorBalance = getInt64LE(_data, i);
     i += 8;
     final var sourceValidatorStakeTarget = getInt64LE(_data, i);
     i += 8;
-    final var destValidatorIndex = getInt32LE(_data, i);
+    final var destValidatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var destValidatorVote = readPubKey(_data, i);
     i += 32;
-    final var destValidatorScore = getInt32LE(_data, i);
+    final var destValidatorScore = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var destValidatorBalance = getInt64LE(_data, i);
     i += 8;
@@ -102,7 +115,7 @@ public record RedelegateEvent(Discriminator discriminator,
       splitStakeAccount = SplitStakeAccountInfo.read(_data, i);
       i += splitStakeAccount.l();
     }
-    final var redelegateStakeIndex = getInt32LE(_data, i);
+    final var redelegateStakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var redelegateStakeAccount = readPubKey(_data, i);
     return new RedelegateEvent(discriminator,
@@ -134,27 +147,27 @@ public record RedelegateEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, epoch);
     i += 8;
-    putInt32LE(_data, i, stakeIndex);
+    putInt32LE(_data, i, (int) stakeIndex);
     i += 4;
     stakeAccount.write(_data, i);
     i += 32;
     putInt64LE(_data, i, lastUpdateDelegation);
     i += 8;
-    putInt32LE(_data, i, sourceValidatorIndex);
+    putInt32LE(_data, i, (int) sourceValidatorIndex);
     i += 4;
     sourceValidatorVote.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, sourceValidatorScore);
+    putInt32LE(_data, i, (int) sourceValidatorScore);
     i += 4;
     putInt64LE(_data, i, sourceValidatorBalance);
     i += 8;
     putInt64LE(_data, i, sourceValidatorStakeTarget);
     i += 8;
-    putInt32LE(_data, i, destValidatorIndex);
+    putInt32LE(_data, i, (int) destValidatorIndex);
     i += 4;
     destValidatorVote.write(_data, i);
     i += 32;
-    putInt32LE(_data, i, destValidatorScore);
+    putInt32LE(_data, i, (int) destValidatorScore);
     i += 4;
     putInt64LE(_data, i, destValidatorBalance);
     i += 8;
@@ -163,7 +176,7 @@ public record RedelegateEvent(Discriminator discriminator,
     putInt64LE(_data, i, redelegateAmount);
     i += 8;
     i += SerDeUtil.writeOptional(1, splitStakeAccount, _data, i);
-    putInt32LE(_data, i, redelegateStakeIndex);
+    putInt32LE(_data, i, (int) redelegateStakeIndex);
     i += 4;
     redelegateStakeAccount.write(_data, i);
     i += 32;

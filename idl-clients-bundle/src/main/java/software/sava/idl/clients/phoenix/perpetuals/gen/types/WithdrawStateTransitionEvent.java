@@ -15,6 +15,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::WithdrawStateTransition Borsh variant 36.
 /// Payload type: WithdrawStateTransitionEvent.
 ///
+/// @param transitionCount: u16
 public record WithdrawStateTransitionEvent(Discriminator discriminator,
                                            PublicKey trader,
                                            QuoteLots amount,

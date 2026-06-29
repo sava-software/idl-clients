@@ -133,12 +133,13 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param tokens: vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final PublicKey oraclePricesKey,
                                              final PublicKey oracleMappingsKey,
                                              final PublicKey oracleTwapsKey,
                                              final PublicKey instructionSysvarAccountInfoKey,
-                                             final short[] tokens) {
+                                             final int[] tokens) {
     final var keys = refreshPriceListKeys(
       oraclePricesKey,
       oracleMappingsKey,
@@ -148,17 +149,19 @@ public final class ScopeProgram {
     return refreshPriceList(invokedScopeProgramMeta, keys, tokens);
   }
 
+  /// @param tokens: vec<u16>
   public static Instruction refreshPriceList(final AccountMeta invokedScopeProgramMeta,
                                              final List<AccountMeta> keys,
-                                             final short[] tokens) {
-    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, tokens)];
+                                             final int[] tokens) {
+    final byte[] _data = new byte[8 + SerDeUtil.lenUnsignedShortVector(4, tokens)];
     int i = REFRESH_PRICE_LIST_DISCRIMINATOR.write(_data, 0);
-    SerDeUtil.writeVector(4, tokens, _data, i);
+    SerDeUtil.writeUnsignedShortVector(4, tokens, _data, i);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record RefreshPriceListIxData(Discriminator discriminator, short[] tokens) implements SerDe {  
+  /// @param tokens: vec<u16>
+  public record RefreshPriceListIxData(Discriminator discriminator, int[] tokens) implements SerDe {  
 
     public static RefreshPriceListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -172,20 +175,20 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tokens = SerDeUtil.readshortVector(4, _data, i);
+      final var tokens = SerDeUtil.readUnsignedShortVector(4, _data, i);
       return new RefreshPriceListIxData(discriminator, tokens);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += SerDeUtil.writeVector(4, tokens, _data, i);
+      i += SerDeUtil.writeUnsignedShortVector(4, tokens, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + SerDeUtil.lenVector(4, tokens);
+      return 8 + SerDeUtil.lenUnsignedShortVector(4, tokens);
     }
   }
 
@@ -223,6 +226,7 @@ public final class ScopeProgram {
   /// @param accessControllerKey The Access Controller Account
   /// @param configAccountKey The Config Account is a PDA derived from a signed report
   /// @param verifierProgramIdKey The Verifier Program ID specifies the target Chainlink Data Streams Verifier Program.
+  /// @param token: u16
   public static Instruction refreshChainlinkPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final PublicKey userKey,
                                                   final PublicKey oraclePricesKey,
@@ -247,6 +251,7 @@ public final class ScopeProgram {
     return refreshChainlinkPrice(invokedScopeProgramMeta, keys, token, serializedChainlinkReport);
   }
 
+  /// @param token: u16
   public static Instruction refreshChainlinkPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int token,
@@ -260,6 +265,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param token: u16
   public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements SerDe {  
 
     public static RefreshChainlinkPriceIxData read(final Instruction instruction) {
@@ -328,6 +334,8 @@ public final class ScopeProgram {
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
   /// @param userKey The account that signs the transaction.
+  /// @param tokens: vec<u16>
+  /// @param ed25519InstructionIndex: u16
   public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final PublicKey userKey,
                                                   final PublicKey oraclePricesKey,
@@ -338,7 +346,7 @@ public final class ScopeProgram {
                                                   final PublicKey pythTreasuryKey,
                                                   final PublicKey systemProgramKey,
                                                   final PublicKey instructionsSysvarKey,
-                                                  final short[] tokens,
+                                                  final int[] tokens,
                                                   final byte[] serializedPythMessage,
                                                   final int ed25519InstructionIndex) {
     final var keys = refreshPythLazerPriceKeys(
@@ -364,22 +372,26 @@ public final class ScopeProgram {
   /// IMPORTANT: we assume the tokens passed in to this ix are in the same order in which
   /// they are found in the message payload. Thus, we rely on the client to do this work
   ///
+  /// @param tokens: vec<u16>
+  /// @param ed25519InstructionIndex: u16
   public static Instruction refreshPythLazerPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
-                                                  final short[] tokens,
+                                                  final int[] tokens,
                                                   final byte[] serializedPythMessage,
                                                   final int ed25519InstructionIndex) {
-    final byte[] _data = new byte[10 + SerDeUtil.lenVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage)];
+    final byte[] _data = new byte[10 + SerDeUtil.lenUnsignedShortVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage)];
     int i = REFRESH_PYTH_LAZER_PRICE_DISCRIMINATOR.write(_data, 0);
-    i += SerDeUtil.writeVector(4, tokens, _data, i);
+    i += SerDeUtil.writeUnsignedShortVector(4, tokens, _data, i);
     i += SerDeUtil.writeVector(4, serializedPythMessage, _data, i);
     putInt16LE(_data, i, ed25519InstructionIndex);
 
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param tokens: vec<u16>
+  /// @param ed25519InstructionIndex: u16
   public record RefreshPythLazerPriceIxData(Discriminator discriminator,
-                                            short[] tokens,
+                                            int[] tokens,
                                             byte[] serializedPythMessage,
                                             int ed25519InstructionIndex) implements SerDe {  
 
@@ -395,8 +407,8 @@ public final class ScopeProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var tokens = SerDeUtil.readshortVector(4, _data, i);
-      i += SerDeUtil.lenVector(4, tokens);
+      final var tokens = SerDeUtil.readUnsignedShortVector(4, _data, i);
+      i += SerDeUtil.lenUnsignedShortVector(4, tokens);
       final var serializedPythMessage = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, serializedPythMessage);
       final var ed25519InstructionIndex = Short.toUnsignedInt(getInt16LE(_data, i));
@@ -406,7 +418,7 @@ public final class ScopeProgram {
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      i += SerDeUtil.writeVector(4, tokens, _data, i);
+      i += SerDeUtil.writeUnsignedShortVector(4, tokens, _data, i);
       i += SerDeUtil.writeVector(4, serializedPythMessage, _data, i);
       putInt16LE(_data, i, ed25519InstructionIndex);
       i += 2;
@@ -415,7 +427,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + SerDeUtil.lenVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage) + 2;
+      return 8 + SerDeUtil.lenUnsignedShortVector(4, tokens) + SerDeUtil.lenVector(4, serializedPythMessage) + 2;
     }
   }
 
@@ -529,6 +541,7 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param token: u64
   public static Instruction resetTwap(final AccountMeta invokedScopeProgramMeta,
                                       final PublicKey adminKey,
                                       final PublicKey configurationKey,
@@ -545,6 +558,7 @@ public final class ScopeProgram {
     return resetTwap(invokedScopeProgramMeta, keys, token, feedName);
   }
 
+  /// @param token: u64
   public static Instruction resetTwap(final AccountMeta invokedScopeProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long token,
@@ -559,6 +573,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param token: u64
   public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements SerDe {  
 
     public static ResetTwapIxData read(final Instruction instruction) {
@@ -765,6 +780,8 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param seedId: u64
+  /// @param scopeChains: vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final PublicKey adminKey,
                                           final PublicKey configurationKey,
@@ -773,7 +790,7 @@ public final class ScopeProgram {
                                           final PublicKey seedPk,
                                           final long seedId,
                                           final int bump,
-                                          final short[][] scopeChains) {
+                                          final int[][] scopeChains) {
     final var keys = createMintMapKeys(
       adminKey,
       configurationKey,
@@ -790,12 +807,14 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param seedId: u64
+  /// @param scopeChains: vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final List<AccountMeta> keys,
                                           final PublicKey seedPk,
                                           final long seedId,
                                           final int bump,
-                                          final short[][] scopeChains) {
+                                          final int[][] scopeChains) {
     final byte[] _data = new byte[49 + SerDeUtil.lenVectorArray(4, scopeChains)];
     int i = CREATE_MINT_MAP_DISCRIMINATOR.write(_data, 0);
     seedPk.write(_data, i);
@@ -809,11 +828,13 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param seedId: u64
+  /// @param scopeChains: vec<u16[]>
   public record CreateMintMapIxData(Discriminator discriminator,
                                     PublicKey seedPk,
                                     long seedId,
                                     int bump,
-                                    short[][] scopeChains) implements SerDe {  
+                                    int[][] scopeChains) implements SerDe {  
 
     public static CreateMintMapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -836,7 +857,7 @@ public final class ScopeProgram {
       i += 8;
       final var bump = _data[i] & 0xFF;
       ++i;
-      final var scopeChains = SerDeUtil.readMultiDimensionshortVectorArray(4, 4, _data, i);
+      final var scopeChains = SerDeUtil.readMultiDimensionUnsignedShortVectorArray(4, 4, _data, i);
       return new CreateMintMapIxData(discriminator,
                                      seedPk,
                                      seedId,
@@ -912,6 +933,7 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param token: u16
   public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final PublicKey adminKey,
                                                   final PublicKey configurationKey,
@@ -930,6 +952,7 @@ public final class ScopeProgram {
     return resumeChainlinkxPrice(invokedScopeProgramMeta, keys, token, feedName);
   }
 
+  /// @param token: u16
   public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int token,
@@ -944,6 +967,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param token: u16
   public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements SerDe {  
 
     public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
@@ -999,6 +1023,7 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param token: u16
   public static Instruction freezePrice(final AccountMeta invokedScopeProgramMeta,
                                         final PublicKey authorityKey,
                                         final PublicKey configurationKey,
@@ -1020,6 +1045,7 @@ public final class ScopeProgram {
     );
   }
 
+  /// @param token: u16
   public static Instruction freezePrice(final AccountMeta invokedScopeProgramMeta,
                                         final List<AccountMeta> keys,
                                         final int token,
@@ -1036,6 +1062,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
+  /// @param token: u16
   public record FreezePriceIxData(Discriminator discriminator,
                                   int token,
                                   String feedName, byte[] _feedName,

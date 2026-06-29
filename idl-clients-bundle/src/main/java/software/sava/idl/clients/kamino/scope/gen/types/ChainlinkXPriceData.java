@@ -8,6 +8,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Price data for ChainlinkX type (v10)
 ///
+/// @param observationsTimestamp: u64
+/// @param activationDateTime: u64
 public record ChainlinkXPriceData(long observationsTimestamp,
                                   boolean suspended,
                                   long activationDateTime) implements SerDe {

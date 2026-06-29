@@ -19,6 +19,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param cumulativePendingDeposits: u64
+/// @param pendingDepositsCounter: u64
+/// @param pendingWithdrawalsCounter: u64
+/// @param pendingLockedWithdrawalsCounter: u64
+/// @param distributionBaseAmount: u64
+/// @param leftToDistribute: u64
 public record BundleTempData(PublicKey _address,
                              Discriminator discriminator,
                              long cumulativePendingDeposits,

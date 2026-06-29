@@ -15,6 +15,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderCollateralTransferred Borsh variant 10.
 /// Payload type: TraderCollateralTransferredEvent.
 ///
+/// @param srcTraderSequenceNumber: u64
+/// @param srcTraderPrevSequenceNumberSlot: u64
+/// @param dstTraderSequenceNumber: u64
+/// @param dstTraderPrevSequenceNumberSlot: u64
 public record TraderCollateralTransferredEvent(Discriminator discriminator,
                                                PublicKey authority,
                                                QuoteLots amount,

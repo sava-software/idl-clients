@@ -6,11 +6,11 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
-/// @param util The utilization rate where `rate` applies
+/// @param util: u32 The utilization rate where `rate` applies
 ///             * a %, as u32, out of 100%, e.g. 50% = .5 * u32::MAX
-/// @param rate The base rate that applies
+/// @param rate: u32 The base rate that applies
 ///             * a %, as u32, out of 1000%, e.g. 100% = 0.1 * u32::MAX
-public record RatePoint(int util, int rate) implements SerDe {
+public record RatePoint(long util, long rate) implements SerDe {
 
   public static final int BYTES = 8;
 
@@ -22,18 +22,18 @@ public record RatePoint(int util, int rate) implements SerDe {
       return null;
     }
     int i = _offset;
-    final var util = getInt32LE(_data, i);
+    final var util = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var rate = getInt32LE(_data, i);
+    final var rate = Integer.toUnsignedLong(getInt32LE(_data, i));
     return new RatePoint(util, rate);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    putInt32LE(_data, i, util);
+    putInt32LE(_data, i, (int) util);
     i += 4;
-    putInt32LE(_data, i, rate);
+    putInt32LE(_data, i, (int) rate);
     i += 4;
     return i - _offset;
   }

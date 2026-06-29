@@ -28,6 +28,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Principal index
 /// Collateral index
 ///
+/// @param amount: u64
 public record WithdrawCollateralParams(long amount,
                                        int collateralIndex,
                                        byte[] assetIndexGuidance,

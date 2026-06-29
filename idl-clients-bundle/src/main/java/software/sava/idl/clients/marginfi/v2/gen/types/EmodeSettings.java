@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Controls the bank's e-mode configuration, allowing certain collateral sources to be treated more
 /// favorably as collateral when used to borrow from this bank.
 ///
-/// @param emodeTag This bank's NON-unique id that other banks will use to determine what emode rate to use when
+/// @param emodeTag: u16 This bank's NON-unique id that other banks will use to determine what emode rate to use when
 ///                 this bank is offered as collateral.
 ///                 
 ///                 For example, all stablecoin banks might share the same emode_tag, and in their entries, each
@@ -23,7 +23,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                 
 ///                 * 0 is in an invalid tag and will do nothing.
 /// @param timestamp Unix timestamp from the system clock when emode state was last updated
-/// @param flags EMODE_ON (1) - If set, at least one entry is configured
+/// @param flags: u64 EMODE_ON (1) - If set, at least one entry is configured
 ///              2, 4, 8, etc, Reserved for future use
 public record EmodeSettings(int emodeTag,
                             byte[] pad0,

@@ -10,7 +10,7 @@ public record PythLazer(int index,
                         PublicKey oracle,
                         int feedId,
                         int exponent,
-                        int confidenceFactor,
+                        long confidenceFactor,
                         Set<EmaType> emaTypes,
                         ScopeEntry refPrice) implements ReferencesEntry {
 

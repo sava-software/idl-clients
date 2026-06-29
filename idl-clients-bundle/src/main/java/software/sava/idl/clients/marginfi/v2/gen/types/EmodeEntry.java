@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
-/// @param collateralBankEmodeTag emode_tag of the bank(s) whose collateral you wish to treat preferentially.
+/// @param collateralBankEmodeTag: u16 emode_tag of the bank(s) whose collateral you wish to treat preferentially.
 /// @param flags * APPLIES_TO_ISOLATED (1) - (NOT YET IMPLEMENTED) if set, isolated banks with this tag
 ///              also benefit. If not set, isolated banks continue to offer zero collateral, even if they
 ///              use this tag.
