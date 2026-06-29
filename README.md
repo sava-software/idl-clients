@@ -1,4 +1,4 @@
-# IDL Clients [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/sava-software/idl-clients) [![Gradle Check](https://github.com/sava-software/idl-clients/actions/workflows/build.yml/badge.svg)](https://github.com/sava-software/idl-clients/actions/workflows/build.yml)
+# IDL Clients [![Gradle Check](https://github.com/sava-software/idl-clients/actions/workflows/build.yml/badge.svg)](https://github.com/sava-software/idl-clients/actions/workflows/build.yml)
 
 Generated source to (de)serialize instructions and accounts for common Solana programs, as well as convenience methods
 and clients to ease integration.
