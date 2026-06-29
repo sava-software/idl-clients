@@ -21,6 +21,8 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 
 ## Primitive Widening
 
+To support the full numerical range of Rust types, the following primitive widening conversions are made:
+
 | Rust  | Scalar | Collection | Java type | Java collection |
 |-------|--------|------------|-----------|-----------------|
 | `u8`  | ✅      | ❌          | `int`     | `byte[]`        |

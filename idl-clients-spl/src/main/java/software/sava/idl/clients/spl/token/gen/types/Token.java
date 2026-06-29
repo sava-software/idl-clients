@@ -175,7 +175,7 @@ public record Token(PublicKey _address,
     if (isNative.isPresent()) {
       putInt32LE(_data, i, (int) 1);
       i += 4;
-      ByteUtil.putFloat64LE(_data, i, isNative.getAsLong());
+      ByteUtil.putInt64LE(_data, i, isNative.getAsLong());
     } else {
       i += 4;
     }
