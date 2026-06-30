@@ -9,8 +9,6 @@ import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
-
 /// @param vaultIndex Index of the vault this transaction belongs to.
 /// @param ephemeralSigners Number of ephemeral signing PDAs required by the transaction.
 /// @param memo: Option<string>

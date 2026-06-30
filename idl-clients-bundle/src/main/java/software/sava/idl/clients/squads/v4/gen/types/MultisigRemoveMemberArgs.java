@@ -11,7 +11,6 @@ import java.util.Arrays;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 /// @param memo: Option<string> Memo is used for indexing only.
 public record MultisigRemoveMemberArgs(PublicKey oldMember, String memo, byte[] _memo) implements SerDe {

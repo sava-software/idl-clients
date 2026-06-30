@@ -10,7 +10,6 @@ import java.util.Arrays;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// @param newThreshold: u16
