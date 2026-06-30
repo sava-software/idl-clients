@@ -1,15 +1,15 @@
 package software.sava.idl.clients.orca;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.orca.whirlpools.gen.types.AccountsType;
 import software.sava.idl.clients.orca.whirlpools.gen.types.RemainingAccountsInfo;
 import software.sava.idl.clients.orca.whirlpools.gen.types.RemainingAccountsSlice;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /// Helper for assembling the "extra" accounts that Whirlpool V2 instructions
 /// read from `ctx.remaining_accounts` but which are not present in the IDL

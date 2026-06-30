@@ -55,7 +55,7 @@ Scalar number fields map to the following Java types.
 | `f64`           | `double`               |
 
 - `u64` and `usize` have no larger signed Java integer to widen into, so the `long` must be treated as unsigned
-  (see [Primitive Widening](#primitive-widening) for convenience helpers).
+  (see [Primitive Widening](#primitive-widening)).
 
 ### Strings
 
@@ -81,21 +81,22 @@ Scalar number fields map to the following Java types.
 
 Fixed arrays (`[T; N]`) and vectors (`Vec<T>`) are both represented as Java arrays. Element types follow the same
 widening rules as scalar fields, except that `u8` / `i8` collections preserve their compact `byte[]` representation
-rather than widening each element (they usually model raw bytes or opaque data).
+rather than widening each element (see [Primitive Widening](#primitive-widening)).
 
-| Rust element            | Java collection |
-|-------------------------|-----------------|
-| `i8` / `u8`             | `byte[]`        |
-| `i16`                   | `short[]`       |
-| `u16` / `i32`           | `int[]`         |
-| `u32` / `i64` / `u64`   | `long[]`        |
-| `i128` / `u128`         | `BigInteger[]`  |
-| `f32`                   | `float[]`       |
-| `f64`                   | `double[]`      |
-| `bool`                  | `boolean[]`     |
-| `pubkey`                | `PublicKey[]`   |
-| `String`                | `String[]`      |
-| defined type `T`        | `T[]`           |
+| Rust element            | `[T; N]` / `Vec<T>` |
+|-------------------------|---------------------|
+| `i8` / `u8`             | `byte[]`            |
+| `i16`                   | `short[]`           |
+| `u16` / `i32`           | `int[]`             |
+| `u32` / `i64` / `u64`   | `long[]`            |
+| `i128` / `u128`         | `BigInteger[]`      |
+| `i256` / `u256`         | `BigInteger[]`      |
+| `f32`                   | `float[]`           |
+| `f64`                   | `double[]`          |
+| `bool`                  | `boolean[]`         |
+| `pubkey`                | `PublicKey[]`       |
+| `String`                | `String[]`          |
+| defined type `T`        | `T[]`               |
 
 ### Optional Values
 

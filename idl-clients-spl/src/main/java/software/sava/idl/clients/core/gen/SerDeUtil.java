@@ -8,9 +8,7 @@ import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.OptionalDouble;
-import java.util.OptionalInt;
-import java.util.OptionalLong;
+import java.util.*;
 
 public final class SerDeUtil {
 
@@ -2390,7 +2388,7 @@ public final class SerDeUtil {
   }
 
   public static int len128Optional(final int optionalBytes, final BigInteger val) {
-    return val == null ? optionalBytes : optionalBytes + INT256_BYTES;
+    return val == null ? optionalBytes : optionalBytes + INT128_BYTES;
   }
 
   public static int len128Array(final BigInteger[] array) {
@@ -3039,5 +3037,159 @@ public final class SerDeUtil {
 
   public static int lenVectorArray(final int prefixBytes, final SerDe[][] array) {
     return prefixBytes + lenArray(array);
+  }
+
+  // Vectors
+
+  public static <T extends SerDe> List<T> readVector(final int prefixBytes,
+                                                     final Factory<T> factory,
+                                                     final byte[] data,
+                                                     final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<T>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      final var instance = factory.read(data, o);
+      result.add(instance);
+      o += instance.l();
+    }
+    return result;
+  }
+
+  public static int writeVector(final int prefixBytes,
+                                final SequencedCollection<? extends SerDe> collection,
+                                final byte[] data,
+                                final int offset) {
+    writeVal(prefixBytes, collection.size(), data, offset);
+    int o = offset + prefixBytes;
+    for (final var element : collection) {
+      o += element.write(data, o);
+    }
+    return o - offset;
+  }
+
+  public static int lenVector(final int prefixBytes, final SequencedCollection<? extends SerDe> collection) {
+    int len = prefixBytes;
+    for (final var element : collection) {
+      len += element.l();
+    }
+    return len;
+  }
+
+  public static List<PublicKey> readPublicKeyVectorList(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<PublicKey>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      result.add(PublicKey.readPubKey(data, o));
+      o += PublicKey.PUBLIC_KEY_LENGTH;
+    }
+    return result;
+  }
+
+  public static int writePublicKeyVector(final int prefixBytes,
+                                         final SequencedCollection<PublicKey> collection,
+                                         final byte[] data,
+                                         final int offset) {
+    writeVal(prefixBytes, collection.size(), data, offset);
+    int o = offset + prefixBytes;
+    for (final var key : collection) {
+      o += key.write(data, o);
+    }
+    return o - offset;
+  }
+
+  public static int lenPublicKeyVector(final int prefixBytes, final SequencedCollection<PublicKey> collection) {
+    return prefixBytes + (collection.size() * PublicKey.PUBLIC_KEY_LENGTH);
+  }
+
+  public static List<String> readStringVectorList(final int vectorPrefix,
+                                                  final int stringPrefix,
+                                                  final byte[] data,
+                                                  final int offset) {
+    final int len = val(vectorPrefix, data, offset);
+    final var result = new ArrayList<String>(len);
+    for (int i = 0, o = offset + vectorPrefix, strLen; i < len; ++i) {
+      strLen = val(stringPrefix, data, o);
+      o += stringPrefix;
+      result.add(new String(data, o, strLen, StandardCharsets.UTF_8));
+      o += strLen;
+    }
+    return result;
+  }
+
+  public static int writeStringVector(final int vectorPrefix,
+                                      final int stringPrefix,
+                                      final SequencedCollection<String> collection,
+                                      final byte[] data,
+                                      final int offset) {
+    writeVal(vectorPrefix, collection.size(), data, offset);
+    int o = offset + vectorPrefix;
+    for (final var str : collection) {
+      o += write(stringPrefix, str, data, o);
+    }
+    return o - offset;
+  }
+
+  public static int lenStringVector(final int vectorPrefix,
+                                    final int stringPrefix,
+                                    final SequencedCollection<String> collection) {
+    int len = vectorPrefix;
+    for (final var str : collection) {
+      len += len(stringPrefix, str);
+    }
+    return len;
+  }
+
+  public static List<BigInteger> read128VectorList(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<BigInteger>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      result.add(ByteUtil.getInt128LE(data, o));
+      o += INT128_BYTES;
+    }
+    return result;
+  }
+
+  public static int write128Vector(final int prefixBytes,
+                                   final SequencedCollection<BigInteger> collection,
+                                   final byte[] data,
+                                   final int offset) {
+    writeVal(prefixBytes, collection.size(), data, offset);
+    int o = offset + prefixBytes;
+    for (final var val : collection) {
+      ByteUtil.putInt128LE(data, o, val);
+      o += INT128_BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int len128Vector(final int prefixBytes, final SequencedCollection<BigInteger> collection) {
+    return prefixBytes + (collection.size() * INT128_BYTES);
+  }
+
+  public static List<BigInteger> read256VectorList(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<BigInteger>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      result.add(ByteUtil.getInt256LE(data, o));
+      o += INT256_BYTES;
+    }
+    return result;
+  }
+
+  public static int write256Vector(final int prefixBytes,
+                                   final SequencedCollection<BigInteger> collection,
+                                   final byte[] data,
+                                   final int offset) {
+    writeVal(prefixBytes, collection.size(), data, offset);
+    int o = offset + prefixBytes;
+    for (final var val : collection) {
+      ByteUtil.putInt256LE(data, o, val);
+      o += INT256_BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int len256Vector(final int prefixBytes, final SequencedCollection<BigInteger> collection) {
+    return prefixBytes + (collection.size() * INT256_BYTES);
   }
 }

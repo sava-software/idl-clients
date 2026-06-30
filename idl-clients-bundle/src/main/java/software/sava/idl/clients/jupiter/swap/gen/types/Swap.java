@@ -172,7 +172,14 @@ public sealed interface Swap extends RustEnum permits
   Swap.ZeroFiSwapV2,
   Swap.BisonFiPredict,
   Swap.ByrealDynamicV3,
-  Swap.Flux {
+  Swap.Flux,
+  Swap.VaultLiquidSellLst,
+  Swap.VaultLiquidBuyLst,
+  Swap.KipseliV2,
+  Swap.Deriverse,
+  Swap.Hadron,
+  Swap.BinaryFi,
+  Swap.Metric {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -336,6 +343,13 @@ public sealed interface Swap extends RustEnum permits
       case 155 -> BisonFiPredict.read(_data, i);
       case 156 -> ByrealDynamicV3.INSTANCE;
       case 157 -> Flux.read(_data, i);
+      case 158 -> VaultLiquidSellLst.INSTANCE;
+      case 159 -> VaultLiquidBuyLst.read(_data, i);
+      case 160 -> KipseliV2.read(_data, i);
+      case 161 -> Deriverse.read(_data, i);
+      case 162 -> Hadron.read(_data, i);
+      case 163 -> BinaryFi.INSTANCE;
+      case 164 -> Metric.read(_data, i);
       default -> null;
     };
   }
@@ -2690,6 +2704,122 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 157;
+    }
+  }
+
+  record VaultLiquidSellLst() implements EnumNone, Swap {
+
+    public static final VaultLiquidSellLst INSTANCE = new VaultLiquidSellLst();
+
+    @Override
+    public int ordinal() {
+      return 158;
+    }
+  }
+
+  record VaultLiquidBuyLst(long val) implements EnumInt64, Swap {
+
+    public static VaultLiquidBuyLst read(final byte[] _data, int i) {
+      return new VaultLiquidBuyLst(getInt64LE(_data, i));
+    }
+
+    @Override
+    public int ordinal() {
+      return 159;
+    }
+  }
+
+  record KipseliV2(boolean val) implements EnumBool, Swap {
+
+    public static final KipseliV2 TRUE = new KipseliV2(true);
+    public static final KipseliV2 FALSE = new KipseliV2(false);
+
+    public static KipseliV2 read(final byte[] _data, int i) {
+      return _data[i] == 1 ? KipseliV2.TRUE : KipseliV2.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 160;
+    }
+  }
+
+  /// @param instrId: u32
+  record Deriverse(Side side, long instrId) implements Swap {
+
+    public static final int BYTES = 5;
+
+    public static final int SIDE_OFFSET = 0;
+    public static final int INSTR_ID_OFFSET = 1;
+
+    public static Deriverse read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var side = Side.read(_data, i);
+      i += side.l();
+      final var instrId = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new Deriverse(side, instrId);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      i += side.write(_data, i);
+      putInt32LE(_data, i, (int) instrId);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 161;
+    }
+  }
+
+  record Hadron(boolean val) implements EnumBool, Swap {
+
+    public static final Hadron TRUE = new Hadron(true);
+    public static final Hadron FALSE = new Hadron(false);
+
+    public static Hadron read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Hadron.TRUE : Hadron.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 162;
+    }
+  }
+
+  record BinaryFi() implements EnumNone, Swap {
+
+    public static final BinaryFi INSTANCE = new BinaryFi();
+
+    @Override
+    public int ordinal() {
+      return 163;
+    }
+  }
+
+  record Metric(boolean val) implements EnumBool, Swap {
+
+    public static final Metric TRUE = new Metric(true);
+    public static final Metric FALSE = new Metric(false);
+
+    public static Metric read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Metric.TRUE : Metric.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 164;
     }
   }
 }
