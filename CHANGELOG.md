@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.14.1](https://github.com/sava-software/idl-clients/compare/25.14.0...25.14.1) (2026-06-30)
+
+
+### Features
+
+* **idl-clients-bundle:** add new `Swap` types and sync Jupiter Swap IDL ([4956ad9](https://github.com/sava-software/idl-clients/commit/4956ad93f3e4fdb00cf22f977e843dddd79d4297))
+* **idl-clients-bundle:** add optional annotations to IDL-generated param docs ([430a6bb](https://github.com/sava-software/idl-clients/commit/430a6bbcc65ea8ec5db065a3c6a6598e5b24f419))
+
 ## [25.14.0](https://github.com/sava-software/idl-clients/compare/25.13.3...25.14.0) (2026-06-29)
 
 
