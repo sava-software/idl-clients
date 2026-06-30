@@ -36,11 +36,27 @@
       "idlURL": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json"
     },
     {
+      "name": "Jupiter Borrow",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "jupiter.borrow",
+      "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
+      "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json"
+    },
+    {
       "name": "Jupiter Governance",
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "jupiter.governance",
       "program": "GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY"
+    },
+    {
+      "name": "Jupiter Lend",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "jupiter.lend",
+      "program": "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9",
+      "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json"
     },
     {
       "name": "Jupiter Locked Voter",
@@ -57,27 +73,13 @@
       "program": "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R"
     },
     {
-      "name": "Jupiter Lend",
+      "name": "Jupiter Offerbook",
       "source": "idl-clients-bundle",
       "module": "bundle",
-      "package": "jupiter.lend",
-      "program": "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9",
-      "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json"
-    },
-    {
-      "name": "Jupiter Borrow",
-      "source": "idl-clients-bundle",
-      "module": "bundle",
-      "package": "jupiter.borrow",
-      "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
-      "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json"
-    },
-    {
-      "name": "Jupiter Swap",
-      "source": "idl-clients-bundle",
-      "module": "bundle",
-      "package": "jupiter.swap",
-      "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+      "package": "jupiter.offerbook",
+      "program": "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie",
+      "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
+      "idlType": "anchor"
     },
     {
       "name": "Jupiter Order Engine",
@@ -85,6 +87,13 @@
       "module": "bundle",
       "package": "jupiter.order_engine",
       "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
+    },
+    {
+      "name": "Jupiter Swap",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "jupiter.swap",
+      "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
     },
     {
       "name": "Jupiter Stable Program",
