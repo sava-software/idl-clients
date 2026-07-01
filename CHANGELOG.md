@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.14.2](https://github.com/sava-software/idl-clients/compare/25.14.1...25.14.2) (2026-07-01)
+
+
+### Features
+
+* **idl-clients-bundle:** add support for `TotalMintSupply` with `emaTypes` ([35acb1c](https://github.com/sava-software/idl-clients/commit/35acb1c0a57fda555708e972f14199ad2ca95776))
+* **idl-clients-bundle:** sync Jupiter Offerbook IDL types ([eb4fedc](https://github.com/sava-software/idl-clients/commit/eb4fedc2183066fa535d9851713fdcc2b9d8dcff))
+
 ## [25.14.1](https://github.com/sava-software/idl-clients/compare/25.14.0...25.14.1) (2026-06-30)
 
 
