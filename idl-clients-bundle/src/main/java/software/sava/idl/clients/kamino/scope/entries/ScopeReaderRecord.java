@@ -201,8 +201,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case TotalMintSupply -> {
         validateNoRefPrice(oracleType, refPrice);
-        validateNoEmaTypes(oracleType, emaTypes);
-        yield new TotalMintSupply(i, priceAccount);
+        yield new TotalMintSupply(i, priceAccount, emaTypes);
       }
       case SwitchboardOnDemand -> new SwitchboardOnDemand(i, priceAccount, emaTypes);
       case Unused -> {
