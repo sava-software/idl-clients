@@ -43,13 +43,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param createdAtTimestamp: u64 The timestamp at which the queue was entered.
 ///                           
 ///                           This is currently only a piece of metadata, not used by the logic.
-/// @param invalid Whether the ticket has been found to be invalid (e.g. the Self::user_destination_liquidity
+/// @param invalid: u8 Whether the ticket has been found to be invalid (e.g. the Self::user_destination_liquidity
 ///                has been repurposed) by the `withdraw_queued_liquidity` handler.
 ///                To be specific: valid = `0`, invalid = `1`.
 ///                
 ///                An invalid ticket cannot be made valid again, and can only be passed to the
 ///                `recover_invalid_ticket_collateral` handler.
-/// @param progressCallbackType One of the valid ProgressCallbackType representations.
+/// @param progressCallbackType: u8 One of the valid ProgressCallbackType representations.
 /// @param alignmentPadding Inner padding, for alignment.
 /// @param progressCallbackCustomAccounts The (optional) accounts to be used by Self::progress_callback_types.
 /// @param endPadding: u64[] Trailing padding, for future developments.

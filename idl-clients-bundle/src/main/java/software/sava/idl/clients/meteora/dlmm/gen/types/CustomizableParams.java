@@ -15,13 +15,13 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param activeId Pool price
 /// @param binStep: u16 Bin step
 /// @param baseFactor: u16 Base factor
-/// @param activationType Activation type. 0 = Slot, 1 = Time. Check ActivationType enum
+/// @param activationType: u8 Activation type. 0 = Slot, 1 = Time. Check ActivationType enum
 /// @param hasAlphaVault Whether the pool has an alpha vault
 /// @param activationPoint: Option<u64> Decide when does the pool start trade. None = Now
 /// @param creatorPoolOnOffControl Pool creator have permission to enable/disable pool with restricted program validation. Only applicable for customizable permissionless pool.
-/// @param baseFeePowerFactor Base fee power factor
-/// @param concreteFunctionType Concrete function type
-/// @param collectFeeMode Collect fee mode
+/// @param baseFeePowerFactor: u8 Base fee power factor
+/// @param concreteFunctionType: u8 Concrete function type
+/// @param collectFeeMode: u8 Collect fee mode
 /// @param padding Padding, for future use
 public record CustomizableParams(int activeId,
                                  int binStep,

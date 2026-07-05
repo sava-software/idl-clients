@@ -27,7 +27,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param totalProcessingOrderAmount: u64 Total processing order amount
 /// @param processedOrderRemainingAmount: u64 Remaining in processing open limit orders amount in the bin.
 /// @param orderAge: u32 Age
-/// @param limitOrderAskSide limit order flag
+/// @param limitOrderAskSide: u8 limit order flag
 /// @param padding1 padding
 public record Bin(long amountX,
                   long amountY,

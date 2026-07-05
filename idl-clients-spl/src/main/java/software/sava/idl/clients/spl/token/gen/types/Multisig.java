@@ -9,8 +9,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 
 import java.util.function.BiFunction;
 
-/// @param m Number of signers required.
-/// @param n Number of valid signers.
+/// @param m: u8 Number of signers required.
+/// @param n: u8 Number of valid signers.
 /// @param isInitialized Is `true` if this structure has been initialized.
 /// @param signers Signer public keys.
 public record Multisig(PublicKey _address,

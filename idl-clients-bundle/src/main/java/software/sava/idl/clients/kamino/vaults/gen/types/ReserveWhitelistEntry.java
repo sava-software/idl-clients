@@ -19,6 +19,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                  a filter on discriminator + the mint field
 ///                  The reserve pubkey, as seed of the reserve whitelist PDA account, it stored so you can link back the PDA to its seeds
 ///                  (for instance, in the operation above we easily find the reserve corresponding to the PDA)
+/// @param whitelistAddAllocation: u8
+/// @param whitelistInvest: u8
 public record ReserveWhitelistEntry(PublicKey _address,
                                     Discriminator discriminator,
                                     PublicKey tokenMint,

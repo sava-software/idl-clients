@@ -15,6 +15,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param traderSequenceNumber: u64
 /// @param maxPositions: u64
+/// @param traderPdaIndex: u8
+/// @param traderSubaccountIndex: u8
 public record TraderRegisteredEvent(Discriminator discriminator,
                                     long traderSequenceNumber,
                                     PublicKey trader,

@@ -22,6 +22,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param vaultId: u16
 /// @param branchId: u32
+/// @param status: u8
 /// @param minimaTickPartials: u32
 /// @param debtLiquidity: u64
 /// @param debtFactor: u64

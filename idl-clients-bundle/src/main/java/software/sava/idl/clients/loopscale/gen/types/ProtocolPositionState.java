@@ -24,7 +24,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Info stored for each user's position
 ///
-/// @param bump Bump to identify PDA
+/// @param bump: u8 Bump to identify PDA
 /// @param poolId The ID of the pool with which this token is connected
 /// @param tickLowerIndex The lower bound tick of the position
 /// @param tickUpperIndex The upper bound tick of the position

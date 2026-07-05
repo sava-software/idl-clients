@@ -18,6 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Fixed Phoenix Eternal permission delegation account layout.
 ///
+/// @param bump: u8
 /// @param permission: u64
 public record PermissionAccount(PublicKey _address,
                                 Discriminator discriminator,

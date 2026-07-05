@@ -29,15 +29,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param quoteCurrency Currency market prices are quoted in
 ///                      e.g. "USD" null padded (`*b"USD\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"`) or a SPL token mint pubkey
 /// @param referralFeeBps: u16 Referral fee for the lending market, as bps out of the total protocol fee
-/// @param autodeleverageEnabled Whether the obligations on this market should be subject to auto-deleveraging after deposit
+/// @param emergencyMode: u8
+/// @param autodeleverageEnabled: u8 Whether the obligations on this market should be subject to auto-deleveraging after deposit
 ///                              or borrow limit is crossed.
 ///                              Besides this flag, the particular reserve's flag also needs to be enabled (logical `AND`).
 ///                              **NOTE:** this also affects the individual "target LTV" deleveraging.
-/// @param priceRefreshTriggerToMaxAgePct Refresh price from oracle only if it's older than this percentage of the price max age.
+/// @param borrowDisabled: u8
+/// @param priceRefreshTriggerToMaxAgePct: u8 Refresh price from oracle only if it's older than this percentage of the price max age.
 ///                                       e.g. if the max age is set to 100s and this is set to 80%, the price will be refreshed if it's older than 80s.
 ///                                       Price is always refreshed if this set to 0.
-/// @param liquidationMaxDebtCloseFactorPct Percentage of the total borrowed value in an obligation available for liquidation
-/// @param insolvencyRiskUnhealthyLtvPct Minimum acceptable unhealthy LTV before max_debt_close_factor_pct becomes 100%
+/// @param liquidationMaxDebtCloseFactorPct: u8 Percentage of the total borrowed value in an obligation available for liquidation
+/// @param insolvencyRiskUnhealthyLtvPct: u8 Minimum acceptable unhealthy LTV before max_debt_close_factor_pct becomes 100%
 /// @param minFullLiquidationValueThreshold: u64 Minimum liquidation value threshold triggering full liquidation for an obligation, in full
 ///                                         units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param maxLiquidatableDebtMarketValueAtOnce: u64 Max allowed liquidation value in one ix call
@@ -55,31 +57,31 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                     been individually marked for auto-deleveraging.
 /// @param minInitialDepositAmount: u64 Minimum amount of deposit at creation of a reserve to prevent artificial inflation
 ///                                Note: this amount cannot be recovered, the ctoken associated are never minted
-/// @param obligationOrderExecutionEnabled Whether the obligation orders should be evaluated during liquidations.
-/// @param immutable Whether the lending market is set as immutable.
-/// @param obligationOrderCreationEnabled Whether new obligation orders can be created.
+/// @param obligationOrderExecutionEnabled: u8 Whether the obligation orders should be evaluated during liquidations.
+/// @param immutable: u8 Whether the lending market is set as immutable.
+/// @param obligationOrderCreationEnabled: u8 Whether new obligation orders can be created.
 ///                                       Note: updating or cancelling existing orders is *not* affected by this flag.
-/// @param priceTriggeredLiquidationDisabled Whether the liquidation operations that are triggered by price changes should be disabled.
+/// @param priceTriggeredLiquidationDisabled: u8 Whether the liquidation operations that are triggered by price changes should be disabled.
 ///                                          This includes regular liquidation (i.e. LTV exceeding the unhealthy threshold) and some
 ///                                          obligation orders' execution.
 ///                                          
 ///                                          *Caution:* this flag is *disabling* the liquidations when `1` - contrary to all the other
 ///                                          liquidation-driving flags (see e.g. Self::autodeleverage_enabled).
-/// @param matureReserveDebtLiquidationEnabled Whether the debts that reached their reserve's ReserveConfig::debt_maturity_timestamp can
+/// @param matureReserveDebtLiquidationEnabled: u8 Whether the debts that reached their reserve's ReserveConfig::debt_maturity_timestamp can
 ///                                            be liquidated.
-/// @param obligationBorrowDebtTermLiquidationEnabled Whether the Obligation::borrows that reached their ReserveConfig::debt_term_seconds can
+/// @param obligationBorrowDebtTermLiquidationEnabled: u8 Whether the Obligation::borrows that reached their ReserveConfig::debt_term_seconds can
 ///                                                   be liquidated.
-/// @param borrowOrderCreationEnabled Whether new borrow orders can be created.
+/// @param borrowOrderCreationEnabled: u8 Whether new borrow orders can be created.
 ///                                   Note: updating or cancelling existing orders is *not* affected by this flag.
-/// @param borrowOrderExecutionEnabled Whether the existing borrow orders can be filled.
+/// @param borrowOrderExecutionEnabled: u8 Whether the existing borrow orders can be filled.
 /// @param proposerAuthority Authority that can propose creating of new reserves but cannot enable them.
 /// @param minBorrowOrderFillValue: u64 Minimum value that can be filled in a single `fill_borrow_order()` call, in full units of
 ///                                the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
-/// @param withdrawTicketIssuanceEnabled Whether any new withdraw tickets can be issued (i.e. whether new requests can enter the
+/// @param withdrawTicketIssuanceEnabled: u8 Whether any new withdraw tickets can be issued (i.e. whether new requests can enter the
 ///                                      withdraw queue).
-/// @param withdrawTicketRedemptionEnabled Whether the existing withdraw tickets can be redeemed (i.e. whether the tickets can be used
+/// @param withdrawTicketRedemptionEnabled: u8 Whether the existing withdraw tickets can be redeemed (i.e. whether the tickets can be used
 ///                                        to transfer accumulated pending liquidity to destination accounts).
-/// @param obligationBorrowRolloverConfigurationEnabled Whether the owners can enable the borrow rollover/migration on their obligations.
+/// @param obligationBorrowRolloverConfigurationEnabled: u8 Whether the owners can enable the borrow rollover/migration on their obligations.
 ///                                                     
 ///                                                     *Note 1:* the actual execution of (different kinds of) rollovers are enabled/disabled by:
 ///                                                     - Self::fixed_term_rollover_window_duration_seconds,
@@ -88,10 +90,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                     
 ///                                                     *Note 2:* when this configuration is disabled, the obligation owners can still disable their
 ///                                                     rollover (i.e. set the obligation's flags to zeroes).
-/// @param obligationBorrowMigrationToFixedExecutionEnabled Whether the actual execution of a "migration to fixed" rollover flavor is allowed.
+/// @param obligationBorrowMigrationToFixedExecutionEnabled: u8 Whether the actual execution of a "migration to fixed" rollover flavor is allowed.
 ///                                                         
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
-/// @param withdrawTicketCancellationEnabled Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
+/// @param withdrawTicketCancellationEnabled: u8 Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
 ///                                          queued collateral vault back to their wallet).
 /// @param reserveRewardsMaxAprBps: u16 Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
 ///                                may distribute their `rewards_amount_per_slot`. `0` disables rewards on this market

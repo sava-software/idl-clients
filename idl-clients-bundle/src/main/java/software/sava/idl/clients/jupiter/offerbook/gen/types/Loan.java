@@ -27,6 +27,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param createdAt: u64
 /// @param expiredAt: u64
 /// @param updatedAt: u64
+/// @param bump: u8
+/// @param collateralAccountBump: u8
 public record Loan(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey lender,

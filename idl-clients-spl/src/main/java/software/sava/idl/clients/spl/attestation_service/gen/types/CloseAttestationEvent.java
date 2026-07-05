@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param discriminator: u8
 public record CloseAttestationEvent(int discriminator,
                                     PublicKey schema,
                                     byte[] attestationData) implements SerDe {

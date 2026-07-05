@@ -20,8 +20,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param proposal The proposal being voted on.
 /// @param voter The voter.
-/// @param bump Bump seed
-/// @param side The side of the vote taken.
+/// @param bump: u8 Bump seed
+/// @param side: u8 The side of the vote taken.
 /// @param votingPower: u64 The number of votes this vote holds.
 /// @param claimed Flag to check whether voter has claim the reward or not
 /// @param buffers buffers for future use

@@ -56,13 +56,13 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///                             Example: a value of `300` here means 300bps == 3.0% bonus for a "debt/coll price > 140"
 ///                             order, when executed at a higher price = 200, at which the obligation's LTV happens to
 ///                             be equal to its liquidation LTV.
-/// @param conditionType Serialized ConditionType.
+/// @param conditionType: u8 Serialized ConditionType.
 ///                      The entire order is void when this is zeroed (i.e. representing ConditionType::Never).
 ///                      
 ///                      Example: a value of `2` here denotes `UserLtvBelow` condition type. Of course, to
 ///                      interpret this condition, we also need to take the Self::condition_threshold_sf into
 ///                      account.
-/// @param opportunityType Serialized OpportunityType.
+/// @param opportunityType: u8 Serialized OpportunityType.
 ///                        
 ///                        Example: a value of `0` here denotes `DeleverageSingleDebtAmount` opportunity. Of course, to
 ///                        interpret this opportunity, we also need to take the Self::opportunity_parameter_sf into

@@ -57,7 +57,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param mintKey Token mint account.
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public static Instruction initializeMint(final AccountMeta invokedTokenProgramMeta,
@@ -87,7 +87,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public static Instruction initializeMint(final AccountMeta invokedTokenProgramMeta,
@@ -117,7 +117,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public record InitializeMintIxData(int discriminator,
@@ -332,7 +332,7 @@ public final class TokenProgram {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig(final AccountMeta invokedTokenProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey multisigKey,
@@ -356,7 +356,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig(final AccountMeta invokedTokenProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int m) {
@@ -379,7 +379,7 @@ public final class TokenProgram {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {  
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
@@ -1256,7 +1256,7 @@ public final class TokenProgram {
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta,
                                             final PublicKey sourceKey,
                                             final PublicKey mintKey,
@@ -1287,7 +1287,7 @@ public final class TokenProgram {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedTokenProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount,
@@ -1310,7 +1310,7 @@ public final class TokenProgram {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
                                       int decimals) implements SerDe {  
@@ -1394,7 +1394,7 @@ public final class TokenProgram {
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta,
                                            final PublicKey sourceKey,
                                            final PublicKey mintKey,
@@ -1424,7 +1424,7 @@ public final class TokenProgram {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedTokenProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
@@ -1446,7 +1446,7 @@ public final class TokenProgram {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
                                      int decimals) implements SerDe {  
@@ -1524,7 +1524,7 @@ public final class TokenProgram {
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta,
                                           final PublicKey mintKey,
                                           final PublicKey tokenKey,
@@ -1551,7 +1551,7 @@ public final class TokenProgram {
   /// offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedTokenProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long amount,
@@ -1572,7 +1572,7 @@ public final class TokenProgram {
   /// offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
                                     int decimals) implements SerDe {  
@@ -1652,7 +1652,7 @@ public final class TokenProgram {
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta,
                                         final PublicKey accountKey,
                                         final PublicKey mintKey,
@@ -1680,7 +1680,7 @@ public final class TokenProgram {
   /// within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedTokenProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long amount,
@@ -1702,7 +1702,7 @@ public final class TokenProgram {
   /// within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
                                   int decimals) implements SerDe {  
@@ -2037,7 +2037,7 @@ public final class TokenProgram {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig2(final AccountMeta invokedTokenProgramMeta,
                                                 final PublicKey multisigKey,
                                                 final int m) {
@@ -2049,7 +2049,7 @@ public final class TokenProgram {
 
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig2(final AccountMeta invokedTokenProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int m) {
@@ -2062,7 +2062,7 @@ public final class TokenProgram {
 
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {  
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
@@ -2116,7 +2116,7 @@ public final class TokenProgram {
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
   /// @param mintKey The mint to initialize.
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public static Instruction initializeMint2(final AccountMeta invokedTokenProgramMeta,
@@ -2138,7 +2138,7 @@ public final class TokenProgram {
 
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public static Instruction initializeMint2(final AccountMeta invokedTokenProgramMeta,
@@ -2162,7 +2162,7 @@ public final class TokenProgram {
 
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public record InitializeMint2IxData(int discriminator,

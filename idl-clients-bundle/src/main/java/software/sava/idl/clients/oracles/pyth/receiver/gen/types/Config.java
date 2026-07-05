@@ -18,6 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param targetGovernanceAuthority: Option<publicKey>
 /// @param singleUpdateFeeInLamports: u64
+/// @param minimumSignatures: u8
 public record Config(PublicKey _address,
                      Discriminator discriminator,
                      PublicKey governanceAuthority,

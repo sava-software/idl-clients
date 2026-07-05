@@ -84,7 +84,7 @@ public sealed interface ConfigAction extends RustEnum permits
   }
 
   /// @param createKey Key that is used to seed the SpendingLimit PDA.
-  /// @param vaultIndex The index of the vault that the spending limit is for.
+  /// @param vaultIndex: u8 The index of the vault that the spending limit is for.
   /// @param mint The token mint the spending limit is for.
   /// @param amount: u64 The amount of tokens that can be spent in a period.
   ///               This amount is in decimals of the mint,

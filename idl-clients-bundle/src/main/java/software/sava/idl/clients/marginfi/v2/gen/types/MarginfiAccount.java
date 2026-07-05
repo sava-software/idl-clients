@@ -48,7 +48,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        
 ///                        Note: use a unique seed to tag accounts related to some particular program or campaign so
 ///                        you can easily fetch them all later.
-/// @param bump This account's bump, if a PDA-based account (0.1.5 or later). Otherwise, does nothing.
+/// @param bump: u8 This account's bump, if a PDA-based account (0.1.5 or later). Otherwise, does nothing.
 /// @param liquidationRecord Stores information related to liquidations made against this account. A pda of this
 ///                          account's key, and "liq_record"
 ///                          * Typically pubkey default if this account has never been liquidated or close to liquidation

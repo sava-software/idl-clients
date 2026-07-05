@@ -31,6 +31,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param permissions: u64
 /// @param maxVariance: u64
 /// @param minResponses: u32
+/// @param permitWriteByAuthority: u8
+/// @param historicalResultIdx: u8
+/// @param minSampleSize: u8
 /// @param lutSlot: u64
 /// @param maxStaleness: u32
 public record PullFeedAccountData(PublicKey _address,

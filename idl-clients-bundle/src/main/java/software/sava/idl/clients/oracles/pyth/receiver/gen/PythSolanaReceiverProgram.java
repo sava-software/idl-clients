@@ -413,6 +413,7 @@ public final class PythSolanaReceiverProgram {
     );
   }
 
+  /// @param minimumSignatures: u8
   public static Instruction setMinimumSignatures(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                  final PublicKey payerKey,
                                                  final PublicKey configKey,
@@ -424,6 +425,7 @@ public final class PythSolanaReceiverProgram {
     return setMinimumSignatures(invokedPythSolanaReceiverProgramMeta, keys, minimumSignatures);
   }
 
+  /// @param minimumSignatures: u8
   public static Instruction setMinimumSignatures(final AccountMeta invokedPythSolanaReceiverProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int minimumSignatures) {
@@ -434,6 +436,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
+  /// @param minimumSignatures: u8
   public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements SerDe {  
 
     public static SetMinimumSignaturesIxData read(final Instruction instruction) {

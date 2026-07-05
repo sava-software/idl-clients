@@ -16,6 +16,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param nonce: u16
+/// @param bump: u8
 public record Oracle(PublicKey _address,
                      Discriminator discriminator,
                      int nonce,

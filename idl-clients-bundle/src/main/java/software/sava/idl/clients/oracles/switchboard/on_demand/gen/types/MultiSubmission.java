@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
+/// @param recoveryId: u8
 public record MultiSubmission(BigInteger[] values,
                               byte[] signature,
                               int recoveryId) implements SerDe {

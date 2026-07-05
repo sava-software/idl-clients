@@ -4,7 +4,7 @@ package software.sava.idl.clients.squads.v4.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-/// @param ephemeralSigners Number of ephemeral signing PDAs required by the transaction.
+/// @param ephemeralSigners: u8 Number of ephemeral signing PDAs required by the transaction.
 public record BatchAddTransactionArgs(int ephemeralSigners, byte[] transactionMessage) implements SerDe {
 
   public static final int EPHEMERAL_SIGNERS_OFFSET = 0;

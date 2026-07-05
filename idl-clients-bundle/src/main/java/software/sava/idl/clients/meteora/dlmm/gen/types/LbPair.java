@@ -21,14 +21,14 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param binStepSeed Bin step signer seed
-/// @param pairType Type of the pair
+/// @param pairType: u8 Type of the pair
 /// @param activeId Active bin id
 /// @param binStep: u16 Bin step. Represent the price increment / decrement.
-/// @param status Status of the pair. Check PairStatus enum.
-/// @param requireBaseFactorSeed Require base factor seed
+/// @param status: u8 Status of the pair. Check PairStatus enum.
+/// @param requireBaseFactorSeed: u8 Require base factor seed
 /// @param baseFactorSeed Base factor seed
-/// @param activationType Activation type
-/// @param creatorPoolOnOffControl Allow pool creator to enable/disable pool with restricted validation. Only applicable for customizable permissionless pair type.
+/// @param activationType: u8 Activation type
+/// @param creatorPoolOnOffControl: u8 Allow pool creator to enable/disable pool with restricted validation. Only applicable for customizable permissionless pair type.
 /// @param tokenXMint Token X mint
 /// @param tokenYMint Token Y mint
 /// @param reserveX LB token X vault
@@ -47,9 +47,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param padding3 _padding 3
 /// @param padding4: u64 _padding_4
 /// @param creator Pool creator
-/// @param tokenMintXProgramFlag token_mint_x_program_flag
-/// @param tokenMintYProgramFlag token_mint_y_program_flag
-/// @param version version to know whether we have reset tombstone fields
+/// @param tokenMintXProgramFlag: u8 token_mint_x_program_flag
+/// @param tokenMintYProgramFlag: u8 token_mint_y_program_flag
+/// @param version: u8 version to know whether we have reset tombstone fields
 /// @param reserved Reserved space for future use
 public record LbPair(PublicKey _address,
                      Discriminator discriminator,

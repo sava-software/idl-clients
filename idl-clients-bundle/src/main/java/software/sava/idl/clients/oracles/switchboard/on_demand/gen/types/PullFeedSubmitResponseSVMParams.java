@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param slot: u64
+/// @param queueBump: u8
 public record PullFeedSubmitResponseSVMParams(long slot,
                                               SbOnDemandActionsPullFeedPullFeedSubmitResponseSvmActionSubmission[] submissions,
                                               PublicKey sourceQueueKey,

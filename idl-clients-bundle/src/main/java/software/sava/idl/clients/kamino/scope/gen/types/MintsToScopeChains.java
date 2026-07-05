@@ -19,6 +19,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Map of mints to scope chain only valid for a given price feed
 ///
 /// @param seedId: u64
+/// @param bump: u8
 public record MintsToScopeChains(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey oraclePrices,

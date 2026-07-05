@@ -8,6 +8,9 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param lpMintAuthorityBumpSeed: u8
+/// @param solLegBumpSeed: u8
+/// @param msolLegAuthorityBumpSeed: u8
 /// @param lpLiquidityTarget: u64 Liquidity target. If the Liquidity reach this amount, the fee reaches lp_min_discount_fee
 /// @param lpMaxFee Liquidity pool max fee
 /// @param lpMinFee SOL/mSOL Liquidity pool min fee

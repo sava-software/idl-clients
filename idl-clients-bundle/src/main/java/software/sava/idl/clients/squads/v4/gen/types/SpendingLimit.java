@@ -18,7 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param multisig The multisig this belongs to.
 /// @param createKey Key that is used to seed the SpendingLimit PDA.
-/// @param vaultIndex The index of the vault that the spending limit is for.
+/// @param vaultIndex: u8 The index of the vault that the spending limit is for.
 /// @param mint The token mint the spending limit is for.
 ///             Pubkey::default() means SOL.
 ///             use NATIVE_MINT for Wrapped SOL.
@@ -30,7 +30,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param remainingAmount: u64 The remaining amount of tokens that can be spent in the current period.
 ///                        When reaches 0, the spending limit cannot be used anymore until the period reset.
 /// @param lastReset Unix timestamp marking the last time the spending limit was reset (or created).
-/// @param bump PDA bump.
+/// @param bump: u8 PDA bump.
 /// @param members Members of the multisig that can use the spending limit.
 ///                In case a member is removed from the multisig, the spending limit will remain existent
 ///                (until explicitly deleted), but the removed member will not be able to use it anymore.

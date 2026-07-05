@@ -10,6 +10,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param lastUpdateDelegatedLamports: u64
 /// @param lastUpdateEpoch: u64
+/// @param isEmergencyUnstaking: u8
 public record StakeRecord(PublicKey stakeAccount,
                           long lastUpdateDelegatedLamports,
                           long lastUpdateEpoch,

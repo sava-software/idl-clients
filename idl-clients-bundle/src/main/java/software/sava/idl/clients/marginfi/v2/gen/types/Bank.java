@@ -19,7 +19,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param mint The SPL token mint this bank manages
-/// @param mintDecimals Number of decimals of the `mint`. Must be < 24.
+/// @param mintDecimals: u8 Number of decimals of the `mint`. Must be < 24.
 /// @param group The `MarginfiGroup` this bank belongs to
 /// @param assetShareValue Monotonically increases as interest rate accumulates. For typical banks, a user's asset
 ///                        value in token = (number of shares the user has * asset_share_value).
@@ -30,15 +30,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                            * A float (arbitrary decimals)
 ///                            * Initially 1
 /// @param liquidityVault The SPL token account holding deposited liquidity
-/// @param liquidityVaultBump PDA bump for the liquidity vault
-/// @param liquidityVaultAuthorityBump PDA bump for the liquidity vault authority
+/// @param liquidityVaultBump: u8 PDA bump for the liquidity vault
+/// @param liquidityVaultAuthorityBump: u8 PDA bump for the liquidity vault authority
 /// @param insuranceVault The SPL token account holding insurance fund tokens
-/// @param insuranceVaultBump PDA bump for the insurance vault
-/// @param insuranceVaultAuthorityBump PDA bump for the insurance vault authority
+/// @param insuranceVaultBump: u8 PDA bump for the insurance vault
+/// @param insuranceVaultAuthorityBump: u8 PDA bump for the insurance vault authority
 /// @param collectedInsuranceFeesOutstanding Fees collected and pending withdraw for the `insurance_vault`
 /// @param feeVault The SPL token account holding collected group fees
-/// @param feeVaultBump PDA bump for the fee vault
-/// @param feeVaultAuthorityBump PDA bump for the fee vault authority
+/// @param feeVaultBump: u8 PDA bump for the fee vault
+/// @param feeVaultAuthorityBump: u8 PDA bump for the fee vault authority
 /// @param collectedGroupFeesOutstanding Fees collected and pending withdraw for the `fee_vault`
 /// @param totalLiabilityShares Sum of all liability shares held by all borrowers in this bank.
 ///                             Multiply by `liability_share_value` to get the total liability amount in native token units.

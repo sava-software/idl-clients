@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
+/// @param collateralIndex: u8
 public record ManageRaydiumLiquidityParams(int collateralIndex,
                                            BigInteger liquidityAmount,
                                            TokenAmountsParams manageParams,

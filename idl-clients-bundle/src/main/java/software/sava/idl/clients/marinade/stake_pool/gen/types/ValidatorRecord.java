@@ -14,6 +14,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param activeBalance: u64 Validator total balance in lamports
 /// @param score: u32
 /// @param lastStakeDeltaEpoch: u64
+/// @param duplicationFlagBumpSeed: u8
 public record ValidatorRecord(PublicKey validatorAccount,
                               long activeBalance,
                               long score,

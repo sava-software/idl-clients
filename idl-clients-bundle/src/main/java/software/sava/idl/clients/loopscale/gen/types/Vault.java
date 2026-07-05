@@ -15,6 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bump: u8
 /// @param lpSupply: u64
 /// @param cumulativePrincipalDeposited: u64
 /// @param maxEarlyUnstakeFee: u64

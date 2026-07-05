@@ -38,13 +38,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param maxBorrowRateBps: u32 The maximum borrow rate that the obligation owner agrees to.
 ///                         The reserves used for Obligation::borrows *cannot* define their maximum borrow rate
 ///                         *higher* than this.
-/// @param active Whether the Self::remaining_debt_amount is non-zero.
+/// @param active: u8 Whether the Self::remaining_debt_amount is non-zero.
 ///               
 ///               This field is *not* used by smart contract logic (which prefers to treat the above
 ///               Self::remaining_debt_amount-based definition as the single source of truth). However, it
 ///               is useful for off-chain bots (order-searchers) to efficiently list (i.e. `memcmp` filter)
 ///               just the obligations that have active borrow orders.
-/// @param enableAutoRolloverOnFilledBorrows When `1`, all Obligation::borrows that get filled by this order will have their
+/// @param enableAutoRolloverOnFilledBorrows: u8 When `1`, all Obligation::borrows that get filled by this order will have their
 ///                                          FixedTermBorrowRolloverConfig::auto_rollover_enabled flag set.
 ///                                          
 ///                                          Additionally, their rollover customizations:

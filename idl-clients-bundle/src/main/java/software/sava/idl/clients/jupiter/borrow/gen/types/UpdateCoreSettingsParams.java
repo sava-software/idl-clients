@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// @param liquidationMaxLimit: u16
 /// @param withdrawGap: u16
 /// @param liquidationPenalty: u16
-/// @param borrowFee: u16
+/// @param borrowFee: u8
 public record UpdateCoreSettingsParams(int supplyRateMagnifier,
                                        int borrowRateMagnifier,
                                        int collateralFactor,
@@ -21,7 +21,7 @@ public record UpdateCoreSettingsParams(int supplyRateMagnifier,
                                        int liquidationPenalty,
                                        int borrowFee) implements SerDe {
 
-  public static final int BYTES = 16;
+  public static final int BYTES = 15;
 
   public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 0;
   public static final int BORROW_RATE_MAGNIFIER_OFFSET = 2;
@@ -51,7 +51,7 @@ public record UpdateCoreSettingsParams(int supplyRateMagnifier,
     i += 2;
     final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
+    final var borrowFee = _data[i] & 0xFF;
     return new UpdateCoreSettingsParams(supplyRateMagnifier,
                                         borrowRateMagnifier,
                                         collateralFactor,
@@ -79,8 +79,8 @@ public record UpdateCoreSettingsParams(int supplyRateMagnifier,
     i += 2;
     putInt16LE(_data, i, liquidationPenalty);
     i += 2;
-    putInt16LE(_data, i, borrowFee);
-    i += 2;
+    _data[i] = (byte) borrowFee;
+    ++i;
     return i - _offset;
   }
 

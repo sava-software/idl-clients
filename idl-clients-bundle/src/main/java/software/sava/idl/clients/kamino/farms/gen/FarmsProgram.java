@@ -77,6 +77,7 @@ public final class FarmsProgram {
     );
   }
 
+  /// @param mode: u8
   public static Instruction updateGlobalConfig(final AccountMeta invokedFarmsProgramMeta,
                                                final PublicKey globalAdminKey,
                                                final PublicKey globalConfigKey,
@@ -89,6 +90,7 @@ public final class FarmsProgram {
     return updateGlobalConfig(invokedFarmsProgramMeta, keys, mode, value);
   }
 
+  /// @param mode: u8
   public static Instruction updateGlobalConfig(final AccountMeta invokedFarmsProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int mode,
@@ -102,6 +104,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
+  /// @param mode: u8
   public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements SerDe {  
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {

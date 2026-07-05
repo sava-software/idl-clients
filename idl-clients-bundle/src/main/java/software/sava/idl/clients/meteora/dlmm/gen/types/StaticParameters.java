@@ -20,9 +20,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param minBinId Min bin id supported by the pool based on the configured bin step.
 /// @param maxBinId Max bin id supported by the pool based on the configured bin step.
 /// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
-/// @param baseFeePowerFactor Base fee power factor
-/// @param functionType function type
-/// @param collectFeeMode Collect fee mode
+/// @param baseFeePowerFactor: u8 Base fee power factor
+/// @param functionType: u8 function type
+/// @param collectFeeMode: u8 Collect fee mode
 /// @param padding Padding for bytemuck safe alignment
 public record StaticParameters(int baseFactor,
                                int filterPeriod,

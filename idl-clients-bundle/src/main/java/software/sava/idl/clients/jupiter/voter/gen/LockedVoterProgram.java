@@ -608,6 +608,7 @@ public final class LockedVoterProgram {
   /// @param voteKey The Vote.
   /// @param governorKey The Governor.
   /// @param governProgramKey The govern program.
+  /// @param side: u8
   public static Instruction castVote(final AccountMeta invokedLockedVoterProgramMeta,
                                      final PublicKey lockerKey,
                                      final PublicKey escrowKey,
@@ -631,6 +632,7 @@ public final class LockedVoterProgram {
 
   /// Casts a vote.
   ///
+  /// @param side: u8
   public static Instruction castVote(final AccountMeta invokedLockedVoterProgramMeta,
                                      final List<AccountMeta> keys,
                                      final int side) {
@@ -641,6 +643,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
+  /// @param side: u8
   public record CastVoteIxData(Discriminator discriminator, int side) implements SerDe {  
 
     public static CastVoteIxData read(final Instruction instruction) {

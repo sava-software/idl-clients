@@ -14,6 +14,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param activeBalanceCount: u8
+/// @param inactiveBalanceCount: u8
 public record ExecuteOrderRecord(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey order,

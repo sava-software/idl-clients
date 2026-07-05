@@ -3,6 +3,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param capacity: u8
 public record CreateConditionalOrdersAccountInstruction(int capacity) implements SerDe {
 
   public static final int BYTES = 1;

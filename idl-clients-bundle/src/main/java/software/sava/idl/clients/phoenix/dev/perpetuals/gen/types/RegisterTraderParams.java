@@ -9,6 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Parameters for registering a new trader account.
 ///
 /// @param maxPositions: u64
+/// @param traderPdaIndex: u8
+/// @param traderSubaccountIndex: u8
 public record RegisterTraderParams(long maxPositions,
                                    int traderPdaIndex,
                                    int traderSubaccountIndex) implements SerDe {

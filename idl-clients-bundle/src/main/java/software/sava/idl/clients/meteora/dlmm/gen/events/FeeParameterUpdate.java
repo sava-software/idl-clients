@@ -12,6 +12,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param protocolShare: u16
 /// @param baseFactor: u16
+/// @param baseFeePowerFactor: u8
 public record FeeParameterUpdate(Discriminator discriminator,
                                  PublicKey lbPair,
                                  int protocolShare,

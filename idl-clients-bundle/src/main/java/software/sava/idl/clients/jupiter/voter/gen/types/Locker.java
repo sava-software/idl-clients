@@ -21,7 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// A group of Escrows.
 ///
 /// @param base Base account used to generate signer seeds.
-/// @param bump Bump seed.
+/// @param bump: u8 Bump seed.
 /// @param tokenMint Mint of the token that must be locked in the Locker.
 /// @param lockedSupply: u64 Total number of tokens locked in Escrows.
 /// @param totalEscrow: u64 Total number of escrow

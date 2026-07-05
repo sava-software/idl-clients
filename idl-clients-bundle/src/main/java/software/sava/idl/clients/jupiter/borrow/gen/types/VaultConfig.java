@@ -21,7 +21,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param liquidationMaxLimit: u16
 /// @param withdrawGap: u16
 /// @param liquidationPenalty: u16
-/// @param borrowFee: u16
+/// @param borrowFee: u8
+/// @param vaultType: u8
+/// @param bump: u8
 public record VaultConfig(PublicKey _address,
                           Discriminator discriminator,
                           int vaultId,
@@ -33,6 +35,7 @@ public record VaultConfig(PublicKey _address,
                           int withdrawGap,
                           int liquidationPenalty,
                           int borrowFee,
+                          int vaultType,
                           PublicKey oracle,
                           PublicKey rebalancer,
                           PublicKey liquidityProgram,
@@ -56,6 +59,7 @@ public record VaultConfig(PublicKey _address,
   public static final int WITHDRAW_GAP_OFFSET = 20;
   public static final int LIQUIDATION_PENALTY_OFFSET = 22;
   public static final int BORROW_FEE_OFFSET = 24;
+  public static final int VAULT_TYPE_OFFSET = 25;
   public static final int ORACLE_OFFSET = 26;
   public static final int REBALANCER_OFFSET = 58;
   public static final int LIQUIDITY_PROGRAM_OFFSET = 90;
@@ -113,9 +117,11 @@ public record VaultConfig(PublicKey _address,
   }
 
   public static Filter createBorrowFeeFilter(final int borrowFee) {
-    final byte[] _data = new byte[2];
-    putInt16LE(_data, 0, borrowFee);
-    return Filter.createMemCompFilter(BORROW_FEE_OFFSET, _data);
+    return Filter.createMemCompFilter(BORROW_FEE_OFFSET, new byte[]{(byte) borrowFee});
+  }
+
+  public static Filter createVaultTypeFilter(final int vaultType) {
+    return Filter.createMemCompFilter(VAULT_TYPE_OFFSET, new byte[]{(byte) vaultType});
   }
 
   public static Filter createOracleFilter(final PublicKey oracle) {
@@ -182,8 +188,10 @@ public record VaultConfig(PublicKey _address,
     i += 2;
     final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
-    i += 2;
+    final var borrowFee = _data[i] & 0xFF;
+    ++i;
+    final var vaultType = _data[i] & 0xFF;
+    ++i;
     final var oracle = readPubKey(_data, i);
     i += 32;
     final var rebalancer = readPubKey(_data, i);
@@ -208,6 +216,7 @@ public record VaultConfig(PublicKey _address,
                            withdrawGap,
                            liquidationPenalty,
                            borrowFee,
+                           vaultType,
                            oracle,
                            rebalancer,
                            liquidityProgram,
@@ -236,8 +245,10 @@ public record VaultConfig(PublicKey _address,
     i += 2;
     putInt16LE(_data, i, liquidationPenalty);
     i += 2;
-    putInt16LE(_data, i, borrowFee);
-    i += 2;
+    _data[i] = (byte) borrowFee;
+    ++i;
+    _data[i] = (byte) vaultType;
+    ++i;
     oracle.write(_data, i);
     i += 32;
     rebalancer.write(_data, i);

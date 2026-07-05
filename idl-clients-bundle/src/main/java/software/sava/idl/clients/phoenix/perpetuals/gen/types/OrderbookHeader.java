@@ -20,6 +20,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed metadata prefix for a Phoenix Eternal orderbook account.
 /// The large recent-trade buffer and dynamic orderbook bytes follow this prefix and are left as trailing account data by generic decoders.
 ///
+/// @param marketStatus: u8
+/// @param baseLotsDecimals: i8
 /// @param assetId: u32
 /// @param tickSizeInQuoteLotsPerBaseLot: u64
 /// @param defaultTakerFeeMicro: u32

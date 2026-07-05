@@ -403,6 +403,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param mode: u8
   public static Instruction initFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final PublicKey lendingMarketOwnerKey,
                                                 final PublicKey lendingMarketKey,
@@ -430,6 +431,7 @@ public final class KaminoLendingProgram {
     return initFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
+  /// @param mode: u8
   public static Instruction initFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int mode) {
@@ -440,6 +442,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param mode: u8
   public record InitFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
 
     public static InitFarmsForReserveIxData read(final Instruction instruction) {
@@ -1033,6 +1036,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param autodeleverageTargetLtvPct: u8
   public static Instruction markObligationForDeleveraging(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final PublicKey lendingMarketOwnerKey,
                                                           final PublicKey obligationKey,
@@ -1046,6 +1050,7 @@ public final class KaminoLendingProgram {
     return markObligationForDeleveraging(invokedKaminoLendingProgramMeta, keys, autodeleverageTargetLtvPct);
   }
 
+  /// @param autodeleverageTargetLtvPct: u8
   public static Instruction markObligationForDeleveraging(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int autodeleverageTargetLtvPct) {
@@ -1056,6 +1061,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param autodeleverageTargetLtvPct: u8
   public record MarkObligationForDeleveragingIxData(Discriminator discriminator, int autodeleverageTargetLtvPct) implements SerDe {  
 
     public static MarkObligationForDeleveragingIxData read(final Instruction instruction) {
@@ -1514,6 +1520,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param mode: u8
   public static Instruction initObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final PublicKey payerKey,
                                                           final PublicKey ownerKey,
@@ -1543,6 +1550,7 @@ public final class KaminoLendingProgram {
     return initObligationFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
+  /// @param mode: u8
   public static Instruction initObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                           final List<AccountMeta> keys,
                                                           final int mode) {
@@ -1553,6 +1561,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param mode: u8
   public record InitObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
 
     public static InitObligationFarmsForReserveIxData read(final Instruction instruction) {
@@ -1619,6 +1628,7 @@ public final class KaminoLendingProgram {
   /// @param baseAccountsReserveFarmStateKey `obligation_farm_user_state`'s own `farm_state` field, in the handler.
   ///                                        (Cannot live as an Anchor constraint because the handler is also reached
   ///                                        via `cpi_refresh_farms` from v2 host instructions, which bypass Anchor.)
+  /// @param mode: u8
   public static Instruction refreshObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                              final PublicKey crankKey,
                                                              final PublicKey baseAccountsObligationKey,
@@ -1646,6 +1656,7 @@ public final class KaminoLendingProgram {
     return refreshObligationFarmsForReserve(invokedKaminoLendingProgramMeta, keys, mode);
   }
 
+  /// @param mode: u8
   public static Instruction refreshObligationFarmsForReserve(final AccountMeta invokedKaminoLendingProgramMeta,
                                                              final List<AccountMeta> keys,
                                                              final int mode) {
@@ -1656,6 +1667,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param mode: u8
   public record RefreshObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
 
     public static RefreshObligationFarmsForReserveIxData read(final Instruction instruction) {
@@ -3853,6 +3865,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
+  /// @param borrowInstructionIndex: u8
   public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final PublicKey userTransferAuthorityKey,
                                                        final PublicKey lendingMarketAuthorityKey,
@@ -3887,6 +3900,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
+  /// @param borrowInstructionIndex: u8
   public static Instruction flashRepayReserveLiquidity(final AccountMeta invokedKaminoLendingProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final long liquidityAmount,
@@ -3901,6 +3915,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
+  /// @param borrowInstructionIndex: u8
   public record FlashRepayReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount, int borrowInstructionIndex) implements SerDe {  
 
     public static FlashRepayReserveLiquidityIxData read(final Instruction instruction) {
@@ -4062,6 +4077,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param elevationGroup: u8
   public static Instruction requestElevationGroup(final AccountMeta invokedKaminoLendingProgramMeta,
                                                   final PublicKey ownerKey,
                                                   final PublicKey obligationKey,
@@ -4075,6 +4091,7 @@ public final class KaminoLendingProgram {
     return requestElevationGroup(invokedKaminoLendingProgramMeta, keys, elevationGroup);
   }
 
+  /// @param elevationGroup: u8
   public static Instruction requestElevationGroup(final AccountMeta invokedKaminoLendingProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final int elevationGroup) {
@@ -4085,6 +4102,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param elevationGroup: u8
   public record RequestElevationGroupIxData(Discriminator discriminator, int elevationGroup) implements SerDe {  
 
     public static RequestElevationGroupIxData read(final Instruction instruction) {
@@ -4435,6 +4453,7 @@ public final class KaminoLendingProgram {
     );
   }
 
+  /// @param index: u8
   public static Instruction setObligationOrder(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final PublicKey ownerKey,
                                                final PublicKey obligationKey,
@@ -4449,6 +4468,7 @@ public final class KaminoLendingProgram {
     return setObligationOrder(invokedKaminoLendingProgramMeta, keys, index, order);
   }
 
+  /// @param index: u8
   public static Instruction setObligationOrder(final AccountMeta invokedKaminoLendingProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int index,
@@ -4462,6 +4482,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
+  /// @param index: u8
   public record SetObligationOrderIxData(Discriminator discriminator, int index, ObligationOrder order) implements SerDe {  
 
     public static SetObligationOrderIxData read(final Instruction instruction) {

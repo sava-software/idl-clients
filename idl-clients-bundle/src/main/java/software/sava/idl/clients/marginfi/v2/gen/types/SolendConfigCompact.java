@@ -19,7 +19,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param oracleSetup Either `SolendPythPull` or `SolendSwitchboardPull`
 /// @param operationalState Bank operational state - allows starting banks in paused state
 /// @param riskTier Risk tier - determines if assets can be borrowed in isolation
-/// @param configFlags Config flags for future-proofing
+/// @param configFlags: u8 Config flags for future-proofing
 /// @param totalAssetValueInitLimit: u64
 /// @param oracleMaxAge: u16
 /// @param oracleMaxConfidence: u32 Oracle confidence threshold (0 = use default 10%)

@@ -23,6 +23,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param vaultId: u16
+/// @param branchLiquidated: u8
 /// @param currentBranchId: u32
 /// @param totalBranchId: u32
 /// @param totalSupply: u64

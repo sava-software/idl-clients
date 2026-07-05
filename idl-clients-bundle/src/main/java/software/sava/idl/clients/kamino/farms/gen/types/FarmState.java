@@ -29,13 +29,14 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param farmVaultsAuthorityBump: u64
 /// @param delegateAuthority Only used for delegate farms
 ///                          Set to `default()` otherwise
-/// @param timeUnit Raw representation of a `TimeUnit`
+/// @param timeUnit: u8 Raw representation of a `TimeUnit`
 ///                 Seconds = 0, Slots = 1
-/// @param isFarmFrozen Automatically set to true in case of a full authority withdrawal
+/// @param isFarmFrozen: u8 Automatically set to true in case of a full authority withdrawal
 ///                     If true, the farm is frozen and no more deposits are allowed
-/// @param isFarmDelegated Indicates if the farm is a delegate farm
+/// @param isFarmDelegated: u8 Indicates if the farm is a delegate farm
 ///                        If true, the farm is a delegate farm and the `delegate_authority` is set*
-/// @param isRewardUserOnceEnabled If set to 1, indicates that the "reward user once" feature is enabled
+/// @param isRewardUserOnceEnabled: u8 If set to 1, indicates that the "reward user once" feature is enabled
+/// @param isHarvestingPermissionless: u8
 /// @param withdrawAuthority Withdraw authority for the farm, allowed to lock deposited funds and withdraw them
 ///                          Set to `default()` if unused (only the depositors can withdraw their funds)
 /// @param depositWarmupPeriod: u32 Delay between a user deposit and the moment it is considered as staked

@@ -20,6 +20,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param version: u8
+/// @param bump: u8
+/// @param externalYieldSource: u8
 /// @param lastAccruedTimestamp: u64 timestamp interest per second's interest was last accrued
 /// @param liquidityBuffer: u64 the is the amount of liquidity % that always needs to be in the strategy
 /// @param tokenBalance: u64 amount of principal in the strategy

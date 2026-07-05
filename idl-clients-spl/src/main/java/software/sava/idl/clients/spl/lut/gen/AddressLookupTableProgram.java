@@ -38,6 +38,7 @@ public final class AddressLookupTableProgram {
   }
 
   /// @param recentSlot: u64
+  /// @param bump: u8
   public static Instruction createLookupTable(final AccountMeta invokedAddressLookupTableProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey addressKey,
@@ -60,6 +61,7 @@ public final class AddressLookupTableProgram {
   }
 
   /// @param recentSlot: u64
+  /// @param bump: u8
   public static Instruction createLookupTable(final AccountMeta invokedAddressLookupTableProgramMeta,
                                               final List<AccountMeta> keys,
                                               final long recentSlot,
@@ -74,6 +76,7 @@ public final class AddressLookupTableProgram {
   }
 
   /// @param recentSlot: u64
+  /// @param bump: u8
   public record CreateLookupTableIxData(long discriminator,
                                         long recentSlot,
                                         int bump) implements SerDe {  

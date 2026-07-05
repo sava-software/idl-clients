@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Contains parameters for the Locker.
 ///
-/// @param maxStakeVoteMultiplier The weight of a maximum vote lock relative to the total number of tokens locked.
+/// @param maxStakeVoteMultiplier: u8 The weight of a maximum vote lock relative to the total number of tokens locked.
 ///                               For example, veCRV is 10 because 1 CRV locked for 4 years = 10 veCRV.
 /// @param minStakeDuration: u64 Minimum staking duration.
 /// @param maxStakeDuration: u64 Maximum staking duration.

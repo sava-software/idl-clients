@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param totalValidatorScore: u32
 /// @param totalActiveBalance: u64 sum of all active lamports staked
-/// @param autoAddValidatorEnabled DEPRECATED, no longer used
+/// @param autoAddValidatorEnabled: u8 DEPRECATED, no longer used
 public record ValidatorSystem(List validatorList,
                               PublicKey managerAuthority,
                               long totalValidatorScore,

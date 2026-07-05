@@ -15,6 +15,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param scopeConfiguration Scope price configuration
 /// @param switchboardConfiguration Switchboard configuration
 /// @param pythConfiguration Pyth configuration
+/// @param blockPriceUsage: u8
 /// @param padding: u64[]
 public record TokenInfo(byte[] name,
                         PriceHeuristic heuristic,

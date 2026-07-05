@@ -37,7 +37,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                  * Always non-negative
 ///                                  * Zero if never updated
 ///                                  * Note: this value is the confidence reported by oracles, multiplied by `STD_DEV_MULTIPLE`
-/// @param liqCacheFlags Liquidation cache flags, set during receivership flow.
+/// @param liqCacheFlags: u8 Liquidation cache flags, set during receivership flow.
 ///                      * 1 (LIQ_CACHE_LOCKED_FLAG) - We "lock" the liquidation cache when writing to it in Start
 ///                      Liquidate as an additional safeguard, if the liquidation prices stored here were to be
 ///                      edited between start and end, it would completely break the risk engine. End validates that

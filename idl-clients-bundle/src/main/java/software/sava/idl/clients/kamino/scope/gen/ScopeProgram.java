@@ -781,6 +781,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
+  /// @param bump: u8
   /// @param scopeChains: Vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final PublicKey adminKey,
@@ -808,6 +809,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
+  /// @param bump: u8
   /// @param scopeChains: Vec<u16[]>
   public static Instruction createMintMap(final AccountMeta invokedScopeProgramMeta,
                                           final List<AccountMeta> keys,
@@ -829,6 +831,7 @@ public final class ScopeProgram {
   }
 
   /// @param seedId: u64
+  /// @param bump: u8
   /// @param scopeChains: Vec<u16[]>
   public record CreateMintMapIxData(Discriminator discriminator,
                                     PublicKey seedPk,

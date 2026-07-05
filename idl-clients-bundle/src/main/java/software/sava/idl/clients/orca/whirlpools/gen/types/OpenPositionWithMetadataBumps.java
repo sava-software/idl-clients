@@ -3,6 +3,8 @@ package software.sava.idl.clients.orca.whirlpools.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param positionBump: u8
+/// @param metadataBump: u8
 public record OpenPositionWithMetadataBumps(int positionBump, int metadataBump) implements SerDe {
 
   public static final int BYTES = 2;

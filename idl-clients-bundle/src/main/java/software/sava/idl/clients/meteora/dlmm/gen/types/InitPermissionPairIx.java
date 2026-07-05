@@ -10,7 +10,11 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param binStep: u16
 /// @param baseFactor: u16
+/// @param baseFeePowerFactor: u8
+/// @param activationType: u8
 /// @param padding0: u16
+/// @param concreteFunctionType: u8
+/// @param collectFeeMode: u8
 public record InitPermissionPairIx(int activeId,
                                    int binStep,
                                    int baseFactor,

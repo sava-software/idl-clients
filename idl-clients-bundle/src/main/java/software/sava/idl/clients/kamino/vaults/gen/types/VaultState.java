@@ -39,6 +39,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param unallocatedTokensCap: u64
 /// @param withdrawalPenaltyLamports: u64
 /// @param withdrawalPenaltyBps: u64
+/// @param allowAllocationsInWhitelistedReservesOnly: u8
+/// @param allowInvestInWhitelistedReservesOnly: u8
 /// @param depositCap: u64 total vault deposit cap; 0 means uncapped for backward compatibility reasons; this is a soft cap that just blocks new deposits but the vault AUM can go above this cap because of the earned interest
 public record VaultState(PublicKey _address,
                          Discriminator discriminator,

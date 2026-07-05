@@ -12,8 +12,11 @@ import software.sava.idl.clients.jupiter.lend.gen.types.AddressBool;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.OptionalLong;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+
+import static java.util.Objects.requireNonNullElse;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -30,7 +33,8 @@ public final class LendingProgram {
 
   public static final Discriminator DEPOSIT_DISCRIMINATOR = toDiscriminator(242, 35, 198, 137, 82, 225, 242, 182);
 
-  public static List<AccountMeta> depositKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> depositKeys(final AccountMeta invokedLendingProgramMeta,
+                                              final SolanaAccounts solanaAccounts,
                                               final PublicKey signerKey,
                                               final PublicKey depositorTokenAccountKey,
                                               final PublicKey recipientTokenAccountKey,
@@ -59,10 +63,10 @@ public final class LendingProgram {
       createRead(rateModelKey),
       createWrite(vaultKey),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -87,6 +91,7 @@ public final class LendingProgram {
                                     final PublicKey tokenProgramKey,
                                     final long assets) {
     final var keys = depositKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       depositorTokenAccountKey,
@@ -155,7 +160,8 @@ public final class LendingProgram {
 
   public static final Discriminator DEPOSIT_WITH_MIN_AMOUNT_OUT_DISCRIMINATOR = toDiscriminator(116, 144, 16, 97, 118, 109, 40, 119);
 
-  public static List<AccountMeta> depositWithMinAmountOutKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> depositWithMinAmountOutKeys(final AccountMeta invokedLendingProgramMeta,
+                                                              final SolanaAccounts solanaAccounts,
                                                               final PublicKey signerKey,
                                                               final PublicKey depositorTokenAccountKey,
                                                               final PublicKey recipientTokenAccountKey,
@@ -184,10 +190,10 @@ public final class LendingProgram {
       createRead(rateModelKey),
       createWrite(vaultKey),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -214,6 +220,7 @@ public final class LendingProgram {
                                                     final long assets,
                                                     final long minAmountOut) {
     final var keys = depositWithMinAmountOutKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       depositorTokenAccountKey,
@@ -499,7 +506,8 @@ public final class LendingProgram {
 
   public static final Discriminator MINT_DISCRIMINATOR = toDiscriminator(51, 57, 225, 47, 182, 146, 137, 166);
 
-  public static List<AccountMeta> mintKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> mintKeys(final AccountMeta invokedLendingProgramMeta,
+                                           final SolanaAccounts solanaAccounts,
                                            final PublicKey signerKey,
                                            final PublicKey depositorTokenAccountKey,
                                            final PublicKey recipientTokenAccountKey,
@@ -528,10 +536,10 @@ public final class LendingProgram {
       createRead(rateModelKey),
       createWrite(vaultKey),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -556,6 +564,7 @@ public final class LendingProgram {
                                  final PublicKey tokenProgramKey,
                                  final long shares) {
     final var keys = mintKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       depositorTokenAccountKey,
@@ -624,7 +633,8 @@ public final class LendingProgram {
 
   public static final Discriminator MINT_WITH_MAX_ASSETS_DISCRIMINATOR = toDiscriminator(6, 94, 69, 122, 30, 179, 146, 171);
 
-  public static List<AccountMeta> mintWithMaxAssetsKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> mintWithMaxAssetsKeys(final AccountMeta invokedLendingProgramMeta,
+                                                        final SolanaAccounts solanaAccounts,
                                                         final PublicKey signerKey,
                                                         final PublicKey depositorTokenAccountKey,
                                                         final PublicKey recipientTokenAccountKey,
@@ -653,10 +663,10 @@ public final class LendingProgram {
       createRead(rateModelKey),
       createWrite(vaultKey),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -683,6 +693,7 @@ public final class LendingProgram {
                                               final long shares,
                                               final long maxAssets) {
     final var keys = mintWithMaxAssetsKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       depositorTokenAccountKey,
@@ -788,7 +799,7 @@ public final class LendingProgram {
       createWrite(rateModelKey),
       createWrite(vaultKey),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
       createRead(solanaAccounts.associatedTokenAccountProgram()),
@@ -837,9 +848,137 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, REBALANCE_DISCRIMINATOR);
   }
 
+  public static final Discriminator REBALANCE_WITH_AMOUNTS_DISCRIMINATOR = toDiscriminator(190, 33, 144, 182, 86, 4, 141, 73);
+
+  public static List<AccountMeta> rebalanceWithAmountsKeys(final SolanaAccounts solanaAccounts,
+                                                           final PublicKey signerKey,
+                                                           final PublicKey depositorTokenAccountKey,
+                                                           final PublicKey lendingAdminKey,
+                                                           final PublicKey lendingKey,
+                                                           final PublicKey mintKey,
+                                                           final PublicKey fTokenMintKey,
+                                                           final PublicKey supplyTokenReservesLiquidityKey,
+                                                           final PublicKey lendingSupplyPositionOnLiquidityKey,
+                                                           final PublicKey rateModelKey,
+                                                           final PublicKey vaultKey,
+                                                           final PublicKey liquidityKey,
+                                                           final PublicKey liquidityProgramKey,
+                                                           final PublicKey rewardsRateModelKey,
+                                                           final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(depositorTokenAccountKey),
+      createRead(lendingAdminKey),
+      createWrite(lendingKey),
+      createRead(mintKey),
+      createWrite(fTokenMintKey),
+      createWrite(supplyTokenReservesLiquidityKey),
+      createWrite(lendingSupplyPositionOnLiquidityKey),
+      createWrite(rateModelKey),
+      createWrite(vaultKey),
+      createWrite(liquidityKey),
+      createRead(liquidityProgramKey),
+      createRead(rewardsRateModelKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// @param amount: Option<u64>
+  public static Instruction rebalanceWithAmounts(final AccountMeta invokedLendingProgramMeta,
+                                                 final SolanaAccounts solanaAccounts,
+                                                 final PublicKey signerKey,
+                                                 final PublicKey depositorTokenAccountKey,
+                                                 final PublicKey lendingAdminKey,
+                                                 final PublicKey lendingKey,
+                                                 final PublicKey mintKey,
+                                                 final PublicKey fTokenMintKey,
+                                                 final PublicKey supplyTokenReservesLiquidityKey,
+                                                 final PublicKey lendingSupplyPositionOnLiquidityKey,
+                                                 final PublicKey rateModelKey,
+                                                 final PublicKey vaultKey,
+                                                 final PublicKey liquidityKey,
+                                                 final PublicKey liquidityProgramKey,
+                                                 final PublicKey rewardsRateModelKey,
+                                                 final PublicKey tokenProgramKey,
+                                                 final OptionalLong amount) {
+    final var keys = rebalanceWithAmountsKeys(
+      solanaAccounts,
+      signerKey,
+      depositorTokenAccountKey,
+      lendingAdminKey,
+      lendingKey,
+      mintKey,
+      fTokenMintKey,
+      supplyTokenReservesLiquidityKey,
+      lendingSupplyPositionOnLiquidityKey,
+      rateModelKey,
+      vaultKey,
+      liquidityKey,
+      liquidityProgramKey,
+      rewardsRateModelKey,
+      tokenProgramKey
+    );
+    return rebalanceWithAmounts(invokedLendingProgramMeta, keys, amount);
+  }
+
+  /// @param amount: Option<u64>
+  public static Instruction rebalanceWithAmounts(final AccountMeta invokedLendingProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final OptionalLong amount) {
+    final byte[] _data = new byte[
+    8
+    + (amount == null || amount.isEmpty() ? 1 : 9)
+    ];
+    int i = REBALANCE_WITH_AMOUNTS_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeOptional(1, amount, _data, i);
+
+    return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
+  }
+
+  /// @param amount: Option<u64>
+  public record RebalanceWithAmountsIxData(Discriminator discriminator, OptionalLong amount) implements SerDe {  
+
+    public static RebalanceWithAmountsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int AMOUNT_OFFSET = 9;
+
+    public static RebalanceWithAmountsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final OptionalLong amount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        amount = OptionalLong.empty();
+      } else {
+        ++i;
+        amount = OptionalLong.of(getInt64LE(_data, i));
+      }
+      return new RebalanceWithAmountsIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeOptional(1, amount, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (amount == null || amount.isEmpty() ? 1 : (1 + 8));
+    }
+  }
+
   public static final Discriminator REDEEM_DISCRIMINATOR = toDiscriminator(184, 12, 86, 149, 70, 196, 97, 225);
 
-  public static List<AccountMeta> redeemKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> redeemKeys(final AccountMeta invokedLendingProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
                                              final PublicKey signerKey,
                                              final PublicKey ownerTokenAccountKey,
                                              final PublicKey recipientTokenAccountKey,
@@ -868,12 +1007,12 @@ public final class LendingProgram {
       createWrite(lendingSupplyPositionOnLiquidityKey),
       createRead(rateModelKey),
       createWrite(vaultKey),
-      createWrite(claimAccountKey),
+      createWrite(requireNonNullElse(claimAccountKey, invokedLendingProgramMeta.publicKey())),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -899,6 +1038,7 @@ public final class LendingProgram {
                                    final PublicKey tokenProgramKey,
                                    final long shares) {
     final var keys = redeemKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       ownerTokenAccountKey,
@@ -968,7 +1108,8 @@ public final class LendingProgram {
 
   public static final Discriminator REDEEM_WITH_MIN_AMOUNT_OUT_DISCRIMINATOR = toDiscriminator(235, 189, 237, 56, 166, 180, 184, 149);
 
-  public static List<AccountMeta> redeemWithMinAmountOutKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> redeemWithMinAmountOutKeys(final AccountMeta invokedLendingProgramMeta,
+                                                             final SolanaAccounts solanaAccounts,
                                                              final PublicKey signerKey,
                                                              final PublicKey ownerTokenAccountKey,
                                                              final PublicKey recipientTokenAccountKey,
@@ -997,12 +1138,12 @@ public final class LendingProgram {
       createWrite(lendingSupplyPositionOnLiquidityKey),
       createRead(rateModelKey),
       createWrite(vaultKey),
-      createWrite(claimAccountKey),
+      createWrite(requireNonNullElse(claimAccountKey, invokedLendingProgramMeta.publicKey())),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -1030,6 +1171,7 @@ public final class LendingProgram {
                                                    final long shares,
                                                    final long minAmountOut) {
     final var keys = redeemWithMinAmountOutKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       ownerTokenAccountKey,
@@ -1419,7 +1561,8 @@ public final class LendingProgram {
 
   public static final Discriminator WITHDRAW_DISCRIMINATOR = toDiscriminator(183, 18, 70, 156, 148, 109, 161, 34);
 
-  public static List<AccountMeta> withdrawKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> withdrawKeys(final AccountMeta invokedLendingProgramMeta,
+                                               final SolanaAccounts solanaAccounts,
                                                final PublicKey signerKey,
                                                final PublicKey ownerTokenAccountKey,
                                                final PublicKey recipientTokenAccountKey,
@@ -1448,12 +1591,12 @@ public final class LendingProgram {
       createWrite(lendingSupplyPositionOnLiquidityKey),
       createRead(rateModelKey),
       createWrite(vaultKey),
-      createWrite(claimAccountKey),
+      createWrite(requireNonNullElse(claimAccountKey, invokedLendingProgramMeta.publicKey())),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -1479,6 +1622,7 @@ public final class LendingProgram {
                                      final PublicKey tokenProgramKey,
                                      final long amount) {
     final var keys = withdrawKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       ownerTokenAccountKey,
@@ -1548,7 +1692,8 @@ public final class LendingProgram {
 
   public static final Discriminator WITHDRAW_WITH_MAX_SHARES_BURN_DISCRIMINATOR = toDiscriminator(47, 197, 183, 171, 239, 18, 245, 171);
 
-  public static List<AccountMeta> withdrawWithMaxSharesBurnKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> withdrawWithMaxSharesBurnKeys(final AccountMeta invokedLendingProgramMeta,
+                                                                final SolanaAccounts solanaAccounts,
                                                                 final PublicKey signerKey,
                                                                 final PublicKey ownerTokenAccountKey,
                                                                 final PublicKey recipientTokenAccountKey,
@@ -1577,12 +1722,12 @@ public final class LendingProgram {
       createWrite(lendingSupplyPositionOnLiquidityKey),
       createRead(rateModelKey),
       createWrite(vaultKey),
-      createWrite(claimAccountKey),
+      createWrite(requireNonNullElse(claimAccountKey, invokedLendingProgramMeta.publicKey())),
       createWrite(liquidityKey),
-      createWrite(liquidityProgramKey),
+      createRead(liquidityProgramKey),
       createRead(rewardsRateModelKey),
       createRead(tokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedLendingProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -1610,6 +1755,7 @@ public final class LendingProgram {
                                                       final long amount,
                                                       final long maxSharesBurn) {
     final var keys = withdrawWithMaxSharesBurnKeys(
+      invokedLendingProgramMeta,
       solanaAccounts,
       signerKey,
       ownerTokenAccountKey,

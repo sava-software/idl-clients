@@ -17,6 +17,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u64
+/// @param conditionalOrderIndex: u8
 public record TriggerOrderCancelledEvent(Discriminator discriminator,
                                          PublicKey trader,
                                          long sequenceNumber,

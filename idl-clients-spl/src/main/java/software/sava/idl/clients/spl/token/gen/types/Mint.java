@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                      be provided during mint creation. If no mint authority is present
 ///                      then the mint has a fixed supply and no further tokens may be minted.
 /// @param supply: u64 Total supply of tokens.
-/// @param decimals Number of base 10 digits to the right of the decimal place.
+/// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
 /// @param isInitialized Is `true` if this structure has been initialized.
 /// @param freezeAuthority Optional authority to freeze token accounts.
 public record Mint(PublicKey _address,

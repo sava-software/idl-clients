@@ -17,6 +17,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param singleUpdateFeeInLamports: u64
+/// @param numTrustedSigners: u8
 public record Storage(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey topAuthority,

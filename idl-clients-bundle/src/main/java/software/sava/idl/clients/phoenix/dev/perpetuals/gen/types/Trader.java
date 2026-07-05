@@ -26,6 +26,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param withdrawQueueNode: u32
 /// @param maxPositions: u64
 /// @param numMarketsWithSplines: u16
+/// @param traderPdaIndex: u8
+/// @param traderSubaccountIndex: u8
 /// @param lastDepositSlot: u64
 public record Trader(PublicKey _address,
                      Discriminator discriminator,

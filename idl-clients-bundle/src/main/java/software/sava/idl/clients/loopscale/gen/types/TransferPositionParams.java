@@ -11,6 +11,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param collateralIndex: u8
 public record TransferPositionParams(BigInteger liquidityAmount,
                                      int collateralIndex,
                                      TransferTypeParams transferParams,

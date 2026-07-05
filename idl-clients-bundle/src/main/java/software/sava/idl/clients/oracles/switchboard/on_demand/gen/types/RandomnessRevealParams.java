@@ -4,6 +4,7 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// @param recoveryId: u8
 public record RandomnessRevealParams(byte[] signature,
                                      int recoveryId,
                                      byte[] value) implements SerDe {

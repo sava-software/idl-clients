@@ -23,6 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param vaultId: u16
 /// @param nftId: u32
+/// @param isSupplyOnlyPosition: u8
 /// @param tickId: u32
 /// @param supplyAmount: u64
 /// @param dustDebtAmount: u64

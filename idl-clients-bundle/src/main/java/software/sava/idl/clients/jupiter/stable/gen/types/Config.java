@@ -17,6 +17,10 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param pegPriceUsd: u64
+/// @param decimals: u8
+/// @param isMintRedeemEnabled: u8
+/// @param authorityBump: u8
+/// @param configBump: u8
 public record Config(PublicKey _address,
                      Discriminator discriminator,
                      PublicKey mint,

@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param userId: u64
+/// @param isFarmDelegated: u8
 /// @param rewardsIssuedUnclaimed: u64[]
 /// @param lastClaimTs: u64[]
 /// @param pendingDepositStakeTs: u64

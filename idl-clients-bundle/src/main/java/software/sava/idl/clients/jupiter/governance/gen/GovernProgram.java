@@ -173,6 +173,8 @@ public final class GovernProgram {
   ///                    One of the owners. Checked in the handler via SmartWallet::owner_index.
   /// @param payerKey Payer of the proposal.
   /// @param systemProgramKey System program.
+  /// @param proposalType: u8
+  /// @param maxOption: u8
   public static Instruction createProposal(final AccountMeta invokedGovernProgramMeta,
                                            final PublicKey governorKey,
                                            final PublicKey proposalKey,
@@ -208,6 +210,8 @@ public final class GovernProgram {
   /// This may be called by anyone, since the Proposal does not do anything until
   /// it is activated in activate_proposal.
   ///
+  /// @param proposalType: u8
+  /// @param maxOption: u8
   public static Instruction createProposal(final AccountMeta invokedGovernProgramMeta,
                                            final List<AccountMeta> keys,
                                            final int proposalType,
@@ -224,6 +228,8 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param proposalType: u8
+  /// @param maxOption: u8
   public record CreateProposalIxData(Discriminator discriminator,
                                      int proposalType,
                                      int maxOption,
@@ -557,6 +563,7 @@ public final class GovernProgram {
   /// @param proposalKey The Proposal.
   /// @param voteKey The Vote.
   /// @param lockerKey The Governor::locker.
+  /// @param side: u8
   /// @param weight: u64
   public static Instruction setVote(final AccountMeta invokedGovernProgramMeta,
                                     final PublicKey governorKey,
@@ -577,6 +584,7 @@ public final class GovernProgram {
   /// Sets a Vote weight and side.
   /// This may only be called by the Governor::voter.
   ///
+  /// @param side: u8
   /// @param weight: u64
   public static Instruction setVote(final AccountMeta invokedGovernProgramMeta,
                                     final List<AccountMeta> keys,
@@ -591,6 +599,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param side: u8
   /// @param weight: u64
   public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {  
 
@@ -979,6 +988,7 @@ public final class GovernProgram {
   /// @param proposalMetaKey The ProposalMeta.
   /// @param payerKey Payer of the ProposalMeta.
   /// @param systemProgramKey System program.
+  /// @param bump: u8
   public static Instruction createProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                final PublicKey proposalKey,
                                                final PublicKey proposerKey,
@@ -1010,6 +1020,7 @@ public final class GovernProgram {
 
   /// Creates a ProposalMeta.
   ///
+  /// @param bump: u8
   public static Instruction createProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int bump,
@@ -1027,6 +1038,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param bump: u8
   public record CreateProposalMetaIxData(Discriminator discriminator,
                                          int bump,
                                          String title, byte[] _title,
@@ -1116,6 +1128,7 @@ public final class GovernProgram {
   /// @param optionProposalMetaKey The ProposalMeta.
   /// @param payerKey Payer of the ProposalMeta.
   /// @param systemProgramKey System program.
+  /// @param bump: u8
   public static Instruction createOptionProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                      final PublicKey proposalKey,
                                                      final PublicKey proposerKey,
@@ -1140,6 +1153,7 @@ public final class GovernProgram {
 
   /// Creates an OptionProposalMeta.
   ///
+  /// @param bump: u8
   public static Instruction createOptionProposalMeta(final AccountMeta invokedGovernProgramMeta,
                                                      final List<AccountMeta> keys,
                                                      final int bump,
@@ -1153,6 +1167,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
+  /// @param bump: u8
   public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions) implements SerDe {  
 
     public static CreateOptionProposalMetaIxData read(final Instruction instruction) {

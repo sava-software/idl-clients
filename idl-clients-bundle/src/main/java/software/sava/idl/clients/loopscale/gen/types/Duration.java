@@ -7,6 +7,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param duration: u32
+/// @param durationType: u8
 public record Duration(long duration, int durationType) implements SerDe {
 
   public static final int BYTES = 5;

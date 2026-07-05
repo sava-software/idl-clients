@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// BinArray index: 0 contains bin 0 <-> 599
 /// index: 2 contains bin 600 <-> 1199, ...
 ///
+/// @param version: u8
 public record BinArray(PublicKey _address,
                        Discriminator discriminator,
                        long index,

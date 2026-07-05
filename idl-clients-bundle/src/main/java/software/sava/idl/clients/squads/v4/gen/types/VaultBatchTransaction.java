@@ -15,7 +15,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Stores data required for execution of one transaction from a batch.
 ///
-/// @param bump PDA bump.
+/// @param bump: u8 PDA bump.
 /// @param ephemeralSignerBumps Derivation bumps for additional signers.
 ///                             Some transactions require multiple signers. Often these additional signers are "ephemeral" keypairs
 ///                             that are generated on the client with a sole purpose of signing the transaction and be discarded immediately after.

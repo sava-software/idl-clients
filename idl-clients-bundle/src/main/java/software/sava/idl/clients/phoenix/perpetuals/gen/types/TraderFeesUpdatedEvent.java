@@ -11,6 +11,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::TraderFeesUpdated Borsh variant 49.
 /// Payload type: TraderFeesUpdatedEvent.
 ///
+/// @param previousMakerFeeOverrideMultiplier: i8
+/// @param newMakerFeeOverrideMultiplier: i8
+/// @param previousTakerFeeOverrideMultiplier: i8
+/// @param newTakerFeeOverrideMultiplier: i8
 public record TraderFeesUpdatedEvent(Discriminator discriminator,
                                      PublicKey trader,
                                      PublicKey authority,

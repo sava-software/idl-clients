@@ -37,6 +37,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param decimals: u32
 /// @param marketIndex: u16
 /// @param padding5: u16[]
+/// @param poolId: u8
 /// @param padding7: u64[] Padding to reach 776 bytes total (including discriminator)
 public record MinimalSpotMarket(PublicKey _address,
                                 Discriminator discriminator,

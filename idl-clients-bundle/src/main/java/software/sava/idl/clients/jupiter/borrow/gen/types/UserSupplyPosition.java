@@ -7,37 +7,42 @@ import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.rpc.json.http.response.AccountInfo;
 
-import java.math.BigInteger;
-
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// User supply position
 ///
+/// @param withInterest: u8
 /// @param amount: u64
+/// @param withdrawalLimit: u64
+/// @param decayAmount: u64
 /// @param lastUpdate: u64
 /// @param expandPct: u16
-/// @param expandDuration: u64
+/// @param expandDuration: u32
+/// @param decayDuration: u32
 /// @param baseWithdrawalLimit: u64
+/// @param status: u8
 public record UserSupplyPosition(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey protocol,
                                  PublicKey mint,
                                  int withInterest,
                                  long amount,
-                                 BigInteger withdrawalLimit,
+                                 long withdrawalLimit,
+                                 long decayAmount,
                                  long lastUpdate,
                                  int expandPct,
                                  long expandDuration,
+                                 long decayDuration,
                                  long baseWithdrawalLimit,
                                  int status) implements SerDe {
 
@@ -52,9 +57,11 @@ public record UserSupplyPosition(PublicKey _address,
   public static final int WITH_INTEREST_OFFSET = 72;
   public static final int AMOUNT_OFFSET = 73;
   public static final int WITHDRAWAL_LIMIT_OFFSET = 81;
+  public static final int DECAY_AMOUNT_OFFSET = 89;
   public static final int LAST_UPDATE_OFFSET = 97;
   public static final int EXPAND_PCT_OFFSET = 105;
   public static final int EXPAND_DURATION_OFFSET = 107;
+  public static final int DECAY_DURATION_OFFSET = 111;
   public static final int BASE_WITHDRAWAL_LIMIT_OFFSET = 115;
   public static final int STATUS_OFFSET = 123;
 
@@ -76,10 +83,16 @@ public record UserSupplyPosition(PublicKey _address,
     return Filter.createMemCompFilter(AMOUNT_OFFSET, _data);
   }
 
-  public static Filter createWithdrawalLimitFilter(final BigInteger withdrawalLimit) {
-    final byte[] _data = new byte[16];
-    putInt128LE(_data, 0, withdrawalLimit);
+  public static Filter createWithdrawalLimitFilter(final long withdrawalLimit) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, withdrawalLimit);
     return Filter.createMemCompFilter(WITHDRAWAL_LIMIT_OFFSET, _data);
+  }
+
+  public static Filter createDecayAmountFilter(final long decayAmount) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, decayAmount);
+    return Filter.createMemCompFilter(DECAY_AMOUNT_OFFSET, _data);
   }
 
   public static Filter createLastUpdateFilter(final long lastUpdate) {
@@ -95,9 +108,15 @@ public record UserSupplyPosition(PublicKey _address,
   }
 
   public static Filter createExpandDurationFilter(final long expandDuration) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, expandDuration);
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) expandDuration);
     return Filter.createMemCompFilter(EXPAND_DURATION_OFFSET, _data);
+  }
+
+  public static Filter createDecayDurationFilter(final long decayDuration) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) decayDuration);
+    return Filter.createMemCompFilter(DECAY_DURATION_OFFSET, _data);
   }
 
   public static Filter createBaseWithdrawalLimitFilter(final long baseWithdrawalLimit) {
@@ -138,14 +157,18 @@ public record UserSupplyPosition(PublicKey _address,
     ++i;
     final var amount = getInt64LE(_data, i);
     i += 8;
-    final var withdrawalLimit = getInt128LE(_data, i);
-    i += 16;
+    final var withdrawalLimit = getInt64LE(_data, i);
+    i += 8;
+    final var decayAmount = getInt64LE(_data, i);
+    i += 8;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;
     final var expandPct = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var expandDuration = getInt64LE(_data, i);
-    i += 8;
+    final var expandDuration = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var decayDuration = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
     final var baseWithdrawalLimit = getInt64LE(_data, i);
     i += 8;
     final var status = _data[i] & 0xFF;
@@ -156,9 +179,11 @@ public record UserSupplyPosition(PublicKey _address,
                                   withInterest,
                                   amount,
                                   withdrawalLimit,
+                                  decayAmount,
                                   lastUpdate,
                                   expandPct,
                                   expandDuration,
+                                  decayDuration,
                                   baseWithdrawalLimit,
                                   status);
   }
@@ -174,14 +199,18 @@ public record UserSupplyPosition(PublicKey _address,
     ++i;
     putInt64LE(_data, i, amount);
     i += 8;
-    putInt128LE(_data, i, withdrawalLimit);
-    i += 16;
+    putInt64LE(_data, i, withdrawalLimit);
+    i += 8;
+    putInt64LE(_data, i, decayAmount);
+    i += 8;
     putInt64LE(_data, i, lastUpdate);
     i += 8;
     putInt16LE(_data, i, expandPct);
     i += 2;
-    putInt64LE(_data, i, expandDuration);
-    i += 8;
+    putInt32LE(_data, i, (int) expandDuration);
+    i += 4;
+    putInt32LE(_data, i, (int) decayDuration);
+    i += 4;
     putInt64LE(_data, i, baseWithdrawalLimit);
     i += 8;
     _data[i] = (byte) status;

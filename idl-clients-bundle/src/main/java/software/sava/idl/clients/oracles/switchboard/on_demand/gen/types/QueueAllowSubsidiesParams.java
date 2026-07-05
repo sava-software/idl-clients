@@ -3,6 +3,7 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param allowSubsidies: u8
 public record QueueAllowSubsidiesParams(int allowSubsidies) implements SerDe {
 
   public static final int BYTES = 1;

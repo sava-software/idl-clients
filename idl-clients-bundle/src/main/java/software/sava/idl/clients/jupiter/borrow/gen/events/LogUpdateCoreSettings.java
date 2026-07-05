@@ -13,7 +13,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param liquidationMaxLimit: u16
 /// @param withdrawGap: u16
 /// @param liquidationPenalty: u16
-/// @param borrowFee: u16
+/// @param borrowFee: u8
 public record LogUpdateCoreSettings(Discriminator discriminator,
                                     int supplyRateMagnifier,
                                     int borrowRateMagnifier,
@@ -24,7 +24,7 @@ public record LogUpdateCoreSettings(Discriminator discriminator,
                                     int liquidationPenalty,
                                     int borrowFee) implements VaultsEvent {
 
-  public static final int BYTES = 24;
+  public static final int BYTES = 23;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(233, 65, 32, 7, 230, 115, 122, 197);
 
   public static final int SUPPLY_RATE_MAGNIFIER_OFFSET = 8;
@@ -56,7 +56,7 @@ public record LogUpdateCoreSettings(Discriminator discriminator,
     i += 2;
     final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
+    final var borrowFee = _data[i] & 0xFF;
     return new LogUpdateCoreSettings(discriminator,
                                      supplyRateMagnifier,
                                      borrowRateMagnifier,
@@ -85,8 +85,8 @@ public record LogUpdateCoreSettings(Discriminator discriminator,
     i += 2;
     putInt16LE(_data, i, liquidationPenalty);
     i += 2;
-    putInt16LE(_data, i, borrowFee);
-    i += 2;
+    _data[i] = (byte) borrowFee;
+    ++i;
     return i - _offset;
   }
 

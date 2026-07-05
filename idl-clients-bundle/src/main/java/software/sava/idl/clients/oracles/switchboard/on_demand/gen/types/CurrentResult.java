@@ -17,8 +17,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param range The range of the submissions needed for quorom size
 /// @param minValue The minimum value of the submissions needed for quorom size
 /// @param maxValue The maximum value of the submissions needed for quorom size
-/// @param numSamples The number of samples used to calculate this result
-/// @param submissionIdx The index of the submission that was used to calculate this result
+/// @param numSamples: u8 The number of samples used to calculate this result
+/// @param submissionIdx: u8 The index of the submission that was used to calculate this result
 /// @param slot: u64 The slot at which this value was signed.
 /// @param minSlot: u64 The slot at which the first considered submission was made
 /// @param maxSlot: u64 The slot at which the last considered submission was made

@@ -19,6 +19,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param createdAt: u64
 /// @param expiredAt: u64
 /// @param updatedAt: u64
+/// @param bump: u8
+/// @param collateralAccountBump: u8
 public record LoanEventV0(PublicKey lender,
                           PublicKey borrower,
                           PublicKey creator,

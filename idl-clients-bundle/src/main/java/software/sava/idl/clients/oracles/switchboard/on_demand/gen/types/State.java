@@ -18,9 +18,16 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bump: u8
+/// @param teeVerifyMode: u8
+/// @param enableStaking: u8
 /// @param reserved1: u64
 /// @param epochLength: u64
 /// @param sgxAdvisories: u16[]
+/// @param advisoriesLen: u8
+/// @param padding2: u8
+/// @param flatRewardCutPercentage: u8
+/// @param enableSlashing: u8
 /// @param padding3: u32
 /// @param lutSlot: u64
 /// @param baseReward: u32

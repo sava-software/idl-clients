@@ -4,6 +4,7 @@ package software.sava.idl.clients.loopscale.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// @param ledgerIndex: u8
 public record LiquidateLedgerParams(int ledgerIndex,
                                     boolean unwrapSol,
                                     byte[] assetIndexGuidance) implements SerDe {

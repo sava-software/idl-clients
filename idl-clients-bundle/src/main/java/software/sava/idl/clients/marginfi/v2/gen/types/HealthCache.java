@@ -64,8 +64,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///               * An f64 stored as bytes
 /// @param internalErr: u32 Errors in asset oracles are ignored (with prices treated as zero). If you see a zero price
 ///                    and the `ORACLE_OK` flag is not set, check here to see what error was ignored internally.
-/// @param errIndex Index in `balances` where `internal_err` appeared
-/// @param programVersion Since 0.1.3, the version will be encoded here. See PROGRAM_VERSION.
+/// @param errIndex: u8 Index in `balances` where `internal_err` appeared
+/// @param programVersion: u8 Since 0.1.3, the version will be encoded here. See PROGRAM_VERSION.
 /// @param internalLiqErr: u32 Error code from the liquidation health check during the last health pulse (0 if none)
 /// @param internalBankruptcyErr: u32 Error code from the bankruptcy check during the last health pulse (0 if none)
 public record HealthCache(WrappedI80F48 assetValue,

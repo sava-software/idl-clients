@@ -16,6 +16,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param vaultId: u16
+/// @param index: u8
 /// @param tickHasDebt Each array contains 8 TickHasDebt structs
 ///                    Each TickHasDebt covers 256 ticks
 ///                    Total: 8 * 256 = 2048 ticks per TickHasDebtArray

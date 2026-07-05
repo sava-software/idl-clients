@@ -3,6 +3,8 @@ package software.sava.idl.clients.kamino.lend.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param tag: u8
+/// @param id: u8
 public record InitObligationArgs(int tag, int id) implements SerDe {
 
   public static final int BYTES = 2;

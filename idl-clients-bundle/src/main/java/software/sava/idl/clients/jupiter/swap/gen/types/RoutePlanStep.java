@@ -3,6 +3,9 @@ package software.sava.idl.clients.jupiter.swap.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param percent: u8
+/// @param inputIndex: u8
+/// @param outputIndex: u8
 public record RoutePlanStep(Swap swap,
                             int percent,
                             int inputIndex,

@@ -19,6 +19,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param stalesnessThreshold: u64
 /// @param minOraclePriceUsd: u64
 /// @param maxOraclePriceUsd: u64
+/// @param bump: u8
+/// @param decimals: u8
 public record Vault(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey mint,

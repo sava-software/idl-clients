@@ -9,7 +9,7 @@ import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-/// @param vaultIndex Index of the vault this transaction belongs to.
+/// @param vaultIndex: u8 Index of the vault this transaction belongs to.
 /// @param memo: Option<string>
 public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) implements SerDe {
 

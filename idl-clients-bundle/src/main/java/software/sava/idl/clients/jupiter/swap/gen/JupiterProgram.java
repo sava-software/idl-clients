@@ -40,6 +40,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   public static Instruction claim(final AccountMeta invokedJupiterProgramMeta,
                                   final SolanaAccounts solanaAccounts,
                                   final PublicKey walletKey,
@@ -53,6 +54,7 @@ public final class JupiterProgram {
     return claim(invokedJupiterProgramMeta, keys, id);
   }
 
+  /// @param id: u8
   public static Instruction claim(final AccountMeta invokedJupiterProgramMeta,
                                   final List<AccountMeta> keys,
                                   final int id) {
@@ -63,6 +65,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   public record ClaimIxData(Discriminator discriminator, int id) implements SerDe {  
 
     public static ClaimIxData read(final Instruction instruction) {
@@ -120,6 +123,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   public static Instruction claimToken(final AccountMeta invokedJupiterProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey payerKey,
@@ -143,6 +147,7 @@ public final class JupiterProgram {
     return claimToken(invokedJupiterProgramMeta, keys, id);
   }
 
+  /// @param id: u8
   public static Instruction claimToken(final AccountMeta invokedJupiterProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int id) {
@@ -153,6 +158,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   public record ClaimTokenIxData(Discriminator discriminator, int id) implements SerDe {  
 
     public static ClaimTokenIxData read(final Instruction instruction) {
@@ -205,6 +211,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   public static Instruction closeToken(final AccountMeta invokedJupiterProgramMeta,
                                        final PublicKey operatorKey,
                                        final PublicKey walletKey,
@@ -225,6 +232,7 @@ public final class JupiterProgram {
     return closeToken(invokedJupiterProgramMeta, keys, id, burnAll);
   }
 
+  /// @param id: u8
   public static Instruction closeToken(final AccountMeta invokedJupiterProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int id,
@@ -238,6 +246,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements SerDe {  
 
     public static CloseTokenIxData read(final Instruction instruction) {
@@ -322,6 +331,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param bump: u8
   public static Instruction createTokenAccount(final AccountMeta invokedJupiterProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey tokenAccountKey,
@@ -339,6 +349,7 @@ public final class JupiterProgram {
     return createTokenAccount(invokedJupiterProgramMeta, keys, bump);
   }
 
+  /// @param bump: u8
   public static Instruction createTokenAccount(final AccountMeta invokedJupiterProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int bump) {
@@ -349,6 +360,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param bump: u8
   public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements SerDe {  
 
     public static CreateTokenAccountIxData read(final Instruction instruction) {
@@ -448,6 +460,7 @@ public final class JupiterProgram {
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction exactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                           final PublicKey tokenProgramKey,
                                           final PublicKey userTransferAuthorityKey,
@@ -493,6 +506,7 @@ public final class JupiterProgram {
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction exactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                           final List<AccountMeta> keys,
                                           final RoutePlanStep[] routePlan,
@@ -517,6 +531,7 @@ public final class JupiterProgram {
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record ExactOutRouteIxData(Discriminator discriminator,
                                     RoutePlanStep[] routePlan,
                                     long outAmount,
@@ -606,6 +621,7 @@ public final class JupiterProgram {
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction route(final AccountMeta invokedJupiterProgramMeta,
                                   final PublicKey tokenProgramKey,
                                   final PublicKey userTransferAuthorityKey,
@@ -647,6 +663,7 @@ public final class JupiterProgram {
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction route(final AccountMeta invokedJupiterProgramMeta,
                                   final List<AccountMeta> keys,
                                   final RoutePlanStep[] routePlan,
@@ -671,6 +688,7 @@ public final class JupiterProgram {
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record RouteIxData(Discriminator discriminator,
                             RoutePlanStep[] routePlan,
                             long inAmount,
@@ -761,6 +779,7 @@ public final class JupiterProgram {
 
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction routeWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                  final PublicKey tokenProgramKey,
                                                  final PublicKey userTransferAuthorityKey,
@@ -801,6 +820,7 @@ public final class JupiterProgram {
 
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction routeWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final RoutePlanStep[] routePlan,
@@ -821,6 +841,7 @@ public final class JupiterProgram {
 
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record RouteWithTokenLedgerIxData(Discriminator discriminator,
                                            RoutePlanStep[] routePlan,
                                            long quotedOutAmount,
@@ -930,9 +951,11 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsExactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                                         final PublicKey tokenProgramKey,
                                                         final PublicKey programAuthorityKey,
@@ -981,9 +1004,11 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsExactOutRoute(final AccountMeta invokedJupiterProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int id,
@@ -1008,9 +1033,11 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record SharedAccountsExactOutRouteIxData(Discriminator discriminator,
                                                   int id,
                                                   RoutePlanStep[] routePlan,
@@ -1113,9 +1140,11 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsRoute(final AccountMeta invokedJupiterProgramMeta,
                                                 final PublicKey tokenProgramKey,
                                                 final PublicKey programAuthorityKey,
@@ -1164,9 +1193,11 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsRoute(final AccountMeta invokedJupiterProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int id,
@@ -1191,9 +1222,11 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record SharedAccountsRouteIxData(Discriminator discriminator,
                                           int id,
                                           RoutePlanStep[] routePlan,
@@ -1298,8 +1331,10 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsRouteWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                                final PublicKey tokenProgramKey,
                                                                final PublicKey programAuthorityKey,
@@ -1348,8 +1383,10 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public static Instruction sharedAccountsRouteWithTokenLedger(final AccountMeta invokedJupiterProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int id,
@@ -1371,8 +1408,10 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
+  /// @param platformFeeBps: u8
   public record SharedAccountsRouteWithTokenLedgerIxData(Discriminator discriminator,
                                                          int id,
                                                          RoutePlanStep[] routePlan,
@@ -1829,6 +1868,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
@@ -1881,6 +1921,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
@@ -1914,6 +1955,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   /// @param outAmount: u64
   /// @param quotedInAmount: u64
   /// @param slippageBps: u16
@@ -2030,6 +2072,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
@@ -2082,6 +2125,7 @@ public final class JupiterProgram {
     );
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16
@@ -2115,6 +2159,7 @@ public final class JupiterProgram {
     return Instruction.createInstruction(invokedJupiterProgramMeta, keys, _data);
   }
 
+  /// @param id: u8
   /// @param inAmount: u64
   /// @param quotedOutAmount: u64
   /// @param slippageBps: u16

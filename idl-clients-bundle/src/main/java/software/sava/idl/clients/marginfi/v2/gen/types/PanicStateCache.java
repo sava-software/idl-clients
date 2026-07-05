@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Cached panic state information for fast checking during user operations
 ///
-/// @param pauseFlags Whether the protocol is currently paused (1 = paused, 0 = not paused)
+/// @param pauseFlags: u8 Whether the protocol is currently paused (1 = paused, 0 = not paused)
 /// @param pauseStartTimestamp Timestamp when the current pause started (0 if not paused)
 /// @param lastCacheUpdate Timestamp when this cache was last updated
 public record PanicStateCache(int pauseFlags,

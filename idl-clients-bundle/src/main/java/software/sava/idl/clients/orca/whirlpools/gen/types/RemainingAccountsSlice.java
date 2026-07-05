@@ -3,6 +3,7 @@ package software.sava.idl.clients.orca.whirlpools.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param length: u8
 public record RemainingAccountsSlice(AccountsType accountsType, int length) implements SerDe {
 
   public static final int BYTES = 2;

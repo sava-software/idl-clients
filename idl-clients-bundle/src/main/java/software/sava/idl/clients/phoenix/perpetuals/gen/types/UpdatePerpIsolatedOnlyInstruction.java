@@ -5,6 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 /// Borsh payload for updating isolated-only metadata for a perp asset.
 ///
+/// @param isolatedOnly: u8
 public record UpdatePerpIsolatedOnlyInstruction(Symbol perpAssetSymbol, int isolatedOnly) implements SerDe {
 
   public static final int BYTES = 17;

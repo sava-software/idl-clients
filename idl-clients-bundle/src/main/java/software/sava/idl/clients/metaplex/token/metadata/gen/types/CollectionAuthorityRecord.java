@@ -11,6 +11,7 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param bump: u8
 /// @param updateAuthority: Option<publicKey>
 public record CollectionAuthorityRecord(PublicKey _address,
                                         Key key,

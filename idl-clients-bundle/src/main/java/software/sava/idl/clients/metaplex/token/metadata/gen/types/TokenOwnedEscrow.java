@@ -10,6 +10,7 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param bump: u8
 public record TokenOwnedEscrow(PublicKey _address,
                                Key key,
                                PublicKey baseToken,

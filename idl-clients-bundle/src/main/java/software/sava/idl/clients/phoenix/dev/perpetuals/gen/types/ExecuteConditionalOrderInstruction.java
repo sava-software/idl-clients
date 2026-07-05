@@ -3,6 +3,7 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param index: u8
 public record ExecuteConditionalOrderInstruction(int index, Direction triggerDirection) implements SerDe {
 
   public static final int BYTES = 2;

@@ -16,8 +16,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bump: u8
 /// @param stakeTime: u64
 /// @param lpAmount: u64
+/// @param durationIndex: u8
 /// @param pendingRewards: u64[]
 /// @param lastRewardIndexUpdateTime: u64[]
 public record UserRewardsInfo(PublicKey _address,

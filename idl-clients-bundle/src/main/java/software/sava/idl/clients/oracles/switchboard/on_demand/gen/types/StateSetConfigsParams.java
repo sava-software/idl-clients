@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param teeVerifyMode: u8
 /// @param addAdvisory: u16
 /// @param rmAdvisory: u16
 /// @param subsidyAmount: u64

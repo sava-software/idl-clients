@@ -3,6 +3,7 @@ package software.sava.idl.clients.orca.whirlpools.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param whirlpoolBump: u8
 public record WhirlpoolBumps(int whirlpoolBump) implements SerDe {
 
   public static final int BYTES = 1;

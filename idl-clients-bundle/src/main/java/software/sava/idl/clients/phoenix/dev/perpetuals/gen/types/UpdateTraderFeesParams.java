@@ -5,6 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 /// Borsh payload for updating trader fee override multipliers.
 ///
+/// @param makerFeeOverrideMultiplier: i8
+/// @param takerFeeOverrideMultiplier: i8
 public record UpdateTraderFeesParams(int makerFeeOverrideMultiplier, int takerFeeOverrideMultiplier) implements SerDe {
 
   public static final int BYTES = 2;

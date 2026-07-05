@@ -21,6 +21,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// 0 -> (L-1): Collateral index for deposited collateral on the ledger market information
 ///
 /// @param amount: u64
+/// @param assetType: u8
 public record DepositCollateralParams(long amount,
                                       int assetType,
                                       PublicKey assetIdentifier,

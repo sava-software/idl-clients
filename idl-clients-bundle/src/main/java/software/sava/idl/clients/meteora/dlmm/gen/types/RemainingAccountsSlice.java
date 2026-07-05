@@ -3,6 +3,7 @@ package software.sava.idl.clients.meteora.dlmm.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param length: u8
 public record RemainingAccountsSlice(AccountsType accountsType, int length) implements SerDe {
 
   public static final int ACCOUNTS_TYPE_OFFSET = 0;

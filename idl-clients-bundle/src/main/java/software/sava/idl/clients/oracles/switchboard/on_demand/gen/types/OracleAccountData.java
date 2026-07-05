@@ -23,7 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param lastHeartbeat The last time the quote heartbeated on-chain.
 /// @param gatewayUri URI location of the verifier's gateway.
 /// @param permissions: u64
-/// @param isOnQueue Whether the quote is located on the AttestationQueues buffer.
+/// @param isOnQueue: u8 Whether the quote is located on the AttestationQueues buffer.
 /// @param lutSlot: u64
 /// @param lastRewardEpoch: u64
 public record OracleAccountData(PublicKey _address,

@@ -6,6 +6,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param share: u8
 public record Creator(PublicKey address,
                       boolean verified,
                       int share) implements SerDe {

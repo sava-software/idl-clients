@@ -14,6 +14,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param version: u8
 public record Schema(PublicKey _address,
                      Discriminator discriminator,
                      PublicKey credential,

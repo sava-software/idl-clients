@@ -17,10 +17,15 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lastUpdateSlot: u64 Last slot when supply and rates updated
-/// @param lastUpdateStale True when marked stale
+/// @param lastUpdateStale: u8 True when marked stale
 /// @param lendingMarket Lending market address
+/// @param liquidityMintDecimals: u8
 /// @param liquidityAvailableAmount: u64
 /// @param collateralMintTotalSupply: u64
+/// @param configOptimalUtilizationRate: u8
+/// @param configLoanToValueRatio: u8
+/// @param configLiquidationBonus: u8
+/// @param configLiquidationThreshold: u8
 public record SolendMinimalReserve(PublicKey _address,
                                    Discriminator discriminator,
                                    long lastUpdateSlot,

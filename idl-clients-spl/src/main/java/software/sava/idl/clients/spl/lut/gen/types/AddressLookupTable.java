@@ -20,6 +20,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param discriminator: u32
 /// @param deactivationSlot: u64
 /// @param lastExtendedSlot: u64
+/// @param lastExtendedSlotStartIndex: u8
 /// @param padding: u16
 public record AddressLookupTable(PublicKey _address,
                                  long discriminator,

@@ -35,16 +35,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param allowedBorrowValueSf The maximum borrow value at the weighted average loan to value ratio (scaled fraction)
 /// @param unhealthyBorrowValueSf The dangerous borrow value at the weighted average liquidation threshold (scaled fraction)
 /// @param paddingDeprecatedAssetTiers The asset tier of the deposits
-/// @param elevationGroup The elevation group id the obligation opted into.
-/// @param numOfObsoleteDepositReserves The number of obsolete reserves the obligation has a deposit in
-/// @param hasDebt Marked = 1 if borrows array is not empty, 0 = borrows empty
+/// @param elevationGroup: u8 The elevation group id the obligation opted into.
+/// @param numOfObsoleteDepositReserves: u8 The number of obsolete reserves the obligation has a deposit in
+/// @param hasDebt: u8 Marked = 1 if borrows array is not empty, 0 = borrows empty
 /// @param referrer Wallet address of the referrer
-/// @param borrowingDisabled Marked = 1 if borrowing disabled, 0 = borrowing enabled
-/// @param autodeleverageTargetLtvPct A target LTV set by the market owner when marking this obligation for deleveraging.
+/// @param borrowingDisabled: u8 Marked = 1 if borrowing disabled, 0 = borrowing enabled
+/// @param autodeleverageTargetLtvPct: u8 A target LTV set by the market owner when marking this obligation for deleveraging.
 ///                                   Only effective when `deleveraging_margin_call_started_slot != 0`.
-/// @param lowestReserveDepositMaxLtvPct The lowest max LTV found amongst the collateral deposits
-/// @param numOfObsoleteBorrowReserves The number of obsolete reserves the obligation has a borrow in
-/// @param ownershipTransferState State of ownership transfer, see OwnershipTransferState
+/// @param lowestReserveDepositMaxLtvPct: u8 The lowest max LTV found amongst the collateral deposits
+/// @param numOfObsoleteBorrowReserves: u8 The number of obsolete reserves the obligation has a borrow in
+/// @param ownershipTransferState: u8 State of ownership transfer, see OwnershipTransferState
 /// @param highestBorrowFactorPct: u64
 /// @param autodeleverageMarginCallStartedTimestamp: u64 A timestamp at which the market owner most-recently marked this obligation for deleveraging.
 ///                                                 Zero if not currently subject to deleveraging.

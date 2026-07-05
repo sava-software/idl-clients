@@ -20,6 +20,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param configBump: u8
+/// @param feeAuthorityBump: u8
 /// @param interestFeeBps: u16
 /// @param repayFeeBps: u16
 /// @param liquidationFeeBps: u16
@@ -32,6 +34,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param maxApy: u32
 /// @param maxDuration: u32
 /// @param maxExpiry: u32
+/// @param isPaused: u8
+/// @param disableRepayment: u8
 public record Config(PublicKey _address,
                      Discriminator discriminator,
                      PublicKey admin,

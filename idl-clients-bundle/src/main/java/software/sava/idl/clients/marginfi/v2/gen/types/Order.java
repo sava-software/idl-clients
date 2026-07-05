@@ -24,7 +24,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///             Padding byte `ORDER_TAG_PADDING - 1` stores the tag count for forward compatibility. (u16 *
 ///             2 = 4 bytes)
 /// @param trigger Stop Loss (0), Take Profit (1), or Both (2)
-/// @param bump Bump to derive this pda
+/// @param bump: u8 Bump to derive this pda
 public record Order(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey marginfiAccount,

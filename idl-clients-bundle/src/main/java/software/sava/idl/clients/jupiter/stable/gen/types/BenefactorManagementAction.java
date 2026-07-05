@@ -97,6 +97,7 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     }
   }
 
+  /// @param index: u8
   /// @param durationSeconds: u64
   /// @param maxMintAmount: u64
   /// @param maxRedeemAmount: u64
@@ -167,6 +168,7 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
     }
   }
 
+  /// @param index: u8
   /// @param mintFeeRate: u16
   /// @param redeemFeeRate: u16
   record UpdateFeeOverride(int index,

@@ -106,6 +106,7 @@ public final class WormholeVerifyVaaShimProgram {
   /// the close signatures instruction, which will refund this payer.
   ///
   /// @param guardianSetIndex: u32
+  /// @param totalSignatures: u8
   public static Instruction postSignatures(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey payerKey,
@@ -147,6 +148,7 @@ public final class WormholeVerifyVaaShimProgram {
   /// the close signatures instruction, which will refund this payer.
   ///
   /// @param guardianSetIndex: u32
+  /// @param totalSignatures: u8
   public static Instruction postSignatures(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long guardianSetIndex,
@@ -164,6 +166,7 @@ public final class WormholeVerifyVaaShimProgram {
   }
 
   /// @param guardianSetIndex: u32
+  /// @param totalSignatures: u8
   public record PostSignaturesIxData(Discriminator discriminator,
                                      long guardianSetIndex,
                                      int totalSignatures,
@@ -300,6 +303,7 @@ public final class WormholeVerifyVaaShimProgram {
   /// @param guardianSetKey Guardian set used for signature verification.
   /// @param guardianSignaturesKey Stores unverified guardian signatures as they are too large to fit in
   ///                              the instruction data.
+  /// @param guardianSetBump: u8
   public static Instruction verifyHash(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                        final PublicKey guardianSetKey,
                                        final PublicKey guardianSignaturesKey,
@@ -350,6 +354,7 @@ public final class WormholeVerifyVaaShimProgram {
   /// );
   /// ```
   ///
+  /// @param guardianSetBump: u8
   public static Instruction verifyHash(final AccountMeta invokedWormholeVerifyVaaShimProgramMeta,
                                        final List<AccountMeta> keys,
                                        final int guardianSetBump,
@@ -363,6 +368,7 @@ public final class WormholeVerifyVaaShimProgram {
     return Instruction.createInstruction(invokedWormholeVerifyVaaShimProgramMeta, keys, _data);
   }
 
+  /// @param guardianSetBump: u8
   public record VerifyHashIxData(Discriminator discriminator, int guardianSetBump, byte[] digest) implements SerDe {  
 
     public static VerifyHashIxData read(final Instruction instruction) {

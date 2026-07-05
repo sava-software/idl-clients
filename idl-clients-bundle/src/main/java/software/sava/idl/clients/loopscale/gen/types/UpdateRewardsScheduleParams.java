@@ -11,6 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param amountToTransfer: u64
 /// @param extendEndTime: Option<u64>
+/// @param scheduleIndex: u8
 public record UpdateRewardsScheduleParams(long amountToTransfer,
                                           OptionalLong extendEndTime,
                                           int scheduleIndex) implements SerDe {

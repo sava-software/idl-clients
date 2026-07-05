@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param oldBits: u8
+/// @param newBits: u8
 public record SetPositionPermissionlessOperationBitsEvt(Discriminator discriminator,
                                                         PublicKey position,
                                                         PublicKey owner,

@@ -29,6 +29,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param updatedAt: u64
 /// @param minFillAmount: u64
 /// @param fillCounter: u64
+/// @param allowPartialFill: u8
+/// @param bump: u8
 public record Offer(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey creator,

@@ -13,7 +13,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 /// @param liquidationMaxLimit: u16
 /// @param withdrawGap: u16
 /// @param liquidationPenalty: u16
-/// @param borrowFee: u16
+/// @param borrowFee: u8
+/// @param vaultType: u8
 public record InitVaultConfigParams(int supplyRateMagnifier,
                                     int borrowRateMagnifier,
                                     int collateralFactor,
@@ -22,6 +23,7 @@ public record InitVaultConfigParams(int supplyRateMagnifier,
                                     int withdrawGap,
                                     int liquidationPenalty,
                                     int borrowFee,
+                                    int vaultType,
                                     PublicKey rebalancer,
                                     PublicKey liquidityProgram,
                                     PublicKey oracleProgram) implements SerDe {
@@ -36,6 +38,7 @@ public record InitVaultConfigParams(int supplyRateMagnifier,
   public static final int WITHDRAW_GAP_OFFSET = 10;
   public static final int LIQUIDATION_PENALTY_OFFSET = 12;
   public static final int BORROW_FEE_OFFSET = 14;
+  public static final int VAULT_TYPE_OFFSET = 15;
   public static final int REBALANCER_OFFSET = 16;
   public static final int LIQUIDITY_PROGRAM_OFFSET = 48;
   public static final int ORACLE_PROGRAM_OFFSET = 80;
@@ -59,8 +62,10 @@ public record InitVaultConfigParams(int supplyRateMagnifier,
     i += 2;
     final var liquidationPenalty = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
-    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
-    i += 2;
+    final var borrowFee = _data[i] & 0xFF;
+    ++i;
+    final var vaultType = _data[i] & 0xFF;
+    ++i;
     final var rebalancer = readPubKey(_data, i);
     i += 32;
     final var liquidityProgram = readPubKey(_data, i);
@@ -74,6 +79,7 @@ public record InitVaultConfigParams(int supplyRateMagnifier,
                                      withdrawGap,
                                      liquidationPenalty,
                                      borrowFee,
+                                     vaultType,
                                      rebalancer,
                                      liquidityProgram,
                                      oracleProgram);
@@ -96,8 +102,10 @@ public record InitVaultConfigParams(int supplyRateMagnifier,
     i += 2;
     putInt16LE(_data, i, liquidationPenalty);
     i += 2;
-    putInt16LE(_data, i, borrowFee);
-    i += 2;
+    _data[i] = (byte) borrowFee;
+    ++i;
+    _data[i] = (byte) vaultType;
+    ++i;
     rebalancer.write(_data, i);
     i += 32;
     liquidityProgram.write(_data, i);

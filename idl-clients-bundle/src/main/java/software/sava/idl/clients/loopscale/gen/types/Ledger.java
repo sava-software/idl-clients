@@ -8,6 +8,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param status: u8
 /// @param principalDue: u64
 /// @param principalRepaid: u64
 /// @param interestOutstanding: u64

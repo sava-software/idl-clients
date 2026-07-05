@@ -11,13 +11,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param enclaveSigner The address of the signer generated within an enclave.
 /// @param mrEnclave The quotes MRENCLAVE measurement dictating the contents of the secure enclave.
-/// @param verificationStatus The VerificationStatus of the quote.
+/// @param verificationStatus: u8 The VerificationStatus of the quote.
 /// @param verificationTimestamp The unix timestamp when the quote was last verified.
 /// @param validUntil The unix timestamp when the quotes verification status expires.
 /// @param quoteRegistry The off-chain registry where the verifiers quote can be located.
 /// @param registryKey Key to lookup the buffer data on IPFS or an alternative decentralized storage solution.
 /// @param secp256k1Signer The secp256k1 public key of the enclave signer. Derived from the enclave_signer.
 /// @param lastRotateSlot: u64
+/// @param guardianApproversLen: u8
 /// @param ebuf3 Reserved.
 public record Quote(PublicKey enclaveSigner,
                     byte[] mrEnclave,

@@ -33,6 +33,7 @@ public sealed interface VaultsError extends ProgramError permits
     VaultsError.VaultInvalidPaybackOrDeposit,
     VaultsError.VaultInvalidLiquidation,
     VaultsError.VaultNothingToRebalance,
+    VaultsError.VaultInvalidRebalanceMinMax,
     VaultsError.VaultLiquidationReverts,
     VaultsError.VaultInvalidOraclePrice,
     VaultsError.VaultBranchNotFound,
@@ -77,7 +78,38 @@ public sealed interface VaultsError extends ProgramError permits
     VaultsError.VaultAdminMaxAuthCountReached,
     VaultsError.VaultAdminInvalidParams,
     VaultsError.VaultAdminOnlyAuthority,
-    VaultsError.VaultAdminOracleProgramMismatch {
+    VaultsError.VaultAdminOracleProgramMismatch,
+    VaultsError.VaultAdminInvalidVaultType,
+    VaultsError.VaultAdminInvalidDexProgram,
+    VaultsError.VaultAdminInvalidDexPool,
+    VaultsError.VaultCpiToDexFailed,
+    VaultsError.VaultDexAccountsRequired,
+    VaultsError.VaultInvalidDexPool,
+    VaultsError.VaultInvalidVaultTypeForDex,
+    VaultsError.VaultOperateDexImperfectMaxUsePerfect,
+    VaultsError.VaultOperateDexNftIdMismatch,
+    VaultsError.VaultAdminSupplyTokenRequired,
+    VaultsError.VaultAdminBorrowTokenRequired,
+    VaultsError.VaultAdminRateMagnifierNotAllowedForSmartLeg,
+    VaultsError.VaultDexDebtSharesPaidMoreThanAvailableLiquidation,
+    VaultsError.VaultSignerSupplyTokenAccountRequired,
+    VaultsError.VaultSignerBorrowTokenAccountRequired,
+    VaultsError.VaultInvalidVaultTypeForOperate,
+    VaultsError.VaultSupplyTokenRequired,
+    VaultsError.VaultBorrowTokenRequired,
+    VaultsError.VaultSupplyReservesRequired,
+    VaultsError.VaultBorrowReservesRequired,
+    VaultsError.VaultSupplyDexRequired,
+    VaultsError.VaultBorrowDexRequired,
+    VaultsError.VaultSupplyRateModelRequired,
+    VaultsError.VaultBorrowRateModelRequired,
+    VaultsError.VaultSupplyTokenProgramRequired,
+    VaultsError.VaultBorrowTokenProgramRequired,
+    VaultsError.VaultSupplyVaultAccountRequired,
+    VaultsError.VaultBorrowVaultAccountRequired,
+    VaultsError.VaultUserBorrowPositionRequired,
+    VaultsError.VaultLiquidateColAmountsRequired,
+    VaultsError.VaultLiquidateDebtAmountsRequired {
 
   static VaultsError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -110,51 +142,83 @@ public sealed interface VaultsError extends ProgramError permits
       case 6026 -> VaultInvalidPaybackOrDeposit.INSTANCE;
       case 6027 -> VaultInvalidLiquidation.INSTANCE;
       case 6028 -> VaultNothingToRebalance.INSTANCE;
-      case 6029 -> VaultLiquidationReverts.INSTANCE;
-      case 6030 -> VaultInvalidOraclePrice.INSTANCE;
-      case 6031 -> VaultBranchNotFound.INSTANCE;
-      case 6032 -> VaultTickNotFound.INSTANCE;
-      case 6033 -> VaultTickHasDebtNotFound.INSTANCE;
-      case 6034 -> VaultTickMismatch.INSTANCE;
-      case 6035 -> VaultInvalidVaultId.INSTANCE;
-      case 6036 -> VaultInvalidNextPositionId.INSTANCE;
-      case 6037 -> VaultInvalidPositionId.INSTANCE;
-      case 6038 -> VaultPositionNotEmpty.INSTANCE;
-      case 6039 -> VaultInvalidSupplyMint.INSTANCE;
-      case 6040 -> VaultInvalidBorrowMint.INSTANCE;
-      case 6041 -> VaultInvalidOracle.INSTANCE;
-      case 6042 -> VaultInvalidTick.INSTANCE;
-      case 6043 -> VaultInvalidLiquidityProgram.INSTANCE;
-      case 6044 -> VaultInvalidPositionAuthority.INSTANCE;
-      case 6045 -> VaultOracleNotValid.INSTANCE;
-      case 6046 -> VaultBranchOwnerNotValid.INSTANCE;
-      case 6047 -> VaultTickHasDebtOwnerNotValid.INSTANCE;
-      case 6048 -> VaultTickOwnerNotValid.INSTANCE;
-      case 6049 -> VaultLiquidateRemainingAccountsTooShort.INSTANCE;
-      case 6050 -> VaultOperateRemainingAccountsTooShort.INSTANCE;
-      case 6051 -> VaultInvalidZerothBranch.INSTANCE;
-      case 6052 -> VaultCpiToLiquidityFailed.INSTANCE;
-      case 6053 -> VaultCpiToOracleFailed.INSTANCE;
-      case 6054 -> VaultOnlyAuthority.INSTANCE;
-      case 6055 -> VaultNewBranchInvalid.INSTANCE;
-      case 6056 -> VaultTickHasDebtIndexMismatch.INSTANCE;
-      case 6057 -> VaultTickHasDebtOutOfRange.INSTANCE;
-      case 6058 -> VaultUserSupplyPositionRequired.INSTANCE;
-      case 6059 -> VaultClaimAccountRequired.INSTANCE;
-      case 6060 -> VaultRecipientWithdrawAccountRequired.INSTANCE;
-      case 6061 -> VaultRecipientBorrowAccountRequired.INSTANCE;
-      case 6062 -> VaultPositionAboveLiquidationThreshold.INSTANCE;
-      case 6063 -> VaultAdminValueAboveLimit.INSTANCE;
-      case 6064 -> VaultAdminOnlyAuths.INSTANCE;
-      case 6065 -> VaultAdminAddressZeroNotAllowed.INSTANCE;
-      case 6066 -> VaultAdminVaultIdMismatch.INSTANCE;
-      case 6067 -> VaultAdminTotalIdsMismatch.INSTANCE;
-      case 6068 -> VaultAdminTickMismatch.INSTANCE;
-      case 6069 -> VaultAdminLiquidityProgramMismatch.INSTANCE;
-      case 6070 -> VaultAdminMaxAuthCountReached.INSTANCE;
-      case 6071 -> VaultAdminInvalidParams.INSTANCE;
-      case 6072 -> VaultAdminOnlyAuthority.INSTANCE;
-      case 6073 -> VaultAdminOracleProgramMismatch.INSTANCE;
+      case 6029 -> VaultInvalidRebalanceMinMax.INSTANCE;
+      case 6030 -> VaultLiquidationReverts.INSTANCE;
+      case 6031 -> VaultInvalidOraclePrice.INSTANCE;
+      case 6032 -> VaultBranchNotFound.INSTANCE;
+      case 6033 -> VaultTickNotFound.INSTANCE;
+      case 6034 -> VaultTickHasDebtNotFound.INSTANCE;
+      case 6035 -> VaultTickMismatch.INSTANCE;
+      case 6036 -> VaultInvalidVaultId.INSTANCE;
+      case 6037 -> VaultInvalidNextPositionId.INSTANCE;
+      case 6038 -> VaultInvalidPositionId.INSTANCE;
+      case 6039 -> VaultPositionNotEmpty.INSTANCE;
+      case 6040 -> VaultInvalidSupplyMint.INSTANCE;
+      case 6041 -> VaultInvalidBorrowMint.INSTANCE;
+      case 6042 -> VaultInvalidOracle.INSTANCE;
+      case 6043 -> VaultInvalidTick.INSTANCE;
+      case 6044 -> VaultInvalidLiquidityProgram.INSTANCE;
+      case 6045 -> VaultInvalidPositionAuthority.INSTANCE;
+      case 6046 -> VaultOracleNotValid.INSTANCE;
+      case 6047 -> VaultBranchOwnerNotValid.INSTANCE;
+      case 6048 -> VaultTickHasDebtOwnerNotValid.INSTANCE;
+      case 6049 -> VaultTickOwnerNotValid.INSTANCE;
+      case 6050 -> VaultLiquidateRemainingAccountsTooShort.INSTANCE;
+      case 6051 -> VaultOperateRemainingAccountsTooShort.INSTANCE;
+      case 6052 -> VaultInvalidZerothBranch.INSTANCE;
+      case 6053 -> VaultCpiToLiquidityFailed.INSTANCE;
+      case 6054 -> VaultCpiToOracleFailed.INSTANCE;
+      case 6055 -> VaultOnlyAuthority.INSTANCE;
+      case 6056 -> VaultNewBranchInvalid.INSTANCE;
+      case 6057 -> VaultTickHasDebtIndexMismatch.INSTANCE;
+      case 6058 -> VaultTickHasDebtOutOfRange.INSTANCE;
+      case 6059 -> VaultUserSupplyPositionRequired.INSTANCE;
+      case 6060 -> VaultClaimAccountRequired.INSTANCE;
+      case 6061 -> VaultRecipientWithdrawAccountRequired.INSTANCE;
+      case 6062 -> VaultRecipientBorrowAccountRequired.INSTANCE;
+      case 6063 -> VaultPositionAboveLiquidationThreshold.INSTANCE;
+      case 6064 -> VaultAdminValueAboveLimit.INSTANCE;
+      case 6065 -> VaultAdminOnlyAuths.INSTANCE;
+      case 6066 -> VaultAdminAddressZeroNotAllowed.INSTANCE;
+      case 6067 -> VaultAdminVaultIdMismatch.INSTANCE;
+      case 6068 -> VaultAdminTotalIdsMismatch.INSTANCE;
+      case 6069 -> VaultAdminTickMismatch.INSTANCE;
+      case 6070 -> VaultAdminLiquidityProgramMismatch.INSTANCE;
+      case 6071 -> VaultAdminMaxAuthCountReached.INSTANCE;
+      case 6072 -> VaultAdminInvalidParams.INSTANCE;
+      case 6073 -> VaultAdminOnlyAuthority.INSTANCE;
+      case 6074 -> VaultAdminOracleProgramMismatch.INSTANCE;
+      case 6075 -> VaultAdminInvalidVaultType.INSTANCE;
+      case 6076 -> VaultAdminInvalidDexProgram.INSTANCE;
+      case 6077 -> VaultAdminInvalidDexPool.INSTANCE;
+      case 6078 -> VaultCpiToDexFailed.INSTANCE;
+      case 6079 -> VaultDexAccountsRequired.INSTANCE;
+      case 6080 -> VaultInvalidDexPool.INSTANCE;
+      case 6081 -> VaultInvalidVaultTypeForDex.INSTANCE;
+      case 6082 -> VaultOperateDexImperfectMaxUsePerfect.INSTANCE;
+      case 6083 -> VaultOperateDexNftIdMismatch.INSTANCE;
+      case 6084 -> VaultAdminSupplyTokenRequired.INSTANCE;
+      case 6085 -> VaultAdminBorrowTokenRequired.INSTANCE;
+      case 6086 -> VaultAdminRateMagnifierNotAllowedForSmartLeg.INSTANCE;
+      case 6087 -> VaultDexDebtSharesPaidMoreThanAvailableLiquidation.INSTANCE;
+      case 6088 -> VaultSignerSupplyTokenAccountRequired.INSTANCE;
+      case 6089 -> VaultSignerBorrowTokenAccountRequired.INSTANCE;
+      case 6090 -> VaultInvalidVaultTypeForOperate.INSTANCE;
+      case 6091 -> VaultSupplyTokenRequired.INSTANCE;
+      case 6092 -> VaultBorrowTokenRequired.INSTANCE;
+      case 6093 -> VaultSupplyReservesRequired.INSTANCE;
+      case 6094 -> VaultBorrowReservesRequired.INSTANCE;
+      case 6095 -> VaultSupplyDexRequired.INSTANCE;
+      case 6096 -> VaultBorrowDexRequired.INSTANCE;
+      case 6097 -> VaultSupplyRateModelRequired.INSTANCE;
+      case 6098 -> VaultBorrowRateModelRequired.INSTANCE;
+      case 6099 -> VaultSupplyTokenProgramRequired.INSTANCE;
+      case 6100 -> VaultBorrowTokenProgramRequired.INSTANCE;
+      case 6101 -> VaultSupplyVaultAccountRequired.INSTANCE;
+      case 6102 -> VaultBorrowVaultAccountRequired.INSTANCE;
+      case 6103 -> VaultUserBorrowPositionRequired.INSTANCE;
+      case 6104 -> VaultLiquidateColAmountsRequired.INSTANCE;
+      case 6105 -> VaultLiquidateDebtAmountsRequired.INSTANCE;
       default -> null;
     };
   }
@@ -362,318 +426,542 @@ public sealed interface VaultsError extends ProgramError permits
     );
   }
 
+  record VaultInvalidRebalanceMinMax(int code, String msg) implements VaultsError {
+
+    public static final VaultInvalidRebalanceMinMax INSTANCE = new VaultInvalidRebalanceMinMax(
+        6029, "VAULT_INVALID_REBALANCE_MIN_MAX"
+    );
+  }
+
   record VaultLiquidationReverts(int code, String msg) implements VaultsError {
 
     public static final VaultLiquidationReverts INSTANCE = new VaultLiquidationReverts(
-        6029, "VAULT_LIQUIDATION_REVERTS"
+        6030, "VAULT_LIQUIDATION_REVERTS"
     );
   }
 
   record VaultInvalidOraclePrice(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidOraclePrice INSTANCE = new VaultInvalidOraclePrice(
-        6030, "VAULT_INVALID_ORACLE_PRICE"
+        6031, "VAULT_INVALID_ORACLE_PRICE"
     );
   }
 
   record VaultBranchNotFound(int code, String msg) implements VaultsError {
 
     public static final VaultBranchNotFound INSTANCE = new VaultBranchNotFound(
-        6031, "VAULT_BRANCH_NOT_FOUND"
+        6032, "VAULT_BRANCH_NOT_FOUND"
     );
   }
 
   record VaultTickNotFound(int code, String msg) implements VaultsError {
 
     public static final VaultTickNotFound INSTANCE = new VaultTickNotFound(
-        6032, "VAULT_TICK_NOT_FOUND"
+        6033, "VAULT_TICK_NOT_FOUND"
     );
   }
 
   record VaultTickHasDebtNotFound(int code, String msg) implements VaultsError {
 
     public static final VaultTickHasDebtNotFound INSTANCE = new VaultTickHasDebtNotFound(
-        6033, "VAULT_TICK_HAS_DEBT_NOT_FOUND"
+        6034, "VAULT_TICK_HAS_DEBT_NOT_FOUND"
     );
   }
 
   record VaultTickMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultTickMismatch INSTANCE = new VaultTickMismatch(
-        6034, "VAULT_TICK_MISMATCH"
+        6035, "VAULT_TICK_MISMATCH"
     );
   }
 
   record VaultInvalidVaultId(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidVaultId INSTANCE = new VaultInvalidVaultId(
-        6035, "VAULT_INVALID_VAULT_ID"
+        6036, "VAULT_INVALID_VAULT_ID"
     );
   }
 
   record VaultInvalidNextPositionId(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidNextPositionId INSTANCE = new VaultInvalidNextPositionId(
-        6036, "VAULT_INVALID_NEXT_POSITION_ID"
+        6037, "VAULT_INVALID_NEXT_POSITION_ID"
     );
   }
 
   record VaultInvalidPositionId(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidPositionId INSTANCE = new VaultInvalidPositionId(
-        6037, "VAULT_INVALID_POSITION_ID"
+        6038, "VAULT_INVALID_POSITION_ID"
     );
   }
 
   record VaultPositionNotEmpty(int code, String msg) implements VaultsError {
 
     public static final VaultPositionNotEmpty INSTANCE = new VaultPositionNotEmpty(
-        6038, "VAULT_POSITION_NOT_EMPTY"
+        6039, "VAULT_POSITION_NOT_EMPTY"
     );
   }
 
   record VaultInvalidSupplyMint(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidSupplyMint INSTANCE = new VaultInvalidSupplyMint(
-        6039, "VAULT_INVALID_SUPPLY_MINT"
+        6040, "VAULT_INVALID_SUPPLY_MINT"
     );
   }
 
   record VaultInvalidBorrowMint(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidBorrowMint INSTANCE = new VaultInvalidBorrowMint(
-        6040, "VAULT_INVALID_BORROW_MINT"
+        6041, "VAULT_INVALID_BORROW_MINT"
     );
   }
 
   record VaultInvalidOracle(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidOracle INSTANCE = new VaultInvalidOracle(
-        6041, "VAULT_INVALID_ORACLE"
+        6042, "VAULT_INVALID_ORACLE"
     );
   }
 
   record VaultInvalidTick(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidTick INSTANCE = new VaultInvalidTick(
-        6042, "VAULT_INVALID_TICK"
+        6043, "VAULT_INVALID_TICK"
     );
   }
 
   record VaultInvalidLiquidityProgram(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidLiquidityProgram INSTANCE = new VaultInvalidLiquidityProgram(
-        6043, "VAULT_INVALID_LIQUIDITY_PROGRAM"
+        6044, "VAULT_INVALID_LIQUIDITY_PROGRAM"
     );
   }
 
   record VaultInvalidPositionAuthority(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidPositionAuthority INSTANCE = new VaultInvalidPositionAuthority(
-        6044, "VAULT_INVALID_POSITION_AUTHORITY"
+        6045, "VAULT_INVALID_POSITION_AUTHORITY"
     );
   }
 
   record VaultOracleNotValid(int code, String msg) implements VaultsError {
 
     public static final VaultOracleNotValid INSTANCE = new VaultOracleNotValid(
-        6045, "VAULT_ORACLE_NOT_VALID"
+        6046, "VAULT_ORACLE_NOT_VALID"
     );
   }
 
   record VaultBranchOwnerNotValid(int code, String msg) implements VaultsError {
 
     public static final VaultBranchOwnerNotValid INSTANCE = new VaultBranchOwnerNotValid(
-        6046, "VAULT_BRANCH_OWNER_NOT_VALID"
+        6047, "VAULT_BRANCH_OWNER_NOT_VALID"
     );
   }
 
   record VaultTickHasDebtOwnerNotValid(int code, String msg) implements VaultsError {
 
     public static final VaultTickHasDebtOwnerNotValid INSTANCE = new VaultTickHasDebtOwnerNotValid(
-        6047, "VAULT_TICK_HAS_DEBT_OWNER_NOT_VALID"
+        6048, "VAULT_TICK_HAS_DEBT_OWNER_NOT_VALID"
     );
   }
 
   record VaultTickOwnerNotValid(int code, String msg) implements VaultsError {
 
     public static final VaultTickOwnerNotValid INSTANCE = new VaultTickOwnerNotValid(
-        6048, "VAULT_TICK_DATA_OWNER_NOT_VALID"
+        6049, "VAULT_TICK_DATA_OWNER_NOT_VALID"
     );
   }
 
   record VaultLiquidateRemainingAccountsTooShort(int code, String msg) implements VaultsError {
 
     public static final VaultLiquidateRemainingAccountsTooShort INSTANCE = new VaultLiquidateRemainingAccountsTooShort(
-        6049, "VAULT_LIQUIDATE_REMAINING_ACCOUNTS_TOO_SHORT"
+        6050, "VAULT_LIQUIDATE_REMAINING_ACCOUNTS_TOO_SHORT"
     );
   }
 
   record VaultOperateRemainingAccountsTooShort(int code, String msg) implements VaultsError {
 
     public static final VaultOperateRemainingAccountsTooShort INSTANCE = new VaultOperateRemainingAccountsTooShort(
-        6050, "VAULT_OPERATE_REMAINING_ACCOUNTS_TOO_SHORT"
+        6051, "VAULT_OPERATE_REMAINING_ACCOUNTS_TOO_SHORT"
     );
   }
 
   record VaultInvalidZerothBranch(int code, String msg) implements VaultsError {
 
     public static final VaultInvalidZerothBranch INSTANCE = new VaultInvalidZerothBranch(
-        6051, "VAULT_INVALID_ZEROTH_BRANCH"
+        6052, "VAULT_INVALID_ZEROTH_BRANCH"
     );
   }
 
   record VaultCpiToLiquidityFailed(int code, String msg) implements VaultsError {
 
     public static final VaultCpiToLiquidityFailed INSTANCE = new VaultCpiToLiquidityFailed(
-        6052, "VAULT_CPI_TO_LIQUIDITY_FAILED"
+        6053, "VAULT_CPI_TO_LIQUIDITY_FAILED"
     );
   }
 
   record VaultCpiToOracleFailed(int code, String msg) implements VaultsError {
 
     public static final VaultCpiToOracleFailed INSTANCE = new VaultCpiToOracleFailed(
-        6053, "VAULT_CPI_TO_ORACLE_FAILED"
+        6054, "VAULT_CPI_TO_ORACLE_FAILED"
     );
   }
 
   record VaultOnlyAuthority(int code, String msg) implements VaultsError {
 
     public static final VaultOnlyAuthority INSTANCE = new VaultOnlyAuthority(
-        6054, "VAULT_ONLY_AUTHORITY"
+        6055, "VAULT_ONLY_AUTHORITY"
     );
   }
 
   record VaultNewBranchInvalid(int code, String msg) implements VaultsError {
 
     public static final VaultNewBranchInvalid INSTANCE = new VaultNewBranchInvalid(
-        6055, "VAULT_NEW_BRANCH_INVALID"
+        6056, "VAULT_NEW_BRANCH_INVALID"
     );
   }
 
   record VaultTickHasDebtIndexMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultTickHasDebtIndexMismatch INSTANCE = new VaultTickHasDebtIndexMismatch(
-        6056, "VAULT_TICK_HAS_DEBT_INDEX_MISMATCH"
+        6057, "VAULT_TICK_HAS_DEBT_INDEX_MISMATCH"
     );
   }
 
   record VaultTickHasDebtOutOfRange(int code, String msg) implements VaultsError {
 
     public static final VaultTickHasDebtOutOfRange INSTANCE = new VaultTickHasDebtOutOfRange(
-        6057, "VAULT_TICK_HAS_DEBT_OUT_OF_RANGE"
+        6058, "VAULT_TICK_HAS_DEBT_OUT_OF_RANGE"
     );
   }
 
   record VaultUserSupplyPositionRequired(int code, String msg) implements VaultsError {
 
     public static final VaultUserSupplyPositionRequired INSTANCE = new VaultUserSupplyPositionRequired(
-        6058, "VAULT_USER_SUPPLY_POSITION_REQUIRED"
+        6059, "VAULT_USER_SUPPLY_POSITION_REQUIRED"
     );
   }
 
   record VaultClaimAccountRequired(int code, String msg) implements VaultsError {
 
     public static final VaultClaimAccountRequired INSTANCE = new VaultClaimAccountRequired(
-        6059, "VAULT_CLAIM_ACCOUNT_REQUIRED"
+        6060, "VAULT_CLAIM_ACCOUNT_REQUIRED"
     );
   }
 
   record VaultRecipientWithdrawAccountRequired(int code, String msg) implements VaultsError {
 
     public static final VaultRecipientWithdrawAccountRequired INSTANCE = new VaultRecipientWithdrawAccountRequired(
-        6060, "VAULT_RECIPIENT_WITHDRAW_ACCOUNT_REQUIRED"
+        6061, "VAULT_RECIPIENT_WITHDRAW_ACCOUNT_REQUIRED"
     );
   }
 
   record VaultRecipientBorrowAccountRequired(int code, String msg) implements VaultsError {
 
     public static final VaultRecipientBorrowAccountRequired INSTANCE = new VaultRecipientBorrowAccountRequired(
-        6061, "VAULT_RECIPIENT_BORROW_ACCOUNT_REQUIRED"
+        6062, "VAULT_RECIPIENT_BORROW_ACCOUNT_REQUIRED"
     );
   }
 
   record VaultPositionAboveLiquidationThreshold(int code, String msg) implements VaultsError {
 
     public static final VaultPositionAboveLiquidationThreshold INSTANCE = new VaultPositionAboveLiquidationThreshold(
-        6062, "VAULT_POSITION_ABOVE_LIQUIDATION_THRESHOLD"
+        6063, "VAULT_POSITION_ABOVE_LIQUIDATION_THRESHOLD"
     );
   }
 
   record VaultAdminValueAboveLimit(int code, String msg) implements VaultsError {
 
     public static final VaultAdminValueAboveLimit INSTANCE = new VaultAdminValueAboveLimit(
-        6063, "VAULT_ADMIN_VALUE_ABOVE_LIMIT"
+        6064, "VAULT_ADMIN_VALUE_ABOVE_LIMIT"
     );
   }
 
   record VaultAdminOnlyAuths(int code, String msg) implements VaultsError {
 
     public static final VaultAdminOnlyAuths INSTANCE = new VaultAdminOnlyAuths(
-        6064, "VAULT_ADMIN_ONLY_AUTH_ACCOUNTS"
+        6065, "VAULT_ADMIN_ONLY_AUTH_ACCOUNTS"
     );
   }
 
   record VaultAdminAddressZeroNotAllowed(int code, String msg) implements VaultsError {
 
     public static final VaultAdminAddressZeroNotAllowed INSTANCE = new VaultAdminAddressZeroNotAllowed(
-        6065, "VAULT_ADMIN_ADDRESS_ZERO_NOT_ALLOWED"
+        6066, "VAULT_ADMIN_ADDRESS_ZERO_NOT_ALLOWED"
     );
   }
 
   record VaultAdminVaultIdMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultAdminVaultIdMismatch INSTANCE = new VaultAdminVaultIdMismatch(
-        6066, "VAULT_ADMIN_VAULT_ID_MISMATCH"
+        6067, "VAULT_ADMIN_VAULT_ID_MISMATCH"
     );
   }
 
   record VaultAdminTotalIdsMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultAdminTotalIdsMismatch INSTANCE = new VaultAdminTotalIdsMismatch(
-        6067, "VAULT_ADMIN_TOTAL_IDS_MISMATCH"
+        6068, "VAULT_ADMIN_TOTAL_IDS_MISMATCH"
     );
   }
 
   record VaultAdminTickMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultAdminTickMismatch INSTANCE = new VaultAdminTickMismatch(
-        6068, "VAULT_ADMIN_TICK_MISMATCH"
+        6069, "VAULT_ADMIN_TICK_MISMATCH"
     );
   }
 
   record VaultAdminLiquidityProgramMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultAdminLiquidityProgramMismatch INSTANCE = new VaultAdminLiquidityProgramMismatch(
-        6069, "VAULT_ADMIN_LIQUIDITY_PROGRAM_MISMATCH"
+        6070, "VAULT_ADMIN_LIQUIDITY_PROGRAM_MISMATCH"
     );
   }
 
   record VaultAdminMaxAuthCountReached(int code, String msg) implements VaultsError {
 
     public static final VaultAdminMaxAuthCountReached INSTANCE = new VaultAdminMaxAuthCountReached(
-        6070, "VAULT_ADMIN_MAX_AUTH_COUNT_REACHED"
+        6071, "VAULT_ADMIN_MAX_AUTH_COUNT_REACHED"
     );
   }
 
   record VaultAdminInvalidParams(int code, String msg) implements VaultsError {
 
     public static final VaultAdminInvalidParams INSTANCE = new VaultAdminInvalidParams(
-        6071, "VAULT_ADMIN_INVALID_PARAMS"
+        6072, "VAULT_ADMIN_INVALID_PARAMS"
     );
   }
 
   record VaultAdminOnlyAuthority(int code, String msg) implements VaultsError {
 
     public static final VaultAdminOnlyAuthority INSTANCE = new VaultAdminOnlyAuthority(
-        6072, "VAULT_ADMIN_ONLY_AUTHORITY"
+        6073, "VAULT_ADMIN_ONLY_AUTHORITY"
     );
   }
 
   record VaultAdminOracleProgramMismatch(int code, String msg) implements VaultsError {
 
     public static final VaultAdminOracleProgramMismatch INSTANCE = new VaultAdminOracleProgramMismatch(
-        6073, "VAULT_ADMIN_ORACLE_PROGRAM_MISMATCH"
+        6074, "VAULT_ADMIN_ORACLE_PROGRAM_MISMATCH"
+    );
+  }
+
+  record VaultAdminInvalidVaultType(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminInvalidVaultType INSTANCE = new VaultAdminInvalidVaultType(
+        6075, "VAULT_ADMIN_INVALID_VAULT_TYPE"
+    );
+  }
+
+  record VaultAdminInvalidDexProgram(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminInvalidDexProgram INSTANCE = new VaultAdminInvalidDexProgram(
+        6076, "VAULT_ADMIN_INVALID_DEX_PROGRAM"
+    );
+  }
+
+  record VaultAdminInvalidDexPool(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminInvalidDexPool INSTANCE = new VaultAdminInvalidDexPool(
+        6077, "VAULT_ADMIN_INVALID_DEX_POOL"
+    );
+  }
+
+  record VaultCpiToDexFailed(int code, String msg) implements VaultsError {
+
+    public static final VaultCpiToDexFailed INSTANCE = new VaultCpiToDexFailed(
+        6078, "VAULT_CPI_TO_DEX_FAILED"
+    );
+  }
+
+  record VaultDexAccountsRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultDexAccountsRequired INSTANCE = new VaultDexAccountsRequired(
+        6079, "VAULT_DEX_ACCOUNTS_REQUIRED"
+    );
+  }
+
+  record VaultInvalidDexPool(int code, String msg) implements VaultsError {
+
+    public static final VaultInvalidDexPool INSTANCE = new VaultInvalidDexPool(
+        6080, "VAULT_INVALID_DEX_POOL"
+    );
+  }
+
+  record VaultInvalidVaultTypeForDex(int code, String msg) implements VaultsError {
+
+    public static final VaultInvalidVaultTypeForDex INSTANCE = new VaultInvalidVaultTypeForDex(
+        6081, "VAULT_INVALID_VAULT_TYPE_FOR_DEX"
+    );
+  }
+
+  record VaultOperateDexImperfectMaxUsePerfect(int code, String msg) implements VaultsError {
+
+    public static final VaultOperateDexImperfectMaxUsePerfect INSTANCE = new VaultOperateDexImperfectMaxUsePerfect(
+        6082, "VAULT_OPERATE_DEX_IMPERFECT_MAX_USE_PERFECT"
+    );
+  }
+
+  record VaultOperateDexNftIdMismatch(int code, String msg) implements VaultsError {
+
+    public static final VaultOperateDexNftIdMismatch INSTANCE = new VaultOperateDexNftIdMismatch(
+        6083, "VAULT_OPERATE_DEX_NFT_ID_MISMATCH"
+    );
+  }
+
+  record VaultAdminSupplyTokenRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminSupplyTokenRequired INSTANCE = new VaultAdminSupplyTokenRequired(
+        6084, "VAULT_ADMIN_SUPPLY_TOKEN_REQUIRED"
+    );
+  }
+
+  record VaultAdminBorrowTokenRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminBorrowTokenRequired INSTANCE = new VaultAdminBorrowTokenRequired(
+        6085, "VAULT_ADMIN_BORROW_TOKEN_REQUIRED"
+    );
+  }
+
+  record VaultAdminRateMagnifierNotAllowedForSmartLeg(int code, String msg) implements VaultsError {
+
+    public static final VaultAdminRateMagnifierNotAllowedForSmartLeg INSTANCE = new VaultAdminRateMagnifierNotAllowedForSmartLeg(
+        6086, "VAULT_ADMIN_RATE_MAGNIFIER_NOT_ALLOWED_FOR_SMART_LEG"
+    );
+  }
+
+  record VaultDexDebtSharesPaidMoreThanAvailableLiquidation(int code, String msg) implements VaultsError {
+
+    public static final VaultDexDebtSharesPaidMoreThanAvailableLiquidation INSTANCE = new VaultDexDebtSharesPaidMoreThanAvailableLiquidation(
+        6087, "VAULT_DEX_DEBT_SHARES_PAID_MORE_THAN_AVAILABLE_LIQUIDATION"
+    );
+  }
+
+  record VaultSignerSupplyTokenAccountRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSignerSupplyTokenAccountRequired INSTANCE = new VaultSignerSupplyTokenAccountRequired(
+        6088, "VAULT_SIGNER_SUPPLY_TOKEN_ACCOUNT_REQUIRED"
+    );
+  }
+
+  record VaultSignerBorrowTokenAccountRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSignerBorrowTokenAccountRequired INSTANCE = new VaultSignerBorrowTokenAccountRequired(
+        6089, "VAULT_SIGNER_BORROW_TOKEN_ACCOUNT_REQUIRED"
+    );
+  }
+
+  record VaultInvalidVaultTypeForOperate(int code, String msg) implements VaultsError {
+
+    public static final VaultInvalidVaultTypeForOperate INSTANCE = new VaultInvalidVaultTypeForOperate(
+        6090, "VAULT_INVALID_VAULT_TYPE_FOR_OPERATE"
+    );
+  }
+
+  record VaultSupplyTokenRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyTokenRequired INSTANCE = new VaultSupplyTokenRequired(
+        6091, "VAULT_SUPPLY_TOKEN_REQUIRED"
+    );
+  }
+
+  record VaultBorrowTokenRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowTokenRequired INSTANCE = new VaultBorrowTokenRequired(
+        6092, "VAULT_BORROW_TOKEN_REQUIRED"
+    );
+  }
+
+  record VaultSupplyReservesRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyReservesRequired INSTANCE = new VaultSupplyReservesRequired(
+        6093, "VAULT_SUPPLY_RESERVES_REQUIRED"
+    );
+  }
+
+  record VaultBorrowReservesRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowReservesRequired INSTANCE = new VaultBorrowReservesRequired(
+        6094, "VAULT_BORROW_RESERVES_REQUIRED"
+    );
+  }
+
+  record VaultSupplyDexRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyDexRequired INSTANCE = new VaultSupplyDexRequired(
+        6095, "VAULT_SUPPLY_DEX_REQUIRED"
+    );
+  }
+
+  record VaultBorrowDexRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowDexRequired INSTANCE = new VaultBorrowDexRequired(
+        6096, "VAULT_BORROW_DEX_REQUIRED"
+    );
+  }
+
+  record VaultSupplyRateModelRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyRateModelRequired INSTANCE = new VaultSupplyRateModelRequired(
+        6097, "VAULT_SUPPLY_RATE_MODEL_REQUIRED"
+    );
+  }
+
+  record VaultBorrowRateModelRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowRateModelRequired INSTANCE = new VaultBorrowRateModelRequired(
+        6098, "VAULT_BORROW_RATE_MODEL_REQUIRED"
+    );
+  }
+
+  record VaultSupplyTokenProgramRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyTokenProgramRequired INSTANCE = new VaultSupplyTokenProgramRequired(
+        6099, "VAULT_SUPPLY_TOKEN_PROGRAM_REQUIRED"
+    );
+  }
+
+  record VaultBorrowTokenProgramRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowTokenProgramRequired INSTANCE = new VaultBorrowTokenProgramRequired(
+        6100, "VAULT_BORROW_TOKEN_PROGRAM_REQUIRED"
+    );
+  }
+
+  record VaultSupplyVaultAccountRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultSupplyVaultAccountRequired INSTANCE = new VaultSupplyVaultAccountRequired(
+        6101, "VAULT_SUPPLY_VAULT_ACCOUNT_REQUIRED"
+    );
+  }
+
+  record VaultBorrowVaultAccountRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultBorrowVaultAccountRequired INSTANCE = new VaultBorrowVaultAccountRequired(
+        6102, "VAULT_BORROW_VAULT_ACCOUNT_REQUIRED"
+    );
+  }
+
+  record VaultUserBorrowPositionRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultUserBorrowPositionRequired INSTANCE = new VaultUserBorrowPositionRequired(
+        6103, "VAULT_USER_BORROW_POSITION_REQUIRED"
+    );
+  }
+
+  record VaultLiquidateColAmountsRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultLiquidateColAmountsRequired INSTANCE = new VaultLiquidateColAmountsRequired(
+        6104, "VAULT_LIQUIDATE_COL_AMOUNTS_REQUIRED"
+    );
+  }
+
+  record VaultLiquidateDebtAmountsRequired(int code, String msg) implements VaultsError {
+
+    public static final VaultLiquidateDebtAmountsRequired INSTANCE = new VaultLiquidateDebtAmountsRequired(
+        6105, "VAULT_LIQUIDATE_DEBT_AMOUNTS_REQUIRED"
     );
   }
 }

@@ -15,6 +15,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param reserveBumpSeed: u8
+/// @param msolMintAuthorityBumpSeed: u8
 /// @param rentExemptForTokenAcc: u64
 /// @param availableReserveBalance: u64
 /// @param msolSupply: u64

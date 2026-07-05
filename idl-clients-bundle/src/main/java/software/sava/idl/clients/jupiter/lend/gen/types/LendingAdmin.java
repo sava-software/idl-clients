@@ -17,6 +17,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param nextLendingId: u16
+/// @param bump: u8
 public record LendingAdmin(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey authority,

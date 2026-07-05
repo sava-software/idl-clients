@@ -12,6 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param maxVariance: u64
 /// @param minResponses: u32
 /// @param recentSlot: u64
+/// @param minSampleSize: u8
 /// @param maxStaleness: u32
 /// @param permitWriteByAuthority: Option<bool>
 public record PullFeedInitParams(byte[] feedHash,

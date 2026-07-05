@@ -67,7 +67,7 @@ public final class Token2022Program {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param mintKey Token mint account.
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public static Instruction initializeMint(final AccountMeta invokedToken2022ProgramMeta,
@@ -97,7 +97,7 @@ public final class Token2022Program {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public static Instruction initializeMint(final AccountMeta invokedToken2022ProgramMeta,
@@ -127,7 +127,7 @@ public final class Token2022Program {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param decimals Number of decimals in token account amounts.
+  /// @param decimals: u8 Number of decimals in token account amounts.
   /// @param mintAuthority Minting authority.
   /// @param freezeAuthority Optional authority that can freeze token accounts.
   public record InitializeMintIxData(int discriminator,
@@ -342,7 +342,7 @@ public final class Token2022Program {
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig(final AccountMeta invokedToken2022ProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey multisigKey,
@@ -366,7 +366,7 @@ public final class Token2022Program {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig(final AccountMeta invokedToken2022ProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int m) {
@@ -389,7 +389,7 @@ public final class Token2022Program {
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {  
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
@@ -1266,7 +1266,7 @@ public final class Token2022Program {
   /// @param destinationKey The destination account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedToken2022ProgramMeta,
                                             final PublicKey sourceKey,
                                             final PublicKey mintKey,
@@ -1297,7 +1297,7 @@ public final class Token2022Program {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction transferChecked(final AccountMeta invokedToken2022ProgramMeta,
                                             final List<AccountMeta> keys,
                                             final long amount,
@@ -1320,7 +1320,7 @@ public final class Token2022Program {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
                                       int decimals) implements SerDe {  
@@ -1404,7 +1404,7 @@ public final class Token2022Program {
   /// @param delegateKey The delegate.
   /// @param ownerKey The source account owner or its multisignature account.
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedToken2022ProgramMeta,
                                            final PublicKey sourceKey,
                                            final PublicKey mintKey,
@@ -1434,7 +1434,7 @@ public final class Token2022Program {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction approveChecked(final AccountMeta invokedToken2022ProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
@@ -1456,7 +1456,7 @@ public final class Token2022Program {
   /// creating transactions offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
                                      int decimals) implements SerDe {  
@@ -1534,7 +1534,7 @@ public final class Token2022Program {
   /// @param tokenKey The account to mint tokens to.
   /// @param mintAuthorityKey The mint's minting authority or its multisignature account.
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedToken2022ProgramMeta,
                                           final PublicKey mintKey,
                                           final PublicKey tokenKey,
@@ -1561,7 +1561,7 @@ public final class Token2022Program {
   /// offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction mintToChecked(final AccountMeta invokedToken2022ProgramMeta,
                                           final List<AccountMeta> keys,
                                           final long amount,
@@ -1582,7 +1582,7 @@ public final class Token2022Program {
   /// offline or within a hardware wallet.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
                                     int decimals) implements SerDe {  
@@ -1662,7 +1662,7 @@ public final class Token2022Program {
   /// @param mintKey The token mint.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                         final PublicKey accountKey,
                                         final PublicKey mintKey,
@@ -1690,7 +1690,7 @@ public final class Token2022Program {
   /// within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction burnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                         final List<AccountMeta> keys,
                                         final long amount,
@@ -1712,7 +1712,7 @@ public final class Token2022Program {
   /// within a hardware wallet.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
                                   int decimals) implements SerDe {  
@@ -2047,7 +2047,7 @@ public final class Token2022Program {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param multisigKey The multisignature account to initialize.
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig2(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey multisigKey,
                                                 final int m) {
@@ -2059,7 +2059,7 @@ public final class Token2022Program {
 
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public static Instruction initializeMultisig2(final AccountMeta invokedToken2022ProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final int m) {
@@ -2072,7 +2072,7 @@ public final class Token2022Program {
 
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
-  /// @param m The number of signers (M) required to validate this multisignature account.
+  /// @param m: u8 The number of signers (M) required to validate this multisignature account.
   public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {  
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
@@ -2126,7 +2126,7 @@ public final class Token2022Program {
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
   /// @param mintKey The mint to initialize.
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public static Instruction initializeMint2(final AccountMeta invokedToken2022ProgramMeta,
@@ -2148,7 +2148,7 @@ public final class Token2022Program {
 
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public static Instruction initializeMint2(final AccountMeta invokedToken2022ProgramMeta,
@@ -2172,7 +2172,7 @@ public final class Token2022Program {
 
   /// Like `InitializeMint`, but does not require the Rent sysvar to be provided.
   ///
-  /// @param decimals Number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Number of base 10 digits to the right of the decimal place.
   /// @param mintAuthority The authority/multisignature to mint tokens.
   /// @param freezeAuthority The optional freeze authority/multisignature of the mint.
   public record InitializeMint2IxData(int discriminator,
@@ -2944,7 +2944,7 @@ public final class Token2022Program {
   /// @param destinationKey The destination account. May include the `TransferFeeAmount` extension.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
@@ -2978,7 +2978,7 @@ public final class Token2022Program {
   /// `TransferCheckedWithFee` with any mint.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
@@ -3007,7 +3007,7 @@ public final class Token2022Program {
   /// `TransferCheckedWithFee` with any mint.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param fee: u64 Expected fee assessed on this transfer, calculated off-chain based
   ///            on the transfer_fee_basis_points and maximum_fee of the mint. May
   ///            be 0 for a mint without a configured transfer fee.
@@ -3191,7 +3191,7 @@ public final class Token2022Program {
   /// @param feeReceiverKey The fee receiver account. Must include the `TransferFeeAmount`
   ///                       extension associated with the provided mint.
   /// @param withdrawWithheldAuthorityKey The mint's `withdraw_withheld_authority` or its multisignature account.
-  /// @param numTokenAccounts Number of token accounts harvested.
+  /// @param numTokenAccounts: u8 Number of token accounts harvested.
   public static Instruction withdrawWithheldTokensFromAccounts(final AccountMeta invokedToken2022ProgramMeta,
                                                                final PublicKey mintKey,
                                                                final PublicKey feeReceiverKey,
@@ -3212,7 +3212,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's
   /// withdraw withheld tokens authority.
   ///
-  /// @param numTokenAccounts Number of token accounts harvested.
+  /// @param numTokenAccounts: u8 Number of token accounts harvested.
   public static Instruction withdrawWithheldTokensFromAccounts(final AccountMeta invokedToken2022ProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int numTokenAccounts) {
@@ -3228,7 +3228,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's
   /// withdraw withheld tokens authority.
   ///
-  /// @param numTokenAccounts Number of token accounts harvested.
+  /// @param numTokenAccounts: u8 Number of token accounts harvested.
   public record WithdrawWithheldTokensFromAccountsIxData(int discriminator,
                                                          int transferFeeDiscriminator,
                                                          int numTokenAccounts) implements SerDe {  
@@ -3853,7 +3853,7 @@ public final class Token2022Program {
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
   /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
   ///                               for the proof.
@@ -3901,7 +3901,7 @@ public final class Token2022Program {
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
   /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
   ///                               for the proof.
@@ -3943,7 +3943,7 @@ public final class Token2022Program {
   /// @param decryptableZeroBalance The decryptable balance (always 0) once the configure account succeeds.
   /// @param maximumPendingBalanceCreditCounter: u64 The maximum number of despots and transfers that an account can receiver
   ///                                           before the `ApplyPendingBalance` is executed
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::ZeroCiphertextProof`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::ZeroCiphertextProof`
   ///                               instruction to the `ConfigureAccount` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
   ///                               for the proof.
@@ -4174,7 +4174,7 @@ public final class Token2022Program {
   ///
   /// @param tokenKey The SPL Token account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::VerifyCloseAccount`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyCloseAccount`
   ///                               instruction to the `EmptyAccount` instruction in the transaction. If
   ///                               the offset is `0`, then use a context state account for the proof.
   public static Instruction emptyConfidentialTransferAccount(final AccountMeta invokedToken2022ProgramMeta,
@@ -4214,7 +4214,7 @@ public final class Token2022Program {
   /// `zk_elgamal_proof` program in the same transaction or the address of a
   /// context state account for the proof must be provided.
   ///
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::VerifyCloseAccount`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyCloseAccount`
   ///                               instruction to the `EmptyAccount` instruction in the transaction. If
   ///                               the offset is `0`, then use a context state account for the proof.
   public static Instruction emptyConfidentialTransferAccount(final AccountMeta invokedToken2022ProgramMeta,
@@ -4249,7 +4249,7 @@ public final class Token2022Program {
   /// `zk_elgamal_proof` program in the same transaction or the address of a
   /// context state account for the proof must be provided.
   ///
-  /// @param proofInstructionOffset Relative location of the `ProofInstruction::VerifyCloseAccount`
+  /// @param proofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyCloseAccount`
   ///                               instruction to the `EmptyAccount` instruction in the transaction. If
   ///                               the offset is `0`, then use a context state account for the proof.
   public record EmptyConfidentialTransferAccountIxData(int discriminator,
@@ -4337,7 +4337,7 @@ public final class Token2022Program {
   /// @param mintKey The corresponding SPL Token mint.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to deposit.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction confidentialDeposit(final AccountMeta invokedToken2022ProgramMeta,
                                                 final PublicKey tokenKey,
                                                 final PublicKey mintKey,
@@ -4368,7 +4368,7 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param amount: u64 The amount of tokens to deposit.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction confidentialDeposit(final AccountMeta invokedToken2022ProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final long amount,
@@ -4395,7 +4395,7 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param amount: u64 The amount of tokens to deposit.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record ConfidentialDepositIxData(int discriminator,
                                           int confidentialTransferDiscriminator,
                                           long amount,
@@ -4522,13 +4522,13 @@ public final class Token2022Program {
   /// @param rangeRecordKey (Optional) Range proof record account or context state account.
   /// @param authorityKey The source account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to withdraw.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Withdraw` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU64`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU64`
   ///                                    instruction to the `Withdraw` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public static Instruction confidentialWithdraw(final AccountMeta invokedToken2022ProgramMeta,
@@ -4578,13 +4578,13 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param amount: u64 The amount of tokens to withdraw.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Withdraw` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU64`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU64`
   ///                                    instruction to the `Withdraw` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public static Instruction confidentialWithdraw(final AccountMeta invokedToken2022ProgramMeta,
@@ -4626,13 +4626,13 @@ public final class Token2022Program {
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param amount: u64 The amount of tokens to withdraw.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   /// @param newDecryptableAvailableBalance The new decryptable balance if the withdrawal succeeds.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Withdraw` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU64`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU64`
   ///                                    instruction to the `Withdraw` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public record ConfidentialWithdrawIxData(int discriminator,
@@ -4791,15 +4791,15 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `Transfer` instruction in the transaction. If the
   ///                                                 offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
   ///                                    instruction to the `Transfer` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public static Instruction confidentialTransfer(final AccountMeta invokedToken2022ProgramMeta,
@@ -4856,15 +4856,15 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `Transfer` instruction in the transaction. If the
   ///                                                 offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
   ///                                    instruction to the `Transfer` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public static Instruction confidentialTransfer(final AccountMeta invokedToken2022ProgramMeta,
@@ -4908,15 +4908,15 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `Transfer` instruction in the transaction. If the offset is
   ///                                       `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `Transfer` instruction in the transaction. If the
   ///                                                 offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU128Data`
   ///                                    instruction to the `Transfer` instruction in the transaction. If the
   ///                                    offset is `0`, then use a context state account for the proof.
   public record ConfidentialTransferIxData(int discriminator,
@@ -5636,25 +5636,25 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
   ///                                       is `0`, then use a context state account for the proof.
-  /// @param transferAmountCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param transferAmountCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                               `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                               instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                               If the offset is `0`, then use a context state account for the
   ///                                                               proof.
-  /// @param feeSigmaProofInstructionOffset Relative location of the `ProofInstruction::VerifyPercentageWithFee`
+  /// @param feeSigmaProofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyPercentageWithFee`
   ///                                       instruction to the `TransferWithFee` instruction in the transaction.
   ///                                       If the offset is `0`, then use a context state account for the
   ///                                       proof.
-  /// @param feeCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param feeCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                    `ProofInstruction::VerifyBatchedGroupedCiphertext2HandlesValidity`
   ///                                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                    If the offset is `0`, then use a context state account for the
   ///                                                    proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
   ///                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                    If the offset is `0`, then use a context state account for the
   ///                                    proof.
@@ -5725,25 +5725,25 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
   ///                                       is `0`, then use a context state account for the proof.
-  /// @param transferAmountCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param transferAmountCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                               `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                               instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                               If the offset is `0`, then use a context state account for the
   ///                                                               proof.
-  /// @param feeSigmaProofInstructionOffset Relative location of the `ProofInstruction::VerifyPercentageWithFee`
+  /// @param feeSigmaProofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyPercentageWithFee`
   ///                                       instruction to the `TransferWithFee` instruction in the transaction.
   ///                                       If the offset is `0`, then use a context state account for the
   ///                                       proof.
-  /// @param feeCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param feeCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                    `ProofInstruction::VerifyBatchedGroupedCiphertext2HandlesValidity`
   ///                                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                    If the offset is `0`, then use a context state account for the
   ///                                                    proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
   ///                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                    If the offset is `0`, then use a context state account for the
   ///                                    proof.
@@ -5799,25 +5799,25 @@ public final class Token2022Program {
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
   /// @param transferAmountAuditorCiphertextLo The transfer amount encrypted under the auditor ElGamal public key.
   /// @param transferAmountAuditorCiphertextHi The transfer amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `TransferWithFee` instruction in the transaction. If the offset
   ///                                       is `0`, then use a context state account for the proof.
-  /// @param transferAmountCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param transferAmountCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                               `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                               instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                               If the offset is `0`, then use a context state account for the
   ///                                                               proof.
-  /// @param feeSigmaProofInstructionOffset Relative location of the `ProofInstruction::VerifyPercentageWithFee`
+  /// @param feeSigmaProofInstructionOffset: i8 Relative location of the `ProofInstruction::VerifyPercentageWithFee`
   ///                                       instruction to the `TransferWithFee` instruction in the transaction.
   ///                                       If the offset is `0`, then use a context state account for the
   ///                                       proof.
-  /// @param feeCiphertextValidityProofInstructionOffset Relative location of the
+  /// @param feeCiphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                    `ProofInstruction::VerifyBatchedGroupedCiphertext2HandlesValidity`
   ///                                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                                    If the offset is `0`, then use a context state account for the
   ///                                                    proof.
-  /// @param rangeProofInstructionOffset Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
+  /// @param rangeProofInstructionOffset: i8 Relative location of the `ProofInstruction::BatchedRangeProofU256Data`
   ///                                    instruction to the `TransferWithFee` instruction in the transaction.
   ///                                    If the offset is `0`, then use a context state account for the
   ///                                    proof.
@@ -7731,7 +7731,7 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public static Instruction withdrawWithheldTokensFromMintForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                                                                      final PublicKey mintKey,
@@ -7763,7 +7763,7 @@ public final class Token2022Program {
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
   ///
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public static Instruction withdrawWithheldTokensFromMintForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                                                                      final List<AccountMeta> keys,
@@ -7789,7 +7789,7 @@ public final class Token2022Program {
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
   ///
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public record WithdrawWithheldTokensFromMintForConfidentialTransferFeeIxData(int discriminator,
                                                                                int confidentialTransferFeeDiscriminator,
@@ -7885,8 +7885,8 @@ public final class Token2022Program {
   ///                                            `VerifyCiphertextCiphertextEquality` is pre-verified into a context
   ///                                            state account.
   /// @param authorityKey The mint's withdraw_withheld_authority
-  /// @param numTokenAccounts Number of token accounts harvested
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param numTokenAccounts: u8 Number of token accounts harvested
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public static Instruction withdrawWithheldTokensFromAccountsForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                                                                          final PublicKey mintKey,
@@ -7917,8 +7917,8 @@ public final class Token2022Program {
   /// 
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
-  /// @param numTokenAccounts Number of token accounts harvested
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param numTokenAccounts: u8 Number of token accounts harvested
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public static Instruction withdrawWithheldTokensFromAccountsForConfidentialTransferFee(final AccountMeta invokedToken2022ProgramMeta,
                                                                                          final List<AccountMeta> keys,
@@ -7944,8 +7944,8 @@ public final class Token2022Program {
   /// 
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
-  /// @param numTokenAccounts Number of token accounts harvested
-  /// @param proofInstructionOffset Proof instruction offset
+  /// @param numTokenAccounts: u8 Number of token accounts harvested
+  /// @param proofInstructionOffset: i8 Proof instruction offset
   /// @param newDecryptableAvailableBalance The new decryptable balance in the destination token account
   public record WithdrawWithheldTokensFromAccountsForConfidentialTransferFeeIxData(int discriminator,
                                                                                    int confidentialTransferFeeDiscriminator,
@@ -9274,7 +9274,7 @@ public final class Token2022Program {
   /// @param mintKey The SPL Token mint.
   /// @param authorityKey The confidential mint authority or its multisignature account.
   /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
-  /// @param proofInstructionOffset The location of the
+  /// @param proofInstructionOffset: i8 The location of the
   ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
   ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
@@ -9304,7 +9304,7 @@ public final class Token2022Program {
   /// processed successfully.
   ///
   /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
-  /// @param proofInstructionOffset The location of the
+  /// @param proofInstructionOffset: i8 The location of the
   ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
   ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
@@ -9330,7 +9330,7 @@ public final class Token2022Program {
   /// processed successfully.
   ///
   /// @param newSupplyElgamalPubkey The new ElGamal pubkey for supply encryption.
-  /// @param proofInstructionOffset The location of the
+  /// @param proofInstructionOffset: i8 The location of the
   ///                               `ProofInstruction::VerifyCiphertextCiphertextEquality` instruction
   ///                               relative to the `RotateSupplyElGamalPubkey` instruction in the
   ///                               transaction. If the offset is `0`, then use a context state account
@@ -9570,15 +9570,15 @@ public final class Token2022Program {
   /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
   /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
   /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialMint` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -9634,15 +9634,15 @@ public final class Token2022Program {
   /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
   /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
   /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialMint` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -9687,15 +9687,15 @@ public final class Token2022Program {
   /// @param newDecryptableSupply The new decryptable supply if the mint succeeds.
   /// @param mintAmountAuditorCiphertextLo The mint amount encrypted under the auditor ElGamal public key.
   /// @param mintAmountAuditorCiphertextHi The mint amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialMint` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialMint` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialMint` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -9862,15 +9862,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -9926,15 +9926,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -9979,15 +9979,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the `ConfidentialBurn` instruction in the transaction. If the
   ///                                       offset is `0`, then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the `ConfidentialBurn` instruction in the transaction.
   ///                                                 If the offset is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    `ConfidentialBurn` instruction in the transaction. If the offset is
   ///                                    `0`, then use a context state account for the proof.
@@ -12019,7 +12019,7 @@ public final class Token2022Program {
   /// @param permissionedBurnAuthorityKey Authority configured on the mint that must sign any permissioned burn instruction.
   /// @param authorityKey The account's owner/delegate or its multisignature account.
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction permissionedBurnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                                     final PublicKey accountKey,
                                                     final PublicKey mintKey,
@@ -12044,7 +12044,7 @@ public final class Token2022Program {
   /// Burn tokens with expected decimals when the mint has the permissioned burn extension enabled.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public static Instruction permissionedBurnChecked(final AccountMeta invokedToken2022ProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long amount,
@@ -12063,7 +12063,7 @@ public final class Token2022Program {
   /// Burn tokens with expected decimals when the mint has the permissioned burn extension enabled.
   ///
   /// @param amount: u64 The amount of tokens to burn.
-  /// @param decimals Expected number of base 10 digits to the right of the decimal place.
+  /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record PermissionedBurnCheckedIxData(int discriminator,
                                               int permissionedBurnDiscriminator,
                                               long amount,
@@ -12208,15 +12208,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the burn instruction in the transaction. If the offset is `0`,
   ///                                       then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the burn instruction in the transaction. If the offset
   ///                                                 is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    burn instruction in the transaction. If the offset is `0`, then use a
   ///                                    context state account for the proof.
@@ -12275,15 +12275,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the burn instruction in the transaction. If the offset is `0`,
   ///                                       then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the burn instruction in the transaction. If the offset
   ///                                                 is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    burn instruction in the transaction. If the offset is `0`, then use a
   ///                                    context state account for the proof.
@@ -12329,15 +12329,15 @@ public final class Token2022Program {
   /// @param newDecryptableAvailableBalance The new decryptable balance of the burner if the burn succeeds.
   /// @param burnAmountAuditorCiphertextLo The burn amount encrypted under the auditor ElGamal public key.
   /// @param burnAmountAuditorCiphertextHi The burn amount encrypted under the auditor ElGamal public key.
-  /// @param equalityProofInstructionOffset Relative location of the
+  /// @param equalityProofInstructionOffset: i8 Relative location of the
   ///                                       `ProofInstruction::VerifyCiphertextCommitmentEquality` instruction
   ///                                       to the burn instruction in the transaction. If the offset is `0`,
   ///                                       then use a context state account for the proof.
-  /// @param ciphertextValidityProofInstructionOffset Relative location of the
+  /// @param ciphertextValidityProofInstructionOffset: i8 Relative location of the
   ///                                                 `ProofInstruction::VerifyBatchedGroupedCiphertext3HandlesValidity`
   ///                                                 instruction to the burn instruction in the transaction. If the offset
   ///                                                 is `0`, then use a context state account for the proof.
-  /// @param rangeProofInstructionOffset Relative location of the
+  /// @param rangeProofInstructionOffset: i8 Relative location of the
   ///                                    `ProofInstruction::VerifyBatchedRangeProofU128` instruction to the
   ///                                    burn instruction in the transaction. If the offset is `0`, then use a
   ///                                    context state account for the proof.

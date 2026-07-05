@@ -51,6 +51,7 @@ public sealed interface ConfigManagementAction extends RustEnum permits
     }
   }
 
+  /// @param index: u8
   /// @param durationSeconds: u64
   /// @param maxMintAmount: u64
   /// @param maxRedeemAmount: u64

@@ -23,7 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param multisig The multisig this belongs to.
 /// @param creator Member of the Multisig who submitted the transaction.
 /// @param index: u64 Index of this transaction within the multisig.
-/// @param bump bump for the transaction seeds.
+/// @param bump: u8 bump for the transaction seeds.
 /// @param actions Action to be performed on the multisig.
 public record ConfigTransaction(PublicKey _address,
                                 Discriminator discriminator,

@@ -5,6 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 /// Bitmask flags applied to an order (currently only the reduce-only bit is used).
 ///
+/// @param flags: u8
 public record OrderFlags(int flags) implements SerDe {
 
   public static final int BYTES = 1;

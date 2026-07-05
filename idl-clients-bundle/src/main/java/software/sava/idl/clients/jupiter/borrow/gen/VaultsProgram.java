@@ -10,6 +10,9 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.jupiter.borrow.gen.types.AddressBool;
 import software.sava.idl.clients.jupiter.borrow.gen.types.InitVaultConfigParams;
+import software.sava.idl.clients.jupiter.borrow.gen.types.LiquidateDexColAmounts;
+import software.sava.idl.clients.jupiter.borrow.gen.types.LiquidateDexDebtAmounts;
+import software.sava.idl.clients.jupiter.borrow.gen.types.LiquidatePerfectDexDebtAmounts;
 import software.sava.idl.clients.jupiter.borrow.gen.types.TransferType;
 import software.sava.idl.clients.jupiter.borrow.gen.types.UpdateCoreSettingsParams;
 
@@ -381,6 +384,7 @@ public final class VaultsProgram {
 
   /// @param vaultConfigKey _dev Verification inside instruction logic
   /// @param vaultId: u16
+  /// @param index: u8
   public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
                                                  final SolanaAccounts solanaAccounts,
                                                  final PublicKey signerKey,
@@ -398,6 +402,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
+  /// @param index: u8
   public static Instruction initTickHasDebtArray(final AccountMeta invokedVaultsProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int vaultId,
@@ -412,6 +417,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
+  /// @param index: u8
   public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {  
 
     public static InitTickHasDebtArrayIxData read(final Instruction instruction) {
@@ -639,22 +645,27 @@ public final class VaultsProgram {
 
   public static final Discriminator INIT_VAULT_CONFIG_DISCRIMINATOR = toDiscriminator(41, 194, 69, 254, 196, 246, 226, 195);
 
-  public static List<AccountMeta> initVaultConfigKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> initVaultConfigKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                      final SolanaAccounts solanaAccounts,
                                                       final PublicKey authorityKey,
                                                       final PublicKey vaultAdminKey,
                                                       final PublicKey vaultConfigKey,
                                                       final PublicKey vaultMetadataKey,
                                                       final PublicKey oracleKey,
                                                       final PublicKey supplyTokenKey,
-                                                      final PublicKey borrowTokenKey) {
+                                                      final PublicKey borrowTokenKey,
+                                                      final PublicKey supplyDexKey,
+                                                      final PublicKey borrowDexKey) {
     return List.of(
       createWritableSigner(authorityKey),
       createWrite(vaultAdminKey),
       createWrite(vaultConfigKey),
       createWrite(vaultMetadataKey),
       createRead(oracleKey),
-      createRead(supplyTokenKey),
-      createRead(borrowTokenKey),
+      createRead(requireNonNullElse(supplyTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexKey, invokedVaultsProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -669,9 +680,12 @@ public final class VaultsProgram {
                                             final PublicKey oracleKey,
                                             final PublicKey supplyTokenKey,
                                             final PublicKey borrowTokenKey,
+                                            final PublicKey supplyDexKey,
+                                            final PublicKey borrowDexKey,
                                             final int vaultId,
                                             final InitVaultConfigParams params) {
     final var keys = initVaultConfigKeys(
+      invokedVaultsProgramMeta,
       solanaAccounts,
       authorityKey,
       vaultAdminKey,
@@ -679,7 +693,9 @@ public final class VaultsProgram {
       vaultMetadataKey,
       oracleKey,
       supplyTokenKey,
-      borrowTokenKey
+      borrowTokenKey,
+      supplyDexKey,
+      borrowDexKey
     );
     return initVaultConfig(invokedVaultsProgramMeta, keys, vaultId, params);
   }
@@ -886,7 +902,7 @@ public final class VaultsProgram {
       createRead(supplyTokenProgramKey),
       createRead(borrowTokenProgramKey),
       createRead(solanaAccounts.systemProgram()),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey())),
       createRead(oracleProgramKey)
     );
   }
@@ -1060,6 +1076,983 @@ public final class VaultsProgram {
     }
   }
 
+  public static final Discriminator LIQUIDATE_DEX_DISCRIMINATOR = toDiscriminator(28, 129, 253, 125, 243, 52, 11, 162);
+
+  /// Typed vault imperfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`.
+  /// - T3 (normal col, smart debt): supply `debt_amounts` (pre-fund vault's borrow-DEX
+  /// user token accounts in the same tx).
+  /// - T4 (smart col + smart debt): supply both `debt_amounts` and `col_amounts`.
+  /// 
+  /// Returns `(actual_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param signerTokenAccountKey _dev not required for T3/T4 (smart debt pays at DEX)
+  /// @param toTokenAccountKey _dev not required for T2/T4 (smart col withdraws at DEX)
+  /// @param vaultConfigKey _dev mut because this PDA signs CPIs to the DEX and liquidity programs
+  /// @param supplyTokenKey _dev not required for T2/T4
+  /// @param borrowTokenKey _dev not required for T3/T4
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  public static List<AccountMeta> liquidateDexKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                   final SolanaAccounts solanaAccounts,
+                                                   final PublicKey signerKey,
+                                                   final PublicKey signerTokenAccountKey,
+                                                   final PublicKey toKey,
+                                                   final PublicKey toTokenAccountKey,
+                                                   final PublicKey vaultConfigKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey supplyTokenKey,
+                                                   final PublicKey borrowTokenKey,
+                                                   final PublicKey oracleKey,
+                                                   final PublicKey newBranchKey,
+                                                   final PublicKey supplyTokenReservesLiquidityKey,
+                                                   final PublicKey borrowTokenReservesLiquidityKey,
+                                                   final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                   final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                   final PublicKey supplyRateModelKey,
+                                                   final PublicKey borrowRateModelKey,
+                                                   final PublicKey supplyTokenClaimAccountKey,
+                                                   final PublicKey liquidityKey,
+                                                   final PublicKey liquidityProgramKey,
+                                                   final PublicKey vaultSupplyTokenAccountKey,
+                                                   final PublicKey vaultBorrowTokenAccountKey,
+                                                   final PublicKey supplyTokenProgramKey,
+                                                   final PublicKey borrowTokenProgramKey,
+                                                   final PublicKey oracleProgramKey,
+                                                   final PublicKey supplyDexDexKey,
+                                                   final PublicKey supplyDexDexPositionKey,
+                                                   final PublicKey supplyDexDexUserToken0AccountKey,
+                                                   final PublicKey supplyDexDexUserToken1AccountKey,
+                                                   final PublicKey supplyDexDexToken0Key,
+                                                   final PublicKey supplyDexDexToken1Key,
+                                                   final PublicKey supplyDexDexToken0ReserveKey,
+                                                   final PublicKey supplyDexDexToken1ReserveKey,
+                                                   final PublicKey supplyDexDexToken0RateModelKey,
+                                                   final PublicKey supplyDexDexToken1RateModelKey,
+                                                   final PublicKey supplyDexDexToken0VaultKey,
+                                                   final PublicKey supplyDexDexToken1VaultKey,
+                                                   final PublicKey supplyDexSupplyPosToken0Key,
+                                                   final PublicKey supplyDexSupplyPosToken1Key,
+                                                   final PublicKey supplyDexBorrowPosToken0Key,
+                                                   final PublicKey supplyDexBorrowPosToken1Key,
+                                                   final PublicKey supplyDexDexToken0ProgramKey,
+                                                   final PublicKey supplyDexDexToken1ProgramKey,
+                                                   final PublicKey borrowDexDexKey,
+                                                   final PublicKey borrowDexDexPositionKey,
+                                                   final PublicKey borrowDexDexUserToken0AccountKey,
+                                                   final PublicKey borrowDexDexUserToken1AccountKey,
+                                                   final PublicKey borrowDexDexToken0Key,
+                                                   final PublicKey borrowDexDexToken1Key,
+                                                   final PublicKey borrowDexDexToken0ReserveKey,
+                                                   final PublicKey borrowDexDexToken1ReserveKey,
+                                                   final PublicKey borrowDexDexToken0RateModelKey,
+                                                   final PublicKey borrowDexDexToken1RateModelKey,
+                                                   final PublicKey borrowDexDexToken0VaultKey,
+                                                   final PublicKey borrowDexDexToken1VaultKey,
+                                                   final PublicKey borrowDexSupplyPosToken0Key,
+                                                   final PublicKey borrowDexSupplyPosToken1Key,
+                                                   final PublicKey borrowDexBorrowPosToken0Key,
+                                                   final PublicKey borrowDexBorrowPosToken1Key,
+                                                   final PublicKey borrowDexDexToken0ProgramKey,
+                                                   final PublicKey borrowDexDexToken1ProgramKey,
+                                                   final PublicKey dexProgramKey,
+                                                   final PublicKey dexOracleProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(requireNonNullElse(signerTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(toKey),
+      createWrite(requireNonNullElse(toTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(requireNonNullElse(supplyTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(oracleKey),
+      createWrite(newBranchKey),
+      createWrite(requireNonNullElse(supplyTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultSupplyPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyTokenClaimAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(requireNonNullElse(vaultSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(oracleProgramKey),
+      createWrite(requireNonNullElse(supplyDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(dexProgramKey),
+      createRead(requireNonNullElse(dexOracleProgramKey, invokedVaultsProgramMeta.publicKey()))
+    );
+  }
+
+  /// Typed vault imperfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`.
+  /// - T3 (normal col, smart debt): supply `debt_amounts` (pre-fund vault's borrow-DEX
+  /// user token accounts in the same tx).
+  /// - T4 (smart col + smart debt): supply both `debt_amounts` and `col_amounts`.
+  /// 
+  /// Returns `(actual_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param signerTokenAccountKey _dev not required for T3/T4 (smart debt pays at DEX)
+  /// @param toTokenAccountKey _dev not required for T2/T4 (smart col withdraws at DEX)
+  /// @param vaultConfigKey _dev mut because this PDA signs CPIs to the DEX and liquidity programs
+  /// @param supplyTokenKey _dev not required for T2/T4
+  /// @param borrowTokenKey _dev not required for T3/T4
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param debtAmt: u64
+  public static Instruction liquidateDex(final AccountMeta invokedVaultsProgramMeta,
+                                         final SolanaAccounts solanaAccounts,
+                                         final PublicKey signerKey,
+                                         final PublicKey signerTokenAccountKey,
+                                         final PublicKey toKey,
+                                         final PublicKey toTokenAccountKey,
+                                         final PublicKey vaultConfigKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey supplyTokenKey,
+                                         final PublicKey borrowTokenKey,
+                                         final PublicKey oracleKey,
+                                         final PublicKey newBranchKey,
+                                         final PublicKey supplyTokenReservesLiquidityKey,
+                                         final PublicKey borrowTokenReservesLiquidityKey,
+                                         final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                         final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                         final PublicKey supplyRateModelKey,
+                                         final PublicKey borrowRateModelKey,
+                                         final PublicKey supplyTokenClaimAccountKey,
+                                         final PublicKey liquidityKey,
+                                         final PublicKey liquidityProgramKey,
+                                         final PublicKey vaultSupplyTokenAccountKey,
+                                         final PublicKey vaultBorrowTokenAccountKey,
+                                         final PublicKey supplyTokenProgramKey,
+                                         final PublicKey borrowTokenProgramKey,
+                                         final PublicKey oracleProgramKey,
+                                         final PublicKey supplyDexDexKey,
+                                         final PublicKey supplyDexDexPositionKey,
+                                         final PublicKey supplyDexDexUserToken0AccountKey,
+                                         final PublicKey supplyDexDexUserToken1AccountKey,
+                                         final PublicKey supplyDexDexToken0Key,
+                                         final PublicKey supplyDexDexToken1Key,
+                                         final PublicKey supplyDexDexToken0ReserveKey,
+                                         final PublicKey supplyDexDexToken1ReserveKey,
+                                         final PublicKey supplyDexDexToken0RateModelKey,
+                                         final PublicKey supplyDexDexToken1RateModelKey,
+                                         final PublicKey supplyDexDexToken0VaultKey,
+                                         final PublicKey supplyDexDexToken1VaultKey,
+                                         final PublicKey supplyDexSupplyPosToken0Key,
+                                         final PublicKey supplyDexSupplyPosToken1Key,
+                                         final PublicKey supplyDexBorrowPosToken0Key,
+                                         final PublicKey supplyDexBorrowPosToken1Key,
+                                         final PublicKey supplyDexDexToken0ProgramKey,
+                                         final PublicKey supplyDexDexToken1ProgramKey,
+                                         final PublicKey borrowDexDexKey,
+                                         final PublicKey borrowDexDexPositionKey,
+                                         final PublicKey borrowDexDexUserToken0AccountKey,
+                                         final PublicKey borrowDexDexUserToken1AccountKey,
+                                         final PublicKey borrowDexDexToken0Key,
+                                         final PublicKey borrowDexDexToken1Key,
+                                         final PublicKey borrowDexDexToken0ReserveKey,
+                                         final PublicKey borrowDexDexToken1ReserveKey,
+                                         final PublicKey borrowDexDexToken0RateModelKey,
+                                         final PublicKey borrowDexDexToken1RateModelKey,
+                                         final PublicKey borrowDexDexToken0VaultKey,
+                                         final PublicKey borrowDexDexToken1VaultKey,
+                                         final PublicKey borrowDexSupplyPosToken0Key,
+                                         final PublicKey borrowDexSupplyPosToken1Key,
+                                         final PublicKey borrowDexBorrowPosToken0Key,
+                                         final PublicKey borrowDexBorrowPosToken1Key,
+                                         final PublicKey borrowDexDexToken0ProgramKey,
+                                         final PublicKey borrowDexDexToken1ProgramKey,
+                                         final PublicKey dexProgramKey,
+                                         final PublicKey dexOracleProgramKey,
+                                         final long debtAmt,
+                                         final LiquidateDexDebtAmounts debtAmounts,
+                                         final BigInteger colPerUnitDebt,
+                                         final LiquidateDexColAmounts colAmounts,
+                                         final boolean absorb,
+                                         final TransferType transferType,
+                                         final byte[] remainingAccountsIndices) {
+    final var keys = liquidateDexKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      signerKey,
+      signerTokenAccountKey,
+      toKey,
+      toTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      oracleKey,
+      newBranchKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      supplyTokenClaimAccountKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey,
+      oracleProgramKey,
+      supplyDexDexKey,
+      supplyDexDexPositionKey,
+      supplyDexDexUserToken0AccountKey,
+      supplyDexDexUserToken1AccountKey,
+      supplyDexDexToken0Key,
+      supplyDexDexToken1Key,
+      supplyDexDexToken0ReserveKey,
+      supplyDexDexToken1ReserveKey,
+      supplyDexDexToken0RateModelKey,
+      supplyDexDexToken1RateModelKey,
+      supplyDexDexToken0VaultKey,
+      supplyDexDexToken1VaultKey,
+      supplyDexSupplyPosToken0Key,
+      supplyDexSupplyPosToken1Key,
+      supplyDexBorrowPosToken0Key,
+      supplyDexBorrowPosToken1Key,
+      supplyDexDexToken0ProgramKey,
+      supplyDexDexToken1ProgramKey,
+      borrowDexDexKey,
+      borrowDexDexPositionKey,
+      borrowDexDexUserToken0AccountKey,
+      borrowDexDexUserToken1AccountKey,
+      borrowDexDexToken0Key,
+      borrowDexDexToken1Key,
+      borrowDexDexToken0ReserveKey,
+      borrowDexDexToken1ReserveKey,
+      borrowDexDexToken0RateModelKey,
+      borrowDexDexToken1RateModelKey,
+      borrowDexDexToken0VaultKey,
+      borrowDexDexToken1VaultKey,
+      borrowDexSupplyPosToken0Key,
+      borrowDexSupplyPosToken1Key,
+      borrowDexBorrowPosToken0Key,
+      borrowDexBorrowPosToken1Key,
+      borrowDexDexToken0ProgramKey,
+      borrowDexDexToken1ProgramKey,
+      dexProgramKey,
+      dexOracleProgramKey
+    );
+    return liquidateDex(
+      invokedVaultsProgramMeta,
+      keys,
+      debtAmt,
+      debtAmounts,
+      colPerUnitDebt,
+      colAmounts,
+      absorb,
+      transferType,
+      remainingAccountsIndices
+    );
+  }
+
+  /// Typed vault imperfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`.
+  /// - T3 (normal col, smart debt): supply `debt_amounts` (pre-fund vault's borrow-DEX
+  /// user token accounts in the same tx).
+  /// - T4 (smart col + smart debt): supply both `debt_amounts` and `col_amounts`.
+  /// 
+  /// Returns `(actual_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param debtAmt: u64
+  public static Instruction liquidateDex(final AccountMeta invokedVaultsProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final long debtAmt,
+                                         final LiquidateDexDebtAmounts debtAmounts,
+                                         final BigInteger colPerUnitDebt,
+                                         final LiquidateDexColAmounts colAmounts,
+                                         final boolean absorb,
+                                         final TransferType transferType,
+                                         final byte[] remainingAccountsIndices) {
+    final byte[] _data = new byte[
+    33
+    + (debtAmounts == null ? 1 : (1 + debtAmounts.l()))
+    + (colAmounts == null ? 1 : (1 + colAmounts.l()))
+    + (transferType == null ? 1 : (1 + transferType.l())) + SerDeUtil.lenVector(4, remainingAccountsIndices)
+    ];
+    int i = LIQUIDATE_DEX_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, debtAmt);
+    i += 8;
+    i += SerDeUtil.writeOptional(1, debtAmounts, _data, i);
+    putInt128LE(_data, i, colPerUnitDebt);
+    i += 16;
+    i += SerDeUtil.writeOptional(1, colAmounts, _data, i);
+    _data[i] = (byte) (absorb ? 1 : 0);
+    ++i;
+    i += SerDeUtil.writeOptional(1, transferType, _data, i);
+    SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  /// @param debtAmt: u64
+  public record LiquidateDexIxData(Discriminator discriminator,
+                                   long debtAmt,
+                                   LiquidateDexDebtAmounts debtAmounts,
+                                   BigInteger colPerUnitDebt,
+                                   LiquidateDexColAmounts colAmounts,
+                                   boolean absorb,
+                                   TransferType transferType,
+                                   byte[] remainingAccountsIndices) implements SerDe {  
+
+    public static LiquidateDexIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int DEBT_AMT_OFFSET = 8;
+    public static final int DEBT_AMOUNTS_OFFSET = 17;
+
+    public static LiquidateDexIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var debtAmt = getInt64LE(_data, i);
+      i += 8;
+      final LiquidateDexDebtAmounts debtAmounts;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        debtAmounts = null;
+        ++i;
+      } else {
+        ++i;
+        debtAmounts = LiquidateDexDebtAmounts.read(_data, i);
+        i += debtAmounts.l();
+      }
+      final var colPerUnitDebt = getInt128LE(_data, i);
+      i += 16;
+      final LiquidateDexColAmounts colAmounts;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        colAmounts = null;
+        ++i;
+      } else {
+        ++i;
+        colAmounts = LiquidateDexColAmounts.read(_data, i);
+        i += colAmounts.l();
+      }
+      final var absorb = _data[i] == 1;
+      ++i;
+      final TransferType transferType;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        transferType = null;
+        ++i;
+      } else {
+        ++i;
+        transferType = TransferType.read(_data, i);
+        i += transferType.l();
+      }
+      final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
+      return new LiquidateDexIxData(discriminator,
+                                    debtAmt,
+                                    debtAmounts,
+                                    colPerUnitDebt,
+                                    colAmounts,
+                                    absorb,
+                                    transferType,
+                                    remainingAccountsIndices);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, debtAmt);
+      i += 8;
+      i += SerDeUtil.writeOptional(1, debtAmounts, _data, i);
+      putInt128LE(_data, i, colPerUnitDebt);
+      i += 16;
+      i += SerDeUtil.writeOptional(1, colAmounts, _data, i);
+      _data[i] = (byte) (absorb ? 1 : 0);
+      ++i;
+      i += SerDeUtil.writeOptional(1, transferType, _data, i);
+      i += SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8
+           + (debtAmounts == null ? 1 : (1 + debtAmounts.l()))
+           + 16
+           + (colAmounts == null ? 1 : (1 + colAmounts.l()))
+           + 1
+           + (transferType == null ? 1 : (1 + transferType.l()))
+           + SerDeUtil.lenVector(4, remainingAccountsIndices);
+    }
+  }
+
+  public static final Discriminator LIQUIDATE_PERFECT_DEX_DISCRIMINATOR = toDiscriminator(26, 113, 116, 50, 247, 131, 208, 5);
+
+  /// Typed vault perfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`
+  /// (`debt_perfect_amounts` = `None`).
+  /// - T3 (normal col, smart debt): supply `debt_amt` = DEX debt shares +
+  /// `debt_perfect_amounts` (pre-fund vault's borrow-DEX user token accounts).
+  /// - T4 (smart col + smart debt): supply all three.
+  /// 
+  /// Returns `(actual_debt, token0_debt, token1_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param signerTokenAccountKey _dev not required for T3/T4 (smart debt pays at DEX)
+  /// @param toTokenAccountKey _dev not required for T2/T4 (smart col withdraws at DEX)
+  /// @param vaultConfigKey _dev mut because this PDA signs CPIs to the DEX and liquidity programs
+  /// @param supplyTokenKey _dev not required for T2/T4
+  /// @param borrowTokenKey _dev not required for T3/T4
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  public static List<AccountMeta> liquidatePerfectDexKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                          final SolanaAccounts solanaAccounts,
+                                                          final PublicKey signerKey,
+                                                          final PublicKey signerTokenAccountKey,
+                                                          final PublicKey toKey,
+                                                          final PublicKey toTokenAccountKey,
+                                                          final PublicKey vaultConfigKey,
+                                                          final PublicKey vaultStateKey,
+                                                          final PublicKey supplyTokenKey,
+                                                          final PublicKey borrowTokenKey,
+                                                          final PublicKey oracleKey,
+                                                          final PublicKey newBranchKey,
+                                                          final PublicKey supplyTokenReservesLiquidityKey,
+                                                          final PublicKey borrowTokenReservesLiquidityKey,
+                                                          final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                          final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                          final PublicKey supplyRateModelKey,
+                                                          final PublicKey borrowRateModelKey,
+                                                          final PublicKey supplyTokenClaimAccountKey,
+                                                          final PublicKey liquidityKey,
+                                                          final PublicKey liquidityProgramKey,
+                                                          final PublicKey vaultSupplyTokenAccountKey,
+                                                          final PublicKey vaultBorrowTokenAccountKey,
+                                                          final PublicKey supplyTokenProgramKey,
+                                                          final PublicKey borrowTokenProgramKey,
+                                                          final PublicKey oracleProgramKey,
+                                                          final PublicKey supplyDexDexKey,
+                                                          final PublicKey supplyDexDexPositionKey,
+                                                          final PublicKey supplyDexDexUserToken0AccountKey,
+                                                          final PublicKey supplyDexDexUserToken1AccountKey,
+                                                          final PublicKey supplyDexDexToken0Key,
+                                                          final PublicKey supplyDexDexToken1Key,
+                                                          final PublicKey supplyDexDexToken0ReserveKey,
+                                                          final PublicKey supplyDexDexToken1ReserveKey,
+                                                          final PublicKey supplyDexDexToken0RateModelKey,
+                                                          final PublicKey supplyDexDexToken1RateModelKey,
+                                                          final PublicKey supplyDexDexToken0VaultKey,
+                                                          final PublicKey supplyDexDexToken1VaultKey,
+                                                          final PublicKey supplyDexSupplyPosToken0Key,
+                                                          final PublicKey supplyDexSupplyPosToken1Key,
+                                                          final PublicKey supplyDexBorrowPosToken0Key,
+                                                          final PublicKey supplyDexBorrowPosToken1Key,
+                                                          final PublicKey supplyDexDexToken0ProgramKey,
+                                                          final PublicKey supplyDexDexToken1ProgramKey,
+                                                          final PublicKey borrowDexDexKey,
+                                                          final PublicKey borrowDexDexPositionKey,
+                                                          final PublicKey borrowDexDexUserToken0AccountKey,
+                                                          final PublicKey borrowDexDexUserToken1AccountKey,
+                                                          final PublicKey borrowDexDexToken0Key,
+                                                          final PublicKey borrowDexDexToken1Key,
+                                                          final PublicKey borrowDexDexToken0ReserveKey,
+                                                          final PublicKey borrowDexDexToken1ReserveKey,
+                                                          final PublicKey borrowDexDexToken0RateModelKey,
+                                                          final PublicKey borrowDexDexToken1RateModelKey,
+                                                          final PublicKey borrowDexDexToken0VaultKey,
+                                                          final PublicKey borrowDexDexToken1VaultKey,
+                                                          final PublicKey borrowDexSupplyPosToken0Key,
+                                                          final PublicKey borrowDexSupplyPosToken1Key,
+                                                          final PublicKey borrowDexBorrowPosToken0Key,
+                                                          final PublicKey borrowDexBorrowPosToken1Key,
+                                                          final PublicKey borrowDexDexToken0ProgramKey,
+                                                          final PublicKey borrowDexDexToken1ProgramKey,
+                                                          final PublicKey dexProgramKey,
+                                                          final PublicKey dexOracleProgramKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(requireNonNullElse(signerTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(toKey),
+      createWrite(requireNonNullElse(toTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(requireNonNullElse(supplyTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(oracleKey),
+      createWrite(newBranchKey),
+      createWrite(requireNonNullElse(supplyTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultSupplyPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyTokenClaimAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(requireNonNullElse(vaultSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(oracleProgramKey),
+      createWrite(requireNonNullElse(supplyDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(dexProgramKey),
+      createRead(requireNonNullElse(dexOracleProgramKey, invokedVaultsProgramMeta.publicKey()))
+    );
+  }
+
+  /// Typed vault perfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`
+  /// (`debt_perfect_amounts` = `None`).
+  /// - T3 (normal col, smart debt): supply `debt_amt` = DEX debt shares +
+  /// `debt_perfect_amounts` (pre-fund vault's borrow-DEX user token accounts).
+  /// - T4 (smart col + smart debt): supply all three.
+  /// 
+  /// Returns `(actual_debt, token0_debt, token1_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param signerTokenAccountKey _dev not required for T3/T4 (smart debt pays at DEX)
+  /// @param toTokenAccountKey _dev not required for T2/T4 (smart col withdraws at DEX)
+  /// @param vaultConfigKey _dev mut because this PDA signs CPIs to the DEX and liquidity programs
+  /// @param supplyTokenKey _dev not required for T2/T4
+  /// @param borrowTokenKey _dev not required for T3/T4
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param debtAmt: u64
+  public static Instruction liquidatePerfectDex(final AccountMeta invokedVaultsProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
+                                                final PublicKey signerKey,
+                                                final PublicKey signerTokenAccountKey,
+                                                final PublicKey toKey,
+                                                final PublicKey toTokenAccountKey,
+                                                final PublicKey vaultConfigKey,
+                                                final PublicKey vaultStateKey,
+                                                final PublicKey supplyTokenKey,
+                                                final PublicKey borrowTokenKey,
+                                                final PublicKey oracleKey,
+                                                final PublicKey newBranchKey,
+                                                final PublicKey supplyTokenReservesLiquidityKey,
+                                                final PublicKey borrowTokenReservesLiquidityKey,
+                                                final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                final PublicKey supplyRateModelKey,
+                                                final PublicKey borrowRateModelKey,
+                                                final PublicKey supplyTokenClaimAccountKey,
+                                                final PublicKey liquidityKey,
+                                                final PublicKey liquidityProgramKey,
+                                                final PublicKey vaultSupplyTokenAccountKey,
+                                                final PublicKey vaultBorrowTokenAccountKey,
+                                                final PublicKey supplyTokenProgramKey,
+                                                final PublicKey borrowTokenProgramKey,
+                                                final PublicKey oracleProgramKey,
+                                                final PublicKey supplyDexDexKey,
+                                                final PublicKey supplyDexDexPositionKey,
+                                                final PublicKey supplyDexDexUserToken0AccountKey,
+                                                final PublicKey supplyDexDexUserToken1AccountKey,
+                                                final PublicKey supplyDexDexToken0Key,
+                                                final PublicKey supplyDexDexToken1Key,
+                                                final PublicKey supplyDexDexToken0ReserveKey,
+                                                final PublicKey supplyDexDexToken1ReserveKey,
+                                                final PublicKey supplyDexDexToken0RateModelKey,
+                                                final PublicKey supplyDexDexToken1RateModelKey,
+                                                final PublicKey supplyDexDexToken0VaultKey,
+                                                final PublicKey supplyDexDexToken1VaultKey,
+                                                final PublicKey supplyDexSupplyPosToken0Key,
+                                                final PublicKey supplyDexSupplyPosToken1Key,
+                                                final PublicKey supplyDexBorrowPosToken0Key,
+                                                final PublicKey supplyDexBorrowPosToken1Key,
+                                                final PublicKey supplyDexDexToken0ProgramKey,
+                                                final PublicKey supplyDexDexToken1ProgramKey,
+                                                final PublicKey borrowDexDexKey,
+                                                final PublicKey borrowDexDexPositionKey,
+                                                final PublicKey borrowDexDexUserToken0AccountKey,
+                                                final PublicKey borrowDexDexUserToken1AccountKey,
+                                                final PublicKey borrowDexDexToken0Key,
+                                                final PublicKey borrowDexDexToken1Key,
+                                                final PublicKey borrowDexDexToken0ReserveKey,
+                                                final PublicKey borrowDexDexToken1ReserveKey,
+                                                final PublicKey borrowDexDexToken0RateModelKey,
+                                                final PublicKey borrowDexDexToken1RateModelKey,
+                                                final PublicKey borrowDexDexToken0VaultKey,
+                                                final PublicKey borrowDexDexToken1VaultKey,
+                                                final PublicKey borrowDexSupplyPosToken0Key,
+                                                final PublicKey borrowDexSupplyPosToken1Key,
+                                                final PublicKey borrowDexBorrowPosToken0Key,
+                                                final PublicKey borrowDexBorrowPosToken1Key,
+                                                final PublicKey borrowDexDexToken0ProgramKey,
+                                                final PublicKey borrowDexDexToken1ProgramKey,
+                                                final PublicKey dexProgramKey,
+                                                final PublicKey dexOracleProgramKey,
+                                                final long debtAmt,
+                                                final LiquidatePerfectDexDebtAmounts debtPerfectAmounts,
+                                                final BigInteger colPerUnitDebt,
+                                                final LiquidateDexColAmounts colAmounts,
+                                                final boolean absorb,
+                                                final TransferType transferType,
+                                                final byte[] remainingAccountsIndices) {
+    final var keys = liquidatePerfectDexKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      signerKey,
+      signerTokenAccountKey,
+      toKey,
+      toTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      oracleKey,
+      newBranchKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      supplyTokenClaimAccountKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey,
+      oracleProgramKey,
+      supplyDexDexKey,
+      supplyDexDexPositionKey,
+      supplyDexDexUserToken0AccountKey,
+      supplyDexDexUserToken1AccountKey,
+      supplyDexDexToken0Key,
+      supplyDexDexToken1Key,
+      supplyDexDexToken0ReserveKey,
+      supplyDexDexToken1ReserveKey,
+      supplyDexDexToken0RateModelKey,
+      supplyDexDexToken1RateModelKey,
+      supplyDexDexToken0VaultKey,
+      supplyDexDexToken1VaultKey,
+      supplyDexSupplyPosToken0Key,
+      supplyDexSupplyPosToken1Key,
+      supplyDexBorrowPosToken0Key,
+      supplyDexBorrowPosToken1Key,
+      supplyDexDexToken0ProgramKey,
+      supplyDexDexToken1ProgramKey,
+      borrowDexDexKey,
+      borrowDexDexPositionKey,
+      borrowDexDexUserToken0AccountKey,
+      borrowDexDexUserToken1AccountKey,
+      borrowDexDexToken0Key,
+      borrowDexDexToken1Key,
+      borrowDexDexToken0ReserveKey,
+      borrowDexDexToken1ReserveKey,
+      borrowDexDexToken0RateModelKey,
+      borrowDexDexToken1RateModelKey,
+      borrowDexDexToken0VaultKey,
+      borrowDexDexToken1VaultKey,
+      borrowDexSupplyPosToken0Key,
+      borrowDexSupplyPosToken1Key,
+      borrowDexBorrowPosToken0Key,
+      borrowDexBorrowPosToken1Key,
+      borrowDexDexToken0ProgramKey,
+      borrowDexDexToken1ProgramKey,
+      dexProgramKey,
+      dexOracleProgramKey
+    );
+    return liquidatePerfectDex(
+      invokedVaultsProgramMeta,
+      keys,
+      debtAmt,
+      debtPerfectAmounts,
+      colPerUnitDebt,
+      colAmounts,
+      absorb,
+      transferType,
+      remainingAccountsIndices
+    );
+  }
+
+  /// Typed vault perfect liquidation (T2 / T3 / T4).
+  /// 
+  /// - T2 (smart col, normal debt): supply `debt_amt` + `col_amounts`
+  /// (`debt_perfect_amounts` = `None`).
+  /// - T3 (normal col, smart debt): supply `debt_amt` = DEX debt shares +
+  /// `debt_perfect_amounts` (pre-fund vault's borrow-DEX user token accounts).
+  /// - T4 (smart col + smart debt): supply all three.
+  /// 
+  /// Returns `(actual_debt, token0_debt, token1_debt, actual_col, token0_col, token1_col)`.
+  ///
+  /// @param debtAmt: u64
+  public static Instruction liquidatePerfectDex(final AccountMeta invokedVaultsProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long debtAmt,
+                                                final LiquidatePerfectDexDebtAmounts debtPerfectAmounts,
+                                                final BigInteger colPerUnitDebt,
+                                                final LiquidateDexColAmounts colAmounts,
+                                                final boolean absorb,
+                                                final TransferType transferType,
+                                                final byte[] remainingAccountsIndices) {
+    final byte[] _data = new byte[
+    33
+    + (debtPerfectAmounts == null ? 1 : (1 + debtPerfectAmounts.l()))
+    + (colAmounts == null ? 1 : (1 + colAmounts.l()))
+    + (transferType == null ? 1 : (1 + transferType.l())) + SerDeUtil.lenVector(4, remainingAccountsIndices)
+    ];
+    int i = LIQUIDATE_PERFECT_DEX_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, debtAmt);
+    i += 8;
+    i += SerDeUtil.writeOptional(1, debtPerfectAmounts, _data, i);
+    putInt128LE(_data, i, colPerUnitDebt);
+    i += 16;
+    i += SerDeUtil.writeOptional(1, colAmounts, _data, i);
+    _data[i] = (byte) (absorb ? 1 : 0);
+    ++i;
+    i += SerDeUtil.writeOptional(1, transferType, _data, i);
+    SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  /// @param debtAmt: u64
+  public record LiquidatePerfectDexIxData(Discriminator discriminator,
+                                          long debtAmt,
+                                          LiquidatePerfectDexDebtAmounts debtPerfectAmounts,
+                                          BigInteger colPerUnitDebt,
+                                          LiquidateDexColAmounts colAmounts,
+                                          boolean absorb,
+                                          TransferType transferType,
+                                          byte[] remainingAccountsIndices) implements SerDe {  
+
+    public static LiquidatePerfectDexIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int DEBT_AMT_OFFSET = 8;
+    public static final int DEBT_PERFECT_AMOUNTS_OFFSET = 17;
+
+    public static LiquidatePerfectDexIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var debtAmt = getInt64LE(_data, i);
+      i += 8;
+      final LiquidatePerfectDexDebtAmounts debtPerfectAmounts;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        debtPerfectAmounts = null;
+        ++i;
+      } else {
+        ++i;
+        debtPerfectAmounts = LiquidatePerfectDexDebtAmounts.read(_data, i);
+        i += debtPerfectAmounts.l();
+      }
+      final var colPerUnitDebt = getInt128LE(_data, i);
+      i += 16;
+      final LiquidateDexColAmounts colAmounts;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        colAmounts = null;
+        ++i;
+      } else {
+        ++i;
+        colAmounts = LiquidateDexColAmounts.read(_data, i);
+        i += colAmounts.l();
+      }
+      final var absorb = _data[i] == 1;
+      ++i;
+      final TransferType transferType;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        transferType = null;
+        ++i;
+      } else {
+        ++i;
+        transferType = TransferType.read(_data, i);
+        i += transferType.l();
+      }
+      final var remainingAccountsIndices = SerDeUtil.readbyteVector(4, _data, i);
+      return new LiquidatePerfectDexIxData(discriminator,
+                                           debtAmt,
+                                           debtPerfectAmounts,
+                                           colPerUnitDebt,
+                                           colAmounts,
+                                           absorb,
+                                           transferType,
+                                           remainingAccountsIndices);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, debtAmt);
+      i += 8;
+      i += SerDeUtil.writeOptional(1, debtPerfectAmounts, _data, i);
+      putInt128LE(_data, i, colPerUnitDebt);
+      i += 16;
+      i += SerDeUtil.writeOptional(1, colAmounts, _data, i);
+      _data[i] = (byte) (absorb ? 1 : 0);
+      ++i;
+      i += SerDeUtil.writeOptional(1, transferType, _data, i);
+      i += SerDeUtil.writeVector(4, remainingAccountsIndices, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8
+           + (debtPerfectAmounts == null ? 1 : (1 + debtPerfectAmounts.l()))
+           + 16
+           + (colAmounts == null ? 1 : (1 + colAmounts.l()))
+           + 1
+           + (transferType == null ? 1 : (1 + transferType.l()))
+           + SerDeUtil.lenVector(4, remainingAccountsIndices);
+    }
+  }
+
   public static final Discriminator OPERATE_DISCRIMINATOR = toDiscriminator(217, 106, 208, 99, 116, 151, 42, 135);
 
   /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
@@ -1103,8 +2096,8 @@ public final class VaultsProgram {
                                               final PublicKey borrowTokenProgramKey) {
     return List.of(
       createWritableSigner(signerKey),
-      createWrite(signerSupplyTokenAccountKey),
-      createWrite(signerBorrowTokenAccountKey),
+      createWrite(requireNonNullElse(signerSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(signerBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
       createRead(requireNonNullElse(recipientKey, invokedVaultsProgramMeta.publicKey())),
       createWrite(requireNonNullElse(recipientBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
       createWrite(requireNonNullElse(recipientSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
@@ -1135,7 +2128,7 @@ public final class VaultsProgram {
       createRead(oracleProgramKey),
       createRead(supplyTokenProgramKey),
       createRead(borrowTokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey())),
       createRead(solanaAccounts.systemProgram())
     );
   }
@@ -1315,7 +2308,8 @@ public final class VaultsProgram {
   /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
   ///                       _dev verification inside instruction logic
   /// @param vaultStateKey _dev verification inside instruction logic
-  public static List<AccountMeta> rebalanceKeys(final SolanaAccounts solanaAccounts,
+  public static List<AccountMeta> rebalanceKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
                                                 final PublicKey rebalancerKey,
                                                 final PublicKey rebalancerSupplyTokenAccountKey,
                                                 final PublicKey rebalancerBorrowTokenAccountKey,
@@ -1356,7 +2350,7 @@ public final class VaultsProgram {
       createRead(solanaAccounts.systemProgram()),
       createRead(supplyTokenProgramKey),
       createRead(borrowTokenProgramKey),
-      createRead(solanaAccounts.associatedTokenAccountProgram())
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey()))
     );
   }
 
@@ -1385,6 +2379,7 @@ public final class VaultsProgram {
                                       final PublicKey supplyTokenProgramKey,
                                       final PublicKey borrowTokenProgramKey) {
     final var keys = rebalanceKeys(
+      invokedVaultsProgramMeta,
       solanaAccounts,
       rebalancerKey,
       rebalancerSupplyTokenAccountKey,
@@ -1412,6 +2407,1017 @@ public final class VaultsProgram {
   public static Instruction rebalance(final AccountMeta invokedVaultsProgramMeta,
                                       final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, REBALANCE_DISCRIMINATOR);
+  }
+
+  public static final Discriminator REBALANCE_DEX_DISCRIMINATOR = toDiscriminator(71, 178, 19, 146, 254, 47, 109, 126);
+
+  /// @param rebalancerSupplyTokenAccountKey _dev not required for T2/T4 (smart collateral)
+  /// @param rebalancerBorrowTokenAccountKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  public static List<AccountMeta> rebalanceDexKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                   final SolanaAccounts solanaAccounts,
+                                                   final PublicKey rebalancerKey,
+                                                   final PublicKey rebalancerSupplyTokenAccountKey,
+                                                   final PublicKey rebalancerBorrowTokenAccountKey,
+                                                   final PublicKey vaultConfigKey,
+                                                   final PublicKey vaultStateKey,
+                                                   final PublicKey supplyTokenKey,
+                                                   final PublicKey borrowTokenKey,
+                                                   final PublicKey supplyTokenReservesLiquidityKey,
+                                                   final PublicKey borrowTokenReservesLiquidityKey,
+                                                   final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                   final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                   final PublicKey supplyRateModelKey,
+                                                   final PublicKey borrowRateModelKey,
+                                                   final PublicKey liquidityKey,
+                                                   final PublicKey liquidityProgramKey,
+                                                   final PublicKey vaultSupplyTokenAccountKey,
+                                                   final PublicKey vaultBorrowTokenAccountKey,
+                                                   final PublicKey supplyTokenProgramKey,
+                                                   final PublicKey borrowTokenProgramKey,
+                                                   final PublicKey dexProgramKey,
+                                                   final PublicKey dexOracleProgramKey,
+                                                   final PublicKey supplyDexDexKey,
+                                                   final PublicKey supplyDexDexPositionKey,
+                                                   final PublicKey supplyDexDexUserToken0AccountKey,
+                                                   final PublicKey supplyDexDexUserToken1AccountKey,
+                                                   final PublicKey supplyDexDexToken0Key,
+                                                   final PublicKey supplyDexDexToken1Key,
+                                                   final PublicKey supplyDexDexToken0ReserveKey,
+                                                   final PublicKey supplyDexDexToken1ReserveKey,
+                                                   final PublicKey supplyDexDexToken0RateModelKey,
+                                                   final PublicKey supplyDexDexToken1RateModelKey,
+                                                   final PublicKey supplyDexDexToken0VaultKey,
+                                                   final PublicKey supplyDexDexToken1VaultKey,
+                                                   final PublicKey supplyDexSupplyPosToken0Key,
+                                                   final PublicKey supplyDexSupplyPosToken1Key,
+                                                   final PublicKey supplyDexBorrowPosToken0Key,
+                                                   final PublicKey supplyDexBorrowPosToken1Key,
+                                                   final PublicKey supplyDexDexToken0ProgramKey,
+                                                   final PublicKey supplyDexDexToken1ProgramKey,
+                                                   final PublicKey borrowDexDexKey,
+                                                   final PublicKey borrowDexDexPositionKey,
+                                                   final PublicKey borrowDexDexUserToken0AccountKey,
+                                                   final PublicKey borrowDexDexUserToken1AccountKey,
+                                                   final PublicKey borrowDexDexToken0Key,
+                                                   final PublicKey borrowDexDexToken1Key,
+                                                   final PublicKey borrowDexDexToken0ReserveKey,
+                                                   final PublicKey borrowDexDexToken1ReserveKey,
+                                                   final PublicKey borrowDexDexToken0RateModelKey,
+                                                   final PublicKey borrowDexDexToken1RateModelKey,
+                                                   final PublicKey borrowDexDexToken0VaultKey,
+                                                   final PublicKey borrowDexDexToken1VaultKey,
+                                                   final PublicKey borrowDexSupplyPosToken0Key,
+                                                   final PublicKey borrowDexSupplyPosToken1Key,
+                                                   final PublicKey borrowDexBorrowPosToken0Key,
+                                                   final PublicKey borrowDexBorrowPosToken1Key,
+                                                   final PublicKey borrowDexDexToken0ProgramKey,
+                                                   final PublicKey borrowDexDexToken1ProgramKey) {
+    return List.of(
+      createWritableSigner(rebalancerKey),
+      createWrite(requireNonNullElse(rebalancerSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(rebalancerBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(requireNonNullElse(supplyTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultSupplyPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(requireNonNullElse(vaultSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(requireNonNullElse(supplyTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey())),
+      createRead(dexProgramKey),
+      createRead(requireNonNullElse(dexOracleProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey()))
+    );
+  }
+
+  /// @param rebalancerSupplyTokenAccountKey _dev not required for T2/T4 (smart collateral)
+  /// @param rebalancerBorrowTokenAccountKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  public static Instruction rebalanceDex(final AccountMeta invokedVaultsProgramMeta,
+                                         final SolanaAccounts solanaAccounts,
+                                         final PublicKey rebalancerKey,
+                                         final PublicKey rebalancerSupplyTokenAccountKey,
+                                         final PublicKey rebalancerBorrowTokenAccountKey,
+                                         final PublicKey vaultConfigKey,
+                                         final PublicKey vaultStateKey,
+                                         final PublicKey supplyTokenKey,
+                                         final PublicKey borrowTokenKey,
+                                         final PublicKey supplyTokenReservesLiquidityKey,
+                                         final PublicKey borrowTokenReservesLiquidityKey,
+                                         final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                         final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                         final PublicKey supplyRateModelKey,
+                                         final PublicKey borrowRateModelKey,
+                                         final PublicKey liquidityKey,
+                                         final PublicKey liquidityProgramKey,
+                                         final PublicKey vaultSupplyTokenAccountKey,
+                                         final PublicKey vaultBorrowTokenAccountKey,
+                                         final PublicKey supplyTokenProgramKey,
+                                         final PublicKey borrowTokenProgramKey,
+                                         final PublicKey dexProgramKey,
+                                         final PublicKey dexOracleProgramKey,
+                                         final PublicKey supplyDexDexKey,
+                                         final PublicKey supplyDexDexPositionKey,
+                                         final PublicKey supplyDexDexUserToken0AccountKey,
+                                         final PublicKey supplyDexDexUserToken1AccountKey,
+                                         final PublicKey supplyDexDexToken0Key,
+                                         final PublicKey supplyDexDexToken1Key,
+                                         final PublicKey supplyDexDexToken0ReserveKey,
+                                         final PublicKey supplyDexDexToken1ReserveKey,
+                                         final PublicKey supplyDexDexToken0RateModelKey,
+                                         final PublicKey supplyDexDexToken1RateModelKey,
+                                         final PublicKey supplyDexDexToken0VaultKey,
+                                         final PublicKey supplyDexDexToken1VaultKey,
+                                         final PublicKey supplyDexSupplyPosToken0Key,
+                                         final PublicKey supplyDexSupplyPosToken1Key,
+                                         final PublicKey supplyDexBorrowPosToken0Key,
+                                         final PublicKey supplyDexBorrowPosToken1Key,
+                                         final PublicKey supplyDexDexToken0ProgramKey,
+                                         final PublicKey supplyDexDexToken1ProgramKey,
+                                         final PublicKey borrowDexDexKey,
+                                         final PublicKey borrowDexDexPositionKey,
+                                         final PublicKey borrowDexDexUserToken0AccountKey,
+                                         final PublicKey borrowDexDexUserToken1AccountKey,
+                                         final PublicKey borrowDexDexToken0Key,
+                                         final PublicKey borrowDexDexToken1Key,
+                                         final PublicKey borrowDexDexToken0ReserveKey,
+                                         final PublicKey borrowDexDexToken1ReserveKey,
+                                         final PublicKey borrowDexDexToken0RateModelKey,
+                                         final PublicKey borrowDexDexToken1RateModelKey,
+                                         final PublicKey borrowDexDexToken0VaultKey,
+                                         final PublicKey borrowDexDexToken1VaultKey,
+                                         final PublicKey borrowDexSupplyPosToken0Key,
+                                         final PublicKey borrowDexSupplyPosToken1Key,
+                                         final PublicKey borrowDexBorrowPosToken0Key,
+                                         final PublicKey borrowDexBorrowPosToken1Key,
+                                         final PublicKey borrowDexDexToken0ProgramKey,
+                                         final PublicKey borrowDexDexToken1ProgramKey,
+                                         final BigInteger colToken0MinMax,
+                                         final BigInteger colToken1MinMax,
+                                         final BigInteger debtToken0MinMax,
+                                         final BigInteger debtToken1MinMax) {
+    final var keys = rebalanceDexKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      rebalancerKey,
+      rebalancerSupplyTokenAccountKey,
+      rebalancerBorrowTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey,
+      dexProgramKey,
+      dexOracleProgramKey,
+      supplyDexDexKey,
+      supplyDexDexPositionKey,
+      supplyDexDexUserToken0AccountKey,
+      supplyDexDexUserToken1AccountKey,
+      supplyDexDexToken0Key,
+      supplyDexDexToken1Key,
+      supplyDexDexToken0ReserveKey,
+      supplyDexDexToken1ReserveKey,
+      supplyDexDexToken0RateModelKey,
+      supplyDexDexToken1RateModelKey,
+      supplyDexDexToken0VaultKey,
+      supplyDexDexToken1VaultKey,
+      supplyDexSupplyPosToken0Key,
+      supplyDexSupplyPosToken1Key,
+      supplyDexBorrowPosToken0Key,
+      supplyDexBorrowPosToken1Key,
+      supplyDexDexToken0ProgramKey,
+      supplyDexDexToken1ProgramKey,
+      borrowDexDexKey,
+      borrowDexDexPositionKey,
+      borrowDexDexUserToken0AccountKey,
+      borrowDexDexUserToken1AccountKey,
+      borrowDexDexToken0Key,
+      borrowDexDexToken1Key,
+      borrowDexDexToken0ReserveKey,
+      borrowDexDexToken1ReserveKey,
+      borrowDexDexToken0RateModelKey,
+      borrowDexDexToken1RateModelKey,
+      borrowDexDexToken0VaultKey,
+      borrowDexDexToken1VaultKey,
+      borrowDexSupplyPosToken0Key,
+      borrowDexSupplyPosToken1Key,
+      borrowDexBorrowPosToken0Key,
+      borrowDexBorrowPosToken1Key,
+      borrowDexDexToken0ProgramKey,
+      borrowDexDexToken1ProgramKey
+    );
+    return rebalanceDex(
+      invokedVaultsProgramMeta,
+      keys,
+      colToken0MinMax,
+      colToken1MinMax,
+      debtToken0MinMax,
+      debtToken1MinMax
+    );
+  }
+
+  public static Instruction rebalanceDex(final AccountMeta invokedVaultsProgramMeta,
+                                         final List<AccountMeta> keys,
+                                         final BigInteger colToken0MinMax,
+                                         final BigInteger colToken1MinMax,
+                                         final BigInteger debtToken0MinMax,
+                                         final BigInteger debtToken1MinMax) {
+    final byte[] _data = new byte[72];
+    int i = REBALANCE_DEX_DISCRIMINATOR.write(_data, 0);
+    putInt128LE(_data, i, colToken0MinMax);
+    i += 16;
+    putInt128LE(_data, i, colToken1MinMax);
+    i += 16;
+    putInt128LE(_data, i, debtToken0MinMax);
+    i += 16;
+    putInt128LE(_data, i, debtToken1MinMax);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  public record RebalanceDexIxData(Discriminator discriminator,
+                                   BigInteger colToken0MinMax,
+                                   BigInteger colToken1MinMax,
+                                   BigInteger debtToken0MinMax,
+                                   BigInteger debtToken1MinMax) implements SerDe {  
+
+    public static RebalanceDexIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 72;
+
+    public static final int COL_TOKEN_0_MIN_MAX_OFFSET = 8;
+    public static final int COL_TOKEN_1_MIN_MAX_OFFSET = 24;
+    public static final int DEBT_TOKEN_0_MIN_MAX_OFFSET = 40;
+    public static final int DEBT_TOKEN_1_MIN_MAX_OFFSET = 56;
+
+    public static RebalanceDexIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var colToken0MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var colToken1MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var debtToken0MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var debtToken1MinMax = getInt128LE(_data, i);
+      return new RebalanceDexIxData(discriminator,
+                                    colToken0MinMax,
+                                    colToken1MinMax,
+                                    debtToken0MinMax,
+                                    debtToken1MinMax);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt128LE(_data, i, colToken0MinMax);
+      i += 16;
+      putInt128LE(_data, i, colToken1MinMax);
+      i += 16;
+      putInt128LE(_data, i, debtToken0MinMax);
+      i += 16;
+      putInt128LE(_data, i, debtToken1MinMax);
+      i += 16;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator REBALANCE_DEX_WITH_AMOUNTS_DISCRIMINATOR = toDiscriminator(240, 127, 38, 166, 99, 125, 51, 124);
+
+  /// Rebalance a typed (T2-T4 / DEX) vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction is
+  /// driven by the imbalance sign; the `*_min_max` slippage bounds behave as in
+  /// `Self::rebalance_dex`.
+  ///
+  /// @param rebalancerSupplyTokenAccountKey _dev not required for T2/T4 (smart collateral)
+  /// @param rebalancerBorrowTokenAccountKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  public static List<AccountMeta> rebalanceDexWithAmountsKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                              final SolanaAccounts solanaAccounts,
+                                                              final PublicKey rebalancerKey,
+                                                              final PublicKey rebalancerSupplyTokenAccountKey,
+                                                              final PublicKey rebalancerBorrowTokenAccountKey,
+                                                              final PublicKey vaultConfigKey,
+                                                              final PublicKey vaultStateKey,
+                                                              final PublicKey supplyTokenKey,
+                                                              final PublicKey borrowTokenKey,
+                                                              final PublicKey supplyTokenReservesLiquidityKey,
+                                                              final PublicKey borrowTokenReservesLiquidityKey,
+                                                              final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                              final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                              final PublicKey supplyRateModelKey,
+                                                              final PublicKey borrowRateModelKey,
+                                                              final PublicKey liquidityKey,
+                                                              final PublicKey liquidityProgramKey,
+                                                              final PublicKey vaultSupplyTokenAccountKey,
+                                                              final PublicKey vaultBorrowTokenAccountKey,
+                                                              final PublicKey supplyTokenProgramKey,
+                                                              final PublicKey borrowTokenProgramKey,
+                                                              final PublicKey dexProgramKey,
+                                                              final PublicKey dexOracleProgramKey,
+                                                              final PublicKey supplyDexDexKey,
+                                                              final PublicKey supplyDexDexPositionKey,
+                                                              final PublicKey supplyDexDexUserToken0AccountKey,
+                                                              final PublicKey supplyDexDexUserToken1AccountKey,
+                                                              final PublicKey supplyDexDexToken0Key,
+                                                              final PublicKey supplyDexDexToken1Key,
+                                                              final PublicKey supplyDexDexToken0ReserveKey,
+                                                              final PublicKey supplyDexDexToken1ReserveKey,
+                                                              final PublicKey supplyDexDexToken0RateModelKey,
+                                                              final PublicKey supplyDexDexToken1RateModelKey,
+                                                              final PublicKey supplyDexDexToken0VaultKey,
+                                                              final PublicKey supplyDexDexToken1VaultKey,
+                                                              final PublicKey supplyDexSupplyPosToken0Key,
+                                                              final PublicKey supplyDexSupplyPosToken1Key,
+                                                              final PublicKey supplyDexBorrowPosToken0Key,
+                                                              final PublicKey supplyDexBorrowPosToken1Key,
+                                                              final PublicKey supplyDexDexToken0ProgramKey,
+                                                              final PublicKey supplyDexDexToken1ProgramKey,
+                                                              final PublicKey borrowDexDexKey,
+                                                              final PublicKey borrowDexDexPositionKey,
+                                                              final PublicKey borrowDexDexUserToken0AccountKey,
+                                                              final PublicKey borrowDexDexUserToken1AccountKey,
+                                                              final PublicKey borrowDexDexToken0Key,
+                                                              final PublicKey borrowDexDexToken1Key,
+                                                              final PublicKey borrowDexDexToken0ReserveKey,
+                                                              final PublicKey borrowDexDexToken1ReserveKey,
+                                                              final PublicKey borrowDexDexToken0RateModelKey,
+                                                              final PublicKey borrowDexDexToken1RateModelKey,
+                                                              final PublicKey borrowDexDexToken0VaultKey,
+                                                              final PublicKey borrowDexDexToken1VaultKey,
+                                                              final PublicKey borrowDexSupplyPosToken0Key,
+                                                              final PublicKey borrowDexSupplyPosToken1Key,
+                                                              final PublicKey borrowDexBorrowPosToken0Key,
+                                                              final PublicKey borrowDexBorrowPosToken1Key,
+                                                              final PublicKey borrowDexDexToken0ProgramKey,
+                                                              final PublicKey borrowDexDexToken1ProgramKey) {
+    return List.of(
+      createWritableSigner(rebalancerKey),
+      createWrite(requireNonNullElse(rebalancerSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(rebalancerBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(requireNonNullElse(supplyTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowTokenReservesLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultSupplyPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowPositionOnLiquidityKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowRateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(requireNonNullElse(vaultSupplyTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(vaultBorrowTokenAccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(requireNonNullElse(supplyTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowTokenProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey())),
+      createRead(dexProgramKey),
+      createRead(requireNonNullElse(dexOracleProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(supplyDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(supplyDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexPositionKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken0AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexUserToken1AccountKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1ReserveKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1RateModelKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken0VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexDexToken1VaultKey, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexSupplyPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken0Key, invokedVaultsProgramMeta.publicKey())),
+      createWrite(requireNonNullElse(borrowDexBorrowPosToken1Key, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken0ProgramKey, invokedVaultsProgramMeta.publicKey())),
+      createRead(requireNonNullElse(borrowDexDexToken1ProgramKey, invokedVaultsProgramMeta.publicKey()))
+    );
+  }
+
+  /// Rebalance a typed (T2-T4 / DEX) vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction is
+  /// driven by the imbalance sign; the `*_min_max` slippage bounds behave as in
+  /// `Self::rebalance_dex`.
+  ///
+  /// @param rebalancerSupplyTokenAccountKey _dev not required for T2/T4 (smart collateral)
+  /// @param rebalancerBorrowTokenAccountKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyTokenReservesLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param borrowTokenReservesLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param vaultSupplyPositionOnLiquidityKey _dev not required for T2/T4 (smart collateral)
+  /// @param vaultBorrowPositionOnLiquidityKey _dev not required for T3/T4 (smart debt)
+  /// @param supplyDexDexUserToken0AccountKey Signer's token0 account
+  /// @param supplyDexDexUserToken1AccountKey Signer's token1 account
+  /// @param supplyDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param supplyDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param supplyDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param supplyDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param supplyDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param supplyDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param borrowDexDexUserToken0AccountKey Signer's token0 account
+  /// @param borrowDexDexUserToken1AccountKey Signer's token1 account
+  /// @param borrowDexDexToken0VaultKey _dev this is Liquidity layer vault token account for token0
+  /// @param borrowDexDexToken1VaultKey _dev this is Liquidity layer vault token account for token1
+  /// @param borrowDexSupplyPosToken0Key This pool's own LL **supply** position for token0 (smart-col side).
+  /// @param borrowDexSupplyPosToken1Key This pool's own LL **supply** position for token1 (smart-col side).
+  /// @param borrowDexBorrowPosToken0Key This pool's own LL **borrow** position for token0 (smart-debt side).
+  /// @param borrowDexBorrowPosToken1Key This pool's own LL **borrow** position for token1 (smart-debt side).
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public static Instruction rebalanceDexWithAmounts(final AccountMeta invokedVaultsProgramMeta,
+                                                    final SolanaAccounts solanaAccounts,
+                                                    final PublicKey rebalancerKey,
+                                                    final PublicKey rebalancerSupplyTokenAccountKey,
+                                                    final PublicKey rebalancerBorrowTokenAccountKey,
+                                                    final PublicKey vaultConfigKey,
+                                                    final PublicKey vaultStateKey,
+                                                    final PublicKey supplyTokenKey,
+                                                    final PublicKey borrowTokenKey,
+                                                    final PublicKey supplyTokenReservesLiquidityKey,
+                                                    final PublicKey borrowTokenReservesLiquidityKey,
+                                                    final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                    final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                    final PublicKey supplyRateModelKey,
+                                                    final PublicKey borrowRateModelKey,
+                                                    final PublicKey liquidityKey,
+                                                    final PublicKey liquidityProgramKey,
+                                                    final PublicKey vaultSupplyTokenAccountKey,
+                                                    final PublicKey vaultBorrowTokenAccountKey,
+                                                    final PublicKey supplyTokenProgramKey,
+                                                    final PublicKey borrowTokenProgramKey,
+                                                    final PublicKey dexProgramKey,
+                                                    final PublicKey dexOracleProgramKey,
+                                                    final PublicKey supplyDexDexKey,
+                                                    final PublicKey supplyDexDexPositionKey,
+                                                    final PublicKey supplyDexDexUserToken0AccountKey,
+                                                    final PublicKey supplyDexDexUserToken1AccountKey,
+                                                    final PublicKey supplyDexDexToken0Key,
+                                                    final PublicKey supplyDexDexToken1Key,
+                                                    final PublicKey supplyDexDexToken0ReserveKey,
+                                                    final PublicKey supplyDexDexToken1ReserveKey,
+                                                    final PublicKey supplyDexDexToken0RateModelKey,
+                                                    final PublicKey supplyDexDexToken1RateModelKey,
+                                                    final PublicKey supplyDexDexToken0VaultKey,
+                                                    final PublicKey supplyDexDexToken1VaultKey,
+                                                    final PublicKey supplyDexSupplyPosToken0Key,
+                                                    final PublicKey supplyDexSupplyPosToken1Key,
+                                                    final PublicKey supplyDexBorrowPosToken0Key,
+                                                    final PublicKey supplyDexBorrowPosToken1Key,
+                                                    final PublicKey supplyDexDexToken0ProgramKey,
+                                                    final PublicKey supplyDexDexToken1ProgramKey,
+                                                    final PublicKey borrowDexDexKey,
+                                                    final PublicKey borrowDexDexPositionKey,
+                                                    final PublicKey borrowDexDexUserToken0AccountKey,
+                                                    final PublicKey borrowDexDexUserToken1AccountKey,
+                                                    final PublicKey borrowDexDexToken0Key,
+                                                    final PublicKey borrowDexDexToken1Key,
+                                                    final PublicKey borrowDexDexToken0ReserveKey,
+                                                    final PublicKey borrowDexDexToken1ReserveKey,
+                                                    final PublicKey borrowDexDexToken0RateModelKey,
+                                                    final PublicKey borrowDexDexToken1RateModelKey,
+                                                    final PublicKey borrowDexDexToken0VaultKey,
+                                                    final PublicKey borrowDexDexToken1VaultKey,
+                                                    final PublicKey borrowDexSupplyPosToken0Key,
+                                                    final PublicKey borrowDexSupplyPosToken1Key,
+                                                    final PublicKey borrowDexBorrowPosToken0Key,
+                                                    final PublicKey borrowDexBorrowPosToken1Key,
+                                                    final PublicKey borrowDexDexToken0ProgramKey,
+                                                    final PublicKey borrowDexDexToken1ProgramKey,
+                                                    final BigInteger supplyAmount,
+                                                    final BigInteger borrowAmount,
+                                                    final BigInteger colToken0MinMax,
+                                                    final BigInteger colToken1MinMax,
+                                                    final BigInteger debtToken0MinMax,
+                                                    final BigInteger debtToken1MinMax) {
+    final var keys = rebalanceDexWithAmountsKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      rebalancerKey,
+      rebalancerSupplyTokenAccountKey,
+      rebalancerBorrowTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey,
+      dexProgramKey,
+      dexOracleProgramKey,
+      supplyDexDexKey,
+      supplyDexDexPositionKey,
+      supplyDexDexUserToken0AccountKey,
+      supplyDexDexUserToken1AccountKey,
+      supplyDexDexToken0Key,
+      supplyDexDexToken1Key,
+      supplyDexDexToken0ReserveKey,
+      supplyDexDexToken1ReserveKey,
+      supplyDexDexToken0RateModelKey,
+      supplyDexDexToken1RateModelKey,
+      supplyDexDexToken0VaultKey,
+      supplyDexDexToken1VaultKey,
+      supplyDexSupplyPosToken0Key,
+      supplyDexSupplyPosToken1Key,
+      supplyDexBorrowPosToken0Key,
+      supplyDexBorrowPosToken1Key,
+      supplyDexDexToken0ProgramKey,
+      supplyDexDexToken1ProgramKey,
+      borrowDexDexKey,
+      borrowDexDexPositionKey,
+      borrowDexDexUserToken0AccountKey,
+      borrowDexDexUserToken1AccountKey,
+      borrowDexDexToken0Key,
+      borrowDexDexToken1Key,
+      borrowDexDexToken0ReserveKey,
+      borrowDexDexToken1ReserveKey,
+      borrowDexDexToken0RateModelKey,
+      borrowDexDexToken1RateModelKey,
+      borrowDexDexToken0VaultKey,
+      borrowDexDexToken1VaultKey,
+      borrowDexSupplyPosToken0Key,
+      borrowDexSupplyPosToken1Key,
+      borrowDexBorrowPosToken0Key,
+      borrowDexBorrowPosToken1Key,
+      borrowDexDexToken0ProgramKey,
+      borrowDexDexToken1ProgramKey
+    );
+    return rebalanceDexWithAmounts(
+      invokedVaultsProgramMeta,
+      keys,
+      supplyAmount,
+      borrowAmount,
+      colToken0MinMax,
+      colToken1MinMax,
+      debtToken0MinMax,
+      debtToken1MinMax
+    );
+  }
+
+  /// Rebalance a typed (T2-T4 / DEX) vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction is
+  /// driven by the imbalance sign; the `*_min_max` slippage bounds behave as in
+  /// `Self::rebalance_dex`.
+  ///
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public static Instruction rebalanceDexWithAmounts(final AccountMeta invokedVaultsProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final BigInteger supplyAmount,
+                                                    final BigInteger borrowAmount,
+                                                    final BigInteger colToken0MinMax,
+                                                    final BigInteger colToken1MinMax,
+                                                    final BigInteger debtToken0MinMax,
+                                                    final BigInteger debtToken1MinMax) {
+    final byte[] _data = new byte[
+    72
+    + (supplyAmount == null ? 1 : 17)
+    + (borrowAmount == null ? 1 : 17)
+    ];
+    int i = REBALANCE_DEX_WITH_AMOUNTS_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.write128Optional(1, supplyAmount, _data, i);
+    i += SerDeUtil.write128Optional(1, borrowAmount, _data, i);
+    putInt128LE(_data, i, colToken0MinMax);
+    i += 16;
+    putInt128LE(_data, i, colToken1MinMax);
+    i += 16;
+    putInt128LE(_data, i, debtToken0MinMax);
+    i += 16;
+    putInt128LE(_data, i, debtToken1MinMax);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public record RebalanceDexWithAmountsIxData(Discriminator discriminator,
+                                              BigInteger supplyAmount,
+                                              BigInteger borrowAmount,
+                                              BigInteger colToken0MinMax,
+                                              BigInteger colToken1MinMax,
+                                              BigInteger debtToken0MinMax,
+                                              BigInteger debtToken1MinMax) implements SerDe {  
+
+    public static RebalanceDexWithAmountsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int SUPPLY_AMOUNT_OFFSET = 9;
+
+    public static RebalanceDexWithAmountsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final BigInteger supplyAmount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        supplyAmount = null;
+        ++i;
+      } else {
+        ++i;
+        supplyAmount = getInt128LE(_data, i);
+        i += 16;
+      }
+      final BigInteger borrowAmount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        borrowAmount = null;
+        ++i;
+      } else {
+        ++i;
+        borrowAmount = getInt128LE(_data, i);
+        i += 16;
+      }
+      final var colToken0MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var colToken1MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var debtToken0MinMax = getInt128LE(_data, i);
+      i += 16;
+      final var debtToken1MinMax = getInt128LE(_data, i);
+      return new RebalanceDexWithAmountsIxData(discriminator,
+                                               supplyAmount,
+                                               borrowAmount,
+                                               colToken0MinMax,
+                                               colToken1MinMax,
+                                               debtToken0MinMax,
+                                               debtToken1MinMax);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.write128Optional(1, supplyAmount, _data, i);
+      i += SerDeUtil.write128Optional(1, borrowAmount, _data, i);
+      putInt128LE(_data, i, colToken0MinMax);
+      i += 16;
+      putInt128LE(_data, i, colToken1MinMax);
+      i += 16;
+      putInt128LE(_data, i, debtToken0MinMax);
+      i += 16;
+      putInt128LE(_data, i, debtToken1MinMax);
+      i += 16;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (supplyAmount == null ? 1 : (1 + 16))
+           + (borrowAmount == null ? 1 : (1 + 16))
+           + 16
+           + 16
+           + 16
+           + 16;
+    }
+  }
+
+  public static final Discriminator REBALANCE_WITH_AMOUNTS_DISCRIMINATOR = toDiscriminator(190, 33, 144, 182, 86, 4, 141, 73);
+
+  /// Rebalance a T1 vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction
+  /// (deposit vs withdraw / borrow vs payback) is driven by the imbalance sign.
+  ///
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
+  public static List<AccountMeta> rebalanceWithAmountsKeys(final AccountMeta invokedVaultsProgramMeta,
+                                                           final SolanaAccounts solanaAccounts,
+                                                           final PublicKey rebalancerKey,
+                                                           final PublicKey rebalancerSupplyTokenAccountKey,
+                                                           final PublicKey rebalancerBorrowTokenAccountKey,
+                                                           final PublicKey vaultConfigKey,
+                                                           final PublicKey vaultStateKey,
+                                                           final PublicKey supplyTokenKey,
+                                                           final PublicKey borrowTokenKey,
+                                                           final PublicKey supplyTokenReservesLiquidityKey,
+                                                           final PublicKey borrowTokenReservesLiquidityKey,
+                                                           final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                           final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                           final PublicKey supplyRateModelKey,
+                                                           final PublicKey borrowRateModelKey,
+                                                           final PublicKey liquidityKey,
+                                                           final PublicKey liquidityProgramKey,
+                                                           final PublicKey vaultSupplyTokenAccountKey,
+                                                           final PublicKey vaultBorrowTokenAccountKey,
+                                                           final PublicKey supplyTokenProgramKey,
+                                                           final PublicKey borrowTokenProgramKey) {
+    return List.of(
+      createWritableSigner(rebalancerKey),
+      createWrite(rebalancerSupplyTokenAccountKey),
+      createWrite(rebalancerBorrowTokenAccountKey),
+      createWrite(vaultConfigKey),
+      createWrite(vaultStateKey),
+      createRead(supplyTokenKey),
+      createRead(borrowTokenKey),
+      createWrite(supplyTokenReservesLiquidityKey),
+      createWrite(borrowTokenReservesLiquidityKey),
+      createWrite(vaultSupplyPositionOnLiquidityKey),
+      createWrite(vaultBorrowPositionOnLiquidityKey),
+      createRead(supplyRateModelKey),
+      createRead(borrowRateModelKey),
+      createRead(liquidityKey),
+      createRead(liquidityProgramKey),
+      createWrite(vaultSupplyTokenAccountKey),
+      createWrite(vaultBorrowTokenAccountKey),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(supplyTokenProgramKey),
+      createRead(borrowTokenProgramKey),
+      createRead(requireNonNullElse(solanaAccounts.associatedTokenAccountProgram(), invokedVaultsProgramMeta.publicKey()))
+    );
+  }
+
+  /// Rebalance a T1 vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction
+  /// (deposit vs withdraw / borrow vs payback) is driven by the imbalance sign.
+  ///
+  /// @param vaultConfigKey _dev mut because this PDA signs the CPI to liquidity program
+  ///                       _dev verification inside instruction logic
+  /// @param vaultStateKey _dev verification inside instruction logic
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public static Instruction rebalanceWithAmounts(final AccountMeta invokedVaultsProgramMeta,
+                                                 final SolanaAccounts solanaAccounts,
+                                                 final PublicKey rebalancerKey,
+                                                 final PublicKey rebalancerSupplyTokenAccountKey,
+                                                 final PublicKey rebalancerBorrowTokenAccountKey,
+                                                 final PublicKey vaultConfigKey,
+                                                 final PublicKey vaultStateKey,
+                                                 final PublicKey supplyTokenKey,
+                                                 final PublicKey borrowTokenKey,
+                                                 final PublicKey supplyTokenReservesLiquidityKey,
+                                                 final PublicKey borrowTokenReservesLiquidityKey,
+                                                 final PublicKey vaultSupplyPositionOnLiquidityKey,
+                                                 final PublicKey vaultBorrowPositionOnLiquidityKey,
+                                                 final PublicKey supplyRateModelKey,
+                                                 final PublicKey borrowRateModelKey,
+                                                 final PublicKey liquidityKey,
+                                                 final PublicKey liquidityProgramKey,
+                                                 final PublicKey vaultSupplyTokenAccountKey,
+                                                 final PublicKey vaultBorrowTokenAccountKey,
+                                                 final PublicKey supplyTokenProgramKey,
+                                                 final PublicKey borrowTokenProgramKey,
+                                                 final BigInteger supplyAmount,
+                                                 final BigInteger borrowAmount) {
+    final var keys = rebalanceWithAmountsKeys(
+      invokedVaultsProgramMeta,
+      solanaAccounts,
+      rebalancerKey,
+      rebalancerSupplyTokenAccountKey,
+      rebalancerBorrowTokenAccountKey,
+      vaultConfigKey,
+      vaultStateKey,
+      supplyTokenKey,
+      borrowTokenKey,
+      supplyTokenReservesLiquidityKey,
+      borrowTokenReservesLiquidityKey,
+      vaultSupplyPositionOnLiquidityKey,
+      vaultBorrowPositionOnLiquidityKey,
+      supplyRateModelKey,
+      borrowRateModelKey,
+      liquidityKey,
+      liquidityProgramKey,
+      vaultSupplyTokenAccountKey,
+      vaultBorrowTokenAccountKey,
+      supplyTokenProgramKey,
+      borrowTokenProgramKey
+    );
+    return rebalanceWithAmounts(invokedVaultsProgramMeta, keys, supplyAmount, borrowAmount);
+  }
+
+  /// Rebalance a T1 vault by a custom (capped) amount per leg.
+  /// `supply_amount`/`borrow_amount` are unsigned magnitudes; `None` rebalances
+  /// the full imbalance for that leg, `Some(n)` clamps it to `n`. Direction
+  /// (deposit vs withdraw / borrow vs payback) is driven by the imbalance sign.
+  ///
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public static Instruction rebalanceWithAmounts(final AccountMeta invokedVaultsProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final BigInteger supplyAmount,
+                                                 final BigInteger borrowAmount) {
+    final byte[] _data = new byte[
+    8
+    + (supplyAmount == null ? 1 : 17)
+    + (borrowAmount == null ? 1 : 17)
+    ];
+    int i = REBALANCE_WITH_AMOUNTS_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.write128Optional(1, supplyAmount, _data, i);
+    SerDeUtil.write128Optional(1, borrowAmount, _data, i);
+
+    return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
+  }
+
+  /// @param supplyAmount: Option<u128>
+  /// @param borrowAmount: Option<u128>
+  public record RebalanceWithAmountsIxData(Discriminator discriminator, BigInteger supplyAmount, BigInteger borrowAmount) implements SerDe {  
+
+    public static RebalanceWithAmountsIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int SUPPLY_AMOUNT_OFFSET = 9;
+
+    public static RebalanceWithAmountsIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final BigInteger supplyAmount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        supplyAmount = null;
+        ++i;
+      } else {
+        ++i;
+        supplyAmount = getInt128LE(_data, i);
+        i += 16;
+      }
+      final BigInteger borrowAmount;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        borrowAmount = null;
+      } else {
+        ++i;
+        borrowAmount = getInt128LE(_data, i);
+      }
+      return new RebalanceWithAmountsIxData(discriminator, supplyAmount, borrowAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.write128Optional(1, supplyAmount, _data, i);
+      i += SerDeUtil.write128Optional(1, borrowAmount, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (supplyAmount == null ? 1 : (1 + 16)) + (borrowAmount == null ? 1 : (1 + 16));
+    }
   }
 
   public static final Discriminator UPDATE_AUTHORITY_DISCRIMINATOR = toDiscriminator(32, 46, 64, 28, 149, 75, 243, 88);
@@ -1568,7 +3574,7 @@ public final class VaultsProgram {
   /// @param supplyTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param borrowTokenReservesLiquidityKey _dev Verification inside instruction logic
   /// @param vaultId: u16
-  /// @param borrowFee: u16
+  /// @param borrowFee: u8
   public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
                                             final PublicKey authorityKey,
                                             final PublicKey vaultAdminKey,
@@ -1590,29 +3596,29 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  /// @param borrowFee: u16
+  /// @param borrowFee: u8
   public static Instruction updateBorrowFee(final AccountMeta invokedVaultsProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int vaultId,
                                             final int borrowFee) {
-    final byte[] _data = new byte[12];
+    final byte[] _data = new byte[11];
     int i = UPDATE_BORROW_FEE_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, vaultId);
     i += 2;
-    putInt16LE(_data, i, borrowFee);
+    _data[i] = (byte) borrowFee;
 
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
   /// @param vaultId: u16
-  /// @param borrowFee: u16
+  /// @param borrowFee: u8
   public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {  
 
     public static UpdateBorrowFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 12;
+    public static final int BYTES = 11;
 
     public static final int VAULT_ID_OFFSET = 8;
     public static final int BORROW_FEE_OFFSET = 10;
@@ -1625,7 +3631,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.length();
       final var vaultId = Short.toUnsignedInt(getInt16LE(_data, i));
       i += 2;
-      final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
+      final var borrowFee = _data[i] & 0xFF;
       return new UpdateBorrowFeeIxData(discriminator, vaultId, borrowFee);
     }
 
@@ -1634,8 +3640,8 @@ public final class VaultsProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt16LE(_data, i, vaultId);
       i += 2;
-      putInt16LE(_data, i, borrowFee);
-      i += 2;
+      _data[i] = (byte) borrowFee;
+      ++i;
       return i - _offset;
     }
 
@@ -1918,7 +3924,7 @@ public final class VaultsProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 26;
+    public static final int BYTES = 25;
 
     public static final int VAULT_ID_OFFSET = 8;
     public static final int PARAMS_OFFSET = 10;

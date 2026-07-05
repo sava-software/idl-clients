@@ -22,10 +22,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param vaultId: u16
 /// @param tickMap: u32
+/// @param isFullyLiquidated1: u8
 /// @param liquidationBranchId1: u32
 /// @param debtFactor1: u64
+/// @param isFullyLiquidated2: u8
 /// @param liquidationBranchId2: u32
 /// @param debtFactor2: u64
+/// @param isFullyLiquidated3: u8
 /// @param liquidationBranchId3: u32
 /// @param debtFactor3: u64
 public record TickIdLiquidation(PublicKey _address,

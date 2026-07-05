@@ -14,6 +14,7 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param bump: u8
 public record VaultRewardsInfo(PublicKey _address,
                                Discriminator discriminator,
                                PublicKey vaultAddress,

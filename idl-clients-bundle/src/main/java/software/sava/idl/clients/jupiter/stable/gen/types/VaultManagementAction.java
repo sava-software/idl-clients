@@ -58,6 +58,7 @@ public sealed interface VaultManagementAction extends RustEnum permits
     }
   }
 
+  /// @param index: u8
   record UpdateOracle(int index, OracleConfig oracle) implements VaultManagementAction {
 
     public static final int INDEX_OFFSET = 0;
@@ -94,6 +95,7 @@ public sealed interface VaultManagementAction extends RustEnum permits
     }
   }
 
+  /// @param index: u8
   /// @param durationSeconds: u64
   /// @param maxMintAmount: u64
   /// @param maxRedeemAmount: u64

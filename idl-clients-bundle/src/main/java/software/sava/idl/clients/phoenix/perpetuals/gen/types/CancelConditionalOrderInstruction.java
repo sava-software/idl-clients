@@ -3,6 +3,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param index: u8
 public record CancelConditionalOrderInstruction(int index,
                                                 boolean disableFirst,
                                                 boolean disableSecond) implements SerDe {

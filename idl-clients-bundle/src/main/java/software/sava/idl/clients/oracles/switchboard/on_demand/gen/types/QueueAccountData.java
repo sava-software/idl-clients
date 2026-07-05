@@ -39,7 +39,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param reward: u32 The reward paid to quote oracles for attesting on-chain.
 /// @param currIdx: u32 Incrementer used to track the current quote oracle permitted to run any available functions.
 /// @param gcIdx: u32 Incrementer used to garbage collect and remove stale quote oracles.
+/// @param requireAuthorityHeartbeatPermission: u8
+/// @param requireAuthorityVerifyPermission: u8
+/// @param requireUsagePermissions: u8
+/// @param signerBump: u8
 /// @param lutSlot: u64
+/// @param allowSubsidies: u8
 /// @param resrved: u64
 /// @param lastRewardEpoch: u64
 /// @param oracleFeeProportionBps: u32 The proportion of subsidy rewards that go to oracle operators (in basis points, 5000 = 50%)

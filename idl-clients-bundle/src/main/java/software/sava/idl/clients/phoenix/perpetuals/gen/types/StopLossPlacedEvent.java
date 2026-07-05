@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param sequenceNumber: u64
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u64
+/// @param positionSequenceNumber: u8
 /// @param placeSlot: u64
 public record StopLossPlacedEvent(Discriminator discriminator,
                                   PublicKey trader,

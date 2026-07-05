@@ -3,6 +3,7 @@ package software.sava.idl.clients.spl.stake.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param bits: u8
 public record StakeFlags(int bits) implements SerDe {
 
   public static final int BYTES = 1;

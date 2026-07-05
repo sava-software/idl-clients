@@ -37,11 +37,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param endTs Lockup time end (Unix Timestamp)
 /// @param clawbackStartTs Clawback start (Unix Timestamp)
 /// @param activationPoint: u64 this merkle tree is activated from this slot or timestamp
-/// @param activationType activation type, 0 means slot, 1 means timestamp
-/// @param claimType claim type
-/// @param bump Bump seed.
-/// @param clawedBack Whether or not the distributor has been clawed back
-/// @param closable indicate that whether admin can close this pool, for testing purpose
+/// @param activationType: u8 activation type, 0 means slot, 1 means timestamp
+/// @param claimType: u8 claim type
+/// @param bump: u8 Bump seed.
+/// @param clawedBack: u8 Whether or not the distributor has been clawed back
+/// @param closable: u8 indicate that whether admin can close this pool, for testing purpose
 /// @param padding0 Padding 0
 public record MerkleDistributor(PublicKey _address,
                                 Discriminator discriminator,

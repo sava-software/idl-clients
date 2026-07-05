@@ -5,6 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 /// Bitmask for permissions.
 ///
+/// @param mask: u8
 public record Permissions(int mask) implements SerDe {
 
   public static final int BYTES = 1;

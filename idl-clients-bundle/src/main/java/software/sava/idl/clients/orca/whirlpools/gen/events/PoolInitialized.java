@@ -15,6 +15,8 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param tickSpacing: u16
+/// @param decimalsA: u8
+/// @param decimalsB: u8
 public record PoolInitialized(Discriminator discriminator,
                               PublicKey whirlpool,
                               PublicKey whirlpoolsConfig,

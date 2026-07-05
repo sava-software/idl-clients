@@ -13,8 +13,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param totalClaim: u64
 /// @param maxNumNodes: u64
 /// @param activationPoint: u64
+/// @param activationType: u8
 /// @param totalBonus: u64
 /// @param bonusVestingDuration: u64
+/// @param claimType: u8
 public record NewDistributorParams(long version,
                                    byte[] root,
                                    long totalClaim,

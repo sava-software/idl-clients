@@ -22,10 +22,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param governor The public key of the governor.
 /// @param index: u64 The unique ID of the proposal, auto-incremented.
-/// @param bump Bump seed
+/// @param bump: u8 Bump seed
 /// @param proposer The public key of the proposer.
 /// @param quorumVotes: u64 The number of votes in support of a proposal required in order for a quorum to be reached and for a vote to succeed
-/// @param maxOption maximum options of the proposal
+/// @param maxOption: u8 maximum options of the proposal
 /// @param optionVotes: Vec<u64> Vote for each option
 /// @param canceledAt The timestamp when the proposal was canceled.
 /// @param createdAt The timestamp when the proposal was created.
@@ -38,6 +38,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param queuedTransaction If the transaction was queued, this is the associated Smart Wallet transaction.
 /// @param votingReward optional reward
 /// @param totalClaimedReward: u64 total claimed reward
+/// @param proposalType: u8
 /// @param buffers buffers for future use
 /// @param instructions The instructions associated with the proposal.
 public record Proposal(PublicKey _address,

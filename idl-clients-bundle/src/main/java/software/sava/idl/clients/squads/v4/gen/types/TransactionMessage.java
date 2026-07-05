@@ -7,9 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// Unvalidated instruction data, must be treated as untrusted.
 ///
-/// @param numSigners The number of signer pubkeys in the account_keys vec.
-/// @param numWritableSigners The number of writable signer pubkeys in the account_keys vec.
-/// @param numWritableNonSigners The number of writable non-signer pubkeys in the account_keys vec.
+/// @param numSigners: u8 The number of signer pubkeys in the account_keys vec.
+/// @param numWritableSigners: u8 The number of writable signer pubkeys in the account_keys vec.
+/// @param numWritableNonSigners: u8 The number of writable non-signer pubkeys in the account_keys vec.
 /// @param accountKeys The list of unique account public keys (including program IDs) that will be used in the provided instructions.
 /// @param instructions The list of instructions to execute.
 /// @param addressTableLookups List of address table lookups used to load additional accounts

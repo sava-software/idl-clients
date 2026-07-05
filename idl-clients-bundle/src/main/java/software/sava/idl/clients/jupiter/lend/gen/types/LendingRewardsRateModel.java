@@ -23,6 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param yearlyReward: u64 _dev current annualized reward based on input params (duration, rewardAmount)
 /// @param nextDuration: u64 _dev Duration for the next rewards phase
 /// @param nextRewardAmount: u64 _dev Amount of rewards for the next phase
+/// @param bump: u8
 public record LendingRewardsRateModel(PublicKey _address,
                                       Discriminator discriminator,
                                       PublicKey mint,

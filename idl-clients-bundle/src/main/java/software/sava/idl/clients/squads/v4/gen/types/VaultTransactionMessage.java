@@ -5,9 +5,9 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-/// @param numSigners The number of signer pubkeys in the account_keys vec.
-/// @param numWritableSigners The number of writable signer pubkeys in the account_keys vec.
-/// @param numWritableNonSigners The number of writable non-signer pubkeys in the account_keys vec.
+/// @param numSigners: u8 The number of signer pubkeys in the account_keys vec.
+/// @param numWritableSigners: u8 The number of writable signer pubkeys in the account_keys vec.
+/// @param numWritableNonSigners: u8 The number of writable non-signer pubkeys in the account_keys vec.
 /// @param accountKeys Unique account pubkeys (including program IDs) required for execution of the tx.
 ///                    The signer pubkeys appear at the beginning of the vec, with writable pubkeys first, and read-only pubkeys following.
 ///                    The non-signer pubkeys follow with writable pubkeys first and read-only ones following.

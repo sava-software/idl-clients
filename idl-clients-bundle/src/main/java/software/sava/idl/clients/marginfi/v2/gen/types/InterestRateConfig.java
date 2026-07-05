@@ -20,7 +20,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 ///               * always in ascending order, e.g. points0 = first kink point, points1 = second kink
 ///               point, and so forth.
 ///               * points where util = 0 are unused
-/// @param curveType Determines which interest rate curve implementation is active. 0 (INTEREST_CURVE_LEGACY) =
+/// @param curveType: u8 Determines which interest rate curve implementation is active. 0 (INTEREST_CURVE_LEGACY) =
 ///                  legacy three point curve, 1 (INTEREST_CURVE_SEVEN_POINT) = multi-point curve.
 public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
                                  WrappedI80F48 plateauInterestRate,

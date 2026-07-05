@@ -33,7 +33,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param tokenMint0 Token pair of the pool, where token_mint_0 address < token_mint_1 address
 /// @param tokenVault0 Token pair vault
 /// @param observationKey observation account key
-/// @param mintDecimals0 mint0 and mint1 decimals
+/// @param mintDecimals0: u8 mint0 and mint1 decimals
+/// @param mintDecimals1: u8
 /// @param tickSpacing: u16 The minimum number of ticks between initialized ticks
 /// @param liquidity The currently in range liquidity available to the pool.
 /// @param sqrtPriceX64 The current price of the pool as a sqrt(token_1/token_0) Q64.64 value
@@ -45,7 +46,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param protocolFeesToken0: u64 The amounts of token_0 and token_1 that are owed to the protocol.
 /// @param protocolFeesToken1: u64
 /// @param swapInAmountToken0 The amounts in and out of swap token_0 and token_1
-/// @param status Bitwise representation of the state of the pool
+/// @param status: u8 Bitwise representation of the state of the pool
 ///               bit0, 1: disable open position and increase liquidity, 0: normal
 ///               bit1, 1: disable decrease liquidity, 0: normal
 ///               bit2, 1: disable collect fee, 0: normal

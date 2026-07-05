@@ -9,6 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Price representation composed of a mantissa (`value`) and decimal exponent (`expo`).
 ///
 /// @param value: u64
+/// @param expo: u8
 public record Price(long value, int expo) implements SerDe {
 
   public static final int BYTES = 9;

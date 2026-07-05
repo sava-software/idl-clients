@@ -11,6 +11,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///
 /// @param sequenceNumber: u64
 /// @param slot: u64
+/// @param positionSequenceNumber: u8
+/// @param flags: u8
 public record StopLoss(long sequenceNumber,
                        Ticks triggerPrice,
                        Ticks executionPrice,

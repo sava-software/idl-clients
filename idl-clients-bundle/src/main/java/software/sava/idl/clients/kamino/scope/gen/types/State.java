@@ -8,6 +8,8 @@ import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
+/// @param reserveBumpSeed: u8
+/// @param msolMintAuthorityBumpSeed: u8
 /// @param rentExemptForTokenAcc: u64
 /// @param availableReserveBalance: u64
 /// @param msolSupply: u64

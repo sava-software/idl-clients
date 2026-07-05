@@ -9,6 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// No remaining accounts or asset index guidance needed. In full repayment, we zero out the matrix for the specific ledger using default loan values.
 ///
 /// @param amount: u64
+/// @param ledgerIndex: u8
 public record RepayPrincipalParams(long amount,
                                    int ledgerIndex,
                                    boolean repayAll) implements SerDe {

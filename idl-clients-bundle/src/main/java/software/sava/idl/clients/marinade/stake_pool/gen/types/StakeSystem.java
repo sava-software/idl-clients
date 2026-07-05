@@ -9,6 +9,8 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param delayedUnstakeCoolingDown: u64
+/// @param stakeDepositBumpSeed: u8
+/// @param stakeWithdrawBumpSeed: u8
 /// @param slotsForStakeDelta: u64 set by admin, how much slots before the end of the epoch, stake-delta can start
 /// @param lastStakeDeltaEpoch: u64 Marks the start of stake-delta operations, meaning that if somebody starts a delayed-unstake ticket
 ///                            after this var is set with epoch_num the ticket will have epoch_created = current_epoch+1

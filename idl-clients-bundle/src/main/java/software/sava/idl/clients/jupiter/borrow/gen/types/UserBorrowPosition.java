@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// User borrow position
 ///
+/// @param withInterest: u8
 /// @param amount: u64
 /// @param debtCeiling: u64
 /// @param lastUpdate: u64
@@ -28,6 +29,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param expandDuration: u32
 /// @param baseDebtCeiling: u64
 /// @param maxDebtCeiling: u64
+/// @param status: u8
 public record UserBorrowPosition(PublicKey _address,
                                  Discriminator discriminator,
                                  PublicKey protocol,

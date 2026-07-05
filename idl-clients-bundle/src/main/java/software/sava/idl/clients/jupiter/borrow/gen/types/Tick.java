@@ -21,8 +21,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Tick data structure
 ///
 /// @param vaultId: u16
+/// @param isLiquidated: u8
 /// @param totalIds: u32
 /// @param rawDebt: u64
+/// @param isFullyLiquidated: u8
 /// @param liquidationBranchId: u32
 /// @param debtFactor: u64
 public record Tick(PublicKey _address,

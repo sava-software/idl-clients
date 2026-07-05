@@ -18,11 +18,12 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lendingId: u16
-/// @param decimals _dev number of decimals for the fToken, same as ASSET
+/// @param decimals: u8 _dev number of decimals for the fToken, same as ASSET
 /// @param rewardsRateModel _dev To read PDA of rewards rate model to get_rate instruction
 /// @param liquidityExchangePrice: u64 _dev exchange price for the underlying asset in the liquidity protocol (without rewards)
 /// @param tokenExchangePrice: u64 _dev exchange price between fToken and the underlying asset (with rewards)
 /// @param lastUpdateTimestamp: u64 _dev timestamp when exchange prices were updated the last time
+/// @param bump: u8
 public record Lending(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey mint,

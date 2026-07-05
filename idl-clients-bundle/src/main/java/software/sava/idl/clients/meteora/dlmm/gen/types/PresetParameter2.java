@@ -26,9 +26,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param reductionFactor: u16 Reduction factor controls the volatile fee rate decrement rate.
 /// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
 /// @param index: u16 index
-/// @param baseFeePowerFactor Base fee power factor
-/// @param concreteFunctionType function type, to check whether the pool should have LM farming or other functions in the future, refer ConcreteFunctionType
-/// @param collectFeeMode collect fee mode
+/// @param baseFeePowerFactor: u8 Base fee power factor
+/// @param concreteFunctionType: u8 function type, to check whether the pool should have LM farming or other functions in the future, refer ConcreteFunctionType
+/// @param collectFeeMode: u8 collect fee mode
 /// @param padding1: u64[] Padding 1 for future use
 public record PresetParameter2(PublicKey _address,
                                Discriminator discriminator,

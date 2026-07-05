@@ -3,6 +3,7 @@ package software.sava.idl.clients.oracles.pyth.push.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param treasuryId: u8
 public record PostUpdateParams(MerklePriceUpdate merklePriceUpdate, int treasuryId) implements SerDe {
 
   public static final int MERKLE_PRICE_UPDATE_OFFSET = 0;

@@ -83,61 +83,6 @@ public final class VaultsPDAs {
     ), program);
   }
 
-  public static ProgramDerivedAddress recipientBorrowTokenAccountPDA(final PublicKey program,
-                                                                     final PublicKey recipientAccount,
-                                                                     final PublicKey borrowTokenProgramAccount,
-                                                                     final PublicKey borrowTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      recipientAccount.toByteArray(),
-      borrowTokenProgramAccount.toByteArray(),
-      borrowTokenAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress recipientSupplyTokenAccountPDA(final PublicKey program,
-                                                                     final PublicKey recipientAccount,
-                                                                     final PublicKey supplyTokenProgramAccount,
-                                                                     final PublicKey supplyTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      recipientAccount.toByteArray(),
-      supplyTokenProgramAccount.toByteArray(),
-      supplyTokenAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress signerBorrowTokenAccountPDA(final PublicKey program,
-                                                                  final PublicKey signerAccount,
-                                                                  final PublicKey borrowTokenProgramAccount,
-                                                                  final PublicKey borrowTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      signerAccount.toByteArray(),
-      borrowTokenProgramAccount.toByteArray(),
-      borrowTokenAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress signerSupplyTokenAccountPDA(final PublicKey program,
-                                                                  final PublicKey signerAccount,
-                                                                  final PublicKey supplyTokenProgramAccount,
-                                                                  final PublicKey supplyTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      signerAccount.toByteArray(),
-      supplyTokenProgramAccount.toByteArray(),
-      supplyTokenAccount.toByteArray()
-    ), program);
-  }
-
-  public static ProgramDerivedAddress signerTokenAccountPDA(final PublicKey program,
-                                                            final PublicKey signerAccount,
-                                                            final PublicKey borrowTokenProgramAccount,
-                                                            final PublicKey borrowTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      signerAccount.toByteArray(),
-      borrowTokenProgramAccount.toByteArray(),
-      borrowTokenAccount.toByteArray()
-    ), program);
-  }
-
   public static ProgramDerivedAddress tickHasDebtArrayPDA(final PublicKey program,
                                                           final byte[] vaultId,
                                                           final byte[] index) {
@@ -145,17 +90,6 @@ public final class VaultsPDAs {
       "tick_has_debt".getBytes(US_ASCII),
       vaultId,
       index
-    ), program);
-  }
-
-  public static ProgramDerivedAddress toTokenAccountPDA(final PublicKey program,
-                                                        final PublicKey toAccount,
-                                                        final PublicKey supplyTokenProgramAccount,
-                                                        final PublicKey supplyTokenAccount) {
-    return PublicKey.findProgramAddress(List.of(
-      toAccount.toByteArray(),
-      supplyTokenProgramAccount.toByteArray(),
-      supplyTokenAccount.toByteArray()
     ), program);
   }
 

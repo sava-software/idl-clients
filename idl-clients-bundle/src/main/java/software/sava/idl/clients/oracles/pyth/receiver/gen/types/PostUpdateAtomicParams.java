@@ -5,6 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.oracles.pyth.push.gen.types.MerklePriceUpdate;
 
+/// @param treasuryId: u8
 public record PostUpdateAtomicParams(byte[] vaa,
                                      MerklePriceUpdate merklePriceUpdate,
                                      int treasuryId) implements SerDe {

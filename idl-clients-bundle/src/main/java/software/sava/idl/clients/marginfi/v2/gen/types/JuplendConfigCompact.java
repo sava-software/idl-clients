@@ -21,7 +21,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param depositLimit: u64
 /// @param oracleSetup Either `JuplendPythPull` or `JuplendSwitchboardPull`
 /// @param riskTier Isolated or Collateral
-/// @param configFlags Config flags for future-proofing, currently ignored
+/// @param configFlags: u8 Config flags for future-proofing, currently ignored
 /// @param totalAssetValueInitLimit: u64 In $
 /// @param oracleMaxAge: u16 In seconds
 /// @param oracleMaxConfidence: u32 Oracle confidence threshold (0 = use default 10%)

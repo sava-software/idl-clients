@@ -5,6 +5,10 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 /// Trader PDA/subaccount metadata stored with escrow requests.
 ///
+/// @param senderPdaIndex: u8
+/// @param senderSubaccountIndex: u8
+/// @param receiverPdaIndex: u8
+/// @param receiverSubaccountIndex: u8
 public record EscrowParticipantMetadata(int senderPdaIndex,
                                         int senderSubaccountIndex,
                                         int receiverPdaIndex,

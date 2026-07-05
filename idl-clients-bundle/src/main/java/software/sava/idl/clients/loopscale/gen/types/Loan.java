@@ -16,6 +16,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param version: u8
+/// @param bump: u8
+/// @param loanStatus: u8
 /// @param nonce: u64
 /// @param startTime: u64
 /// @param weightMatrix: u32[][]

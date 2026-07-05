@@ -21,11 +21,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param tag: u64
 /// @param lastUpdateSlot: u64 Kamino obligations are only good for one slot, e.g. `refresh_obligation` must have run within the
 ///                       same slot as any ix that needs a non-stale obligation e.g. withdraw.
-/// @param lastUpdateStale True if the obligation is stale, which will cause various ixes like withdraw to fail. Typically
+/// @param lastUpdateStale: u8 True if the obligation is stale, which will cause various ixes like withdraw to fail. Typically
 ///                        set to true in any tx that modifies obligation balance, and set to false at the end of a
 ///                        successful `refresh_obligation`
 ///                        * 0 = false, 1 = true
-/// @param lastUpdatePriceStatus Each bit represents a passed check in price status.
+/// @param lastUpdatePriceStatus: u8 Each bit represents a passed check in price status.
 ///                              * 63 = all checks passed
 ///                              
 ///                              Otherwise:

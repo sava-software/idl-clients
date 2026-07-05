@@ -3,15 +3,13 @@ package software.sava.idl.clients.jupiter.borrow.gen.events;
 
 import software.sava.core.programs.Discriminator;
 
-import static software.sava.core.encoding.ByteUtil.getInt16LE;
-import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param borrowFee: u16
+/// @param borrowFee: u8
 public record LogUpdateBorrowFee(Discriminator discriminator, int borrowFee) implements VaultsEvent {
 
-  public static final int BYTES = 10;
+  public static final int BYTES = 9;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(33, 134, 42, 66, 16, 167, 119, 196);
 
   public static final int BORROW_FEE_OFFSET = 8;
@@ -22,15 +20,15 @@ public record LogUpdateBorrowFee(Discriminator discriminator, int borrowFee) imp
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var borrowFee = Short.toUnsignedInt(getInt16LE(_data, i));
+    final var borrowFee = _data[i] & 0xFF;
     return new LogUpdateBorrowFee(discriminator, borrowFee);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt16LE(_data, i, borrowFee);
-    i += 2;
+    _data[i] = (byte) borrowFee;
+    ++i;
     return i - _offset;
   }
 

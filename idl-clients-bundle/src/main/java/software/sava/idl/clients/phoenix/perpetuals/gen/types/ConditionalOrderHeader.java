@@ -17,6 +17,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Fixed ConditionalOrderHeader prefix for a Phoenix Eternal conditional orders account.
 /// The dynamic conditional order array follows this header and is left as trailing account data by generic decoders.
 ///
+/// @param len: u8
+/// @param capacity: u8
 public record ConditionalOrderHeader(PublicKey _address,
                                      Discriminator discriminator,
                                      PublicKey traderKey,

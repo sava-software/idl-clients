@@ -13,7 +13,10 @@ public enum SourceType implements RustEnum {
   Chainlink,
   SinglePool,
   JupLend,
-  ChainlinkDataStreams;
+  ChainlinkDataStreams,
+  PstPool,
+  DexSmartColPegOracle,
+  DexSmartDebtPegOracle;
 
   public static SourceType read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, SourceType.values(), _data, _offset);

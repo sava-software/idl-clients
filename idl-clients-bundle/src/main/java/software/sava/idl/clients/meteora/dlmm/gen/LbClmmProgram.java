@@ -2208,6 +2208,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToRemove: u16
+  /// @param side: u8
   public static Instruction decreasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey rentReceiverKey,
@@ -2229,6 +2230,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToRemove: u16
+  /// @param side: u8
   public static Instruction decreasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int lengthToRemove,
@@ -2243,6 +2245,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToRemove: u16
+  /// @param side: u8
   public record DecreasePositionLengthIxData(Discriminator discriminator, int lengthToRemove, int side) implements SerDe {  
 
     public static DecreasePositionLengthIxData read(final Instruction instruction) {
@@ -2664,6 +2667,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToAdd: u16
+  /// @param side: u8
   public static Instruction increasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final SolanaAccounts solanaAccounts,
                                                    final PublicKey funderKey,
@@ -2687,6 +2691,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToAdd: u16
+  /// @param side: u8
   public static Instruction increasePositionLength(final AccountMeta invokedLbClmmProgramMeta,
                                                    final List<AccountMeta> keys,
                                                    final int lengthToAdd,
@@ -2701,6 +2706,7 @@ public final class LbClmmProgram {
   }
 
   /// @param lengthToAdd: u16
+  /// @param side: u8
   public record IncreasePositionLengthIxData(Discriminator discriminator, int lengthToAdd, int side) implements SerDe {  
 
     public static IncreasePositionLengthIxData read(final Instruction instruction) {
@@ -5212,6 +5218,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param status: u8
   public static Instruction setPairStatus(final AccountMeta invokedLbClmmProgramMeta,
                                           final PublicKey lbPairKey,
                                           final PublicKey operatorKey,
@@ -5225,6 +5232,7 @@ public final class LbClmmProgram {
     return setPairStatus(invokedLbClmmProgramMeta, keys, status);
   }
 
+  /// @param status: u8
   public static Instruction setPairStatus(final AccountMeta invokedLbClmmProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int status) {
@@ -5235,6 +5243,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param status: u8
   public record SetPairStatusIxData(Discriminator discriminator, int status) implements SerDe {  
 
     public static SetPairStatusIxData read(final Instruction instruction) {
@@ -5279,6 +5288,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param status: u8
   public static Instruction setPairStatusPermissionless(final AccountMeta invokedLbClmmProgramMeta,
                                                         final PublicKey lbPairKey,
                                                         final PublicKey signerKey,
@@ -5290,6 +5300,7 @@ public final class LbClmmProgram {
     return setPairStatusPermissionless(invokedLbClmmProgramMeta, keys, status);
   }
 
+  /// @param status: u8
   public static Instruction setPairStatusPermissionless(final AccountMeta invokedLbClmmProgramMeta,
                                                         final List<AccountMeta> keys,
                                                         final int status) {
@@ -5300,6 +5311,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param status: u8
   public record SetPairStatusPermissionlessIxData(Discriminator discriminator, int status) implements SerDe {  
 
     public static SetPairStatusPermissionlessIxData read(final Instruction instruction) {
@@ -5348,6 +5360,7 @@ public final class LbClmmProgram {
     );
   }
 
+  /// @param bits: u8
   public static Instruction setPermissionlessOperationBits(final AccountMeta invokedLbClmmProgramMeta,
                                                            final PublicKey positionKey,
                                                            final PublicKey ownerKey,
@@ -5363,6 +5376,7 @@ public final class LbClmmProgram {
     return setPermissionlessOperationBits(invokedLbClmmProgramMeta, keys, bits);
   }
 
+  /// @param bits: u8
   public static Instruction setPermissionlessOperationBits(final AccountMeta invokedLbClmmProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int bits) {
@@ -5373,6 +5387,7 @@ public final class LbClmmProgram {
     return Instruction.createInstruction(invokedLbClmmProgramMeta, keys, _data);
   }
 
+  /// @param bits: u8
   public record SetPermissionlessOperationBitsIxData(Discriminator discriminator, int bits) implements SerDe {  
 
     public static SetPermissionlessOperationBitsIxData read(final Instruction instruction) {

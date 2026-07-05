@@ -23,7 +23,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param multisig The multisig this belongs to.
 /// @param transactionIndex: u64 Index of the multisig transaction this proposal is associated with.
 /// @param status The status of the transaction.
-/// @param bump PDA bump.
+/// @param bump: u8 PDA bump.
 /// @param approved Keys that have approved/signed.
 /// @param rejected Keys that have rejected.
 /// @param cancelled Keys that have cancelled (Approved only).

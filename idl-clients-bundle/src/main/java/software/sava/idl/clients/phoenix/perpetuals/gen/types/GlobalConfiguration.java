@@ -16,6 +16,8 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param exchangeStatus: u8
+/// @param quoteDecimals: u8
 /// @param withdrawalMarginFactorBps: u16
 /// @param padding1: u64[]
 /// @param padding2: u64[]

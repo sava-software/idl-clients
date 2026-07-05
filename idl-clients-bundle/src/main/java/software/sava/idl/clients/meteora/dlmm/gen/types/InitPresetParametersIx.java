@@ -17,9 +17,9 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param variableFeeControl: u32 Used to scale the variable fee component depending on the dynamic of the market
 /// @param maxVolatilityAccumulator: u32 Maximum number of bin crossed can be accumulated. Used to cap volatile fee rate.
 /// @param protocolShare: u16 Portion of swap fees retained by the protocol by controlling protocol_share parameter. protocol_swap_fee = protocol_share * total_swap_fee
-/// @param baseFeePowerFactor Base fee power factor
-/// @param concreteFunctionType function type
-/// @param collectFeeMode collect fee mode
+/// @param baseFeePowerFactor: u8 Base fee power factor
+/// @param concreteFunctionType: u8 function type
+/// @param collectFeeMode: u8 collect fee mode
 public record InitPresetParametersIx(int index,
                                      int binStep,
                                      int baseFactor,

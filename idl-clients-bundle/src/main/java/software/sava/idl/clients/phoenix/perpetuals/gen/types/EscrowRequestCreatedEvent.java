@@ -18,6 +18,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// Payload type: EscrowRequestCreatedEvent.
 ///
 /// @param sequenceNumber: u64
+/// @param senderPdaIndex: u8
+/// @param senderSubaccountIndex: u8
+/// @param receiverPdaIndex: u8
+/// @param receiverSubaccountIndex: u8
 /// @param expirationOffset: u32
 /// @param initialSlot: u64
 public record EscrowRequestCreatedEvent(Discriminator discriminator,

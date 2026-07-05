@@ -24,6 +24,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param totalBorrowerLiquidations: u64
 /// @param updatedAt: u64
 /// @param createdAt: u64
+/// @param bump: u8
 public record User(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey owner,

@@ -21,6 +21,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param updatedAt: u64
 /// @param minFillAmount: u64
 /// @param fillCounter: u64
+/// @param allowPartialFill: u8
+/// @param bump: u8
 public record OfferEventV1(PublicKey creator,
                            OfferSide side,
                            OfferStatus status,

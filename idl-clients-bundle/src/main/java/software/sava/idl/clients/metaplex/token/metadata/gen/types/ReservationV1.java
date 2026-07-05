@@ -6,6 +6,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
+/// @param spotsRemaining: u8
+/// @param totalSpots: u8
 public record ReservationV1(PublicKey address,
                             int spotsRemaining,
                             int totalSpots) implements SerDe {

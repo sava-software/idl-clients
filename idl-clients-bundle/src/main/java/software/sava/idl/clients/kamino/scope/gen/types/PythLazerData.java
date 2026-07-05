@@ -9,6 +9,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
 /// @param feedId: u16
+/// @param exponent: u8
 /// @param confidenceFactor: u32
 public record PythLazerData(int feedId,
                             int exponent,

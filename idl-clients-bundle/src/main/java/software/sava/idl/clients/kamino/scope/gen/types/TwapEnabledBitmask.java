@@ -3,6 +3,7 @@ package software.sava.idl.clients.kamino.scope.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param bitmask: u8
 public record TwapEnabledBitmask(int bitmask) implements SerDe {
 
   public static final int BYTES = 1;

@@ -10,6 +10,12 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// @param maxLiquidationBonusBps: u16
+/// @param id: u8
+/// @param ltvPct: u8
+/// @param liquidationThresholdPct: u8
+/// @param allowNewLoans: u8
+/// @param maxReservesAsCollateral: u8
+/// @param padding0: u8
 /// @param debtReserve Mandatory debt reserve for this elevation group
 /// @param padding1: u64[]
 public record ElevationGroup(int maxLiquidationBonusBps,

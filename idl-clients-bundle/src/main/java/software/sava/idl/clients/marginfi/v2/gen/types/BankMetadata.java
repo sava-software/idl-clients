@@ -27,7 +27,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param dataBlob Reserved for future use. Room for a very small icon or something else cool
 /// @param endDescriptionByte: u16 The last data byte in description (padding follows)
 /// @param endDataBlob: u16 The last data byte in data_blob (padding follows)
-/// @param endTickerByte The last data byte in ticker (padding follows)
+/// @param endTickerByte: u8 The last data byte in ticker (padding follows)
+/// @param bump: u8
 public record BankMetadata(PublicKey _address,
                            Discriminator discriminator,
                            PublicKey bank,

@@ -12,6 +12,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param proposalType: u8
+/// @param maxOption: u8
 /// @param index: u64
 public record ProposalCreateEvent(Discriminator discriminator,
                                   PublicKey governor,

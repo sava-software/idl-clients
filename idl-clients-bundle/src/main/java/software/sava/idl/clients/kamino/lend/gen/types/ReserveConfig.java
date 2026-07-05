@@ -11,27 +11,27 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Reserve configuration values
 ///
-/// @param status Status of the reserve Active/Obsolete/Hidden
-/// @param paddingDeprecatedAssetTier Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
+/// @param status: u8 Status of the reserve Active/Obsolete/Hidden
+/// @param paddingDeprecatedAssetTier: u8 Asset tier -> 0 - regular (collateral & debt), 1 - isolated collateral, 2 - isolated debt
 /// @param hostFixedInterestRateBps: u16 Flat rate that goes to the host
 /// @param minDeleveragingBonusBps: u16 Starting bonus for deleveraging-related liquidations, in bps.
-/// @param blockCtokenUsage Boolean flag to block minting/redeeming of ctokens
+/// @param blockCtokenUsage: u8 Boolean flag to block minting/redeeming of ctokens
 ///                         Blocks usage of ctokens (minting or withdrawing from obligation)
 ///                         Effectively blocks deposit_reserve_liquidity and withdraw_obligation_collateral
-/// @param earlyRepayRemainingInterestPct The percentage of remaining interest over the debt term that is charged as early repay penalty.
+/// @param earlyRepayRemainingInterestPct: u8 The percentage of remaining interest over the debt term that is charged as early repay penalty.
 ///                                       Only meaningful when `debt_term_seconds > 0`.
-/// @param emergencyMode Whether the reserve is in emergency mode.
+/// @param emergencyMode: u8 Whether the reserve is in emergency mode.
 ///                      Blocks most user operations involving this reserve, similar to LendingMarket::emergency_mode
 ///                      but scoped to a single reserve. Also cascades to obligations using this reserve as
 ///                      collateral or debt, blocking borrows and withdrawals on other reserves but still
 ///                      allowing repays and deposits.
 /// @param reserved1 Past reserved space - feel free to reuse.
-/// @param protocolOrderExecutionFeePct Cut of the order execution bonus that the protocol receives, as a percentage
-/// @param protocolTakeRatePct Protocol take rate is the amount borrowed interest protocol receives, as a percentage
-/// @param protocolLiquidationFeePct Cut of the liquidation bonus that the protocol receives, as a percentage
-/// @param loanToValuePct Target ratio of the value of borrows to deposits, as a percentage
+/// @param protocolOrderExecutionFeePct: u8 Cut of the order execution bonus that the protocol receives, as a percentage
+/// @param protocolTakeRatePct: u8 Protocol take rate is the amount borrowed interest protocol receives, as a percentage
+/// @param protocolLiquidationFeePct: u8 Cut of the liquidation bonus that the protocol receives, as a percentage
+/// @param loanToValuePct: u8 Target ratio of the value of borrows to deposits, as a percentage
 ///                       0 if use as collateral is disabled
-/// @param liquidationThresholdPct Loan to value ratio at which an obligation can be liquidated, as percentage
+/// @param liquidationThresholdPct: u8 Loan to value ratio at which an obligation can be liquidated, as percentage
 /// @param minLiquidationBonusBps: u16 Minimum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
 /// @param maxLiquidationBonusBps: u16 Maximum bonus a liquidator receives when repaying part of an unhealthy obligation, as bps
 /// @param badDebtLiquidationBonusBps: u16 Bad debt liquidation bonus for an undercollateralized obligation, as bps
@@ -48,12 +48,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param tokenInfo Token id from TokenInfos struct
 /// @param depositWithdrawalCap Deposit withdrawal caps - deposit & redeem
 /// @param debtWithdrawalCap Debt withdrawal caps - borrow & repay
-/// @param utilizationLimitBlockBorrowingAbovePct Utilization (in percentage) above which borrowing is blocked. 0 to disable.
-/// @param autodeleverageEnabled Whether this reserve should be subject to auto-deleveraging after deposit or borrow limit is
+/// @param disableUsageAsCollOutsideEmode: u8
+/// @param utilizationLimitBlockBorrowingAbovePct: u8 Utilization (in percentage) above which borrowing is blocked. 0 to disable.
+/// @param autodeleverageEnabled: u8 Whether this reserve should be subject to auto-deleveraging after deposit or borrow limit is
 ///                              crossed.
 ///                              Besides this flag, the lending market's flag also needs to be enabled (logical `AND`).
 ///                              **NOTE:** the manual "target LTV" deleveraging is NOT affected by this flag.
-/// @param proposerAuthorityLocked Boolean flag indicating whether the reserve is locked for the proposer authority.
+/// @param proposerAuthorityLocked: u8 Boolean flag indicating whether the reserve is locked for the proposer authority.
 ///                                
 ///                                Once the proposer have finished preparing the reserve, it must be locked to prevent
 ///                                further changes to the reserve configuration allowing review and voting on the proposal

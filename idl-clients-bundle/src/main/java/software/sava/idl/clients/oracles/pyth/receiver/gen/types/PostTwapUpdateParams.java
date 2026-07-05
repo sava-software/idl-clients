@@ -4,6 +4,7 @@ package software.sava.idl.clients.oracles.pyth.receiver.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.oracles.pyth.push.gen.types.MerklePriceUpdate;
 
+/// @param treasuryId: u8
 public record PostTwapUpdateParams(MerklePriceUpdate startMerklePriceUpdate,
                                    MerklePriceUpdate endMerklePriceUpdate,
                                    int treasuryId) implements SerDe {

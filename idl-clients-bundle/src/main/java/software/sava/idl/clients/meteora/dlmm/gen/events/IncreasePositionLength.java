@@ -11,6 +11,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lengthToAdd: u16
+/// @param side: u8
 public record IncreasePositionLength(Discriminator discriminator,
                                      PublicKey lbPair,
                                      PublicKey position,

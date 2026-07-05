@@ -13,7 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param depositLimit: u64
 /// @param borrowLimit: u64
-/// @param assetTag Determines what kinds of assets users of this bank can interact with. Options:
+/// @param assetTag: u8 Determines what kinds of assets users of this bank can interact with. Options:
 ///                 * `ASSET_TAG_DEFAULT` (0) - A regular asset that can be comingled with any other regular
 ///                 asset or with `ASSET_TAG_SOL`
 ///                 * `ASSET_TAG_SOL` (1) - Accounts with a SOL position can comingle with **either**
@@ -23,7 +23,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                 * `ASSET_TAG_KAMINO` (3) - Treated the same as `ASSET_TAG_DEFAULT`
 ///                 * `ASSET_TAG_DRIFT` (4) - Treated the same as `ASSET_TAG_DEFAULT`
 ///                 * `ASSET_TAG_SOLEND` (5) - Treated the same as `ASSET_TAG_DEFAULT`
-/// @param configFlags Flags for various config options
+/// @param configFlags: u8 Flags for various config options
 ///                    * 1 - Always set if bank created in 0.1.4 or later, or if migrated to the new oracle setup
 ///                    from a prior version. Not set in 0.1.3 or earlier banks that have not yet migrated.
 ///                    * 2, 4, 8, 16, etc - reserved for future use.

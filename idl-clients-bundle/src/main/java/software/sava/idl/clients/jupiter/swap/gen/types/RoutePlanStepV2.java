@@ -7,6 +7,8 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// @param bps: u16
+/// @param inputIndex: u8
+/// @param outputIndex: u8
 public record RoutePlanStepV2(Swap swap,
                               int bps,
                               int inputIndex,

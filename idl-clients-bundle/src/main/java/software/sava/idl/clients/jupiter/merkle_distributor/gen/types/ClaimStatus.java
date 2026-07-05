@@ -29,7 +29,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param lockedAmountWithdrawn: u64 Locked amount withdrawn
 /// @param unlockedAmount: u64 Unlocked amount
 /// @param bonusAmount: u64 Bonus amount
-/// @param closable indicate that whether admin can close this account, for testing purpose
+/// @param closable: u8 indicate that whether admin can close this account, for testing purpose
 /// @param padding0 padding 0
 /// @param padding1 padding 1
 public record ClaimStatus(PublicKey _address,

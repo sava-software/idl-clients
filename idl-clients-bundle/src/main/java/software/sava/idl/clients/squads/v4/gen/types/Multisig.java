@@ -37,7 +37,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                              This index is updated when multisig config (members/threshold/time_lock) changes.
 /// @param rentCollector: Option<publicKey> The address where the rent for the accounts related to executed, rejected, or cancelled
 ///                      transactions can be reclaimed. If set to `None`, the rent reclamation feature is turned off.
-/// @param bump Bump for the multisig PDA seed.
+/// @param bump: u8 Bump for the multisig PDA seed.
 /// @param members Members of the multisig.
 public record Multisig(PublicKey _address,
                        Discriminator discriminator,

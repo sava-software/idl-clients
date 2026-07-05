@@ -3,6 +3,7 @@ package software.sava.idl.clients.oracles.switchboard.on_demand.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param permission: u8
 public record PermissionSetParams(int permission, boolean enable) implements SerDe {
 
   public static final int BYTES = 2;

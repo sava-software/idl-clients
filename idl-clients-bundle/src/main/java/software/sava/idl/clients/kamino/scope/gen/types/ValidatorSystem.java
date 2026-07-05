@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param totalValidatorScore: u32
 /// @param totalActiveBalance: u64 sum of all active lamports staked
-/// @param autoAddValidatorEnabled allow & auto-add validator when a user deposits a stake-account of a non-listed validator
+/// @param autoAddValidatorEnabled: u8 allow & auto-add validator when a user deposits a stake-account of a non-listed validator
 public record ValidatorSystem(List validatorList,
                               PublicKey managerAuthority,
                               long totalValidatorScore,

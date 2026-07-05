@@ -21,7 +21,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                           * Precision: token mint precision
 /// @param marketIndex: u16 The market index of the corresponding spot market
 /// @param balanceType Whether the position is deposit or borrow
-/// @param openOrders Number of open orders
+/// @param openOrders: u8 Number of open orders
 /// @param padding Padding
 public record SpotPosition(long scaledBalance,
                            long openBids,

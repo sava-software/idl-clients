@@ -16,6 +16,8 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param vaultId: u16
+/// @param supplyMintDecimals: u8
+/// @param borrowMintDecimals: u8
 public record VaultMetadata(PublicKey _address,
                             Discriminator discriminator,
                             int vaultId,

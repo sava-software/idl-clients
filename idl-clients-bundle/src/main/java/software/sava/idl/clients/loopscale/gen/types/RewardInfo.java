@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param rewardState Reward state
+/// @param rewardState: u8 Reward state
 /// @param openTime: u64 Reward open time
 /// @param endTime: u64 Reward end time
 /// @param lastUpdateTime: u64 Reward last update time

@@ -745,6 +745,7 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
+  /// @param rewardIndex: u8
   public static Instruction collectReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final PublicKey whirlpoolKey,
                                           final PublicKey positionAuthorityKey,
@@ -773,6 +774,7 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
+  /// @param rewardIndex: u8
   public static Instruction collectReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                           final List<AccountMeta> keys,
                                           final int rewardIndex) {
@@ -783,6 +785,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record CollectRewardIxData(Discriminator discriminator, int rewardIndex) implements SerDe {  
 
     public static CollectRewardIxData read(final Instruction instruction) {
@@ -855,6 +858,7 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
+  /// @param rewardIndex: u8
   public static Instruction collectRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final PublicKey whirlpoolKey,
                                             final PublicKey positionAuthorityKey,
@@ -889,6 +893,7 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
+  /// @param rewardIndex: u8
   public static Instruction collectRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                             final List<AccountMeta> keys,
                                             final int rewardIndex,
@@ -905,6 +910,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record CollectRewardV2IxData(Discriminator discriminator, int rewardIndex, RemainingAccountsInfo remainingAccountsInfo) implements SerDe {  
 
     public static CollectRewardV2IxData read(final Instruction instruction) {
@@ -3617,6 +3623,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction initializeReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey rewardAuthorityKey,
@@ -3654,6 +3661,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction initializeReward(final AccountMeta invokedWhirlpoolProgramMeta,
                                              final List<AccountMeta> keys,
                                              final int rewardIndex) {
@@ -3664,6 +3672,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record InitializeRewardIxData(Discriminator discriminator, int rewardIndex) implements SerDe {  
 
     public static InitializeRewardIxData read(final Instruction instruction) {
@@ -3753,6 +3762,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction initializeRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final SolanaAccounts solanaAccounts,
                                                final PublicKey rewardAuthorityKey,
@@ -3793,6 +3803,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction initializeRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int rewardIndex) {
@@ -3803,6 +3814,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record InitializeRewardV2IxData(Discriminator discriminator, int rewardIndex) implements SerDe {  
 
     public static InitializeRewardV2IxData read(final Instruction instruction) {
@@ -6829,6 +6841,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolKey,
                                                final PublicKey rewardAuthorityKey,
@@ -6855,6 +6868,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int rewardIndex) {
@@ -6865,6 +6879,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record SetRewardAuthorityIxData(Discriminator discriminator, int rewardIndex) implements SerDe {  
 
     public static SetRewardAuthorityIxData read(final Instruction instruction) {
@@ -6937,6 +6952,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardAuthorityBySuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                final PublicKey whirlpoolsConfigKey,
                                                                final PublicKey whirlpoolKey,
@@ -6965,6 +6981,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardAuthorityBySuperAuthority(final AccountMeta invokedWhirlpoolProgramMeta,
                                                                final List<AccountMeta> keys,
                                                                final int rewardIndex) {
@@ -6975,6 +6992,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record SetRewardAuthorityBySuperAuthorityIxData(Discriminator discriminator, int rewardIndex) implements SerDe {  
 
     public static SetRewardAuthorityBySuperAuthorityIxData read(final Instruction instruction) {
@@ -7059,6 +7077,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardEmissions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final PublicKey whirlpoolKey,
                                                final PublicKey rewardAuthorityKey,
@@ -7093,6 +7112,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardEmissions(final AccountMeta invokedWhirlpoolProgramMeta,
                                                final List<AccountMeta> keys,
                                                final int rewardIndex,
@@ -7106,6 +7126,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record SetRewardEmissionsIxData(Discriminator discriminator, int rewardIndex, BigInteger emissionsPerSecondX64) implements SerDe {  
 
     public static SetRewardEmissionsIxData read(final Instruction instruction) {
@@ -7251,6 +7272,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardEmissionsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final PublicKey whirlpoolKey,
                                                  final PublicKey rewardAuthorityKey,
@@ -7286,6 +7308,7 @@ public final class WhirlpoolProgram {
   /// index in this pool, or exceeds NUM_REWARDS, or
   /// all reward slots for this pool has been initialized.
   ///
+  /// @param rewardIndex: u8
   public static Instruction setRewardEmissionsV2(final AccountMeta invokedWhirlpoolProgramMeta,
                                                  final List<AccountMeta> keys,
                                                  final int rewardIndex,
@@ -7299,6 +7322,7 @@ public final class WhirlpoolProgram {
     return Instruction.createInstruction(invokedWhirlpoolProgramMeta, keys, _data);
   }
 
+  /// @param rewardIndex: u8
   public record SetRewardEmissionsV2IxData(Discriminator discriminator, int rewardIndex, BigInteger emissionsPerSecondX64) implements SerDe {  
 
     public static SetRewardEmissionsV2IxData read(final Instruction instruction) {

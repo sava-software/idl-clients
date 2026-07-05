@@ -4,6 +4,7 @@ package software.sava.idl.clients.squads.v4.gen.types;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
+/// @param programIdIndex: u8
 /// @param accountIndexes Indices into the tx's `account_keys` list indicating which accounts to pass to the instruction.
 /// @param data Instruction data.
 public record CompiledInstruction(int programIdIndex,

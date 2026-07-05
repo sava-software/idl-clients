@@ -10,8 +10,10 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param oracleType: u8
 /// @param maxUncertainty: u32
 /// @param maxAge: u16
+/// @param decimals: u8
 /// @param ltv: u32
 /// @param liquidationThreshold: u32
 public record AssetData(PublicKey assetIdentifier,

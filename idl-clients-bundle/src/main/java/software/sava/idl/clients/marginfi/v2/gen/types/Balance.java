@@ -11,9 +11,9 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// @param active Whether this balance slot is in use (nonzero = active)
+/// @param active: u8 Whether this balance slot is in use (nonzero = active)
 /// @param bankPk The bank this balance corresponds to
-/// @param bankAssetTag Inherited from the bank when the position is first created and CANNOT BE CHANGED after that.
+/// @param bankAssetTag: u8 Inherited from the bank when the position is first created and CANNOT BE CHANGED after that.
 ///                     Note that all balances created before the addition of this feature use `ASSET_TAG_DEFAULT`
 /// @param tag: u16 Tag used by orders to reference this balance (0 means unused/unassigned).
 ///            A tag may also have a non-zero value while having no orders.

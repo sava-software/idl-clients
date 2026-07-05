@@ -19,6 +19,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param rewardsIssuedUnclaimed: u64
 /// @param rewardsIssuedCumulative: u64
 /// @param placeholder0: u64
+/// @param rewardType: u8
+/// @param rewardsPerSecondDecimals: u8
 /// @param padding1: u64[]
 public record RewardInfo(TokenInfo token,
                          PublicKey rewardsVault,

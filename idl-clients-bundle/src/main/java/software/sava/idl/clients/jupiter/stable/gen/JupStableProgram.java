@@ -364,6 +364,7 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param decimals: u8
   public static Instruction init(final AccountMeta invokedJupStableProgramMeta,
                                  final SolanaAccounts solanaAccounts,
                                  final PublicKey payerKey,
@@ -405,6 +406,7 @@ public final class JupStableProgram {
     );
   }
 
+  /// @param decimals: u8
   public static Instruction init(final AccountMeta invokedJupStableProgramMeta,
                                  final List<AccountMeta> keys,
                                  final int decimals,
@@ -425,6 +427,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
+  /// @param decimals: u8
   public record InitIxData(Discriminator discriminator,
                            int decimals,
                            String name, byte[] _name,

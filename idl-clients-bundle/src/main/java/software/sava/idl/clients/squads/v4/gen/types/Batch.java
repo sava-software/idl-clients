@@ -25,9 +25,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param multisig The multisig this belongs to.
 /// @param creator Member of the Multisig who submitted the batch.
 /// @param index: u64 Index of this batch within the multisig transactions.
-/// @param bump PDA bump.
-/// @param vaultIndex Index of the vault this batch belongs to.
-/// @param vaultBump Derivation bump of the vault PDA this batch belongs to.
+/// @param bump: u8 PDA bump.
+/// @param vaultIndex: u8 Index of the vault this batch belongs to.
+/// @param vaultBump: u8 Derivation bump of the vault PDA this batch belongs to.
 /// @param size: u32 Number of transactions in the batch.
 /// @param executedTransactionIndex: u32 Index of the last executed transaction within the batch.
 ///                                 0 means that no transactions have been executed yet.

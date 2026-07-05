@@ -13,6 +13,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param y0: u64
 /// @param deltaX: u64
 /// @param deltaY: u64
+/// @param bitFlag: u8
 public record AddLiquidityParams(int minDeltaId,
                                  int maxDeltaId,
                                  long x0,

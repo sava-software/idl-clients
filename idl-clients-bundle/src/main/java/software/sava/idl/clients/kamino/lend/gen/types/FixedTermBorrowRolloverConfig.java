@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// 
 /// By its nature (not a special case), the zeroed struct means "no auto-rollover/migration".
 ///
-/// @param autoRolloverEnabled Whether this *fixed-term* borrow can be permissionlessly prolonged. The funds used to roll
+/// @param autoRolloverEnabled: u8 Whether this *fixed-term* borrow can be permissionlessly prolonged. The funds used to roll
 ///                            over can come:
 ///                            - either from a *fixed-term* reserve (same or a different one):
 ///                            - This can only happen within LendingMarket::fixed_term_rollover_window_duration_seconds.
@@ -30,14 +30,14 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                            - The user must explicitly set Self::open_term_allowed here.
 ///                            
 ///                            This setting is not effective when the borrow is currently using an *open-term* reserve.
-/// @param openTermAllowed When `1`, then Self::auto_rollover_enabled is allowed to roll this borrow over into any
+/// @param openTermAllowed: u8 When `1`, then Self::auto_rollover_enabled is allowed to roll this borrow over into any
 ///                        open-term reserve.
 ///                        
 ///                        Please note that if such rollover actually happens, then Self::max_borrow_rate_bps
 ///                        condition does not apply - technically, it could be evaluated, but open-term reserves
 ///                        typically use float-rate (utilization-driven borrow rate curve) which has very high maximum
 ///                        (when at 100% utilization) that would not meet any practical criteria here.
-/// @param migrationToFixedEnabled Whether this *open-term* borrow can be permissionlessly migrated into a fixed-term reserve:
+/// @param migrationToFixedEnabled: u8 Whether this *open-term* borrow can be permissionlessly migrated into a fixed-term reserve:
 ///                                - This can happen at any moment (as soon as liquidity becomes available).
 ///                                - The target fixed-term reserve must meet all the criteria defined in this config (see
 ///                                Self::max_borrow_rate_bps and Self::min_debt_term_seconds).

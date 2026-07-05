@@ -10,13 +10,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A definition of optional customizations that should be applied after cloning the config.
 ///
-/// @param overrideFixedRateBps A gate for Self::fixed_borrow_rate_bps.
+/// @param overrideFixedRateBps: u8 A gate for Self::fixed_borrow_rate_bps.
 /// @param fixedBorrowRateBps: u32 If Self::override_fixed_rate_bps is non-zero, this borrow rate will be used to override
 ///                           the ReserveConfig::borrow_rate_curve with a fixed one.
-/// @param overrideDebtTermSeconds A gate for Self::debt_term_seconds.
+/// @param overrideDebtTermSeconds: u8 A gate for Self::debt_term_seconds.
 /// @param debtTermSeconds: u64 If Self::override_debt_term_seconds is non-zero, this value will be used to override the
 ///                        ReserveConfig::debt_term_seconds.
-/// @param clearElevationGroups Whether the target reserve should have zeroed ReserveConfig::elevation_groups (i.e. not
+/// @param clearElevationGroups: u8 Whether the target reserve should have zeroed ReserveConfig::elevation_groups (i.e. not
 ///                             cloned from source).
 ///                             
 ///                             This customization is mandatory when cloning a reserve (with some elevation groups) into a

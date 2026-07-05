@@ -9,9 +9,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Panic state for emergency protocol pausing
 ///
-/// @param pauseFlags Whether the protocol is currently paused (1 = paused, 0 = not paused)
-/// @param dailyPauseCount Number of times paused today (resets every 24 hours)
-/// @param consecutivePauseCount Number of consecutive pauses (resets when unpause happens)
+/// @param pauseFlags: u8 Whether the protocol is currently paused (1 = paused, 0 = not paused)
+/// @param dailyPauseCount: u8 Number of times paused today (resets every 24 hours)
+/// @param consecutivePauseCount: u8 Number of consecutive pauses (resets when unpause happens)
 /// @param pauseStartTimestamp Timestamp when the current pause started (0 if not paused)
 ///                            * When a pause is extended before expiring, this could be in the future.
 /// @param lastDailyResetTimestamp Timestamp of the last daily reset (for tracking daily pause count)

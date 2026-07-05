@@ -22,7 +22,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// including treasury, protocol parameters, and more.
 ///
 /// @param base Base.
-/// @param bump Bump seed
+/// @param bump: u8 Bump seed
 /// @param proposalCount: u64 The total number of Proposals
 /// @param locker The voting body associated with the Governor.
 ///               This account is responsible for handling vote proceedings, such as:

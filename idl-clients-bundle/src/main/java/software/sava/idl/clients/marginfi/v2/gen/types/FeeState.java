@@ -27,6 +27,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param placeholder0: u64
 /// @param bankInitFlatSolFee: u32 Flat fee assessed when a new bank is initialized, in lamports.
 ///                           * In SOL, in native decimals.
+/// @param bumpSeed: u8
 /// @param liquidationMaxFee Liquidators can claim at this premium, when liquidating an asset in receivership
 ///                          liquidation, e.g. (1 + this) * amount repaid >= asset seized
 ///                          * A percentage

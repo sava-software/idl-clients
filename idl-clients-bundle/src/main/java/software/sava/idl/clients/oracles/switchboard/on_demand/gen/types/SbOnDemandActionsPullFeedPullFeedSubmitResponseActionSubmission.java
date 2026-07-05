@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
+/// @param recoveryId: u8
+/// @param offset: u8
 public record SbOnDemandActionsPullFeedPullFeedSubmitResponseActionSubmission(BigInteger value,
                                                                               byte[] signature,
                                                                               int recoveryId,

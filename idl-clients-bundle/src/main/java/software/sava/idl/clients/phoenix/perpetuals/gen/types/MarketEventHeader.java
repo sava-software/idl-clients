@@ -20,6 +20,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param prevSequenceNumberSlot: u64
 /// @param assetId: u32
 /// @param tickSize: u32
+/// @param baseLotDecimals: i8
+/// @param quoteLotDecimals: u8
 public record MarketEventHeader(Discriminator discriminator,
                                 long sequenceNumber,
                                 long prevSequenceNumberSlot,

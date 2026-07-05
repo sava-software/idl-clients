@@ -848,6 +848,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param poolIndex: u8
   record Clone(int poolIndex,
                boolean quantityIsInput,
                boolean quantityIsCollateral) implements Swap {
@@ -894,6 +895,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param srcLstValueCalcAccs: u8
+  /// @param dstLstValueCalcAccs: u8
   /// @param srcLstIndex: u32
   /// @param dstLstIndex: u32
   record SanctumS(int srcLstValueCalcAccs,
@@ -951,6 +954,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param lstValueCalcAccs: u8
   /// @param lstIndex: u32
   record SanctumSAddLiquidity(int lstValueCalcAccs, long lstIndex) implements Swap {
 
@@ -991,6 +995,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param lstValueCalcAccs: u8
   /// @param lstIndex: u32
   record SanctumSRemoveLiquidity(int lstValueCalcAccs, long lstIndex) implements Swap {
 
@@ -1330,6 +1335,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param inIndex: u8
+  /// @param outIndex: u8
   record Perena(int inIndex, int outIndex) implements Swap {
 
     public static final int BYTES = 2;
@@ -1517,6 +1524,7 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param blacklistBump: u8
   record GoonFi(boolean isBid, int blacklistBump) implements Swap {
 
     public static final int BYTES = 2;
@@ -2311,6 +2319,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param srcLstValueCalcAccs: u8
+  /// @param dstLstValueCalcAccs: u8
   /// @param srcLstIndex: u32
   /// @param dstLstIndex: u32
   record SanctumSV2(int srcLstValueCalcAccs,
@@ -2483,6 +2493,8 @@ public sealed interface Swap extends RustEnum permits
     }
   }
 
+  /// @param maxSplitQuoteCalls: u8
+  /// @param maxSplitCandidates: u8
   record DynamicV2(CandidateSwapWithBps[] candidateSwaps,
                    int maxSplitQuoteCalls,
                    int maxSplitCandidates) implements Swap {

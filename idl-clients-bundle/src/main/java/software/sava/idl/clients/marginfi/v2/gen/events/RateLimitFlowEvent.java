@@ -10,8 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// @param flowDirection 0 = outflow (withdraw/borrow), 1 = inflow (deposit/repay)
+/// @param flowDirection: u8 0 = outflow (withdraw/borrow), 1 = inflow (deposit/repay)
 /// @param nativeAmount: u64 Amount in native tokens
+/// @param mintDecimals: u8
 /// @param currentTimestamp Unix timestamp when the flow was recorded
 public record RateLimitFlowEvent(Discriminator discriminator,
                                  PublicKey group,

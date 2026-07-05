@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
+/// @param condition: u8
 /// @param toleranceBps: u16
 /// @param sources: u16[] Extension-prone source list is stored last so future versioned layouts can
 ///                add more sources without shifting earlier scalar fields.

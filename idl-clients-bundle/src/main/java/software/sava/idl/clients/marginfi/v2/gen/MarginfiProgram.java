@@ -3402,6 +3402,8 @@ public final class MarginfiProgram {
   /// * `liquidator_accounts` - number of remaining accounts for the liquidator
   ///
   /// @param assetAmount: u64
+  /// @param liquidateeAccounts: u8
+  /// @param liquidatorAccounts: u8
   public static Instruction lendingAccountLiquidate(final AccountMeta invokedMarginfiProgramMeta,
                                                     final PublicKey groupKey,
                                                     final PublicKey assetBankKey,
@@ -3445,6 +3447,8 @@ public final class MarginfiProgram {
   /// * `liquidator_accounts` - number of remaining accounts for the liquidator
   ///
   /// @param assetAmount: u64
+  /// @param liquidateeAccounts: u8
+  /// @param liquidatorAccounts: u8
   public static Instruction lendingAccountLiquidate(final AccountMeta invokedMarginfiProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final long assetAmount,
@@ -3462,6 +3466,8 @@ public final class MarginfiProgram {
   }
 
   /// @param assetAmount: u64
+  /// @param liquidateeAccounts: u8
+  /// @param liquidatorAccounts: u8
   public record LendingAccountLiquidateIxData(Discriminator discriminator,
                                               long assetAmount,
                                               int liquidateeAccounts,
@@ -5628,6 +5634,7 @@ public final class MarginfiProgram {
 
   /// (admin only)
   ///
+  /// @param setup: u8
   public static Instruction lendingPoolConfigureBankOracle(final AccountMeta invokedMarginfiProgramMeta,
                                                            final PublicKey groupKey,
                                                            final PublicKey adminKey,
@@ -5644,6 +5651,7 @@ public final class MarginfiProgram {
 
   /// (admin only)
   ///
+  /// @param setup: u8
   public static Instruction lendingPoolConfigureBankOracle(final AccountMeta invokedMarginfiProgramMeta,
                                                            final List<AccountMeta> keys,
                                                            final int setup,
@@ -5657,6 +5665,7 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
+  /// @param setup: u8
   public record LendingPoolConfigureBankOracleIxData(Discriminator discriminator, int setup, PublicKey oracle) implements SerDe {  
 
     public static LendingPoolConfigureBankOracleIxData read(final Instruction instruction) {

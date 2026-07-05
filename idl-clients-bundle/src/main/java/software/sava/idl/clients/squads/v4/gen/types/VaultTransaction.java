@@ -23,9 +23,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param multisig The multisig this belongs to.
 /// @param creator Member of the Multisig who submitted the transaction.
 /// @param index: u64 Index of this transaction within the multisig.
-/// @param bump bump for the transaction seeds.
-/// @param vaultIndex Index of the vault this transaction belongs to.
-/// @param vaultBump Derivation bump of the vault PDA this transaction belongs to.
+/// @param bump: u8 bump for the transaction seeds.
+/// @param vaultIndex: u8 Index of the vault this transaction belongs to.
+/// @param vaultBump: u8 Derivation bump of the vault PDA this transaction belongs to.
 /// @param ephemeralSignerBumps Derivation bumps for additional signers.
 ///                             Some transactions require multiple signers. Often these additional signers are "ephemeral" keypairs
 ///                             that are generated on the client with a sole purpose of signing the transaction and be discarded immediately after.

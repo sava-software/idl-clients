@@ -19,7 +19,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param maxDepositXAmount: u64 threshold for deposit token x
 /// @param minWithdrawYAmount: u64 threshold for withdraw token y
 /// @param maxDepositYAmount: u64 threshold for deposit token y
-/// @param shrinkMode shrink mode
+/// @param shrinkMode: u8 shrink mode
 /// @param padding padding 32 bytes for future usage
 /// @param removes removes
 /// @param adds adds

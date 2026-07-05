@@ -3,6 +3,8 @@ package software.sava.idl.clients.jupiter.swap.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param accountsType: u8
+/// @param length: u8
 public record RemainingAccountsSlice(int accountsType, int length) implements SerDe {
 
   public static final int BYTES = 2;

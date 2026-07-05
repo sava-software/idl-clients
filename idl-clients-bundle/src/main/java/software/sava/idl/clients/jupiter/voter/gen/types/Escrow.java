@@ -22,7 +22,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 /// @param locker The Locker that this Escrow is part of.
 /// @param owner The key of the account that is authorized to stake into/withdraw from this Escrow.
-/// @param bump Bump seed.
+/// @param bump: u8 Bump seed.
 /// @param tokens The token account holding the escrow tokens.
 /// @param amount: u64 Amount of tokens staked.
 /// @param escrowStartedAt When the Escrow::owner started their escrow.

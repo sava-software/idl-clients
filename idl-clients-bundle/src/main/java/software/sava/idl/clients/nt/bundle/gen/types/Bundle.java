@@ -34,6 +34,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param currentAllocationBps: u32
 /// @param oracleBuffer: u64
 /// @param assetPrecision: u64
+/// @param assetDecimals: u8
 /// @param minDepositAmount: u64
 public record Bundle(PublicKey _address,
                      Discriminator discriminator,

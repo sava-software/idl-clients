@@ -11,6 +11,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// MarketEvent::ExchangeStatusChanged Borsh variant 41.
 /// Payload type: ExchangeStatusChangedEvent.
 ///
+/// @param previousBits: u8
+/// @param newBits: u8
 public record ExchangeStatusChangedEvent(Discriminator discriminator,
                                          int previousBits,
                                          int newBits,

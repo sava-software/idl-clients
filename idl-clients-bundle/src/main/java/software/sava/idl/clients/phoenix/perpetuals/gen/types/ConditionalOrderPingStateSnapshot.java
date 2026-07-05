@@ -3,6 +3,7 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
 
+/// @param value: u8
 public record ConditionalOrderPingStateSnapshot(int value) implements SerDe {
 
   public static final int BYTES = 1;

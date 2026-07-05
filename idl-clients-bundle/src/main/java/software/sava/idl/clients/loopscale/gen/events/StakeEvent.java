@@ -10,7 +10,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
+/// @param durationType: u8
 /// @param amount: u64
+/// @param actionType: u8
 /// @param principalAmount: u64
 public record StakeEvent(Discriminator discriminator,
                          PublicKey user,

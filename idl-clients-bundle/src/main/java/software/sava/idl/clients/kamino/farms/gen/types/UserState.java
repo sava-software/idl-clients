@@ -21,7 +21,7 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param userId: u64
-/// @param isFarmDelegated Indicate if this user state is part of a delegated farm
+/// @param isFarmDelegated: u8 Indicate if this user state is part of a delegated farm
 /// @param rewardsTallyScaled Rewards tally used for computation of gained rewards
 ///                           (scaled from `Decimal` representation).
 /// @param rewardsIssuedUnclaimed: u64[] Number of reward tokens ready for claim

@@ -20,6 +20,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param bookPriceStaleThreshold: u64
 /// @param perpPriceStaleThreshold: u64
 /// @param oracleDivergenceRadius: u16
+/// @param minOracleResponses: u8
 /// @param commoditiesAfterHoursRadiusBps: u64
 public record MarkPriceConfig(long emaPeriodSlots,
                               long emaDiffRadius,

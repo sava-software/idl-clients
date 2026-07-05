@@ -19,11 +19,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param version: u64
 /// @param slot: u64 Kamino reserves are only good for one slot, e.g. `refresh_reserve` must have run within the
 ///             same slot as any ix that needs a non-stale reserve e.g. withdraw.
-/// @param stale True if the reserve is stale, which will cause various ixes like withdraw to fail. Typically
+/// @param stale: u8 True if the reserve is stale, which will cause various ixes like withdraw to fail. Typically
 ///              set to true in any tx that modifies reserve balance, and set to false at the end of a
 ///              successful `refresh_reserve`
 ///              * 0 = false, 1 = true
-/// @param priceStatus Each bit represents a passed check in price status.
+/// @param priceStatus: u8 Each bit represents a passed check in price status.
 ///                    * 63 = all checks passed
 ///                    
 ///                    Otherwise:

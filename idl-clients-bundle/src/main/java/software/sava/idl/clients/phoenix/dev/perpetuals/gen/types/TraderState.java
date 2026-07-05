@@ -12,6 +12,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Fixed trader state embedded in the Phoenix Eternal DynamicTraderHeader.
 ///
 /// @param flags: u32
+/// @param globalPositionSequenceNumber: u8
+/// @param makerFeeOverrideMultiplier: i8
+/// @param takerFeeOverrideMultiplier: i8
 public record TraderState(long quoteLotCollateral,
                           long flags,
                           byte[] padding,
