@@ -324,10 +324,25 @@ public interface SPLClient {
     return moveLamports(sourceStakeAccount.address(), destinationStakeAccount, sourceStakeAccount.stakeAuthority(), lamports);
   }
 
+  /// Creates a SetComputeUnitLimit instruction, padded to cover the consumption of the compute
+  /// budget instructions themselves, for legacy and v0 transactions.
+  ///
+  /// Per SIMD-0385, v1 transactions ignore ComputeBudgetProgram instructions for configuration;
+  /// they are processed as successful no-ops which still consume compute units. Configure a v1
+  /// transaction via {@link software.sava.core.tx.TxBuilder#computeUnitLimit(int)} or update it
+  /// in place via {@link software.sava.core.tx.Transaction#setComputeUnitLimit(int)} instead.
   default Instruction computeBudgetLimit(final int computeUnitLimit) {
     return setComputeUnitLimit(solanaAccounts().invokedComputeBudgetProgram(), computeUnitLimit + COMPUTE_UNITS_CONSUMED);
   }
 
+  /// Creates a SetComputeUnitPrice instruction, priced in micro-lamports per compute unit, for
+  /// legacy and v0 transactions.
+  ///
+  /// Per SIMD-0385, v1 transactions ignore ComputeBudgetProgram instructions for configuration;
+  /// they are processed as successful no-ops which still consume compute units. Configure a v1
+  /// transaction's priority fee, in total lamports, via
+  /// {@link software.sava.core.tx.TxBuilder#priorityFeeLamports(long)} or update it in place via
+  /// {@link software.sava.core.tx.Transaction#setPriorityFeeLamports(long)} instead.
   default Instruction computeBudgetPrice(final long microLamportComputeUnitPrice) {
     return setComputeUnitPrice(solanaAccounts().invokedComputeBudgetProgram(), microLamportComputeUnitPrice);
   }

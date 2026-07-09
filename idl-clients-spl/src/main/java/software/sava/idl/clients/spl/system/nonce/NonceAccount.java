@@ -111,13 +111,13 @@ public record NonceAccount(PublicKey address,
     );
   }
 
-  public void setNonce(final Transaction transaction) {
-    setNonce(SolanaAccounts.MAIN_NET, transaction);
+  public Transaction setNonce(final Transaction transaction) {
+    return setNonce(SolanaAccounts.MAIN_NET, transaction);
   }
 
-  public void setNonce(final SolanaAccounts solanaAccounts, final Transaction transaction) {
+  public Transaction setNonce(final SolanaAccounts solanaAccounts, final Transaction transaction) {
     transaction.setRecentBlockHash(nonce);
     final var advanceNonceIx = advanceNonceAccount(solanaAccounts);
-    transaction.prependIx(advanceNonceIx);
+    return transaction.prependIx(advanceNonceIx);
   }
 }
