@@ -89,6 +89,13 @@
       "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
     },
     {
+      "name": "Jupiter Perpetuals",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "jupiter.perpetuals",
+      "program": "PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu"
+    },
+    {
       "name": "Jupiter Swap",
       "source": "idl-clients-bundle",
       "module": "bundle",
