@@ -5,6 +5,7 @@ import software.sava.core.accounts.meta.AccountMeta;
 
 public record LoopscaleAccountsRecord(AccountMeta invokedLoopscaleProgram,
                                       PublicKey eventAuthority,
-                                      PublicKey bsAuth) implements LoopscaleAccounts {
+                                      PublicKey protocolAdmin,
+                                      PublicKey protocolAdminState) implements LoopscaleAccounts {
 
 }

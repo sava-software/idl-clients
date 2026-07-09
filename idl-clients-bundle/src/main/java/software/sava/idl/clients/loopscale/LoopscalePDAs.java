@@ -10,6 +10,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class LoopscalePDAs {
 
+  public static ProgramDerivedAddress protocolAdminState(final PublicKey programId) {
+    return PublicKey.findProgramAddress(
+        List.of("protocol_admin_state".getBytes(US_ASCII)),
+        programId
+    );
+  }
+
   public static ProgramDerivedAddress eventAuthority(final PublicKey programId) {
     return PublicKey.findProgramAddress(
         List.of("__event_authority".getBytes(US_ASCII)),

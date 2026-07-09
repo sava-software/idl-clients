@@ -11,18 +11,19 @@ public interface LoopscaleAccounts {
       "CyNKPfqsSLAejjZtEeNG3pR4SkPhSPHXdGhuNTyudrNs"
   );
 
-  static LoopscaleAccounts createAccounts(final PublicKey loopscaleProgram, final PublicKey bsAuth) {
+  static LoopscaleAccounts createAccounts(final PublicKey loopscaleProgram, final PublicKey protocolAdmin) {
     return new LoopscaleAccountsRecord(
         AccountMeta.createInvoked(loopscaleProgram),
         LoopscalePDAs.eventAuthority(loopscaleProgram).publicKey(),
-        bsAuth
+        protocolAdmin,
+        LoopscalePDAs.protocolAdminState(loopscaleProgram).publicKey()
     );
   }
 
-  static LoopscaleAccounts createAccounts(final String loopscaleProgram, final String bsAuth) {
+  static LoopscaleAccounts createAccounts(final String loopscaleProgram, final String protocolAdmin) {
     return createAccounts(
         PublicKey.fromBase58Encoded(loopscaleProgram),
-        PublicKey.fromBase58Encoded(bsAuth)
+        PublicKey.fromBase58Encoded(protocolAdmin)
     );
   }
 
@@ -34,7 +35,9 @@ public interface LoopscaleAccounts {
 
   PublicKey eventAuthority();
 
-  PublicKey bsAuth();
+  PublicKey protocolAdmin();
+
+  PublicKey protocolAdminState();
 
   default ProgramDerivedAddress loanPda(final PublicKey borrower, final long nonce) {
     return LoopscalePDAs.loan(borrower, nonce, loopscaleProgram());

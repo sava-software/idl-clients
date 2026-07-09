@@ -54,6 +54,7 @@ public sealed interface LoopscaleError extends ProgramError permits
     LoopscaleError.InvalidOrcaAccountOwner,
     LoopscaleError.InvalidCLMMPosition,
     LoopscaleError.InvalidOrcaWhirlpool,
+    LoopscaleError.InvalidRaydiumPool,
     LoopscaleError.InvalidTickArray,
     LoopscaleError.PositionDoesNotMatchPool,
     LoopscaleError.PositionDoesNotMatchMint,
@@ -154,7 +155,11 @@ public sealed interface LoopscaleError extends ProgramError permits
     LoopscaleError.LoanNotEligibleForClose,
     LoopscaleError.UnsupportedAction,
     LoopscaleError.ZeroPrice,
-    LoopscaleError.ZeroLpMint {
+    LoopscaleError.ZeroLpMint,
+    LoopscaleError.InvalidComponentPrice,
+    LoopscaleError.UnexpectedMultiComponentPrice,
+    LoopscaleError.InvalidComponentOracleType,
+    LoopscaleError.ProtocolFrozen {
 
   static LoopscaleError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -208,107 +213,112 @@ public sealed interface LoopscaleError extends ProgramError permits
       case 6047 -> InvalidOrcaAccountOwner.INSTANCE;
       case 6048 -> InvalidCLMMPosition.INSTANCE;
       case 6049 -> InvalidOrcaWhirlpool.INSTANCE;
-      case 6050 -> InvalidTickArray.INSTANCE;
-      case 6051 -> PositionDoesNotMatchPool.INSTANCE;
-      case 6052 -> PositionDoesNotMatchMint.INSTANCE;
-      case 6053 -> TickArrayDoesNotMatchPool.INSTANCE;
-      case 6054 -> MintDoesNotMatchWhirlpool.INSTANCE;
-      case 6055 -> InvalidPythAccount.INSTANCE;
-      case 6056 -> InvalidLtvData.INSTANCE;
-      case 6057 -> LtvDataNotFound.INSTANCE;
-      case 6058 -> InvalidMintType.INSTANCE;
-      case 6059 -> InvalidMeteoraPool.INSTANCE;
-      case 6060 -> InvalidLPAccount.INSTANCE;
-      case 6061 -> UnsupportedCurveType.INSTANCE;
-      case 6062 -> SwapSimulationFailed.INSTANCE;
-      case 6063 -> InvalidBaseMintForFLP.INSTANCE;
-      case 6064 -> FLPPoolNotSupported.INSTANCE;
-      case 6065 -> InvalidAssetIndex.INSTANCE;
-      case 6066 -> InvalidAssetIndexGuidance.INSTANCE;
-      case 6067 -> PriceNotFound.INSTANCE;
-      case 6068 -> DuplicateCollateralMintsInMarketInformation.INSTANCE;
-      case 6069 -> MarketInformationFull.INSTANCE;
-      case 6070 -> AssetNotFoundInMarketInformation.INSTANCE;
-      case 6071 -> MarketInformationAlreadyExists.INSTANCE;
-      case 6072 -> InvalidVaultStrategy.INSTANCE;
-      case 6073 -> LedgerHealthy.INSTANCE;
-      case 6074 -> InvalidLiquidation.INSTANCE;
-      case 6075 -> InsufficientLiquidity.INSTANCE;
-      case 6076 -> InterestNotAccrued.INSTANCE;
-      case 6077 -> InvalidInterestPerSecondForClose.INSTANCE;
-      case 6078 -> InvalidExternalYieldAmountForClose.INSTANCE;
-      case 6079 -> InvalidCurrentDeployedAmountForClose.INSTANCE;
-      case 6080 -> InvalidTokenBalanceForClose.INSTANCE;
-      case 6081 -> InvalidFeeClaimableForClose.INSTANCE;
-      case 6082 -> InvalidLender.INSTANCE;
-      case 6083 -> SaleSlippageExceeded.INSTANCE;
-      case 6084 -> ExpectedLtvMismatch.INSTANCE;
-      case 6085 -> ExpectedLqtMismatch.INSTANCE;
-      case 6086 -> ExpectedApyMismatch.INSTANCE;
-      case 6087 -> LpSlippageToleranceExceeded.INSTANCE;
-      case 6088 -> InvalidStartTime.INSTANCE;
-      case 6089 -> InvalidWeightMatrix.INSTANCE;
-      case 6090 -> LoanPastEndTime.INSTANCE;
-      case 6091 -> InvalidCollateralWithdrawalWeightMatrixAssignment.INSTANCE;
-      case 6092 -> TooMuchCollateralWithdrawn.INSTANCE;
-      case 6093 -> InvalidPrincipalWithdrawalWeightMatrixAssignment.INSTANCE;
-      case 6094 -> LedgerInRefinanceGracePeriodCannotBeWithdrawn.INSTANCE;
-      case 6095 -> OnlyBorrowerCanRefinanceBeforeEnd.INSTANCE;
-      case 6096 -> InvalidDurationForLedgerSale.INSTANCE;
-      case 6097 -> StakedSolCurrentlyUnsupported.INSTANCE;
-      case 6098 -> LoanNotFullyRepaid.INSTANCE;
-      case 6099 -> InvalidLiquidationThreshold.INSTANCE;
-      case 6100 -> MaxAmountInExceeded.INSTANCE;
-      case 6101 -> MinAmountOutNotMet.INSTANCE;
-      case 6102 -> MissingAccount.INSTANCE;
-      case 6103 -> LQTWeightedCollateralValueGreaterThanTotalDebt.INSTANCE;
-      case 6104 -> StrategyOriginationsDisabled.INSTANCE;
-      case 6105 -> TimelockDelayNotMet.INSTANCE;
-      case 6106 -> VaultDepositsDisabled.INSTANCE;
-      case 6107 -> InvalidLpParams.INSTANCE;
-      case 6108 -> InvalidVaultAccount.INSTANCE;
-      case 6109 -> InvalidStakeDuration.INSTANCE;
-      case 6110 -> EndTimeBeforeStartTime.INSTANCE;
-      case 6111 -> InvalidRewardStartTime.INSTANCE;
-      case 6112 -> RewardsScheduleNotEligibleForClose.INSTANCE;
-      case 6113 -> InvalidRewardEndTime.INSTANCE;
-      case 6114 -> NoAvailableRewardsSchedules.INSTANCE;
-      case 6115 -> NotEnoughRewardsTransferred.INSTANCE;
-      case 6116 -> InvalidCpiProgram.INSTANCE;
-      case 6117 -> InvalidRewardMint.INSTANCE;
-      case 6118 -> InvalidPerenaPoolData.INSTANCE;
-      case 6119 -> PriceUnderflow.INSTANCE;
-      case 6120 -> InvalidPriceData.INSTANCE;
-      case 6121 -> RemoveCollateralNotFullDisable.INSTANCE;
-      case 6122 -> LedgerStrategyMismatch.INSTANCE;
-      case 6123 -> InvalidLiquidityAmount.INSTANCE;
-      case 6124 -> CannotUpdateVaultMarketInfo.INSTANCE;
-      case 6125 -> InvalidRewardsMint.INSTANCE;
-      case 6126 -> InvalidOracleAccountOwner.INSTANCE;
-      case 6127 -> InvalidMaxUncertainty.INSTANCE;
-      case 6128 -> InvalidMaxAge.INSTANCE;
-      case 6129 -> InvalidLtv.INSTANCE;
-      case 6130 -> UnsupportedOracleType.INSTANCE;
-      case 6131 -> InvalidQuoteMint.INSTANCE;
-      case 6132 -> TotalWeightedStakeSupplyZero.INSTANCE;
-      case 6133 -> TransferFeeNotSupported.INSTANCE;
-      case 6134 -> TransferHookNotSupported.INSTANCE;
-      case 6135 -> InvalidAuthority.INSTANCE;
-      case 6136 -> InvalidAssetMint.INSTANCE;
-      case 6137 -> PythPriceVerificationLevelTooLow.INSTANCE;
-      case 6138 -> InvalidInputAmount.INSTANCE;
-      case 6139 -> InvalidCpiAccount.INSTANCE;
-      case 6140 -> CollateralAllocationCapExceeded.INSTANCE;
-      case 6141 -> OneHourPrincipalCapExceeded.INSTANCE;
-      case 6142 -> TwentyFourHourPrincipalCapExceeded.INSTANCE;
-      case 6143 -> OutstandingPrincipalCapExceeded.INSTANCE;
-      case 6144 -> NoCapsToUpdateFoundOnTimelock.INSTANCE;
-      case 6145 -> IllegalLoanLock.INSTANCE;
-      case 6146 -> InvalidLoanStatus.INSTANCE;
-      case 6147 -> LoanNotEligibleForClose.INSTANCE;
-      case 6148 -> UnsupportedAction.INSTANCE;
-      case 6149 -> ZeroPrice.INSTANCE;
-      case 6150 -> ZeroLpMint.INSTANCE;
+      case 6050 -> InvalidRaydiumPool.INSTANCE;
+      case 6051 -> InvalidTickArray.INSTANCE;
+      case 6052 -> PositionDoesNotMatchPool.INSTANCE;
+      case 6053 -> PositionDoesNotMatchMint.INSTANCE;
+      case 6054 -> TickArrayDoesNotMatchPool.INSTANCE;
+      case 6055 -> MintDoesNotMatchWhirlpool.INSTANCE;
+      case 6056 -> InvalidPythAccount.INSTANCE;
+      case 6057 -> InvalidLtvData.INSTANCE;
+      case 6058 -> LtvDataNotFound.INSTANCE;
+      case 6059 -> InvalidMintType.INSTANCE;
+      case 6060 -> InvalidMeteoraPool.INSTANCE;
+      case 6061 -> InvalidLPAccount.INSTANCE;
+      case 6062 -> UnsupportedCurveType.INSTANCE;
+      case 6063 -> SwapSimulationFailed.INSTANCE;
+      case 6064 -> InvalidBaseMintForFLP.INSTANCE;
+      case 6065 -> FLPPoolNotSupported.INSTANCE;
+      case 6066 -> InvalidAssetIndex.INSTANCE;
+      case 6067 -> InvalidAssetIndexGuidance.INSTANCE;
+      case 6068 -> PriceNotFound.INSTANCE;
+      case 6069 -> DuplicateCollateralMintsInMarketInformation.INSTANCE;
+      case 6070 -> MarketInformationFull.INSTANCE;
+      case 6071 -> AssetNotFoundInMarketInformation.INSTANCE;
+      case 6072 -> MarketInformationAlreadyExists.INSTANCE;
+      case 6073 -> InvalidVaultStrategy.INSTANCE;
+      case 6074 -> LedgerHealthy.INSTANCE;
+      case 6075 -> InvalidLiquidation.INSTANCE;
+      case 6076 -> InsufficientLiquidity.INSTANCE;
+      case 6077 -> InterestNotAccrued.INSTANCE;
+      case 6078 -> InvalidInterestPerSecondForClose.INSTANCE;
+      case 6079 -> InvalidExternalYieldAmountForClose.INSTANCE;
+      case 6080 -> InvalidCurrentDeployedAmountForClose.INSTANCE;
+      case 6081 -> InvalidTokenBalanceForClose.INSTANCE;
+      case 6082 -> InvalidFeeClaimableForClose.INSTANCE;
+      case 6083 -> InvalidLender.INSTANCE;
+      case 6084 -> SaleSlippageExceeded.INSTANCE;
+      case 6085 -> ExpectedLtvMismatch.INSTANCE;
+      case 6086 -> ExpectedLqtMismatch.INSTANCE;
+      case 6087 -> ExpectedApyMismatch.INSTANCE;
+      case 6088 -> LpSlippageToleranceExceeded.INSTANCE;
+      case 6089 -> InvalidStartTime.INSTANCE;
+      case 6090 -> InvalidWeightMatrix.INSTANCE;
+      case 6091 -> LoanPastEndTime.INSTANCE;
+      case 6092 -> InvalidCollateralWithdrawalWeightMatrixAssignment.INSTANCE;
+      case 6093 -> TooMuchCollateralWithdrawn.INSTANCE;
+      case 6094 -> InvalidPrincipalWithdrawalWeightMatrixAssignment.INSTANCE;
+      case 6095 -> LedgerInRefinanceGracePeriodCannotBeWithdrawn.INSTANCE;
+      case 6096 -> OnlyBorrowerCanRefinanceBeforeEnd.INSTANCE;
+      case 6097 -> InvalidDurationForLedgerSale.INSTANCE;
+      case 6098 -> StakedSolCurrentlyUnsupported.INSTANCE;
+      case 6099 -> LoanNotFullyRepaid.INSTANCE;
+      case 6100 -> InvalidLiquidationThreshold.INSTANCE;
+      case 6101 -> MaxAmountInExceeded.INSTANCE;
+      case 6102 -> MinAmountOutNotMet.INSTANCE;
+      case 6103 -> MissingAccount.INSTANCE;
+      case 6104 -> LQTWeightedCollateralValueGreaterThanTotalDebt.INSTANCE;
+      case 6105 -> StrategyOriginationsDisabled.INSTANCE;
+      case 6106 -> TimelockDelayNotMet.INSTANCE;
+      case 6107 -> VaultDepositsDisabled.INSTANCE;
+      case 6108 -> InvalidLpParams.INSTANCE;
+      case 6109 -> InvalidVaultAccount.INSTANCE;
+      case 6110 -> InvalidStakeDuration.INSTANCE;
+      case 6111 -> EndTimeBeforeStartTime.INSTANCE;
+      case 6112 -> InvalidRewardStartTime.INSTANCE;
+      case 6113 -> RewardsScheduleNotEligibleForClose.INSTANCE;
+      case 6114 -> InvalidRewardEndTime.INSTANCE;
+      case 6115 -> NoAvailableRewardsSchedules.INSTANCE;
+      case 6116 -> NotEnoughRewardsTransferred.INSTANCE;
+      case 6117 -> InvalidCpiProgram.INSTANCE;
+      case 6118 -> InvalidRewardMint.INSTANCE;
+      case 6119 -> InvalidPerenaPoolData.INSTANCE;
+      case 6120 -> PriceUnderflow.INSTANCE;
+      case 6121 -> InvalidPriceData.INSTANCE;
+      case 6122 -> RemoveCollateralNotFullDisable.INSTANCE;
+      case 6123 -> LedgerStrategyMismatch.INSTANCE;
+      case 6124 -> InvalidLiquidityAmount.INSTANCE;
+      case 6125 -> CannotUpdateVaultMarketInfo.INSTANCE;
+      case 6126 -> InvalidRewardsMint.INSTANCE;
+      case 6127 -> InvalidOracleAccountOwner.INSTANCE;
+      case 6128 -> InvalidMaxUncertainty.INSTANCE;
+      case 6129 -> InvalidMaxAge.INSTANCE;
+      case 6130 -> InvalidLtv.INSTANCE;
+      case 6131 -> UnsupportedOracleType.INSTANCE;
+      case 6132 -> InvalidQuoteMint.INSTANCE;
+      case 6133 -> TotalWeightedStakeSupplyZero.INSTANCE;
+      case 6134 -> TransferFeeNotSupported.INSTANCE;
+      case 6135 -> TransferHookNotSupported.INSTANCE;
+      case 6136 -> InvalidAuthority.INSTANCE;
+      case 6137 -> InvalidAssetMint.INSTANCE;
+      case 6138 -> PythPriceVerificationLevelTooLow.INSTANCE;
+      case 6139 -> InvalidInputAmount.INSTANCE;
+      case 6140 -> InvalidCpiAccount.INSTANCE;
+      case 6141 -> CollateralAllocationCapExceeded.INSTANCE;
+      case 6142 -> OneHourPrincipalCapExceeded.INSTANCE;
+      case 6143 -> TwentyFourHourPrincipalCapExceeded.INSTANCE;
+      case 6144 -> OutstandingPrincipalCapExceeded.INSTANCE;
+      case 6145 -> NoCapsToUpdateFoundOnTimelock.INSTANCE;
+      case 6146 -> IllegalLoanLock.INSTANCE;
+      case 6147 -> InvalidLoanStatus.INSTANCE;
+      case 6148 -> LoanNotEligibleForClose.INSTANCE;
+      case 6149 -> UnsupportedAction.INSTANCE;
+      case 6150 -> ZeroPrice.INSTANCE;
+      case 6151 -> ZeroLpMint.INSTANCE;
+      case 6152 -> InvalidComponentPrice.INSTANCE;
+      case 6153 -> UnexpectedMultiComponentPrice.INSTANCE;
+      case 6154 -> InvalidComponentOracleType.INSTANCE;
+      case 6155 -> ProtocolFrozen.INSTANCE;
       default -> null;
     };
   }
@@ -663,710 +673,745 @@ public sealed interface LoopscaleError extends ProgramError permits
     );
   }
 
+  record InvalidRaydiumPool(int code, String msg) implements LoopscaleError {
+
+    public static final InvalidRaydiumPool INSTANCE = new InvalidRaydiumPool(
+        6050, "Invalid raydium pool"
+    );
+  }
+
   record InvalidTickArray(int code, String msg) implements LoopscaleError {
 
     public static final InvalidTickArray INSTANCE = new InvalidTickArray(
-        6050, "Invalid CLMM tick array"
+        6051, "Invalid CLMM tick array"
     );
   }
 
   record PositionDoesNotMatchPool(int code, String msg) implements LoopscaleError {
 
     public static final PositionDoesNotMatchPool INSTANCE = new PositionDoesNotMatchPool(
-        6051, "Position does not match CLMM pool"
+        6052, "Position does not match CLMM pool"
     );
   }
 
   record PositionDoesNotMatchMint(int code, String msg) implements LoopscaleError {
 
     public static final PositionDoesNotMatchMint INSTANCE = new PositionDoesNotMatchMint(
-        6052, "Position does not match mint"
+        6053, "Position does not match mint"
     );
   }
 
   record TickArrayDoesNotMatchPool(int code, String msg) implements LoopscaleError {
 
     public static final TickArrayDoesNotMatchPool INSTANCE = new TickArrayDoesNotMatchPool(
-        6053, "Tick array does not match whirlpool"
+        6054, "Tick array does not match whirlpool"
     );
   }
 
   record MintDoesNotMatchWhirlpool(int code, String msg) implements LoopscaleError {
 
     public static final MintDoesNotMatchWhirlpool INSTANCE = new MintDoesNotMatchWhirlpool(
-        6054, "Mint does not match whirlpool"
+        6055, "Mint does not match whirlpool"
     );
   }
 
   record InvalidPythAccount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidPythAccount INSTANCE = new InvalidPythAccount(
-        6055, "Invalid Pyth account"
+        6056, "Invalid Pyth account"
     );
   }
 
   record InvalidLtvData(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLtvData INSTANCE = new InvalidLtvData(
-        6056, "Invalid LTV data"
+        6057, "Invalid LTV data"
     );
   }
 
   record LtvDataNotFound(int code, String msg) implements LoopscaleError {
 
     public static final LtvDataNotFound INSTANCE = new LtvDataNotFound(
-        6057, "Ltv data not found"
+        6058, "Ltv data not found"
     );
   }
 
   record InvalidMintType(int code, String msg) implements LoopscaleError {
 
     public static final InvalidMintType INSTANCE = new InvalidMintType(
-        6058, "Invalid mint type for oracle"
+        6059, "Invalid mint type for oracle"
     );
   }
 
   record InvalidMeteoraPool(int code, String msg) implements LoopscaleError {
 
     public static final InvalidMeteoraPool INSTANCE = new InvalidMeteoraPool(
-        6059, "Invalid meteora pool"
+        6060, "Invalid meteora pool"
     );
   }
 
   record InvalidLPAccount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLPAccount INSTANCE = new InvalidLPAccount(
-        6060, "Invalid LP account"
+        6061, "Invalid LP account"
     );
   }
 
   record UnsupportedCurveType(int code, String msg) implements LoopscaleError {
 
     public static final UnsupportedCurveType INSTANCE = new UnsupportedCurveType(
-        6061, "Unsupported curve type"
+        6062, "Unsupported curve type"
     );
   }
 
   record SwapSimulationFailed(int code, String msg) implements LoopscaleError {
 
     public static final SwapSimulationFailed INSTANCE = new SwapSimulationFailed(
-        6062, "Swap simulation failed"
+        6063, "Swap simulation failed"
     );
   }
 
   record InvalidBaseMintForFLP(int code, String msg) implements LoopscaleError {
 
     public static final InvalidBaseMintForFLP INSTANCE = new InvalidBaseMintForFLP(
-        6063, "Invalid base mint for FLP"
+        6064, "Invalid base mint for FLP"
     );
   }
 
   record FLPPoolNotSupported(int code, String msg) implements LoopscaleError {
 
     public static final FLPPoolNotSupported INSTANCE = new FLPPoolNotSupported(
-        6064, "FLP pool not supported"
+        6065, "FLP pool not supported"
     );
   }
 
   record InvalidAssetIndex(int code, String msg) implements LoopscaleError {
 
     public static final InvalidAssetIndex INSTANCE = new InvalidAssetIndex(
-        6065, "Invalid asset index"
+        6066, "Invalid asset index"
     );
   }
 
   record InvalidAssetIndexGuidance(int code, String msg) implements LoopscaleError {
 
     public static final InvalidAssetIndexGuidance INSTANCE = new InvalidAssetIndexGuidance(
-        6066, "Invalid asset index guidance"
+        6067, "Invalid asset index guidance"
     );
   }
 
   record PriceNotFound(int code, String msg) implements LoopscaleError {
 
     public static final PriceNotFound INSTANCE = new PriceNotFound(
-        6067, "Quote price not found in cache"
+        6068, "Quote price not found in cache"
     );
   }
 
   record DuplicateCollateralMintsInMarketInformation(int code, String msg) implements LoopscaleError {
 
     public static final DuplicateCollateralMintsInMarketInformation INSTANCE = new DuplicateCollateralMintsInMarketInformation(
-        6068, "Duplicate collateral mints in market information"
+        6069, "Duplicate collateral mints in market information"
     );
   }
 
   record MarketInformationFull(int code, String msg) implements LoopscaleError {
 
     public static final MarketInformationFull INSTANCE = new MarketInformationFull(
-        6069, "Market information is full"
+        6070, "Market information is full"
     );
   }
 
   record AssetNotFoundInMarketInformation(int code, String msg) implements LoopscaleError {
 
     public static final AssetNotFoundInMarketInformation INSTANCE = new AssetNotFoundInMarketInformation(
-        6070, "Asset not found in market information"
+        6071, "Asset not found in market information"
     );
   }
 
   record MarketInformationAlreadyExists(int code, String msg) implements LoopscaleError {
 
     public static final MarketInformationAlreadyExists INSTANCE = new MarketInformationAlreadyExists(
-        6071, "Market information already exists"
+        6072, "Market information already exists"
     );
   }
 
   record InvalidVaultStrategy(int code, String msg) implements LoopscaleError {
 
     public static final InvalidVaultStrategy INSTANCE = new InvalidVaultStrategy(
-        6072, "Invalid vault strategy"
+        6073, "Invalid vault strategy"
     );
   }
 
   record LedgerHealthy(int code, String msg) implements LoopscaleError {
 
     public static final LedgerHealthy INSTANCE = new LedgerHealthy(
-        6073, "Cannot liquidate a healthy ledger"
+        6074, "Cannot liquidate a healthy ledger"
     );
   }
 
   record InvalidLiquidation(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLiquidation INSTANCE = new InvalidLiquidation(
-        6074, "Invalid liquidation"
+        6075, "Invalid liquidation"
     );
   }
 
   record InsufficientLiquidity(int code, String msg) implements LoopscaleError {
 
     public static final InsufficientLiquidity INSTANCE = new InsufficientLiquidity(
-        6075, "Liquidity buffer has been exceeded"
+        6076, "Liquidity buffer has been exceeded"
     );
   }
 
   record InterestNotAccrued(int code, String msg) implements LoopscaleError {
 
     public static final InterestNotAccrued INSTANCE = new InterestNotAccrued(
-        6076, "Interest not accrued"
+        6077, "Interest not accrued"
     );
   }
 
   record InvalidInterestPerSecondForClose(int code, String msg) implements LoopscaleError {
 
     public static final InvalidInterestPerSecondForClose INSTANCE = new InvalidInterestPerSecondForClose(
-        6077, "Invalid interest per second. Must be 0"
+        6078, "Invalid interest per second. Must be 0"
     );
   }
 
   record InvalidExternalYieldAmountForClose(int code, String msg) implements LoopscaleError {
 
     public static final InvalidExternalYieldAmountForClose INSTANCE = new InvalidExternalYieldAmountForClose(
-        6078, "Invalid external yield amount. Must be 0"
+        6079, "Invalid external yield amount. Must be 0"
     );
   }
 
   record InvalidCurrentDeployedAmountForClose(int code, String msg) implements LoopscaleError {
 
     public static final InvalidCurrentDeployedAmountForClose INSTANCE = new InvalidCurrentDeployedAmountForClose(
-        6079, "Invalid current deployed amount. Must be 0"
+        6080, "Invalid current deployed amount. Must be 0"
     );
   }
 
   record InvalidTokenBalanceForClose(int code, String msg) implements LoopscaleError {
 
     public static final InvalidTokenBalanceForClose INSTANCE = new InvalidTokenBalanceForClose(
-        6080, "Invalid token balance. Must be 0"
+        6081, "Invalid token balance. Must be 0"
     );
   }
 
   record InvalidFeeClaimableForClose(int code, String msg) implements LoopscaleError {
 
     public static final InvalidFeeClaimableForClose INSTANCE = new InvalidFeeClaimableForClose(
-        6081, "Invalid fee claimable. Must be 0"
+        6082, "Invalid fee claimable. Must be 0"
     );
   }
 
   record InvalidLender(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLender INSTANCE = new InvalidLender(
-        6082, "Invalid lender"
+        6083, "Invalid lender"
     );
   }
 
   record SaleSlippageExceeded(int code, String msg) implements LoopscaleError {
 
     public static final SaleSlippageExceeded INSTANCE = new SaleSlippageExceeded(
-        6083, "Sale slippage exceeded"
+        6084, "Sale slippage exceeded"
     );
   }
 
   record ExpectedLtvMismatch(int code, String msg) implements LoopscaleError {
 
     public static final ExpectedLtvMismatch INSTANCE = new ExpectedLtvMismatch(
-        6084, "Expected LTV mismatch"
+        6085, "Expected LTV mismatch"
     );
   }
 
   record ExpectedLqtMismatch(int code, String msg) implements LoopscaleError {
 
     public static final ExpectedLqtMismatch INSTANCE = new ExpectedLqtMismatch(
-        6085, "Expected LQT mismatch"
+        6086, "Expected LQT mismatch"
     );
   }
 
   record ExpectedApyMismatch(int code, String msg) implements LoopscaleError {
 
     public static final ExpectedApyMismatch INSTANCE = new ExpectedApyMismatch(
-        6086, "Expected APY mismatch"
+        6087, "Expected APY mismatch"
     );
   }
 
   record LpSlippageToleranceExceeded(int code, String msg) implements LoopscaleError {
 
     public static final LpSlippageToleranceExceeded INSTANCE = new LpSlippageToleranceExceeded(
-        6087, "Lp slippage tolerance exceeded"
+        6088, "Lp slippage tolerance exceeded"
     );
   }
 
   record InvalidStartTime(int code, String msg) implements LoopscaleError {
 
     public static final InvalidStartTime INSTANCE = new InvalidStartTime(
-        6088, "Invalid start time. Loan start time must be within 5 minutes of current time"
+        6089, "Invalid start time. Loan start time must be within 5 minutes of current time"
     );
   }
 
   record InvalidWeightMatrix(int code, String msg) implements LoopscaleError {
 
     public static final InvalidWeightMatrix INSTANCE = new InvalidWeightMatrix(
-        6089, "Invalid weight matrix"
+        6090, "Invalid weight matrix"
     );
   }
 
   record LoanPastEndTime(int code, String msg) implements LoopscaleError {
 
     public static final LoanPastEndTime INSTANCE = new LoanPastEndTime(
-        6090, "Loan is past end time"
+        6091, "Loan is past end time"
     );
   }
 
   record InvalidCollateralWithdrawalWeightMatrixAssignment(int code, String msg) implements LoopscaleError {
 
     public static final InvalidCollateralWithdrawalWeightMatrixAssignment INSTANCE = new InvalidCollateralWithdrawalWeightMatrixAssignment(
-        6091, "Invalid collateral withdrawal weight matrix assignment"
+        6092, "Invalid collateral withdrawal weight matrix assignment"
     );
   }
 
   record TooMuchCollateralWithdrawn(int code, String msg) implements LoopscaleError {
 
     public static final TooMuchCollateralWithdrawn INSTANCE = new TooMuchCollateralWithdrawn(
-        6092, "Too much collateral withdrawn"
+        6093, "Too much collateral withdrawn"
     );
   }
 
   record InvalidPrincipalWithdrawalWeightMatrixAssignment(int code, String msg) implements LoopscaleError {
 
     public static final InvalidPrincipalWithdrawalWeightMatrixAssignment INSTANCE = new InvalidPrincipalWithdrawalWeightMatrixAssignment(
-        6093, "Invalid principal withdrawal weight matrix assignment"
+        6094, "Invalid principal withdrawal weight matrix assignment"
     );
   }
 
   record LedgerInRefinanceGracePeriodCannotBeWithdrawn(int code, String msg) implements LoopscaleError {
 
     public static final LedgerInRefinanceGracePeriodCannotBeWithdrawn INSTANCE = new LedgerInRefinanceGracePeriodCannotBeWithdrawn(
-        6094, "Ledger in refinance grace period cannot be withdrawn"
+        6095, "Ledger in refinance grace period cannot be withdrawn"
     );
   }
 
   record OnlyBorrowerCanRefinanceBeforeEnd(int code, String msg) implements LoopscaleError {
 
     public static final OnlyBorrowerCanRefinanceBeforeEnd INSTANCE = new OnlyBorrowerCanRefinanceBeforeEnd(
-        6095, "Only borrower can refinance before end"
+        6096, "Only borrower can refinance before end"
     );
   }
 
   record InvalidDurationForLedgerSale(int code, String msg) implements LoopscaleError {
 
     public static final InvalidDurationForLedgerSale INSTANCE = new InvalidDurationForLedgerSale(
-        6096, "Invalid duration for ledger sale"
+        6097, "Invalid duration for ledger sale"
     );
   }
 
   record StakedSolCurrentlyUnsupported(int code, String msg) implements LoopscaleError {
 
     public static final StakedSolCurrentlyUnsupported INSTANCE = new StakedSolCurrentlyUnsupported(
-        6097, "Staked sol is currently unsupported"
+        6098, "Staked sol is currently unsupported"
     );
   }
 
   record LoanNotFullyRepaid(int code, String msg) implements LoopscaleError {
 
     public static final LoanNotFullyRepaid INSTANCE = new LoanNotFullyRepaid(
-        6098, "Loan has not been fully repaid"
+        6099, "Loan has not been fully repaid"
     );
   }
 
   record InvalidLiquidationThreshold(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLiquidationThreshold INSTANCE = new InvalidLiquidationThreshold(
-        6099, "Liquidation threshold must be >= ltv + buffer"
+        6100, "Liquidation threshold must be >= ltv + buffer"
     );
   }
 
   record MaxAmountInExceeded(int code, String msg) implements LoopscaleError {
 
     public static final MaxAmountInExceeded INSTANCE = new MaxAmountInExceeded(
-        6100, "Max amount in exceeded"
+        6101, "Max amount in exceeded"
     );
   }
 
   record MinAmountOutNotMet(int code, String msg) implements LoopscaleError {
 
     public static final MinAmountOutNotMet INSTANCE = new MinAmountOutNotMet(
-        6101, "Min amount out not met"
+        6102, "Min amount out not met"
     );
   }
 
   record MissingAccount(int code, String msg) implements LoopscaleError {
 
     public static final MissingAccount INSTANCE = new MissingAccount(
-        6102, "Missing account"
+        6103, "Missing account"
     );
   }
 
   record LQTWeightedCollateralValueGreaterThanTotalDebt(int code, String msg) implements LoopscaleError {
 
     public static final LQTWeightedCollateralValueGreaterThanTotalDebt INSTANCE = new LQTWeightedCollateralValueGreaterThanTotalDebt(
-        6103, "LQT weighted collateral value is greater than total debt"
+        6104, "LQT weighted collateral value is greater than total debt"
     );
   }
 
   record StrategyOriginationsDisabled(int code, String msg) implements LoopscaleError {
 
     public static final StrategyOriginationsDisabled INSTANCE = new StrategyOriginationsDisabled(
-        6104, "Strategy originations are disabled"
+        6105, "Strategy originations are disabled"
     );
   }
 
   record TimelockDelayNotMet(int code, String msg) implements LoopscaleError {
 
     public static final TimelockDelayNotMet INSTANCE = new TimelockDelayNotMet(
-        6105, "Timelock delay not met"
+        6106, "Timelock delay not met"
     );
   }
 
   record VaultDepositsDisabled(int code, String msg) implements LoopscaleError {
 
     public static final VaultDepositsDisabled INSTANCE = new VaultDepositsDisabled(
-        6106, "Vault deposits are disabled"
+        6107, "Vault deposits are disabled"
     );
   }
 
   record InvalidLpParams(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLpParams INSTANCE = new InvalidLpParams(
-        6107, "Invalid LP params"
+        6108, "Invalid LP params"
     );
   }
 
   record InvalidVaultAccount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidVaultAccount INSTANCE = new InvalidVaultAccount(
-        6108, "Invalid Met Vault account"
+        6109, "Invalid Met Vault account"
     );
   }
 
   record InvalidStakeDuration(int code, String msg) implements LoopscaleError {
 
     public static final InvalidStakeDuration INSTANCE = new InvalidStakeDuration(
-        6109, "Invalid stake duration"
+        6110, "Invalid stake duration"
     );
   }
 
   record EndTimeBeforeStartTime(int code, String msg) implements LoopscaleError {
 
     public static final EndTimeBeforeStartTime INSTANCE = new EndTimeBeforeStartTime(
-        6110, "End time before start time"
+        6111, "End time before start time"
     );
   }
 
   record InvalidRewardStartTime(int code, String msg) implements LoopscaleError {
 
     public static final InvalidRewardStartTime INSTANCE = new InvalidRewardStartTime(
-        6111, "Invalid reward start time"
+        6112, "Invalid reward start time"
     );
   }
 
   record RewardsScheduleNotEligibleForClose(int code, String msg) implements LoopscaleError {
 
     public static final RewardsScheduleNotEligibleForClose INSTANCE = new RewardsScheduleNotEligibleForClose(
-        6112, "Rewards schedule not eligible for close"
+        6113, "Rewards schedule not eligible for close"
     );
   }
 
   record InvalidRewardEndTime(int code, String msg) implements LoopscaleError {
 
     public static final InvalidRewardEndTime INSTANCE = new InvalidRewardEndTime(
-        6113, "Invalid reward end time"
+        6114, "Invalid reward end time"
     );
   }
 
   record NoAvailableRewardsSchedules(int code, String msg) implements LoopscaleError {
 
     public static final NoAvailableRewardsSchedules INSTANCE = new NoAvailableRewardsSchedules(
-        6114, "No available rewards schedules"
+        6115, "No available rewards schedules"
     );
   }
 
   record NotEnoughRewardsTransferred(int code, String msg) implements LoopscaleError {
 
     public static final NotEnoughRewardsTransferred INSTANCE = new NotEnoughRewardsTransferred(
-        6115, "Not enough rewards transferred"
+        6116, "Not enough rewards transferred"
     );
   }
 
   record InvalidCpiProgram(int code, String msg) implements LoopscaleError {
 
     public static final InvalidCpiProgram INSTANCE = new InvalidCpiProgram(
-        6116, "Invalid CPI program"
+        6117, "Invalid CPI program"
     );
   }
 
   record InvalidRewardMint(int code, String msg) implements LoopscaleError {
 
     public static final InvalidRewardMint INSTANCE = new InvalidRewardMint(
-        6117, "Invalid reward mint"
+        6118, "Invalid reward mint"
     );
   }
 
   record InvalidPerenaPoolData(int code, String msg) implements LoopscaleError {
 
     public static final InvalidPerenaPoolData INSTANCE = new InvalidPerenaPoolData(
-        6118, "Invalid perena pool data"
+        6119, "Invalid perena pool data"
     );
   }
 
   record PriceUnderflow(int code, String msg) implements LoopscaleError {
 
     public static final PriceUnderflow INSTANCE = new PriceUnderflow(
-        6119, "Price underflow"
+        6120, "Price underflow"
     );
   }
 
   record InvalidPriceData(int code, String msg) implements LoopscaleError {
 
     public static final InvalidPriceData INSTANCE = new InvalidPriceData(
-        6120, "Invalid price data"
+        6121, "Invalid price data"
     );
   }
 
   record RemoveCollateralNotFullDisable(int code, String msg) implements LoopscaleError {
 
     public static final RemoveCollateralNotFullDisable INSTANCE = new RemoveCollateralNotFullDisable(
-        6121, "Remove collateral timelock needs to be full disable"
+        6122, "Remove collateral timelock needs to be full disable"
     );
   }
 
   record LedgerStrategyMismatch(int code, String msg) implements LoopscaleError {
 
     public static final LedgerStrategyMismatch INSTANCE = new LedgerStrategyMismatch(
-        6122, "Ledger strategy mismatch"
+        6123, "Ledger strategy mismatch"
     );
   }
 
   record InvalidLiquidityAmount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLiquidityAmount INSTANCE = new InvalidLiquidityAmount(
-        6123, "Invalid liquidity amount"
+        6124, "Invalid liquidity amount"
     );
   }
 
   record CannotUpdateVaultMarketInfo(int code, String msg) implements LoopscaleError {
 
     public static final CannotUpdateVaultMarketInfo INSTANCE = new CannotUpdateVaultMarketInfo(
-        6124, "Cannot update vault market info"
+        6125, "Cannot update vault market info"
     );
   }
 
   record InvalidRewardsMint(int code, String msg) implements LoopscaleError {
 
     public static final InvalidRewardsMint INSTANCE = new InvalidRewardsMint(
-        6125, "Invalid rewards mint"
+        6126, "Invalid rewards mint"
     );
   }
 
   record InvalidOracleAccountOwner(int code, String msg) implements LoopscaleError {
 
     public static final InvalidOracleAccountOwner INSTANCE = new InvalidOracleAccountOwner(
-        6126, "Invalid oracle account owner"
+        6127, "Invalid oracle account owner"
     );
   }
 
   record InvalidMaxUncertainty(int code, String msg) implements LoopscaleError {
 
     public static final InvalidMaxUncertainty INSTANCE = new InvalidMaxUncertainty(
-        6127, "Invalid max uncertainty"
+        6128, "Invalid max uncertainty"
     );
   }
 
   record InvalidMaxAge(int code, String msg) implements LoopscaleError {
 
     public static final InvalidMaxAge INSTANCE = new InvalidMaxAge(
-        6128, "Invalid max age"
+        6129, "Invalid max age"
     );
   }
 
   record InvalidLtv(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLtv INSTANCE = new InvalidLtv(
-        6129, "Invalid ltv"
+        6130, "Invalid ltv"
     );
   }
 
   record UnsupportedOracleType(int code, String msg) implements LoopscaleError {
 
     public static final UnsupportedOracleType INSTANCE = new UnsupportedOracleType(
-        6130, "Unsupported oracle type"
+        6131, "Unsupported oracle type"
     );
   }
 
   record InvalidQuoteMint(int code, String msg) implements LoopscaleError {
 
     public static final InvalidQuoteMint INSTANCE = new InvalidQuoteMint(
-        6131, "Invalid quote mint"
+        6132, "Invalid quote mint"
     );
   }
 
   record TotalWeightedStakeSupplyZero(int code, String msg) implements LoopscaleError {
 
     public static final TotalWeightedStakeSupplyZero INSTANCE = new TotalWeightedStakeSupplyZero(
-        6132, "Total weighted stake supply is zero"
+        6133, "Total weighted stake supply is zero"
     );
   }
 
   record TransferFeeNotSupported(int code, String msg) implements LoopscaleError {
 
     public static final TransferFeeNotSupported INSTANCE = new TransferFeeNotSupported(
-        6133, "Transfer fee is not supported"
+        6134, "Transfer fee is not supported"
     );
   }
 
   record TransferHookNotSupported(int code, String msg) implements LoopscaleError {
 
     public static final TransferHookNotSupported INSTANCE = new TransferHookNotSupported(
-        6134, "Transfer hook is not supported"
+        6135, "Transfer hook is not supported"
     );
   }
 
   record InvalidAuthority(int code, String msg) implements LoopscaleError {
 
     public static final InvalidAuthority INSTANCE = new InvalidAuthority(
-        6135, "Invalid authority"
+        6136, "Invalid authority"
     );
   }
 
   record InvalidAssetMint(int code, String msg) implements LoopscaleError {
 
     public static final InvalidAssetMint INSTANCE = new InvalidAssetMint(
-        6136, "Invalid asset mint"
+        6137, "Invalid asset mint"
     );
   }
 
   record PythPriceVerificationLevelTooLow(int code, String msg) implements LoopscaleError {
 
     public static final PythPriceVerificationLevelTooLow INSTANCE = new PythPriceVerificationLevelTooLow(
-        6137, "Pyth Price verification level too low"
+        6138, "Pyth Price verification level too low"
     );
   }
 
   record InvalidInputAmount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidInputAmount INSTANCE = new InvalidInputAmount(
-        6138, "Invalid input amount"
+        6139, "Invalid input amount"
     );
   }
 
   record InvalidCpiAccount(int code, String msg) implements LoopscaleError {
 
     public static final InvalidCpiAccount INSTANCE = new InvalidCpiAccount(
-        6139, "Invalid cpi account"
+        6140, "Invalid cpi account"
     );
   }
 
   record CollateralAllocationCapExceeded(int code, String msg) implements LoopscaleError {
 
     public static final CollateralAllocationCapExceeded INSTANCE = new CollateralAllocationCapExceeded(
-        6140, "Collateral allocation cap exceeded"
+        6141, "Collateral allocation cap exceeded"
     );
   }
 
   record OneHourPrincipalCapExceeded(int code, String msg) implements LoopscaleError {
 
     public static final OneHourPrincipalCapExceeded INSTANCE = new OneHourPrincipalCapExceeded(
-        6141, "1 Hour principal cap exceeded"
+        6142, "1 Hour principal cap exceeded"
     );
   }
 
   record TwentyFourHourPrincipalCapExceeded(int code, String msg) implements LoopscaleError {
 
     public static final TwentyFourHourPrincipalCapExceeded INSTANCE = new TwentyFourHourPrincipalCapExceeded(
-        6142, "24 Hour principal cap exceeded"
+        6143, "24 Hour principal cap exceeded"
     );
   }
 
   record OutstandingPrincipalCapExceeded(int code, String msg) implements LoopscaleError {
 
     public static final OutstandingPrincipalCapExceeded INSTANCE = new OutstandingPrincipalCapExceeded(
-        6143, "Outstanding principal cap exceeded"
+        6144, "Outstanding principal cap exceeded"
     );
   }
 
   record NoCapsToUpdateFoundOnTimelock(int code, String msg) implements LoopscaleError {
 
     public static final NoCapsToUpdateFoundOnTimelock INSTANCE = new NoCapsToUpdateFoundOnTimelock(
-        6144, "No Caps to update found on timelock"
+        6145, "No Caps to update found on timelock"
     );
   }
 
   record IllegalLoanLock(int code, String msg) implements LoopscaleError {
 
     public static final IllegalLoanLock INSTANCE = new IllegalLoanLock(
-        6145, "Illegal loan lock"
+        6146, "Illegal loan lock"
     );
   }
 
   record InvalidLoanStatus(int code, String msg) implements LoopscaleError {
 
     public static final InvalidLoanStatus INSTANCE = new InvalidLoanStatus(
-        6146, "Invalid loan type"
+        6147, "Invalid loan type"
     );
   }
 
   record LoanNotEligibleForClose(int code, String msg) implements LoopscaleError {
 
     public static final LoanNotEligibleForClose INSTANCE = new LoanNotEligibleForClose(
-        6147, "Loan is not eligible for close"
+        6148, "Loan is not eligible for close"
     );
   }
 
   record UnsupportedAction(int code, String msg) implements LoopscaleError {
 
     public static final UnsupportedAction INSTANCE = new UnsupportedAction(
-        6148, "Invalid action"
+        6149, "Invalid action"
     );
   }
 
   record ZeroPrice(int code, String msg) implements LoopscaleError {
 
     public static final ZeroPrice INSTANCE = new ZeroPrice(
-        6149, "Zero price"
+        6150, "Zero price"
     );
   }
 
   record ZeroLpMint(int code, String msg) implements LoopscaleError {
 
     public static final ZeroLpMint INSTANCE = new ZeroLpMint(
-        6150, "LP to mint cannot be zero"
+        6151, "LP to mint cannot be zero"
+    );
+  }
+
+  record InvalidComponentPrice(int code, String msg) implements LoopscaleError {
+
+    public static final InvalidComponentPrice INSTANCE = new InvalidComponentPrice(
+        6152, "Invalid component price for CLMM position (zero or negative)"
+    );
+  }
+
+  record UnexpectedMultiComponentPrice(int code, String msg) implements LoopscaleError {
+
+    public static final UnexpectedMultiComponentPrice INSTANCE = new UnexpectedMultiComponentPrice(
+        6153, "Component token oracle returned multiple prices"
+    );
+  }
+
+  record InvalidComponentOracleType(int code, String msg) implements LoopscaleError {
+
+    public static final InvalidComponentOracleType INSTANCE = new InvalidComponentOracleType(
+        6154, "Component token oracle type not in single-price whitelist"
+    );
+  }
+
+  record ProtocolFrozen(int code, String msg) implements LoopscaleError {
+
+    public static final ProtocolFrozen INSTANCE = new ProtocolFrozen(
+        6155, "Protocol is frozen"
     );
   }
 }

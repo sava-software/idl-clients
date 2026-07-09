@@ -77,11 +77,12 @@ final class LoopscaleClientImpl implements LoopscaleClient {
     final var loan = LoopscalePDAs.loan(borrower, nonce, accounts.loopscaleProgram()).publicKey();
     return LoopscaleProgram.createLoan(
         accounts.invokedLoopscaleProgram(),
-        accounts.bsAuth(),
+        accounts.protocolAdmin(),
         feePayer,
         borrower,
         loan,
         solanaAccounts.systemProgram(),
+        accounts.protocolAdminState(),
         accounts.eventAuthority(),
         accounts.loopscaleProgram(),
         new CreateLoanParams(nonce)
@@ -104,7 +105,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
                                        final DepositCollateralParams params) {
     return LoopscaleProgram.depositCollateral(
         accounts.invokedLoopscaleProgram(),
-        accounts.bsAuth(),
+        accounts.protocolAdmin(),
         feePayer,
         borrower,
         loan,
@@ -115,6 +116,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
         solanaAccounts.systemProgram(),
         tokenProgram,
         solanaAccounts.associatedTokenAccountProgram(),
+        accounts.protocolAdminState(),
         accounts.eventAuthority(),
         accounts.loopscaleProgram(),
         params
@@ -146,9 +148,10 @@ final class LoopscaleClientImpl implements LoopscaleClient {
                                         final UpdateWeightMatrixParams params) {
     return LoopscaleProgram.updateWeightMatrix(
         accounts.invokedLoopscaleProgram(),
-        accounts.bsAuth(),
+        accounts.protocolAdmin(),
         borrower,
         loan,
+        accounts.protocolAdminState(),
         params
     );
   }
@@ -170,7 +173,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
                                      final BorrowPrincipalParams params) {
     return LoopscaleProgram.borrowPrincipal(
         accounts.invokedLoopscaleProgram(),
-        accounts.bsAuth(),
+        accounts.protocolAdmin(),
         feePayer,
         borrower,
         loan,
@@ -182,6 +185,7 @@ final class LoopscaleClientImpl implements LoopscaleClient {
         solanaAccounts.associatedTokenAccountProgram(),
         tokenProgram,
         solanaAccounts.systemProgram(),
+        accounts.protocolAdminState(),
         accounts.eventAuthority(),
         accounts.loopscaleProgram(),
         params

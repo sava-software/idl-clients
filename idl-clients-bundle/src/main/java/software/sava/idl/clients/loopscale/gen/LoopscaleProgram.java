@@ -9,7 +9,6 @@ import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.loopscale.gen.types.BorrowPrincipalParams;
 import software.sava.idl.clients.loopscale.gen.types.ClaimVaultFeeParams;
-import software.sava.idl.clients.loopscale.gen.types.CollateralAllocationParam;
 import software.sava.idl.clients.loopscale.gen.types.CreateLoanParams;
 import software.sava.idl.clients.loopscale.gen.types.CreateMarketInformationParams;
 import software.sava.idl.clients.loopscale.gen.types.CreateRewardsScheduleParams;
@@ -26,6 +25,7 @@ import software.sava.idl.clients.loopscale.gen.types.MultiCollateralTermsUpdateP
 import software.sava.idl.clients.loopscale.gen.types.RefinanceLedgerParams;
 import software.sava.idl.clients.loopscale.gen.types.RepayPrincipalParams;
 import software.sava.idl.clients.loopscale.gen.types.SellLedgerParams;
+import software.sava.idl.clients.loopscale.gen.types.SetProtocolAdminStateParams;
 import software.sava.idl.clients.loopscale.gen.types.TimelockUpdateParams;
 import software.sava.idl.clients.loopscale.gen.types.TransferPositionParams;
 import software.sava.idl.clients.loopscale.gen.types.UpdateAssetDataParams;
@@ -42,6 +42,7 @@ import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
 
+import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
@@ -59,7 +60,7 @@ public final class LoopscaleProgram {
   /// 6.
   /// 6.1. borrow principal
   ///
-  public static List<AccountMeta> borrowPrincipalKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> borrowPrincipalKeys(final PublicKey protocolAdminKey,
                                                       final PublicKey payerKey,
                                                       final PublicKey borrowerKey,
                                                       final PublicKey loanKey,
@@ -71,10 +72,11 @@ public final class LoopscaleProgram {
                                                       final PublicKey associatedTokenProgramKey,
                                                       final PublicKey tokenProgramKey,
                                                       final PublicKey systemProgramKey,
+                                                      final PublicKey protocolAdminStateKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
@@ -86,6 +88,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(tokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -96,7 +99,7 @@ public final class LoopscaleProgram {
   /// 6.1. borrow principal
   ///
   public static Instruction borrowPrincipal(final AccountMeta invokedLoopscaleProgramMeta,
-                                            final PublicKey bsAuthKey,
+                                            final PublicKey protocolAdminKey,
                                             final PublicKey payerKey,
                                             final PublicKey borrowerKey,
                                             final PublicKey loanKey,
@@ -108,11 +111,12 @@ public final class LoopscaleProgram {
                                             final PublicKey associatedTokenProgramKey,
                                             final PublicKey tokenProgramKey,
                                             final PublicKey systemProgramKey,
+                                            final PublicKey protocolAdminStateKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey,
                                             final BorrowPrincipalParams params) {
     final var keys = borrowPrincipalKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -124,6 +128,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       tokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -179,21 +184,23 @@ public final class LoopscaleProgram {
 
   /// 9.2.3 timelock cancel
   ///
-  public static List<AccountMeta> cancelTimelockKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> cancelTimelockKeys(final PublicKey protocolAdminKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey managerKey,
                                                      final PublicKey vaultKey,
                                                      final PublicKey timelockKey,
                                                      final PublicKey systemProgramKey,
+                                                     final PublicKey protocolAdminStateKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(managerKey),
       createWrite(vaultKey),
       createWrite(timelockKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -202,21 +209,23 @@ public final class LoopscaleProgram {
   /// 9.2.3 timelock cancel
   ///
   public static Instruction cancelTimelock(final AccountMeta invokedLoopscaleProgramMeta,
-                                           final PublicKey bsAuthKey,
+                                           final PublicKey protocolAdminKey,
                                            final PublicKey payerKey,
                                            final PublicKey managerKey,
                                            final PublicKey vaultKey,
                                            final PublicKey timelockKey,
                                            final PublicKey systemProgramKey,
+                                           final PublicKey protocolAdminStateKey,
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey) {
     final var keys = cancelTimelockKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       managerKey,
       vaultKey,
       timelockKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -234,7 +243,7 @@ public final class LoopscaleProgram {
 
   /// 9.1.2 vault manager actions
   ///
-  public static List<AccountMeta> claimVaultFeeKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> claimVaultFeeKeys(final PublicKey protocolAdminKey,
                                                     final PublicKey payerKey,
                                                     final PublicKey managerKey,
                                                     final PublicKey vaultKey,
@@ -246,10 +255,11 @@ public final class LoopscaleProgram {
                                                     final PublicKey tokenProgramKey,
                                                     final PublicKey associatedTokenProgramKey,
                                                     final PublicKey systemProgramKey,
+                                                    final PublicKey protocolAdminStateKey,
                                                     final PublicKey eventAuthorityKey,
                                                     final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(managerKey),
       createWrite(vaultKey),
@@ -261,6 +271,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -269,7 +280,7 @@ public final class LoopscaleProgram {
   /// 9.1.2 vault manager actions
   ///
   public static Instruction claimVaultFee(final AccountMeta invokedLoopscaleProgramMeta,
-                                          final PublicKey bsAuthKey,
+                                          final PublicKey protocolAdminKey,
                                           final PublicKey payerKey,
                                           final PublicKey managerKey,
                                           final PublicKey vaultKey,
@@ -281,11 +292,12 @@ public final class LoopscaleProgram {
                                           final PublicKey tokenProgramKey,
                                           final PublicKey associatedTokenProgramKey,
                                           final PublicKey systemProgramKey,
+                                          final PublicKey protocolAdminStateKey,
                                           final PublicKey eventAuthorityKey,
                                           final PublicKey programKey,
                                           final ClaimVaultFeeParams params) {
     final var keys = claimVaultFeeKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       managerKey,
       vaultKey,
@@ -297,6 +309,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -352,7 +365,7 @@ public final class LoopscaleProgram {
 
   /// 9.1.1.5 vault user claim rewards
   ///
-  public static List<AccountMeta> claimVaultRewardsKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> claimVaultRewardsKeys(final PublicKey protocolAdminKey,
                                                         final PublicKey payerKey,
                                                         final PublicKey userKey,
                                                         final PublicKey vaultKey,
@@ -361,10 +374,11 @@ public final class LoopscaleProgram {
                                                         final PublicKey stakeAccountKey,
                                                         final PublicKey associatedTokenProgramKey,
                                                         final PublicKey systemProgramKey,
+                                                        final PublicKey protocolAdminStateKey,
                                                         final PublicKey eventAuthorityKey,
                                                         final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createRead(userKey),
       createRead(vaultKey),
@@ -373,6 +387,7 @@ public final class LoopscaleProgram {
       createWrite(stakeAccountKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -381,7 +396,7 @@ public final class LoopscaleProgram {
   /// 9.1.1.5 vault user claim rewards
   ///
   public static Instruction claimVaultRewards(final AccountMeta invokedLoopscaleProgramMeta,
-                                              final PublicKey bsAuthKey,
+                                              final PublicKey protocolAdminKey,
                                               final PublicKey payerKey,
                                               final PublicKey userKey,
                                               final PublicKey vaultKey,
@@ -390,11 +405,12 @@ public final class LoopscaleProgram {
                                               final PublicKey stakeAccountKey,
                                               final PublicKey associatedTokenProgramKey,
                                               final PublicKey systemProgramKey,
+                                              final PublicKey protocolAdminStateKey,
                                               final PublicKey eventAuthorityKey,
                                               final PublicKey programKey,
                                               final PublicKey[] mints) {
     final var keys = claimVaultRewardsKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       userKey,
       vaultKey,
@@ -403,6 +419,7 @@ public final class LoopscaleProgram {
       stakeAccountKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -456,19 +473,21 @@ public final class LoopscaleProgram {
 
   /// 1.4 close loan
   ///
-  public static List<AccountMeta> closeLoanKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> closeLoanKeys(final PublicKey protocolAdminKey,
                                                 final PublicKey payerKey,
                                                 final PublicKey borrowerKey,
                                                 final PublicKey loanKey,
                                                 final PublicKey systemProgramKey,
+                                                final PublicKey protocolAdminStateKey,
                                                 final PublicKey eventAuthorityKey,
                                                 final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -477,19 +496,21 @@ public final class LoopscaleProgram {
   /// 1.4 close loan
   ///
   public static Instruction closeLoan(final AccountMeta invokedLoopscaleProgramMeta,
-                                      final PublicKey bsAuthKey,
+                                      final PublicKey protocolAdminKey,
                                       final PublicKey payerKey,
                                       final PublicKey borrowerKey,
                                       final PublicKey loanKey,
                                       final PublicKey systemProgramKey,
+                                      final PublicKey protocolAdminStateKey,
                                       final PublicKey eventAuthorityKey,
                                       final PublicKey programKey) {
     final var keys = closeLoanKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -507,7 +528,7 @@ public final class LoopscaleProgram {
 
   /// 8.5 close strategy
   ///
-  public static List<AccountMeta> closeStrategyKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> closeStrategyKeys(final PublicKey protocolAdminKey,
                                                     final PublicKey payerKey,
                                                     final PublicKey lenderKey,
                                                     final PublicKey strategyKey,
@@ -515,10 +536,11 @@ public final class LoopscaleProgram {
                                                     final PublicKey tokenProgramKey,
                                                     final PublicKey associatedTokenProgramKey,
                                                     final PublicKey systemProgramKey,
+                                                    final PublicKey protocolAdminStateKey,
                                                     final PublicKey eventAuthorityKey,
                                                     final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(lenderKey),
       createWrite(strategyKey),
@@ -526,6 +548,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -534,7 +557,7 @@ public final class LoopscaleProgram {
   /// 8.5 close strategy
   ///
   public static Instruction closeStrategy(final AccountMeta invokedLoopscaleProgramMeta,
-                                          final PublicKey bsAuthKey,
+                                          final PublicKey protocolAdminKey,
                                           final PublicKey payerKey,
                                           final PublicKey lenderKey,
                                           final PublicKey strategyKey,
@@ -542,10 +565,11 @@ public final class LoopscaleProgram {
                                           final PublicKey tokenProgramKey,
                                           final PublicKey associatedTokenProgramKey,
                                           final PublicKey systemProgramKey,
+                                          final PublicKey protocolAdminStateKey,
                                           final PublicKey eventAuthorityKey,
                                           final PublicKey programKey) {
     final var keys = closeStrategyKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       lenderKey,
       strategyKey,
@@ -553,6 +577,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -573,19 +598,21 @@ public final class LoopscaleProgram {
   /// 1. loan instructions
   /// 1.1 create loan
   ///
-  public static List<AccountMeta> createLoanKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createLoanKeys(final PublicKey protocolAdminKey,
                                                  final PublicKey payerKey,
                                                  final PublicKey borrowerKey,
                                                  final PublicKey loanKey,
                                                  final PublicKey systemProgramKey,
+                                                 final PublicKey protocolAdminStateKey,
                                                  final PublicKey eventAuthorityKey,
                                                  final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -597,20 +624,22 @@ public final class LoopscaleProgram {
   /// 1.1 create loan
   ///
   public static Instruction createLoan(final AccountMeta invokedLoopscaleProgramMeta,
-                                       final PublicKey bsAuthKey,
+                                       final PublicKey protocolAdminKey,
                                        final PublicKey payerKey,
                                        final PublicKey borrowerKey,
                                        final PublicKey loanKey,
                                        final PublicKey systemProgramKey,
+                                       final PublicKey protocolAdminStateKey,
                                        final PublicKey eventAuthorityKey,
                                        final PublicKey programKey,
                                        final CreateLoanParams params) {
     final var keys = createLoanKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -670,15 +699,17 @@ public final class LoopscaleProgram {
   /// 7. oracle instructions
   /// 7.1 create market information account
   ///
-  public static List<AccountMeta> createMarketInformationKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createMarketInformationKeys(final PublicKey protocolAdminKey,
                                                               final PublicKey marketInformationKey,
                                                               final PublicKey principalMintKey,
-                                                              final PublicKey systemProgramKey) {
+                                                              final PublicKey systemProgramKey,
+                                                              final PublicKey protocolAdminStateKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWrite(marketInformationKey),
       createRead(principalMintKey),
-      createRead(systemProgramKey)
+      createRead(systemProgramKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
@@ -686,16 +717,18 @@ public final class LoopscaleProgram {
   /// 7.1 create market information account
   ///
   public static Instruction createMarketInformation(final AccountMeta invokedLoopscaleProgramMeta,
-                                                    final PublicKey bsAuthKey,
+                                                    final PublicKey protocolAdminKey,
                                                     final PublicKey marketInformationKey,
                                                     final PublicKey principalMintKey,
                                                     final PublicKey systemProgramKey,
+                                                    final PublicKey protocolAdminStateKey,
                                                     final CreateMarketInformationParams params) {
     final var keys = createMarketInformationKeys(
-      bsAuthKey,
+      protocolAdminKey,
       marketInformationKey,
       principalMintKey,
-      systemProgramKey
+      systemProgramKey,
+      protocolAdminStateKey
     );
     return createMarketInformation(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -751,7 +784,7 @@ public final class LoopscaleProgram {
   /// 9.5 reward management instructions
   /// 9.5.1 create rewards schedule
   ///
-  public static List<AccountMeta> createRewardsScheduleKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createRewardsScheduleKeys(final PublicKey protocolAdminKey,
                                                             final PublicKey payerKey,
                                                             final PublicKey managerKey,
                                                             final PublicKey rewardsSourceKey,
@@ -763,10 +796,11 @@ public final class LoopscaleProgram {
                                                             final PublicKey tokenProgramKey,
                                                             final PublicKey associatedTokenProgramKey,
                                                             final PublicKey systemProgramKey,
+                                                            final PublicKey protocolAdminStateKey,
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(managerKey),
       createReadOnlySigner(rewardsSourceKey),
@@ -778,6 +812,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -788,7 +823,7 @@ public final class LoopscaleProgram {
   ///
   /// @param amountToTransfer: u64
   public static Instruction createRewardsSchedule(final AccountMeta invokedLoopscaleProgramMeta,
-                                                  final PublicKey bsAuthKey,
+                                                  final PublicKey protocolAdminKey,
                                                   final PublicKey payerKey,
                                                   final PublicKey managerKey,
                                                   final PublicKey rewardsSourceKey,
@@ -800,12 +835,13 @@ public final class LoopscaleProgram {
                                                   final PublicKey tokenProgramKey,
                                                   final PublicKey associatedTokenProgramKey,
                                                   final PublicKey systemProgramKey,
+                                                  final PublicKey protocolAdminStateKey,
                                                   final PublicKey eventAuthorityKey,
                                                   final PublicKey programKey,
                                                   final CreateRewardsScheduleParams params,
                                                   final long amountToTransfer) {
     final var keys = createRewardsScheduleKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       managerKey,
       rewardsSourceKey,
@@ -817,6 +853,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -883,23 +920,25 @@ public final class LoopscaleProgram {
   /// 8. strategy instructions
   /// 8.1 create strategy
   ///
-  public static List<AccountMeta> createStrategyKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createStrategyKeys(final PublicKey protocolAdminKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey nonceKey,
                                                      final PublicKey strategyKey,
                                                      final PublicKey marketInformationKey,
                                                      final PublicKey principalMintKey,
                                                      final PublicKey systemProgramKey,
+                                                     final PublicKey protocolAdminStateKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(nonceKey),
       createWrite(strategyKey),
       createRead(marketInformationKey),
       createRead(principalMintKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -909,24 +948,26 @@ public final class LoopscaleProgram {
   /// 8.1 create strategy
   ///
   public static Instruction createStrategy(final AccountMeta invokedLoopscaleProgramMeta,
-                                           final PublicKey bsAuthKey,
+                                           final PublicKey protocolAdminKey,
                                            final PublicKey payerKey,
                                            final PublicKey nonceKey,
                                            final PublicKey strategyKey,
                                            final PublicKey marketInformationKey,
                                            final PublicKey principalMintKey,
                                            final PublicKey systemProgramKey,
+                                           final PublicKey protocolAdminStateKey,
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey,
                                            final CreateStrategyParams params) {
     final var keys = createStrategyKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       nonceKey,
       strategyKey,
       marketInformationKey,
       principalMintKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -982,7 +1023,7 @@ public final class LoopscaleProgram {
   /// 9.2 timelock instructions
   /// 9.2.1 timelock create
   ///
-  public static List<AccountMeta> createTimelockKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createTimelockKeys(final PublicKey protocolAdminKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey managerKey,
                                                      final PublicKey vaultKey,
@@ -990,10 +1031,11 @@ public final class LoopscaleProgram {
                                                      final PublicKey vaultMarketInformationKey,
                                                      final PublicKey externalMarketInformationKey,
                                                      final PublicKey systemProgramKey,
+                                                     final PublicKey protocolAdminStateKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(managerKey),
       createWrite(vaultKey),
@@ -1001,6 +1043,7 @@ public final class LoopscaleProgram {
       createWrite(vaultMarketInformationKey),
       createRead(externalMarketInformationKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1010,7 +1053,7 @@ public final class LoopscaleProgram {
   /// 9.2.1 timelock create
   ///
   public static Instruction createTimelock(final AccountMeta invokedLoopscaleProgramMeta,
-                                           final PublicKey bsAuthKey,
+                                           final PublicKey protocolAdminKey,
                                            final PublicKey payerKey,
                                            final PublicKey managerKey,
                                            final PublicKey vaultKey,
@@ -1018,11 +1061,12 @@ public final class LoopscaleProgram {
                                            final PublicKey vaultMarketInformationKey,
                                            final PublicKey externalMarketInformationKey,
                                            final PublicKey systemProgramKey,
+                                           final PublicKey protocolAdminStateKey,
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey,
                                            final TimelockUpdateParams params) {
     final var keys = createTimelockKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       managerKey,
       vaultKey,
@@ -1030,6 +1074,7 @@ public final class LoopscaleProgram {
       vaultMarketInformationKey,
       externalMarketInformationKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1084,7 +1129,7 @@ public final class LoopscaleProgram {
 
   /// 9.3 create vault
   ///
-  public static List<AccountMeta> createVaultKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> createVaultKeys(final PublicKey protocolAdminKey,
                                                   final PublicKey payerKey,
                                                   final PublicKey nonceKey,
                                                   final PublicKey principalMintKey,
@@ -1094,10 +1139,11 @@ public final class LoopscaleProgram {
                                                   final PublicKey marketInformationKey,
                                                   final PublicKey tokenProgramKey,
                                                   final PublicKey systemProgramKey,
+                                                  final PublicKey protocolAdminStateKey,
                                                   final PublicKey eventAuthorityKey,
                                                   final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(nonceKey),
       createRead(principalMintKey),
@@ -1107,6 +1153,7 @@ public final class LoopscaleProgram {
       createWrite(marketInformationKey),
       createRead(tokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1115,7 +1162,7 @@ public final class LoopscaleProgram {
   /// 9.3 create vault
   ///
   public static Instruction createVault(final AccountMeta invokedLoopscaleProgramMeta,
-                                        final PublicKey bsAuthKey,
+                                        final PublicKey protocolAdminKey,
                                         final PublicKey payerKey,
                                         final PublicKey nonceKey,
                                         final PublicKey principalMintKey,
@@ -1125,11 +1172,12 @@ public final class LoopscaleProgram {
                                         final PublicKey marketInformationKey,
                                         final PublicKey tokenProgramKey,
                                         final PublicKey systemProgramKey,
+                                        final PublicKey protocolAdminStateKey,
                                         final PublicKey eventAuthorityKey,
                                         final PublicKey programKey,
                                         final CreateVaultParams params) {
     final var keys = createVaultKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       nonceKey,
       principalMintKey,
@@ -1139,6 +1187,7 @@ public final class LoopscaleProgram {
       marketInformationKey,
       tokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1195,7 +1244,7 @@ public final class LoopscaleProgram {
   /// 5.1. deposit collateral
   ///
   /// @param assetIdentifierKey CHECKs: checks in constraint
-  public static List<AccountMeta> depositCollateralKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> depositCollateralKeys(final PublicKey protocolAdminKey,
                                                         final PublicKey payerKey,
                                                         final PublicKey borrowerKey,
                                                         final PublicKey loanKey,
@@ -1206,10 +1255,11 @@ public final class LoopscaleProgram {
                                                         final PublicKey systemProgramKey,
                                                         final PublicKey tokenProgramKey,
                                                         final PublicKey associatedTokenProgramKey,
+                                                        final PublicKey protocolAdminStateKey,
                                                         final PublicKey eventAuthorityKey,
                                                         final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWritableSigner(borrowerKey),
       createWrite(loanKey),
@@ -1220,6 +1270,7 @@ public final class LoopscaleProgram {
       createRead(systemProgramKey),
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1231,7 +1282,7 @@ public final class LoopscaleProgram {
   ///
   /// @param assetIdentifierKey CHECKs: checks in constraint
   public static Instruction depositCollateral(final AccountMeta invokedLoopscaleProgramMeta,
-                                              final PublicKey bsAuthKey,
+                                              final PublicKey protocolAdminKey,
                                               final PublicKey payerKey,
                                               final PublicKey borrowerKey,
                                               final PublicKey loanKey,
@@ -1242,11 +1293,12 @@ public final class LoopscaleProgram {
                                               final PublicKey systemProgramKey,
                                               final PublicKey tokenProgramKey,
                                               final PublicKey associatedTokenProgramKey,
+                                              final PublicKey protocolAdminStateKey,
                                               final PublicKey eventAuthorityKey,
                                               final PublicKey programKey,
                                               final DepositCollateralParams params) {
     final var keys = depositCollateralKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -1257,6 +1309,7 @@ public final class LoopscaleProgram {
       systemProgramKey,
       tokenProgramKey,
       associatedTokenProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1312,7 +1365,7 @@ public final class LoopscaleProgram {
 
   /// 8.2 deposit strategy
   ///
-  public static List<AccountMeta> depositStrategyKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> depositStrategyKeys(final PublicKey protocolAdminKey,
                                                       final PublicKey payerKey,
                                                       final PublicKey lenderKey,
                                                       final PublicKey strategyKey,
@@ -1323,10 +1376,11 @@ public final class LoopscaleProgram {
                                                       final PublicKey tokenProgramKey,
                                                       final PublicKey associatedTokenProgramKey,
                                                       final PublicKey systemProgramKey,
+                                                      final PublicKey protocolAdminStateKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWritableSigner(lenderKey),
       createWrite(strategyKey),
@@ -1337,6 +1391,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1346,7 +1401,7 @@ public final class LoopscaleProgram {
   ///
   /// @param amount: u64
   public static Instruction depositStrategy(final AccountMeta invokedLoopscaleProgramMeta,
-                                            final PublicKey bsAuthKey,
+                                            final PublicKey protocolAdminKey,
                                             final PublicKey payerKey,
                                             final PublicKey lenderKey,
                                             final PublicKey strategyKey,
@@ -1357,11 +1412,12 @@ public final class LoopscaleProgram {
                                             final PublicKey tokenProgramKey,
                                             final PublicKey associatedTokenProgramKey,
                                             final PublicKey systemProgramKey,
+                                            final PublicKey protocolAdminStateKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey,
                                             final long amount) {
     final var keys = depositStrategyKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       lenderKey,
       strategyKey,
@@ -1372,6 +1428,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1433,7 +1490,7 @@ public final class LoopscaleProgram {
   /// 9.1.1 vault user actions
   /// 9.1.1.1 vault user deposit
   ///
-  public static List<AccountMeta> depositUserVaultKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> depositUserVaultKeys(final PublicKey protocolAdminKey,
                                                        final PublicKey payerKey,
                                                        final PublicKey userKey,
                                                        final PublicKey vaultKey,
@@ -1448,10 +1505,11 @@ public final class LoopscaleProgram {
                                                        final PublicKey token2022ProgramKey,
                                                        final PublicKey associatedTokenProgramKey,
                                                        final PublicKey systemProgramKey,
+                                                       final PublicKey protocolAdminStateKey,
                                                        final PublicKey eventAuthorityKey,
                                                        final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWritableSigner(userKey),
       createWrite(vaultKey),
@@ -1466,6 +1524,7 @@ public final class LoopscaleProgram {
       createRead(token2022ProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1477,7 +1536,7 @@ public final class LoopscaleProgram {
   /// 9.1.1.1 vault user deposit
   ///
   public static Instruction depositUserVault(final AccountMeta invokedLoopscaleProgramMeta,
-                                             final PublicKey bsAuthKey,
+                                             final PublicKey protocolAdminKey,
                                              final PublicKey payerKey,
                                              final PublicKey userKey,
                                              final PublicKey vaultKey,
@@ -1492,11 +1551,12 @@ public final class LoopscaleProgram {
                                              final PublicKey token2022ProgramKey,
                                              final PublicKey associatedTokenProgramKey,
                                              final PublicKey systemProgramKey,
+                                             final PublicKey protocolAdminStateKey,
                                              final PublicKey eventAuthorityKey,
                                              final PublicKey programKey,
                                              final LpParams params) {
     final var keys = depositUserVaultKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       userKey,
       vaultKey,
@@ -1511,6 +1571,7 @@ public final class LoopscaleProgram {
       token2022ProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1567,7 +1628,7 @@ public final class LoopscaleProgram {
 
   /// 9.2.2 timelock execute
   ///
-  public static List<AccountMeta> executeTimelockKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> executeTimelockKeys(final PublicKey protocolAdminKey,
                                                       final PublicKey payerKey,
                                                       final PublicKey vaultKey,
                                                       final PublicKey timelockKey,
@@ -1578,10 +1639,11 @@ public final class LoopscaleProgram {
                                                       final PublicKey tokenProgramKey,
                                                       final PublicKey associatedTokenProgramKey,
                                                       final PublicKey principalMintKey,
+                                                      final PublicKey protocolAdminStateKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWrite(vaultKey),
       createWrite(timelockKey),
@@ -1592,6 +1654,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(principalMintKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1600,7 +1663,7 @@ public final class LoopscaleProgram {
   /// 9.2.2 timelock execute
   ///
   public static Instruction executeTimelock(final AccountMeta invokedLoopscaleProgramMeta,
-                                            final PublicKey bsAuthKey,
+                                            final PublicKey protocolAdminKey,
                                             final PublicKey payerKey,
                                             final PublicKey vaultKey,
                                             final PublicKey timelockKey,
@@ -1611,10 +1674,11 @@ public final class LoopscaleProgram {
                                             final PublicKey tokenProgramKey,
                                             final PublicKey associatedTokenProgramKey,
                                             final PublicKey principalMintKey,
+                                            final PublicKey protocolAdminStateKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey) {
     final var keys = executeTimelockKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       vaultKey,
       timelockKey,
@@ -1625,6 +1689,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       principalMintKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1655,6 +1720,7 @@ public final class LoopscaleProgram {
                                                       final PublicKey tokenProgramKey,
                                                       final PublicKey token2022ProgramKey,
                                                       final PublicKey systemProgramKey,
+                                                      final PublicKey protocolAdminStateKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
@@ -1671,6 +1737,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(token2022ProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1692,6 +1759,7 @@ public final class LoopscaleProgram {
                                             final PublicKey tokenProgramKey,
                                             final PublicKey token2022ProgramKey,
                                             final PublicKey systemProgramKey,
+                                            final PublicKey protocolAdminStateKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey,
                                             final LiquidateLedgerParams params) {
@@ -1709,6 +1777,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       token2022ProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -1762,39 +1831,43 @@ public final class LoopscaleProgram {
 
   /// 1.2 lock loan
   ///
-  public static List<AccountMeta> lockLoanKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> lockLoanKeys(final PublicKey protocolAdminKey,
                                                final PublicKey payerKey,
                                                final PublicKey borrowerKey,
                                                final PublicKey loanKey,
                                                final PublicKey instructionsSysvarKey,
-                                               final PublicKey systemProgramKey) {
+                                               final PublicKey systemProgramKey,
+                                               final PublicKey protocolAdminStateKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
       createRead(instructionsSysvarKey),
-      createRead(systemProgramKey)
+      createRead(systemProgramKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
   /// 1.2 lock loan
   ///
   public static Instruction lockLoan(final AccountMeta invokedLoopscaleProgramMeta,
-                                     final PublicKey bsAuthKey,
+                                     final PublicKey protocolAdminKey,
                                      final PublicKey payerKey,
                                      final PublicKey borrowerKey,
                                      final PublicKey loanKey,
                                      final PublicKey instructionsSysvarKey,
                                      final PublicKey systemProgramKey,
+                                     final PublicKey protocolAdminStateKey,
                                      final LockLoanParams params) {
     final var keys = lockLoanKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
       instructionsSysvarKey,
-      systemProgramKey
+      systemProgramKey,
+      protocolAdminStateKey
     );
     return lockLoan(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -1851,7 +1924,7 @@ public final class LoopscaleProgram {
   /// 5.3
   /// 5.3.1 orca claim fee
   ///
-  public static List<AccountMeta> manageCollateralClaimOrcaFeeKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralClaimOrcaFeeKeys(final PublicKey protocolAdminKey,
                                                                    final PublicKey payerKey,
                                                                    final PublicKey borrowerKey,
                                                                    final PublicKey loanKey,
@@ -1874,10 +1947,11 @@ public final class LoopscaleProgram {
                                                                    final PublicKey associatedTokenProgramKey,
                                                                    final PublicKey systemProgramKey,
                                                                    final PublicKey memoProgramKey,
+                                                                   final PublicKey protocolAdminStateKey,
                                                                    final PublicKey eventAuthorityKey,
                                                                    final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createRead(loanKey),
@@ -1900,6 +1974,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1911,7 +1986,7 @@ public final class LoopscaleProgram {
   /// 5.3.1 orca claim fee
   ///
   public static Instruction manageCollateralClaimOrcaFee(final AccountMeta invokedLoopscaleProgramMeta,
-                                                         final PublicKey bsAuthKey,
+                                                         final PublicKey protocolAdminKey,
                                                          final PublicKey payerKey,
                                                          final PublicKey borrowerKey,
                                                          final PublicKey loanKey,
@@ -1934,11 +2009,12 @@ public final class LoopscaleProgram {
                                                          final PublicKey associatedTokenProgramKey,
                                                          final PublicKey systemProgramKey,
                                                          final PublicKey memoProgramKey,
+                                                         final PublicKey protocolAdminStateKey,
                                                          final PublicKey eventAuthorityKey,
                                                          final PublicKey programKey,
                                                          final boolean closeTa) {
     final var keys = manageCollateralClaimOrcaFeeKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -1961,6 +2037,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -2020,7 +2097,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.5 raydium decrease liquidity
   ///
-  public static List<AccountMeta> manageCollateralDecreaseRaydiumLiquidityKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralDecreaseRaydiumLiquidityKeys(final PublicKey protocolAdminKey,
                                                                                final PublicKey payerKey,
                                                                                final PublicKey borrowerKey,
                                                                                final PublicKey loanKey,
@@ -2044,10 +2121,11 @@ public final class LoopscaleProgram {
                                                                                final PublicKey associatedTokenProgramKey,
                                                                                final PublicKey systemProgramKey,
                                                                                final PublicKey memoProgramKey,
+                                                                               final PublicKey protocolAdminStateKey,
                                                                                final PublicKey eventAuthorityKey,
                                                                                final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createRead(loanKey),
@@ -2071,6 +2149,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -2079,7 +2158,7 @@ public final class LoopscaleProgram {
   /// 5.3.5 raydium decrease liquidity
   ///
   public static Instruction manageCollateralDecreaseRaydiumLiquidity(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                     final PublicKey bsAuthKey,
+                                                                     final PublicKey protocolAdminKey,
                                                                      final PublicKey payerKey,
                                                                      final PublicKey borrowerKey,
                                                                      final PublicKey loanKey,
@@ -2103,11 +2182,12 @@ public final class LoopscaleProgram {
                                                                      final PublicKey associatedTokenProgramKey,
                                                                      final PublicKey systemProgramKey,
                                                                      final PublicKey memoProgramKey,
+                                                                     final PublicKey protocolAdminStateKey,
                                                                      final PublicKey eventAuthorityKey,
                                                                      final PublicKey programKey,
                                                                      final ManageRaydiumLiquidityParams params) {
     final var keys = manageCollateralDecreaseRaydiumLiquidityKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2131,6 +2211,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -2184,7 +2265,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.2 orca increase liquidity
   ///
-  public static List<AccountMeta> manageCollateralIncreaseOrcaLiquidityKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralIncreaseOrcaLiquidityKeys(final PublicKey protocolAdminKey,
                                                                             final PublicKey payerKey,
                                                                             final PublicKey borrowerKey,
                                                                             final PublicKey loanKey,
@@ -2207,10 +2288,11 @@ public final class LoopscaleProgram {
                                                                             final PublicKey associatedTokenProgramKey,
                                                                             final PublicKey systemProgramKey,
                                                                             final PublicKey memoProgramKey,
+                                                                            final PublicKey protocolAdminStateKey,
                                                                             final PublicKey eventAuthorityKey,
                                                                             final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createRead(loanKey),
@@ -2233,6 +2315,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -2241,7 +2324,7 @@ public final class LoopscaleProgram {
   /// 5.3.2 orca increase liquidity
   ///
   public static Instruction manageCollateralIncreaseOrcaLiquidity(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                  final PublicKey bsAuthKey,
+                                                                  final PublicKey protocolAdminKey,
                                                                   final PublicKey payerKey,
                                                                   final PublicKey borrowerKey,
                                                                   final PublicKey loanKey,
@@ -2264,11 +2347,12 @@ public final class LoopscaleProgram {
                                                                   final PublicKey associatedTokenProgramKey,
                                                                   final PublicKey systemProgramKey,
                                                                   final PublicKey memoProgramKey,
+                                                                  final PublicKey protocolAdminStateKey,
                                                                   final PublicKey eventAuthorityKey,
                                                                   final PublicKey programKey,
                                                                   final ManageLiquidityParams params) {
     final var keys = manageCollateralIncreaseOrcaLiquidityKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2291,6 +2375,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -2344,7 +2429,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.6 raydium increase liquidity
   ///
-  public static List<AccountMeta> manageCollateralIncreaseRaydiumLiquidityKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralIncreaseRaydiumLiquidityKeys(final PublicKey protocolAdminKey,
                                                                                final PublicKey payerKey,
                                                                                final PublicKey borrowerKey,
                                                                                final PublicKey loanKey,
@@ -2368,10 +2453,11 @@ public final class LoopscaleProgram {
                                                                                final PublicKey associatedTokenProgramKey,
                                                                                final PublicKey systemProgramKey,
                                                                                final PublicKey memoProgramKey,
+                                                                               final PublicKey protocolAdminStateKey,
                                                                                final PublicKey eventAuthorityKey,
                                                                                final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createRead(loanKey),
@@ -2395,6 +2481,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -2403,7 +2490,7 @@ public final class LoopscaleProgram {
   /// 5.3.6 raydium increase liquidity
   ///
   public static Instruction manageCollateralIncreaseRaydiumLiquidity(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                     final PublicKey bsAuthKey,
+                                                                     final PublicKey protocolAdminKey,
                                                                      final PublicKey payerKey,
                                                                      final PublicKey borrowerKey,
                                                                      final PublicKey loanKey,
@@ -2427,11 +2514,12 @@ public final class LoopscaleProgram {
                                                                      final PublicKey associatedTokenProgramKey,
                                                                      final PublicKey systemProgramKey,
                                                                      final PublicKey memoProgramKey,
+                                                                     final PublicKey protocolAdminStateKey,
                                                                      final PublicKey eventAuthorityKey,
                                                                      final PublicKey programKey,
                                                                      final ManageRaydiumLiquidityParams params) {
     final var keys = manageCollateralIncreaseRaydiumLiquidityKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2455,6 +2543,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -2508,7 +2597,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.4 orca transfer position
   ///
-  public static List<AccountMeta> manageCollateralTransferOrcaPositionKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralTransferOrcaPositionKeys(final PublicKey protocolAdminKey,
                                                                            final PublicKey payerKey,
                                                                            final PublicKey borrowerKey,
                                                                            final PublicKey loanKey,
@@ -2538,10 +2627,11 @@ public final class LoopscaleProgram {
                                                                            final PublicKey associatedTokenProgramKey,
                                                                            final PublicKey systemProgramKey,
                                                                            final PublicKey memoProgramKey,
+                                                                           final PublicKey protocolAdminStateKey,
                                                                            final PublicKey eventAuthorityKey,
                                                                            final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
@@ -2571,6 +2661,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -2579,7 +2670,7 @@ public final class LoopscaleProgram {
   /// 5.3.4 orca transfer position
   ///
   public static Instruction manageCollateralTransferOrcaPosition(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                 final PublicKey bsAuthKey,
+                                                                 final PublicKey protocolAdminKey,
                                                                  final PublicKey payerKey,
                                                                  final PublicKey borrowerKey,
                                                                  final PublicKey loanKey,
@@ -2609,11 +2700,12 @@ public final class LoopscaleProgram {
                                                                  final PublicKey associatedTokenProgramKey,
                                                                  final PublicKey systemProgramKey,
                                                                  final PublicKey memoProgramKey,
+                                                                 final PublicKey protocolAdminStateKey,
                                                                  final PublicKey eventAuthorityKey,
                                                                  final PublicKey programKey,
                                                                  final TransferPositionParams params) {
     final var keys = manageCollateralTransferOrcaPositionKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2643,6 +2735,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -2696,7 +2789,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.7 raydium transfer position
   ///
-  public static List<AccountMeta> manageCollateralTransferRaydiumPositionKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralTransferRaydiumPositionKeys(final PublicKey protocolAdminKey,
                                                                               final PublicKey payerKey,
                                                                               final PublicKey borrowerKey,
                                                                               final PublicKey loanKey,
@@ -2727,9 +2820,10 @@ public final class LoopscaleProgram {
                                                                               final PublicKey associatedTokenProgramKey,
                                                                               final PublicKey systemProgramKey,
                                                                               final PublicKey rentKey,
-                                                                              final PublicKey memoProgramKey) {
+                                                                              final PublicKey memoProgramKey,
+                                                                              final PublicKey protocolAdminStateKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
@@ -2760,14 +2854,15 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(rentKey),
-      createRead(memoProgramKey)
+      createRead(memoProgramKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
   /// 5.3.7 raydium transfer position
   ///
   public static Instruction manageCollateralTransferRaydiumPosition(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                    final PublicKey bsAuthKey,
+                                                                    final PublicKey protocolAdminKey,
                                                                     final PublicKey payerKey,
                                                                     final PublicKey borrowerKey,
                                                                     final PublicKey loanKey,
@@ -2799,9 +2894,10 @@ public final class LoopscaleProgram {
                                                                     final PublicKey systemProgramKey,
                                                                     final PublicKey rentKey,
                                                                     final PublicKey memoProgramKey,
+                                                                    final PublicKey protocolAdminStateKey,
                                                                     final TransferPositionParams params) {
     final var keys = manageCollateralTransferRaydiumPositionKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2832,7 +2928,8 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       rentKey,
-      memoProgramKey
+      memoProgramKey,
+      protocolAdminStateKey
     );
     return manageCollateralTransferRaydiumPosition(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -2884,7 +2981,7 @@ public final class LoopscaleProgram {
 
   /// 5.3.3 orca withdraw liquidity
   ///
-  public static List<AccountMeta> manageCollateralWithdrawOrcaLiquidityKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> manageCollateralWithdrawOrcaLiquidityKeys(final PublicKey protocolAdminKey,
                                                                             final PublicKey payerKey,
                                                                             final PublicKey borrowerKey,
                                                                             final PublicKey loanKey,
@@ -2907,10 +3004,11 @@ public final class LoopscaleProgram {
                                                                             final PublicKey associatedTokenProgramKey,
                                                                             final PublicKey systemProgramKey,
                                                                             final PublicKey memoProgramKey,
+                                                                            final PublicKey protocolAdminStateKey,
                                                                             final PublicKey eventAuthorityKey,
                                                                             final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createRead(loanKey),
@@ -2933,6 +3031,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
       createRead(memoProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -2941,7 +3040,7 @@ public final class LoopscaleProgram {
   /// 5.3.3 orca withdraw liquidity
   ///
   public static Instruction manageCollateralWithdrawOrcaLiquidity(final AccountMeta invokedLoopscaleProgramMeta,
-                                                                  final PublicKey bsAuthKey,
+                                                                  final PublicKey protocolAdminKey,
                                                                   final PublicKey payerKey,
                                                                   final PublicKey borrowerKey,
                                                                   final PublicKey loanKey,
@@ -2964,11 +3063,12 @@ public final class LoopscaleProgram {
                                                                   final PublicKey associatedTokenProgramKey,
                                                                   final PublicKey systemProgramKey,
                                                                   final PublicKey memoProgramKey,
+                                                                  final PublicKey protocolAdminStateKey,
                                                                   final PublicKey eventAuthorityKey,
                                                                   final PublicKey programKey,
                                                                   final ManageLiquidityParams params) {
     final var keys = manageCollateralWithdrawOrcaLiquidityKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -2991,6 +3091,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       systemProgramKey,
       memoProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3040,81 +3141,11 @@ public final class LoopscaleProgram {
     }
   }
 
-  public static final Discriminator MIGRATE_MARKET_INFO_ALLOCATION_DISCRIMINATOR = toDiscriminator(112, 172, 64, 213, 227, 1, 86, 2);
-
-  public static List<AccountMeta> migrateMarketInfoAllocationKeys(final PublicKey bsAuthKey,
-                                                                  final PublicKey marketInfoKey,
-                                                                  final PublicKey eventAuthorityKey,
-                                                                  final PublicKey programKey) {
-    return List.of(
-      createWritableSigner(bsAuthKey),
-      createWrite(marketInfoKey),
-      createRead(eventAuthorityKey),
-      createRead(programKey)
-    );
-  }
-
-  public static Instruction migrateMarketInfoAllocation(final AccountMeta invokedLoopscaleProgramMeta,
-                                                        final PublicKey bsAuthKey,
-                                                        final PublicKey marketInfoKey,
-                                                        final PublicKey eventAuthorityKey,
-                                                        final PublicKey programKey,
-                                                        final CollateralAllocationParam[] allocations) {
-    final var keys = migrateMarketInfoAllocationKeys(
-      bsAuthKey,
-      marketInfoKey,
-      eventAuthorityKey,
-      programKey
-    );
-    return migrateMarketInfoAllocation(invokedLoopscaleProgramMeta, keys, allocations);
-  }
-
-  public static Instruction migrateMarketInfoAllocation(final AccountMeta invokedLoopscaleProgramMeta,
-                                                        final List<AccountMeta> keys,
-                                                        final CollateralAllocationParam[] allocations) {
-    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, allocations)];
-    int i = MIGRATE_MARKET_INFO_ALLOCATION_DISCRIMINATOR.write(_data, 0);
-    SerDeUtil.writeVector(4, allocations, _data, i);
-
-    return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
-  }
-
-  public record MigrateMarketInfoAllocationIxData(Discriminator discriminator, CollateralAllocationParam[] allocations) implements SerDe {  
-
-    public static MigrateMarketInfoAllocationIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
-    }
-
-    public static final int ALLOCATIONS_OFFSET = 8;
-
-    public static MigrateMarketInfoAllocationIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
-      int i = _offset + discriminator.length();
-      final var allocations = SerDeUtil.readVector(4, CollateralAllocationParam.class, CollateralAllocationParam::read, _data, i);
-      return new MigrateMarketInfoAllocationIxData(discriminator, allocations);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset + discriminator.write(_data, _offset);
-      i += SerDeUtil.writeVector(4, allocations, _data, i);
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return 8 + SerDeUtil.lenVector(4, allocations);
-    }
-  }
-
   public static final Discriminator REFINANCE_LEDGER_DISCRIMINATOR = toDiscriminator(103, 41, 134, 43, 140, 152, 253, 74);
 
   /// 3. refinance ledger
   ///
-  public static List<AccountMeta> refinanceLedgerKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> refinanceLedgerKeys(final PublicKey refinanceAdminKey,
                                                       final PublicKey payerKey,
                                                       final PublicKey loanKey,
                                                       final PublicKey oldStrategyKey,
@@ -3127,10 +3158,11 @@ public final class LoopscaleProgram {
                                                       final PublicKey tokenProgramKey,
                                                       final PublicKey associatedTokenProgramKey,
                                                       final PublicKey systemProgramKey,
+                                                      final PublicKey protocolAdminStateKey,
                                                       final PublicKey eventAuthorityKey,
                                                       final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(refinanceAdminKey),
       createWritableSigner(payerKey),
       createWrite(loanKey),
       createWrite(oldStrategyKey),
@@ -3143,6 +3175,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -3151,7 +3184,7 @@ public final class LoopscaleProgram {
   /// 3. refinance ledger
   ///
   public static Instruction refinanceLedger(final AccountMeta invokedLoopscaleProgramMeta,
-                                            final PublicKey bsAuthKey,
+                                            final PublicKey refinanceAdminKey,
                                             final PublicKey payerKey,
                                             final PublicKey loanKey,
                                             final PublicKey oldStrategyKey,
@@ -3164,11 +3197,12 @@ public final class LoopscaleProgram {
                                             final PublicKey tokenProgramKey,
                                             final PublicKey associatedTokenProgramKey,
                                             final PublicKey systemProgramKey,
+                                            final PublicKey protocolAdminStateKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey,
                                             final RefinanceLedgerParams params) {
     final var keys = refinanceLedgerKeys(
-      bsAuthKey,
+      refinanceAdminKey,
       payerKey,
       loanKey,
       oldStrategyKey,
@@ -3181,6 +3215,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3234,7 +3269,7 @@ public final class LoopscaleProgram {
 
   /// 6.2. repay principal
   ///
-  public static List<AccountMeta> repayPrincipalKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> repayPrincipalKeys(final PublicKey protocolAdminKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey borrowerKey,
                                                      final PublicKey loanKey,
@@ -3246,10 +3281,11 @@ public final class LoopscaleProgram {
                                                      final PublicKey associatedTokenProgramKey,
                                                      final PublicKey tokenProgramKey,
                                                      final PublicKey systemProgramKey,
+                                                     final PublicKey protocolAdminStateKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
@@ -3261,6 +3297,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(tokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -3269,7 +3306,7 @@ public final class LoopscaleProgram {
   /// 6.2. repay principal
   ///
   public static Instruction repayPrincipal(final AccountMeta invokedLoopscaleProgramMeta,
-                                           final PublicKey bsAuthKey,
+                                           final PublicKey protocolAdminKey,
                                            final PublicKey payerKey,
                                            final PublicKey borrowerKey,
                                            final PublicKey loanKey,
@@ -3281,11 +3318,12 @@ public final class LoopscaleProgram {
                                            final PublicKey associatedTokenProgramKey,
                                            final PublicKey tokenProgramKey,
                                            final PublicKey systemProgramKey,
+                                           final PublicKey protocolAdminStateKey,
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey,
                                            final RepayPrincipalParams params) {
     final var keys = repayPrincipalKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -3297,6 +3335,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       tokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3353,7 +3392,7 @@ public final class LoopscaleProgram {
   /// 4. sell ledger
   ///
   public static List<AccountMeta> sellLedgerKeys(final AccountMeta invokedLoopscaleProgramMeta,
-                                                 final PublicKey bsAuthKey,
+                                                 final PublicKey protocolAdminKey,
                                                  final PublicKey payerKey,
                                                  final PublicKey lenderAuthKey,
                                                  final PublicKey loanKey,
@@ -3369,10 +3408,11 @@ public final class LoopscaleProgram {
                                                  final PublicKey systemProgramKey,
                                                  final PublicKey vaultKey,
                                                  final PublicKey oldStrategyTaKey,
+                                                 final PublicKey protocolAdminStateKey,
                                                  final PublicKey eventAuthorityKey,
                                                  final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(lenderAuthKey),
       createWrite(loanKey),
@@ -3388,6 +3428,7 @@ public final class LoopscaleProgram {
       createRead(systemProgramKey),
       createWrite(requireNonNullElse(vaultKey, invokedLoopscaleProgramMeta.publicKey())),
       createWrite(requireNonNullElse(oldStrategyTaKey, invokedLoopscaleProgramMeta.publicKey())),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -3396,7 +3437,7 @@ public final class LoopscaleProgram {
   /// 4. sell ledger
   ///
   public static Instruction sellLedger(final AccountMeta invokedLoopscaleProgramMeta,
-                                       final PublicKey bsAuthKey,
+                                       final PublicKey protocolAdminKey,
                                        final PublicKey payerKey,
                                        final PublicKey lenderAuthKey,
                                        final PublicKey loanKey,
@@ -3412,12 +3453,13 @@ public final class LoopscaleProgram {
                                        final PublicKey systemProgramKey,
                                        final PublicKey vaultKey,
                                        final PublicKey oldStrategyTaKey,
+                                       final PublicKey protocolAdminStateKey,
                                        final PublicKey eventAuthorityKey,
                                        final PublicKey programKey,
                                        final SellLedgerParams params) {
     final var keys = sellLedgerKeys(
       invokedLoopscaleProgramMeta,
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       lenderAuthKey,
       loanKey,
@@ -3433,6 +3475,7 @@ public final class LoopscaleProgram {
       systemProgramKey,
       vaultKey,
       oldStrategyTaKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3482,11 +3525,81 @@ public final class LoopscaleProgram {
     }
   }
 
+  public static final Discriminator SET_PROTOCOL_ADMIN_STATE_DISCRIMINATOR = toDiscriminator(6, 9, 158, 45, 113, 238, 2, 141);
+
+  public static List<AccountMeta> setProtocolAdminStateKeys(final PublicKey payerKey,
+                                                            final PublicKey authorityKey,
+                                                            final PublicKey systemProgramKey,
+                                                            final PublicKey protocolAdminStateKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createReadOnlySigner(authorityKey),
+      createRead(systemProgramKey),
+      createWrite(protocolAdminStateKey)
+    );
+  }
+
+  public static Instruction setProtocolAdminState(final AccountMeta invokedLoopscaleProgramMeta,
+                                                  final PublicKey payerKey,
+                                                  final PublicKey authorityKey,
+                                                  final PublicKey systemProgramKey,
+                                                  final PublicKey protocolAdminStateKey,
+                                                  final SetProtocolAdminStateParams params) {
+    final var keys = setProtocolAdminStateKeys(
+      payerKey,
+      authorityKey,
+      systemProgramKey,
+      protocolAdminStateKey
+    );
+    return setProtocolAdminState(invokedLoopscaleProgramMeta, keys, params);
+  }
+
+  public static Instruction setProtocolAdminState(final AccountMeta invokedLoopscaleProgramMeta,
+                                                  final List<AccountMeta> keys,
+                                                  final SetProtocolAdminStateParams params) {
+    final byte[] _data = new byte[8 + params.l()];
+    int i = SET_PROTOCOL_ADMIN_STATE_DISCRIMINATOR.write(_data, 0);
+    params.write(_data, i);
+
+    return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
+  }
+
+  public record SetProtocolAdminStateIxData(Discriminator discriminator, SetProtocolAdminStateParams params) implements SerDe {  
+
+    public static SetProtocolAdminStateIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int PARAMS_OFFSET = 8;
+
+    public static SetProtocolAdminStateIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var params = SetProtocolAdminStateParams.read(_data, i);
+      return new SetProtocolAdminStateIxData(discriminator, params);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += params.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + params.l();
+    }
+  }
+
   public static final Discriminator STAKE_USER_VAULT_LP_DISCRIMINATOR = toDiscriminator(114, 132, 194, 209, 208, 149, 43, 136);
 
   /// 9.1.1.3 vault user stake
   ///
-  public static List<AccountMeta> stakeUserVaultLpKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> stakeUserVaultLpKeys(final PublicKey protocolAdminKey,
                                                        final PublicKey payerKey,
                                                        final PublicKey userKey,
                                                        final PublicKey nonceKey,
@@ -3500,10 +3613,11 @@ public final class LoopscaleProgram {
                                                        final PublicKey tokenProgramKey,
                                                        final PublicKey associatedTokenProgramKey,
                                                        final PublicKey systemProgramKey,
+                                                       final PublicKey protocolAdminStateKey,
                                                        final PublicKey eventAuthorityKey,
                                                        final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(userKey),
       createReadOnlySigner(nonceKey),
@@ -3517,6 +3631,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -3525,7 +3640,7 @@ public final class LoopscaleProgram {
   /// 9.1.1.3 vault user stake
   ///
   public static Instruction stakeUserVaultLp(final AccountMeta invokedLoopscaleProgramMeta,
-                                             final PublicKey bsAuthKey,
+                                             final PublicKey protocolAdminKey,
                                              final PublicKey payerKey,
                                              final PublicKey userKey,
                                              final PublicKey nonceKey,
@@ -3539,11 +3654,12 @@ public final class LoopscaleProgram {
                                              final PublicKey tokenProgramKey,
                                              final PublicKey associatedTokenProgramKey,
                                              final PublicKey systemProgramKey,
+                                             final PublicKey protocolAdminStateKey,
                                              final PublicKey eventAuthorityKey,
                                              final PublicKey programKey,
                                              final VaultStakeParams params) {
     final var keys = stakeUserVaultLpKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       userKey,
       nonceKey,
@@ -3557,6 +3673,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3613,14 +3730,16 @@ public final class LoopscaleProgram {
   public static List<AccountMeta> unlockLoanKeys(final PublicKey borrowerKey,
                                                  final PublicKey loanKey,
                                                  final PublicKey payerKey,
-                                                 final PublicKey bsAuthKey,
-                                                 final PublicKey systemProgramKey) {
+                                                 final PublicKey protocolAdminKey,
+                                                 final PublicKey systemProgramKey,
+                                                 final PublicKey protocolAdminStateKey) {
     return List.of(
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
       createWritableSigner(payerKey),
-      createReadOnlySigner(bsAuthKey),
-      createRead(systemProgramKey)
+      createReadOnlySigner(protocolAdminKey),
+      createRead(systemProgramKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
@@ -3630,15 +3749,17 @@ public final class LoopscaleProgram {
                                        final PublicKey borrowerKey,
                                        final PublicKey loanKey,
                                        final PublicKey payerKey,
-                                       final PublicKey bsAuthKey,
+                                       final PublicKey protocolAdminKey,
                                        final PublicKey systemProgramKey,
+                                       final PublicKey protocolAdminStateKey,
                                        final LoanUnlockParams params) {
     final var keys = unlockLoanKeys(
       borrowerKey,
       loanKey,
       payerKey,
-      bsAuthKey,
-      systemProgramKey
+      protocolAdminKey,
+      systemProgramKey,
+      protocolAdminStateKey
     );
     return unlockLoan(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -3690,7 +3811,7 @@ public final class LoopscaleProgram {
 
   /// 9.1.1.4 vault user unstake
   ///
-  public static List<AccountMeta> unstakeUserVaultLpKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> unstakeUserVaultLpKeys(final PublicKey protocolAdminKey,
                                                          final PublicKey payerKey,
                                                          final PublicKey userKey,
                                                          final PublicKey vaultKey,
@@ -3703,10 +3824,11 @@ public final class LoopscaleProgram {
                                                          final PublicKey tokenProgramKey,
                                                          final PublicKey associatedTokenProgramKey,
                                                          final PublicKey systemProgramKey,
+                                                         final PublicKey protocolAdminStateKey,
                                                          final PublicKey eventAuthorityKey,
                                                          final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(userKey),
       createWrite(vaultKey),
@@ -3719,6 +3841,7 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -3727,7 +3850,7 @@ public final class LoopscaleProgram {
   /// 9.1.1.4 vault user unstake
   ///
   public static Instruction unstakeUserVaultLp(final AccountMeta invokedLoopscaleProgramMeta,
-                                               final PublicKey bsAuthKey,
+                                               final PublicKey protocolAdminKey,
                                                final PublicKey payerKey,
                                                final PublicKey userKey,
                                                final PublicKey vaultKey,
@@ -3740,11 +3863,12 @@ public final class LoopscaleProgram {
                                                final PublicKey tokenProgramKey,
                                                final PublicKey associatedTokenProgramKey,
                                                final PublicKey systemProgramKey,
+                                               final PublicKey protocolAdminStateKey,
                                                final PublicKey eventAuthorityKey,
                                                final PublicKey programKey,
                                                final VaultUnstakeParams params) {
     final var keys = unstakeUserVaultLpKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       userKey,
       vaultKey,
@@ -3757,6 +3881,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -3812,38 +3937,57 @@ public final class LoopscaleProgram {
 
   /// 7.2 update market information account
   ///
-  public static List<AccountMeta> updateMarketInformationKeys(final PublicKey authorityKey,
-                                                              final PublicKey marketInformationKey) {
+  public static List<AccountMeta> updateMarketInformationKeys(final PublicKey protocolAdminKey,
+                                                              final PublicKey authorityKey,
+                                                              final PublicKey marketInformationKey,
+                                                              final PublicKey protocolAdminStateKey) {
     return List.of(
+      createReadOnlySigner(protocolAdminKey),
       createReadOnlySigner(authorityKey),
-      createWrite(marketInformationKey)
+      createWrite(marketInformationKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
   /// 7.2 update market information account
   ///
+  /// @param newAuthority: Option<publicKey>
   public static Instruction updateMarketInformation(final AccountMeta invokedLoopscaleProgramMeta,
+                                                    final PublicKey protocolAdminKey,
                                                     final PublicKey authorityKey,
                                                     final PublicKey marketInformationKey,
+                                                    final PublicKey protocolAdminStateKey,
                                                     final UpdateAssetDataParams[] assetUpdateParams,
-                                                    final UpdateCapsParams updateCapParams) {
+                                                    final UpdateCapsParams updateCapParams,
+                                                    final PublicKey newAuthority) {
     final var keys = updateMarketInformationKeys(
+      protocolAdminKey,
       authorityKey,
-      marketInformationKey
+      marketInformationKey,
+      protocolAdminStateKey
     );
-    return updateMarketInformation(invokedLoopscaleProgramMeta, keys, assetUpdateParams, updateCapParams);
+    return updateMarketInformation(
+      invokedLoopscaleProgramMeta,
+      keys,
+      assetUpdateParams,
+      updateCapParams,
+      newAuthority
+    );
   }
 
   /// 7.2 update market information account
   ///
+  /// @param newAuthority: Option<publicKey>
   public static Instruction updateMarketInformation(final AccountMeta invokedLoopscaleProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final UpdateAssetDataParams[] assetUpdateParams,
-                                                    final UpdateCapsParams updateCapParams) {
+                                                    final UpdateCapsParams updateCapParams,
+                                                    final PublicKey newAuthority) {
     final byte[] _data = new byte[
     8
     + (assetUpdateParams == null || assetUpdateParams.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams)))
     + (updateCapParams == null ? 1 : (1 + updateCapParams.l()))
+    + (newAuthority == null ? 1 : 33)
     ];
     int i = UPDATE_MARKET_INFORMATION_DISCRIMINATOR.write(_data, 0);
     if (assetUpdateParams == null || assetUpdateParams.length == 0) {
@@ -3852,12 +3996,17 @@ public final class LoopscaleProgram {
       _data[i++] = 1;
       i += SerDeUtil.writeVector(4, assetUpdateParams, _data, i);
     }
-    SerDeUtil.writeOptional(1, updateCapParams, _data, i);
+    i += SerDeUtil.writeOptional(1, updateCapParams, _data, i);
+    SerDeUtil.writeOptional(1, newAuthority, _data, i);
 
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UpdateMarketInformationIxData(Discriminator discriminator, UpdateAssetDataParams[] assetUpdateParams, UpdateCapsParams updateCapParams) implements SerDe {  
+  /// @param newAuthority: Option<publicKey>
+  public record UpdateMarketInformationIxData(Discriminator discriminator,
+                                              UpdateAssetDataParams[] assetUpdateParams,
+                                              UpdateCapsParams updateCapParams,
+                                              PublicKey newAuthority) implements SerDe {  
 
     public static UpdateMarketInformationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3883,11 +4032,20 @@ public final class LoopscaleProgram {
       final UpdateCapsParams updateCapParams;
       if (SerDeUtil.isAbsent(1, _data, i)) {
         updateCapParams = null;
+        ++i;
       } else {
         ++i;
         updateCapParams = UpdateCapsParams.read(_data, i);
+        i += updateCapParams.l();
       }
-      return new UpdateMarketInformationIxData(discriminator, assetUpdateParams, updateCapParams);
+      final PublicKey newAuthority;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        newAuthority = null;
+      } else {
+        ++i;
+        newAuthority = readPubKey(_data, i);
+      }
+      return new UpdateMarketInformationIxData(discriminator, assetUpdateParams, updateCapParams, newAuthority);
     }
 
     @Override
@@ -3900,18 +4058,19 @@ public final class LoopscaleProgram {
         i += SerDeUtil.writeVector(4, assetUpdateParams, _data, i);
       }
       i += SerDeUtil.writeOptional(1, updateCapParams, _data, i);
+      i += SerDeUtil.writeOptional(1, newAuthority, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + (assetUpdateParams == null || assetUpdateParams.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams))) + (updateCapParams == null ? 1 : (1 + updateCapParams.l()));
+      return 8 + (assetUpdateParams == null || assetUpdateParams.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, assetUpdateParams))) + (updateCapParams == null ? 1 : (1 + updateCapParams.l())) + (newAuthority == null ? 1 : (1 + 32));
     }
   }
 
   public static final Discriminator UPDATE_REWARDS_SCHEDULE_DISCRIMINATOR = toDiscriminator(226, 238, 15, 86, 66, 219, 13, 232);
 
-  public static List<AccountMeta> updateRewardsScheduleKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> updateRewardsScheduleKeys(final PublicKey protocolAdminKey,
                                                             final PublicKey payerKey,
                                                             final PublicKey managerKey,
                                                             final PublicKey rewardsSourceKey,
@@ -3923,10 +4082,11 @@ public final class LoopscaleProgram {
                                                             final PublicKey tokenProgramKey,
                                                             final PublicKey associatedTokenProgramKey,
                                                             final PublicKey systemProgramKey,
+                                                            final PublicKey protocolAdminStateKey,
                                                             final PublicKey eventAuthorityKey,
                                                             final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(managerKey),
       createReadOnlySigner(rewardsSourceKey),
@@ -3938,13 +4098,14 @@ public final class LoopscaleProgram {
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
   }
 
   public static Instruction updateRewardsSchedule(final AccountMeta invokedLoopscaleProgramMeta,
-                                                  final PublicKey bsAuthKey,
+                                                  final PublicKey protocolAdminKey,
                                                   final PublicKey payerKey,
                                                   final PublicKey managerKey,
                                                   final PublicKey rewardsSourceKey,
@@ -3956,11 +4117,12 @@ public final class LoopscaleProgram {
                                                   final PublicKey tokenProgramKey,
                                                   final PublicKey associatedTokenProgramKey,
                                                   final PublicKey systemProgramKey,
+                                                  final PublicKey protocolAdminStateKey,
                                                   final PublicKey eventAuthorityKey,
                                                   final PublicKey programKey,
                                                   final UpdateRewardsScheduleParams params) {
     final var keys = updateRewardsScheduleKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       managerKey,
       rewardsSourceKey,
@@ -3972,6 +4134,7 @@ public final class LoopscaleProgram {
       tokenProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -4023,7 +4186,7 @@ public final class LoopscaleProgram {
 
   /// 8.3 update strategy
   ///
-  public static List<AccountMeta> updateStrategyKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> updateStrategyKeys(final PublicKey protocolAdminKey,
                                                      final PublicKey payerKey,
                                                      final PublicKey lenderKey,
                                                      final PublicKey strategyKey,
@@ -4032,10 +4195,11 @@ public final class LoopscaleProgram {
                                                      final PublicKey systemProgramKey,
                                                      final PublicKey associatedTokenProgramKey,
                                                      final PublicKey tokenProgramKey,
+                                                     final PublicKey protocolAdminStateKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(lenderKey),
       createWrite(strategyKey),
@@ -4044,6 +4208,7 @@ public final class LoopscaleProgram {
       createRead(systemProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(tokenProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -4052,7 +4217,7 @@ public final class LoopscaleProgram {
   /// 8.3 update strategy
   ///
   public static Instruction updateStrategy(final AccountMeta invokedLoopscaleProgramMeta,
-                                           final PublicKey bsAuthKey,
+                                           final PublicKey protocolAdminKey,
                                            final PublicKey payerKey,
                                            final PublicKey lenderKey,
                                            final PublicKey strategyKey,
@@ -4061,12 +4226,13 @@ public final class LoopscaleProgram {
                                            final PublicKey systemProgramKey,
                                            final PublicKey associatedTokenProgramKey,
                                            final PublicKey tokenProgramKey,
+                                           final PublicKey protocolAdminStateKey,
                                            final PublicKey eventAuthorityKey,
                                            final PublicKey programKey,
                                            final MultiCollateralTermsUpdateParams[] collateralTerms,
                                            final UpdateStrategyParams params) {
     final var keys = updateStrategyKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       lenderKey,
       strategyKey,
@@ -4075,6 +4241,7 @@ public final class LoopscaleProgram {
       systemProgramKey,
       associatedTokenProgramKey,
       tokenProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -4142,43 +4309,47 @@ public final class LoopscaleProgram {
 
   /// 9.4 toggle vault deposits
   ///
-  public static List<AccountMeta> updateVaultKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> updateVaultKeys(final PublicKey protocolAdminKey,
                                                   final PublicKey managerKey,
                                                   final PublicKey payerKey,
                                                   final PublicKey vaultKey,
                                                   final PublicKey marketInformationKey,
                                                   final PublicKey vaultRewardsInfoKey,
-                                                  final PublicKey systemProgramKey) {
+                                                  final PublicKey systemProgramKey,
+                                                  final PublicKey protocolAdminStateKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createReadOnlySigner(managerKey),
       createWritableSigner(payerKey),
       createWrite(vaultKey),
       createRead(marketInformationKey),
       createWrite(vaultRewardsInfoKey),
-      createRead(systemProgramKey)
+      createRead(systemProgramKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
   /// 9.4 toggle vault deposits
   ///
   public static Instruction updateVault(final AccountMeta invokedLoopscaleProgramMeta,
-                                        final PublicKey bsAuthKey,
+                                        final PublicKey protocolAdminKey,
                                         final PublicKey managerKey,
                                         final PublicKey payerKey,
                                         final PublicKey vaultKey,
                                         final PublicKey marketInformationKey,
                                         final PublicKey vaultRewardsInfoKey,
                                         final PublicKey systemProgramKey,
+                                        final PublicKey protocolAdminStateKey,
                                         final UpdateVaultParams params) {
     final var keys = updateVaultKeys(
-      bsAuthKey,
+      protocolAdminKey,
       managerKey,
       payerKey,
       vaultKey,
       marketInformationKey,
       vaultRewardsInfoKey,
-      systemProgramKey
+      systemProgramKey,
+      protocolAdminStateKey
     );
     return updateVault(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -4232,27 +4403,31 @@ public final class LoopscaleProgram {
 
   /// 10. update weight matrix
   ///
-  public static List<AccountMeta> updateWeightMatrixKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> updateWeightMatrixKeys(final PublicKey protocolAdminKey,
                                                          final PublicKey borrowerKey,
-                                                         final PublicKey loanKey) {
+                                                         final PublicKey loanKey,
+                                                         final PublicKey protocolAdminStateKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createReadOnlySigner(borrowerKey),
-      createWrite(loanKey)
+      createWrite(loanKey),
+      createRead(protocolAdminStateKey)
     );
   }
 
   /// 10. update weight matrix
   ///
   public static Instruction updateWeightMatrix(final AccountMeta invokedLoopscaleProgramMeta,
-                                               final PublicKey bsAuthKey,
+                                               final PublicKey protocolAdminKey,
                                                final PublicKey borrowerKey,
                                                final PublicKey loanKey,
+                                               final PublicKey protocolAdminStateKey,
                                                final UpdateWeightMatrixParams params) {
     final var keys = updateWeightMatrixKeys(
-      bsAuthKey,
+      protocolAdminKey,
       borrowerKey,
-      loanKey
+      loanKey,
+      protocolAdminStateKey
     );
     return updateWeightMatrix(invokedLoopscaleProgramMeta, keys, params);
   }
@@ -4304,7 +4479,7 @@ public final class LoopscaleProgram {
 
   /// 5.2. withdraw collateral
   ///
-  public static List<AccountMeta> withdrawCollateralKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> withdrawCollateralKeys(final PublicKey protocolAdminKey,
                                                          final PublicKey payerKey,
                                                          final PublicKey borrowerKey,
                                                          final PublicKey loanKey,
@@ -4314,10 +4489,11 @@ public final class LoopscaleProgram {
                                                          final PublicKey assetMintKey,
                                                          final PublicKey tokenProgramKey,
                                                          final PublicKey associatedTokenProgramKey,
+                                                         final PublicKey protocolAdminStateKey,
                                                          final PublicKey eventAuthorityKey,
                                                          final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createReadOnlySigner(borrowerKey),
       createWrite(loanKey),
@@ -4327,6 +4503,7 @@ public final class LoopscaleProgram {
       createRead(assetMintKey),
       createRead(tokenProgramKey),
       createRead(associatedTokenProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -4335,7 +4512,7 @@ public final class LoopscaleProgram {
   /// 5.2. withdraw collateral
   ///
   public static Instruction withdrawCollateral(final AccountMeta invokedLoopscaleProgramMeta,
-                                               final PublicKey bsAuthKey,
+                                               final PublicKey protocolAdminKey,
                                                final PublicKey payerKey,
                                                final PublicKey borrowerKey,
                                                final PublicKey loanKey,
@@ -4345,11 +4522,12 @@ public final class LoopscaleProgram {
                                                final PublicKey assetMintKey,
                                                final PublicKey tokenProgramKey,
                                                final PublicKey associatedTokenProgramKey,
+                                               final PublicKey protocolAdminStateKey,
                                                final PublicKey eventAuthorityKey,
                                                final PublicKey programKey,
                                                final WithdrawCollateralParams params) {
     final var keys = withdrawCollateralKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       borrowerKey,
       loanKey,
@@ -4359,6 +4537,7 @@ public final class LoopscaleProgram {
       assetMintKey,
       tokenProgramKey,
       associatedTokenProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -4412,7 +4591,7 @@ public final class LoopscaleProgram {
 
   /// 8.4 withdraw strategy
   ///
-  public static List<AccountMeta> withdrawStrategyKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> withdrawStrategyKeys(final PublicKey protocolAdminKey,
                                                        final PublicKey payerKey,
                                                        final PublicKey lenderKey,
                                                        final PublicKey strategyKey,
@@ -4423,10 +4602,11 @@ public final class LoopscaleProgram {
                                                        final PublicKey associatedTokenProgramKey,
                                                        final PublicKey tokenProgramKey,
                                                        final PublicKey systemProgramKey,
+                                                       final PublicKey protocolAdminStateKey,
                                                        final PublicKey eventAuthorityKey,
                                                        final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWritableSigner(lenderKey),
       createWrite(strategyKey),
@@ -4437,6 +4617,7 @@ public final class LoopscaleProgram {
       createRead(associatedTokenProgramKey),
       createRead(tokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -4446,7 +4627,7 @@ public final class LoopscaleProgram {
   ///
   /// @param amount: u64
   public static Instruction withdrawStrategy(final AccountMeta invokedLoopscaleProgramMeta,
-                                             final PublicKey bsAuthKey,
+                                             final PublicKey protocolAdminKey,
                                              final PublicKey payerKey,
                                              final PublicKey lenderKey,
                                              final PublicKey strategyKey,
@@ -4457,12 +4638,13 @@ public final class LoopscaleProgram {
                                              final PublicKey associatedTokenProgramKey,
                                              final PublicKey tokenProgramKey,
                                              final PublicKey systemProgramKey,
+                                             final PublicKey protocolAdminStateKey,
                                              final PublicKey eventAuthorityKey,
                                              final PublicKey programKey,
                                              final long amount,
                                              final boolean withdrawAll) {
     final var keys = withdrawStrategyKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       lenderKey,
       strategyKey,
@@ -4473,6 +4655,7 @@ public final class LoopscaleProgram {
       associatedTokenProgramKey,
       tokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
@@ -4539,7 +4722,7 @@ public final class LoopscaleProgram {
 
   /// 9.1.1.2 vault user withdraw
   ///
-  public static List<AccountMeta> withdrawUserVaultKeys(final PublicKey bsAuthKey,
+  public static List<AccountMeta> withdrawUserVaultKeys(final PublicKey protocolAdminKey,
                                                         final PublicKey payerKey,
                                                         final PublicKey userKey,
                                                         final PublicKey vaultKey,
@@ -4554,10 +4737,11 @@ public final class LoopscaleProgram {
                                                         final PublicKey token2022ProgramKey,
                                                         final PublicKey associatedTokenProgramKey,
                                                         final PublicKey systemProgramKey,
+                                                        final PublicKey protocolAdminStateKey,
                                                         final PublicKey eventAuthorityKey,
                                                         final PublicKey programKey) {
     return List.of(
-      createReadOnlySigner(bsAuthKey),
+      createReadOnlySigner(protocolAdminKey),
       createWritableSigner(payerKey),
       createWritableSigner(userKey),
       createWrite(vaultKey),
@@ -4572,6 +4756,7 @@ public final class LoopscaleProgram {
       createRead(token2022ProgramKey),
       createRead(associatedTokenProgramKey),
       createRead(systemProgramKey),
+      createRead(protocolAdminStateKey),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -4580,7 +4765,7 @@ public final class LoopscaleProgram {
   /// 9.1.1.2 vault user withdraw
   ///
   public static Instruction withdrawUserVault(final AccountMeta invokedLoopscaleProgramMeta,
-                                              final PublicKey bsAuthKey,
+                                              final PublicKey protocolAdminKey,
                                               final PublicKey payerKey,
                                               final PublicKey userKey,
                                               final PublicKey vaultKey,
@@ -4595,11 +4780,12 @@ public final class LoopscaleProgram {
                                               final PublicKey token2022ProgramKey,
                                               final PublicKey associatedTokenProgramKey,
                                               final PublicKey systemProgramKey,
+                                              final PublicKey protocolAdminStateKey,
                                               final PublicKey eventAuthorityKey,
                                               final PublicKey programKey,
                                               final LpParams params) {
     final var keys = withdrawUserVaultKeys(
-      bsAuthKey,
+      protocolAdminKey,
       payerKey,
       userKey,
       vaultKey,
@@ -4614,6 +4800,7 @@ public final class LoopscaleProgram {
       token2022ProgramKey,
       associatedTokenProgramKey,
       systemProgramKey,
+      protocolAdminStateKey,
       eventAuthorityKey,
       programKey
     );
