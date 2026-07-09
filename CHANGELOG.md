@@ -1,5 +1,15 @@
 # Changelog
 
+## [25.14.3](https://github.com/sava-software/idl-clients/compare/25.14.2...25.14.3) (2026-07-09)
+
+
+### Features
+
+* **idl-clients-bundle:** sync Jupiter Borrow IDL types ([1118f57](https://github.com/sava-software/idl-clients/commit/1118f571b46e179f29ebe7decdadb7d94e7a0e4d))
+* **idl-clients-bundle:** sync Jupiter Doves IDL types ([4642e2c](https://github.com/sava-software/idl-clients/commit/4642e2c3a8139b39dd66b762038f77fbc53c386a))
+* **idl-clients-bundle:** sync Jupiter Perpetuals IDL types ([f3c9aed](https://github.com/sava-software/idl-clients/commit/f3c9aedfa7226bd81904f405e3f44965be1390a2))
+* **idl-clients-bundle:** sync LoopscaleProtocol admin and state IDL types ([3ace272](https://github.com/sava-software/idl-clients/commit/3ace27204034fa16b052746d5ca40dc725a73b60))
+
 ## [25.14.2](https://github.com/sava-software/idl-clients/compare/25.14.1...25.14.2) (2026-07-01)
 
 
