@@ -6,6 +6,8 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.jupiter.borrow.gen.types;
   exports software.sava.idl.clients.jupiter.borrow.gen;
   exports software.sava.idl.clients.jupiter.borrow;
+  exports software.sava.idl.clients.jupiter.doves.gen.types;
+  exports software.sava.idl.clients.jupiter.doves.gen;
   exports software.sava.idl.clients.jupiter.governance.gen.events;
   exports software.sava.idl.clients.jupiter.governance.gen.types;
   exports software.sava.idl.clients.jupiter.governance.gen;

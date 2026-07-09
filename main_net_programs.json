@@ -44,6 +44,13 @@
       "idlURL": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json"
     },
     {
+      "name": "Jupiter Doves",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "jupiter.doves",
+      "program": "DoVEsk76QybCEHQGzkvYPWLQu9gzNoZZZt3TPiL597e"
+    },
+    {
       "name": "Jupiter Governance",
       "source": "idl-clients-bundle",
       "module": "bundle",
