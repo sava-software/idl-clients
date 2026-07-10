@@ -12,11 +12,16 @@ import static software.sava.idl.clients.kamino.scope.gen.types.OracleType.*;
 record ScopeReaderRecord(ScopeEntry[] entries,
                          PublicKey[] priceInfoAccounts,
                          byte[] priceTypes,
-                         int[] twapSource,
+                         int[] twapSourceOrRefPriceToleranceBps,
                          TwapEnabledBitmask[] twapEnabledBitmasks,
                          int[] refPrice,
                          byte[][] generic,
                          OracleType[] oracleTypes) implements ScopeReader {
+
+  /// Bit 7 of `OracleMappings.price_types[i]` is a frozen flag.
+  /// The oracle type is preserved in bits 0-6.
+  private static final int ORACLE_TYPE_MASK = 0x7F;
+  private static final int NO_REF_PRICE_TOLERANCE = 0xFFFF;
 
   ScopeEntries readEntries(final PublicKey pubKey, final long slot) {
     for (int i = 0; i < priceInfoAccounts.length; ++i) {
@@ -51,10 +56,8 @@ record ScopeReaderRecord(ScopeEntry[] entries,
   private static Set<EmaType> emaTypes(final int bitmask) {
     if (bitmask != 0) {
       final var types = EnumSet.noneOf(EmaType.class);
-      int ordinal;
       for (final var type : EmaType.values()) {
-        ordinal = type.ordinal();
-        if ((ordinal & bitmask) != ordinal) {
+        if ((bitmask & (1 << type.ordinal())) != 0) {
           types.add(type);
         }
       }
@@ -62,6 +65,16 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     } else {
       return Set.of();
     }
+  }
+
+  /// For non-TWAP types, `twap_source_or_ref_price_tolerance_bps` holds the ref price
+  /// tolerance in bps, where `u16::MAX` means no tolerance is configured.
+  private OptionalInt refPriceToleranceBps(final int i, final ScopeEntry refPrice) {
+    if (refPrice == null) {
+      return OptionalInt.empty();
+    }
+    final int toleranceBps = twapSourceOrRefPriceToleranceBps[i];
+    return toleranceBps == NO_REF_PRICE_TOLERANCE ? OptionalInt.empty() : OptionalInt.of(toleranceBps);
   }
 
   private ScopeEntry entry(final int i) {
@@ -73,9 +86,10 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       return entry;
     }
     final var priceAccount = priceInfoAccounts[i];
-    final var oracleType = oracleTypes[Byte.toUnsignedInt(priceTypes[i])];
+    final var oracleType = oracleTypes[priceTypes[i] & ORACLE_TYPE_MASK];
     final var emaTypes = emaTypes(this.twapEnabledBitmasks[i].bitmask());
     final var refPrice = entry(this.refPrice[i]);
+    final var refPriceToleranceBps = refPriceToleranceBps(i, refPrice);
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
       case CappedFloored -> {
@@ -103,7 +117,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       }
       case Chainlink -> {
         final var cfg = V3.read(generic[i], 0);
-        yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, refPrice);
+        yield new Chainlink(i, priceAccount, cfg.confidenceFactor(), emaTypes, refPrice, refPriceToleranceBps);
       }
       case ChainlinkExchangeRate -> new ChainlinkExchangeRate(i, priceAccount, emaTypes);
       case Conditional -> {
@@ -143,7 +157,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
         validateNoEmaTypes(oracleType, emaTypes);
         final var mostRecentOf = MostRecentOfData.read(generic[i], 0);
         final var sources = parseEntries(mostRecentOf.sourceEntries());
-        yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice);
+        yield new MostRecentOfEntry(i, sources, mostRecentOf.maxDivergenceBps(), mostRecentOf.sourcesMaxAgeS(), refPrice, refPriceToleranceBps);
       }
       case MsolStake -> new MsolStake(i, priceAccount, emaTypes);
       case MultiplicationChain -> {
@@ -163,27 +177,36 @@ record ScopeReaderRecord(ScopeEntry[] entries,
             data.exponent(),
             data.confidenceFactor(),
             emaTypes,
-            refPrice
+            refPrice,
+            refPriceToleranceBps
         );
       }
-      case PythPull -> new PythPull(i, priceAccount, emaTypes, refPrice);
+      case PythLazerEMA -> {
+        final var data = PythLazerEmaRefData.read(generic[i], 0);
+        yield new PythLazerEMA(i, entry(data.sourceEntry()), emaTypes);
+      }
+      case PythPull -> new PythPull(i, priceAccount, emaTypes, refPrice, refPriceToleranceBps);
       case PythPullEMA -> new PythPullEMA(i, priceAccount, emaTypes);
       case RaydiumAmmV3AtoB -> new RaydiumAmmV3AtoB(i, priceAccount, emaTypes);
       case RaydiumAmmV3BtoA -> new RaydiumAmmV3BtoA(i, priceAccount, emaTypes);
       case RedStone -> new RedStone(i, priceAccount, emaTypes);
       case ScopeTwap1h -> {
         validateNoEmaTypes(oracleType, emaTypes);
-        yield new ScopeTwap(i, ScopeTwap1h, entry(twapSource[i]));
+        yield new ScopeTwap(i, ScopeTwap1h, entry(twapSourceOrRefPriceToleranceBps[i]));
       }
       case ScopeTwap8h -> {
         validateNoEmaTypes(oracleType, emaTypes);
-        yield new ScopeTwap(i, ScopeTwap8h, entry(twapSource[i]));
+        yield new ScopeTwap(i, ScopeTwap8h, entry(twapSourceOrRefPriceToleranceBps[i]));
       }
       case ScopeTwap24h -> {
         validateNoEmaTypes(oracleType, emaTypes);
-        yield new ScopeTwap(i, ScopeTwap24h, entry(twapSource[i]));
+        yield new ScopeTwap(i, ScopeTwap24h, entry(twapSourceOrRefPriceToleranceBps[i]));
       }
-      case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice);
+      case ScopeTwap7d -> {
+        validateNoEmaTypes(oracleType, emaTypes);
+        yield new ScopeTwap(i, ScopeTwap7d, entry(twapSourceOrRefPriceToleranceBps[i]));
+      }
+      case Securitize -> new Securitize(i, priceAccount, emaTypes, refPrice, refPriceToleranceBps);
       case SplBalance -> {
         validateNoRefPrice(oracleType, refPrice);
         validateNoEmaTypes(oracleType, emaTypes);
@@ -213,7 +236,7 @@ record ScopeReaderRecord(ScopeEntry[] entries,
           validateNoEmaTypes(oracleType, emaTypes);
           yield new Deprecated(i, oracleType);
         } else {
-          yield new NotYetSupported(i, priceAccount, oracleType, entry(twapSource[i]), emaTypes, refPrice, generic[i]);
+          yield new NotYetSupported(i, priceAccount, oracleType, emaTypes, refPrice, refPriceToleranceBps, generic[i]);
         }
       }
     };

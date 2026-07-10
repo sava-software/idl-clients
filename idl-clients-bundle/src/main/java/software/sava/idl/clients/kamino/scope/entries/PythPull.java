@@ -4,12 +4,14 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
+import java.util.OptionalInt;
 import java.util.Set;
 
 public record PythPull(int index,
                        PublicKey oracle,
                        Set<EmaType> emaTypes,
-                       ScopeEntry refPrice) implements ReferencesEntry {
+                       ScopeEntry refPrice,
+                       OptionalInt refPriceToleranceBps) implements ReferencesEntry {
 
   @Override
   public OracleType oracleType() {

@@ -4,6 +4,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.kamino.scope.gen.types.EmaType;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
+import java.util.OptionalInt;
 import java.util.Set;
 
 public record PythLazer(int index,
@@ -12,7 +13,8 @@ public record PythLazer(int index,
                         int exponent,
                         long confidenceFactor,
                         Set<EmaType> emaTypes,
-                        ScopeEntry refPrice) implements ReferencesEntry {
+                        ScopeEntry refPrice,
+                        OptionalInt refPriceToleranceBps) implements ReferencesEntry {
 
   @Override
   public OracleType oracleType() {

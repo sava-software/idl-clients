@@ -11,15 +11,20 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 /// @param feedId: u16
 /// @param exponent: u8
 /// @param confidenceFactor: u32
+/// @param emaConfidenceFactor: u32
 public record PythLazerData(int feedId,
                             int exponent,
-                            long confidenceFactor) implements SerDe {
+                            long confidenceFactor,
+                            boolean emaEnabled,
+                            long emaConfidenceFactor) implements SerDe {
 
-  public static final int BYTES = 7;
+  public static final int BYTES = 12;
 
   public static final int FEED_ID_OFFSET = 0;
   public static final int EXPONENT_OFFSET = 2;
   public static final int CONFIDENCE_FACTOR_OFFSET = 3;
+  public static final int EMA_ENABLED_OFFSET = 7;
+  public static final int EMA_CONFIDENCE_FACTOR_OFFSET = 8;
 
   public static PythLazerData read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -31,7 +36,15 @@ public record PythLazerData(int feedId,
     final var exponent = _data[i] & 0xFF;
     ++i;
     final var confidenceFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
-    return new PythLazerData(feedId, exponent, confidenceFactor);
+    i += 4;
+    final var emaEnabled = _data[i] == 1;
+    ++i;
+    final var emaConfidenceFactor = Integer.toUnsignedLong(getInt32LE(_data, i));
+    return new PythLazerData(feedId,
+                             exponent,
+                             confidenceFactor,
+                             emaEnabled,
+                             emaConfidenceFactor);
   }
 
   @Override
@@ -42,6 +55,10 @@ public record PythLazerData(int feedId,
     _data[i] = (byte) exponent;
     ++i;
     putInt32LE(_data, i, (int) confidenceFactor);
+    i += 4;
+    _data[i] = (byte) (emaEnabled ? 1 : 0);
+    ++i;
+    putInt32LE(_data, i, (int) emaConfidenceFactor);
     i += 4;
     return i - _offset;
   }

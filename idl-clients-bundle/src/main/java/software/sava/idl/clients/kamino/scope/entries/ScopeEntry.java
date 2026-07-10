@@ -12,6 +12,7 @@ public sealed interface ScopeEntry permits CappedFloored,
     MultiplicationChain,
     NotYetSupported,
     OracleEntry,
+    PythLazerEMA,
     ScopeTwap,
     Unused {
 

@@ -18,7 +18,9 @@ pluginManagement {
         }
       }
     }
-//  includeBuild("../sava-build")
+  }
+  if (settingsDir.resolve("../sava-build").isDirectory) {
+    includeBuild("../sava-build")
   }
 }
 

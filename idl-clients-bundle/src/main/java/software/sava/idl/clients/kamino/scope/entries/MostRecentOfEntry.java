@@ -4,12 +4,14 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.OptionalInt;
 
 public record MostRecentOfEntry(int index,
                                 ScopeEntry[] sources,
                                 int maxDivergenceBps,
                                 long sourcesMaxAgeS,
-                                ScopeEntry refPrice) implements MostRecentOf {
+                                ScopeEntry refPrice,
+                                OptionalInt refPriceToleranceBps) implements MostRecentOf {
 
   @Override
   public OracleType oracleType() {
@@ -23,12 +25,14 @@ public record MostRecentOfEntry(int index,
         final ScopeEntry[] oSources,
         final int oMaxDivergenceBps,
         final long oSourcesMaxAgeS,
-        final ScopeEntry oRefPrice
+        final ScopeEntry oRefPrice,
+        final OptionalInt oRefPriceToleranceBps
     )) {
       return index == i
           && sourcesMaxAgeS == oSourcesMaxAgeS
           && maxDivergenceBps == oMaxDivergenceBps
           && Objects.equals(refPrice, oRefPrice)
+          && refPriceToleranceBps.equals(oRefPriceToleranceBps)
           && Arrays.equals(sources, oSources);
     } else {
       return false;
@@ -42,6 +46,7 @@ public record MostRecentOfEntry(int index,
     result = 31 * result + maxDivergenceBps;
     result = 31 * result + Long.hashCode(sourcesMaxAgeS);
     result = 31 * result + Objects.hashCode(refPrice);
+    result = 31 * result + refPriceToleranceBps.hashCode();
     return result;
   }
 
@@ -53,6 +58,7 @@ public record MostRecentOfEntry(int index,
         ", maxDivergenceBps=" + maxDivergenceBps +
         ", sourcesMaxAgeS=" + sourcesMaxAgeS +
         ", refPrice=" + refPrice +
+        ", refPriceToleranceBps=" + refPriceToleranceBps +
         '}';
   }
 }

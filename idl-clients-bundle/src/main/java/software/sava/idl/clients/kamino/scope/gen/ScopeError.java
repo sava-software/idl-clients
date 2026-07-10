@@ -73,7 +73,10 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.PriceFrozen,
     ScopeError.PriceAlreadyFrozen,
     ScopeError.PriceNotFrozen,
-    ScopeError.UnauthorizedFreeze {
+    ScopeError.UnauthorizedFreeze,
+    ScopeError.PythLazerEmaPriceNotPresent,
+    ScopeError.PythLazerEmaConfidenceNotPresent,
+    ScopeError.PythLazerEmaNotEnabledOnSource {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -147,6 +150,9 @@ public sealed interface ScopeError extends ProgramError permits
       case 6067 -> PriceAlreadyFrozen.INSTANCE;
       case 6068 -> PriceNotFrozen.INSTANCE;
       case 6069 -> UnauthorizedFreeze.INSTANCE;
+      case 6070 -> PythLazerEmaPriceNotPresent.INSTANCE;
+      case 6071 -> PythLazerEmaConfidenceNotPresent.INSTANCE;
+      case 6072 -> PythLazerEmaNotEnabledOnSource.INSTANCE;
       default -> null;
     };
   }
@@ -638,6 +644,27 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final UnauthorizedFreeze INSTANCE = new UnauthorizedFreeze(
         6069, "Signer is not authorized to freeze/unfreeze"
+    );
+  }
+
+  record PythLazerEmaPriceNotPresent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerEmaPriceNotPresent INSTANCE = new PythLazerEmaPriceNotPresent(
+        6070, "Property fields in the feed of the PythLazer payload do not contain an EMA price"
+    );
+  }
+
+  record PythLazerEmaConfidenceNotPresent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerEmaConfidenceNotPresent INSTANCE = new PythLazerEmaConfidenceNotPresent(
+        6071, "Property fields in the feed of the PythLazer payload do not contain an EMA confidence"
+    );
+  }
+
+  record PythLazerEmaNotEnabledOnSource(int code, String msg) implements ScopeError {
+
+    public static final PythLazerEmaNotEnabledOnSource INSTANCE = new PythLazerEmaNotEnabledOnSource(
+        6072, "PythLazerEMA source entry does not have EMA enabled"
     );
   }
 }
