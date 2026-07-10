@@ -1,5 +1,17 @@
 # Changelog
 
+## [25.15.0](https://github.com/sava-software/idl-clients/compare/25.14.3...25.15.0) (2026-07-10)
+
+
+### Features
+
+* **idl-clients-bundle:** sync PythLazerEMA and IDL schema updates ([f037e5d](https://github.com/sava-software/idl-clients/commit/f037e5d124180d293393d765ed1cd9c1f606f3bd))
+
+
+### Miscellaneous Chores
+
+* release 25.15.0 ([9bc9c5f](https://github.com/sava-software/idl-clients/commit/9bc9c5fda2b5daf8b10e49b21928c196de4ca356))
+
 ## [25.14.3](https://github.com/sava-software/idl-clients/compare/25.14.2...25.14.3) (2026-07-09)
 
 
