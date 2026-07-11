@@ -12,8 +12,8 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 /// `perfect_shares`  — primary: shares to operate (positive = deposit/borrow, negative = withdraw/payback).
 /// Pass `i128::MIN` to request max-withdrawal / max-payback.
 /// `token0_min_max`  — slippage bound for token0:
-/// deposit/payback ��� max tokens to spend  (positive for deposit, negative for payback)
-/// withdraw/borrow ��� min tokens to receive (negative for withdraw, positive for borrow)
+/// deposit/payback → max tokens to spend  (positive for deposit, negative for payback)
+/// withdraw/borrow → min tokens to receive (negative for withdraw, positive for borrow)
 /// Set to 0 to receive the full withdrawal / payback in the *other* token only.
 /// `token1_min_max`  — same semantics as `token0_min_max` for token1.
 ///

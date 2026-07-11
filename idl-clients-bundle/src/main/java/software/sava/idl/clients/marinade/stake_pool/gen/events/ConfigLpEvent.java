@@ -8,7 +8,7 @@ import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeValueChange;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.U64ValueChange;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record ConfigLpEvent(Discriminator discriminator,
@@ -18,7 +18,7 @@ public record ConfigLpEvent(Discriminator discriminator,
                             U64ValueChange liquidityTargetChange,
                             FeeValueChange treasuryCutChange) implements MarinadeFinanceEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 204, 192, 138, 68, 145, 224, 148);
 
   public static final int STATE_OFFSET = 8;
   public static final int MIN_FEE_CHANGE_OFFSET = 41;
@@ -27,7 +27,7 @@ public record ConfigLpEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
@@ -87,7 +87,7 @@ public record ConfigLpEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + (minFeeChange == null ? 1 : (1 + minFeeChange.l()))
          + (maxFeeChange == null ? 1 : (1 + maxFeeChange.l()))
          + (liquidityTargetChange == null ? 1 : (1 + liquidityTargetChange.l()))

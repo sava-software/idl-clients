@@ -1,1 +1,1498 @@
-{"version":"0.1.0","name":"merkle_distributor","instructions":[{"name":"newDistributor","docs":["ADMIN FUNCTIONS ////"],"accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["[MerkleDistributor]."],"pda":{"seeds":[{"kind":"const","type":"string","value":"MerkleDistributor"},{"kind":"account","type":"publicKey","path":"base"},{"kind":"account","type":"publicKey","account":"Mint","path":"mint"},{"kind":"arg","type":"u64","path":"version"}]}},{"name":"base","isMut":false,"isSigner":true,"docs":["Base key of the distributor."]},{"name":"clawbackReceiver","isMut":true,"isSigner":false,"docs":["Clawback receiver token account"]},{"name":"mint","isMut":false,"isSigner":false,"docs":["The mint to distribute."]},{"name":"tokenVault","isMut":false,"isSigner":false,"docs":["Token vault","Should create previously"]},{"name":"admin","isMut":true,"isSigner":true,"docs":["Admin wallet, responsible for creating the distributor and paying for the transaction.","Also has the authority to set the clawback receiver and change itself."]},{"name":"systemProgram","isMut":false,"isSigner":false,"docs":["The [System] program."]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["The [Token] program."]}],"args":[{"name":"params","type":{"defined":"NewDistributorParams"}}]},{"name":"closeDistributor","docs":["only available in test phase"],"accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["[MerkleDistributor]."],"relations":["admin","token_vault"]},{"name":"tokenVault","isMut":true,"isSigner":false,"docs":["Clawback receiver token account"]},{"name":"admin","isMut":true,"isSigner":true,"docs":["Admin wallet, responsible for creating the distributor and paying for the transaction.","Also has the authority to set the clawback receiver and change itself."]},{"name":"destinationTokenAccount","isMut":true,"isSigner":false,"docs":["account receive token back"]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["The [Token] program."]}],"args":[]},{"name":"closeClaimStatus","docs":["only available in test phase"],"accounts":[{"name":"claimStatus","isMut":true,"isSigner":false,"relations":["claimant","admin"]},{"name":"claimant","isMut":true,"isSigner":false},{"name":"admin","isMut":false,"isSigner":true}],"args":[]},{"name":"setActivationPoint","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["[MerkleDistributor]."],"relations":["admin"]},{"name":"admin","isMut":true,"isSigner":true,"docs":["Payer to create the distributor."]}],"args":[{"name":"activationPoint","type":"u64"}]},{"name":"clawback","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["clawback_receiver"]},{"name":"from","isMut":true,"isSigner":false,"docs":["Distributor ATA containing the tokens to distribute."]},{"name":"clawbackReceiver","isMut":true,"isSigner":false,"docs":["The Clawback token account."]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["SPL [Token] program."]}],"args":[]},{"name":"setClawbackReceiver","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["admin"]},{"name":"newClawbackAccount","isMut":false,"isSigner":false,"docs":["New clawback account"]},{"name":"admin","isMut":false,"isSigner":true,"docs":["Admin signer"]}],"args":[]},{"name":"setAdmin","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["admin"]},{"name":"admin","isMut":false,"isSigner":true,"docs":["Admin signer"]},{"name":"newAdmin","isMut":false,"isSigner":false,"docs":["New admin account"]}],"args":[]},{"name":"setOperator","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["admin"]},{"name":"admin","isMut":false,"isSigner":true,"docs":["Admin signer"]}],"args":[{"name":"newOperator","type":"publicKey"}]},{"name":"newClaim","docs":["USER FUNCTIONS /////"],"accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."]},{"name":"claimStatus","isMut":true,"isSigner":false,"docs":["Claim status PDA"],"pda":{"seeds":[{"kind":"const","type":"string","value":"ClaimStatus"},{"kind":"account","type":"publicKey","path":"claimant"},{"kind":"account","type":"publicKey","path":"distributor"}]}},{"name":"from","isMut":true,"isSigner":false,"docs":["Distributor ATA containing the tokens to distribute."]},{"name":"to","isMut":true,"isSigner":false,"docs":["Account to send the claimed tokens to."]},{"name":"claimant","isMut":true,"isSigner":true,"docs":["Who is claiming the tokens."]},{"name":"operator","isMut":false,"isSigner":true,"isOptional":true,"docs":["operator"]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["SPL [Token] program."]},{"name":"systemProgram","isMut":false,"isSigner":false,"docs":["The [System] program."]}],"args":[{"name":"amountUnlocked","type":"u64"},{"name":"amountLocked","type":"u64"},{"name":"proof","type":{"vec":{"array":["u8",32]}}}]},{"name":"claimLocked","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."]},{"name":"claimStatus","isMut":true,"isSigner":false,"docs":["Claim Status PDA"],"relations":["distributor","claimant"]},{"name":"from","isMut":true,"isSigner":false,"docs":["Distributor ATA containing the tokens to distribute."]},{"name":"to","isMut":true,"isSigner":false,"docs":["Account to send the claimed tokens to."]},{"name":"claimant","isMut":false,"isSigner":true,"docs":["Who is claiming the tokens."]},{"name":"operator","isMut":false,"isSigner":true,"isOptional":true,"docs":["operator"]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["SPL [Token] program."]}],"args":[]},{"name":"newClaimAndStake","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["locker"]},{"name":"claimStatus","isMut":true,"isSigner":false,"docs":["Claim status PDA"],"pda":{"seeds":[{"kind":"const","type":"string","value":"ClaimStatus"},{"kind":"account","type":"publicKey","path":"claimant"},{"kind":"account","type":"publicKey","path":"distributor"}]}},{"name":"from","isMut":true,"isSigner":false,"docs":["Distributor ATA containing the tokens to distribute."]},{"name":"claimant","isMut":true,"isSigner":true,"docs":["Who is claiming the tokens."]},{"name":"operator","isMut":false,"isSigner":true,"isOptional":true,"docs":["operator"]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["SPL [Token] program."]},{"name":"systemProgram","isMut":false,"isSigner":false,"docs":["The [System] program."]},{"name":"voterProgram","isMut":false,"isSigner":false,"docs":["Voter program"]},{"name":"locker","isMut":true,"isSigner":false},{"name":"escrow","isMut":true,"isSigner":false},{"name":"escrowTokens","isMut":true,"isSigner":false}],"args":[{"name":"amountUnlocked","type":"u64"},{"name":"amountLocked","type":"u64"},{"name":"proof","type":{"vec":{"array":["u8",32]}}}]},{"name":"claimLockedAndStake","accounts":[{"name":"distributor","isMut":true,"isSigner":false,"docs":["The [MerkleDistributor]."],"relations":["locker"]},{"name":"claimStatus","isMut":true,"isSigner":false,"docs":["Claim Status PDA"],"relations":["distributor","claimant"]},{"name":"from","isMut":true,"isSigner":false,"docs":["Distributor ATA containing the tokens to distribute."]},{"name":"claimant","isMut":false,"isSigner":true,"docs":["Who is claiming the tokens."]},{"name":"operator","isMut":false,"isSigner":true,"isOptional":true,"docs":["operator"]},{"name":"tokenProgram","isMut":false,"isSigner":false,"docs":["SPL [Token] program."]},{"name":"voterProgram","isMut":false,"isSigner":false,"docs":["Voter program"]},{"name":"locker","isMut":true,"isSigner":false},{"name":"escrow","isMut":true,"isSigner":false},{"name":"escrowTokens","isMut":true,"isSigner":false}],"args":[]}],"accounts":[{"name":"ClaimStatus","docs":["Holds whether or not a claimant has claimed tokens."],"type":{"kind":"struct","fields":[{"name":"admin","docs":["admin of merkle tree, store for for testing purpose"],"type":"publicKey"},{"name":"distributor","docs":["distributor"],"type":"publicKey"},{"name":"claimant","docs":["Authority that claimed the tokens."],"type":"publicKey"},{"name":"lockedAmount","docs":["Locked amount"],"type":"u64"},{"name":"lockedAmountWithdrawn","docs":["Locked amount withdrawn"],"type":"u64"},{"name":"unlockedAmount","docs":["Unlocked amount"],"type":"u64"},{"name":"bonusAmount","docs":["Bonus amount"],"type":"u64"},{"name":"closable","docs":["indicate that whether admin can close this account, for testing purpose"],"type":"u8"},{"name":"padding0","docs":["padding 0"],"type":{"array":["u8",7]}},{"name":"padding1","docs":["padding 1"],"type":"u128"}]}},{"name":"MerkleDistributor","docs":["State for the account which distributes tokens."],"type":{"kind":"struct","fields":[{"name":"root","docs":["The 256-bit merkle root."],"type":{"array":["u8",32]}},{"name":"mint","docs":["[Mint] of the token to be distributed."],"type":"publicKey"},{"name":"base","docs":["base key of distributor."],"type":"publicKey"},{"name":"tokenVault","docs":["Token Address of the vault"],"type":"publicKey"},{"name":"clawbackReceiver","docs":["Clawback receiver"],"type":"publicKey"},{"name":"admin","docs":["Admin wallet"],"type":"publicKey"},{"name":"locker","docs":["locker, for claim type claim and stake"],"type":"publicKey"},{"name":"operator","docs":["operator for signing in permissioned merkle tree"],"type":"publicKey"},{"name":"version","docs":["Version of the airdrop"],"type":"u64"},{"name":"maxTotalClaim","docs":["Maximum number of tokens that can ever be claimed from this [MerkleDistributor]."],"type":"u64"},{"name":"maxNumNodes","docs":["Maximum number of nodes in [MerkleDistributor]."],"type":"u64"},{"name":"totalAmountClaimed","docs":["Total amount of tokens that have been claimed."],"type":"u64"},{"name":"numNodesClaimed","docs":["Number of nodes that have been claimed."],"type":"u64"},{"name":"startTs","docs":["Lockup time start (Unix Timestamp)"],"type":"i64"},{"name":"endTs","docs":["Lockup time end (Unix Timestamp)"],"type":"i64"},{"name":"clawbackStartTs","docs":["Clawback start (Unix Timestamp)"],"type":"i64"},{"name":"activationPoint","docs":["this merkle tree is activated from this slot or timestamp"],"type":"u64"},{"name":"activationType","docs":["activation type, 0 means slot, 1 means timestamp"],"type":"u8"},{"name":"claimType","docs":["claim type"],"type":"u8"},{"name":"bump","docs":["Bump seed."],"type":"u8"},{"name":"clawedBack","docs":["Whether or not the distributor has been clawed back"],"type":"u8"},{"name":"closable","docs":["indicate that whether admin can close this pool, for testing purpose"],"type":"u8"},{"name":"padding0","docs":["Padding 0"],"type":{"array":["u8",3]}},{"name":"airdropBonus","type":{"defined":"AirdropBonus"}},{"name":"padding2","type":{"array":["u128",5]}}]}}],"types":[{"name":"NewDistributorParams","type":{"kind":"struct","fields":[{"name":"version","type":"u64"},{"name":"root","type":{"array":["u8",32]}},{"name":"totalClaim","type":"u64"},{"name":"maxNumNodes","type":"u64"},{"name":"startVestingTs","type":"i64"},{"name":"endVestingTs","type":"i64"},{"name":"clawbackStartTs","type":"i64"},{"name":"activationPoint","type":"u64"},{"name":"activationType","type":"u8"},{"name":"closable","type":"bool"},{"name":"totalBonus","type":"u64"},{"name":"bonusVestingDuration","type":"u64"},{"name":"claimType","type":"u8"},{"name":"operator","type":"publicKey"},{"name":"locker","type":"publicKey"}]}},{"name":"AirdropBonus","type":{"kind":"struct","fields":[{"name":"totalBonus","docs":["total bonus"],"type":"u64"},{"name":"vestingDuration","type":"u64"},{"name":"totalClaimedBonus","docs":["total bonus"],"type":"u64"}]}},{"name":"ActivationType","docs":["Type of the activation"],"type":{"kind":"enum","variants":[{"name":"Slot"},{"name":"Timestamp"}]}},{"name":"ClaimType","docs":["Type of the activation"],"type":{"kind":"enum","variants":[{"name":"Permissionless"},{"name":"Permissioned"},{"name":"PermissionlessWithStaking"},{"name":"PermissionedWithStaking"}]}}],"events":[{"name":"NewClaimEvent","fields":[{"name":"claimant","type":"publicKey","index":false},{"name":"timestamp","type":"i64","index":false}]},{"name":"ClaimedEvent","fields":[{"name":"claimant","type":"publicKey","index":false},{"name":"amount","type":"u64","index":false}]}],"errors":[{"code":6000,"name":"InsufficientUnlockedTokens","msg":"Insufficient unlocked tokens"},{"code":6001,"name":"StartTooFarInFuture","msg":"Deposit Start too far in future"},{"code":6002,"name":"InvalidProof","msg":"Invalid Merkle proof."},{"code":6003,"name":"ExceededMaxClaim","msg":"Exceeded maximum claim amount"},{"code":6004,"name":"MaxNodesExceeded","msg":"Exceeded maximum node count"},{"code":6005,"name":"Unauthorized","msg":"Account is not authorized to execute this instruction"},{"code":6006,"name":"OwnerMismatch","msg":"Token account owner did not match intended owner"},{"code":6007,"name":"ClawbackDuringVesting","msg":"Clawback cannot be before vesting ends"},{"code":6008,"name":"ClawbackBeforeStart","msg":"Attempted clawback before start"},{"code":6009,"name":"ClawbackAlreadyClaimed","msg":"Clawback already claimed"},{"code":6010,"name":"InsufficientClawbackDelay","msg":"Clawback start must be at least one day after vesting end"},{"code":6011,"name":"SameClawbackReceiver","msg":"New and old Clawback receivers are identical"},{"code":6012,"name":"SameAdmin","msg":"New and old admin are identical"},{"code":6013,"name":"ClaimExpired","msg":"Claim window expired"},{"code":6014,"name":"ArithmeticError","msg":"Arithmetic Error (overflow/underflow)"},{"code":6015,"name":"StartTimestampAfterEnd","msg":"Start Timestamp cannot be after end Timestamp"},{"code":6016,"name":"TimestampsNotInFuture","msg":"Timestamps cannot be in the past"},{"code":6017,"name":"InvalidVersion","msg":"Airdrop Version Mismatch"},{"code":6018,"name":"ClaimingIsNotStarted","msg":"Claiming is not started"},{"code":6019,"name":"CannotCloseDistributor","msg":"Cannot close distributor"},{"code":6020,"name":"CannotCloseClaimStatus","msg":"Cannot close claim status"},{"code":6021,"name":"InvalidActivationType","msg":"Invalid activation type"},{"code":6022,"name":"TypeCastedError","msg":"Type casted error"},{"code":6023,"name":"InvalidOperator","msg":"Invalid operator"},{"code":6024,"name":"InvalidClaimType","msg":"Invalid claim type"},{"code":6025,"name":"SameOperator","msg":"Same operator"},{"code":6026,"name":"InvalidLocker","msg":"Invalid locker"},{"code":6027,"name":"EscrowIsNotMaxLock","msg":"Escrow is not max lock"}]}
+{
+  "address": "DiS3nNjFVMieMgmiQFm6wgJL7nevk4NrhXKLbtEH1Z2R",
+  "metadata": {
+    "name": "merkle_distributor",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "new_distributor",
+      "docs": [
+        "ADMIN FUNCTIONS ////"
+      ],
+      "discriminator": [
+        32,
+        139,
+        112,
+        171,
+        0,
+        2,
+        225,
+        155
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "[MerkleDistributor]."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  34,
+                  77,
+                  101,
+                  114,
+                  107,
+                  108,
+                  101,
+                  68,
+                  105,
+                  115,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  111,
+                  114,
+                  34
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "base"
+              },
+              {
+                "kind": "account",
+                "path": "mint",
+                "account": "Mint"
+              },
+              {
+                "kind": "arg",
+                "path": "version"
+              }
+            ]
+          }
+        },
+        {
+          "name": "base",
+          "docs": [
+            "Base key of the distributor."
+          ],
+          "signer": true
+        },
+        {
+          "name": "clawback_receiver",
+          "docs": [
+            "Clawback receiver token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "mint",
+          "docs": [
+            "The mint to distribute."
+          ]
+        },
+        {
+          "name": "token_vault",
+          "docs": [
+            "Token vault",
+            "Should create previously"
+          ]
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin wallet, responsible for creating the distributor and paying for the transaction.",
+            "Also has the authority to set the clawback receiver and change itself."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ]
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The [Token] program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "NewDistributorParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_distributor",
+      "docs": [
+        "only available in test phase"
+      ],
+      "discriminator": [
+        202,
+        56,
+        180,
+        143,
+        46,
+        104,
+        106,
+        112
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "[MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "admin",
+            "token_vault"
+          ]
+        },
+        {
+          "name": "token_vault",
+          "docs": [
+            "Clawback receiver token account"
+          ],
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin wallet, responsible for creating the distributor and paying for the transaction.",
+            "Also has the authority to set the clawback receiver and change itself."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "destination_token_account",
+          "docs": [
+            "account receive token back"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "The [Token] program."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_claim_status",
+      "docs": [
+        "only available in test phase"
+      ],
+      "discriminator": [
+        163,
+        214,
+        191,
+        165,
+        245,
+        188,
+        17,
+        185
+      ],
+      "accounts": [
+        {
+          "name": "claim_status",
+          "writable": true,
+          "relations": [
+            "claimant",
+            "admin"
+          ]
+        },
+        {
+          "name": "claimant",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_activation_point",
+      "discriminator": [
+        91,
+        249,
+        15,
+        165,
+        26,
+        129,
+        254,
+        125
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "[MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "admin"
+          ]
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Payer to create the distributor."
+          ],
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "activation_point",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "clawback",
+      "discriminator": [
+        111,
+        92,
+        142,
+        79,
+        33,
+        234,
+        82,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "clawback_receiver"
+          ]
+        },
+        {
+          "name": "from",
+          "docs": [
+            "Distributor ATA containing the tokens to distribute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "clawback_receiver",
+          "docs": [
+            "The Clawback token account."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL [Token] program."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_clawback_receiver",
+      "discriminator": [
+        153,
+        217,
+        34,
+        20,
+        19,
+        29,
+        229,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "admin"
+          ]
+        },
+        {
+          "name": "new_clawback_account",
+          "docs": [
+            "New clawback account"
+          ]
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin signer"
+          ],
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_admin",
+      "discriminator": [
+        251,
+        163,
+        0,
+        52,
+        91,
+        194,
+        187,
+        92
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "admin"
+          ]
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin signer"
+          ],
+          "signer": true
+        },
+        {
+          "name": "new_admin",
+          "docs": [
+            "New admin account"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_operator",
+      "discriminator": [
+        238,
+        153,
+        101,
+        169,
+        243,
+        131,
+        36,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "admin"
+          ]
+        },
+        {
+          "name": "admin",
+          "docs": [
+            "Admin signer"
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_operator",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "new_claim",
+      "docs": [
+        "USER FUNCTIONS /////"
+      ],
+      "discriminator": [
+        78,
+        177,
+        98,
+        123,
+        210,
+        21,
+        187,
+        83
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claim_status",
+          "docs": [
+            "Claim status PDA"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  34,
+                  67,
+                  108,
+                  97,
+                  105,
+                  109,
+                  83,
+                  116,
+                  97,
+                  116,
+                  117,
+                  115,
+                  34
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "claimant"
+              },
+              {
+                "kind": "account",
+                "path": "distributor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "from",
+          "docs": [
+            "Distributor ATA containing the tokens to distribute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "to",
+          "docs": [
+            "Account to send the claimed tokens to."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claimant",
+          "docs": [
+            "Who is claiming the tokens."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "operator",
+          "docs": [
+            "operator"
+          ],
+          "signer": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL [Token] program."
+          ]
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_unlocked",
+          "type": "u64"
+        },
+        {
+          "name": "amount_locked",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "claim_locked",
+      "discriminator": [
+        34,
+        206,
+        181,
+        23,
+        11,
+        207,
+        147,
+        90
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claim_status",
+          "docs": [
+            "Claim Status PDA"
+          ],
+          "writable": true,
+          "relations": [
+            "distributor",
+            "claimant"
+          ]
+        },
+        {
+          "name": "from",
+          "docs": [
+            "Distributor ATA containing the tokens to distribute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "to",
+          "docs": [
+            "Account to send the claimed tokens to."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claimant",
+          "docs": [
+            "Who is claiming the tokens."
+          ],
+          "signer": true
+        },
+        {
+          "name": "operator",
+          "docs": [
+            "operator"
+          ],
+          "signer": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL [Token] program."
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "new_claim_and_stake",
+      "discriminator": [
+        50,
+        111,
+        242,
+        118,
+        51,
+        250,
+        141,
+        187
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "locker"
+          ]
+        },
+        {
+          "name": "claim_status",
+          "docs": [
+            "Claim status PDA"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  34,
+                  67,
+                  108,
+                  97,
+                  105,
+                  109,
+                  83,
+                  116,
+                  97,
+                  116,
+                  117,
+                  115,
+                  34
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "claimant"
+              },
+              {
+                "kind": "account",
+                "path": "distributor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "from",
+          "docs": [
+            "Distributor ATA containing the tokens to distribute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claimant",
+          "docs": [
+            "Who is claiming the tokens."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "operator",
+          "docs": [
+            "operator"
+          ],
+          "signer": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL [Token] program."
+          ]
+        },
+        {
+          "name": "system_program",
+          "docs": [
+            "The [System] program."
+          ]
+        },
+        {
+          "name": "voter_program",
+          "docs": [
+            "Voter program"
+          ]
+        },
+        {
+          "name": "locker",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "escrow_tokens",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_unlocked",
+          "type": "u64"
+        },
+        {
+          "name": "amount_locked",
+          "type": "u64"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "claim_locked_and_stake",
+      "discriminator": [
+        173,
+        208,
+        81,
+        8,
+        13,
+        19,
+        202,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "distributor",
+          "docs": [
+            "The [MerkleDistributor]."
+          ],
+          "writable": true,
+          "relations": [
+            "locker"
+          ]
+        },
+        {
+          "name": "claim_status",
+          "docs": [
+            "Claim Status PDA"
+          ],
+          "writable": true,
+          "relations": [
+            "distributor",
+            "claimant"
+          ]
+        },
+        {
+          "name": "from",
+          "docs": [
+            "Distributor ATA containing the tokens to distribute."
+          ],
+          "writable": true
+        },
+        {
+          "name": "claimant",
+          "docs": [
+            "Who is claiming the tokens."
+          ],
+          "signer": true
+        },
+        {
+          "name": "operator",
+          "docs": [
+            "operator"
+          ],
+          "signer": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "docs": [
+            "SPL [Token] program."
+          ]
+        },
+        {
+          "name": "voter_program",
+          "docs": [
+            "Voter program"
+          ]
+        },
+        {
+          "name": "locker",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "escrow_tokens",
+          "writable": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ClaimStatus",
+      "discriminator": [
+        22,
+        183,
+        249,
+        157,
+        247,
+        95,
+        150,
+        96
+      ]
+    },
+    {
+      "name": "MerkleDistributor",
+      "discriminator": [
+        77,
+        119,
+        139,
+        70,
+        84,
+        247,
+        12,
+        26
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "NewClaimEvent",
+      "discriminator": [
+        244,
+        3,
+        231,
+        151,
+        60,
+        101,
+        55,
+        55
+      ]
+    },
+    {
+      "name": "ClaimedEvent",
+      "discriminator": [
+        144,
+        172,
+        209,
+        86,
+        144,
+        87,
+        84,
+        115
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientUnlockedTokens",
+      "msg": "Insufficient unlocked tokens"
+    },
+    {
+      "code": 6001,
+      "name": "StartTooFarInFuture",
+      "msg": "Deposit Start too far in future"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidProof",
+      "msg": "Invalid Merkle proof."
+    },
+    {
+      "code": 6003,
+      "name": "ExceededMaxClaim",
+      "msg": "Exceeded maximum claim amount"
+    },
+    {
+      "code": 6004,
+      "name": "MaxNodesExceeded",
+      "msg": "Exceeded maximum node count"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Account is not authorized to execute this instruction"
+    },
+    {
+      "code": 6006,
+      "name": "OwnerMismatch",
+      "msg": "Token account owner did not match intended owner"
+    },
+    {
+      "code": 6007,
+      "name": "ClawbackDuringVesting",
+      "msg": "Clawback cannot be before vesting ends"
+    },
+    {
+      "code": 6008,
+      "name": "ClawbackBeforeStart",
+      "msg": "Attempted clawback before start"
+    },
+    {
+      "code": 6009,
+      "name": "ClawbackAlreadyClaimed",
+      "msg": "Clawback already claimed"
+    },
+    {
+      "code": 6010,
+      "name": "InsufficientClawbackDelay",
+      "msg": "Clawback start must be at least one day after vesting end"
+    },
+    {
+      "code": 6011,
+      "name": "SameClawbackReceiver",
+      "msg": "New and old Clawback receivers are identical"
+    },
+    {
+      "code": 6012,
+      "name": "SameAdmin",
+      "msg": "New and old admin are identical"
+    },
+    {
+      "code": 6013,
+      "name": "ClaimExpired",
+      "msg": "Claim window expired"
+    },
+    {
+      "code": 6014,
+      "name": "ArithmeticError",
+      "msg": "Arithmetic Error (overflow/underflow)"
+    },
+    {
+      "code": 6015,
+      "name": "StartTimestampAfterEnd",
+      "msg": "Start Timestamp cannot be after end Timestamp"
+    },
+    {
+      "code": 6016,
+      "name": "TimestampsNotInFuture",
+      "msg": "Timestamps cannot be in the past"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidVersion",
+      "msg": "Airdrop Version Mismatch"
+    },
+    {
+      "code": 6018,
+      "name": "ClaimingIsNotStarted",
+      "msg": "Claiming is not started"
+    },
+    {
+      "code": 6019,
+      "name": "CannotCloseDistributor",
+      "msg": "Cannot close distributor"
+    },
+    {
+      "code": 6020,
+      "name": "CannotCloseClaimStatus",
+      "msg": "Cannot close claim status"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidActivationType",
+      "msg": "Invalid activation type"
+    },
+    {
+      "code": 6022,
+      "name": "TypeCastedError",
+      "msg": "Type casted error"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidOperator",
+      "msg": "Invalid operator"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidClaimType",
+      "msg": "Invalid claim type"
+    },
+    {
+      "code": 6025,
+      "name": "SameOperator",
+      "msg": "Same operator"
+    },
+    {
+      "code": 6026,
+      "name": "InvalidLocker",
+      "msg": "Invalid locker"
+    },
+    {
+      "code": 6027,
+      "name": "EscrowIsNotMaxLock",
+      "msg": "Escrow is not max lock"
+    }
+  ],
+  "types": [
+    {
+      "name": "NewDistributorParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u64"
+          },
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "total_claim",
+            "type": "u64"
+          },
+          {
+            "name": "max_num_nodes",
+            "type": "u64"
+          },
+          {
+            "name": "start_vesting_ts",
+            "type": "i64"
+          },
+          {
+            "name": "end_vesting_ts",
+            "type": "i64"
+          },
+          {
+            "name": "clawback_start_ts",
+            "type": "i64"
+          },
+          {
+            "name": "activation_point",
+            "type": "u64"
+          },
+          {
+            "name": "activation_type",
+            "type": "u8"
+          },
+          {
+            "name": "closable",
+            "type": "bool"
+          },
+          {
+            "name": "total_bonus",
+            "type": "u64"
+          },
+          {
+            "name": "bonus_vesting_duration",
+            "type": "u64"
+          },
+          {
+            "name": "claim_type",
+            "type": "u8"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AirdropBonus",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_bonus",
+            "docs": [
+              "total bonus"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "vesting_duration",
+            "type": "u64"
+          },
+          {
+            "name": "total_claimed_bonus",
+            "docs": [
+              "total bonus"
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ActivationType",
+      "docs": [
+        "Type of the activation"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Slot"
+          },
+          {
+            "name": "Timestamp"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimType",
+      "docs": [
+        "Type of the activation"
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Permissionless"
+          },
+          {
+            "name": "Permissioned"
+          },
+          {
+            "name": "PermissionlessWithStaking"
+          },
+          {
+            "name": "PermissionedWithStaking"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimStatus",
+      "docs": [
+        "Holds whether or not a claimant has claimed tokens."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "admin of merkle tree, store for for testing purpose"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "distributor",
+            "docs": [
+              "distributor"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "claimant",
+            "docs": [
+              "Authority that claimed the tokens."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "locked_amount",
+            "docs": [
+              "Locked amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "locked_amount_withdrawn",
+            "docs": [
+              "Locked amount withdrawn"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "unlocked_amount",
+            "docs": [
+              "Unlocked amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bonus_amount",
+            "docs": [
+              "Bonus amount"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "closable",
+            "docs": [
+              "indicate that whether admin can close this account, for testing purpose"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "padding0",
+            "docs": [
+              "padding 0"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                7
+              ]
+            }
+          },
+          {
+            "name": "padding1",
+            "docs": [
+              "padding 1"
+            ],
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerkleDistributor",
+      "docs": [
+        "State for the account which distributes tokens."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "root",
+            "docs": [
+              "The 256-bit merkle root."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "[Mint] of the token to be distributed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "base",
+            "docs": [
+              "base key of distributor."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_vault",
+            "docs": [
+              "Token Address of the vault"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "clawback_receiver",
+            "docs": [
+              "Clawback receiver"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "admin",
+            "docs": [
+              "Admin wallet"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "locker",
+            "docs": [
+              "locker, for claim type claim and stake"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "docs": [
+              "operator for signing in permissioned merkle tree"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "version",
+            "docs": [
+              "Version of the airdrop"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_total_claim",
+            "docs": [
+              "Maximum number of tokens that can ever be claimed from this [MerkleDistributor]."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_num_nodes",
+            "docs": [
+              "Maximum number of nodes in [MerkleDistributor]."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_amount_claimed",
+            "docs": [
+              "Total amount of tokens that have been claimed."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "num_nodes_claimed",
+            "docs": [
+              "Number of nodes that have been claimed."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "start_ts",
+            "docs": [
+              "Lockup time start (Unix Timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "end_ts",
+            "docs": [
+              "Lockup time end (Unix Timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "clawback_start_ts",
+            "docs": [
+              "Clawback start (Unix Timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "activation_point",
+            "docs": [
+              "this merkle tree is activated from this slot or timestamp"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "activation_type",
+            "docs": [
+              "activation type, 0 means slot, 1 means timestamp"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "claim_type",
+            "docs": [
+              "claim type"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "clawed_back",
+            "docs": [
+              "Whether or not the distributor has been clawed back"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "closable",
+            "docs": [
+              "indicate that whether admin can close this pool, for testing purpose"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "padding0",
+            "docs": [
+              "Padding 0"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                3
+              ]
+            }
+          },
+          {
+            "name": "airdrop_bonus",
+            "type": {
+              "defined": {
+                "name": "AirdropBonus"
+              }
+            }
+          },
+          {
+            "name": "padding2",
+            "type": {
+              "array": [
+                "u128",
+                5
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "NewClaimEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimant",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimant",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -10,7 +10,7 @@ import java.util.OptionalLong;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param positionSide: u8
@@ -56,7 +56,7 @@ public record IncreasePositionEvent(Discriminator discriminator,
                                     long fundingFeeUsd,
                                     long priceImpactFeeUsd) implements PerpetualsEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(245, 113, 85, 52, 214, 187, 153, 132);
 
   public static final int POSITION_KEY_OFFSET = 8;
   public static final int POSITION_SIDE_OFFSET = 40;
@@ -81,7 +81,7 @@ public record IncreasePositionEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var positionKey = readPubKey(_data, i);
     i += 32;
@@ -230,7 +230,7 @@ public record IncreasePositionEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + 1
          + 32
          + 32

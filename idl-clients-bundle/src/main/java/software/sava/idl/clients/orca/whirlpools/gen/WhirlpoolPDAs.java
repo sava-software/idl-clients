@@ -3,6 +3,7 @@ package software.sava.idl.clients.orca.whirlpools.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -12,21 +13,25 @@ public final class WhirlpoolPDAs {
 
   public static ProgramDerivedAddress adaptiveFeeTierPDA(final PublicKey program,
                                                          final PublicKey whirlpoolsConfigAccount,
-                                                         final byte[] feeTierIndex) {
+                                                         final int feeTierIndex) {
+    final byte[] feeTierIndexBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(feeTierIndexBytes, 0, feeTierIndex);
     return PublicKey.findProgramAddress(List.of(
       "fee_tier".getBytes(US_ASCII),
       whirlpoolsConfigAccount.toByteArray(),
-      feeTierIndex
+      feeTierIndexBytes
     ), program);
   }
 
   public static ProgramDerivedAddress bundledPositionPDA(final PublicKey program,
                                                          final PublicKey positionBundlePositionBundleMintAccount,
-                                                         final byte[] bundleIndex) {
+                                                         final int bundleIndex) {
+    final byte[] bundleIndexBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(bundleIndexBytes, 0, bundleIndex);
     return PublicKey.findProgramAddress(List.of(
       "bundled_position".getBytes(US_ASCII),
       positionBundlePositionBundleMintAccount.toByteArray(),
-      bundleIndex
+      bundleIndexBytes
     ), program);
   }
 
@@ -40,11 +45,13 @@ public final class WhirlpoolPDAs {
 
   public static ProgramDerivedAddress feeTierPDA(final PublicKey program,
                                                  final PublicKey configAccount,
-                                                 final byte[] tickSpacing) {
+                                                 final int tickSpacing) {
+    final byte[] tickSpacingBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(tickSpacingBytes, 0, tickSpacing);
     return PublicKey.findProgramAddress(List.of(
       "fee_tier".getBytes(US_ASCII),
       configAccount.toByteArray(),
-      tickSpacing
+      tickSpacingBytes
     ), program);
   }
 
@@ -130,11 +137,13 @@ public final class WhirlpoolPDAs {
 
   public static ProgramDerivedAddress tickArrayPDA(final PublicKey program,
                                                    final PublicKey whirlpoolAccount,
-                                                   final byte[] startTickIndex) {
+                                                   final int startTickIndex) {
+    final byte[] startTickIndexBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(startTickIndexBytes, 0, startTickIndex);
     return PublicKey.findProgramAddress(List.of(
       "tick_array".getBytes(US_ASCII),
       whirlpoolAccount.toByteArray(),
-      startTickIndex
+      startTickIndexBytes
     ), program);
   }
 
@@ -172,13 +181,15 @@ public final class WhirlpoolPDAs {
                                                    final PublicKey whirlpoolsConfigAccount,
                                                    final PublicKey tokenMintAAccount,
                                                    final PublicKey tokenMintBAccount,
-                                                   final byte[] tickSpacing) {
+                                                   final int tickSpacing) {
+    final byte[] tickSpacingBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(tickSpacingBytes, 0, tickSpacing);
     return PublicKey.findProgramAddress(List.of(
       "whirlpool".getBytes(US_ASCII),
       whirlpoolsConfigAccount.toByteArray(),
       tokenMintAAccount.toByteArray(),
       tokenMintBAccount.toByteArray(),
-      tickSpacing
+      tickSpacingBytes
     ), program);
   }
 

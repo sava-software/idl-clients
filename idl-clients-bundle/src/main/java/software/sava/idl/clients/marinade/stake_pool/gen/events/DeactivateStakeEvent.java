@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param epoch: u64
@@ -42,7 +42,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
                                    long totalUnstakeDelta,
                                    long unstakedAmount) implements MarinadeFinanceEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(2, 54, 184, 218, 78, 181, 163, 117);
 
   public static final int STATE_OFFSET = 8;
   public static final int EPOCH_OFFSET = 40;
@@ -55,7 +55,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
@@ -148,7 +148,7 @@ public record DeactivateStakeEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + 8
          + 4
          + 32

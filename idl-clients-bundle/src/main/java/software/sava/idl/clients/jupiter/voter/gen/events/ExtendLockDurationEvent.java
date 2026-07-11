@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lockerSupply: u64
@@ -22,7 +22,7 @@ public record ExtendLockDurationEvent(Discriminator discriminator,
                                       long nextEscrowStartedAt) implements LockedVoterEvent {
 
   public static final int BYTES = 144;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(56, 121, 52, 182, 84, 133, 195, 191);
 
   public static final int LOCKER_OFFSET = 8;
   public static final int ESCROW_OWNER_OFFSET = 40;
@@ -37,7 +37,7 @@ public record ExtendLockDurationEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var locker = readPubKey(_data, i);
     i += 32;

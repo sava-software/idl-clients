@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param index: u32
@@ -21,7 +21,7 @@ public record RemoveValidatorEvent(Discriminator discriminator,
                                    long operationalSolBalance) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 84;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(67, 164, 190, 192, 156, 156, 168, 210);
 
   public static final int STATE_OFFSET = 8;
   public static final int VALIDATOR_OFFSET = 40;
@@ -32,7 +32,7 @@ public record RemoveValidatorEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;

@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param withdrawAmount: u64
@@ -31,7 +31,7 @@ public record WithdrawCollateralEvent(Discriminator discriminator,
                                       long time) implements PerpetualsEvent {
 
   public static final int BYTES = 280;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(145, 38, 46, 87, 190, 149, 253, 191);
 
   public static final int OWNER_OFFSET = 8;
   public static final int POOL_OFFSET = 40;
@@ -51,7 +51,7 @@ public record WithdrawCollateralEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var owner = readPubKey(_data, i);
     i += 32;

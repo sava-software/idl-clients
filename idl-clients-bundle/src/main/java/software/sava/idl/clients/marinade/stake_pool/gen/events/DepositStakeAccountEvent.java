@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param delegated: u64
@@ -37,7 +37,7 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
                                        long msolSupply) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 200;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(231, 203, 118, 96, 75, 116, 70, 228);
 
   public static final int STATE_OFFSET = 8;
   public static final int STAKE_OFFSET = 40;
@@ -57,7 +57,7 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;

@@ -6,7 +6,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.jupiter.governance.gen.types.GovernanceParameters;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record GovernorSetParamsEvent(Discriminator discriminator,
@@ -15,7 +15,7 @@ public record GovernorSetParamsEvent(Discriminator discriminator,
                                      GovernanceParameters params) implements GovernEvent {
 
   public static final int BYTES = 104;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(169, 129, 187, 152, 130, 17, 81, 157);
 
   public static final int GOVERNOR_OFFSET = 8;
   public static final int PREV_PARAMS_OFFSET = 40;
@@ -25,7 +25,7 @@ public record GovernorSetParamsEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var governor = readPubKey(_data, i);
     i += 32;

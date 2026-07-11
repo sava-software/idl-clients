@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param positionSide: u8
@@ -51,7 +51,7 @@ public record LiquidateFullPositionEvent(Discriminator discriminator,
                                          long positionPrice) implements PerpetualsEvent {
 
   public static final int BYTES = 354;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(128, 101, 71, 168, 128, 72, 86, 84);
 
   public static final int POSITION_KEY_OFFSET = 8;
   public static final int POSITION_SIDE_OFFSET = 40;
@@ -82,7 +82,7 @@ public record LiquidateFullPositionEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var positionKey = readPubKey(_data, i);
     i += 32;

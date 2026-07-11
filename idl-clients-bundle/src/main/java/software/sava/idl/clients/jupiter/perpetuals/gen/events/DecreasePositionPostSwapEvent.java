@@ -10,7 +10,7 @@ import java.util.OptionalLong;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param swapAmount: u64
@@ -20,7 +20,7 @@ public record DecreasePositionPostSwapEvent(Discriminator discriminator,
                                             long swapAmount,
                                             OptionalLong jupiterMinimumOut) implements PerpetualsEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(23, 210, 16, 233, 98, 245, 89, 82);
 
   public static final int POSITION_REQUEST_KEY_OFFSET = 8;
   public static final int SWAP_AMOUNT_OFFSET = 40;
@@ -30,7 +30,7 @@ public record DecreasePositionPostSwapEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var positionRequestKey = readPubKey(_data, i);
     i += 32;
@@ -59,6 +59,6 @@ public record DecreasePositionPostSwapEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32 + 8 + (jupiterMinimumOut == null || jupiterMinimumOut.isEmpty() ? 1 : (1 + 8));
+    return 8 + 32 + 8 + (jupiterMinimumOut == null || jupiterMinimumOut.isEmpty() ? 1 : (1 + 8));
   }
 }

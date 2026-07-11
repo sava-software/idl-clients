@@ -6,7 +6,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record LockerSetParamsEvent(Discriminator discriminator,
@@ -15,7 +15,7 @@ public record LockerSetParamsEvent(Discriminator discriminator,
                                    LockerParams params) implements LockedVoterEvent {
 
   public static final int BYTES = 90;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(239, 24, 209, 234, 210, 143, 7, 202);
 
   public static final int LOCKER_OFFSET = 8;
   public static final int PREV_PARAMS_OFFSET = 40;
@@ -25,7 +25,7 @@ public record LockerSetParamsEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var locker = readPubKey(_data, i);
     i += 32;

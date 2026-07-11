@@ -3,6 +3,7 @@ package software.sava.idl.clients.jupiter.borrow.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -11,12 +12,16 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public final class VaultsPDAs {
 
   public static ProgramDerivedAddress branchPDA(final PublicKey program,
-                                                final byte[] vaultId,
-                                                final byte[] branchId) {
+                                                final int vaultId,
+                                                final long branchId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+    final byte[] branchIdBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(branchIdBytes, 0, (int) branchId);
     return PublicKey.findProgramAddress(List.of(
       "branch".getBytes(US_ASCII),
-      vaultId,
-      branchId
+      vaultIdBytes,
+      branchIdBytes
     ), program);
   }
 
@@ -31,22 +36,30 @@ public final class VaultsPDAs {
   }
 
   public static ProgramDerivedAddress positionPDA(final PublicKey program,
-                                                  final byte[] vaultId,
-                                                  final byte[] nextPositionId) {
+                                                  final int vaultId,
+                                                  final long nextPositionId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+    final byte[] nextPositionIdBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(nextPositionIdBytes, 0, (int) nextPositionId);
     return PublicKey.findProgramAddress(List.of(
       "position".getBytes(US_ASCII),
-      vaultId,
-      nextPositionId
+      vaultIdBytes,
+      nextPositionIdBytes
     ), program);
   }
 
   public static ProgramDerivedAddress positionMintPDA(final PublicKey program,
-                                                      final byte[] vaultId,
-                                                      final byte[] nextPositionId) {
+                                                      final int vaultId,
+                                                      final long nextPositionId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+    final byte[] nextPositionIdBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(nextPositionIdBytes, 0, (int) nextPositionId);
     return PublicKey.findProgramAddress(List.of(
       "position_mint".getBytes(US_ASCII),
-      vaultId,
-      nextPositionId
+      vaultIdBytes,
+      nextPositionIdBytes
     ), program);
   }
 
@@ -84,12 +97,15 @@ public final class VaultsPDAs {
   }
 
   public static ProgramDerivedAddress tickHasDebtArrayPDA(final PublicKey program,
-                                                          final byte[] vaultId,
-                                                          final byte[] index) {
+                                                          final int vaultId,
+                                                          final int index) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+    final byte[] indexBytes = new byte[] {(byte) index};
     return PublicKey.findProgramAddress(List.of(
       "tick_has_debt".getBytes(US_ASCII),
-      vaultId,
-      index
+      vaultIdBytes,
+      indexBytes
     ), program);
   }
 
@@ -100,26 +116,32 @@ public final class VaultsPDAs {
   }
 
   public static ProgramDerivedAddress vaultConfigPDA(final PublicKey program,
-                                                     final byte[] vaultId) {
+                                                     final int vaultId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
     return PublicKey.findProgramAddress(List.of(
       "vault_config".getBytes(US_ASCII),
-      vaultId
+      vaultIdBytes
     ), program);
   }
 
   public static ProgramDerivedAddress vaultMetadataPDA(final PublicKey program,
-                                                       final byte[] vaultId) {
+                                                       final int vaultId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
     return PublicKey.findProgramAddress(List.of(
       "vault_metadata".getBytes(US_ASCII),
-      vaultId
+      vaultIdBytes
     ), program);
   }
 
   public static ProgramDerivedAddress vaultStatePDA(final PublicKey program,
-                                                    final byte[] vaultId) {
+                                                    final int vaultId) {
+    final byte[] vaultIdBytes = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
     return PublicKey.findProgramAddress(List.of(
       "vault_state".getBytes(US_ASCII),
-      vaultId
+      vaultIdBytes
     ), program);
   }
 

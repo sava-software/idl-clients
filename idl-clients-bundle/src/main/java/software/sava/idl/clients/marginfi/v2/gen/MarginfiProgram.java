@@ -6389,7 +6389,7 @@ public final class MarginfiProgram {
   /// * Returns rent for ephemeral accounts created during `StartExecuteOrder`
   ///
   /// @param marginfiAccountKey The account owning the order
-  /// @param executorKey The executioner ������
+  /// @param executorKey The executioner ☠️
   /// @param executeRecordKey This keeps track of the relevant state to be checked at the end of execution.
   public static List<AccountMeta> marginfiAccountEndExecuteOrderKeys(final PublicKey groupKey,
                                                                      final PublicKey marginfiAccountKey,
@@ -6420,7 +6420,7 @@ public final class MarginfiProgram {
   /// * Returns rent for ephemeral accounts created during `StartExecuteOrder`
   ///
   /// @param marginfiAccountKey The account owning the order
-  /// @param executorKey The executioner ������
+  /// @param executorKey The executioner ☠️
   /// @param executeRecordKey This keeps track of the relevant state to be checked at the end of execution.
   public static Instruction marginfiAccountEndExecuteOrder(final AccountMeta invokedMarginfiProgramMeta,
                                                            final PublicKey groupKey,

@@ -11,7 +11,7 @@ import java.util.OptionalLong;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param liqPoolSolBalance: u64
@@ -41,7 +41,7 @@ public record LiquidUnstakeEvent(Discriminator discriminator,
                                  Fee lpMinFee,
                                  Fee treasuryCut) implements MarinadeFinanceEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(173, 5, 147, 15, 5, 14, 194, 116);
 
   public static final int STATE_OFFSET = 8;
   public static final int MSOL_OWNER_OFFSET = 40;
@@ -53,7 +53,7 @@ public record LiquidUnstakeEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
@@ -143,7 +143,7 @@ public record LiquidUnstakeEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + 32
          + 8
          + 8

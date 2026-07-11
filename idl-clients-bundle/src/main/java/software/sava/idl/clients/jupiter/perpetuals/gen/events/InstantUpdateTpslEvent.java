@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param positionSide: u8
@@ -29,7 +29,7 @@ public record InstantUpdateTpslEvent(Discriminator discriminator,
                                      long updateTime) implements PerpetualsEvent {
 
   public static final int BYTES = 290;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(177, 22, 47, 37, 120, 246, 17, 101);
 
   public static final int OWNER_OFFSET = 8;
   public static final int POOL_OFFSET = 40;
@@ -49,7 +49,7 @@ public record InstantUpdateTpslEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var owner = readPubKey(_data, i);
     i += 32;

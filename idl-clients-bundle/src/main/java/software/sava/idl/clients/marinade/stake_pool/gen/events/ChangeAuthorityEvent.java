@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.PubkeyValueChange;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record ChangeAuthorityEvent(Discriminator discriminator,
@@ -18,7 +18,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
                                    PubkeyValueChange treasuryMsolAccountChange,
                                    PubkeyValueChange pauseAuthorityChange) implements MarinadeFinanceEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(228, 111, 35, 24, 187, 78, 224, 138);
 
   public static final int STATE_OFFSET = 8;
   public static final int ADMIN_CHANGE_OFFSET = 41;
@@ -27,7 +27,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
@@ -98,7 +98,7 @@ public record ChangeAuthorityEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + (adminChange == null ? 1 : (1 + adminChange.l()))
          + (validatorManagerChange == null ? 1 : (1 + validatorManagerChange.l()))
          + (operationalSolAccountChange == null ? 1 : (1 + operationalSolAccountChange.l()))

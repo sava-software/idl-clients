@@ -4,13 +4,13 @@ package software.sava.idl.clients.kamino.lend.gen.events;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.kamino.lend.gen.types.BorrowOrder;
 
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record BorrowOrderUpdateEvent(Discriminator discriminator, BorrowOrder before, BorrowOrder after) implements KaminoLendingEvent {
 
   public static final int BYTES = 328;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(178, 214, 116, 30, 59, 81, 228, 72);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(21, 33, 67, 131, 48, 184, 90, 64);
 
   public static final int BEFORE_OFFSET = 8;
   public static final int AFTER_OFFSET = 168;
@@ -19,7 +19,7 @@ public record BorrowOrderUpdateEvent(Discriminator discriminator, BorrowOrder be
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var before = BorrowOrder.read(_data, i);
     i += before.l();

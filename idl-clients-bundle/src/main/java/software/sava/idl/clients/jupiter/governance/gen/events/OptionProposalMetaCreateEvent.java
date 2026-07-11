@@ -6,7 +6,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record OptionProposalMetaCreateEvent(Discriminator discriminator,
@@ -14,7 +14,7 @@ public record OptionProposalMetaCreateEvent(Discriminator discriminator,
                                             PublicKey proposal,
                                             String[] optionDescriptions) implements GovernEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(120, 126, 65, 125, 85, 200, 75, 206);
 
   public static final int GOVERNOR_OFFSET = 8;
   public static final int PROPOSAL_OFFSET = 40;
@@ -24,7 +24,7 @@ public record OptionProposalMetaCreateEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var governor = readPubKey(_data, i);
     i += 32;
@@ -47,6 +47,6 @@ public record OptionProposalMetaCreateEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32 + 32 + SerDeUtil.lenVector(4, 4, optionDescriptions);
+    return 8 + 32 + 32 + SerDeUtil.lenVector(4, 4, optionDescriptions);
   }
 }

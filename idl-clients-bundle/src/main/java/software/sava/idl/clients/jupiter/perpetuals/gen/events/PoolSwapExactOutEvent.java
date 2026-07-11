@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param amountIn: u64
@@ -28,7 +28,7 @@ public record PoolSwapExactOutEvent(Discriminator discriminator,
                                     PublicKey receivingAccountKey) implements PerpetualsEvent {
 
   public static final int BYTES = 208;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(121, 118, 11, 11, 198, 66, 142, 115);
 
   public static final int RECEIVING_CUSTODY_KEY_OFFSET = 8;
   public static final int DISPENSING_CUSTODY_KEY_OFFSET = 40;
@@ -45,7 +45,7 @@ public record PoolSwapExactOutEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var receivingCustodyKey = readPubKey(_data, i);
     i += 32;

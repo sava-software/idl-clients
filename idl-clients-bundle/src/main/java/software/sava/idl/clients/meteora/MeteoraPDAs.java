@@ -93,27 +93,19 @@ public final class MeteoraPDAs {
                                                   final int lowerBinId,
                                                   final int width,
                                                   final PublicKey programId) {
-    final byte[] lowerBinIdBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(lowerBinIdBytes, 0, lowerBinId);
-
-    final byte[] widthBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(widthBytes, 0, width);
-
     return LbClmmPDAs.positionPDA(
         programId,
         lbPair,
         baseKey,
-        lowerBinIdBytes,
-        widthBytes
+        lowerBinId,
+        width
     );
   }
 
   public static ProgramDerivedAddress binArrayPdA(final PublicKey lbPair,
                                                   final int binArrayIndex,
                                                   final PublicKey programId) {
-    final byte[] binArrayIndexBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(binArrayIndexBytes, 0, binArrayIndex);
-    return LbClmmPDAs.binArrayPDA(programId, lbPair, binArrayIndexBytes);
+    return LbClmmPDAs.binArrayPDA(programId, lbPair, binArrayIndex);
   }
 
   public static ProgramDerivedAddress reservePDA(final PublicKey lbPair,
@@ -129,9 +121,7 @@ public final class MeteoraPDAs {
   public static ProgramDerivedAddress rewardVaultPDA(final PublicKey lbPair,
                                                      final long rewardIndex,
                                                      final PublicKey programId) {
-    final byte[] rewardIndexBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(rewardIndexBytes, 0, rewardIndex);
-    return LbClmmPDAs.rewardVaultPDA(programId, lbPair, rewardIndexBytes);
+    return LbClmmPDAs.rewardVaultPDA(programId, lbPair, rewardIndex);
   }
 
   public static ProgramDerivedAddress presetParameterPDA(final int ixIndex,

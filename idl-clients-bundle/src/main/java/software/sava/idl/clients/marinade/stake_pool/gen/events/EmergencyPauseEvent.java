@@ -5,13 +5,13 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record EmergencyPauseEvent(Discriminator discriminator, PublicKey state) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 40;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 241, 192, 232, 29, 208, 51, 21);
 
   public static final int STATE_OFFSET = 8;
 
@@ -19,7 +19,7 @@ public record EmergencyPauseEvent(Discriminator discriminator, PublicKey state) 
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     return new EmergencyPauseEvent(discriminator, state);

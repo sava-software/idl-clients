@@ -7,13 +7,13 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record NewClaimEvent(Discriminator discriminator, PublicKey claimant, long timestamp) implements MerkleDistributorEvent {
 
   public static final int BYTES = 48;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(156, 211, 255, 5, 24, 206, 76, 171);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(244, 3, 231, 151, 60, 101, 55, 55);
 
   public static final int CLAIMANT_OFFSET = 8;
   public static final int TIMESTAMP_OFFSET = 40;
@@ -22,7 +22,7 @@ public record NewClaimEvent(Discriminator discriminator, PublicKey claimant, lon
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var claimant = readPubKey(_data, i);
     i += 32;

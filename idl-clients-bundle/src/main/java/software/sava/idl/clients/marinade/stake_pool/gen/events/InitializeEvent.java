@@ -6,7 +6,7 @@ import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.InitializeData;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record InitializeEvent(Discriminator discriminator,
@@ -21,7 +21,7 @@ public record InitializeEvent(Discriminator discriminator,
                               PublicKey treasuryMsolAccount) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 408;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(206, 175, 169, 208, 241, 210, 35, 221);
 
   public static final int STATE_OFFSET = 8;
   public static final int PARAMS_OFFSET = 40;
@@ -37,7 +37,7 @@ public record InitializeEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;

@@ -9,7 +9,7 @@ import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstructio
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param proposalType: u8
@@ -24,7 +24,7 @@ public record ProposalCreateEvent(Discriminator discriminator,
                                   long index,
                                   ProposalInstruction[] instructions) implements GovernEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(121, 18, 213, 155, 223, 158, 95, 70);
 
   public static final int GOVERNOR_OFFSET = 8;
   public static final int PROPOSAL_OFFSET = 40;
@@ -38,7 +38,7 @@ public record ProposalCreateEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var governor = readPubKey(_data, i);
     i += 32;
@@ -84,7 +84,7 @@ public record ProposalCreateEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + 32
          + 32
          + 1

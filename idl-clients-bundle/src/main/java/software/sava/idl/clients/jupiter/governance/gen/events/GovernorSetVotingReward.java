@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param rewardPerProposal: u64
@@ -17,7 +17,7 @@ public record GovernorSetVotingReward(Discriminator discriminator,
                                       long rewardPerProposal) implements GovernEvent {
 
   public static final int BYTES = 80;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(234, 121, 246, 143, 42, 244, 8, 229);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(74, 82, 223, 19, 41, 16, 148, 200);
 
   public static final int GOVERNOR_OFFSET = 8;
   public static final int REWARD_MINT_OFFSET = 40;
@@ -27,7 +27,7 @@ public record GovernorSetVotingReward(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var governor = readPubKey(_data, i);
     i += 32;

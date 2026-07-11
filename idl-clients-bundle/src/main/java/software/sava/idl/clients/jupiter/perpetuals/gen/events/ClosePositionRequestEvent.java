@@ -8,7 +8,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param entirePosition: Option<bool>
@@ -28,7 +28,7 @@ public record ClosePositionRequestEvent(Discriminator discriminator,
                                         long amount,
                                         long openTime) implements PerpetualsEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(21, 34, 92, 158, 224, 29, 180, 243);
 
   public static final int ENTIRE_POSITION_OFFSET = 9;
 
@@ -36,7 +36,7 @@ public record ClosePositionRequestEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final Boolean entirePosition;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -104,7 +104,7 @@ public record ClosePositionRequestEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + (entirePosition == null ? 1 : (1 + 1))
+    return 8 + (entirePosition == null ? 1 : (1 + 1))
          + 1
          + 1
          + 1

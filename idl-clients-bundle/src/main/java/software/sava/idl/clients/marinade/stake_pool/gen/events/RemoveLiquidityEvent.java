@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param solLegBalance: u64
@@ -32,7 +32,7 @@ public record RemoveLiquidityEvent(Discriminator discriminator,
                                    long msolOutAmount) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 112;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(141, 199, 182, 123, 159, 94, 215, 102);
 
   public static final int STATE_OFFSET = 8;
   public static final int SOL_LEG_BALANCE_OFFSET = 40;
@@ -49,7 +49,7 @@ public record RemoveLiquidityEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;

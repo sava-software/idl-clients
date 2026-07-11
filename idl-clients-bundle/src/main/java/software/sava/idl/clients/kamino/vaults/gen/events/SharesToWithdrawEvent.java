@@ -5,7 +5,7 @@ import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param sharesAmount: u64
@@ -13,7 +13,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 public record SharesToWithdrawEvent(Discriminator discriminator, long sharesAmount, long userSharesBefore) implements KaminoVaultEvent {
 
   public static final int BYTES = 24;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(124, 220, 160, 245, 166, 68, 63, 198);
 
   public static final int SHARES_AMOUNT_OFFSET = 8;
   public static final int USER_SHARES_BEFORE_OFFSET = 16;
@@ -22,7 +22,7 @@ public record SharesToWithdrawEvent(Discriminator discriminator, long sharesAmou
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var sharesAmount = getInt64LE(_data, i);
     i += 8;

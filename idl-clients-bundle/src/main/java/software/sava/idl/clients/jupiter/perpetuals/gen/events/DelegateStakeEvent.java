@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param custodyTotalStakedAmount: u64
@@ -22,7 +22,7 @@ public record DelegateStakeEvent(Discriminator discriminator,
                                  long delegateTime) implements PerpetualsEvent {
 
   public static final int BYTES = 160;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(109, 50, 19, 133, 150, 191, 244, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(85, 135, 75, 222, 168, 133, 159, 212);
 
   public static final int CUSTODY_OFFSET = 8;
   public static final int STAKE_ACCOUNT_OFFSET = 40;
@@ -36,7 +36,7 @@ public record DelegateStakeEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var custody = readPubKey(_data, i);
     i += 32;

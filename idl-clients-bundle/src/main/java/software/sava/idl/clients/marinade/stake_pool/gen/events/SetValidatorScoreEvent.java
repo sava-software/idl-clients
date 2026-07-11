@@ -8,7 +8,7 @@ import software.sava.idl.clients.marinade.stake_pool.gen.types.U32ValueChange;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param index: u32
@@ -19,7 +19,7 @@ public record SetValidatorScoreEvent(Discriminator discriminator,
                                      U32ValueChange scoreChange) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 84;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(58, 53, 237, 178, 238, 153, 85, 156);
 
   public static final int STATE_OFFSET = 8;
   public static final int VALIDATOR_OFFSET = 40;
@@ -30,7 +30,7 @@ public record SetValidatorScoreEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;

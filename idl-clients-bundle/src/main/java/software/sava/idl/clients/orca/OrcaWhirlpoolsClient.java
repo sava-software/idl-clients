@@ -1,18 +1,13 @@
 package software.sava.idl.clients.orca;
 
-import java.math.BigInteger;
-
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.orca.whirlpools.gen.WhirlpoolPDAs;
-import software.sava.idl.clients.orca.whirlpools.gen.types.IncreaseLiquidityMethod;
-import software.sava.idl.clients.orca.whirlpools.gen.types.LockType;
-import software.sava.idl.clients.orca.whirlpools.gen.types.OpenPositionBumps;
-import software.sava.idl.clients.orca.whirlpools.gen.types.OpenPositionWithMetadataBumps;
-import software.sava.idl.clients.orca.whirlpools.gen.types.RemainingAccountsInfo;
-import software.sava.idl.clients.orca.whirlpools.gen.types.RepositionLiquidityMethod;
+import software.sava.idl.clients.orca.whirlpools.gen.types.*;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
+
+import java.math.BigInteger;
 
 /// Trader-facing client wrapper around the generated `WhirlpoolProgram` builders.
 ///
@@ -483,8 +478,8 @@ public interface OrcaWhirlpoolsClient {
     return WhirlpoolPDAs.positionBundlePDA(whirlpoolProgramKey(), positionBundleMintKey).publicKey();
   }
 
-  default PublicKey deriveBundledPositionKey(final PublicKey positionBundleMintKey, final byte[] bundleIndexBytes) {
-    return WhirlpoolPDAs.bundledPositionPDA(whirlpoolProgramKey(), positionBundleMintKey, bundleIndexBytes).publicKey();
+  default PublicKey deriveBundledPositionKey(final PublicKey positionBundleMintKey, final int bundleIndex) {
+    return WhirlpoolPDAs.bundledPositionPDA(whirlpoolProgramKey(), positionBundleMintKey, bundleIndex).publicKey();
   }
 
   default PublicKey deriveATA(final PublicKey ownerKey,
@@ -645,12 +640,11 @@ public interface OrcaWhirlpoolsClient {
                                           final PublicKey whirlpoolKey,
                                           final PublicKey funderKey,
                                           final int bundleIndex,
-                                          final byte[] bundleIndexBytes,
                                           final int tickLowerIndex,
                                           final int tickUpperIndex) {
     final var tokenProgramKey = solanaAccounts().tokenProgram();
     return openBundledPosition(
-        deriveBundledPositionKey(positionBundleMintKey, bundleIndexBytes),
+        deriveBundledPositionKey(positionBundleMintKey, bundleIndex),
         derivePositionBundleKey(positionBundleMintKey),
         deriveATA(positionBundleOwnerKey, tokenProgramKey, positionBundleMintKey),
         positionBundleAuthorityKey,
@@ -666,11 +660,10 @@ public interface OrcaWhirlpoolsClient {
                                            final PublicKey positionBundleOwnerKey,
                                            final PublicKey positionBundleAuthorityKey,
                                            final PublicKey receiverKey,
-                                           final int bundleIndex,
-                                           final byte[] bundleIndexBytes) {
+                                           final int bundleIndex) {
     final var tokenProgramKey = solanaAccounts().tokenProgram();
     return closeBundledPosition(
-        deriveBundledPositionKey(positionBundleMintKey, bundleIndexBytes),
+        deriveBundledPositionKey(positionBundleMintKey, bundleIndex),
         derivePositionBundleKey(positionBundleMintKey),
         deriveATA(positionBundleOwnerKey, tokenProgramKey, positionBundleMintKey),
         positionBundleAuthorityKey,

@@ -3,6 +3,7 @@ package software.sava.idl.clients.meteora.dlmm.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -12,11 +13,13 @@ public final class LbClmmPDAs {
 
   public static ProgramDerivedAddress binArrayPDA(final PublicKey program,
                                                   final PublicKey lbPairAccount,
-                                                  final byte[] index) {
+                                                  final long index) {
+    final byte[] indexBytes = new byte[Long.BYTES];
+    ByteUtil.putInt64LE(indexBytes, 0, index);
     return PublicKey.findProgramAddress(List.of(
       "bin_array".getBytes(US_ASCII),
       lbPairAccount.toByteArray(),
-      index
+      indexBytes
     ), program);
   }
 
@@ -53,14 +56,18 @@ public final class LbClmmPDAs {
   public static ProgramDerivedAddress positionPDA(final PublicKey program,
                                                   final PublicKey lbPairAccount,
                                                   final PublicKey baseAccount,
-                                                  final byte[] lowerBinId,
-                                                  final byte[] width) {
+                                                  final int lowerBinId,
+                                                  final int width) {
+    final byte[] lowerBinIdBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(lowerBinIdBytes, 0, lowerBinId);
+    final byte[] widthBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(widthBytes, 0, width);
     return PublicKey.findProgramAddress(List.of(
       "position".getBytes(US_ASCII),
       lbPairAccount.toByteArray(),
       baseAccount.toByteArray(),
-      lowerBinId,
-      width
+      lowerBinIdBytes,
+      widthBytes
     ), program);
   }
 
@@ -92,10 +99,12 @@ public final class LbClmmPDAs {
 
   public static ProgramDerivedAddress rewardVaultPDA(final PublicKey program,
                                                      final PublicKey lbPairAccount,
-                                                     final byte[] rewardIndex) {
+                                                     final long rewardIndex) {
+    final byte[] rewardIndexBytes = new byte[Long.BYTES];
+    ByteUtil.putInt64LE(rewardIndexBytes, 0, rewardIndex);
     return PublicKey.findProgramAddress(List.of(
       lbPairAccount.toByteArray(),
-      rewardIndex
+      rewardIndexBytes
     ), program);
   }
 

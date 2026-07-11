@@ -10,7 +10,7 @@ import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeValueChange;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.U64ValueChange;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record ConfigMarinadeEvent(Discriminator discriminator,
@@ -27,7 +27,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
                                   FeeCentsValueChange withdrawStakeAccountFeeChange,
                                   FeeValueChange maxStakeMovedPerEpochChange) implements MarinadeFinanceEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 164, 245, 114, 94, 253, 3, 9);
 
   public static final int STATE_OFFSET = 8;
   public static final int REWARDS_FEE_CHANGE_OFFSET = 41;
@@ -36,7 +36,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
@@ -173,7 +173,7 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return discriminator.length() + 32
+    return 8 + 32
          + (rewardsFeeChange == null ? 1 : (1 + rewardsFeeChange.l()))
          + (slotsForStakeDeltaChange == null ? 1 : (1 + slotsForStakeDeltaChange.l()))
          + (minStakeChange == null ? 1 : (1 + minStakeChange.l()))

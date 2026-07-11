@@ -5,14 +5,14 @@ import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param userAtaBalance: u64
 public record DepositUserAtaBalanceEvent(Discriminator discriminator, long userAtaBalance) implements KaminoVaultEvent {
 
   public static final int BYTES = 16;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(202, 199, 172, 212, 36, 174, 122, 14);
 
   public static final int USER_ATA_BALANCE_OFFSET = 8;
 
@@ -20,7 +20,7 @@ public record DepositUserAtaBalanceEvent(Discriminator discriminator, long userA
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var userAtaBalance = getInt64LE(_data, i);
     return new DepositUserAtaBalanceEvent(discriminator, userAtaBalance);

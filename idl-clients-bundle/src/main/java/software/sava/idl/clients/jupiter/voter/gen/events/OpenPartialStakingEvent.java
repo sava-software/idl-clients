@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param amount: u64
@@ -18,7 +18,7 @@ public record OpenPartialStakingEvent(Discriminator discriminator,
                                       long expiration) implements LockedVoterEvent {
 
   public static final int BYTES = 88;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(56, 151, 51, 15, 89, 64, 183, 201);
 
   public static final int PARTIAL_UNSTAKE_OFFSET = 8;
   public static final int ESCROW_OFFSET = 40;
@@ -29,7 +29,7 @@ public record OpenPartialStakingEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var partialUnstake = readPubKey(_data, i);
     i += 32;

@@ -5,7 +5,7 @@ import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param sharesToBurn: u64
@@ -19,7 +19,7 @@ public record WithdrawResultEvent(Discriminator discriminator,
                                   long investedLiquidityToSendToUser) implements KaminoVaultEvent {
 
   public static final int BYTES = 40;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(149, 244, 122, 223, 193, 62, 199, 31);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(20, 191, 15, 231, 196, 49, 101, 38);
 
   public static final int SHARES_TO_BURN_OFFSET = 8;
   public static final int AVAILABLE_TO_SEND_TO_USER_OFFSET = 16;
@@ -30,7 +30,7 @@ public record WithdrawResultEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var sharesToBurn = getInt64LE(_data, i);
     i += 8;

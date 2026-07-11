@@ -5,7 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public record SetVoteDelegateEvent(Discriminator discriminator,
@@ -14,7 +14,7 @@ public record SetVoteDelegateEvent(Discriminator discriminator,
                                    PublicKey newDelegate) implements LockedVoterEvent {
 
   public static final int BYTES = 104;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(179, 231, 197, 195, 129, 224, 201, 14);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(165, 160, 157, 241, 121, 34, 54, 8);
 
   public static final int ESCROW_OWNER_OFFSET = 8;
   public static final int OLD_DELEGATE_OFFSET = 40;
@@ -24,7 +24,7 @@ public record SetVoteDelegateEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var escrowOwner = readPubKey(_data, i);
     i += 32;

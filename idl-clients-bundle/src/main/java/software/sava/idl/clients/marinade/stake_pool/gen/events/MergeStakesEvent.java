@@ -9,7 +9,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createDiscriminator;
+import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param epoch: u64
@@ -41,7 +41,7 @@ public record MergeStakesEvent(Discriminator discriminator,
                                long operationalSolBalance) implements MarinadeFinanceEvent {
 
   public static final int BYTES = 212;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 100, 48, 232, 83, 169, 174, 85);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(73, 156, 69, 233, 32, 14, 150, 65);
 
   public static final int STATE_OFFSET = 8;
   public static final int EPOCH_OFFSET = 40;
@@ -63,7 +63,7 @@ public record MergeStakesEvent(Discriminator discriminator,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createDiscriminator(_data, _offset, 8);
+    final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
     final var state = readPubKey(_data, i);
     i += 32;
