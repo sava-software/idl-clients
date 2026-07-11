@@ -1,5 +1,12 @@
 # Changelog
 
+## [25.15.1](https://github.com/sava-software/idl-clients/compare/25.15.0...25.15.1) (2026-07-11)
+
+
+### Bug Fixes
+
+* re-generate with fixed anchor event discriminators ([cc062a7](https://github.com/sava-software/idl-clients/commit/cc062a7151c07f744802cb437e24ff1d8905a23a))
+
 ## [25.15.0](https://github.com/sava-software/idl-clients/compare/25.14.3...25.15.0) (2026-07-10)
 
 
