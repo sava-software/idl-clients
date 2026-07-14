@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
@@ -21,20 +22,18 @@ public record JupiterPrice(PublicKey mint,
                            double priceChange24h) {
 
   public static JupiterPrice parsePrice(final PublicKey mint, final JsonIterator ji) {
-    final var parser = new Parser(mint);
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser(mint));
   }
 
   public static Map<PublicKey, JupiterPrice> parsePrices(final JsonIterator ji) {
-    final var prices = HashMap.<PublicKey, JupiterPrice>newHashMap(50);
-    for (PublicKey mint; (mint = ji.applyObjField(PublicKeyEncoding.PARSE_BASE58_PUBLIC_KEY)) != null; ) {
-      prices.put(mint, parsePrice(mint, ji));
-    }
-    return prices;
+    return ji.readMap(
+        HashMap.newHashMap(64),
+        PublicKeyEncoding.PARSE_BASE58_PUBLIC_KEY,
+        JupiterPrice::parsePrice
+    );
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<JupiterPrice> {
 
     private final PublicKey mint;
     private Instant createdAt;
@@ -48,7 +47,8 @@ public record JupiterPrice(PublicKey mint,
       this.mint = mint;
     }
 
-    private JupiterPrice create() {
+    @Override
+    public JupiterPrice get() {
       return new JupiterPrice(mint, createdAt, liquidity, usdPrice, blockId, decimals, priceChange24h);
     }
 

@@ -1,11 +1,11 @@
 package software.sava.idl.clients.jupiter.swap.rest.response;
 
-import systems.comodal.jsoniter.FieldBufferPredicate;
+import systems.comodal.jsoniter.FieldIndexPredicate;
+import systems.comodal.jsoniter.FieldMatcher;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.time.Duration;
-
-import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
+import java.util.function.Supplier;
 
 public record JupiterTokenStats(Duration duration,
                                 double priceChange,
@@ -20,12 +20,10 @@ public record JupiterTokenStats(Duration duration,
                                 int numNetBuyers) {
 
   public static JupiterTokenStats parse(final JsonIterator ji, final Duration duration) {
-    final var parser = new JupiterTokenStats.Parser(duration);
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(Parser.FIELDS, new JupiterTokenStats.Parser(duration));
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldIndexPredicate, Supplier<JupiterTokenStats> {
 
     private final Duration duration;
     private double priceChange;
@@ -46,7 +44,8 @@ public record JupiterTokenStats(Duration duration,
       this.duration = duration;
     }
 
-    private JupiterTokenStats create() {
+    @Override
+    public JupiterTokenStats get() {
       return new JupiterTokenStats(
           duration,
           priceChange, holderChange, liquidityChange, volumeChange,
@@ -55,36 +54,39 @@ public record JupiterTokenStats(Duration duration,
       );
     }
 
+    private static final FieldMatcher FIELDS = FieldMatcher.of(
+        "priceChange",
+        "holderChange",
+        "liquidityChange",
+        "volumeChange",
+        "buyVolume",
+        "sellVolume",
+        "buyOrganicVolume",
+        "sellOrganicVolume",
+        "numBuys",
+        "numSells",
+        "numTraders",
+        "numOrganicBuyers",
+        "numNetBuyers"
+    );
+
     @Override
-    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
-      if (fieldEquals("priceChange", buf, offset, len)) {
-        this.priceChange = ji.readDouble();
-      } else if (fieldEquals("holderChange", buf, offset, len)) {
-        this.holderChange = ji.readDouble();
-      } else if (fieldEquals("liquidityChange", buf, offset, len)) {
-        this.liquidityChange = ji.readDouble();
-      } else if (fieldEquals("volumeChange", buf, offset, len)) {
-        this.volumeChange = ji.readDouble();
-      } else if (fieldEquals("buyVolume", buf, offset, len)) {
-        this.buyVolume = ji.readDouble();
-      } else if (fieldEquals("sellVolume", buf, offset, len)) {
-        this.sellVolume = ji.readDouble();
-      } else if (fieldEquals("buyOrganicVolume", buf, offset, len)) {
-        this.buyOrganicVolume = ji.readDouble();
-      } else if (fieldEquals("sellOrganicVolume", buf, offset, len)) {
-        this.sellOrganicVolume = ji.readDouble();
-      } else if (fieldEquals("numBuys", buf, offset, len)) {
-        this.numBuys = ji.readInt();
-      } else if (fieldEquals("numSells", buf, offset, len)) {
-        this.numSells = ji.readInt();
-      } else if (fieldEquals("numTraders", buf, offset, len)) {
-        this.numTraders = ji.readInt();
-      } else if (fieldEquals("numOrganicBuyers", buf, offset, len)) {
-        this.numOrganicBuyers = ji.readInt();
-      } else if (fieldEquals("numNetBuyers", buf, offset, len)) {
-        this.numNetBuyers = ji.readInt();
-      } else {
-        ji.skip();
+    public boolean test(final int fieldIndex, final JsonIterator ji) {
+      switch (fieldIndex) {
+        case 0 -> this.priceChange = ji.readDouble();
+        case 1 -> this.holderChange = ji.readDouble();
+        case 2 -> this.liquidityChange = ji.readDouble();
+        case 3 -> this.volumeChange = ji.readDouble();
+        case 4 -> this.buyVolume = ji.readDouble();
+        case 5 -> this.sellVolume = ji.readDouble();
+        case 6 -> this.buyOrganicVolume = ji.readDouble();
+        case 7 -> this.sellOrganicVolume = ji.readDouble();
+        case 8 -> this.numBuys = ji.readInt();
+        case 9 -> this.numSells = ji.readInt();
+        case 10 -> this.numTraders = ji.readInt();
+        case 11 -> this.numOrganicBuyers = ji.readInt();
+        case 12 -> this.numNetBuyers = ji.readInt();
+        default -> ji.skip();
       }
       return true;
     }

@@ -6,6 +6,7 @@ import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigDecimal;
+import java.util.function.Supplier;
 
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
@@ -23,9 +24,7 @@ public record JupiterRoute(PublicKey ammKey,
                            BigDecimal usdValue) {
 
   public static JupiterRoute parse(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
   private static final ContextFieldBufferPredicate<Parser> SWAP_INFO_PARSER = (parser, buf, offset, len, ji) -> {
@@ -51,7 +50,7 @@ public record JupiterRoute(PublicKey ammKey,
     return true;
   };
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<JupiterRoute> {
 
     private PublicKey ammKey;
     private String label;
@@ -68,7 +67,8 @@ public record JupiterRoute(PublicKey ammKey,
     private Parser() {
     }
 
-    private JupiterRoute create() {
+    @Override
+    public JupiterRoute get() {
       return new JupiterRoute(
           ammKey, label, inputMint, outputMint, inAmount, outAmount, feeAmount, feeMint,
           percent, bps, usdValue
@@ -80,9 +80,9 @@ public record JupiterRoute(PublicKey ammKey,
       if (fieldEquals("swapInfo", buf, offset, len)) {
         ji.testObject(this, SWAP_INFO_PARSER);
       } else if (fieldEquals("percent", buf, offset, len)) {
-        percent = ji.readNull() ? -1 : ji.readInt();
+        percent = ji.notNull() ? ji.readInt() : -1;
       } else if (fieldEquals("bps", buf, offset, len)) {
-        bps = ji.readNull() ? -1 : ji.readInt();
+        bps = ji.notNull() ? ji.readInt() : -1;
       } else if (fieldEquals("usdValue", buf, offset, len)) {
         usdValue = ji.readBigDecimal();
       } else {

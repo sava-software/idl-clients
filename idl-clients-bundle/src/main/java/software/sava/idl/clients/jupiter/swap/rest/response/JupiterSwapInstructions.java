@@ -12,6 +12,7 @@ import systems.comodal.jsoniter.JsonIterator;
 import systems.comodal.jsoniter.ValueType;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 import static software.sava.core.tx.Transaction.sortLegacyAccounts;
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
@@ -34,11 +35,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
   }
 
   static List<PublicKey> parseKeys(final JsonIterator ji) {
-    final var keys = new ArrayList<PublicKey>();
-    while (ji.readArray()) {
-      keys.add(PublicKeyEncoding.parseBase58Encoded(ji));
-    }
-    return keys;
+    return ji.readList(PublicKeyEncoding::parseBase58Encoded);
   }
 
   public static Collection<PublicKey> parseLookupTables(final JsonIterator ji) {
@@ -119,36 +116,23 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
   private static final List<Instruction> NO_INSTRUCTIONS = List.of();
 
   public static JupiterSwapInstructions parseInstructions(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
   public static List<Instruction> parseInstructionsList(final JsonIterator ji) {
-    if (ji.readArray()) {
-      final var instructions = new ArrayList<Instruction>();
-      do {
-        instructions.add(parseInstruction(ji));
-      } while (ji.readArray());
-      return instructions;
-    } else {
-      return NO_INSTRUCTIONS;
-    }
+    final var instructions = ji.readList(JupiterSwapInstructions::parseInstruction);
+    return instructions.isEmpty() ? NO_INSTRUCTIONS : instructions;
   }
 
   public static Instruction parseInstruction(final JsonIterator ji) {
-    final var parser = new InstructionParser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new InstructionParser());
   }
 
   private static AccountMeta parseAccount(final JsonIterator ji) {
-    final var parser = new AccountParser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new AccountParser());
   }
 
-  private static final class InstructionParser implements FieldBufferPredicate {
+  private static final class InstructionParser implements FieldBufferPredicate, Supplier<Instruction> {
 
     private PublicKey programId;
     private List<AccountMeta> accounts;
@@ -157,7 +141,8 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     private InstructionParser() {
     }
 
-    private Instruction create() {
+    @Override
+    public Instruction get() {
       return Instruction.createInstruction(programId, accounts, data);
     }
 
@@ -166,11 +151,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
       if (fieldEquals("programId", buf, offset, len)) {
         programId = parseBase58Encoded(ji);
       } else if (fieldEquals("accounts", buf, offset, len)) {
-        final var accounts = new ArrayList<AccountMeta>();
-        while (ji.readArray()) {
-          accounts.add(parseAccount(ji));
-        }
-        this.accounts = accounts;
+        accounts = ji.readList(JupiterSwapInstructions::parseAccount);
       } else if (fieldEquals("data", buf, offset, len)) {
         data = ji.decodeBase64String();
       } else {
@@ -180,7 +161,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     }
   }
 
-  private static final class AccountParser implements FieldBufferPredicate {
+  private static final class AccountParser implements FieldBufferPredicate, Supplier<AccountMeta> {
 
     private PublicKey pubKey;
     private boolean signer;
@@ -189,7 +170,8 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     private AccountParser() {
     }
 
-    private AccountMeta create() {
+    @Override
+    public AccountMeta get() {
       if (signer) {
         return writable
             ? AccountMeta.createWritableSigner(pubKey)
@@ -216,7 +198,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     }
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<JupiterSwapInstructions> {
 
     private List<Instruction> computeBudgetInstructions;
     private List<Instruction> setupInstructions;
@@ -228,7 +210,8 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     private Parser() {
     }
 
-    private JupiterSwapInstructions create() {
+    @Override
+    public JupiterSwapInstructions get() {
       return new JupiterSwapInstructions(
           computeBudgetInstructions,
           setupInstructions,

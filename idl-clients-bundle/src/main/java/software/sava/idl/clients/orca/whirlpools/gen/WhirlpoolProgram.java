@@ -383,7 +383,8 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
-  public static List<AccountMeta> collectFeesV2Keys(final PublicKey whirlpoolKey,
+  public static List<AccountMeta> collectFeesV2Keys(final SolanaAccounts solanaAccounts,
+                                                    final PublicKey whirlpoolKey,
                                                     final PublicKey positionAuthorityKey,
                                                     final PublicKey positionKey,
                                                     final PublicKey positionTokenAccountKey,
@@ -395,7 +396,6 @@ public final class WhirlpoolProgram {
                                                     final PublicKey tokenVaultBKey,
                                                     final PublicKey tokenProgramAKey,
                                                     final PublicKey tokenProgramBKey,
-                                                    final PublicKey memoProgramKey,
                                                     final PublicKey whirlpoolProgramKey) {
     return List.of(
       createRead(whirlpoolKey),
@@ -410,7 +410,7 @@ public final class WhirlpoolProgram {
       createWrite(tokenVaultBKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(whirlpoolProgramKey)
     );
   }
@@ -422,6 +422,7 @@ public final class WhirlpoolProgram {
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
   public static Instruction collectFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                          final SolanaAccounts solanaAccounts,
                                           final PublicKey whirlpoolKey,
                                           final PublicKey positionAuthorityKey,
                                           final PublicKey positionKey,
@@ -434,10 +435,10 @@ public final class WhirlpoolProgram {
                                           final PublicKey tokenVaultBKey,
                                           final PublicKey tokenProgramAKey,
                                           final PublicKey tokenProgramBKey,
-                                          final PublicKey memoProgramKey,
                                           final PublicKey whirlpoolProgramKey,
                                           final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectFeesV2Keys(
+      solanaAccounts,
       whirlpoolKey,
       positionAuthorityKey,
       positionKey,
@@ -450,7 +451,6 @@ public final class WhirlpoolProgram {
       tokenVaultBKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       whirlpoolProgramKey
     );
     return collectFeesV2(invokedWhirlpoolProgramMeta, keys, remainingAccountsInfo);
@@ -588,7 +588,8 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
   ///
-  public static List<AccountMeta> collectProtocolFeesV2Keys(final PublicKey whirlpoolsConfigKey,
+  public static List<AccountMeta> collectProtocolFeesV2Keys(final SolanaAccounts solanaAccounts,
+                                                            final PublicKey whirlpoolsConfigKey,
                                                             final PublicKey whirlpoolKey,
                                                             final PublicKey collectProtocolFeesAuthorityKey,
                                                             final PublicKey tokenMintAKey,
@@ -599,7 +600,6 @@ public final class WhirlpoolProgram {
                                                             final PublicKey tokenDestinationBKey,
                                                             final PublicKey tokenProgramAKey,
                                                             final PublicKey tokenProgramBKey,
-                                                            final PublicKey memoProgramKey,
                                                             final PublicKey whirlpoolProgramKey) {
     return List.of(
       createRead(whirlpoolsConfigKey),
@@ -613,7 +613,7 @@ public final class WhirlpoolProgram {
       createWrite(tokenDestinationBKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(whirlpoolProgramKey)
     );
   }
@@ -625,6 +625,7 @@ public final class WhirlpoolProgram {
   /// - `collect_protocol_fees_authority` - assigned authority in the WhirlpoolConfig that can collect protocol fees
   ///
   public static Instruction collectProtocolFeesV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                                  final SolanaAccounts solanaAccounts,
                                                   final PublicKey whirlpoolsConfigKey,
                                                   final PublicKey whirlpoolKey,
                                                   final PublicKey collectProtocolFeesAuthorityKey,
@@ -636,10 +637,10 @@ public final class WhirlpoolProgram {
                                                   final PublicKey tokenDestinationBKey,
                                                   final PublicKey tokenProgramAKey,
                                                   final PublicKey tokenProgramBKey,
-                                                  final PublicKey memoProgramKey,
                                                   final PublicKey whirlpoolProgramKey,
                                                   final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectProtocolFeesV2Keys(
+      solanaAccounts,
       whirlpoolsConfigKey,
       whirlpoolKey,
       collectProtocolFeesAuthorityKey,
@@ -651,7 +652,6 @@ public final class WhirlpoolProgram {
       tokenDestinationBKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       whirlpoolProgramKey
     );
     return collectProtocolFeesV2(invokedWhirlpoolProgramMeta, keys, remainingAccountsInfo);
@@ -828,7 +828,8 @@ public final class WhirlpoolProgram {
   /// ### Authority
   /// - `position_authority` - authority that owns the token corresponding to this desired position.
   ///
-  public static List<AccountMeta> collectRewardV2Keys(final PublicKey whirlpoolKey,
+  public static List<AccountMeta> collectRewardV2Keys(final SolanaAccounts solanaAccounts,
+                                                      final PublicKey whirlpoolKey,
                                                       final PublicKey positionAuthorityKey,
                                                       final PublicKey positionKey,
                                                       final PublicKey positionTokenAccountKey,
@@ -836,7 +837,6 @@ public final class WhirlpoolProgram {
                                                       final PublicKey rewardMintKey,
                                                       final PublicKey rewardVaultKey,
                                                       final PublicKey rewardTokenProgramKey,
-                                                      final PublicKey memoProgramKey,
                                                       final PublicKey whirlpoolProgramKey) {
     return List.of(
       createRead(whirlpoolKey),
@@ -847,7 +847,7 @@ public final class WhirlpoolProgram {
       createRead(rewardMintKey),
       createWrite(rewardVaultKey),
       createRead(rewardTokenProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(whirlpoolProgramKey)
     );
   }
@@ -860,6 +860,7 @@ public final class WhirlpoolProgram {
   ///
   /// @param rewardIndex: u8
   public static Instruction collectRewardV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                            final SolanaAccounts solanaAccounts,
                                             final PublicKey whirlpoolKey,
                                             final PublicKey positionAuthorityKey,
                                             final PublicKey positionKey,
@@ -868,11 +869,11 @@ public final class WhirlpoolProgram {
                                             final PublicKey rewardMintKey,
                                             final PublicKey rewardVaultKey,
                                             final PublicKey rewardTokenProgramKey,
-                                            final PublicKey memoProgramKey,
                                             final PublicKey whirlpoolProgramKey,
                                             final int rewardIndex,
                                             final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = collectRewardV2Keys(
+      solanaAccounts,
       whirlpoolKey,
       positionAuthorityKey,
       positionKey,
@@ -881,7 +882,6 @@ public final class WhirlpoolProgram {
       rewardMintKey,
       rewardVaultKey,
       rewardTokenProgramKey,
-      memoProgramKey,
       whirlpoolProgramKey
     );
     return collectRewardV2(invokedWhirlpoolProgramMeta, keys, rewardIndex, remainingAccountsInfo);
@@ -1154,10 +1154,10 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMinSubceeded` - The required token to perform this operation subceeds the user defined amount.
   ///
-  public static List<AccountMeta> decreaseLiquidityV2Keys(final PublicKey whirlpoolKey,
+  public static List<AccountMeta> decreaseLiquidityV2Keys(final SolanaAccounts solanaAccounts,
+                                                          final PublicKey whirlpoolKey,
                                                           final PublicKey tokenProgramAKey,
                                                           final PublicKey tokenProgramBKey,
-                                                          final PublicKey memoProgramKey,
                                                           final PublicKey positionAuthorityKey,
                                                           final PublicKey positionKey,
                                                           final PublicKey positionTokenAccountKey,
@@ -1174,7 +1174,7 @@ public final class WhirlpoolProgram {
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createReadOnlySigner(positionAuthorityKey),
       createWrite(positionKey),
       createRead(positionTokenAccountKey),
@@ -1209,10 +1209,10 @@ public final class WhirlpoolProgram {
   /// @param tokenMinA: u64
   /// @param tokenMinB: u64
   public static Instruction decreaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey tokenProgramAKey,
                                                 final PublicKey tokenProgramBKey,
-                                                final PublicKey memoProgramKey,
                                                 final PublicKey positionAuthorityKey,
                                                 final PublicKey positionKey,
                                                 final PublicKey positionTokenAccountKey,
@@ -1230,10 +1230,10 @@ public final class WhirlpoolProgram {
                                                 final long tokenMinB,
                                                 final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = decreaseLiquidityV2Keys(
+      solanaAccounts,
       whirlpoolKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       positionAuthorityKey,
       positionKey,
       positionTokenAccountKey,
@@ -1731,10 +1731,10 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Computed liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
-  public static List<AccountMeta> increaseLiquidityByTokenAmountsV2Keys(final PublicKey whirlpoolKey,
+  public static List<AccountMeta> increaseLiquidityByTokenAmountsV2Keys(final SolanaAccounts solanaAccounts,
+                                                                        final PublicKey whirlpoolKey,
                                                                         final PublicKey tokenProgramAKey,
                                                                         final PublicKey tokenProgramBKey,
-                                                                        final PublicKey memoProgramKey,
                                                                         final PublicKey positionAuthorityKey,
                                                                         final PublicKey positionKey,
                                                                         final PublicKey positionTokenAccountKey,
@@ -1751,7 +1751,7 @@ public final class WhirlpoolProgram {
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createReadOnlySigner(positionAuthorityKey),
       createWrite(positionKey),
       createRead(positionTokenAccountKey),
@@ -1788,10 +1788,10 @@ public final class WhirlpoolProgram {
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
   public static Instruction increaseLiquidityByTokenAmountsV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                                              final SolanaAccounts solanaAccounts,
                                                               final PublicKey whirlpoolKey,
                                                               final PublicKey tokenProgramAKey,
                                                               final PublicKey tokenProgramBKey,
-                                                              final PublicKey memoProgramKey,
                                                               final PublicKey positionAuthorityKey,
                                                               final PublicKey positionKey,
                                                               final PublicKey positionTokenAccountKey,
@@ -1807,10 +1807,10 @@ public final class WhirlpoolProgram {
                                                               final IncreaseLiquidityMethod method,
                                                               final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = increaseLiquidityByTokenAmountsV2Keys(
+      solanaAccounts,
       whirlpoolKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       positionAuthorityKey,
       positionKey,
       positionTokenAccountKey,
@@ -1920,10 +1920,10 @@ public final class WhirlpoolProgram {
   /// - `LiquidityTooHigh` - Provided liquidity exceeds u128::max.
   /// - `TokenMaxExceeded` - The required token to perform this operation exceeds the user defined amount.
   ///
-  public static List<AccountMeta> increaseLiquidityV2Keys(final PublicKey whirlpoolKey,
+  public static List<AccountMeta> increaseLiquidityV2Keys(final SolanaAccounts solanaAccounts,
+                                                          final PublicKey whirlpoolKey,
                                                           final PublicKey tokenProgramAKey,
                                                           final PublicKey tokenProgramBKey,
-                                                          final PublicKey memoProgramKey,
                                                           final PublicKey positionAuthorityKey,
                                                           final PublicKey positionKey,
                                                           final PublicKey positionTokenAccountKey,
@@ -1940,7 +1940,7 @@ public final class WhirlpoolProgram {
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createReadOnlySigner(positionAuthorityKey),
       createWrite(positionKey),
       createRead(positionTokenAccountKey),
@@ -1975,10 +1975,10 @@ public final class WhirlpoolProgram {
   /// @param tokenMaxA: u64
   /// @param tokenMaxB: u64
   public static Instruction increaseLiquidityV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
                                                 final PublicKey whirlpoolKey,
                                                 final PublicKey tokenProgramAKey,
                                                 final PublicKey tokenProgramBKey,
-                                                final PublicKey memoProgramKey,
                                                 final PublicKey positionAuthorityKey,
                                                 final PublicKey positionKey,
                                                 final PublicKey positionTokenAccountKey,
@@ -1996,10 +1996,10 @@ public final class WhirlpoolProgram {
                                                 final long tokenMaxB,
                                                 final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = increaseLiquidityV2Keys(
+      solanaAccounts,
       whirlpoolKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       positionAuthorityKey,
       positionKey,
       positionTokenAccountKey,
@@ -4882,7 +4882,6 @@ public final class WhirlpoolProgram {
                                                             final PublicKey whirlpoolKey,
                                                             final PublicKey tokenProgramAKey,
                                                             final PublicKey tokenProgramBKey,
-                                                            final PublicKey memoProgramKey,
                                                             final PublicKey positionAuthorityKey,
                                                             final PublicKey funderKey,
                                                             final PublicKey positionKey,
@@ -4902,7 +4901,7 @@ public final class WhirlpoolProgram {
       createWrite(whirlpoolKey),
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createReadOnlySigner(positionAuthorityKey),
       createWritableSigner(funderKey),
       createWrite(positionKey),
@@ -4956,7 +4955,6 @@ public final class WhirlpoolProgram {
                                                   final PublicKey whirlpoolKey,
                                                   final PublicKey tokenProgramAKey,
                                                   final PublicKey tokenProgramBKey,
-                                                  final PublicKey memoProgramKey,
                                                   final PublicKey positionAuthorityKey,
                                                   final PublicKey funderKey,
                                                   final PublicKey positionKey,
@@ -4981,7 +4979,6 @@ public final class WhirlpoolProgram {
       whirlpoolKey,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       positionAuthorityKey,
       funderKey,
       positionKey,
@@ -7784,9 +7781,9 @@ public final class WhirlpoolProgram {
   /// - `LiquidityOverflow` - Liquidity value overflowed 128bits during tick crossing.
   /// - `InvalidTickSpacing` - The swap pool was initialized with tick-spacing of 0.
   ///
-  public static List<AccountMeta> swapV2Keys(final PublicKey tokenProgramAKey,
+  public static List<AccountMeta> swapV2Keys(final SolanaAccounts solanaAccounts,
+                                             final PublicKey tokenProgramAKey,
                                              final PublicKey tokenProgramBKey,
-                                             final PublicKey memoProgramKey,
                                              final PublicKey tokenAuthorityKey,
                                              final PublicKey whirlpoolKey,
                                              final PublicKey tokenMintAKey,
@@ -7803,7 +7800,7 @@ public final class WhirlpoolProgram {
     return List.of(
       createRead(tokenProgramAKey),
       createRead(tokenProgramBKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createReadOnlySigner(tokenAuthorityKey),
       createWrite(whirlpoolKey),
       createRead(tokenMintAKey),
@@ -7846,9 +7843,9 @@ public final class WhirlpoolProgram {
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction swapV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                   final SolanaAccounts solanaAccounts,
                                    final PublicKey tokenProgramAKey,
                                    final PublicKey tokenProgramBKey,
-                                   final PublicKey memoProgramKey,
                                    final PublicKey tokenAuthorityKey,
                                    final PublicKey whirlpoolKey,
                                    final PublicKey tokenMintAKey,
@@ -7869,9 +7866,9 @@ public final class WhirlpoolProgram {
                                    final boolean aToB,
                                    final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = swapV2Keys(
+      solanaAccounts,
       tokenProgramAKey,
       tokenProgramBKey,
-      memoProgramKey,
       tokenAuthorityKey,
       whirlpoolKey,
       tokenMintAKey,
@@ -8432,7 +8429,8 @@ public final class WhirlpoolProgram {
   /// - `InvalidIntermediaryMint` - Error if the intermediary mint between hop one and two do not equal.
   /// - `DuplicateTwoHopPool` - Error if whirlpool one & two are the same pool.
   ///
-  public static List<AccountMeta> twoHopSwapV2Keys(final PublicKey whirlpoolOneKey,
+  public static List<AccountMeta> twoHopSwapV2Keys(final SolanaAccounts solanaAccounts,
+                                                   final PublicKey whirlpoolOneKey,
                                                    final PublicKey whirlpoolTwoKey,
                                                    final PublicKey tokenMintInputKey,
                                                    final PublicKey tokenMintIntermediateKey,
@@ -8455,7 +8453,6 @@ public final class WhirlpoolProgram {
                                                    final PublicKey tickArrayTwo2Key,
                                                    final PublicKey oracleOneKey,
                                                    final PublicKey oracleTwoKey,
-                                                   final PublicKey memoProgramKey,
                                                    final PublicKey whirlpoolProgramKey) {
     return List.of(
       createWrite(whirlpoolOneKey),
@@ -8481,7 +8478,7 @@ public final class WhirlpoolProgram {
       createWrite(tickArrayTwo2Key),
       createWrite(oracleOneKey),
       createWrite(oracleTwoKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(whirlpoolProgramKey)
     );
   }
@@ -8516,6 +8513,7 @@ public final class WhirlpoolProgram {
   /// @param amount: u64
   /// @param otherAmountThreshold: u64
   public static Instruction twoHopSwapV2(final AccountMeta invokedWhirlpoolProgramMeta,
+                                         final SolanaAccounts solanaAccounts,
                                          final PublicKey whirlpoolOneKey,
                                          final PublicKey whirlpoolTwoKey,
                                          final PublicKey tokenMintInputKey,
@@ -8539,7 +8537,6 @@ public final class WhirlpoolProgram {
                                          final PublicKey tickArrayTwo2Key,
                                          final PublicKey oracleOneKey,
                                          final PublicKey oracleTwoKey,
-                                         final PublicKey memoProgramKey,
                                          final PublicKey whirlpoolProgramKey,
                                          final long amount,
                                          final long otherAmountThreshold,
@@ -8550,6 +8547,7 @@ public final class WhirlpoolProgram {
                                          final BigInteger sqrtPriceLimitTwo,
                                          final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = twoHopSwapV2Keys(
+      solanaAccounts,
       whirlpoolOneKey,
       whirlpoolTwoKey,
       tokenMintInputKey,
@@ -8573,7 +8571,6 @@ public final class WhirlpoolProgram {
       tickArrayTwo2Key,
       oracleOneKey,
       oracleTwoKey,
-      memoProgramKey,
       whirlpoolProgramKey
     );
     return twoHopSwapV2(

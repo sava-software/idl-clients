@@ -2,7 +2,7 @@
   "address": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
   "metadata": {
     "name": "kamino_vault",
-    "version": "2.2.0",
+    "version": "2.2.2",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -63,6 +63,12 @@
     },
     {
       "name": "update_reserve_allocation",
+      "docs": [
+        "Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.",
+        "",
+        "New allocations created through this v1 instruction use `0`, which is treated as uncapped.",
+        "Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`."
+      ],
       "discriminator": [
         5,
         54,
@@ -118,6 +124,77 @@
         },
         {
           "name": "cap",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_reserve_allocation_v2",
+      "docs": [
+        "Updates a reserve allocation with an optional cToken-denominated cap.",
+        "",
+        "`ctoken_allocation_cap` limits the allocation after conversion to token liquidity at",
+        "the current reserve exchange rate. `0` and `u64::MAX` mean uncapped."
+      ],
+      "discriminator": [
+        195,
+        136,
+        1,
+        79,
+        10,
+        123,
+        121,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_state",
+          "writable": true
+        },
+        {
+          "name": "base_vault_authority"
+        },
+        {
+          "name": "reserve_collateral_mint",
+          "writable": true
+        },
+        {
+          "name": "reserve"
+        },
+        {
+          "name": "ctoken_vault",
+          "writable": true
+        },
+        {
+          "name": "reserve_whitelist_entry",
+          "optional": true
+        },
+        {
+          "name": "reserve_collateral_token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "rent"
+        }
+      ],
+      "args": [
+        {
+          "name": "weight",
+          "type": "u64"
+        },
+        {
+          "name": "cap",
+          "type": "u64"
+        },
+        {
+          "name": "ctoken_allocation_cap",
           "type": "u64"
         }
       ]
@@ -190,6 +267,77 @@
       ]
     },
     {
+      "name": "deposit_with_min_shares_out",
+      "discriminator": [
+        74,
+        127,
+        128,
+        80,
+        4,
+        221,
+        193,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_state",
+          "writable": true
+        },
+        {
+          "name": "token_vault",
+          "writable": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "base_vault_authority"
+        },
+        {
+          "name": "shares_mint",
+          "writable": true
+        },
+        {
+          "name": "user_token_ata",
+          "writable": true
+        },
+        {
+          "name": "user_shares_ata",
+          "writable": true
+        },
+        {
+          "name": "klend_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "shares_token_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "max_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_shares_out",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "buy",
       "discriminator": [
         102,
@@ -252,6 +400,77 @@
       "args": [
         {
           "name": "max_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "buy_with_min_shares_out",
+      "discriminator": [
+        61,
+        135,
+        102,
+        151,
+        124,
+        46,
+        144,
+        209
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault_state",
+          "writable": true
+        },
+        {
+          "name": "token_vault",
+          "writable": true
+        },
+        {
+          "name": "token_mint"
+        },
+        {
+          "name": "base_vault_authority"
+        },
+        {
+          "name": "shares_mint",
+          "writable": true
+        },
+        {
+          "name": "user_token_ata",
+          "writable": true
+        },
+        {
+          "name": "user_shares_ata",
+          "writable": true
+        },
+        {
+          "name": "klend_program"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "shares_token_program"
+        },
+        {
+          "name": "event_authority"
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "max_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_shares_out",
           "type": "u64"
         }
       ]
@@ -1786,6 +2005,11 @@
       "code": 7063,
       "name": "MaxInvestAmountMustBeGreaterThanZero",
       "msg": "max_amount must be greater than 0"
+    },
+    {
+      "code": 7064,
+      "name": "SharesOutBelowMinimum",
+      "msg": "Shares out is below minimum requested"
     }
   ],
   "types": [
@@ -2234,12 +2458,21 @@
               "Rewards distributed per slot to depositors. Drained from",
               "[ReserveLiquidity::rewards_amount_available] into",
               "[ReserveLiquidity::total_available_amount] at each refresh, capped by the",
-              "market-level [LendingMarket::reserve_rewards_max_apr_pct]. `0` disables.",
+              "market-level [LendingMarket::reserve_rewards_max_apr_bps]. `0` disables.",
               "",
               "**Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a",
               "reserve with [Self::autodeleverage_enabled] and a finite [Self::deposit_limit]",
               "will eventually cross the cap and arm the autodeleverage countdown. Size",
               "`deposit_limit` and RPS together."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "permissioned_ops",
+            "docs": [
+              "Bitmask of [PermissionedOp]s gated by the parent market's `permissioning_authority`",
+              "when this reserve is the operation's target. `0` = no operation is restricted at the",
+              "reserve level. Use [Reserve::get_permissioned_ops] for a typed view."
             ],
             "type": "u64"
           }
@@ -2432,7 +2665,7 @@
               "touching [Self::total_available_amount]). On every `refresh_reserve`, up to",
               "`rewards_amount_per_slot * slots_elapsed` tokens are moved from this counter into",
               "[Self::total_available_amount], inflating the cToken exchange rate, capped by the",
-              "market-level `reserve_rewards_max_apr_pct` cap."
+              "market-level `reserve_rewards_max_apr_bps` cap."
             ],
             "type": "u64"
           },
@@ -2879,11 +3112,15 @@
             "type": "u64"
           },
           {
+            "name": "ctoken_allocation_cap",
+            "type": "u64"
+          },
+          {
             "name": "config_padding",
             "type": {
               "array": [
                 "u64",
-                127
+                126
               ]
             }
           },
@@ -3067,7 +3304,7 @@
             "type": {
               "array": [
                 "u64",
-                113
+                112
               ]
             }
           },
@@ -3155,7 +3392,7 @@
               "The token mint is stored to solve the problem of finding all the whitelisted reserves for a particular token mint:",
               "when storing the token mint inside the PDA, finding all the whitelisted reserves becomes a `getProgramAccounts` with",
               "a filter on discriminator + the mint field",
-              "The reserve pubkey, as seed of the reserve whitelist PDA account, it stored so you can link back the PDA to its seeds",
+              "The reserve pubkey, as seed of the reserve whitelist PDA account, is stored so you can link back the PDA to its seeds",
               "(for instance, in the operation above we easily find the reserve corresponding to the PDA)"
             ],
             "type": "pubkey"

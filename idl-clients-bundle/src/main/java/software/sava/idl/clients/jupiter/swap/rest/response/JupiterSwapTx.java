@@ -3,17 +3,17 @@ package software.sava.idl.clients.jupiter.swap.rest.response;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
+import java.util.function.Supplier;
+
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
 public record JupiterSwapTx(byte[] swapTransaction, long lastValidBlockHeight, int prioritizationFeeLamports) {
 
   public static JupiterSwapTx parse(final JsonIterator ji) {
-    final var parser = new JupiterSwapTx.Builder();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new JupiterSwapTx.Builder());
   }
 
-  private static final class Builder implements FieldBufferPredicate {
+  private static final class Builder implements FieldBufferPredicate, Supplier<JupiterSwapTx> {
 
     private byte[] swapTransaction;
     private long lastValidBlockHeight;
@@ -22,7 +22,8 @@ public record JupiterSwapTx(byte[] swapTransaction, long lastValidBlockHeight, i
     private Builder() {
     }
 
-    private JupiterSwapTx create() {
+    @Override
+    public JupiterSwapTx get() {
       return new JupiterSwapTx(swapTransaction, lastValidBlockHeight, prioritizationFeeLamports);
     }
 

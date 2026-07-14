@@ -202,7 +202,6 @@ public interface OrcaWhirlpoolsClient {
   Instruction increaseLiquidityV2(final PublicKey whirlpoolKey,
                                   final PublicKey tokenProgramAKey,
                                   final PublicKey tokenProgramBKey,
-                                  final PublicKey memoProgramKey,
                                   final PublicKey positionAuthorityKey,
                                   final PublicKey positionKey,
                                   final PublicKey positionTokenAccountKey,
@@ -222,7 +221,6 @@ public interface OrcaWhirlpoolsClient {
   Instruction increaseLiquidityByTokenAmountsV2(final PublicKey whirlpoolKey,
                                                 final PublicKey tokenProgramAKey,
                                                 final PublicKey tokenProgramBKey,
-                                                final PublicKey memoProgramKey,
                                                 final PublicKey positionAuthorityKey,
                                                 final PublicKey positionKey,
                                                 final PublicKey positionTokenAccountKey,
@@ -255,7 +253,6 @@ public interface OrcaWhirlpoolsClient {
   Instruction decreaseLiquidityV2(final PublicKey whirlpoolKey,
                                   final PublicKey tokenProgramAKey,
                                   final PublicKey tokenProgramBKey,
-                                  final PublicKey memoProgramKey,
                                   final PublicKey positionAuthorityKey,
                                   final PublicKey positionKey,
                                   final PublicKey positionTokenAccountKey,
@@ -275,7 +272,6 @@ public interface OrcaWhirlpoolsClient {
   Instruction repositionLiquidityV2(final PublicKey whirlpoolKey,
                                     final PublicKey tokenProgramAKey,
                                     final PublicKey tokenProgramBKey,
-                                    final PublicKey memoProgramKey,
                                     final PublicKey positionAuthorityKey,
                                     final PublicKey funderKey,
                                     final PublicKey positionKey,
@@ -324,7 +320,6 @@ public interface OrcaWhirlpoolsClient {
                             final PublicKey tokenVaultBKey,
                             final PublicKey tokenProgramAKey,
                             final PublicKey tokenProgramBKey,
-                            final PublicKey memoProgramKey,
                             final RemainingAccountsInfo remainingAccountsInfo);
 
   Instruction collectReward(final PublicKey whirlpoolKey,
@@ -344,7 +339,6 @@ public interface OrcaWhirlpoolsClient {
                               final PublicKey rewardMintKey,
                               final PublicKey rewardVaultKey,
                               final PublicKey rewardTokenProgramKey,
-                              final PublicKey memoProgramKey,
                               final int rewardIndex,
                               final RemainingAccountsInfo remainingAccountsInfo);
 
@@ -369,7 +363,6 @@ public interface OrcaWhirlpoolsClient {
 
   Instruction swapV2(final PublicKey tokenProgramAKey,
                      final PublicKey tokenProgramBKey,
-                     final PublicKey memoProgramKey,
                      final PublicKey tokenAuthorityKey,
                      final PublicKey whirlpoolKey,
                      final PublicKey tokenMintAKey,
@@ -440,7 +433,6 @@ public interface OrcaWhirlpoolsClient {
                            final PublicKey tickArrayTwo2Key,
                            final PublicKey oracleOneKey,
                            final PublicKey oracleTwoKey,
-                           final PublicKey memoProgramKey,
                            final long amount,
                            final long otherAmountThreshold,
                            final boolean amountSpecifiedIsInput,
@@ -711,7 +703,6 @@ public interface OrcaWhirlpoolsClient {
 
   default Instruction swapV2(final PublicKey tokenProgramAKey,
                              final PublicKey tokenProgramBKey,
-                             final PublicKey memoProgramKey,
                              final PublicKey tokenAuthorityKey,
                              final PublicKey whirlpoolKey,
                              final PublicKey tokenMintAKey,
@@ -732,7 +723,6 @@ public interface OrcaWhirlpoolsClient {
     return swapV2(
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         tokenAuthorityKey,
         whirlpoolKey,
         tokenMintAKey,

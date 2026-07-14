@@ -16,6 +16,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param targetAllocationWeight: u64
 /// @param tokenAllocationCap: u64 Maximum token invested in this reserve
 /// @param ctokenVaultBump: u64
+/// @param ctokenAllocationCap: u64
 /// @param configPadding: u64[]
 /// @param ctokenAllocation: u64
 /// @param lastInvestSlot: u64
@@ -25,6 +26,7 @@ public record VaultAllocation(PublicKey reserve,
                               long targetAllocationWeight,
                               long tokenAllocationCap,
                               long ctokenVaultBump,
+                              long ctokenAllocationCap,
                               long[] configPadding,
                               long ctokenAllocation,
                               long lastInvestSlot,
@@ -32,7 +34,7 @@ public record VaultAllocation(PublicKey reserve,
                               long[] statePadding) implements SerDe {
 
   public static final int BYTES = 2160;
-  public static final int CONFIG_PADDING_LEN = 127;
+  public static final int CONFIG_PADDING_LEN = 126;
   public static final int STATE_PADDING_LEN = 128;
 
   public static final int RESERVE_OFFSET = 0;
@@ -40,7 +42,8 @@ public record VaultAllocation(PublicKey reserve,
   public static final int TARGET_ALLOCATION_WEIGHT_OFFSET = 64;
   public static final int TOKEN_ALLOCATION_CAP_OFFSET = 72;
   public static final int CTOKEN_VAULT_BUMP_OFFSET = 80;
-  public static final int CONFIG_PADDING_OFFSET = 88;
+  public static final int CTOKEN_ALLOCATION_CAP_OFFSET = 88;
+  public static final int CONFIG_PADDING_OFFSET = 96;
   public static final int CTOKEN_ALLOCATION_OFFSET = 1104;
   public static final int LAST_INVEST_SLOT_OFFSET = 1112;
   public static final int TOKEN_TARGET_ALLOCATION_SF_OFFSET = 1120;
@@ -61,7 +64,9 @@ public record VaultAllocation(PublicKey reserve,
     i += 8;
     final var ctokenVaultBump = getInt64LE(_data, i);
     i += 8;
-    final var configPadding = new long[127];
+    final var ctokenAllocationCap = getInt64LE(_data, i);
+    i += 8;
+    final var configPadding = new long[126];
     i += SerDeUtil.readArray(configPadding, _data, i);
     final var ctokenAllocation = getInt64LE(_data, i);
     i += 8;
@@ -76,6 +81,7 @@ public record VaultAllocation(PublicKey reserve,
                                targetAllocationWeight,
                                tokenAllocationCap,
                                ctokenVaultBump,
+                               ctokenAllocationCap,
                                configPadding,
                                ctokenAllocation,
                                lastInvestSlot,
@@ -96,7 +102,9 @@ public record VaultAllocation(PublicKey reserve,
     i += 8;
     putInt64LE(_data, i, ctokenVaultBump);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(configPadding, 127, _data, i);
+    putInt64LE(_data, i, ctokenAllocationCap);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(configPadding, 126, _data, i);
     putInt64LE(_data, i, ctokenAllocation);
     i += 8;
     putInt64LE(_data, i, lastInvestSlot);

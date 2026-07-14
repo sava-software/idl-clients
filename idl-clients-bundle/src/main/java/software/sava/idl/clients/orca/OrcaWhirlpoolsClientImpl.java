@@ -421,7 +421,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
   public Instruction increaseLiquidityV2(final PublicKey whirlpoolKey,
                                          final PublicKey tokenProgramAKey,
                                          final PublicKey tokenProgramBKey,
-                                         final PublicKey memoProgramKey,
                                          final PublicKey positionAuthorityKey,
                                          final PublicKey positionKey,
                                          final PublicKey positionTokenAccountKey,
@@ -439,10 +438,10 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                          final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.increaseLiquidityV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         positionAuthorityKey,
         positionKey,
         positionTokenAccountKey,
@@ -466,7 +465,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
   public Instruction increaseLiquidityByTokenAmountsV2(final PublicKey whirlpoolKey,
                                                        final PublicKey tokenProgramAKey,
                                                        final PublicKey tokenProgramBKey,
-                                                       final PublicKey memoProgramKey,
                                                        final PublicKey positionAuthorityKey,
                                                        final PublicKey positionKey,
                                                        final PublicKey positionTokenAccountKey,
@@ -482,10 +480,10 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                                        final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.increaseLiquidityByTokenAmountsV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         positionAuthorityKey,
         positionKey,
         positionTokenAccountKey,
@@ -542,7 +540,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
   public Instruction decreaseLiquidityV2(final PublicKey whirlpoolKey,
                                          final PublicKey tokenProgramAKey,
                                          final PublicKey tokenProgramBKey,
-                                         final PublicKey memoProgramKey,
                                          final PublicKey positionAuthorityKey,
                                          final PublicKey positionKey,
                                          final PublicKey positionTokenAccountKey,
@@ -560,10 +557,10 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                          final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.decreaseLiquidityV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         positionAuthorityKey,
         positionKey,
         positionTokenAccountKey,
@@ -587,7 +584,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
   public Instruction repositionLiquidityV2(final PublicKey whirlpoolKey,
                                            final PublicKey tokenProgramAKey,
                                            final PublicKey tokenProgramBKey,
-                                           final PublicKey memoProgramKey,
                                            final PublicKey positionAuthorityKey,
                                            final PublicKey funderKey,
                                            final PublicKey positionKey,
@@ -612,7 +608,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         whirlpoolKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         positionAuthorityKey,
         funderKey,
         positionKey,
@@ -688,10 +683,10 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                    final PublicKey tokenVaultBKey,
                                    final PublicKey tokenProgramAKey,
                                    final PublicKey tokenProgramBKey,
-                                   final PublicKey memoProgramKey,
                                    final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.collectFeesV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolKey,
         positionAuthorityKey,
         positionKey,
@@ -704,7 +699,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tokenVaultBKey,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         whirlpoolProgramId(),
         remainingAccountsInfo
     );
@@ -742,11 +736,11 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                      final PublicKey rewardMintKey,
                                      final PublicKey rewardVaultKey,
                                      final PublicKey rewardTokenProgramKey,
-                                     final PublicKey memoProgramKey,
                                      final int rewardIndex,
                                      final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.collectRewardV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolKey,
         positionAuthorityKey,
         positionKey,
@@ -755,7 +749,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         rewardMintKey,
         rewardVaultKey,
         rewardTokenProgramKey,
-        memoProgramKey,
         whirlpoolProgramId(),
         rewardIndex,
         remainingAccountsInfo
@@ -804,7 +797,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
   @Override
   public Instruction swapV2(final PublicKey tokenProgramAKey,
                             final PublicKey tokenProgramBKey,
-                            final PublicKey memoProgramKey,
                             final PublicKey tokenAuthorityKey,
                             final PublicKey whirlpoolKey,
                             final PublicKey tokenMintAKey,
@@ -825,9 +817,9 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                             final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.swapV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         tokenProgramAKey,
         tokenProgramBKey,
-        memoProgramKey,
         tokenAuthorityKey,
         whirlpoolKey,
         tokenMintAKey,
@@ -935,7 +927,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                   final PublicKey tickArrayTwo2Key,
                                   final PublicKey oracleOneKey,
                                   final PublicKey oracleTwoKey,
-                                  final PublicKey memoProgramKey,
                                   final long amount,
                                   final long otherAmountThreshold,
                                   final boolean amountSpecifiedIsInput,
@@ -946,6 +937,7 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
                                   final RemainingAccountsInfo remainingAccountsInfo) {
     return WhirlpoolProgram.twoHopSwapV2(
         accounts.invokedWhirlpoolProgram(),
+        solanaAccounts,
         whirlpoolOneKey,
         whirlpoolTwoKey,
         tokenMintInputKey,
@@ -969,7 +961,6 @@ final class OrcaWhirlpoolsClientImpl implements OrcaWhirlpoolsClient {
         tickArrayTwo2Key,
         oracleOneKey,
         oracleTwoKey,
-        memoProgramKey,
         whirlpoolProgramId(),
         amount,
         otherAmountThreshold,

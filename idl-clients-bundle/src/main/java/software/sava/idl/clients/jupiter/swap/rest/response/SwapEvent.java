@@ -4,6 +4,8 @@ import software.sava.core.accounts.PublicKey;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
+import java.util.function.Supplier;
+
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
@@ -13,19 +15,18 @@ public record SwapEvent(PublicKey inputMint,
                         long outputAmount) {
 
   public static SwapEvent parse(final JsonIterator ji) {
-    final var parser = new SwapEvent.Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new SwapEvent.Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<SwapEvent> {
 
     private PublicKey inputMint;
     private long inputAmount;
     private PublicKey outputMint;
     private long outputAmount;
 
-    private SwapEvent create() {
+    @Override
+    public SwapEvent get() {
       return new SwapEvent(inputMint, inputAmount, outputMint, outputAmount);
     }
 

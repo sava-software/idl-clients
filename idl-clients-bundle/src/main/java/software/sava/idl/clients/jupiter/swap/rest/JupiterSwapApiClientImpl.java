@@ -43,14 +43,15 @@ final class JupiterSwapApiClientImpl extends JsonHttpClient implements JupiterSw
   };
   private static final Function<HttpResponse<?>, Map<String, PublicKey>> PROGRAM_LABEL_PARSER = applyGenericResponse(ji -> {
     final var programLabels = new TreeMap<String, PublicKey>(String.CASE_INSENSITIVE_ORDER);
-    for (PublicKey program; (program = ji.applyObjField(PARSE_BASE58_PUBLIC_KEY)) != null; ) {
-      final var dex = ji.readString();
-      final var previousDex = programLabels.put(dex, program);
+    return ji.testObject(programLabels, (labels, buf, offset, len, jsonIterator) -> {
+      final var program = PARSE_BASE58_PUBLIC_KEY.apply(buf, offset, len);
+      final var dex = jsonIterator.readString();
+      final var previousDex = labels.put(dex, program);
       if (previousDex != null) {
         throw new IllegalStateException(String.format("Duplicate case insensitive dexes: [%s] [%s]", previousDex, dex));
       }
-    }
-    return programLabels;
+      return true;
+    });
   });
 
   // Ultra

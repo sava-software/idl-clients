@@ -3,16 +3,16 @@ package software.sava.idl.clients.jupiter.swap.rest.request;
 import software.sava.core.accounts.PublicKey;
 import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.CharBufferFunction;
-import systems.comodal.jsoniter.FieldBufferPredicate;
+import systems.comodal.jsoniter.FieldIndexPredicate;
+import systems.comodal.jsoniter.FieldMatcher;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
-import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 import static systems.comodal.jsoniter.JsonIterator.fieldEqualsIgnoreCase;
 
 // https://dev.jup.ag/api-reference/swap/quote
@@ -40,50 +40,50 @@ record JupiterQuoteRequestRecord(SwapMode swapMode,
     }
   };
 
-  record Parser(Builder builder) implements FieldBufferPredicate {
+  record Parser(Builder builder) implements FieldIndexPredicate, Supplier<JupiterQuoteRequest> {
 
-    JupiterQuoteRequest createRequest() {
+    @Override
+    public JupiterQuoteRequest get() {
       return builder.create();
     }
 
     private static List<String> readStringArray(final JsonIterator ji) {
-      final var dexes = new ArrayList<String>();
-      while (ji.readArray()) {
-        dexes.add(ji.readString());
-      }
-      return List.copyOf(dexes);
+      return List.copyOf(ji.readList(JsonIterator::readString));
     }
 
+    static final FieldMatcher FIELDS = FieldMatcher.of(
+        "amount",
+        "swapMode",
+        "inputMint",
+        "outputMint",
+        "slippageBps",
+        "dexes",
+        "excludeDexes",
+        "restrictIntermediateTokens",
+        "onlyDirectRoutes",
+        "asLegacyTransaction",
+        "platformFeeBps",
+        "maxAccounts",
+        "instructionVersion"
+    );
+
     @Override
-    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
-      if (fieldEquals("amount", buf, offset, len)) {
-        builder.amount(ji.readLong());
-      } else if (fieldEquals("swapMode", buf, offset, len)) {
-        builder.swapMode(ji.applyChars(PARSE_MODE));
-      } else if (fieldEquals("inputMint", buf, offset, len)) {
-        builder.inputTokenMint(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("outputMint", buf, offset, len)) {
-        builder.outputTokenMint(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("slippageBps", buf, offset, len)) {
-        builder.slippageBps(ji.readInt());
-      } else if (fieldEquals("dexes", buf, offset, len)) {
-        builder.dexes(readStringArray(ji));
-      } else if (fieldEquals("excludeDexes", buf, offset, len)) {
-        builder.excludeDexes(readStringArray(ji));
-      } else if (fieldEquals("restrictIntermediateTokens", buf, offset, len)) {
-        builder.restrictIntermediateTokens(ji.readBoolean());
-      } else if (fieldEquals("onlyDirectRoutes", buf, offset, len)) {
-        builder.onlyDirectRoutes(ji.readBoolean());
-      } else if (fieldEquals("asLegacyTransaction", buf, offset, len)) {
-        builder.asLegacyTransaction(ji.readBoolean());
-      } else if (fieldEquals("platformFeeBps", buf, offset, len)) {
-        builder.platformFeeBps(ji.readInt());
-      } else if (fieldEquals("maxAccounts", buf, offset, len)) {
-        builder.maxAccounts(ji.readInt());
-      } else if (fieldEquals("instructionVersion", buf, offset, len)) {
-        builder.instructionVersion(ji.readString());
-      } else {
-        ji.skip();
+    public boolean test(final int fieldIndex, final JsonIterator ji) {
+      switch (fieldIndex) {
+        case 0 -> builder.amount(ji.readLong());
+        case 1 -> builder.swapMode(ji.applyChars(PARSE_MODE));
+        case 2 -> builder.inputTokenMint(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 3 -> builder.outputTokenMint(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 4 -> builder.slippageBps(ji.readInt());
+        case 5 -> builder.dexes(readStringArray(ji));
+        case 6 -> builder.excludeDexes(readStringArray(ji));
+        case 7 -> builder.restrictIntermediateTokens(ji.readBoolean());
+        case 8 -> builder.onlyDirectRoutes(ji.readBoolean());
+        case 9 -> builder.asLegacyTransaction(ji.readBoolean());
+        case 10 -> builder.platformFeeBps(ji.readInt());
+        case 11 -> builder.maxAccounts(ji.readInt());
+        case 12 -> builder.instructionVersion(ji.readString());
+        default -> ji.skip();
       }
       return true;
     }

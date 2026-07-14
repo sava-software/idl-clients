@@ -67,7 +67,8 @@ public sealed interface KaminoVaultError extends ProgramError permits
     KaminoVaultError.RewardWithdrawAmountNotExpected,
     KaminoVaultError.RewardsStaleForFeeUpdate,
     KaminoVaultError.VaultDepositCapReached,
-    KaminoVaultError.MaxInvestAmountMustBeGreaterThanZero {
+    KaminoVaultError.MaxInvestAmountMustBeGreaterThanZero,
+    KaminoVaultError.SharesOutBelowMinimum {
 
   static KaminoVaultError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -135,6 +136,7 @@ public sealed interface KaminoVaultError extends ProgramError permits
       case 7061 -> RewardsStaleForFeeUpdate.INSTANCE;
       case 7062 -> VaultDepositCapReached.INSTANCE;
       case 7063 -> MaxInvestAmountMustBeGreaterThanZero.INSTANCE;
+      case 7064 -> SharesOutBelowMinimum.INSTANCE;
       default -> null;
     };
   }
@@ -584,6 +586,13 @@ public sealed interface KaminoVaultError extends ProgramError permits
 
     public static final MaxInvestAmountMustBeGreaterThanZero INSTANCE = new MaxInvestAmountMustBeGreaterThanZero(
         7063, "max_amount must be greater than 0"
+    );
+  }
+
+  record SharesOutBelowMinimum(int code, String msg) implements KaminoVaultError {
+
+    public static final SharesOutBelowMinimum INSTANCE = new SharesOutBelowMinimum(
+        7064, "Shares out is below minimum requested"
     );
   }
 }

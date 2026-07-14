@@ -2,14 +2,14 @@ package software.sava.idl.clients.jupiter.swap.rest.request;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.rpc.json.PublicKeyEncoding;
-import systems.comodal.jsoniter.FieldBufferPredicate;
+import systems.comodal.jsoniter.FieldIndexPredicate;
+import systems.comodal.jsoniter.FieldMatcher;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
-
-import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
+import java.util.function.Supplier;
 
 // https://dev.jup.ag/api-reference/ultra/order
 public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
@@ -24,7 +24,7 @@ public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
                                              Set<String> excludeRouters,
                                              Set<String> excludeDexes) implements JupiterUltraOrderRequest {
 
-  static final class Parser implements FieldBufferPredicate {
+  static final class Parser implements FieldIndexPredicate, Supplier<JupiterUltraOrderRequest> {
 
     private final Builder builder;
 
@@ -32,32 +32,36 @@ public record JupiterUltraOrderRequestRecord(PublicKey inputMint,
       this.builder = JupiterUltraOrderRequest.build(prototype);
     }
 
-    JupiterUltraOrderRequest createRequest() {
+    @Override
+    public JupiterUltraOrderRequest get() {
       return builder.createRequest();
     }
 
+    static final FieldMatcher FIELDS = FieldMatcher.of(
+        "amount",
+        "inputMint",
+        "outputMint",
+        "taker",
+        "receiver",
+        "payer",
+        "closeAuthority",
+        "referralAccount",
+        "referralFeeBps"
+    );
+
     @Override
-    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
-      if (fieldEquals("amount", buf, offset, len)) {
-        builder.amount(ji.readBigInteger());
-      } else if (fieldEquals("inputMint", buf, offset, len)) {
-        builder.inputMint(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("outputMint", buf, offset, len)) {
-        builder.outputMint(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("taker", buf, offset, len)) {
-        builder.taker(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("receiver", buf, offset, len)) {
-        builder.receiver(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("payer", buf, offset, len)) {
-        builder.payer(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("closeAuthority", buf, offset, len)) {
-        builder.closeAuthority(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("referralAccount", buf, offset, len)) {
-        builder.referralAccount(PublicKeyEncoding.parseBase58Encoded(ji));
-      } else if (fieldEquals("referralFeeBps", buf, offset, len)) {
-        builder.referralFeeBps(ji.readInt());
-      } else {
-        ji.skip();
+    public boolean test(final int fieldIndex, final JsonIterator ji) {
+      switch (fieldIndex) {
+        case 0 -> builder.amount(ji.readBigInteger());
+        case 1 -> builder.inputMint(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 2 -> builder.outputMint(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 3 -> builder.taker(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 4 -> builder.receiver(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 5 -> builder.payer(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 6 -> builder.closeAuthority(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 7 -> builder.referralAccount(PublicKeyEncoding.parseBase58Encoded(ji));
+        case 8 -> builder.referralFeeBps(ji.readInt());
+        default -> ji.skip();
       }
       return true;
     }

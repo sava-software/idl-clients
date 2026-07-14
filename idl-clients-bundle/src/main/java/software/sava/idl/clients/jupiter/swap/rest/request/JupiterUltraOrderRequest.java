@@ -17,9 +17,7 @@ public interface JupiterUltraOrderRequest {
   }
 
   static JupiterUltraOrderRequest parseRequest(final JupiterUltraOrderRequest prototype, final JsonIterator ji) {
-    final var parser = new JupiterUltraOrderRequestRecord.Parser(prototype);
-    ji.testObject(parser);
-    return parser.createRequest();
+    return ji.parseObject(JupiterUltraOrderRequestRecord.Parser.FIELDS, new JupiterUltraOrderRequestRecord.Parser(prototype));
   }
 
   static JupiterUltraOrderRequest parseRequest(final JsonIterator ji) {

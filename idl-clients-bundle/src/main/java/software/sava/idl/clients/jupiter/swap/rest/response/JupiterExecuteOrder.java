@@ -1,13 +1,12 @@
 package software.sava.idl.clients.jupiter.swap.rest.response;
 
-import systems.comodal.jsoniter.FieldBufferPredicate;
+import systems.comodal.jsoniter.FieldIndexPredicate;
+import systems.comodal.jsoniter.FieldMatcher;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
-
-import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
+import java.util.function.Supplier;
 
 public record JupiterExecuteOrder(String status,
                                   String signature,
@@ -22,16 +21,14 @@ public record JupiterExecuteOrder(String status,
                                   byte[] responseJson) {
 
   public static JupiterExecuteOrder parse(final byte[] responseJson, final JsonIterator ji) {
-    final var parser = new JupiterExecuteOrder.Parser(responseJson);
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(Parser.FIELDS, new JupiterExecuteOrder.Parser(responseJson));
   }
 
   public enum Status {
     Success, Failed
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldIndexPredicate, Supplier<JupiterExecuteOrder> {
 
     private final byte[] responseJson;
     private String status;
@@ -49,7 +46,8 @@ public record JupiterExecuteOrder(String status,
       this.responseJson = responseJson;
     }
 
-    private JupiterExecuteOrder create() {
+    @Override
+    public JupiterExecuteOrder get() {
       return new JupiterExecuteOrder(
           status, signature, slot, error, code,
           totalInputAmount, totalOutputAmount, inputAmountResult, outputAmountResult,
@@ -57,34 +55,33 @@ public record JupiterExecuteOrder(String status,
       );
     }
 
+    private static final FieldMatcher FIELDS = FieldMatcher.of(
+        "status",
+        "signature",
+        "slot",
+        "error",
+        "code",
+        "totalInputAmount",
+        "totalOutputAmount",
+        "inputAmountResult",
+        "outputAmountResult",
+        "swapEvents"
+    );
+
     @Override
-    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
-      if (fieldEquals("status", buf, offset, len)) {
-        status = ji.readString();
-      } else if (fieldEquals("signature", buf, offset, len)) {
-        signature = ji.readString();
-      } else if (fieldEquals("slot", buf, offset, len)) {
-        slot = ji.readBigInteger();
-      } else if (fieldEquals("error", buf, offset, len)) {
-        error = ji.readString();
-      } else if (fieldEquals("code", buf, offset, len)) {
-        code = ji.readLong();
-      } else if (fieldEquals("totalInputAmount", buf, offset, len)) {
-        totalInputAmount = ji.readLong();
-      } else if (fieldEquals("totalOutputAmount", buf, offset, len)) {
-        totalOutputAmount = ji.readLong();
-      } else if (fieldEquals("inputAmountResult", buf, offset, len)) {
-        inputAmountResult = ji.readString();
-      } else if (fieldEquals("outputAmountResult", buf, offset, len)) {
-        outputAmountResult = ji.readString();
-      } else if (fieldEquals("swapEvents", buf, offset, len)) {
-        final var swapEvents = new ArrayList<SwapEvent>();
-        while (ji.readArray()) {
-          swapEvents.add(SwapEvent.parse(ji));
-        }
-        this.swapEvents = swapEvents;
-      } else {
-        ji.skip();
+    public boolean test(final int fieldIndex, final JsonIterator ji) {
+      switch (fieldIndex) {
+        case 0 -> status = ji.readString();
+        case 1 -> signature = ji.readString();
+        case 2 -> slot = ji.readBigInteger();
+        case 3 -> error = ji.readString();
+        case 4 -> code = ji.readLong();
+        case 5 -> totalInputAmount = ji.readLong();
+        case 6 -> totalOutputAmount = ji.readLong();
+        case 7 -> inputAmountResult = ji.readString();
+        case 8 -> outputAmountResult = ji.readString();
+        case 9 -> swapEvents = ji.readList(SwapEvent::parse);
+        default -> ji.skip();
       }
       return true;
     }

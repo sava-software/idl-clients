@@ -1189,6 +1189,7 @@ public final class LbClmmProgram {
 
   /// @param ownerTokenXKey When dont set it tokenAccount to prevent unnecessary create token account (rent fee) when user only withdraw token y
   public static List<AccountMeta> cancelLimitOrderKeys(final AccountMeta invokedLbClmmProgramMeta,
+                                                       final SolanaAccounts solanaAccounts,
                                                        final PublicKey lbPairKey,
                                                        final PublicKey binArrayBitmapExtensionKey,
                                                        final PublicKey reserveXKey,
@@ -1201,7 +1202,6 @@ public final class LbClmmProgram {
                                                        final PublicKey ownerKey,
                                                        final PublicKey tokenXProgramKey,
                                                        final PublicKey tokenYProgramKey,
-                                                       final PublicKey memoProgramKey,
                                                        final PublicKey eventAuthorityKey,
                                                        final PublicKey programKey) {
     return List.of(
@@ -1217,7 +1217,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(ownerKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1225,6 +1225,7 @@ public final class LbClmmProgram {
 
   /// @param ownerTokenXKey When dont set it tokenAccount to prevent unnecessary create token account (rent fee) when user only withdraw token y
   public static Instruction cancelLimitOrder(final AccountMeta invokedLbClmmProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
                                              final PublicKey lbPairKey,
                                              final PublicKey binArrayBitmapExtensionKey,
                                              final PublicKey reserveXKey,
@@ -1237,13 +1238,13 @@ public final class LbClmmProgram {
                                              final PublicKey ownerKey,
                                              final PublicKey tokenXProgramKey,
                                              final PublicKey tokenYProgramKey,
-                                             final PublicKey memoProgramKey,
                                              final PublicKey eventAuthorityKey,
                                              final PublicKey programKey,
                                              final int[] bins,
                                              final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = cancelLimitOrderKeys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       lbPairKey,
       binArrayBitmapExtensionKey,
       reserveXKey,
@@ -1256,7 +1257,6 @@ public final class LbClmmProgram {
       ownerKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -1384,7 +1384,8 @@ public final class LbClmmProgram {
 
   public static final Discriminator CLAIM_FEE_2_DISCRIMINATOR = toDiscriminator(112, 191, 101, 171, 28, 144, 127, 187);
 
-  public static List<AccountMeta> claimFee2Keys(final PublicKey lbPairKey,
+  public static List<AccountMeta> claimFee2Keys(final SolanaAccounts solanaAccounts,
+                                                final PublicKey lbPairKey,
                                                 final PublicKey positionKey,
                                                 final PublicKey senderKey,
                                                 final PublicKey reserveXKey,
@@ -1395,7 +1396,6 @@ public final class LbClmmProgram {
                                                 final PublicKey tokenYMintKey,
                                                 final PublicKey tokenProgramXKey,
                                                 final PublicKey tokenProgramYKey,
-                                                final PublicKey memoProgramKey,
                                                 final PublicKey eventAuthorityKey,
                                                 final PublicKey programKey) {
     return List.of(
@@ -1410,13 +1410,14 @@ public final class LbClmmProgram {
       createRead(tokenYMintKey),
       createRead(tokenProgramXKey),
       createRead(tokenProgramYKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
   }
 
   public static Instruction claimFee2(final AccountMeta invokedLbClmmProgramMeta,
+                                      final SolanaAccounts solanaAccounts,
                                       final PublicKey lbPairKey,
                                       final PublicKey positionKey,
                                       final PublicKey senderKey,
@@ -1428,13 +1429,13 @@ public final class LbClmmProgram {
                                       final PublicKey tokenYMintKey,
                                       final PublicKey tokenProgramXKey,
                                       final PublicKey tokenProgramYKey,
-                                      final PublicKey memoProgramKey,
                                       final PublicKey eventAuthorityKey,
                                       final PublicKey programKey,
                                       final int minBinId,
                                       final int maxBinId,
                                       final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = claimFee2Keys(
+      solanaAccounts,
       lbPairKey,
       positionKey,
       senderKey,
@@ -1446,7 +1447,6 @@ public final class LbClmmProgram {
       tokenYMintKey,
       tokenProgramXKey,
       tokenProgramYKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -1625,14 +1625,14 @@ public final class LbClmmProgram {
 
   public static final Discriminator CLAIM_REWARD_2_DISCRIMINATOR = toDiscriminator(190, 3, 127, 119, 178, 87, 157, 183);
 
-  public static List<AccountMeta> claimReward2Keys(final PublicKey lbPairKey,
+  public static List<AccountMeta> claimReward2Keys(final SolanaAccounts solanaAccounts,
+                                                   final PublicKey lbPairKey,
                                                    final PublicKey positionKey,
                                                    final PublicKey senderKey,
                                                    final PublicKey rewardVaultKey,
                                                    final PublicKey rewardMintKey,
                                                    final PublicKey userTokenAccountKey,
                                                    final PublicKey tokenProgramKey,
-                                                   final PublicKey memoProgramKey,
                                                    final PublicKey eventAuthorityKey,
                                                    final PublicKey programKey) {
     return List.of(
@@ -1643,7 +1643,7 @@ public final class LbClmmProgram {
       createRead(rewardMintKey),
       createWrite(userTokenAccountKey),
       createRead(tokenProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -1651,6 +1651,7 @@ public final class LbClmmProgram {
 
   /// @param rewardIndex: u64
   public static Instruction claimReward2(final AccountMeta invokedLbClmmProgramMeta,
+                                         final SolanaAccounts solanaAccounts,
                                          final PublicKey lbPairKey,
                                          final PublicKey positionKey,
                                          final PublicKey senderKey,
@@ -1658,7 +1659,6 @@ public final class LbClmmProgram {
                                          final PublicKey rewardMintKey,
                                          final PublicKey userTokenAccountKey,
                                          final PublicKey tokenProgramKey,
-                                         final PublicKey memoProgramKey,
                                          final PublicKey eventAuthorityKey,
                                          final PublicKey programKey,
                                          final long rewardIndex,
@@ -1666,6 +1666,7 @@ public final class LbClmmProgram {
                                          final int maxBinId,
                                          final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = claimReward2Keys(
+      solanaAccounts,
       lbPairKey,
       positionKey,
       senderKey,
@@ -1673,7 +1674,6 @@ public final class LbClmmProgram {
       rewardMintKey,
       userTokenAccountKey,
       tokenProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -4386,7 +4386,6 @@ public final class LbClmmProgram {
                                                          final PublicKey rentPayerKey,
                                                          final PublicKey tokenXProgramKey,
                                                          final PublicKey tokenYProgramKey,
-                                                         final PublicKey memoProgramKey,
                                                          final PublicKey eventAuthorityKey,
                                                          final PublicKey programKey) {
     return List.of(
@@ -4403,7 +4402,7 @@ public final class LbClmmProgram {
       createWritableSigner(rentPayerKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(solanaAccounts.systemProgram()),
       createRead(eventAuthorityKey),
       createRead(programKey)
@@ -4425,7 +4424,6 @@ public final class LbClmmProgram {
                                                final PublicKey rentPayerKey,
                                                final PublicKey tokenXProgramKey,
                                                final PublicKey tokenYProgramKey,
-                                               final PublicKey memoProgramKey,
                                                final PublicKey eventAuthorityKey,
                                                final PublicKey programKey,
                                                final RebalanceLiquidityParams params,
@@ -4446,7 +4444,6 @@ public final class LbClmmProgram {
       rentPayerKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -4705,6 +4702,7 @@ public final class LbClmmProgram {
   public static final Discriminator REMOVE_LIQUIDITY_2_DISCRIMINATOR = toDiscriminator(230, 215, 82, 127, 241, 101, 227, 146);
 
   public static List<AccountMeta> removeLiquidity2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                                       final SolanaAccounts solanaAccounts,
                                                        final PublicKey positionKey,
                                                        final PublicKey lbPairKey,
                                                        final PublicKey binArrayBitmapExtensionKey,
@@ -4717,7 +4715,6 @@ public final class LbClmmProgram {
                                                        final PublicKey senderKey,
                                                        final PublicKey tokenXProgramKey,
                                                        final PublicKey tokenYProgramKey,
-                                                       final PublicKey memoProgramKey,
                                                        final PublicKey eventAuthorityKey,
                                                        final PublicKey programKey) {
     return List.of(
@@ -4733,13 +4730,14 @@ public final class LbClmmProgram {
       createReadOnlySigner(senderKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
   }
 
   public static Instruction removeLiquidity2(final AccountMeta invokedLbClmmProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
                                              final PublicKey positionKey,
                                              final PublicKey lbPairKey,
                                              final PublicKey binArrayBitmapExtensionKey,
@@ -4752,13 +4750,13 @@ public final class LbClmmProgram {
                                              final PublicKey senderKey,
                                              final PublicKey tokenXProgramKey,
                                              final PublicKey tokenYProgramKey,
-                                             final PublicKey memoProgramKey,
                                              final PublicKey eventAuthorityKey,
                                              final PublicKey programKey,
                                              final BinLiquidityReduction[] binLiquidityRemoval,
                                              final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = removeLiquidity2Keys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       positionKey,
       lbPairKey,
       binArrayBitmapExtensionKey,
@@ -4771,7 +4769,6 @@ public final class LbClmmProgram {
       senderKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -4980,6 +4977,7 @@ public final class LbClmmProgram {
   public static final Discriminator REMOVE_LIQUIDITY_BY_RANGE_2_DISCRIMINATOR = toDiscriminator(204, 2, 195, 145, 53, 145, 145, 205);
 
   public static List<AccountMeta> removeLiquidityByRange2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                                              final SolanaAccounts solanaAccounts,
                                                               final PublicKey positionKey,
                                                               final PublicKey lbPairKey,
                                                               final PublicKey binArrayBitmapExtensionKey,
@@ -4992,7 +4990,6 @@ public final class LbClmmProgram {
                                                               final PublicKey senderKey,
                                                               final PublicKey tokenXProgramKey,
                                                               final PublicKey tokenYProgramKey,
-                                                              final PublicKey memoProgramKey,
                                                               final PublicKey eventAuthorityKey,
                                                               final PublicKey programKey) {
     return List.of(
@@ -5008,7 +5005,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(senderKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -5016,6 +5013,7 @@ public final class LbClmmProgram {
 
   /// @param bpsToRemove: u16
   public static Instruction removeLiquidityByRange2(final AccountMeta invokedLbClmmProgramMeta,
+                                                    final SolanaAccounts solanaAccounts,
                                                     final PublicKey positionKey,
                                                     final PublicKey lbPairKey,
                                                     final PublicKey binArrayBitmapExtensionKey,
@@ -5028,7 +5026,6 @@ public final class LbClmmProgram {
                                                     final PublicKey senderKey,
                                                     final PublicKey tokenXProgramKey,
                                                     final PublicKey tokenYProgramKey,
-                                                    final PublicKey memoProgramKey,
                                                     final PublicKey eventAuthorityKey,
                                                     final PublicKey programKey,
                                                     final int fromBinId,
@@ -5037,6 +5034,7 @@ public final class LbClmmProgram {
                                                     final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = removeLiquidityByRange2Keys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       positionKey,
       lbPairKey,
       binArrayBitmapExtensionKey,
@@ -5049,7 +5047,6 @@ public final class LbClmmProgram {
       senderKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -5692,6 +5689,7 @@ public final class LbClmmProgram {
   public static final Discriminator SWAP_2_DISCRIMINATOR = toDiscriminator(65, 75, 63, 76, 235, 91, 91, 136);
 
   public static List<AccountMeta> swap2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                            final SolanaAccounts solanaAccounts,
                                             final PublicKey lbPairKey,
                                             final PublicKey binArrayBitmapExtensionKey,
                                             final PublicKey reserveXKey,
@@ -5705,7 +5703,6 @@ public final class LbClmmProgram {
                                             final PublicKey userKey,
                                             final PublicKey tokenXProgramKey,
                                             final PublicKey tokenYProgramKey,
-                                            final PublicKey memoProgramKey,
                                             final PublicKey eventAuthorityKey,
                                             final PublicKey programKey) {
     return List.of(
@@ -5722,7 +5719,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(userKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -5731,6 +5728,7 @@ public final class LbClmmProgram {
   /// @param amountIn: u64
   /// @param minAmountOut: u64
   public static Instruction swap2(final AccountMeta invokedLbClmmProgramMeta,
+                                  final SolanaAccounts solanaAccounts,
                                   final PublicKey lbPairKey,
                                   final PublicKey binArrayBitmapExtensionKey,
                                   final PublicKey reserveXKey,
@@ -5744,7 +5742,6 @@ public final class LbClmmProgram {
                                   final PublicKey userKey,
                                   final PublicKey tokenXProgramKey,
                                   final PublicKey tokenYProgramKey,
-                                  final PublicKey memoProgramKey,
                                   final PublicKey eventAuthorityKey,
                                   final PublicKey programKey,
                                   final long amountIn,
@@ -5752,6 +5749,7 @@ public final class LbClmmProgram {
                                   final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = swap2Keys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       lbPairKey,
       binArrayBitmapExtensionKey,
       reserveXKey,
@@ -5765,7 +5763,6 @@ public final class LbClmmProgram {
       userKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -5979,6 +5976,7 @@ public final class LbClmmProgram {
   public static final Discriminator SWAP_EXACT_OUT_2_DISCRIMINATOR = toDiscriminator(43, 215, 247, 132, 137, 60, 243, 81);
 
   public static List<AccountMeta> swapExactOut2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                                    final SolanaAccounts solanaAccounts,
                                                     final PublicKey lbPairKey,
                                                     final PublicKey binArrayBitmapExtensionKey,
                                                     final PublicKey reserveXKey,
@@ -5992,7 +5990,6 @@ public final class LbClmmProgram {
                                                     final PublicKey userKey,
                                                     final PublicKey tokenXProgramKey,
                                                     final PublicKey tokenYProgramKey,
-                                                    final PublicKey memoProgramKey,
                                                     final PublicKey eventAuthorityKey,
                                                     final PublicKey programKey) {
     return List.of(
@@ -6009,7 +6006,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(userKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -6018,6 +6015,7 @@ public final class LbClmmProgram {
   /// @param maxInAmount: u64
   /// @param outAmount: u64
   public static Instruction swapExactOut2(final AccountMeta invokedLbClmmProgramMeta,
+                                          final SolanaAccounts solanaAccounts,
                                           final PublicKey lbPairKey,
                                           final PublicKey binArrayBitmapExtensionKey,
                                           final PublicKey reserveXKey,
@@ -6031,7 +6029,6 @@ public final class LbClmmProgram {
                                           final PublicKey userKey,
                                           final PublicKey tokenXProgramKey,
                                           final PublicKey tokenYProgramKey,
-                                          final PublicKey memoProgramKey,
                                           final PublicKey eventAuthorityKey,
                                           final PublicKey programKey,
                                           final long maxInAmount,
@@ -6039,6 +6036,7 @@ public final class LbClmmProgram {
                                           final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = swapExactOut2Keys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       lbPairKey,
       binArrayBitmapExtensionKey,
       reserveXKey,
@@ -6052,7 +6050,6 @@ public final class LbClmmProgram {
       userKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -6292,6 +6289,7 @@ public final class LbClmmProgram {
   public static final Discriminator SWAP_WITH_PRICE_IMPACT_2_DISCRIMINATOR = toDiscriminator(74, 98, 192, 214, 177, 51, 75, 51);
 
   public static List<AccountMeta> swapWithPriceImpact2Keys(final AccountMeta invokedLbClmmProgramMeta,
+                                                           final SolanaAccounts solanaAccounts,
                                                            final PublicKey lbPairKey,
                                                            final PublicKey binArrayBitmapExtensionKey,
                                                            final PublicKey reserveXKey,
@@ -6305,7 +6303,6 @@ public final class LbClmmProgram {
                                                            final PublicKey userKey,
                                                            final PublicKey tokenXProgramKey,
                                                            final PublicKey tokenYProgramKey,
-                                                           final PublicKey memoProgramKey,
                                                            final PublicKey eventAuthorityKey,
                                                            final PublicKey programKey) {
     return List.of(
@@ -6322,7 +6319,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(userKey),
       createRead(tokenXProgramKey),
       createRead(tokenYProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -6332,6 +6329,7 @@ public final class LbClmmProgram {
   /// @param activeId: Option<i32>
   /// @param maxPriceImpactBps: u16
   public static Instruction swapWithPriceImpact2(final AccountMeta invokedLbClmmProgramMeta,
+                                                 final SolanaAccounts solanaAccounts,
                                                  final PublicKey lbPairKey,
                                                  final PublicKey binArrayBitmapExtensionKey,
                                                  final PublicKey reserveXKey,
@@ -6345,7 +6343,6 @@ public final class LbClmmProgram {
                                                  final PublicKey userKey,
                                                  final PublicKey tokenXProgramKey,
                                                  final PublicKey tokenYProgramKey,
-                                                 final PublicKey memoProgramKey,
                                                  final PublicKey eventAuthorityKey,
                                                  final PublicKey programKey,
                                                  final long amountIn,
@@ -6354,6 +6351,7 @@ public final class LbClmmProgram {
                                                  final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = swapWithPriceImpact2Keys(
       invokedLbClmmProgramMeta,
+      solanaAccounts,
       lbPairKey,
       binArrayBitmapExtensionKey,
       reserveXKey,
@@ -6367,7 +6365,6 @@ public final class LbClmmProgram {
       userKey,
       tokenXProgramKey,
       tokenYProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );
@@ -6993,14 +6990,14 @@ public final class LbClmmProgram {
 
   public static final Discriminator WITHDRAW_INELIGIBLE_REWARD_DISCRIMINATOR = toDiscriminator(148, 206, 42, 195, 247, 49, 103, 8);
 
-  public static List<AccountMeta> withdrawIneligibleRewardKeys(final PublicKey lbPairKey,
+  public static List<AccountMeta> withdrawIneligibleRewardKeys(final SolanaAccounts solanaAccounts,
+                                                               final PublicKey lbPairKey,
                                                                final PublicKey rewardVaultKey,
                                                                final PublicKey rewardMintKey,
                                                                final PublicKey funderTokenAccountKey,
                                                                final PublicKey funderKey,
                                                                final PublicKey binArrayKey,
                                                                final PublicKey tokenProgramKey,
-                                                               final PublicKey memoProgramKey,
                                                                final PublicKey eventAuthorityKey,
                                                                final PublicKey programKey) {
     return List.of(
@@ -7011,7 +7008,7 @@ public final class LbClmmProgram {
       createReadOnlySigner(funderKey),
       createWrite(binArrayKey),
       createRead(tokenProgramKey),
-      createRead(memoProgramKey),
+      createRead(solanaAccounts.memoProgramV2()),
       createRead(eventAuthorityKey),
       createRead(programKey)
     );
@@ -7019,6 +7016,7 @@ public final class LbClmmProgram {
 
   /// @param rewardIndex: u64
   public static Instruction withdrawIneligibleReward(final AccountMeta invokedLbClmmProgramMeta,
+                                                     final SolanaAccounts solanaAccounts,
                                                      final PublicKey lbPairKey,
                                                      final PublicKey rewardVaultKey,
                                                      final PublicKey rewardMintKey,
@@ -7026,12 +7024,12 @@ public final class LbClmmProgram {
                                                      final PublicKey funderKey,
                                                      final PublicKey binArrayKey,
                                                      final PublicKey tokenProgramKey,
-                                                     final PublicKey memoProgramKey,
                                                      final PublicKey eventAuthorityKey,
                                                      final PublicKey programKey,
                                                      final long rewardIndex,
                                                      final RemainingAccountsInfo remainingAccountsInfo) {
     final var keys = withdrawIneligibleRewardKeys(
+      solanaAccounts,
       lbPairKey,
       rewardVaultKey,
       rewardMintKey,
@@ -7039,7 +7037,6 @@ public final class LbClmmProgram {
       funderKey,
       binArrayKey,
       tokenProgramKey,
-      memoProgramKey,
       eventAuthorityKey,
       programKey
     );

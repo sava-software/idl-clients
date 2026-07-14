@@ -8,6 +8,7 @@ import systems.comodal.jsoniter.JsonIterator;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions.parseInstruction;
 import static software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions.parseKeys;
@@ -20,12 +21,10 @@ public record JupiterSwapIx(Instruction swapInstruction, Collection<PublicKey> a
   }
 
   public static JupiterSwapIx parse(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<JupiterSwapIx> {
 
     private Instruction swapInstruction;
     private List<PublicKey> addressLookupTableAddresses;
@@ -33,7 +32,8 @@ public record JupiterSwapIx(Instruction swapInstruction, Collection<PublicKey> a
     private Parser() {
     }
 
-    private JupiterSwapIx create() {
+    @Override
+    public JupiterSwapIx get() {
       return new JupiterSwapIx(swapInstruction, addressLookupTableAddresses);
     }
 

@@ -22,9 +22,7 @@ public interface JupiterQuoteRequest {
   static JupiterQuoteRequest parseRequest(final JupiterQuoteRequest prototype,
                                           final JsonIterator ji) {
     final var builder = JupiterQuoteRequest.buildRequest(prototype);
-    final var parser = new JupiterQuoteRequestRecord.Parser(builder);
-    ji.testObject(parser);
-    return parser.createRequest();
+    return ji.parseObject(JupiterQuoteRequestRecord.Parser.FIELDS, new JupiterQuoteRequestRecord.Parser(builder));
   }
 
   static JupiterQuoteRequest parseRequest(final JsonIterator ji) {

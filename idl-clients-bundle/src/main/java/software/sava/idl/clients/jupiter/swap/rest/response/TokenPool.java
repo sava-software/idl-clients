@@ -4,23 +4,23 @@ import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.time.Instant;
+import java.util.function.Supplier;
 
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
 public record TokenPool(String id, Instant createdAt) {
 
   public static TokenPool parse(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<TokenPool> {
 
     private String id;
     private Instant createdAt;
 
-    private TokenPool create() {
+    @Override
+    public TokenPool get() {
       return new TokenPool(id, createdAt);
     }
 

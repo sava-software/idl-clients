@@ -2,17 +2,17 @@ package software.sava.idl.clients.jupiter.swap.rest.response;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.idl.clients.jupiter.swap.JupiterSwapUtil;
-import systems.comodal.jsoniter.FieldBufferPredicate;
+import systems.comodal.jsoniter.FieldIndexPredicate;
+import systems.comodal.jsoniter.FieldMatcher;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
-import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
 public record JupiterQuote(PublicKey inputMint,
                            long inAmount,
@@ -61,12 +61,10 @@ public record JupiterQuote(PublicKey inputMint,
   }
 
   public static JupiterQuote parse(final byte[] quoteResponseJson, final JsonIterator ji) {
-    final var parser = new Parser(quoteResponseJson);
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(Parser.FIELDS, new Parser(quoteResponseJson));
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldIndexPredicate, Supplier<JupiterQuote> {
 
     private final byte[] quoteResponseJson;
     private PublicKey inputMint;
@@ -86,7 +84,8 @@ public record JupiterQuote(PublicKey inputMint,
       this.quoteResponseJson = quoteResponseJson;
     }
 
-    private JupiterQuote create() {
+    @Override
+    public JupiterQuote get() {
       return new JupiterQuote(
           inputMint, inAmount,
           outputMint, outAmount,
@@ -102,37 +101,37 @@ public record JupiterQuote(PublicKey inputMint,
       );
     }
 
+    private static final FieldMatcher FIELDS = FieldMatcher.of(
+        "inputMint",
+        "inAmount",
+        "outputMint",
+        "outAmount",
+        "otherAmountThreshold",
+        "swapMode",
+        "slippageBps",
+        "platformFee",
+        "priceImpactPct",
+        "routePlan",
+        "contextSlot",
+        "timeTaken"
+    );
+
     @Override
-    public boolean test(final char[] buf, final int offset, final int len, final JsonIterator ji) {
-      if (fieldEquals("inputMint", buf, offset, len)) {
-        inputMint = parseBase58Encoded(ji);
-      } else if (fieldEquals("inAmount", buf, offset, len)) {
-        inAmount = ji.readLong();
-      } else if (fieldEquals("outputMint", buf, offset, len)) {
-        outputMint = parseBase58Encoded(ji);
-      } else if (fieldEquals("outAmount", buf, offset, len)) {
-        outAmount = ji.readLong();
-      } else if (fieldEquals("otherAmountThreshold", buf, offset, len)) {
-        otherAmountThreshold = ji.readLong();
-      } else if (fieldEquals("swapMode", buf, offset, len)) {
-        swapMode = ji.readString();
-      } else if (fieldEquals("slippageBps", buf, offset, len)) {
-        slippageBps = ji.readInt();
-      } else if (fieldEquals("platformFee", buf, offset, len)) {
-        platformFee = PlatformFee.parse(ji);
-      } else if (fieldEquals("priceImpactPct", buf, offset, len)) {
-        priceImpactPct = ji.readBigDecimalDropZeroes();
-      } else if (fieldEquals("routePlan", buf, offset, len)) {
-        this.routePlan = new ArrayList<>();
-        while (ji.readArray()) {
-          routePlan.add(JupiterRoute.parse(ji));
-        }
-      } else if (fieldEquals("contextSlot", buf, offset, len)) {
-        contextSlot = ji.readLong();
-      } else if (fieldEquals("timeTaken", buf, offset, len)) {
-        timeTaken = ji.readDouble();
-      } else {
-        ji.skip();
+    public boolean test(final int fieldIndex, final JsonIterator ji) {
+      switch (fieldIndex) {
+        case 0 -> inputMint = parseBase58Encoded(ji);
+        case 1 -> inAmount = ji.readLong();
+        case 2 -> outputMint = parseBase58Encoded(ji);
+        case 3 -> outAmount = ji.readLong();
+        case 4 -> otherAmountThreshold = ji.readLong();
+        case 5 -> swapMode = ji.readString();
+        case 6 -> slippageBps = ji.readInt();
+        case 7 -> platformFee = PlatformFee.parse(ji);
+        case 8 -> priceImpactPct = ji.readBigDecimalDropZeroes();
+        case 9 -> routePlan = ji.readList(JupiterRoute::parse);
+        case 10 -> contextSlot = ji.readLong();
+        case 11 -> timeTaken = ji.readDouble();
+        default -> ji.skip();
       }
       return true;
     }

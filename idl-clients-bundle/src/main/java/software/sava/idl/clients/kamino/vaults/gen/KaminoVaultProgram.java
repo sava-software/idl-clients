@@ -93,6 +93,11 @@ public final class KaminoVaultProgram {
 
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_DISCRIMINATOR = toDiscriminator(5, 54, 213, 112, 75, 232, 117, 37);
 
+  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
+  /// 
+  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
+  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
+  ///
   public static List<AccountMeta> updateReserveAllocationKeys(final AccountMeta invokedKaminoVaultProgramMeta,
                                                               final PublicKey signerKey,
                                                               final PublicKey vaultStateKey,
@@ -118,6 +123,11 @@ public final class KaminoVaultProgram {
     );
   }
 
+  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
+  /// 
+  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
+  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
+  ///
   /// @param weight: u64
   /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
@@ -149,6 +159,11 @@ public final class KaminoVaultProgram {
     return updateReserveAllocation(invokedKaminoVaultProgramMeta, keys, weight, cap);
   }
 
+  /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
+  /// 
+  /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
+  /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
+  ///
   /// @param weight: u64
   /// @param cap: u64
   public static Instruction updateReserveAllocation(final AccountMeta invokedKaminoVaultProgramMeta,
@@ -195,6 +210,156 @@ public final class KaminoVaultProgram {
       putInt64LE(_data, i, weight);
       i += 8;
       putInt64LE(_data, i, cap);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator UPDATE_RESERVE_ALLOCATION_V_2_DISCRIMINATOR = toDiscriminator(195, 136, 1, 79, 10, 123, 121, 100);
+
+  /// Updates a reserve allocation with an optional cToken-denominated cap.
+  /// 
+  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
+  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
+  ///
+  public static List<AccountMeta> updateReserveAllocationV2Keys(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                                final PublicKey signerKey,
+                                                                final PublicKey vaultStateKey,
+                                                                final PublicKey baseVaultAuthorityKey,
+                                                                final PublicKey reserveCollateralMintKey,
+                                                                final PublicKey reserveKey,
+                                                                final PublicKey ctokenVaultKey,
+                                                                final PublicKey reserveWhitelistEntryKey,
+                                                                final PublicKey reserveCollateralTokenProgramKey,
+                                                                final PublicKey systemProgramKey,
+                                                                final PublicKey rentKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createWrite(vaultStateKey),
+      createRead(baseVaultAuthorityKey),
+      createWrite(reserveCollateralMintKey),
+      createRead(reserveKey),
+      createWrite(ctokenVaultKey),
+      createRead(requireNonNullElse(reserveWhitelistEntryKey, invokedKaminoVaultProgramMeta.publicKey())),
+      createRead(reserveCollateralTokenProgramKey),
+      createRead(systemProgramKey),
+      createRead(rentKey)
+    );
+  }
+
+  /// Updates a reserve allocation with an optional cToken-denominated cap.
+  /// 
+  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
+  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
+  ///
+  /// @param weight: u64
+  /// @param cap: u64
+  /// @param ctokenAllocationCap: u64
+  public static Instruction updateReserveAllocationV2(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                      final PublicKey signerKey,
+                                                      final PublicKey vaultStateKey,
+                                                      final PublicKey baseVaultAuthorityKey,
+                                                      final PublicKey reserveCollateralMintKey,
+                                                      final PublicKey reserveKey,
+                                                      final PublicKey ctokenVaultKey,
+                                                      final PublicKey reserveWhitelistEntryKey,
+                                                      final PublicKey reserveCollateralTokenProgramKey,
+                                                      final PublicKey systemProgramKey,
+                                                      final PublicKey rentKey,
+                                                      final long weight,
+                                                      final long cap,
+                                                      final long ctokenAllocationCap) {
+    final var keys = updateReserveAllocationV2Keys(
+      invokedKaminoVaultProgramMeta,
+      signerKey,
+      vaultStateKey,
+      baseVaultAuthorityKey,
+      reserveCollateralMintKey,
+      reserveKey,
+      ctokenVaultKey,
+      reserveWhitelistEntryKey,
+      reserveCollateralTokenProgramKey,
+      systemProgramKey,
+      rentKey
+    );
+    return updateReserveAllocationV2(
+      invokedKaminoVaultProgramMeta,
+      keys,
+      weight,
+      cap,
+      ctokenAllocationCap
+    );
+  }
+
+  /// Updates a reserve allocation with an optional cToken-denominated cap.
+  /// 
+  /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
+  /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
+  ///
+  /// @param weight: u64
+  /// @param cap: u64
+  /// @param ctokenAllocationCap: u64
+  public static Instruction updateReserveAllocationV2(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final long weight,
+                                                      final long cap,
+                                                      final long ctokenAllocationCap) {
+    final byte[] _data = new byte[32];
+    int i = UPDATE_RESERVE_ALLOCATION_V_2_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, weight);
+    i += 8;
+    putInt64LE(_data, i, cap);
+    i += 8;
+    putInt64LE(_data, i, ctokenAllocationCap);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  /// @param weight: u64
+  /// @param cap: u64
+  /// @param ctokenAllocationCap: u64
+  public record UpdateReserveAllocationV2IxData(Discriminator discriminator,
+                                                long weight,
+                                                long cap,
+                                                long ctokenAllocationCap) implements SerDe {  
+
+    public static UpdateReserveAllocationV2IxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 32;
+
+    public static final int WEIGHT_OFFSET = 8;
+    public static final int CAP_OFFSET = 16;
+    public static final int CTOKEN_ALLOCATION_CAP_OFFSET = 24;
+
+    public static UpdateReserveAllocationV2IxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var weight = getInt64LE(_data, i);
+      i += 8;
+      final var cap = getInt64LE(_data, i);
+      i += 8;
+      final var ctokenAllocationCap = getInt64LE(_data, i);
+      return new UpdateReserveAllocationV2IxData(discriminator, weight, cap, ctokenAllocationCap);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, weight);
+      i += 8;
+      putInt64LE(_data, i, cap);
+      i += 8;
+      putInt64LE(_data, i, ctokenAllocationCap);
       i += 8;
       return i - _offset;
     }
@@ -317,6 +482,130 @@ public final class KaminoVaultProgram {
     }
   }
 
+  public static final Discriminator DEPOSIT_WITH_MIN_SHARES_OUT_DISCRIMINATOR = toDiscriminator(74, 127, 128, 80, 4, 221, 193, 91);
+
+  public static List<AccountMeta> depositWithMinSharesOutKeys(final PublicKey userKey,
+                                                              final PublicKey vaultStateKey,
+                                                              final PublicKey tokenVaultKey,
+                                                              final PublicKey tokenMintKey,
+                                                              final PublicKey baseVaultAuthorityKey,
+                                                              final PublicKey sharesMintKey,
+                                                              final PublicKey userTokenAtaKey,
+                                                              final PublicKey userSharesAtaKey,
+                                                              final PublicKey klendProgramKey,
+                                                              final PublicKey tokenProgramKey,
+                                                              final PublicKey sharesTokenProgramKey,
+                                                              final PublicKey eventAuthorityKey,
+                                                              final PublicKey programKey) {
+    return List.of(
+      createWritableSigner(userKey),
+      createWrite(vaultStateKey),
+      createWrite(tokenVaultKey),
+      createRead(tokenMintKey),
+      createRead(baseVaultAuthorityKey),
+      createWrite(sharesMintKey),
+      createWrite(userTokenAtaKey),
+      createWrite(userSharesAtaKey),
+      createRead(klendProgramKey),
+      createRead(tokenProgramKey),
+      createRead(sharesTokenProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public static Instruction depositWithMinSharesOut(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                    final PublicKey userKey,
+                                                    final PublicKey vaultStateKey,
+                                                    final PublicKey tokenVaultKey,
+                                                    final PublicKey tokenMintKey,
+                                                    final PublicKey baseVaultAuthorityKey,
+                                                    final PublicKey sharesMintKey,
+                                                    final PublicKey userTokenAtaKey,
+                                                    final PublicKey userSharesAtaKey,
+                                                    final PublicKey klendProgramKey,
+                                                    final PublicKey tokenProgramKey,
+                                                    final PublicKey sharesTokenProgramKey,
+                                                    final PublicKey eventAuthorityKey,
+                                                    final PublicKey programKey,
+                                                    final long maxAmount,
+                                                    final long minSharesOut) {
+    final var keys = depositWithMinSharesOutKeys(
+      userKey,
+      vaultStateKey,
+      tokenVaultKey,
+      tokenMintKey,
+      baseVaultAuthorityKey,
+      sharesMintKey,
+      userTokenAtaKey,
+      userSharesAtaKey,
+      klendProgramKey,
+      tokenProgramKey,
+      sharesTokenProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return depositWithMinSharesOut(invokedKaminoVaultProgramMeta, keys, maxAmount, minSharesOut);
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public static Instruction depositWithMinSharesOut(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final long maxAmount,
+                                                    final long minSharesOut) {
+    final byte[] _data = new byte[24];
+    int i = DEPOSIT_WITH_MIN_SHARES_OUT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, maxAmount);
+    i += 8;
+    putInt64LE(_data, i, minSharesOut);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public record DepositWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {  
+
+    public static DepositWithMinSharesOutIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 24;
+
+    public static final int MAX_AMOUNT_OFFSET = 8;
+    public static final int MIN_SHARES_OUT_OFFSET = 16;
+
+    public static DepositWithMinSharesOutIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var maxAmount = getInt64LE(_data, i);
+      i += 8;
+      final var minSharesOut = getInt64LE(_data, i);
+      return new DepositWithMinSharesOutIxData(discriminator, maxAmount, minSharesOut);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, maxAmount);
+      i += 8;
+      putInt64LE(_data, i, minSharesOut);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator BUY_DISCRIMINATOR = toDiscriminator(102, 6, 61, 18, 1, 218, 235, 234);
 
   public static List<AccountMeta> buyKeys(final PublicKey userKey,
@@ -419,6 +708,130 @@ public final class KaminoVaultProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, maxAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator BUY_WITH_MIN_SHARES_OUT_DISCRIMINATOR = toDiscriminator(61, 135, 102, 151, 124, 46, 144, 209);
+
+  public static List<AccountMeta> buyWithMinSharesOutKeys(final PublicKey userKey,
+                                                          final PublicKey vaultStateKey,
+                                                          final PublicKey tokenVaultKey,
+                                                          final PublicKey tokenMintKey,
+                                                          final PublicKey baseVaultAuthorityKey,
+                                                          final PublicKey sharesMintKey,
+                                                          final PublicKey userTokenAtaKey,
+                                                          final PublicKey userSharesAtaKey,
+                                                          final PublicKey klendProgramKey,
+                                                          final PublicKey tokenProgramKey,
+                                                          final PublicKey sharesTokenProgramKey,
+                                                          final PublicKey eventAuthorityKey,
+                                                          final PublicKey programKey) {
+    return List.of(
+      createWritableSigner(userKey),
+      createWrite(vaultStateKey),
+      createWrite(tokenVaultKey),
+      createRead(tokenMintKey),
+      createRead(baseVaultAuthorityKey),
+      createWrite(sharesMintKey),
+      createWrite(userTokenAtaKey),
+      createWrite(userSharesAtaKey),
+      createRead(klendProgramKey),
+      createRead(tokenProgramKey),
+      createRead(sharesTokenProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public static Instruction buyWithMinSharesOut(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                final PublicKey userKey,
+                                                final PublicKey vaultStateKey,
+                                                final PublicKey tokenVaultKey,
+                                                final PublicKey tokenMintKey,
+                                                final PublicKey baseVaultAuthorityKey,
+                                                final PublicKey sharesMintKey,
+                                                final PublicKey userTokenAtaKey,
+                                                final PublicKey userSharesAtaKey,
+                                                final PublicKey klendProgramKey,
+                                                final PublicKey tokenProgramKey,
+                                                final PublicKey sharesTokenProgramKey,
+                                                final PublicKey eventAuthorityKey,
+                                                final PublicKey programKey,
+                                                final long maxAmount,
+                                                final long minSharesOut) {
+    final var keys = buyWithMinSharesOutKeys(
+      userKey,
+      vaultStateKey,
+      tokenVaultKey,
+      tokenMintKey,
+      baseVaultAuthorityKey,
+      sharesMintKey,
+      userTokenAtaKey,
+      userSharesAtaKey,
+      klendProgramKey,
+      tokenProgramKey,
+      sharesTokenProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return buyWithMinSharesOut(invokedKaminoVaultProgramMeta, keys, maxAmount, minSharesOut);
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public static Instruction buyWithMinSharesOut(final AccountMeta invokedKaminoVaultProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final long maxAmount,
+                                                final long minSharesOut) {
+    final byte[] _data = new byte[24];
+    int i = BUY_WITH_MIN_SHARES_OUT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, maxAmount);
+    i += 8;
+    putInt64LE(_data, i, minSharesOut);
+
+    return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
+  }
+
+  /// @param maxAmount: u64
+  /// @param minSharesOut: u64
+  public record BuyWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {  
+
+    public static BuyWithMinSharesOutIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 24;
+
+    public static final int MAX_AMOUNT_OFFSET = 8;
+    public static final int MIN_SHARES_OUT_OFFSET = 16;
+
+    public static BuyWithMinSharesOutIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var maxAmount = getInt64LE(_data, i);
+      i += 8;
+      final var minSharesOut = getInt64LE(_data, i);
+      return new BuyWithMinSharesOutIxData(discriminator, maxAmount, minSharesOut);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, maxAmount);
+      i += 8;
+      putInt64LE(_data, i, minSharesOut);
       i += 8;
       return i - _offset;
     }

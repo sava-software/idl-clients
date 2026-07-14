@@ -3,6 +3,8 @@ package software.sava.idl.clients.jupiter.swap.rest.response;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
+import java.util.function.Supplier;
+
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
 public record TokenAudit(boolean isSus,
@@ -13,12 +15,10 @@ public record TokenAudit(boolean isSus,
                          int devMigrations) {
 
   public static TokenAudit parse(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<TokenAudit> {
 
     private boolean isSus;
     private boolean mintAuthorityDisabled;
@@ -27,7 +27,8 @@ public record TokenAudit(boolean isSus,
     private double devBalancePercentage;
     private int devMigrations;
 
-    private TokenAudit create() {
+    @Override
+    public TokenAudit get() {
       return new TokenAudit(
           isSus,
           mintAuthorityDisabled,

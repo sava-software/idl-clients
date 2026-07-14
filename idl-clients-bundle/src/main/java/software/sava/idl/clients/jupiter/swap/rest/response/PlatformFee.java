@@ -3,17 +3,17 @@ package software.sava.idl.clients.jupiter.swap.rest.response;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
+import java.util.function.Supplier;
+
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
 public record PlatformFee(long amount, int feeBps) {
 
   public static PlatformFee parse(final JsonIterator ji) {
-    final var parser = new Parser();
-    ji.testObject(parser);
-    return parser.create();
+    return ji.parseObject(new Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<PlatformFee> {
     private long amount;
     private int feeBps;
 
@@ -29,7 +29,8 @@ public record PlatformFee(long amount, int feeBps) {
       return true;
     }
 
-    private PlatformFee create() {
+    @Override
+    public PlatformFee get() {
       return new PlatformFee(amount, feeBps);
     }
   }

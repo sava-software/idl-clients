@@ -6,6 +6,7 @@ import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
@@ -16,12 +17,10 @@ public record ClaimProof(PublicKey mint,
                          byte[][] proof) {
 
   public static ClaimProof parseProof(final JsonIterator ji) {
-    final var builder = new ClaimProof.Parser();
-    ji.testObject(builder);
-    return builder.create();
+    return ji.parseObject(new ClaimProof.Parser());
   }
 
-  private static final class Parser implements FieldBufferPredicate {
+  private static final class Parser implements FieldBufferPredicate, Supplier<ClaimProof> {
 
     private PublicKey mint;
     private PublicKey merkleTree;
@@ -32,7 +31,8 @@ public record ClaimProof(PublicKey mint,
     private Parser() {
     }
 
-    private ClaimProof create() {
+    @Override
+    public ClaimProof get() {
       return new ClaimProof(mint, merkleTree, amount, lockedAmount, proof);
     }
 
@@ -47,15 +47,11 @@ public record ClaimProof(PublicKey mint,
       } else if (fieldEquals("locked_amount", buf, offset, len)) {
         lockedAmount = ji.readLong();
       } else if (fieldEquals("proof", buf, offset, len)) {
-        final var proof = new ArrayList<byte[]>(16);
-        while (ji.readArray()) {
+        this.proof = ji.readCollection(new ArrayList<>(16), jsonIterator -> {
           final byte[] item = new byte[32];
-          for (int i = 0; ji.readArray(); i++) {
-            item[i] = (byte) ji.readInt();
-          }
-          proof.add(item);
-        }
-        this.proof = proof.toArray(byte[][]::new);
+          jsonIterator.readByteArray(item);
+          return item;
+        }).toArray(byte[][]::new);
       } else {
         ji.skip();
       }
