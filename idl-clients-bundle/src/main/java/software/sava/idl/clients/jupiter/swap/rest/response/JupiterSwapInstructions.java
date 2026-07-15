@@ -11,10 +11,12 @@ import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 import systems.comodal.jsoniter.ValueType;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
-import static software.sava.core.tx.Transaction.sortLegacyAccounts;
 import static software.sava.rpc.json.PublicKeyEncoding.parseBase58Encoded;
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
 
@@ -90,13 +92,6 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
     }
 
     return serializedInstructionLength;
-  }
-
-  public Transaction serializeTransaction() {
-    final var accounts = createAccountsMap();
-    final var instructions = new Instruction[numInstructions()];
-    final int serializedInstructionLength = mergeAllAccounts(instructions, accounts);
-    return Transaction.createTx(Arrays.asList(instructions), serializedInstructionLength, sortLegacyAccounts(accounts));
   }
 
   public Transaction serializeTransaction(final AddressLookupTable lookupTable) {
@@ -231,11 +226,7 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
       } else if (fieldEquals("swapInstruction", buf, offset, len)) {
         swapInstruction = parseInstruction(ji);
       } else if (fieldEquals("cleanupInstruction", buf, offset, len)) {
-        if (ji.whatIsNext() == ValueType.OBJECT) {
-          cleanupInstruction = parseInstruction(ji);
-        } else {
-          ji.skip();
-        }
+        cleanupInstruction = ji.readOrNull(ValueType.OBJECT, JupiterSwapInstructions::parseInstruction);
       } else if (fieldEquals("otherInstructions", buf, offset, len)) {
         otherInstructions = parseInstructionsList(ji);
       } else if (fieldEquals("addressLookupTableAddresses", buf, offset, len)) {
