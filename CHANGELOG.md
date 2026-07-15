@@ -1,5 +1,21 @@
 # Changelog
 
+## [25.16.0](https://github.com/sava-software/idl-clients/compare/25.15.1...25.16.0) (2026-07-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* memoProgramKey parameters removed from OrcaWhirlpoolsClient methods and the generated instruction builders; callers must pass SolanaAccounts instead.
+
+### Bug Fixes
+
+* auto-wire memoProgramV2 via SolanaAccounts in generated programs ([e363a1c](https://github.com/sava-software/idl-clients/commit/e363a1c18c15034aafc5efad11d23eccc815341a))
+
+
+### Miscellaneous Chores
+
+* release 25.16.0 ([40fd212](https://github.com/sava-software/idl-clients/commit/40fd212ea9551c071d6e066fc9848d4db909ad68))
+
 ## [25.15.1](https://github.com/sava-software/idl-clients/compare/25.15.0...25.15.1) (2026-07-11)
 
 
