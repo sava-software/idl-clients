@@ -46,12 +46,17 @@ public record ValidatorList(PublicKey address,
   @Override
   public int write(final byte[] data, final int offset) {
     data[offset] = (byte) accountType.ordinal();
-    ByteUtil.putInt32LE(data, offset + 1, maxValidators);
-    return Borsh.writeArray(validators, data, offset + 1 + Integer.BYTES);
+    int i = offset + 1;
+    ByteUtil.putInt32LE(data, i, maxValidators);
+    i += Integer.BYTES;
+    ByteUtil.putInt32LE(data, i, validators.length);
+    i += Integer.BYTES;
+    i += Borsh.writeArray(validators, data, i);
+    return i - offset;
   }
 
   @Override
   public int l() {
-    return 1 + Integer.BYTES + (ValidatorStakeInfo.BYTES * validators.length);
+    return 1 + Integer.BYTES + Integer.BYTES + (ValidatorStakeInfo.BYTES * validators.length);
   }
 }

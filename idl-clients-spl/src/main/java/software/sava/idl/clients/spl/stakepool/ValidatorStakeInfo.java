@@ -68,7 +68,8 @@ public record ValidatorStakeInfo(long activeStakeLamports,
     data[i] = (byte) podStakeStatus.ordinal();
     ++i;
     voteAccountAddress.write(data, i);
-    return i + PUBLIC_KEY_LENGTH;
+    i += PUBLIC_KEY_LENGTH;
+    return i - offset;
   }
 
   @Override
