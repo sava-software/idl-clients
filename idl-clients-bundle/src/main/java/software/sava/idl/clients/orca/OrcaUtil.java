@@ -1,5 +1,10 @@
 package software.sava.idl.clients.orca;
 
+import software.sava.core.accounts.ProgramDerivedAddress;
+import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.gen.SerDeUtil;
+import software.sava.idl.clients.orca.whirlpools.gen.WhirlpoolPDAs;
+
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.OptionalInt;
@@ -10,8 +15,8 @@ import java.util.OptionalInt;
 /// All helpers are pure functions on the canonical on-chain constants and are
 /// intended for callers wiring `OrcaWhirlpoolsClient` instructions that take a
 /// `tickLowerIndex` / `tickUpperIndex` / `startTickIndex` / `bundleIndex`, or
-/// that need the bundle-index seed bytes used by
-/// `WhirlpoolPDAs.bundledPositionPDA(...)`.
+/// that need the `tick_array` / `bundled_position` PDAs derived by
+/// [#tickArrayPDA] / [#bundledPositionPDA].
 public final class OrcaUtil {
 
   /// Maximum supported tick index (inclusive). Source:
@@ -98,7 +103,7 @@ public final class OrcaUtil {
   /// `tickIndex` for a pool of the given `tickSpacing`. The result is always
   /// a multiple of `TICK_ARRAY_SIZE * tickSpacing` and is the value passed to
   /// `initializeTickArray` / `initializeDynamicTickArray` and used as the
-  /// `startTick` seed in `WhirlpoolPDAs.tickArrayPDA(...)`.
+  /// `start_tick_index` seed in [#tickArrayPDA(PublicKey, PublicKey, int)].
   ///
   /// Uses floor-division semantics so negative tick indexes map to the array
   /// whose start tick is `<= tickIndex`.
@@ -148,13 +153,47 @@ public final class OrcaUtil {
   /// `bundled_position` PDA derivation:
   /// `seeds = [b"bundled_position", position_bundle_mint, bundle_index.to_string().as_bytes()]`.
   ///
-  /// Pass the returned `byte[]` to
-  /// `WhirlpoolPDAs.bundledPositionPDA(program, positionBundleMint, ...)`.
+  /// Used by [#bundledPositionPDA(PublicKey, PublicKey, int)].
   public static byte[] bundleIndexSeedBytes(final int bundleIndex) {
     if (!isValidBundleIndex(bundleIndex)) {
       throw new IllegalArgumentException("bundleIndex out of range: " + bundleIndex);
     }
     return Integer.toString(bundleIndex).getBytes(StandardCharsets.US_ASCII);
+  }
+
+  // --------------------------------------------------------------------------
+  // PDA derivations with program-specific seed encodings
+  //
+  // The on-chain program derives the `tick_array` and `bundled_position` PDAs
+  // from the *decimal string* of the integer seed
+  // (`start_tick_index.to_string().as_bytes()` in
+  // `instructions/initialize_tick_array.rs` / `open_bundled_position.rs`) —
+  // an encoding the anchor IDL cannot express, so the generated
+  // `WhirlpoolPDAs.tickArrayPDA` / `bundledPositionPDA` helpers take raw seed
+  // bytes. The typed helpers below delegate to them with the source-verified
+  // string encoding (`SerDeUtil.asciiSeed`).
+  // --------------------------------------------------------------------------
+
+  /// Derives the `tick_array` PDA for the array starting at `startTickIndex`:
+  /// `seeds = [b"tick_array", whirlpool, start_tick_index.to_string().as_bytes()]`.
+  ///
+  /// Note the decimal-string seed: the index's little-endian bytes derive an
+  /// address that does not exist on-chain.
+  public static ProgramDerivedAddress tickArrayPDA(final PublicKey whirlpoolProgram,
+                                                   final PublicKey whirlpool,
+                                                   final int startTickIndex) {
+    return WhirlpoolPDAs.tickArrayPDA(whirlpoolProgram, whirlpool, SerDeUtil.asciiSeed(startTickIndex));
+  }
+
+  /// Derives the `bundled_position` PDA for `bundleIndex`:
+  /// `seeds = [b"bundled_position", position_bundle_mint, bundle_index.to_string().as_bytes()]`.
+  ///
+  /// Note the decimal-string seed: the index's little-endian bytes derive an
+  /// address that does not exist on-chain.
+  public static ProgramDerivedAddress bundledPositionPDA(final PublicKey whirlpoolProgram,
+                                                         final PublicKey positionBundleMint,
+                                                         final int bundleIndex) {
+    return WhirlpoolPDAs.bundledPositionPDA(whirlpoolProgram, positionBundleMint, bundleIndexSeedBytes(bundleIndex));
   }
 
   // --------------------------------------------------------------------------

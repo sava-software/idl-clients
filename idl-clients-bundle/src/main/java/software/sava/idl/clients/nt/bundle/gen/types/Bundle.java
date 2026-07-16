@@ -14,9 +14,9 @@ import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getFloat32LE;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putFloat32LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -137,13 +137,13 @@ public record Bundle(PublicKey _address,
     i += 4;
     final var withdrawalFee = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var managerPfeeShares = getInt128LE(_data, i);
+    final var managerPfeeShares = getUInt128LE(_data, i);
     i += 16;
     final var currentAllocationBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var oracleBuffer = getInt64LE(_data, i);
     i += 8;
-    final var totalShares = getInt128LE(_data, i);
+    final var totalShares = getUInt128LE(_data, i);
     i += 16;
     final var assetPrecision = getInt64LE(_data, i);
     i += 8;
@@ -159,7 +159,7 @@ public record Bundle(PublicKey _address,
     i += 4;
     final var permissionned = _data[i] == 1;
     ++i;
-    final var managerMfeeShares = getInt128LE(_data, i);
+    final var managerMfeeShares = getUInt128LE(_data, i);
     i += 16;
     final var minDepositAmount = getInt64LE(_data, i);
     i += 8;

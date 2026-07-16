@@ -5,8 +5,8 @@ import software.sava.core.programs.Discriminator;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -27,7 +27,7 @@ public record ManagerWithdrawal(Discriminator discriminator, BigInteger managerS
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var managerShares = getInt128LE(_data, i);
+    final var managerShares = getUInt128LE(_data, i);
     i += 16;
     final var redemptionAmount = getInt64LE(_data, i);
     return new ManagerWithdrawal(discriminator, managerShares, redemptionAmount);

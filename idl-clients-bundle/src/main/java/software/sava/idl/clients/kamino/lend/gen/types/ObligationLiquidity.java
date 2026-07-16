@@ -8,8 +8,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -79,11 +79,11 @@ public record ObligationLiquidity(PublicKey borrowReserve,
     i += cumulativeBorrowRateBsf.l();
     final var lastBorrowedAtTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var borrowedAmountSf = getInt128LE(_data, i);
+    final var borrowedAmountSf = getUInt128LE(_data, i);
     i += 16;
-    final var marketValueSf = getInt128LE(_data, i);
+    final var marketValueSf = getUInt128LE(_data, i);
     i += 16;
-    final var borrowFactorAdjustedMarketValueSf = getInt128LE(_data, i);
+    final var borrowFactorAdjustedMarketValueSf = getUInt128LE(_data, i);
     i += 16;
     final var borrowedAmountOutsideElevationGroups = getInt64LE(_data, i);
     i += 8;

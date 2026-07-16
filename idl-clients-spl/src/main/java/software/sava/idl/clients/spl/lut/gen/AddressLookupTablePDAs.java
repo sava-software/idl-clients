@@ -3,7 +3,7 @@ package software.sava.idl.clients.spl.lut.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.List;
 
@@ -15,8 +15,7 @@ public final class AddressLookupTablePDAs {
   public static ProgramDerivedAddress addressLookupTablePDA(final PublicKey programOwner,
                                                             final PublicKey authority,
                                                             final long recentSlot) {
-    final byte[] recentSlotBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(recentSlotBytes, 0, recentSlot);
+    final byte[] recentSlotBytes = SerDeUtil.int64LESeed(recentSlot);
     return PublicKey.findProgramAddress(List.of(
       authority.toByteArray(),
       recentSlotBytes

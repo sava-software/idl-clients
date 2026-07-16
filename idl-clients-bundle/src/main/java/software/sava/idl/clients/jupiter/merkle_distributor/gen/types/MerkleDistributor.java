@@ -281,7 +281,7 @@ public record MerkleDistributor(PublicKey _address,
     final var airdropBonus = AirdropBonus.read(_data, i);
     i += airdropBonus.l();
     final var padding2 = new BigInteger[5];
-    SerDeUtil.read128Array(padding2, _data, i);
+    SerDeUtil.readU128Array(padding2, _data, i);
     return new MerkleDistributor(_address,
                                  discriminator,
                                  root,
@@ -359,7 +359,7 @@ public record MerkleDistributor(PublicKey _address,
     ++i;
     i += SerDeUtil.writeArrayChecked(padding0, 3, _data, i);
     i += airdropBonus.write(_data, i);
-    i += SerDeUtil.write128ArrayChecked(padding2, 5, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }
 

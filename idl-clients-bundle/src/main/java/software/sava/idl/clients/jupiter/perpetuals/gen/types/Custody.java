@@ -12,8 +12,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -347,9 +347,9 @@ public record Custody(PublicKey _address,
     i += borrowLendParameters.l();
     final var borrowsFundingRateState = FundingRateState.read(_data, i);
     i += borrowsFundingRateState.l();
-    final var debt = getInt128LE(_data, i);
+    final var debt = getUInt128LE(_data, i);
     i += 16;
-    final var borrowLendInterestsAccured = getInt128LE(_data, i);
+    final var borrowLendInterestsAccured = getUInt128LE(_data, i);
     i += 16;
     final var borrowLimitInTokenAmount = getInt64LE(_data, i);
     i += 8;

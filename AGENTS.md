@@ -82,6 +82,32 @@ in `AGENTS.local.md`, which is git-ignored; consult it (and add to it) rather
 than putting local paths in this file. If a needed program repo is not yet
 cloned, clone it into the reference directory listed there.
 
+### PDA helpers require the official program source
+
+Never write or fix a PDA-derivation helper from the IDL alone. A PDA seed is
+an opaque byte array on-chain, and an **Anchor IDL cannot express how a
+numeric seed value is encoded** (an arg seed only references the typed
+instruction argument) — programs differ: Kamino derives withdraw-ticket PDAs
+from `sequence_number.to_le_bytes()` (little-endian), while Orca whirlpools
+derives tick-array and bundled-position PDAs from
+`start_tick_index.to_string()` (decimal-ASCII). Guessing produces addresses
+that verifiably do not exist on-chain (see `OrcaUtil`'s history for the scar
+tissue). Codama IDLs are not ambiguous by design — a seed carries a full type
+node (`numberTypeNode` declares endianness; a decimal-string seed is a
+`stringTypeNode`) — but a mis-modeled codama IDL is still wrong, so the
+source-verification rule below applies regardless of IDL flavor.
+
+When adding PDA helpers for a program:
+
+1. **Reference the program's official Rust and/or TypeScript codebase** and
+   read the actual seed construction (`seeds = [...]` in the handler/context,
+   or the SDK's derive functions).
+2. If the official repo is not already cloned in the reference directory
+   (`AGENTS.local.md`), **clone it there** before writing the helper.
+3. If it is not clear which repository is the official one for a program,
+   **stop and ask** — do not infer seed encodings from forks, third-party
+   SDKs, or the IDL.
+
 ## Build & test
 
 GitHub Packages credentials are required for dependency resolution, in

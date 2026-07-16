@@ -5,8 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -23,7 +23,7 @@ public record RaydiumAmmV3StatesPersonalPositionPositionRewardInfo(BigInteger gr
       return null;
     }
     int i = _offset;
-    final var growthInsideLastX64 = getInt128LE(_data, i);
+    final var growthInsideLastX64 = getUInt128LE(_data, i);
     i += 16;
     final var rewardAmountOwed = getInt64LE(_data, i);
     return new RaydiumAmmV3StatesPersonalPositionPositionRewardInfo(growthInsideLastX64, rewardAmountOwed);

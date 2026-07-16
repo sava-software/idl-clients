@@ -13,10 +13,10 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -452,11 +452,11 @@ public record Dex(PublicKey _address,
     ++i;
     final var token1Decimals = _data[i] & 0xFF;
     ++i;
-    final var lastToLastStoredPrice = getInt128LE(_data, i);
+    final var lastToLastStoredPrice = getUInt128LE(_data, i);
     i += 16;
-    final var lastStoredPrice = getInt128LE(_data, i);
+    final var lastStoredPrice = getUInt128LE(_data, i);
     i += 16;
-    final var centerPrice = getInt128LE(_data, i);
+    final var centerPrice = getUInt128LE(_data, i);
     i += 16;
     final var lastUpdateTimestamp = getInt64LE(_data, i);
     i += 8;

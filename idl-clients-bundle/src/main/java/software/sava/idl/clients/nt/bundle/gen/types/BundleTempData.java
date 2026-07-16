@@ -12,8 +12,8 @@ import java.math.BigInteger;
 
 import java.util.function.BiFunction;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -156,7 +156,7 @@ public record BundleTempData(PublicKey _address,
     i += 8;
     final var pendingLockedWithdrawalsCounter = getInt64LE(_data, i);
     i += 8;
-    final var lastTotalSharesMinted = getInt128LE(_data, i);
+    final var lastTotalSharesMinted = getUInt128LE(_data, i);
     i += 16;
     final var lastNettingTimestamp = getInt64LE(_data, i);
     i += 8;
@@ -170,7 +170,7 @@ public record BundleTempData(PublicKey _address,
     ++i;
     final var leftToDistribute = getInt64LE(_data, i);
     i += 8;
-    final var allocatedShares = getInt128LE(_data, i);
+    final var allocatedShares = getUInt128LE(_data, i);
     i += 16;
     final var padding = new byte[168];
     SerDeUtil.readArray(padding, _data, i);

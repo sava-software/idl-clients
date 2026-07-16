@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -147,7 +147,7 @@ public record ClaimStatus(PublicKey _address,
     ++i;
     final var padding0 = new byte[7];
     i += SerDeUtil.readArray(padding0, _data, i);
-    final var padding1 = getInt128LE(_data, i);
+    final var padding1 = getUInt128LE(_data, i);
     return new ClaimStatus(_address,
                            discriminator,
                            admin,

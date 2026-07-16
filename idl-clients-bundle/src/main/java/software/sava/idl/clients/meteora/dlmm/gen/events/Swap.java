@@ -7,9 +7,9 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -73,7 +73,7 @@ public record Swap(Discriminator discriminator,
     i += 8;
     final var protocolFee = getInt64LE(_data, i);
     i += 8;
-    final var feeBps = getInt128LE(_data, i);
+    final var feeBps = getUInt128LE(_data, i);
     i += 16;
     final var hostFee = getInt64LE(_data, i);
     return new Swap(discriminator,

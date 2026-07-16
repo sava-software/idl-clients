@@ -6,6 +6,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.spl.associated_token.gen.AssociatedTokenPDAs;
 import software.sava.idl.clients.spl.lut.gen.AddressLookupTablePDAs;
 import software.sava.idl.clients.spl.lut.gen.AddressLookupTableProgram;
@@ -89,7 +90,11 @@ record SPLClientImpl(SolanaAccounts solanaAccounts) implements SPLClient {
 
   @Override
   public ProgramDerivedAddress findLookupTableAddress(final PublicKey authority, final long recentSlot) {
-    return AddressLookupTablePDAs.addressLookupTablePDA(solanaAccounts.addressLookupTableProgram(), authority, recentSlot);
+    return AddressLookupTablePDAs.addressLookupTablePDA(
+        solanaAccounts.addressLookupTableProgram(),
+        authority,
+        recentSlot
+    );
   }
 
   @Override

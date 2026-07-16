@@ -3,6 +3,7 @@ package software.sava.idl.clients.meteora;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.meteora.dlmm.gen.LbClmmPDAs;
 
 import java.util.List;
@@ -97,15 +98,15 @@ public final class MeteoraPDAs {
         programId,
         lbPair,
         baseKey,
-        lowerBinId,
-        width
+        SerDeUtil.int32LESeed(lowerBinId),
+        SerDeUtil.int32LESeed(width)
     );
   }
 
   public static ProgramDerivedAddress binArrayPdA(final PublicKey lbPair,
                                                   final int binArrayIndex,
                                                   final PublicKey programId) {
-    return LbClmmPDAs.binArrayPDA(programId, lbPair, binArrayIndex);
+    return LbClmmPDAs.binArrayPDA(programId, lbPair, SerDeUtil.int64LESeed(binArrayIndex));
   }
 
   public static ProgramDerivedAddress reservePDA(final PublicKey lbPair,
@@ -121,7 +122,7 @@ public final class MeteoraPDAs {
   public static ProgramDerivedAddress rewardVaultPDA(final PublicKey lbPair,
                                                      final long rewardIndex,
                                                      final PublicKey programId) {
-    return LbClmmPDAs.rewardVaultPDA(programId, lbPair, rewardIndex);
+    return LbClmmPDAs.rewardVaultPDA(programId, lbPair, SerDeUtil.int64LESeed(rewardIndex));
   }
 
   public static ProgramDerivedAddress presetParameterPDA(final int ixIndex,

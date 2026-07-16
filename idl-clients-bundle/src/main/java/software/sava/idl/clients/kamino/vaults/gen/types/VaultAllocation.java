@@ -8,8 +8,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -72,7 +72,7 @@ public record VaultAllocation(PublicKey reserve,
     i += 8;
     final var lastInvestSlot = getInt64LE(_data, i);
     i += 8;
-    final var tokenTargetAllocationSf = getInt128LE(_data, i);
+    final var tokenTargetAllocationSf = getUInt128LE(_data, i);
     i += 16;
     final var statePadding = new long[128];
     SerDeUtil.readArray(statePadding, _data, i);

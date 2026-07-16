@@ -13,9 +13,9 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -393,9 +393,9 @@ public record FarmState(PublicKey _address,
     i += 4;
     final var withdrawalCooldownPeriod = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var totalActiveStakeScaled = getInt128LE(_data, i);
+    final var totalActiveStakeScaled = getUInt128LE(_data, i);
     i += 16;
-    final var totalPendingStakeScaled = getInt128LE(_data, i);
+    final var totalPendingStakeScaled = getUInt128LE(_data, i);
     i += 16;
     final var totalPendingAmount = getInt64LE(_data, i);
     i += 8;

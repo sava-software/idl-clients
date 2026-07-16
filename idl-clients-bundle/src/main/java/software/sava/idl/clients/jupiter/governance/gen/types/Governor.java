@@ -125,7 +125,7 @@ public record Governor(PublicKey _address,
     final var votingReward = VotingReward.read(_data, i);
     i += votingReward.l();
     final var buffers = new BigInteger[32];
-    SerDeUtil.read128Array(buffers, _data, i);
+    SerDeUtil.readU128Array(buffers, _data, i);
     return new Governor(_address,
                         discriminator,
                         base,
@@ -153,7 +153,7 @@ public record Governor(PublicKey _address,
     i += 32;
     i += params.write(_data, i);
     i += votingReward.write(_data, i);
-    i += SerDeUtil.write128ArrayChecked(buffers, 32, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }
 

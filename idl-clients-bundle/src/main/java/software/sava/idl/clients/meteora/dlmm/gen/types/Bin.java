@@ -6,9 +6,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -75,9 +75,9 @@ public record Bin(long amountX,
     i += 8;
     final var amountY = getInt64LE(_data, i);
     i += 8;
-    final var price = getInt128LE(_data, i);
+    final var price = getUInt128LE(_data, i);
     i += 16;
-    final var liquiditySupply = getInt128LE(_data, i);
+    final var liquiditySupply = getUInt128LE(_data, i);
     i += 16;
     final var fulfilledOrderAmountX = getInt64LE(_data, i);
     i += 8;
@@ -87,9 +87,9 @@ public record Bin(long amountX,
     i += 8;
     final var limitOrderFeeBidSide = getInt64LE(_data, i);
     i += 8;
-    final var feeAmountXPerTokenStored = getInt128LE(_data, i);
+    final var feeAmountXPerTokenStored = getUInt128LE(_data, i);
     i += 16;
-    final var feeAmountYPerTokenStored = getInt128LE(_data, i);
+    final var feeAmountYPerTokenStored = getUInt128LE(_data, i);
     i += 16;
     final var openOrderAmount = getInt64LE(_data, i);
     i += 8;

@@ -3,7 +3,6 @@ package software.sava.idl.clients.meteora.dlmm.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -11,15 +10,14 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class LbClmmPDAs {
 
+  /// @param index i64 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress binArrayPDA(final PublicKey program,
                                                   final PublicKey lbPairAccount,
-                                                  final long index) {
-    final byte[] indexBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(indexBytes, 0, index);
+                                                  final byte[] index) {
     return PublicKey.findProgramAddress(List.of(
       "bin_array".getBytes(US_ASCII),
       lbPairAccount.toByteArray(),
-      indexBytes
+      index
     ), program);
   }
 
@@ -53,21 +51,19 @@ public final class LbClmmPDAs {
     ), program);
   }
 
+  /// @param lowerBinId i32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param width i32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress positionPDA(final PublicKey program,
                                                   final PublicKey lbPairAccount,
                                                   final PublicKey baseAccount,
-                                                  final int lowerBinId,
-                                                  final int width) {
-    final byte[] lowerBinIdBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(lowerBinIdBytes, 0, lowerBinId);
-    final byte[] widthBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(widthBytes, 0, width);
+                                                  final byte[] lowerBinId,
+                                                  final byte[] width) {
     return PublicKey.findProgramAddress(List.of(
       "position".getBytes(US_ASCII),
       lbPairAccount.toByteArray(),
       baseAccount.toByteArray(),
-      lowerBinIdBytes,
-      widthBytes
+      lowerBinId,
+      width
     ), program);
   }
 
@@ -97,14 +93,13 @@ public final class LbClmmPDAs {
     ), program);
   }
 
+  /// @param rewardIndex u64 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress rewardVaultPDA(final PublicKey program,
                                                      final PublicKey lbPairAccount,
-                                                     final long rewardIndex) {
-    final byte[] rewardIndexBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(rewardIndexBytes, 0, rewardIndex);
+                                                     final byte[] rewardIndex) {
     return PublicKey.findProgramAddress(List.of(
       lbPairAccount.toByteArray(),
-      rewardIndexBytes
+      rewardIndex
     ), program);
   }
 

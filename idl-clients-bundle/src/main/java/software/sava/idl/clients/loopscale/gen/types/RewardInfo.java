@@ -7,8 +7,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -63,7 +63,7 @@ public record RewardInfo(int rewardState,
     i += 8;
     final var lastUpdateTime = getInt64LE(_data, i);
     i += 8;
-    final var emissionsPerSecondX64 = getInt128LE(_data, i);
+    final var emissionsPerSecondX64 = getUInt128LE(_data, i);
     i += 16;
     final var rewardTotalEmissioned = getInt64LE(_data, i);
     i += 8;
@@ -75,7 +75,7 @@ public record RewardInfo(int rewardState,
     i += 32;
     final var authority = readPubKey(_data, i);
     i += 32;
-    final var rewardGrowthGlobalX64 = getInt128LE(_data, i);
+    final var rewardGrowthGlobalX64 = getUInt128LE(_data, i);
     return new RewardInfo(rewardState,
                           openTime,
                           endTime,

@@ -5,8 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -26,9 +26,9 @@ public record Limit(BigInteger maxAumUsd,
       return null;
     }
     int i = _offset;
-    final var maxAumUsd = getInt128LE(_data, i);
+    final var maxAumUsd = getUInt128LE(_data, i);
     i += 16;
-    final var tokenWeightageBufferBps = getInt128LE(_data, i);
+    final var tokenWeightageBufferBps = getUInt128LE(_data, i);
     i += 16;
     final var buffer = getInt64LE(_data, i);
     return new Limit(maxAumUsd, tokenWeightageBufferBps, buffer);

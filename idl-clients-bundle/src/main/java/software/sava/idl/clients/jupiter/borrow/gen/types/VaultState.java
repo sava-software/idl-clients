@@ -11,10 +11,10 @@ import java.math.BigInteger;
 
 import java.util.function.BiFunction;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -216,9 +216,9 @@ public record VaultState(PublicKey _address,
     i += 8;
     final var totalPositions = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
-    final var absorbedDebtAmount = getInt128LE(_data, i);
+    final var absorbedDebtAmount = getUInt128LE(_data, i);
     i += 16;
-    final var absorbedColAmount = getInt128LE(_data, i);
+    final var absorbedColAmount = getUInt128LE(_data, i);
     i += 16;
     final var absorbedDustDebt = getInt64LE(_data, i);
     i += 8;

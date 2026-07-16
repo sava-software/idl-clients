@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -306,9 +306,9 @@ public record Strategy(PublicKey _address,
     i += 8;
     final var feeClaimable = getInt64LE(_data, i);
     i += 8;
-    final var cumulativePrincipalOriginated = getInt128LE(_data, i);
+    final var cumulativePrincipalOriginated = getUInt128LE(_data, i);
     i += 16;
-    final var cumulativeInterestAccrued = getInt128LE(_data, i);
+    final var cumulativeInterestAccrued = getUInt128LE(_data, i);
     i += 16;
     final var cumulativeLoanCount = getInt64LE(_data, i);
     i += 8;

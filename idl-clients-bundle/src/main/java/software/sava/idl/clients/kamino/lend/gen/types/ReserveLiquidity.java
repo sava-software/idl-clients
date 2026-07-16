@@ -8,8 +8,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -102,9 +102,9 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 32;
     final var totalAvailableAmount = getInt64LE(_data, i);
     i += 8;
-    final var borrowedAmountSf = getInt128LE(_data, i);
+    final var borrowedAmountSf = getUInt128LE(_data, i);
     i += 16;
-    final var marketPriceSf = getInt128LE(_data, i);
+    final var marketPriceSf = getUInt128LE(_data, i);
     i += 16;
     final var marketPriceLastUpdatedTs = getInt64LE(_data, i);
     i += 8;
@@ -116,13 +116,13 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     i += 8;
     final var cumulativeBorrowRateBsf = BigFractionBytes.read(_data, i);
     i += cumulativeBorrowRateBsf.l();
-    final var accumulatedProtocolFeesSf = getInt128LE(_data, i);
+    final var accumulatedProtocolFeesSf = getUInt128LE(_data, i);
     i += 16;
-    final var accumulatedReferrerFeesSf = getInt128LE(_data, i);
+    final var accumulatedReferrerFeesSf = getUInt128LE(_data, i);
     i += 16;
-    final var pendingReferrerFeesSf = getInt128LE(_data, i);
+    final var pendingReferrerFeesSf = getUInt128LE(_data, i);
     i += 16;
-    final var absoluteReferralRateSf = getInt128LE(_data, i);
+    final var absoluteReferralRateSf = getUInt128LE(_data, i);
     i += 16;
     final var tokenProgram = readPubKey(_data, i);
     i += 32;
@@ -131,7 +131,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     final var padding2 = new long[50];
     i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new BigInteger[32];
-    SerDeUtil.read128Array(padding3, _data, i);
+    SerDeUtil.readU128Array(padding3, _data, i);
     return new ReserveLiquidity(mintPubkey,
                                 supplyVault,
                                 feeVault,
@@ -190,7 +190,7 @@ public record ReserveLiquidity(PublicKey mintPubkey,
     putInt64LE(_data, i, rewardsAmountAvailable);
     i += 8;
     i += SerDeUtil.writeArrayChecked(padding2, 50, _data, i);
-    i += SerDeUtil.write128ArrayChecked(padding3, 32, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding3, 32, _data, i);
     return i - _offset;
   }
 

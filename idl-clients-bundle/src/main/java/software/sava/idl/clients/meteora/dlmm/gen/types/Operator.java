@@ -13,7 +13,7 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
@@ -68,7 +68,7 @@ public record Operator(PublicKey _address,
     int i = _offset + discriminator.length();
     final var signer = readPubKey(_data, i);
     i += 32;
-    final var permission = getInt128LE(_data, i);
+    final var permission = getUInt128LE(_data, i);
     i += 16;
     final var padding = new long[2];
     SerDeUtil.readArray(padding, _data, i);

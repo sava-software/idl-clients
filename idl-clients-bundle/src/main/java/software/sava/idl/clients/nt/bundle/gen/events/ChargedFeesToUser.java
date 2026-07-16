@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -39,15 +39,15 @@ public record ChargedFeesToUser(Discriminator discriminator,
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var totalFeeShares = getInt128LE(_data, i);
+    final var totalFeeShares = getUInt128LE(_data, i);
     i += 16;
     final var totalFeeValue = getInt64LE(_data, i);
     i += 8;
-    final var managementFeeShares = getInt128LE(_data, i);
+    final var managementFeeShares = getUInt128LE(_data, i);
     i += 16;
-    final var performanceFeeShares = getInt128LE(_data, i);
+    final var performanceFeeShares = getUInt128LE(_data, i);
     i += 16;
-    final var sharePrice = getInt128LE(_data, i);
+    final var sharePrice = getUInt128LE(_data, i);
     i += 16;
     final var bundleAccountKey = readPubKey(_data, i);
     return new ChargedFeesToUser(discriminator,

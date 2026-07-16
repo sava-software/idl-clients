@@ -5,8 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -26,7 +26,7 @@ public record FundingRateState(BigInteger cumulativeInterestRate,
       return null;
     }
     int i = _offset;
-    final var cumulativeInterestRate = getInt128LE(_data, i);
+    final var cumulativeInterestRate = getUInt128LE(_data, i);
     i += 16;
     final var lastUpdate = getInt64LE(_data, i);
     i += 8;

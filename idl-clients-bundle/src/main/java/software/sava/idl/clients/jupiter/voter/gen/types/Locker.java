@@ -122,7 +122,7 @@ public record Locker(PublicKey _address,
     final var params = LockerParams.read(_data, i);
     i += params.l();
     final var buffers = new BigInteger[32];
-    SerDeUtil.read128Array(buffers, _data, i);
+    SerDeUtil.readU128Array(buffers, _data, i);
     return new Locker(_address,
                       discriminator,
                       base,
@@ -151,7 +151,7 @@ public record Locker(PublicKey _address,
     governor.write(_data, i);
     i += 32;
     i += params.write(_data, i);
-    i += SerDeUtil.write128ArrayChecked(buffers, 32, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(buffers, 32, _data, i);
     return i - _offset;
   }
 

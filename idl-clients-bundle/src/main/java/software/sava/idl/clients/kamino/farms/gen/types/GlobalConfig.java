@@ -98,7 +98,7 @@ public record GlobalConfig(PublicKey _address,
     final var pendingGlobalAdmin = readPubKey(_data, i);
     i += 32;
     final var padding1 = new BigInteger[126];
-    SerDeUtil.read128Array(padding1, _data, i);
+    SerDeUtil.readU128Array(padding1, _data, i);
     return new GlobalConfig(_address,
                             discriminator,
                             globalAdmin,
@@ -122,7 +122,7 @@ public record GlobalConfig(PublicKey _address,
     i += 8;
     pendingGlobalAdmin.write(_data, i);
     i += 32;
-    i += SerDeUtil.write128ArrayChecked(padding1, 126, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding1, 126, _data, i);
     return i - _offset;
   }
 

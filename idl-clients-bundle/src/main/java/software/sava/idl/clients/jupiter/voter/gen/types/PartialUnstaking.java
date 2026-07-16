@@ -106,7 +106,7 @@ public record PartialUnstaking(PublicKey _address,
     final var expiration = getInt64LE(_data, i);
     i += 8;
     final var buffers = new BigInteger[6];
-    i += SerDeUtil.read128Array(buffers, _data, i);
+    i += SerDeUtil.readU128Array(buffers, _data, i);
     final int _memoLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
@@ -129,7 +129,7 @@ public record PartialUnstaking(PublicKey _address,
     i += 8;
     putInt64LE(_data, i, expiration);
     i += 8;
-    i += SerDeUtil.write128ArrayChecked(buffers, 6, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(buffers, 6, _data, i);
     i += SerDeUtil.writeVector(4, _memo, _data, i);
     return i - _offset;
   }
@@ -139,7 +139,7 @@ public record PartialUnstaking(PublicKey _address,
     return 8 + 32
          + 8
          + 8
-         + SerDeUtil.len128Array(buffers)
+         + SerDeUtil.lenU128Array(buffers)
          + _memo.length;
   }
 }

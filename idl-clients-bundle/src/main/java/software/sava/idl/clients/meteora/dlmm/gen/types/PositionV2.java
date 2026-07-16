@@ -178,7 +178,7 @@ public record PositionV2(PublicKey _address,
     final var owner = readPubKey(_data, i);
     i += 32;
     final var liquidityShares = new BigInteger[70];
-    i += SerDeUtil.read128Array(liquidityShares, _data, i);
+    i += SerDeUtil.readU128Array(liquidityShares, _data, i);
     final var rewardInfos = new UserRewardInfo[70];
     i += SerDeUtil.readArray(rewardInfos, UserRewardInfo::read, _data, i);
     final var feeInfos = new FeeInfo[70];
@@ -238,7 +238,7 @@ public record PositionV2(PublicKey _address,
     i += 32;
     owner.write(_data, i);
     i += 32;
-    i += SerDeUtil.write128ArrayChecked(liquidityShares, 70, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(liquidityShares, 70, _data, i);
     i += SerDeUtil.writeArrayChecked(rewardInfos, 70, _data, i);
     i += SerDeUtil.writeArrayChecked(feeInfos, 70, _data, i);
     putInt32LE(_data, i, lowerBinId);

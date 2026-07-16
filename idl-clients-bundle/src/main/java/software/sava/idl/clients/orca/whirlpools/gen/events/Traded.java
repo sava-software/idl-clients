@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -56,9 +56,9 @@ public record Traded(Discriminator discriminator,
     i += 32;
     final var aToB = _data[i] == 1;
     ++i;
-    final var preSqrtPrice = getInt128LE(_data, i);
+    final var preSqrtPrice = getUInt128LE(_data, i);
     i += 16;
-    final var postSqrtPrice = getInt128LE(_data, i);
+    final var postSqrtPrice = getUInt128LE(_data, i);
     i += 16;
     final var inputAmount = getInt64LE(_data, i);
     i += 8;

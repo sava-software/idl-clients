@@ -6,8 +6,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
@@ -99,9 +99,9 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
       return null;
     }
     int i = _offset;
-    final var conditionThresholdSf = getInt128LE(_data, i);
+    final var conditionThresholdSf = getUInt128LE(_data, i);
     i += 16;
-    final var opportunityParameterSf = getInt128LE(_data, i);
+    final var opportunityParameterSf = getUInt128LE(_data, i);
     i += 16;
     final var minExecutionBonusBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
@@ -114,7 +114,7 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
     final var padding1 = new byte[10];
     i += SerDeUtil.readArray(padding1, _data, i);
     final var padding2 = new BigInteger[5];
-    SerDeUtil.read128Array(padding2, _data, i);
+    SerDeUtil.readU128Array(padding2, _data, i);
     return new ObligationOrder(conditionThresholdSf,
                                opportunityParameterSf,
                                minExecutionBonusBps,
@@ -141,7 +141,7 @@ public record ObligationOrder(BigInteger conditionThresholdSf,
     _data[i] = (byte) opportunityType;
     ++i;
     i += SerDeUtil.writeArrayChecked(padding1, 10, _data, i);
-    i += SerDeUtil.write128ArrayChecked(padding2, 5, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding2, 5, _data, i);
     return i - _offset;
   }
 

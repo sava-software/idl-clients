@@ -22,7 +22,7 @@ public record UserRewardInfo(BigInteger[] rewardPerTokenCompletes, long[] reward
     }
     int i = _offset;
     final var rewardPerTokenCompletes = new BigInteger[2];
-    i += SerDeUtil.read128Array(rewardPerTokenCompletes, _data, i);
+    i += SerDeUtil.readU128Array(rewardPerTokenCompletes, _data, i);
     final var rewardPendings = new long[2];
     SerDeUtil.readArray(rewardPendings, _data, i);
     return new UserRewardInfo(rewardPerTokenCompletes, rewardPendings);
@@ -31,7 +31,7 @@ public record UserRewardInfo(BigInteger[] rewardPerTokenCompletes, long[] reward
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += SerDeUtil.write128ArrayChecked(rewardPerTokenCompletes, 2, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(rewardPerTokenCompletes, 2, _data, i);
     i += SerDeUtil.writeArrayChecked(rewardPendings, 2, _data, i);
     return i - _offset;
   }

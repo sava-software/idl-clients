@@ -12,8 +12,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -133,9 +133,9 @@ public record BorrowPosition(PublicKey _address,
     i += 8;
     final var updateTime = getInt64LE(_data, i);
     i += 8;
-    final var borrowSize = getInt128LE(_data, i);
+    final var borrowSize = getUInt128LE(_data, i);
     i += 16;
-    final var cumulativeCompoundedInterestSnapshot = getInt128LE(_data, i);
+    final var cumulativeCompoundedInterestSnapshot = getUInt128LE(_data, i);
     i += 16;
     final var lockedCollateral = getInt64LE(_data, i);
     i += 8;

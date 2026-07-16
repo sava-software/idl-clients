@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -67,15 +67,15 @@ public record Redeemed(Discriminator discriminator,
     i += 32;
     final var grossAmount = getInt64LE(_data, i);
     i += 8;
-    final var sharePrice = getInt128LE(_data, i);
+    final var sharePrice = getUInt128LE(_data, i);
     i += 16;
-    final var userSharesBefore = getInt128LE(_data, i);
+    final var userSharesBefore = getUInt128LE(_data, i);
     i += 16;
-    final var userSharesAfter = getInt128LE(_data, i);
+    final var userSharesAfter = getUInt128LE(_data, i);
     i += 16;
-    final var totalSharesBefore = getInt128LE(_data, i);
+    final var totalSharesBefore = getUInt128LE(_data, i);
     i += 16;
-    final var totalSharesAfter = getInt128LE(_data, i);
+    final var totalSharesAfter = getUInt128LE(_data, i);
     return new Redeemed(discriminator,
                         from,
                         to,

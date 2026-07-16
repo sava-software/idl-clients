@@ -8,9 +8,9 @@ import java.math.BigInteger;
 
 import java.util.OptionalInt;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -2108,7 +2108,7 @@ public sealed interface Swap extends RustEnum permits
   record Scorch(BigInteger val) implements EnumInt128, Swap {
 
     public static Scorch read(final byte[] _data, int i) {
-      return new Scorch(getInt128LE(_data, i));
+      return new Scorch(getUInt128LE(_data, i));
     }
 
     @Override

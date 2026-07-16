@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -60,13 +60,13 @@ public record Allocated(Discriminator discriminator,
     i += 32;
     final var netAmount = getInt64LE(_data, i);
     i += 8;
-    final var sharePrice = getInt128LE(_data, i);
+    final var sharePrice = getUInt128LE(_data, i);
     i += 16;
-    final var userSharesBefore = getInt128LE(_data, i);
+    final var userSharesBefore = getUInt128LE(_data, i);
     i += 16;
-    final var userSharesAfter = getInt128LE(_data, i);
+    final var userSharesAfter = getUInt128LE(_data, i);
     i += 16;
-    final var totalShares = getInt128LE(_data, i);
+    final var totalShares = getUInt128LE(_data, i);
     return new Allocated(discriminator,
                          from,
                          to,

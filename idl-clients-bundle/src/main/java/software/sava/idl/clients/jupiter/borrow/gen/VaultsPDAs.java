@@ -3,7 +3,6 @@ package software.sava.idl.clients.jupiter.borrow.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -11,17 +10,15 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class VaultsPDAs {
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param branchId u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress branchPDA(final PublicKey program,
-                                                final int vaultId,
-                                                final long branchId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
-    final byte[] branchIdBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(branchIdBytes, 0, (int) branchId);
+                                                final byte[] vaultId,
+                                                final byte[] branchId) {
     return PublicKey.findProgramAddress(List.of(
       "branch".getBytes(US_ASCII),
-      vaultIdBytes,
-      branchIdBytes
+      vaultId,
+      branchId
     ), program);
   }
 
@@ -35,31 +32,27 @@ public final class VaultsPDAs {
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param nextPositionId u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress positionPDA(final PublicKey program,
-                                                  final int vaultId,
-                                                  final long nextPositionId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
-    final byte[] nextPositionIdBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(nextPositionIdBytes, 0, (int) nextPositionId);
+                                                  final byte[] vaultId,
+                                                  final byte[] nextPositionId) {
     return PublicKey.findProgramAddress(List.of(
       "position".getBytes(US_ASCII),
-      vaultIdBytes,
-      nextPositionIdBytes
+      vaultId,
+      nextPositionId
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param nextPositionId u32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress positionMintPDA(final PublicKey program,
-                                                      final int vaultId,
-                                                      final long nextPositionId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
-    final byte[] nextPositionIdBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(nextPositionIdBytes, 0, (int) nextPositionId);
+                                                      final byte[] vaultId,
+                                                      final byte[] nextPositionId) {
     return PublicKey.findProgramAddress(List.of(
       "position_mint".getBytes(US_ASCII),
-      vaultIdBytes,
-      nextPositionIdBytes
+      vaultId,
+      nextPositionId
     ), program);
   }
 
@@ -96,16 +89,15 @@ public final class VaultsPDAs {
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
+  /// @param index u8 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress tickHasDebtArrayPDA(final PublicKey program,
-                                                          final int vaultId,
-                                                          final int index) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
-    final byte[] indexBytes = new byte[] {(byte) index};
+                                                          final byte[] vaultId,
+                                                          final byte[] index) {
     return PublicKey.findProgramAddress(List.of(
       "tick_has_debt".getBytes(US_ASCII),
-      vaultIdBytes,
-      indexBytes
+      vaultId,
+      index
     ), program);
   }
 
@@ -115,33 +107,30 @@ public final class VaultsPDAs {
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress vaultConfigPDA(final PublicKey program,
-                                                     final int vaultId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+                                                     final byte[] vaultId) {
     return PublicKey.findProgramAddress(List.of(
       "vault_config".getBytes(US_ASCII),
-      vaultIdBytes
+      vaultId
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress vaultMetadataPDA(final PublicKey program,
-                                                       final int vaultId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+                                                       final byte[] vaultId) {
     return PublicKey.findProgramAddress(List.of(
       "vault_metadata".getBytes(US_ASCII),
-      vaultIdBytes
+      vaultId
     ), program);
   }
 
+  /// @param vaultId u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress vaultStatePDA(final PublicKey program,
-                                                    final int vaultId) {
-    final byte[] vaultIdBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(vaultIdBytes, 0, vaultId);
+                                                    final byte[] vaultId) {
     return PublicKey.findProgramAddress(List.of(
       "vault_state".getBytes(US_ASCII),
-      vaultIdBytes
+      vaultId
     ), program);
   }
 

@@ -155,7 +155,7 @@ public record Proposal(PublicKey _address,
     final var proposalType = _data[i] & 0xFF;
     ++i;
     final var buffers = new BigInteger[10];
-    i += SerDeUtil.read128Array(buffers, _data, i);
+    i += SerDeUtil.readU128Array(buffers, _data, i);
     final var instructions = SerDeUtil.readVector(4, ProposalInstruction.class, ProposalInstruction::read, _data, i);
     return new Proposal(_address,
                         discriminator,
@@ -212,7 +212,7 @@ public record Proposal(PublicKey _address,
     i += 8;
     _data[i] = (byte) proposalType;
     ++i;
-    i += SerDeUtil.write128ArrayChecked(buffers, 10, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(buffers, 10, _data, i);
     i += SerDeUtil.writeVector(4, instructions, _data, i);
     return i - _offset;
   }
@@ -235,7 +235,7 @@ public record Proposal(PublicKey _address,
          + votingReward.l()
          + 8
          + 1
-         + SerDeUtil.len128Array(buffers)
+         + SerDeUtil.lenU128Array(buffers)
          + SerDeUtil.lenVector(4, instructions);
   }
 }

@@ -5,8 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -29,9 +29,9 @@ public record FeeInfo(BigInteger feeXPerTokenComplete,
       return null;
     }
     int i = _offset;
-    final var feeXPerTokenComplete = getInt128LE(_data, i);
+    final var feeXPerTokenComplete = getUInt128LE(_data, i);
     i += 16;
-    final var feeYPerTokenComplete = getInt128LE(_data, i);
+    final var feeYPerTokenComplete = getUInt128LE(_data, i);
     i += 16;
     final var feeXPending = getInt64LE(_data, i);
     i += 8;

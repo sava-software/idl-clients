@@ -15,9 +15,9 @@ import java.util.function.BiFunction;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -117,7 +117,7 @@ public record Pool(PublicKey _address,
     i += _name.length;
     final var custodies = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, custodies);
-    final var aumUsd = getInt128LE(_data, i);
+    final var aumUsd = getUInt128LE(_data, i);
     i += 16;
     final var limit = Limit.read(_data, i);
     i += limit.l();

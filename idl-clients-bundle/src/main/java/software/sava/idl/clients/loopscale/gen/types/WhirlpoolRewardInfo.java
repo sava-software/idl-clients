@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 /// Stores the state relevant for tracking liquidity mining rewards at the `Whirlpool` level.
@@ -46,9 +46,9 @@ public record WhirlpoolRewardInfo(PublicKey mint,
     i += 32;
     final var authority = readPubKey(_data, i);
     i += 32;
-    final var emissionsPerSecondX64 = getInt128LE(_data, i);
+    final var emissionsPerSecondX64 = getUInt128LE(_data, i);
     i += 16;
-    final var growthGlobalX64 = getInt128LE(_data, i);
+    final var growthGlobalX64 = getUInt128LE(_data, i);
     return new WhirlpoolRewardInfo(mint,
                                    vault,
                                    authority,

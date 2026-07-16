@@ -44,9 +44,9 @@ public record ReserveCollateral(PublicKey mintPubkey,
     final var supplyVault = readPubKey(_data, i);
     i += 32;
     final var padding1 = new BigInteger[32];
-    i += SerDeUtil.read128Array(padding1, _data, i);
+    i += SerDeUtil.readU128Array(padding1, _data, i);
     final var padding2 = new BigInteger[32];
-    SerDeUtil.read128Array(padding2, _data, i);
+    SerDeUtil.readU128Array(padding2, _data, i);
     return new ReserveCollateral(mintPubkey,
                                  mintTotalSupply,
                                  supplyVault,
@@ -63,8 +63,8 @@ public record ReserveCollateral(PublicKey mintPubkey,
     i += 8;
     supplyVault.write(_data, i);
     i += 32;
-    i += SerDeUtil.write128ArrayChecked(padding1, 32, _data, i);
-    i += SerDeUtil.write128ArrayChecked(padding2, 32, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding1, 32, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding2, 32, _data, i);
     return i - _offset;
   }
 

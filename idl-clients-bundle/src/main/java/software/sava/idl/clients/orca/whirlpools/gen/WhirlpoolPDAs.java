@@ -3,7 +3,6 @@ package software.sava.idl.clients.orca.whirlpools.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -11,27 +10,25 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public final class WhirlpoolPDAs {
 
+  /// @param feeTierIndex u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress adaptiveFeeTierPDA(final PublicKey program,
                                                          final PublicKey whirlpoolsConfigAccount,
-                                                         final int feeTierIndex) {
-    final byte[] feeTierIndexBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(feeTierIndexBytes, 0, feeTierIndex);
+                                                         final byte[] feeTierIndex) {
     return PublicKey.findProgramAddress(List.of(
       "fee_tier".getBytes(US_ASCII),
       whirlpoolsConfigAccount.toByteArray(),
-      feeTierIndexBytes
+      feeTierIndex
     ), program);
   }
 
+  /// @param bundleIndex u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress bundledPositionPDA(final PublicKey program,
                                                          final PublicKey positionBundlePositionBundleMintAccount,
-                                                         final int bundleIndex) {
-    final byte[] bundleIndexBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(bundleIndexBytes, 0, bundleIndex);
+                                                         final byte[] bundleIndex) {
     return PublicKey.findProgramAddress(List.of(
       "bundled_position".getBytes(US_ASCII),
       positionBundlePositionBundleMintAccount.toByteArray(),
-      bundleIndexBytes
+      bundleIndex
     ), program);
   }
 
@@ -43,15 +40,14 @@ public final class WhirlpoolPDAs {
     ), program);
   }
 
+  /// @param tickSpacing u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress feeTierPDA(final PublicKey program,
                                                  final PublicKey configAccount,
-                                                 final int tickSpacing) {
-    final byte[] tickSpacingBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(tickSpacingBytes, 0, tickSpacing);
+                                                 final byte[] tickSpacing) {
     return PublicKey.findProgramAddress(List.of(
       "fee_tier".getBytes(US_ASCII),
       configAccount.toByteArray(),
-      tickSpacingBytes
+      tickSpacing
     ), program);
   }
 
@@ -135,15 +131,14 @@ public final class WhirlpoolPDAs {
     ), program);
   }
 
+  /// @param startTickIndex i32 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress tickArrayPDA(final PublicKey program,
                                                    final PublicKey whirlpoolAccount,
-                                                   final int startTickIndex) {
-    final byte[] startTickIndexBytes = new byte[Integer.BYTES];
-    ByteUtil.putInt32LE(startTickIndexBytes, 0, startTickIndex);
+                                                   final byte[] startTickIndex) {
     return PublicKey.findProgramAddress(List.of(
       "tick_array".getBytes(US_ASCII),
       whirlpoolAccount.toByteArray(),
-      startTickIndexBytes
+      startTickIndex
     ), program);
   }
 
@@ -177,19 +172,18 @@ public final class WhirlpoolPDAs {
     ), program);
   }
 
+  /// @param tickSpacing u16 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress whirlpoolPDA(final PublicKey program,
                                                    final PublicKey whirlpoolsConfigAccount,
                                                    final PublicKey tokenMintAAccount,
                                                    final PublicKey tokenMintBAccount,
-                                                   final int tickSpacing) {
-    final byte[] tickSpacingBytes = new byte[Short.BYTES];
-    ByteUtil.putInt16LE(tickSpacingBytes, 0, tickSpacing);
+                                                   final byte[] tickSpacing) {
     return PublicKey.findProgramAddress(List.of(
       "whirlpool".getBytes(US_ASCII),
       whirlpoolsConfigAccount.toByteArray(),
       tokenMintAAccount.toByteArray(),
       tokenMintBAccount.toByteArray(),
-      tickSpacingBytes
+      tickSpacing
     ), program);
   }
 

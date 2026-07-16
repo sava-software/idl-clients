@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -403,14 +403,14 @@ public record VaultState(PublicKey _address,
     i += 8;
     final var lastFeeChargeTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var prevAumSf = getInt128LE(_data, i);
+    final var prevAumSf = getUInt128LE(_data, i);
     i += 16;
-    final var pendingFeesSf = getInt128LE(_data, i);
+    final var pendingFeesSf = getUInt128LE(_data, i);
     i += 16;
     final var vaultAllocationStrategy = new VaultAllocation[25];
     i += SerDeUtil.readArray(vaultAllocationStrategy, VaultAllocation::read, _data, i);
     final var padding1 = new BigInteger[256];
-    i += SerDeUtil.read128Array(padding1, _data, i);
+    i += SerDeUtil.readU128Array(padding1, _data, i);
     final var minDepositAmount = getInt64LE(_data, i);
     i += 8;
     final var minWithdrawAmount = getInt64LE(_data, i);
@@ -423,11 +423,11 @@ public record VaultState(PublicKey _address,
     i += 8;
     final var pendingAdmin = readPubKey(_data, i);
     i += 32;
-    final var cumulativeEarnedInterestSf = getInt128LE(_data, i);
+    final var cumulativeEarnedInterestSf = getUInt128LE(_data, i);
     i += 16;
-    final var cumulativeMgmtFeesSf = getInt128LE(_data, i);
+    final var cumulativeMgmtFeesSf = getUInt128LE(_data, i);
     i += 16;
-    final var cumulativePerfFeesSf = getInt128LE(_data, i);
+    final var cumulativePerfFeesSf = getUInt128LE(_data, i);
     i += 16;
     final var name = new byte[40];
     i += SerDeUtil.readArray(name, _data, i);
@@ -458,7 +458,7 @@ public record VaultState(PublicKey _address,
     final var rewardInfo = VaultRewardInfo.read(_data, i);
     i += rewardInfo.l();
     final var padding3 = new BigInteger[232];
-    SerDeUtil.read128Array(padding3, _data, i);
+    SerDeUtil.readU128Array(padding3, _data, i);
     return new VaultState(_address,
                           discriminator,
                           vaultAdminAuthority,
@@ -547,7 +547,7 @@ public record VaultState(PublicKey _address,
     putInt128LE(_data, i, pendingFeesSf);
     i += 16;
     i += SerDeUtil.writeArrayChecked(vaultAllocationStrategy, 25, _data, i);
-    i += SerDeUtil.write128ArrayChecked(padding1, 256, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding1, 256, _data, i);
     putInt64LE(_data, i, minDepositAmount);
     i += 8;
     putInt64LE(_data, i, minWithdrawAmount);
@@ -591,7 +591,7 @@ public record VaultState(PublicKey _address,
     putInt64LE(_data, i, depositCap);
     i += 8;
     i += rewardInfo.write(_data, i);
-    i += SerDeUtil.write128ArrayChecked(padding3, 232, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding3, 232, _data, i);
     return i - _offset;
   }
 

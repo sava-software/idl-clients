@@ -7,6 +7,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 public record DynamicTickData(BigInteger liquidityNet,
@@ -31,14 +32,14 @@ public record DynamicTickData(BigInteger liquidityNet,
     int i = _offset;
     final var liquidityNet = getInt128LE(_data, i);
     i += 16;
-    final var liquidityGross = getInt128LE(_data, i);
+    final var liquidityGross = getUInt128LE(_data, i);
     i += 16;
-    final var feeGrowthOutsideA = getInt128LE(_data, i);
+    final var feeGrowthOutsideA = getUInt128LE(_data, i);
     i += 16;
-    final var feeGrowthOutsideB = getInt128LE(_data, i);
+    final var feeGrowthOutsideB = getUInt128LE(_data, i);
     i += 16;
     final var rewardGrowthsOutside = new BigInteger[3];
-    SerDeUtil.read128Array(rewardGrowthsOutside, _data, i);
+    SerDeUtil.readU128Array(rewardGrowthsOutside, _data, i);
     return new DynamicTickData(liquidityNet,
                                liquidityGross,
                                feeGrowthOutsideA,
@@ -57,7 +58,7 @@ public record DynamicTickData(BigInteger liquidityNet,
     i += 16;
     putInt128LE(_data, i, feeGrowthOutsideB);
     i += 16;
-    i += SerDeUtil.write128ArrayChecked(rewardGrowthsOutside, 3, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(rewardGrowthsOutside, 3, _data, i);
     return i - _offset;
   }
 

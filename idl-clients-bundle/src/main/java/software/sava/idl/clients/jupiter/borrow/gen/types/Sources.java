@@ -7,7 +7,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 public record Sources(PublicKey source,
@@ -33,9 +33,9 @@ public record Sources(PublicKey source,
     i += 32;
     final var invert = _data[i] == 1;
     ++i;
-    final var multiplier = getInt128LE(_data, i);
+    final var multiplier = getUInt128LE(_data, i);
     i += 16;
-    final var divisor = getInt128LE(_data, i);
+    final var divisor = getUInt128LE(_data, i);
     i += 16;
     final var sourceType = SourceType.read(_data, i);
     return new Sources(source,

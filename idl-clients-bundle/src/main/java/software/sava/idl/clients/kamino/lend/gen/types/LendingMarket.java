@@ -13,9 +13,9 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -533,7 +533,7 @@ public record LendingMarket(PublicKey _address,
     i += SerDeUtil.readArray(elevationGroups, ElevationGroup::read, _data, i);
     final var elevationGroupPadding = new long[90];
     i += SerDeUtil.readArray(elevationGroupPadding, _data, i);
-    final var minNetValueInObligationSf = getInt128LE(_data, i);
+    final var minNetValueInObligationSf = getUInt128LE(_data, i);
     i += 16;
     final var minValueSkipLiquidationLtvChecks = getInt64LE(_data, i);
     i += 8;

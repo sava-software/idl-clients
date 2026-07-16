@@ -31,6 +31,7 @@ import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
@@ -1030,7 +1031,7 @@ public final class VaultsProgram {
       int i = _offset + discriminator.length();
       final var debtAmt = getInt64LE(_data, i);
       i += 8;
-      final var colPerUnitDebt = getInt128LE(_data, i);
+      final var colPerUnitDebt = getUInt128LE(_data, i);
       i += 16;
       final var absorb = _data[i] == 1;
       ++i;
@@ -1502,7 +1503,7 @@ public final class VaultsProgram {
         debtAmounts = LiquidateDexDebtAmounts.read(_data, i);
         i += debtAmounts.l();
       }
-      final var colPerUnitDebt = getInt128LE(_data, i);
+      final var colPerUnitDebt = getUInt128LE(_data, i);
       i += 16;
       final LiquidateDexColAmounts colAmounts;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -1992,7 +1993,7 @@ public final class VaultsProgram {
         debtPerfectAmounts = LiquidatePerfectDexDebtAmounts.read(_data, i);
         i += debtPerfectAmounts.l();
       }
-      final var colPerUnitDebt = getInt128LE(_data, i);
+      final var colPerUnitDebt = getUInt128LE(_data, i);
       i += 16;
       final LiquidateDexColAmounts colAmounts;
       if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -3178,7 +3179,7 @@ public final class VaultsProgram {
         ++i;
       } else {
         ++i;
-        supplyAmount = getInt128LE(_data, i);
+        supplyAmount = getUInt128LE(_data, i);
         i += 16;
       }
       final BigInteger borrowAmount;
@@ -3187,7 +3188,7 @@ public final class VaultsProgram {
         ++i;
       } else {
         ++i;
-        borrowAmount = getInt128LE(_data, i);
+        borrowAmount = getUInt128LE(_data, i);
         i += 16;
       }
       final var colToken0MinMax = getInt128LE(_data, i);
@@ -3393,7 +3394,7 @@ public final class VaultsProgram {
         ++i;
       } else {
         ++i;
-        supplyAmount = getInt128LE(_data, i);
+        supplyAmount = getUInt128LE(_data, i);
         i += 16;
       }
       final BigInteger borrowAmount;
@@ -3401,7 +3402,7 @@ public final class VaultsProgram {
         borrowAmount = null;
       } else {
         ++i;
-        borrowAmount = getInt128LE(_data, i);
+        borrowAmount = getUInt128LE(_data, i);
       }
       return new RebalanceWithAmountsIxData(discriminator, supplyAmount, borrowAmount);
     }

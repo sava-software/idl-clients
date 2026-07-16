@@ -7,9 +7,9 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -84,9 +84,9 @@ public record LiquidityRepositioned(Discriminator discriminator,
     i += 4;
     final var newRangeTickUpperIndex = getInt32LE(_data, i);
     i += 4;
-    final var existingRangeLiquidity = getInt128LE(_data, i);
+    final var existingRangeLiquidity = getUInt128LE(_data, i);
     i += 16;
-    final var newRangeLiquidity = getInt128LE(_data, i);
+    final var newRangeLiquidity = getUInt128LE(_data, i);
     i += 16;
     final var existingRangeTokenAAmount = getInt64LE(_data, i);
     i += 8;

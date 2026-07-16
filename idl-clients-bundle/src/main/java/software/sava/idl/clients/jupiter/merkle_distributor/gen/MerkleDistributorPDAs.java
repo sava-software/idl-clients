@@ -3,7 +3,6 @@ package software.sava.idl.clients.jupiter.merkle_distributor.gen;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.encoding.ByteUtil;
 
 import java.util.List;
 
@@ -21,17 +20,16 @@ public final class MerkleDistributorPDAs {
     ), program);
   }
 
+  /// @param version u64 seed value encoding is program-specific — commonly its little-endian bytes (`SerDeUtil` `*LESeed` helpers) or its decimal string (`SerDeUtil.asciiSeed`); verify against the program source.
   public static ProgramDerivedAddress distributorPDA(final PublicKey program,
                                                      final PublicKey baseAccount,
                                                      final PublicKey mintAccount,
-                                                     final long version) {
-    final byte[] versionBytes = new byte[Long.BYTES];
-    ByteUtil.putInt64LE(versionBytes, 0, version);
+                                                     final byte[] version) {
     return PublicKey.findProgramAddress(List.of(
       "MerkleDistributor".getBytes(US_ASCII),
       baseAccount.toByteArray(),
       mintAccount.toByteArray(),
-      versionBytes
+      version
     ), program);
   }
 

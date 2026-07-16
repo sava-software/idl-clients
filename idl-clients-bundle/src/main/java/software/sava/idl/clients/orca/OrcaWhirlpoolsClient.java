@@ -471,7 +471,11 @@ public interface OrcaWhirlpoolsClient {
   }
 
   default PublicKey deriveBundledPositionKey(final PublicKey positionBundleMintKey, final int bundleIndex) {
-    return WhirlpoolPDAs.bundledPositionPDA(whirlpoolProgramKey(), positionBundleMintKey, bundleIndex).publicKey();
+    return OrcaUtil.bundledPositionPDA(whirlpoolProgramKey(), positionBundleMintKey, bundleIndex).publicKey();
+  }
+
+  default PublicKey deriveTickArrayKey(final PublicKey whirlpoolKey, final int startTickIndex) {
+    return OrcaUtil.tickArrayPDA(whirlpoolProgramKey(), whirlpoolKey, startTickIndex).publicKey();
   }
 
   default PublicKey deriveATA(final PublicKey ownerKey,

@@ -6,7 +6,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 /// @param collateralIndex: u8
@@ -26,7 +26,7 @@ public record ManageLiquidityParams(int collateralIndex,
     int i = _offset;
     final var collateralIndex = _data[i] & 0xFF;
     ++i;
-    final var liquidityAmount = getInt128LE(_data, i);
+    final var liquidityAmount = getUInt128LE(_data, i);
     i += 16;
     final var transferParams = TransferTypeParams.read(_data, i);
     i += transferParams.l();

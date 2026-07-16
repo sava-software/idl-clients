@@ -13,8 +13,8 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -76,7 +76,7 @@ public record DynamicTickArray(PublicKey _address,
     i += 4;
     final var whirlpool = readPubKey(_data, i);
     i += 32;
-    final var tickBitmap = getInt128LE(_data, i);
+    final var tickBitmap = getUInt128LE(_data, i);
     i += 16;
     final var ticks = new DynamicTick[88];
     SerDeUtil.readArray(ticks, DynamicTick::read, _data, i);

@@ -5,7 +5,7 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 
 public record PositionBinData(BigInteger liquidityShare,
@@ -23,7 +23,7 @@ public record PositionBinData(BigInteger liquidityShare,
       return null;
     }
     int i = _offset;
-    final var liquidityShare = getInt128LE(_data, i);
+    final var liquidityShare = getUInt128LE(_data, i);
     i += 16;
     final var rewardInfo = UserRewardInfo.read(_data, i);
     i += rewardInfo.l();

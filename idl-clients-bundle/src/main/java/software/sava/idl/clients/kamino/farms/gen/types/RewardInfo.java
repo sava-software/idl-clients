@@ -8,8 +8,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -77,7 +77,7 @@ public record RewardInfo(TokenInfo token,
     i += 8;
     final var rewardsIssuedCumulative = getInt64LE(_data, i);
     i += 8;
-    final var rewardPerShareScaled = getInt128LE(_data, i);
+    final var rewardPerShareScaled = getUInt128LE(_data, i);
     i += 16;
     final var placeholder0 = getInt64LE(_data, i);
     i += 8;

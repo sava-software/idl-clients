@@ -5,8 +5,8 @@ import software.sava.idl.clients.core.gen.SerDe;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -23,7 +23,7 @@ public record WhirlpoolStatePositionPositionRewardInfo(BigInteger growthInsideCh
       return null;
     }
     int i = _offset;
-    final var growthInsideCheckpoint = getInt128LE(_data, i);
+    final var growthInsideCheckpoint = getUInt128LE(_data, i);
     i += 16;
     final var amountOwed = getInt64LE(_data, i);
     return new WhirlpoolStatePositionPositionRewardInfo(growthInsideCheckpoint, amountOwed);

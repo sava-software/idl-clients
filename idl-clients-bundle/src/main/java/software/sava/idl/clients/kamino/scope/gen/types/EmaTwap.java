@@ -6,8 +6,8 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.math.BigInteger;
 
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -53,24 +53,24 @@ public record EmaTwap(long lastUpdateSlot,
     i += 8;
     final var lastUpdateUnixTimestamp = getInt64LE(_data, i);
     i += 8;
-    final var currentEma1h = getInt128LE(_data, i);
+    final var currentEma1h = getUInt128LE(_data, i);
     i += 16;
     final var updatesTracker1h = getInt64LE(_data, i);
     i += 8;
     final var updatesTracker7d = getInt64LE(_data, i);
     i += 8;
-    final var currentEma8h = getInt128LE(_data, i);
+    final var currentEma8h = getUInt128LE(_data, i);
     i += 16;
-    final var currentEma24h = getInt128LE(_data, i);
+    final var currentEma24h = getUInt128LE(_data, i);
     i += 16;
     final var updatesTracker8h = getInt64LE(_data, i);
     i += 8;
     final var updatesTracker24h = getInt64LE(_data, i);
     i += 8;
-    final var currentEma7d = getInt128LE(_data, i);
+    final var currentEma7d = getUInt128LE(_data, i);
     i += 16;
     final var padding1 = new BigInteger[35];
-    SerDeUtil.read128Array(padding1, _data, i);
+    SerDeUtil.readU128Array(padding1, _data, i);
     return new EmaTwap(lastUpdateSlot,
                        lastUpdateUnixTimestamp,
                        currentEma1h,
@@ -107,7 +107,7 @@ public record EmaTwap(long lastUpdateSlot,
     i += 8;
     putInt128LE(_data, i, currentEma7d);
     i += 16;
-    i += SerDeUtil.write128ArrayChecked(padding1, 35, _data, i);
+    i += SerDeUtil.writeU128ArrayChecked(padding1, 35, _data, i);
     return i - _offset;
   }
 

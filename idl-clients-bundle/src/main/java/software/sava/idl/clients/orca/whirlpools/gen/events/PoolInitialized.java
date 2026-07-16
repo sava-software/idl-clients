@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -67,7 +67,7 @@ public record PoolInitialized(Discriminator discriminator,
     ++i;
     final var decimalsB = _data[i] & 0xFF;
     ++i;
-    final var initialSqrtPrice = getInt128LE(_data, i);
+    final var initialSqrtPrice = getUInt128LE(_data, i);
     return new PoolInitialized(discriminator,
                                whirlpool,
                                whirlpoolsConfig,

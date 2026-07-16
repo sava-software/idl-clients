@@ -22,6 +22,76 @@ public final class SerDeUtil {
     return bytes;
   }
 
+  // PDA Seeds
+  //
+  // A PDA seed is an opaque byte array; how a numeric value is encoded is a
+  // per-program convention which the IDL cannot express. Many programs use the
+  // value's little-endian bytes (Rust `to_le_bytes()`, e.g. Kamino market
+  // sequence numbers), others its decimal string (Rust
+  // `to_string().as_bytes()`, e.g. Orca whirlpool tick and bundle indexes).
+  // Verify against the program source before choosing a helper.
+
+  public static byte[] byteSeed(final int value) {
+    return new byte[]{(byte) value};
+  }
+
+  public static byte[] int16LESeed(final int value) {
+    final byte[] seed = new byte[Short.BYTES];
+    ByteUtil.putInt16LE(seed, 0, value);
+    return seed;
+  }
+
+  public static byte[] int32LESeed(final int value) {
+    final byte[] seed = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(seed, 0, value);
+    return seed;
+  }
+
+  /// Unsigned 32-bit values widened to a Java long.
+  public static byte[] int32LESeed(final long value) {
+    return int32LESeed((int) value);
+  }
+
+  public static byte[] int64LESeed(final long value) {
+    final byte[] seed = new byte[Long.BYTES];
+    ByteUtil.putInt64LE(seed, 0, value);
+    return seed;
+  }
+
+  public static byte[] int128LESeed(final BigInteger value) {
+    final byte[] seed = new byte[16];
+    ByteUtil.putInt128LE(seed, 0, value);
+    return seed;
+  }
+
+  public static byte[] int256LESeed(final BigInteger value) {
+    final byte[] seed = new byte[32];
+    ByteUtil.putInt256LE(seed, 0, value);
+    return seed;
+  }
+
+  public static byte[] float32LESeed(final float value) {
+    final byte[] seed = new byte[Float.BYTES];
+    ByteUtil.putFloat32LE(seed, 0, value);
+    return seed;
+  }
+
+  public static byte[] float64LESeed(final double value) {
+    final byte[] seed = new byte[Double.BYTES];
+    ByteUtil.putFloat64LE(seed, 0, value);
+    return seed;
+  }
+
+  /// The value's decimal string as US-ASCII bytes, e.g. `17` -> `{'1', '7'}`.
+  public static byte[] asciiSeed(final long value) {
+    return Long.toString(value).getBytes(StandardCharsets.US_ASCII);
+  }
+
+  /// The value's decimal string as US-ASCII bytes.
+  public static byte[] asciiSeed(final BigInteger value) {
+    return value.toString().getBytes(StandardCharsets.US_ASCII);
+  }
+
   public static String fixedLengthString(final byte[] data) {
     return fixedLengthString(data, 0, data.length);
   }
@@ -3191,5 +3261,308 @@ public final class SerDeUtil {
 
   public static int len256Vector(final int prefixBytes, final SequencedCollection<BigInteger> collection) {
     return prefixBytes + (collection.size() * INT256_BYTES);
+  }
+
+  // unsigned 128-bit integers
+  //
+  // Reads interpret the bytes as unsigned (never negative); writes and
+  // lengths are signedness-agnostic and delegate to the 128 family.
+
+  public static int readU128Array(final BigInteger[] result, final byte[] data, final int offset) {
+    int o = offset;
+    for (int i = 0; i < result.length; ++i) {
+      result[i] = ByteUtil.getUInt128LE(data, o);
+      o += INT128_BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int readU128Array(final BigInteger[][] result, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var out : result) {
+      i += readU128Array(out, data, i);
+    }
+    return i - offset;
+  }
+
+  public static BigInteger[] readU128Vector(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new BigInteger[len];
+    readU128Array(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static BigInteger[][] readMultiDimensionU128Vector(final int prefixBytes, final byte[] data, int offset) {
+    final int len = val(prefixBytes, data, offset);
+    offset += prefixBytes;
+    final var result = new BigInteger[len][];
+    for (int i = 0; i < result.length; ++i) {
+      final var instance = readU128Vector(prefixBytes, data, offset);
+      result[i] = instance;
+      offset += len128Vector(prefixBytes, instance);
+    }
+    return result;
+  }
+
+  public static BigInteger[][] readMultiDimensionU128VectorArray(final int prefixBytes,
+                                                                 final int fixedLength,
+                                                                 final byte[] data,
+                                                                 final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new BigInteger[len][fixedLength];
+    readU128Array(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static List<BigInteger> readU128VectorList(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<BigInteger>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      result.add(ByteUtil.getUInt128LE(data, o));
+      o += INT128_BYTES;
+    }
+    return result;
+  }
+
+  public static int writeU128(final BigInteger val, final byte[] data, final int offset) {
+    return write128(val, data, offset);
+  }
+
+  public static int writeU128Optional(final int optionalBytes, final BigInteger val, final byte[] data, final int offset) {
+    return write128Optional(optionalBytes, val, data, offset);
+  }
+
+  public static int writeU128Array(final BigInteger[] array, final byte[] data, final int offset) {
+    return write128Array(array, data, offset);
+  }
+
+  public static int writeU128Array(final BigInteger[][] array, final byte[] data, final int offset) {
+    return write128Array(array, data, offset);
+  }
+
+  public static int writeU128ArrayChecked(final BigInteger[] array,
+                                          final int fixedLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write128ArrayChecked(array, fixedLength, data, offset);
+  }
+
+  public static int writeU128ArrayChecked(final BigInteger[][] array,
+                                          final int fixedLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write128ArrayChecked(array, fixedLength, data, offset);
+  }
+
+  public static int writeU128Vector(final int prefixBytes, final BigInteger[] array, final byte[] data, final int offset) {
+    return write128Vector(prefixBytes, array, data, offset);
+  }
+
+  public static int writeU128Vector(final int prefixBytes,
+                                    final SequencedCollection<BigInteger> collection,
+                                    final byte[] data,
+                                    final int offset) {
+    return write128Vector(prefixBytes, collection, data, offset);
+  }
+
+  public static int writeU128VectorArrayChecked(final int prefixBytes,
+                                                final BigInteger[][] array,
+                                                final int fixedLength,
+                                                final byte[] data,
+                                                final int offset) {
+    return write128VectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeVectorU128ArrayChecked(final int prefixBytes,
+                                                final BigInteger[][] array,
+                                                final int fixedLength,
+                                                final byte[] data,
+                                                final int offset) {
+    return write128VectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeU128VectorArray(final int prefixBytes,
+                                         final BigInteger[][] array,
+                                         final byte[] data,
+                                         final int offset) {
+    return write128VectorArray(prefixBytes, array, data, offset);
+  }
+
+  public static int lenU128Optional(final int optionalBytes, final BigInteger val) {
+    return len128Optional(optionalBytes, val);
+  }
+
+  public static int lenU128Array(final BigInteger[] array) {
+    return len128Array(array);
+  }
+
+  public static int lenU128Array(final BigInteger[][] array) {
+    return len128Array(array);
+  }
+
+  public static int lenU128Vector(final int prefixBytes, final BigInteger[] array) {
+    return len128Vector(prefixBytes, array);
+  }
+
+  public static int lenU128Vector(final int prefixBytes, final BigInteger[][] array) {
+    return len128Vector(prefixBytes, array);
+  }
+
+  public static int lenU128Vector(final int prefixBytes, final SequencedCollection<BigInteger> collection) {
+    return len128Vector(prefixBytes, collection);
+  }
+
+  public static int lenU128VectorArray(final int prefixBytes, final BigInteger[][] array) {
+    return len128VectorArray(prefixBytes, array);
+  }
+
+  // unsigned 256-bit integers
+
+  public static int readU256Array(final BigInteger[] result, final byte[] data, final int offset) {
+    int o = offset;
+    for (int i = 0; i < result.length; ++i) {
+      result[i] = ByteUtil.getUInt256LE(data, o);
+      o += INT256_BYTES;
+    }
+    return o - offset;
+  }
+
+  public static int readU256Array(final BigInteger[][] result, final byte[] data, final int offset) {
+    int i = offset;
+    for (final var out : result) {
+      i += readU256Array(out, data, i);
+    }
+    return i - offset;
+  }
+
+  public static BigInteger[] readU256Vector(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new BigInteger[len];
+    readU256Array(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static BigInteger[][] readMultiDimensionU256Vector(final int prefixBytes, final byte[] data, int offset) {
+    final int len = val(prefixBytes, data, offset);
+    offset += prefixBytes;
+    final var result = new BigInteger[len][];
+    for (int i = 0; i < result.length; ++i) {
+      final var instance = readU256Vector(prefixBytes, data, offset);
+      result[i] = instance;
+      offset += len256Vector(prefixBytes, instance);
+    }
+    return result;
+  }
+
+  public static BigInteger[][] readMultiDimensionU256VectorArray(final int prefixBytes,
+                                                                 final int fixedLength,
+                                                                 final byte[] data,
+                                                                 final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new BigInteger[len][fixedLength];
+    readU256Array(result, data, offset + prefixBytes);
+    return result;
+  }
+
+  public static List<BigInteger> readU256VectorList(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final var result = new ArrayList<BigInteger>(len);
+    for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
+      result.add(ByteUtil.getUInt256LE(data, o));
+      o += INT256_BYTES;
+    }
+    return result;
+  }
+
+  public static int writeU256(final BigInteger val, final byte[] data, final int offset) {
+    return write256(val, data, offset);
+  }
+
+  public static int writeU256Optional(final int optionalBytes, final BigInteger val, final byte[] data, final int offset) {
+    return write256Optional(optionalBytes, val, data, offset);
+  }
+
+  public static int writeU256Array(final BigInteger[] array, final byte[] data, final int offset) {
+    return write256Array(array, data, offset);
+  }
+
+  public static int writeU256Array(final BigInteger[][] array, final byte[] data, final int offset) {
+    return write256Array(array, data, offset);
+  }
+
+  public static int writeU256ArrayChecked(final BigInteger[] array,
+                                          final int fixedLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write256ArrayChecked(array, fixedLength, data, offset);
+  }
+
+  public static int writeU256ArrayChecked(final BigInteger[][] array,
+                                          final int fixedLength,
+                                          final byte[] data,
+                                          final int offset) {
+    return write256ArrayChecked(array, fixedLength, data, offset);
+  }
+
+  public static int writeU256Vector(final int prefixBytes, final BigInteger[] array, final byte[] data, final int offset) {
+    return write256Vector(prefixBytes, array, data, offset);
+  }
+
+  public static int writeU256Vector(final int prefixBytes,
+                                    final SequencedCollection<BigInteger> collection,
+                                    final byte[] data,
+                                    final int offset) {
+    return write256Vector(prefixBytes, collection, data, offset);
+  }
+
+  public static int writeU256VectorArrayChecked(final int prefixBytes,
+                                                final BigInteger[][] array,
+                                                final int fixedLength,
+                                                final byte[] data,
+                                                final int offset) {
+    return write256VectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeVectorU256ArrayChecked(final int prefixBytes,
+                                                final BigInteger[][] array,
+                                                final int fixedLength,
+                                                final byte[] data,
+                                                final int offset) {
+    return write256VectorArrayChecked(prefixBytes, array, fixedLength, data, offset);
+  }
+
+  public static int writeU256VectorArray(final int prefixBytes,
+                                         final BigInteger[][] array,
+                                         final byte[] data,
+                                         final int offset) {
+    return write256VectorArray(prefixBytes, array, data, offset);
+  }
+
+  public static int lenU256Optional(final int optionalBytes, final BigInteger val) {
+    return len256Optional(optionalBytes, val);
+  }
+
+  public static int lenU256Array(final BigInteger[] array) {
+    return len256Array(array);
+  }
+
+  public static int lenU256Array(final BigInteger[][] array) {
+    return len256Array(array);
+  }
+
+  public static int lenU256Vector(final int prefixBytes, final BigInteger[] array) {
+    return len256Vector(prefixBytes, array);
+  }
+
+  public static int lenU256Vector(final int prefixBytes, final BigInteger[][] array) {
+    return len256Vector(prefixBytes, array);
+  }
+
+  public static int lenU256Vector(final int prefixBytes, final SequencedCollection<BigInteger> collection) {
+    return len256Vector(prefixBytes, collection);
+  }
+
+  public static int lenU256VectorArray(final int prefixBytes, final BigInteger[][] array) {
+    return len256VectorArray(prefixBytes, array);
   }
 }

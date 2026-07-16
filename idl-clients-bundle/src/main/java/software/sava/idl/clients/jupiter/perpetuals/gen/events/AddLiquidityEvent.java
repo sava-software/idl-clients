@@ -7,8 +7,8 @@ import software.sava.core.programs.Discriminator;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -58,7 +58,7 @@ public record AddLiquidityEvent(Discriminator discriminator,
     i += 32;
     final var tokenAmountIn = getInt64LE(_data, i);
     i += 8;
-    final var prePoolAmountUsd = getInt128LE(_data, i);
+    final var prePoolAmountUsd = getUInt128LE(_data, i);
     i += 16;
     final var tokenAmountUsd = getInt64LE(_data, i);
     i += 8;
@@ -70,7 +70,7 @@ public record AddLiquidityEvent(Discriminator discriminator,
     i += 8;
     final var lpAmount = getInt64LE(_data, i);
     i += 8;
-    final var postPoolAmountUsd = getInt128LE(_data, i);
+    final var postPoolAmountUsd = getUInt128LE(_data, i);
     return new AddLiquidityEvent(discriminator,
                                  custodyKey,
                                  poolKey,

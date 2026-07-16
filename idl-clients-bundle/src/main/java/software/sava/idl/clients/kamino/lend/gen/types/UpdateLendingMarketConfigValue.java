@@ -8,9 +8,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.math.BigInteger;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.encoding.ByteUtil.getInt128LE;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
+import static software.sava.core.encoding.ByteUtil.getUInt128LE;
 
 public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
   UpdateLendingMarketConfigValue.Bool,
@@ -128,7 +128,7 @@ public sealed interface UpdateLendingMarketConfigValue extends RustEnum permits
   record U128(BigInteger val) implements EnumInt128, UpdateLendingMarketConfigValue {
 
     public static U128 read(final byte[] _data, int i) {
-      return new U128(getInt128LE(_data, i));
+      return new U128(getUInt128LE(_data, i));
     }
 
     @Override
