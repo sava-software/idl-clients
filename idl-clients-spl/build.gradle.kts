@@ -15,7 +15,9 @@ hardening {
       "software.sava.idl.clients.spl.stakepool.StakePoolProgram",
       "software.sava.idl.clients.spl.stakepool.StakePoolState",
       "software.sava.idl.clients.spl.stakepool.ValidatorList",
-      "software.sava.idl.clients.spl.stakepool.ValidatorStakeInfo"
+      "software.sava.idl.clients.spl.stakepool.ValidatorStakeInfo",
+      "software.sava.idl.clients.spl.stake.StakeAccount",
+      "software.sava.idl.clients.spl.system.nonce.NonceAccount"
     )
     targetTests = "software.sava.idl.clients.spl.*Test*"
   }

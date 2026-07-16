@@ -58,10 +58,10 @@ public record NonceAccount(PublicKey address,
     return createMemCompFilter(NONCE_OFFSET, nonce);
   }
 
-  public static Filter createVersionFilter(final long lamportsPerSignature) {
+  public static Filter createLamportsPerSignatureFilter(final long lamportsPerSignature) {
     final byte[] bytes = new byte[Long.BYTES];
     ByteUtil.putInt64LE(bytes, 0, lamportsPerSignature);
-    return createMemCompFilter(VERSION_OFFSET, bytes);
+    return createMemCompFilter(LAMPORTS_PER_SIG_OFFSET, bytes);
   }
 
   public static NonceAccount read(final byte[] data, int offset) {
