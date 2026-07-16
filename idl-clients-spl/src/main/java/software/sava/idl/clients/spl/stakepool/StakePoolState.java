@@ -149,7 +149,7 @@ public record StakePoolState(PublicKey address,
       offset += FutureEpochFee.BYTES;
     }
 
-    final int stakeReferralFee = data[offset];
+    final int stakeReferralFee = data[offset] & 0xFF;
     ++offset;
 
     final PublicKey solDepositAuthority;
@@ -163,7 +163,7 @@ public record StakePoolState(PublicKey address,
 
     final var solDepositFee = Fee.parseFee(data, offset);
     offset += Fee.BYTES;
-    final int solReferralFee = data[offset];
+    final int solReferralFee = data[offset] & 0xFF;
     ++offset;
 
     final PublicKey solWithdrawAuthority;
