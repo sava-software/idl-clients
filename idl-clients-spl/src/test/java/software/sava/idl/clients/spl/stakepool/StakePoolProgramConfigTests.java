@@ -236,7 +236,6 @@ final class StakePoolProgramConfigTests {
     final var validatorVoteAddress = key(9);
 
     final var ix = StakePoolProgram.setPreferredValidator(
-        SOLANA_ACCOUNTS,
         INVOKED_PROGRAM,
         STAKE_POOL,
         staker,
@@ -269,7 +268,6 @@ final class StakePoolProgramConfigTests {
     final var validatorList = key(3);
 
     final var ix = StakePoolProgram.setPreferredValidator(
-        SOLANA_ACCOUNTS,
         INVOKED_PROGRAM,
         STAKE_POOL,
         staker,

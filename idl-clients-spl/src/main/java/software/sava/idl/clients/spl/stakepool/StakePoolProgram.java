@@ -1015,8 +1015,7 @@ public final class StakePoolProgram {
     Withdraw
   }
 
-  public static Instruction setPreferredValidator(final SolanaAccounts solanaAccounts,
-                                                  final AccountMeta invokedStakePoolProgram,
+  public static Instruction setPreferredValidator(final AccountMeta invokedStakePoolProgram,
                                                   final PublicKey stakePool,
                                                   final PublicKey staker,
                                                   final PublicKey validatorList,
