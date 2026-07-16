@@ -1,7 +1,7 @@
 package software.sava.idl.clients.jupiter.swap;
 
-import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.jupiter.swap.gen.JupiterProgram;
+import software.sava.idl.clients.jupiter.swap.gen.types.RoutePlanStepV2;
 
 import java.util.Arrays;
 
@@ -15,9 +15,9 @@ import static software.sava.idl.clients.jupiter.swap.gen.JupiterProgram.SHARED_A
 ///
 /// Any payload either parses — in which case RouteV2Data must agree with the generated
 /// ix record, and write/read must reach a byte-identical fixed point — or is rejected
-/// with a runtime exception. The generated vector reads trust in-band u32 lengths and
-/// unknown Swap ordinals surface as null, so allocation failures and NPEs are the
-/// rejection paths today.
+/// with a runtime exception: readLen for length prefixes the buffer cannot back,
+/// IndexOutOfBounds for truncation, and NPE for unknown Swap ordinals (read returns
+/// null).
 ///
 /// Deliberately has no Jazzer imports so it compiles with the regular test sources;
 /// the raw `byte[]` signature is all the driver needs.
@@ -35,31 +35,12 @@ public final class RouteV2DataFuzz {
     discriminator.write(ix, 0);
     System.arraycopy(data, 1, ix, discriminator.length(), data.length - 1);
 
-    // the generated readVector trusts the in-band u32 count and allocates before any
-    // bounds check, so a wild route-plan count burns hundreds of MB per execution just
-    // to fail on the first element reads. Counts modestly beyond what the data can back
-    // still exercise the truncation path; anything larger only throttles the fuzzer.
-    final int routePlanOffset = shared
-        ? JupiterProgram.SharedAccountsRouteV2IxData.ROUTE_PLAN_OFFSET
-        : JupiterProgram.RouteV2IxData.ROUTE_PLAN_OFFSET;
-    if (ix.length >= routePlanOffset + Integer.BYTES) {
-      final int routePlanCount = ByteUtil.getInt32LE(ix, routePlanOffset);
-      // the smallest RoutePlanStepV2 is a unit Swap variant: 1 + 2 + 1 + 1 bytes
-      if (routePlanCount < 0 || routePlanCount > (ix.length / 5) + 2) {
-        return;
-      }
-    }
-
     final RouteV2Data route;
     try {
       route = RouteV2Data.readData(ix, 0);
-    } catch (final IndexOutOfBoundsException | NegativeArraySizeException | NullPointerException rejected) {
-      // truncated payload, an in-band count the buffer cannot back, or an unknown Swap
-      // ordinal (read returns null) — rejection is the documented behavior today
-      return;
-    } catch (final OutOfMemoryError oversizedVector) {
-      // generated readVector allocates from an unvalidated u32 length; an impossible
-      // count dies in the array allocation without consuming memory
+    } catch (final IndexOutOfBoundsException | NullPointerException rejected) {
+      // truncated payload, a length prefix the buffer cannot back (readLen), or an
+      // unknown Swap ordinal (read returns null) — rejection is the documented behavior
       return;
     }
 
@@ -77,6 +58,7 @@ public final class RouteV2DataFuzz {
       routePlanLength = ixData.routePlan().length;
       canonical = writeChecked(ixData.l(), ixData::write);
       final var reRead = JupiterProgram.SharedAccountsRouteV2IxData.read(canonical, 0);
+      expectSameRoutePlan(ixData.routePlan(), reRead.routePlan());
       expectFixedPoint(canonical, writeChecked(reRead.l(), reRead::write));
     } else {
       final var ixData = JupiterProgram.RouteV2IxData.read(ix, 0);
@@ -88,6 +70,7 @@ public final class RouteV2DataFuzz {
       routePlanLength = ixData.routePlan().length;
       canonical = writeChecked(ixData.l(), ixData::write);
       final var reRead = JupiterProgram.RouteV2IxData.read(canonical, 0);
+      expectSameRoutePlan(ixData.routePlan(), reRead.routePlan());
       expectFixedPoint(canonical, writeChecked(reRead.l(), reRead::write));
     }
     if (route.inAmount() != inAmount
@@ -111,6 +94,24 @@ public final class RouteV2DataFuzz {
       throw new IllegalStateException("write returned " + wrote + " but l() is " + length);
     }
     return out;
+  }
+
+  /// Catches value corruption that stays size-aligned — e.g. a variant whose write
+  /// drops the ordinal deserializes as variant 0 without shifting any offsets.
+  private static void expectSameRoutePlan(final RoutePlanStepV2[] original, final RoutePlanStepV2[] reRead) {
+    if (original.length != reRead.length) {
+      throw new IllegalStateException("route plan length did not round trip: "
+          + original.length + " -> " + reRead.length);
+    }
+    for (int i = 0; i < original.length; ++i) {
+      final var o = original[i].swap();
+      final var r = reRead[i].swap();
+      if (o.ordinal() != r.ordinal() || o.l() != r.l()) {
+        throw new IllegalStateException(String.format(
+            "route plan step %d did not round trip: %s -> %s", i, o, r
+        ));
+      }
+    }
   }
 
   private static void expectFixedPoint(final byte[] first, final byte[] second) {

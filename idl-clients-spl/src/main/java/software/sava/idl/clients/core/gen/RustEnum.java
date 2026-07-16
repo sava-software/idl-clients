@@ -41,11 +41,8 @@ public interface RustEnum extends SerDe {
     return writeOrdinal(data, offset);
   }
 
+  // unit variants: the base write/l already serialize exactly the ordinal
   interface EnumNone extends RustEnum {
-
-    default int write(final byte[] data, final int offset) {
-      return l();
-    }
   }
 
   interface EnumBool extends RustEnum {

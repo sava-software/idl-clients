@@ -119,6 +119,20 @@ public final class SerDeUtil {
     };
   }
 
+  /// Reads a vector/string length prefix, validated against the bytes remaining after
+  /// the prefix: every element occupies at least one byte, so a larger claim is
+  /// malformed and would otherwise drive an arbitrarily large allocation.
+  public static int readLen(final int prefixBytes, final byte[] data, final int offset) {
+    final int len = val(prefixBytes, data, offset);
+    final int remaining = data.length - offset - prefixBytes;
+    if (len < 0 || len > remaining) {
+      throw new IndexOutOfBoundsException(String.format(
+          "Length prefix %d exceeds the %d bytes remaining.", len, remaining
+      ));
+    }
+    return len;
+  }
+
   private static void writeVal(final int prefixBytes, final int val, final byte[] data, final int offset) {
     switch (prefixBytes) {
       case 1 -> data[offset] = (byte) val;
@@ -161,14 +175,14 @@ public final class SerDeUtil {
   }
 
   public static byte[] readbyteVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new byte[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static byte[][] readMultiDimensionbyteVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new byte[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -183,7 +197,7 @@ public final class SerDeUtil {
                                                            final int fixedLength,
                                                            final byte[] data,
                                                            final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final byte[][] result = new byte[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -368,14 +382,14 @@ public final class SerDeUtil {
                                   final byte[] data,
                                   final int offset,
                                   final Charset charset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     return new String(data, offset + prefixBytes, len, charset);
   }
 
   public static String readString(final int prefixBytes,
                                   final byte[] data,
                                   final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     return new String(data, offset + prefixBytes, len, StandardCharsets.UTF_8);
   }
 
@@ -434,7 +448,7 @@ public final class SerDeUtil {
     int o = offset;
     String s;
     for (int i = 0, len; i < result.length; ++i) {
-      len = val(stringPrefix, data, o);
+      len = readLen(stringPrefix, data, o);
       o += stringPrefix;
       s = new String(data, o, len, charset);
       result[i] = s;
@@ -448,7 +462,7 @@ public final class SerDeUtil {
                                           final byte[] data,
                                           final int offset,
                                           final Charset charset) {
-    final int len = val(vectorPrefix, data, offset);
+    final int len = readLen(vectorPrefix, data, offset);
     final var result = new String[len];
     readArray(stringPrefix, result, data, offset + vectorPrefix, charset);
     return result;
@@ -459,11 +473,11 @@ public final class SerDeUtil {
                                                           final byte[] data,
                                                           int offset,
                                                           final Charset charset) {
-    int len = val(vectorPrefix, data, offset);
+    int len = readLen(vectorPrefix, data, offset);
     offset += vectorPrefix;
     final var result = new String[len][];
     for (int i = 0; i < result.length; ++i) {
-      len = val(vectorPrefix, data, offset);
+      len = readLen(vectorPrefix, data, offset);
       offset += vectorPrefix;
       final var stringArray = new String[len];
       offset += readArray(stringPrefix, stringArray, data, offset, charset);
@@ -491,7 +505,7 @@ public final class SerDeUtil {
                                                                final byte[] data,
                                                                final int offset,
                                                                final Charset charset) {
-    final int len = val(vectorPrefix, data, offset);
+    final int len = readLen(vectorPrefix, data, offset);
     final var result = new String[len][fixedLength];
     readArray(stringPrefix, result, data, offset + vectorPrefix, charset);
     return result;
@@ -794,14 +808,14 @@ public final class SerDeUtil {
   }
 
   public static boolean[] readbooleanVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new boolean[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static boolean[][] readMultiDimensionbooleanVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new boolean[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -816,7 +830,7 @@ public final class SerDeUtil {
                                                                  final int fixedLength,
                                                                  final byte[] data,
                                                                  final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final boolean[][] result = new boolean[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -973,14 +987,14 @@ public final class SerDeUtil {
   }
 
   public static short[] readshortVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new short[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static short[][] readMultiDimensionshortVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new short[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -995,7 +1009,7 @@ public final class SerDeUtil {
                                                              final int fixedLength,
                                                              final byte[] data,
                                                              final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final short[][] result = new short[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -1170,14 +1184,14 @@ public final class SerDeUtil {
   }
 
   public static int[] readintVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new int[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static int[][] readMultiDimensionintVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new int[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -1192,7 +1206,7 @@ public final class SerDeUtil {
                                                          final int fixedLength,
                                                          final byte[] data,
                                                          final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final int[][] result = new int[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -1382,14 +1396,14 @@ public final class SerDeUtil {
   }
 
   public static int[] readUnsignedShortVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new int[len];
     readUnsignedShortArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static int[][] readMultiDimensionUnsignedShortVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new int[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -1404,7 +1418,7 @@ public final class SerDeUtil {
                                                                    final int fixedLength,
                                                                    final byte[] data,
                                                                    final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final int[][] result = new int[len][fixedLength];
     readUnsignedShortArray(result, data, offset + prefixBytes);
     return result;
@@ -1556,14 +1570,14 @@ public final class SerDeUtil {
   }
 
   public static long[] readUnsignedIntVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new long[len];
     readUnsignedIntArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static long[][] readMultiDimensionUnsignedIntVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new long[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -1578,7 +1592,7 @@ public final class SerDeUtil {
                                                                   final int fixedLength,
                                                                   final byte[] data,
                                                                   final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final long[][] result = new long[len][fixedLength];
     readUnsignedIntArray(result, data, offset + prefixBytes);
     return result;
@@ -1730,14 +1744,14 @@ public final class SerDeUtil {
   }
 
   public static long[] readlongVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new long[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static long[][] readMultiDimensionlongVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new long[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -1752,7 +1766,7 @@ public final class SerDeUtil {
                                                            final int fixedLength,
                                                            final byte[] data,
                                                            final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final long[][] result = new long[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -1924,14 +1938,14 @@ public final class SerDeUtil {
   }
 
   public static float[] readfloatVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new float[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static float[][] readMultiDimensionfloatVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new float[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -1946,7 +1960,7 @@ public final class SerDeUtil {
                                                              final int fixedLength,
                                                              final byte[] data,
                                                              final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final float[][] result = new float[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -2121,14 +2135,14 @@ public final class SerDeUtil {
   }
 
   public static double[] readdoubleVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new double[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static double[][] readMultiDimensiondoubleVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new double[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -2143,7 +2157,7 @@ public final class SerDeUtil {
                                                                final int fixedLength,
                                                                final byte[] data,
                                                                final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final double[][] result = new double[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -2320,7 +2334,7 @@ public final class SerDeUtil {
   }
 
   public static BigInteger[] read128Vector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len];
     read128Array(result, data, offset + prefixBytes);
     return result;
@@ -2329,7 +2343,7 @@ public final class SerDeUtil {
   public static BigInteger[][] readMultiDimension128Vector(final int prefixBytes,
                                                            final byte[] data,
                                                            int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new BigInteger[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -2344,7 +2358,7 @@ public final class SerDeUtil {
                                                                 final int fixedLength,
                                                                 final byte[] data,
                                                                 final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final BigInteger[][] result = new BigInteger[len][fixedLength];
     read128Array(result, data, offset + prefixBytes);
     return result;
@@ -2511,7 +2525,7 @@ public final class SerDeUtil {
   }
 
   public static BigInteger[] read256Vector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len];
     read256Array(result, data, offset + prefixBytes);
     return result;
@@ -2520,7 +2534,7 @@ public final class SerDeUtil {
   public static BigInteger[][] readMultiDimension256Vector(final int prefixBytes,
                                                            final byte[] data,
                                                            int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new BigInteger[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -2535,7 +2549,7 @@ public final class SerDeUtil {
                                                                 final int fixedLength,
                                                                 final byte[] data,
                                                                 final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final BigInteger[][] result = new BigInteger[len][fixedLength];
     read256Array(result, data, offset + prefixBytes);
     return result;
@@ -2701,14 +2715,14 @@ public final class SerDeUtil {
   }
 
   public static PublicKey[] readPublicKeyVector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new PublicKey[len];
     readArray(result, data, offset + prefixBytes);
     return result;
   }
 
   public static PublicKey[][] readMultiDimensionPublicKeyVector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new PublicKey[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -2723,7 +2737,7 @@ public final class SerDeUtil {
                                                                      final int fixedLength,
                                                                      final byte[] data,
                                                                      final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final PublicKey[][] result = new PublicKey[len][fixedLength];
     readArray(result, data, offset + prefixBytes);
     return result;
@@ -2908,7 +2922,7 @@ public final class SerDeUtil {
                                                  final Factory<T> factory,
                                                  final byte[] data,
                                                  final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     @SuppressWarnings("unchecked") final var result = (T[]) Array.newInstance(clazz, len);
     readArray(result, factory, data, offset + prefixBytes);
     return result;
@@ -2919,7 +2933,7 @@ public final class SerDeUtil {
                                                                  final Factory<T> factory,
                                                                  final byte[] data,
                                                                  int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     @SuppressWarnings("unchecked") final T[][] result = (T[][]) Array.newInstance(clazz, len, 0);
     for (int i = 0; i < result.length; ++i) {
@@ -2936,7 +2950,7 @@ public final class SerDeUtil {
                                                                       final int fixedLength,
                                                                       final byte[] data,
                                                                       final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     @SuppressWarnings("unchecked") final T[][] result = (T[][]) Array.newInstance(clazz, len, fixedLength);
     readArray(result, factory, data, offset + prefixBytes);
     return result;
@@ -3115,7 +3129,7 @@ public final class SerDeUtil {
                                                      final Factory<T> factory,
                                                      final byte[] data,
                                                      final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<T>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       final var instance = factory.read(data, o);
@@ -3146,7 +3160,7 @@ public final class SerDeUtil {
   }
 
   public static List<PublicKey> readPublicKeyVectorList(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<PublicKey>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       result.add(PublicKey.readPubKey(data, o));
@@ -3175,10 +3189,10 @@ public final class SerDeUtil {
                                                   final int stringPrefix,
                                                   final byte[] data,
                                                   final int offset) {
-    final int len = val(vectorPrefix, data, offset);
+    final int len = readLen(vectorPrefix, data, offset);
     final var result = new ArrayList<String>(len);
     for (int i = 0, o = offset + vectorPrefix, strLen; i < len; ++i) {
-      strLen = val(stringPrefix, data, o);
+      strLen = readLen(stringPrefix, data, o);
       o += stringPrefix;
       result.add(new String(data, o, strLen, StandardCharsets.UTF_8));
       o += strLen;
@@ -3210,7 +3224,7 @@ public final class SerDeUtil {
   }
 
   public static List<BigInteger> read128VectorList(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<BigInteger>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       result.add(ByteUtil.getInt128LE(data, o));
@@ -3237,7 +3251,7 @@ public final class SerDeUtil {
   }
 
   public static List<BigInteger> read256VectorList(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<BigInteger>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       result.add(ByteUtil.getInt256LE(data, o));
@@ -3286,14 +3300,14 @@ public final class SerDeUtil {
   }
 
   public static BigInteger[] readU128Vector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len];
     readU128Array(result, data, offset + prefixBytes);
     return result;
   }
 
   public static BigInteger[][] readMultiDimensionU128Vector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new BigInteger[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -3308,14 +3322,14 @@ public final class SerDeUtil {
                                                                  final int fixedLength,
                                                                  final byte[] data,
                                                                  final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len][fixedLength];
     readU128Array(result, data, offset + prefixBytes);
     return result;
   }
 
   public static List<BigInteger> readU128VectorList(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<BigInteger>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       result.add(ByteUtil.getUInt128LE(data, o));
@@ -3436,14 +3450,14 @@ public final class SerDeUtil {
   }
 
   public static BigInteger[] readU256Vector(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len];
     readU256Array(result, data, offset + prefixBytes);
     return result;
   }
 
   public static BigInteger[][] readMultiDimensionU256Vector(final int prefixBytes, final byte[] data, int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     offset += prefixBytes;
     final var result = new BigInteger[len][];
     for (int i = 0; i < result.length; ++i) {
@@ -3458,14 +3472,14 @@ public final class SerDeUtil {
                                                                  final int fixedLength,
                                                                  final byte[] data,
                                                                  final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new BigInteger[len][fixedLength];
     readU256Array(result, data, offset + prefixBytes);
     return result;
   }
 
   public static List<BigInteger> readU256VectorList(final int prefixBytes, final byte[] data, final int offset) {
-    final int len = val(prefixBytes, data, offset);
+    final int len = readLen(prefixBytes, data, offset);
     final var result = new ArrayList<BigInteger>(len);
     for (int i = 0, o = offset + prefixBytes; i < len; ++i) {
       result.add(ByteUtil.getUInt256LE(data, o));
