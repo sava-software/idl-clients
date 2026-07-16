@@ -108,6 +108,19 @@ When adding PDA helpers for a program:
    **stop and ask** — do not infer seed encodings from forks, third-party
    SDKs, or the IDL.
 
+**Test PDA helpers against real on-chain addresses, not the source you read.**
+A real account *is* the program's own PDA output, so it is authoritative
+ground truth a re-derivation can be pinned to — a wrong seed derives an
+address that does not exist on-chain. The established pattern (see
+`OrcaPDATests`, `kamino/lend/KaminoPDATests`, `meteora/MeteoraPDATests`,
+`loopscale/LoopscalePDATests`): fetch a real account during development,
+extract its seed inputs and the PDA(s) it stores (or its own address when the
+account is itself a PDA of a stored nonce), then bake those as
+`PublicKey.fromBase58Encoded` constants and assert the helper reproduces them.
+Tests never hit the network. If a derivation cannot be anchored to a real
+instance, **skip it and say so** rather than assert a value you only computed
+from the helper under test.
+
 ## Build & test
 
 GitHub Packages credentials are required for dependency resolution, in
@@ -125,6 +138,42 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 ```
 
 Integration-style tests named `Integ.*` are git-ignored scratch files.
+
+## Hardening: mutation testing & fuzzing
+
+Money-critical hand-written parsers and math are covered by PIT mutation testing
+(`pitest<Name>` — mutates the classes and expects the tests to kill the mutants)
+and Jazzer fuzzing (`fuzz<Name>` — feeds a parse method arbitrary bytes), via the
+shared `software.sava.build.feature.hardening` convention plugin (from the
+sava-build repo). Each target is declared in a module's `hardening {}` block
+(`idl-clients-spl/build.gradle.kts`, `idl-clients-bundle/build.gradle.kts`) —
+**that block is the authoritative list**; the class each suite mutates and the
+harness/seed each fuzz target uses live there, so read it rather than trusting a
+copy here. List the generated tasks with:
+
+```shell
+./gradlew :<module>:tasks --all | grep -iE '^(fuzz|pitest)'
+```
+
+These tasks are **not** part of `check`; run the relevant one when you change a
+targeted class — a fuzzer with `./gradlew :<module>:fuzz<Name> -PmaxFuzzTime=<seconds>`,
+a PIT suite with `./gradlew :<module>:pitest<Name>`.
+
+Conventions when adding a target:
+
+- A fuzz harness is a `*Fuzz.java` in the test sources with
+  `public static void fuzzerTestOneInput(byte[])` and **no Jazzer imports** (so it
+  compiles with the regular test sources). Register it with `fuzz.register(...)`.
+- Malformed-input contract is **garbage in → `RuntimeException` out**: the harness
+  tolerates any `RuntimeException` from a parse; a `StackOverflowError`, `OutOfMemoryError`,
+  or any other non-`RuntimeException` throwable is a finding. Beyond that, assert the
+  cross-method invariants that must hold on a successful parse (round-trip / determinism /
+  length-vs-header), which is what catches offset and logic bugs.
+- **Seed structured parsers.** A fixed/large account layout (e.g. a ~29KB Scope
+  mapping, a ~600B stake pool) is unreachable from a scratch mutator, so commit real
+  account dumps under `src/test/resources/fuzz/<name>/` and point the target's
+  `seedCorpus` at that directory. Skip seeding only when every input prefix is already
+  valid (a small count-prefixed record parser reaches its whole space from scratch).
 
 ## Conventions
 
