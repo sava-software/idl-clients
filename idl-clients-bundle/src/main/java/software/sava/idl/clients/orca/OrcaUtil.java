@@ -135,8 +135,10 @@ public final class OrcaUtil {
       if (startTickIndex > MIN_TICK_INDEX) {
         return false;
       }
+      // Rust's `%` truncates toward zero, so the remainder of the negative
+      // MIN_TICK_INDEX is negative — floorMod lands one array too far left
       final int minArrayStart =
-          MIN_TICK_INDEX - (Math.floorMod(MIN_TICK_INDEX, ticksInArray) + ticksInArray);
+          MIN_TICK_INDEX - (MIN_TICK_INDEX % ticksInArray + ticksInArray);
       return startTickIndex == minArrayStart;
     }
     return Math.floorMod(startTickIndex, ticksInArray) == 0;
@@ -292,7 +294,8 @@ public final class OrcaUtil {
     if (value.signum() < 0 || value.compareTo(U64_MAX) > 0) {
       throw new ArithmeticException("amount exceeds u64: " + value);
     }
-    return value.longValueExact(); // returns as unsigned long bits
+    // longValueExact would reject the valid u64 range above Long.MAX_VALUE
+    return value.longValue(); // returns as unsigned long bits
   }
 
   private static long mulDivU64(final long amount,
@@ -776,8 +779,8 @@ public final class OrcaUtil {
   }
 
   /// Compute the token-A delta between two sqrt-prices for a given
-  /// `liquidity`. Mirrors `try_get_amount_delta_a`. Result is a u64 token
-  /// amount returned as an unsigned `long`.
+  /// `liquidity`. Mirrors `try_get_amount_delta_a`, except the result is
+  /// returned uncapped: the Rust version errors when it exceeds u64.
   public static BigInteger tryGetAmountDeltaA(final BigInteger sqrtPrice1,
                                               final BigInteger sqrtPrice2,
                                               final BigInteger liquidity,
@@ -803,8 +806,8 @@ public final class OrcaUtil {
   }
 
   /// Compute the token-B delta between two sqrt-prices for a given
-  /// `liquidity`. Mirrors `try_get_amount_delta_b`. Result is a u64 token
-  /// amount returned as an unsigned `long`.
+  /// `liquidity`. Mirrors `try_get_amount_delta_b`, except the result is
+  /// returned uncapped: the Rust version errors when it exceeds u64.
   public static BigInteger tryGetAmountDeltaB(final BigInteger sqrtPrice1,
                                               final BigInteger sqrtPrice2,
                                               final BigInteger liquidity,

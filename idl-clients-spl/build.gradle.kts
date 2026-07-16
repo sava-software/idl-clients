@@ -12,6 +12,7 @@ hardening {
     targetClasses = listOf(
       "software.sava.idl.clients.spl.precompiles.SignatureVerifyProgram",
       "software.sava.idl.clients.spl.token_2022.Token2022Instructions",
+      "software.sava.idl.clients.spl.stakepool.StakePoolProgram",
       "software.sava.idl.clients.spl.stakepool.ValidatorList",
       "software.sava.idl.clients.spl.stakepool.ValidatorStakeInfo"
     )

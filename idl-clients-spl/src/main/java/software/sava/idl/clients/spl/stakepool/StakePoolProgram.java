@@ -1028,7 +1028,9 @@ public final class StakePoolProgram {
         createRead(validatorList)
     );
 
-    final byte[] data = new byte[1 + 1 + 1 + PublicKey.PUBLIC_KEY_LENGTH];
+    // strict borsh parsing on-chain rejects trailing bytes, so None must not carry
+    // the 32 zero bytes of an absent key
+    final byte[] data = new byte[1 + 1 + (validatorVoteAddress == null ? 1 : 1 + PublicKey.PUBLIC_KEY_LENGTH)];
     int i = Instructions.SetPreferredValidator.write(data);
     i += preferredValidatorType.write(data, i);
     Borsh.writeOptional(validatorVoteAddress, data, i);
@@ -1058,7 +1060,8 @@ public final class StakePoolProgram {
     keys[6] = solanaAccounts.readStakeProgram();
     int i = 7;
     for (final var validatorStakeAccount : validatorAndTransientStakeAccounts) {
-      keys[i++] = createRead(validatorStakeAccount);
+      // the processor merges transient lamports into these pairs
+      keys[i++] = createWrite(validatorStakeAccount);
     }
 
     final byte[] data = new byte[1 + Integer.BYTES + 1];
