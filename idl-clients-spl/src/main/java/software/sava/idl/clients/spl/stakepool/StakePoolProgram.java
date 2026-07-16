@@ -868,7 +868,9 @@ public final class StakePoolProgram {
                                                final PublicKey validatorListStorageAccount,
                                                final PublicKey stakeAccount,
                                                final PublicKey validator) {
-    final var keys = addValidatorToPoolKeys(
+    // the on-chain instruction is AddValidatorToPool(u32) with strict borsh parsing,
+    // so the "no seed" form still serializes a zero seed
+    return addValidatorToPool(
         solanaAccounts,
         invokedStakePoolProgram,
         stakePool,
@@ -876,10 +878,9 @@ public final class StakePoolProgram {
         reserveStakeAccount,
         validatorListStorageAccount,
         stakeAccount,
-        validator
+        validator,
+        0
     );
-
-    return Instruction.createInstruction(invokedStakePoolProgram, keys, Instructions.AddValidatorToPool.data);
   }
 
   public static Instruction addValidatorToPool(final SolanaAccounts solanaAccounts,
@@ -974,6 +975,7 @@ public final class StakePoolProgram {
                                                    final PublicKey staker,
                                                    final PublicKey validatorList,
                                                    final PublicKey stakePoolReserveAccount,
+                                                   final PublicKey transientStakeAccount,
                                                    final PublicKey validatorStakeAccount,
                                                    final PublicKey validatorVoteAccount,
                                                    final long lamports,
@@ -988,6 +990,7 @@ public final class StakePoolProgram {
         createRead(stakePoolWithdrawAuthority.publicKey()),
         createWrite(validatorList),
         createWrite(stakePoolReserveAccount),
+        createWrite(transientStakeAccount),
         createRead(validatorStakeAccount),
         createRead(validatorVoteAccount),
         solanaAccounts.readClockSysVar(),
@@ -1143,7 +1146,7 @@ public final class StakePoolProgram {
                                                         final AccountMeta invokedStakePoolProgram,
                                                         final PublicKey stakePool,
                                                         final PublicKey reserveStakeAccount,
-                                                        final PublicKey solDepositAuthority,
+                                                        final PublicKey lamportsFrom,
                                                         final PublicKey poolTokenATA,
                                                         final PublicKey poolTokenFeeATA,
                                                         final PublicKey poolTokenReferralFeeATA,
@@ -1157,7 +1160,8 @@ public final class StakePoolProgram {
         createWrite(stakePool),
         createRead(stakePoolWithdrawAuthority.publicKey()),
         createWrite(reserveStakeAccount),
-        createReadOnlySigner(solDepositAuthority),
+        // the account funding the deposit: lamports are debited from it
+        createWritableSigner(lamportsFrom),
         createWrite(poolTokenATA),
         createWrite(poolTokenFeeATA),
         createWrite(poolTokenReferralFeeATA),
@@ -1171,7 +1175,7 @@ public final class StakePoolProgram {
                                                    final AccountMeta invokedStakePoolProgram,
                                                    final PublicKey stakePool,
                                                    final PublicKey reserveStakeAccount,
-                                                   final PublicKey solDepositAuthority,
+                                                   final PublicKey lamportsFrom,
                                                    final PublicKey poolTokenATA,
                                                    final PublicKey poolTokenFeeATA,
                                                    final PublicKey poolTokenReferralFeeATA,
@@ -1184,7 +1188,7 @@ public final class StakePoolProgram {
         invokedStakePoolProgram,
         stakePool,
         reserveStakeAccount,
-        solDepositAuthority,
+        lamportsFrom,
         poolTokenATA,
         poolTokenFeeATA,
         poolTokenReferralFeeATA,
@@ -1204,7 +1208,7 @@ public final class StakePoolProgram {
                                        final AccountMeta invokedStakePoolProgram,
                                        final PublicKey stakePool,
                                        final PublicKey reserveStakeAccount,
-                                       final PublicKey solDepositAuthority,
+                                       final PublicKey lamportsFrom,
                                        final PublicKey poolTokenATA,
                                        final PublicKey poolTokenFeeATA,
                                        final PublicKey poolTokenReferralFeeATA,
@@ -1216,7 +1220,7 @@ public final class StakePoolProgram {
         invokedStakePoolProgram,
         stakePool,
         reserveStakeAccount,
-        solDepositAuthority,
+        lamportsFrom,
         poolTokenATA,
         poolTokenFeeATA,
         poolTokenReferralFeeATA,

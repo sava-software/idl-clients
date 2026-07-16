@@ -59,7 +59,7 @@ final class StakePoolProgramTests {
   @Test
   void depositSol() {
     final var reserveStakeAccount = key(2);
-    final var solDepositAuthority = key(3);
+    final var lamportsFrom = key(3);
     final var poolTokenATA = key(4);
     final var poolTokenFeeATA = key(5);
     final var poolTokenReferralFeeATA = key(6);
@@ -71,7 +71,7 @@ final class StakePoolProgramTests {
         INVOKED_PROGRAM,
         STAKE_POOL,
         reserveStakeAccount,
-        solDepositAuthority,
+        lamportsFrom,
         poolTokenATA,
         poolTokenFeeATA,
         poolTokenReferralFeeATA,
@@ -94,10 +94,9 @@ final class StakePoolProgramTests {
     assertAccount(accounts.get(0), STAKE_POOL, true, false);
     assertAccount(accounts.get(1), WITHDRAW_AUTHORITY, false, false);
     assertAccount(accounts.get(2), reserveStakeAccount, true, false);
-    // NOTE: the Rust builder marks the lamports-source account writable
-    // (AccountMeta::new(*lamports_from, true)); this builder emits a read-only
-    // signer. Pinned as-is, see report.
-    assertAccount(accounts.get(3), solDepositAuthority, false, true);
+    // lamports are debited from the funding account: writable + signer, matching
+    // the Rust builder (AccountMeta::new(*lamports_from, true))
+    assertAccount(accounts.get(3), lamportsFrom, true, true);
     assertAccount(accounts.get(4), poolTokenATA, true, false);
     assertAccount(accounts.get(5), poolTokenFeeATA, true, false);
     assertAccount(accounts.get(6), poolTokenReferralFeeATA, true, false);
@@ -109,7 +108,7 @@ final class StakePoolProgramTests {
   @Test
   void depositSolWithSlippage() {
     final var reserveStakeAccount = key(2);
-    final var solDepositAuthority = key(3);
+    final var lamportsFrom = key(3);
     final var poolTokenATA = key(4);
     final var poolTokenFeeATA = key(5);
     final var poolTokenReferralFeeATA = key(6);
@@ -121,7 +120,7 @@ final class StakePoolProgramTests {
         INVOKED_PROGRAM,
         STAKE_POOL,
         reserveStakeAccount,
-        solDepositAuthority,
+        lamportsFrom,
         poolTokenATA,
         poolTokenFeeATA,
         poolTokenReferralFeeATA,
@@ -146,7 +145,7 @@ final class StakePoolProgramTests {
     assertAccount(accounts.get(0), STAKE_POOL, true, false);
     assertAccount(accounts.get(1), WITHDRAW_AUTHORITY, false, false);
     assertAccount(accounts.get(2), reserveStakeAccount, true, false);
-    assertAccount(accounts.get(3), solDepositAuthority, false, true);
+    assertAccount(accounts.get(3), lamportsFrom, true, true);
     assertAccount(accounts.get(4), poolTokenATA, true, false);
     assertAccount(accounts.get(5), poolTokenFeeATA, true, false);
     assertAccount(accounts.get(6), poolTokenReferralFeeATA, true, false);
@@ -481,8 +480,9 @@ final class StakePoolProgramTests {
     final var staker = key(2);
     final var validatorList = key(3);
     final var stakePoolReserveAccount = key(4);
-    final var validatorStakeAccount = key(5);
-    final var validatorVoteAccount = key(6);
+    final var transientStakeAccount = key(5);
+    final var validatorStakeAccount = key(6);
+    final var validatorVoteAccount = key(7);
 
     final var ix = StakePoolProgram.increaseValidatorStake(
         SOLANA_ACCOUNTS,
@@ -491,6 +491,7 @@ final class StakePoolProgramTests {
         staker,
         validatorList,
         stakePoolReserveAccount,
+        transientStakeAccount,
         validatorStakeAccount,
         validatorVoteAccount,
         0x1122334455667788L,
@@ -507,24 +508,24 @@ final class StakePoolProgramTests {
     };
     assertArrayEquals(expectedData, ix.data());
 
-    // NOTE: the Rust source lists 14 accounts, with a writable transient stake
-    // account at index 5 between the reserve and the validator stake account.
-    // This builder omits it; pinned as-is, see report.
+    // 14 accounts with the writable transient stake account at index 5, matching
+    // the Rust builder increase_validator_stake.
     final var accounts = ix.accounts();
-    assertEquals(13, accounts.size());
+    assertEquals(14, accounts.size());
     assertAccount(accounts.get(0), STAKE_POOL, false, false);
     assertAccount(accounts.get(1), staker, false, true);
     assertAccount(accounts.get(2), WITHDRAW_AUTHORITY, false, false);
     assertAccount(accounts.get(3), validatorList, true, false);
     assertAccount(accounts.get(4), stakePoolReserveAccount, true, false);
-    assertAccount(accounts.get(5), validatorStakeAccount, false, false);
-    assertAccount(accounts.get(6), validatorVoteAccount, false, false);
-    assertAccount(accounts.get(7), CLOCK_SYSVAR, false, false);
-    assertAccount(accounts.get(8), RENT_SYSVAR, false, false);
-    assertAccount(accounts.get(9), STAKE_HISTORY_SYSVAR, false, false);
-    assertAccount(accounts.get(10), STAKE_CONFIG, false, false);
-    assertAccount(accounts.get(11), SYSTEM_PROGRAM, false, false);
-    assertAccount(accounts.get(12), STAKE_PROGRAM, false, false);
+    assertAccount(accounts.get(5), transientStakeAccount, true, false);
+    assertAccount(accounts.get(6), validatorStakeAccount, false, false);
+    assertAccount(accounts.get(7), validatorVoteAccount, false, false);
+    assertAccount(accounts.get(8), CLOCK_SYSVAR, false, false);
+    assertAccount(accounts.get(9), RENT_SYSVAR, false, false);
+    assertAccount(accounts.get(10), STAKE_HISTORY_SYSVAR, false, false);
+    assertAccount(accounts.get(11), STAKE_CONFIG, false, false);
+    assertAccount(accounts.get(12), SYSTEM_PROGRAM, false, false);
+    assertAccount(accounts.get(13), STAKE_PROGRAM, false, false);
   }
 
   @Test
@@ -640,11 +641,9 @@ final class StakePoolProgramTests {
 
     assertEquals(INVOKED_PROGRAM, ix.programId());
 
-    // NOTE: the Rust enum variant is AddValidatorToPool(u32) and the processor
-    // uses strict borsh try_from_slice, which requires the 4-byte seed (the Rust
-    // builder always serializes seed.unwrap_or(0)). This overload emits only the
-    // 1-byte discriminant; pinned as-is, see report.
-    assertArrayEquals(new byte[]{1}, ix.data());
+    // AddValidatorToPool(u32) with strict borsh parsing: the no-seed overload
+    // serializes a zero seed, matching the Rust builder's seed.unwrap_or(0).
+    assertArrayEquals(new byte[]{1, 0, 0, 0, 0}, ix.data());
 
     final var accounts = ix.accounts();
     assertEquals(13, accounts.size());
