@@ -32,4 +32,10 @@ hardening {
     maxLen = 1024
     seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/stakePoolState")
   }
+  fuzz.register("precompileOffsets") {
+    targetClass = "software.sava.idl.clients.spl.precompiles.PrecompileOffsetsFuzz"
+    // a u8 count (max 255) with 11/14-byte records: 2 + 255*14 ~= 3.5KB covers every
+    // record; the whole space is reachable from scratch, so no seed corpus
+    maxLen = 256
+  }
 }
