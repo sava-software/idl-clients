@@ -70,7 +70,7 @@ public sealed interface IncreaseLiquidityMethod extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override

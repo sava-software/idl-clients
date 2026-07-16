@@ -78,7 +78,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -117,7 +117,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -178,7 +178,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
 
     @Override
     public int l() {
-      return 1 + (refPriceIndex == null || refPriceIndex.isEmpty() ? 1 : (1 + 2)) + (refPriceToleranceBps == null || refPriceToleranceBps.isEmpty() ? 1 : (1 + 2));
+      return ordinalBytes() + (refPriceIndex == null || refPriceIndex.isEmpty() ? 1 : (1 + 2)) + (refPriceToleranceBps == null || refPriceToleranceBps.isEmpty() ? 1 : (1 + 2));
     }
 
     @Override

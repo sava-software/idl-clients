@@ -713,7 +713,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -886,7 +886,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -945,7 +945,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -986,7 +986,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -1027,7 +1027,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -1079,7 +1079,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
+      return ordinalBytes() + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
     }
 
     @Override
@@ -1367,7 +1367,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -1555,7 +1555,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -1595,7 +1595,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -1799,7 +1799,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
+      return ordinalBytes() + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
     }
 
     @Override
@@ -1924,7 +1924,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + SerDeUtil.lenVector(4, candidateSwaps) + (bestPosition == null || bestPosition.isEmpty() ? 1 : (1 + 1));
+      return ordinalBytes() + SerDeUtil.lenVector(4, candidateSwaps) + (bestPosition == null || bestPosition.isEmpty() ? 1 : (1 + 1));
     }
 
     @Override
@@ -2031,7 +2031,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2081,7 +2081,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + side.l() + SerDeUtil.lenVector(4, fillData);
+      return ordinalBytes() + side.l() + SerDeUtil.lenVector(4, fillData);
     }
 
     @Override
@@ -2149,7 +2149,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2218,7 +2218,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2369,7 +2369,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2527,7 +2527,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + SerDeUtil.lenVector(4, candidateSwaps) + 1 + 1;
+      return ordinalBytes() + SerDeUtil.lenVector(4, candidateSwaps) + 1 + 1;
     }
 
     @Override
@@ -2660,7 +2660,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2710,7 +2710,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -2786,7 +2786,7 @@ public sealed interface Swap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override

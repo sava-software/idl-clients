@@ -93,7 +93,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -136,7 +136,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -191,7 +191,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -234,7 +234,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -296,7 +296,7 @@ public sealed interface DelegateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + 32 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + 32 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override

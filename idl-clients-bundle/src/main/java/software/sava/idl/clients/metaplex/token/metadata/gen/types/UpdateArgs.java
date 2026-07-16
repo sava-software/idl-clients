@@ -134,7 +134,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + (newUpdateAuthority == null ? 1 : (1 + 32))
+      return ordinalBytes() + (newUpdateAuthority == null ? 1 : (1 + 32))
            + (data == null ? 1 : (1 + data.l()))
            + (primarySaleHappened == null ? 1 : (1 + 1))
            + (isMutable == null ? 1 : (1 + 1))
@@ -262,7 +262,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + (newUpdateAuthority == null ? 1 : (1 + 32))
+      return ordinalBytes() + (newUpdateAuthority == null ? 1 : (1 + 32))
            + (data == null ? 1 : (1 + data.l()))
            + (primarySaleHappened == null ? 1 : (1 + 1))
            + (isMutable == null ? 1 : (1 + 1))
@@ -359,7 +359,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + (newUpdateAuthority == null ? 1 : (1 + 32))
+      return ordinalBytes() + (newUpdateAuthority == null ? 1 : (1 + 32))
            + (primarySaleHappened == null ? 1 : (1 + 1))
            + (isMutable == null ? 1 : (1 + 1))
            + (tokenStandard == null ? 1 : (1 + tokenStandard.l()))
@@ -403,7 +403,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + collection.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + collection.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -450,7 +450,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + (data == null ? 1 : (1 + data.l())) + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + (data == null ? 1 : (1 + data.l())) + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -490,7 +490,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + ruleSet.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + ruleSet.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -537,7 +537,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + (data == null ? 1 : (1 + data.l())) + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + (data == null ? 1 : (1 + data.l())) + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -577,7 +577,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + collection.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + collection.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override
@@ -617,7 +617,7 @@ public sealed interface UpdateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + ruleSet.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + ruleSet.l() + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override

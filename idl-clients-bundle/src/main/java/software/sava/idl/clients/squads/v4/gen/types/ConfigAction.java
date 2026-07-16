@@ -157,7 +157,7 @@ public sealed interface ConfigAction extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 32
+      return ordinalBytes() + 32
            + 1
            + 32
            + 8

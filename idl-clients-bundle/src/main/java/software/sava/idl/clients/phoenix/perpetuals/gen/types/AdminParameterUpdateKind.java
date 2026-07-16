@@ -80,7 +80,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -119,7 +119,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -156,7 +156,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -193,7 +193,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -234,7 +234,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -275,7 +275,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -316,7 +316,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -353,7 +353,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -390,7 +390,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -434,7 +434,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -471,7 +471,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -508,7 +508,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -549,7 +549,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -583,7 +583,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + previous.l() + _new.l();
+      return ordinalBytes() + previous.l() + _new.l();
     }
 
     @Override

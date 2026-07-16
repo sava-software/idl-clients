@@ -86,7 +86,7 @@ public sealed interface VaultManagementAction extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + oracle.l();
+      return ordinalBytes() + 1 + oracle.l();
     }
 
     @Override
@@ -145,7 +145,7 @@ public sealed interface VaultManagementAction extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override

@@ -53,7 +53,7 @@ public sealed interface MintArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
+      return ordinalBytes() + 8 + (authorizationData == null ? 1 : (1 + authorizationData.l()));
     }
 
     @Override

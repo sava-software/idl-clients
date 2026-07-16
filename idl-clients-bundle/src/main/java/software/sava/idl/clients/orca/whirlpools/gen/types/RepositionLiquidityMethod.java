@@ -79,7 +79,7 @@ public sealed interface RepositionLiquidityMethod extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override

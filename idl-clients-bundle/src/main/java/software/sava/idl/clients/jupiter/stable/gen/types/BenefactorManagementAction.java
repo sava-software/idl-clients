@@ -88,7 +88,7 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -147,7 +147,7 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -217,7 +217,7 @@ public sealed interface BenefactorManagementAction extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override

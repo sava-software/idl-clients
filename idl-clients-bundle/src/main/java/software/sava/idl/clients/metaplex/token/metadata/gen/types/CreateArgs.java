@@ -62,7 +62,7 @@ public sealed interface CreateArgs extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + assetData.l() + (decimals == null || decimals.isEmpty() ? 1 : (1 + 1)) + (printSupply == null ? 1 : (1 + printSupply.l()));
+      return ordinalBytes() + assetData.l() + (decimals == null || decimals.isEmpty() ? 1 : (1 + 1)) + (printSupply == null ? 1 : (1 + printSupply.l()));
     }
 
     @Override

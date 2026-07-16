@@ -72,7 +72,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -124,7 +124,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int l() {
-      return BYTES;
+      return ordinalBytes() + BYTES;
     }
 
     @Override
@@ -256,7 +256,7 @@ public sealed interface CandidateSwap extends RustEnum permits
 
     @Override
     public int l() {
-      return 1 + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
+      return ordinalBytes() + 1 + (remainingAccountsInfo == null ? 1 : (1 + remainingAccountsInfo.l()));
     }
 
     @Override
