@@ -28,7 +28,8 @@ public interface ScopeReader {
         oracleMappings.twapEnabledBitmask(),
         oracleMappings.refPrice(),
         oracleMappings.generic(),
-        OracleType.values()
+        OracleType.values(),
+        new boolean[priceAccounts.length]
     );
     return reader.readEntries(oracleMappings._address(), slot);
   }

@@ -35,4 +35,12 @@ hardening {
     // the discriminator, so the budget is all payload
     maxLen = 1024
   }
+  fuzz.register("scopeReader") {
+    targetClass = "software.sava.idl.clients.kamino.scope.entries.ScopeReaderFuzz"
+    // OracleMappings is a fixed 29704-byte account; a little headroom lets the mutator
+    // probe over-long inputs. Seeds are real account dumps — the layout is unreachable
+    // from scratch
+    maxLen = 30000
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/scopeReader")
+  }
 }

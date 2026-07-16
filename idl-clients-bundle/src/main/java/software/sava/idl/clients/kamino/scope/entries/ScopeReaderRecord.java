@@ -16,7 +16,8 @@ record ScopeReaderRecord(ScopeEntry[] entries,
                          TwapEnabledBitmask[] twapEnabledBitmasks,
                          int[] refPrice,
                          byte[][] generic,
-                         OracleType[] oracleTypes) implements ScopeReader {
+                         OracleType[] oracleTypes,
+                         boolean[] visiting) implements ScopeReader {
 
   /// Bit 7 of `OracleMappings.price_types[i]` is a frozen flag.
   /// The oracle type is preserved in bits 0-6.
@@ -85,6 +86,20 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     if (entry != null) {
       return entry;
     }
+    if (visiting[i]) {
+      // a cyclic refPrice/source index (never produced on-chain) would recurse forever;
+      // treat the back-reference as an absent entry instead of overflowing the stack
+      return null;
+    }
+    visiting[i] = true;
+    try {
+      return computeEntry(i);
+    } finally {
+      visiting[i] = false;
+    }
+  }
+
+  private ScopeEntry computeEntry(final int i) {
     final var priceAccount = priceInfoAccounts[i];
     final var oracleType = oracleTypes[priceTypes[i] & ORACLE_TYPE_MASK];
     final var emaTypes = emaTypes(this.twapEnabledBitmasks[i].bitmask());

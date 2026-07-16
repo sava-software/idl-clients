@@ -36,5 +36,5 @@ javaModules {
   }
 }
 
-//includeBuild("../sava")
+includeBuild("../sava")
 //includeBuild("../json-iterator")
