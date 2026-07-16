@@ -36,9 +36,10 @@ public final class ValidatorListFuzz {
       return;
     }
     // accepted input must re-serialize byte-identically over the consumed prefix. The
-    // prefix may be shorter than l(): sava-core's readPubKey zero-pads a truncated
-    // trailing key (Arrays.copyOfRange), so truncation inside the final vote-account
-    // key is silently accepted rather than rejected.
+    // prefix may be shorter than l(): readPubKey in sava-core releases up to the
+    // current BOM zero-pads a truncated trailing key, so truncation inside the final
+    // vote-account key is silently accepted rather than rejected. Fixed upstream to
+    // throw IndexOutOfBoundsException; the min() below stays correct either way.
     final int length = list.l();
     final byte[] written = new byte[length];
     final int wrote = list.write(written, 0);

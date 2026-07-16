@@ -66,10 +66,12 @@ final class OracleUtilTests {
         new BigDecimal("64230.11500000"),
         OracleUtil.scalePythPullPrice(priceUpdate(6423011500000L, -8)));
     assertEquals(new BigDecimal("500"), OracleUtil.scalePythPullPrice(priceUpdate(5L, 2)));
-    // Negative price longs follow the unsigned branch.
+    // PriceFeedMessage.price is an i64: a negative price stays negative, unlike the
+    // unsigned scalePrice(long, int) overload.
     assertEquals(
-        new BigDecimal("18446744073709551615"),
-        OracleUtil.scalePythPullPrice(priceUpdate(-1L, 0)));
+        new BigDecimal("-0.00000001"),
+        OracleUtil.scalePythPullPrice(priceUpdate(-1L, -8)));
+    assertEquals(new BigDecimal("-1"), OracleUtil.scalePythPullPrice(priceUpdate(-1L, 0)));
   }
 
   private static PriceUpdateV2 priceUpdate(final long price, final int exponent) {
