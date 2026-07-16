@@ -51,7 +51,11 @@ public interface MarinadeProgramClient {
   static CompletableFuture<AccountInfo<MarinadeValidatorList>> fetchValidatorList(final SolanaRpcClient rpcClient,
                                                                                   final State programState) {
     final var destinationValidatorList = programState.validatorSystem().validatorList();
-    return rpcClient.getAccountInfo(destinationValidatorList.account(), MarinadeValidatorList.FACTORY);
+    final int count = Math.toIntExact(destinationValidatorList.count());
+    return rpcClient.getAccountInfo(
+        destinationValidatorList.account(),
+        (address, data) -> MarinadeValidatorList.read(address, data, count)
+    );
   }
 
   static long totalVirtualStakedLamports(final State state) {
