@@ -133,7 +133,18 @@ public final class SerDeUtil {
     return len;
   }
 
+  /// Length prefixes and presence flags pass through here; a value the prefix cannot
+  /// hold — or that [#val(int,byte\[\],int)] cannot read back, e.g. a length past
+  /// `Short.MAX_VALUE` under a 2-byte prefix — must fail fast instead of silently
+  /// truncating into data that cannot round trip.
   private static void writeVal(final int prefixBytes, final int val, final byte[] data, final int offset) {
+    if (val < 0
+        || (prefixBytes == 1 && val > 0xFF)
+        || (prefixBytes == 2 && val > Short.MAX_VALUE)) {
+      throw new IllegalArgumentException(String.format(
+          "%d does not fit in a %d byte prefix.", val, prefixBytes
+      ));
+    }
     switch (prefixBytes) {
       case 1 -> data[offset] = (byte) val;
       case 2 -> ByteUtil.putInt16LE(data, offset, val);
@@ -560,7 +571,7 @@ public final class SerDeUtil {
                                 final int offset,
                                 final Charset charset) {
     writeVal(vectorPrefix, array.length, data, offset);
-    return stringPrefix + writeArray(stringPrefix, array, data, offset + stringPrefix, charset);
+    return vectorPrefix + writeArray(stringPrefix, array, data, offset + vectorPrefix, charset);
   }
 
   public static int writeArray(final int stringPrefix,
