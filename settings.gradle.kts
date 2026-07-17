@@ -25,8 +25,8 @@ pluginManagement {
 }
 
 plugins {
-  id("software.sava.build") version "21.5.4"
-  id("software.sava.build.feature.jdk-provisioning") version "21.5.4"
+  id("software.sava.build") version "21.5.5"
+  id("software.sava.build.feature.jdk-provisioning") version "21.5.5"
 }
 
 javaModules {
@@ -36,5 +36,5 @@ javaModules {
   }
 }
 
-includeBuild("../sava")
+//includeBuild("../sava")
 //includeBuild("../json-iterator")
