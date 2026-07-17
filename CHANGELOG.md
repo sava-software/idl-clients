@@ -1,5 +1,31 @@
 # Changelog
 
+## [25.17.0](https://github.com/sava-software/idl-clients/compare/25.16.0...25.17.0) (2026-07-17)
+
+
+### Features
+
+* **idl-clients-bundle:** add unit tests for Dlmm, JupiterSwap, and Kamino utilities ([a7edd03](https://github.com/sava-software/idl-clients/commit/a7edd03c56a1a2881a2abc3d12adc383cbfb027c))
+* **idl-clients-bundle:** handle unknown oracle types gracefully in ScopeReader ([9cdd151](https://github.com/sava-software/idl-clients/commit/9cdd151535ed17b834ab683a9afed2abcc73ea9d))
+* **idl-clients-bundle:** include Orca PDA unit tests and sync IDL updates ([6ea8877](https://github.com/sava-software/idl-clients/commit/6ea8877a2bc26850ae044e2e7bcc8ef887f95aff))
+* **idl-clients-spl:** enforce strict bounds on prefix serialization in SerDeUtil ([856f1f5](https://github.com/sava-software/idl-clients/commit/856f1f5136d5ecbe2fc918560d8acbaa30e78547))
+* **idl-clients-spl:** migrate Borsh implementations to SerDe equivalents ([f36ef67](https://github.com/sava-software/idl-clients/commit/f36ef67b04b6f2ba628dcd1135a9446ec5f06e2e))
+* **marinade:** add support for reading validator lists with precise counts ([09bff10](https://github.com/sava-software/idl-clients/commit/09bff1013a87482727d55561c465e364d15726fd))
+
+
+### Bug Fixes
+
+* **idl-clients-bundle:** correct scale logic for negative i64 prices ([1e54c17](https://github.com/sava-software/idl-clients/commit/1e54c17a5b1f0bba920d844a8738f32a565ad5d0))
+* **idl-clients-bundle:** update length calculations to use `ordinalBytes` ([0f37956](https://github.com/sava-software/idl-clients/commit/0f379560b9de1b3c7422a53a54cf264da8fc5ea8))
+* **idl-clients-spl:** validate length prefixes in vector deserialization ([93b4d00](https://github.com/sava-software/idl-clients/commit/93b4d00605196e26ab656350c983b5dab96d24e8))
+* **stakepool:** update account handling and align with Rust instruction logic ([8e60056](https://github.com/sava-software/idl-clients/commit/8e60056a03ca85ab6892d208ff70ef5b164407bc))
+* update solanaBOMVersion and remove unused methods from JupiterSwapInstructions ([8ee3de6](https://github.com/sava-software/idl-clients/commit/8ee3de66ddbd5e7eae5d5826734fbdd59b9862bf))
+
+
+### Miscellaneous Chores
+
+* release 25.17.0 ([b9d434b](https://github.com/sava-software/idl-clients/commit/b9d434b57f3fd11b48a76b65777b1c89410636d8))
+
 ## [25.16.0](https://github.com/sava-software/idl-clients/compare/25.15.1...25.16.0) (2026-07-15)
 
 
