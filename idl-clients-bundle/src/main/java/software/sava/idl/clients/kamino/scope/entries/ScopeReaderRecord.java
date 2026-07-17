@@ -101,10 +101,17 @@ record ScopeReaderRecord(ScopeEntry[] entries,
 
   private ScopeEntry computeEntry(final int i) {
     final var priceAccount = priceInfoAccounts[i];
-    final var oracleType = oracleTypes[priceTypes[i] & ORACLE_TYPE_MASK];
     final var emaTypes = emaTypes(this.twapEnabledBitmasks[i].bitmask());
     final var refPrice = entry(this.refPrice[i]);
     final var refPriceToleranceBps = refPriceToleranceBps(i, refPrice);
+    final int typeOrdinal = priceTypes[i] & ORACLE_TYPE_MASK;
+    if (typeOrdinal >= oracleTypes.length) {
+      // the on-chain program has deployed an oracle type newer than the generated
+      // OracleType enum; degrade until the IDL is re-synced instead of failing the
+      // whole mappings parse
+      return new NotYetSupported(i, priceAccount, null, emaTypes, refPrice, refPriceToleranceBps, generic[i]);
+    }
+    final var oracleType = oracleTypes[typeOrdinal];
     return switch (oracleType) {
       case AdrenaLp -> new AdrenaLp(i, priceAccount, emaTypes);
       case CappedFloored -> {

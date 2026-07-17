@@ -9,6 +9,11 @@ import java.util.Objects;
 import java.util.OptionalInt;
 import java.util.Set;
 
+/// A slot whose oracle type this library does not (yet) interpret.
+///
+/// `oracleType` is `null` when the on-chain ordinal is beyond the generated
+/// [OracleType] enum — i.e. the deployed program is ahead of the IDL this
+/// library was generated from.
 public record NotYetSupported(int index,
                               PublicKey priceAccount,
                               OracleType oracleType,
@@ -37,7 +42,7 @@ public record NotYetSupported(int index,
   @Override
   public int hashCode() {
     int result = Objects.hashCode(priceAccount);
-    result = 31 * result + oracleType.hashCode();
+    result = 31 * result + Objects.hashCode(oracleType);
     result = 31 * result + emaTypes.hashCode();
     result = 31 * result + Objects.hashCode(refPrice);
     result = 31 * result + refPriceToleranceBps.hashCode();

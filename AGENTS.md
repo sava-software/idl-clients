@@ -82,6 +82,25 @@ in `AGENTS.local.md`, which is git-ignored; consult it (and add to it) rather
 than putting local paths in this file. If a needed program repo is not yet
 cloned, clone it into the reference directory listed there.
 
+### Reporting issues found in a third-party program's Rust source
+
+The Rust source is ground truth, but our job is to mirror the program's actual
+on-chain behavior, not to critique its code. When cross-checking against a
+**third-party** program's Rust (anything that is *not* a sava-software repo,
+e.g. the SPL, Kamino, Meteora, Orca, Jupiter, Marinade sources):
+
+- **Only surface a discrepancy if it is a genuine bug we would open an upstream
+  PR for.** If you find one, say so precisely (file, symbol, wrong vs correct
+  behavior) so a PR can follow.
+- **Do not report harmless divergences.** A Rust builder fn whose account flags
+  disagree with its own doc comment, dead code, style, naming — none of that is
+  actionable for us. Match whatever the deployed program actually enforces
+  (verify on-chain when in doubt) and move on without a note. These reports are
+  noise, not signal.
+
+This restriction is only for third-party sources. Issues in sava-software's own
+repos (sava, idl-src-gen, sava-build, ...) are reported and fixed normally.
+
 ### PDA helpers require the official program source
 
 Never write or fix a PDA-derivation helper from the IDL alone. A PDA seed is
