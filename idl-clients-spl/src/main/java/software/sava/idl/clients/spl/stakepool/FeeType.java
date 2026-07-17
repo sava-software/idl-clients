@@ -1,6 +1,6 @@
 package software.sava.idl.clients.spl.stakepool;
 
-import software.sava.core.borsh.RustEnum;
+import software.sava.idl.clients.core.gen.RustEnum;
 
 public sealed interface FeeType extends RustEnum permits
     FeeType.SolReferral,
@@ -28,7 +28,7 @@ public sealed interface FeeType extends RustEnum permits
     }
   }
 
-  record Epoch(StakePoolState.Fee val) implements BorshEnum, FeeType {
+  record Epoch(StakePoolState.Fee val) implements SerDeEnum, FeeType {
 
     @Override
     public int ordinal() {
@@ -36,7 +36,7 @@ public sealed interface FeeType extends RustEnum permits
     }
   }
 
-  record StakeWithdrawal(StakePoolState.Fee val) implements BorshEnum, FeeType {
+  record StakeWithdrawal(StakePoolState.Fee val) implements SerDeEnum, FeeType {
 
     @Override
     public int ordinal() {
@@ -44,7 +44,7 @@ public sealed interface FeeType extends RustEnum permits
     }
   }
 
-  record SolDeposit(StakePoolState.Fee val) implements BorshEnum, FeeType {
+  record SolDeposit(StakePoolState.Fee val) implements SerDeEnum, FeeType {
 
     @Override
     public int ordinal() {
@@ -52,7 +52,7 @@ public sealed interface FeeType extends RustEnum permits
     }
   }
 
-  record StakeDeposit(StakePoolState.Fee val) implements BorshEnum, FeeType {
+  record StakeDeposit(StakePoolState.Fee val) implements SerDeEnum, FeeType {
 
     @Override
     public int ordinal() {
@@ -60,7 +60,7 @@ public sealed interface FeeType extends RustEnum permits
     }
   }
 
-  record SolWithdrawal(StakePoolState.Fee val) implements BorshEnum, FeeType {
+  record SolWithdrawal(StakePoolState.Fee val) implements SerDeEnum, FeeType {
 
     @Override
     public int ordinal() {

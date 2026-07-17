@@ -1,8 +1,8 @@
 package software.sava.idl.clients.spl.stakepool;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static software.sava.core.accounts.PublicKey.PUBLIC_KEY_LENGTH;
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -16,7 +16,7 @@ public record ValidatorStakeInfo(long activeStakeLamports,
                                  int unused,
                                  int validatorSeedSuffix,
                                  StakeStatus podStakeStatus,
-                                 PublicKey voteAccountAddress) implements Borsh {
+                                 PublicKey voteAccountAddress) implements SerDe {
 
   public static int BYTES = Long.BYTES + Long.BYTES + Long.BYTES + Long.BYTES
       + Integer.BYTES + Integer.BYTES

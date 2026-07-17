@@ -1,8 +1,8 @@
 package software.sava.idl.clients.spl.stakepool;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.spl.stake.LockUp;
 
 import java.math.BigDecimal;
@@ -213,7 +213,7 @@ public record StakePoolState(PublicKey address,
     );
   }
 
-  public record Fee(long denominator, long numerator) implements Comparable<Fee>, Borsh {
+  public record Fee(long denominator, long numerator) implements Comparable<Fee>, SerDe {
 
     static final int BYTES = 16;
 

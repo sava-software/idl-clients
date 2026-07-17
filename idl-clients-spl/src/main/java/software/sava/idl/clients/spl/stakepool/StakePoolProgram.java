@@ -4,7 +4,8 @@ import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.core.borsh.Borsh;
+import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
@@ -1009,7 +1010,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, keys, data);
   }
 
-  public enum PreferredValidatorType implements Borsh.Enum {
+  public enum PreferredValidatorType implements RustEnum {
 
     Deposit,
     Withdraw
@@ -1032,7 +1033,7 @@ public final class StakePoolProgram {
     final byte[] data = new byte[1 + 1 + (validatorVoteAddress == null ? 1 : 1 + PublicKey.PUBLIC_KEY_LENGTH)];
     int i = Instructions.SetPreferredValidator.write(data);
     i += preferredValidatorType.write(data, i);
-    Borsh.writeOptional(validatorVoteAddress, data, i);
+    SerDeUtil.writeOptional(1, validatorVoteAddress, data, i);
 
     return Instruction.createInstruction(invokedStakePoolProgram, keys, data);
   }
@@ -1117,7 +1118,7 @@ public final class StakePoolProgram {
     return Instruction.createInstruction(invokedStakePoolProgram, keys, Instructions.SetStaker);
   }
 
-  public enum FundingType implements Borsh.Enum {
+  public enum FundingType implements RustEnum {
     /// Sets the stake deposit authority
     StakeDeposit,
     /// Sets the SOL deposit authority

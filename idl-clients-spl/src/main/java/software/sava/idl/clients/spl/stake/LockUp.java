@@ -1,14 +1,14 @@
 package software.sava.idl.clients.spl.stake;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.borsh.Borsh;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.gen.SerDe;
 
 import static java.util.Objects.requireNonNullElse;
 import static software.sava.core.accounts.PublicKey.PUBLIC_KEY_LENGTH;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
-public record LockUp(long unixTimestamp, long epoch, PublicKey custodian) implements Borsh {
+public record LockUp(long unixTimestamp, long epoch, PublicKey custodian) implements SerDe {
 
   public static final int BYTES = Long.BYTES + Long.BYTES + PUBLIC_KEY_LENGTH;
 
