@@ -6,9 +6,11 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// T3/T4 smart debt: maximum token amounts per debt share for `payback_perfect` (1e18 precision).
+/// T3/T4 smart debt: maximum token amounts per WHOLE debt share for `payback_perfect`
+/// (1e9 precision — Solana DEX shares are 9-decimal, unlike Solidity's 1e18).
 /// After the core liquidation, the vault calls DEX `payback_perfect` with
-/// `token_per_unit_shares * actual_debt_shares / 1e18` as the per-token max.
+/// `token_per_unit_shares * actual_debt_shares / 1e9` as the per-token max
+/// (see `SHARES_PRECISION`).
 /// Set a field to `0` to pay back entirely in the *other* token only.
 ///
 /// @param token0PerUnitShares: u64

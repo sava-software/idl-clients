@@ -30,7 +30,7 @@ final class JupiterTokenClientImpl extends JsonHttpClient implements JupiterToke
                          final BiPredicate<HttpResponse<?>, byte[]> testResponse,
                          final URI v2TokenPath,
                          final URI v2RecentTokenPath) {
-    super(endpoint, httpClient, requestTimeout, extendRequest, null, testResponse);
+    super(endpoint, httpClient, requestTimeout, extendRequest, testResponse);
     this.v2TokenPath = v2TokenPath;
     this.v2RecentTokenPath = v2RecentTokenPath;
   }

@@ -79,7 +79,7 @@ final class JupiterSwapApiClientImpl extends JsonHttpClient implements JupiterSw
                            final URI swapURI,
                            final URI swapInstructionsURI,
                            final URI programIdToLabelURI) {
-    super(endpoint, httpClient, requestTimeout, extendRequest, null, testResponse);
+    super(endpoint, httpClient, requestTimeout, extendRequest, testResponse);
     this.quotePathFormat = quotePathFormat;
     this.quotePath = quotePath;
     this.swapURI = swapURI;

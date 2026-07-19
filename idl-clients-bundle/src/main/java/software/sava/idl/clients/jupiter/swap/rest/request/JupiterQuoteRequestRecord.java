@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static systems.comodal.jsoniter.JsonIterator.fieldEqualsIgnoreCase;
-
 // https://dev.jup.ag/api-reference/swap/quote
 record JupiterQuoteRequestRecord(SwapMode swapMode,
                                  PublicKey inputTokenMint,
@@ -30,15 +28,7 @@ record JupiterQuoteRequestRecord(SwapMode swapMode,
                                  int maxAccounts,
                                  String instructionVersion) implements JupiterQuoteRequest {
 
-  private static final CharBufferFunction<SwapMode> PARSE_MODE = (buf, offset, len) -> {
-    if (fieldEqualsIgnoreCase("ExactIn", buf, offset, len)) {
-      return SwapMode.ExactIn;
-    } else if (fieldEqualsIgnoreCase("ExactOut", buf, offset, len)) {
-      return SwapMode.ExactOut;
-    } else {
-      return null;
-    }
-  };
+  private static final CharBufferFunction<SwapMode> PARSE_MODE = FieldMatcher.enumMatcherIgnoreCase(SwapMode.values());
 
   record Parser(Builder builder) implements FieldIndexPredicate, Supplier<JupiterQuoteRequest> {
 

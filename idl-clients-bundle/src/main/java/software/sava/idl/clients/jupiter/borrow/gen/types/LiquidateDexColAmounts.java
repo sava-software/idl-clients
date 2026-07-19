@@ -6,10 +6,11 @@ import software.sava.idl.clients.core.gen.SerDe;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// T2/T4 smart collateral: minimum token amounts per collateral share (1e18 precision).
+/// T2/T4 smart collateral: minimum token amounts per WHOLE collateral share
+/// (1e9 precision — Solana DEX shares are 9-decimal, unlike Solidity's 1e18).
 /// After the core liquidation, the vault calls DEX `withdraw_perfect` (or
 /// `withdraw_perfect_in_one_token`) with per-share slippage bounds computed as
-/// `token_per_unit_shares * actual_col_shares / 1e18`.
+/// `token_per_unit_shares * actual_col_shares / 1e9` (see `SHARES_PRECISION`).
 /// Set a field to `0` to receive the full withdrawal in the *other* token only.
 ///
 /// @param token0PerUnitShares: u64

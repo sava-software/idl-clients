@@ -5,7 +5,6 @@ import software.sava.rpc.json.PublicKeyEncoding;
 import systems.comodal.jsoniter.FieldBufferPredicate;
 import systems.comodal.jsoniter.JsonIterator;
 
-import java.util.ArrayList;
 import java.util.function.Supplier;
 
 import static systems.comodal.jsoniter.JsonIterator.fieldEquals;
@@ -47,7 +46,7 @@ public record ClaimProof(PublicKey mint,
       } else if (fieldEquals("locked_amount", buf, offset, len)) {
         lockedAmount = ji.readLong();
       } else if (fieldEquals("proof", buf, offset, len)) {
-        this.proof = ji.readCollection(new ArrayList<>(16), jsonIterator -> {
+        this.proof = ji.readList(16, jsonIterator -> {
           final byte[] item = new byte[32];
           jsonIterator.readByteArray(item);
           return item;

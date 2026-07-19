@@ -109,7 +109,8 @@ public sealed interface VaultsError extends ProgramError permits
     VaultsError.VaultBorrowVaultAccountRequired,
     VaultsError.VaultUserBorrowPositionRequired,
     VaultsError.VaultLiquidateColAmountsRequired,
-    VaultsError.VaultLiquidateDebtAmountsRequired {
+    VaultsError.VaultLiquidateDebtAmountsRequired,
+    VaultsError.VaultInvalidDexOracleProgram {
 
   static VaultsError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -219,6 +220,7 @@ public sealed interface VaultsError extends ProgramError permits
       case 6103 -> VaultUserBorrowPositionRequired.INSTANCE;
       case 6104 -> VaultLiquidateColAmountsRequired.INSTANCE;
       case 6105 -> VaultLiquidateDebtAmountsRequired.INSTANCE;
+      case 6106 -> VaultInvalidDexOracleProgram.INSTANCE;
       default -> null;
     };
   }
@@ -962,6 +964,13 @@ public sealed interface VaultsError extends ProgramError permits
 
     public static final VaultLiquidateDebtAmountsRequired INSTANCE = new VaultLiquidateDebtAmountsRequired(
         6105, "VAULT_LIQUIDATE_DEBT_AMOUNTS_REQUIRED"
+    );
+  }
+
+  record VaultInvalidDexOracleProgram(int code, String msg) implements VaultsError {
+
+    public static final VaultInvalidDexOracleProgram INSTANCE = new VaultInvalidDexOracleProgram(
+        6106, "VAULT_INVALID_DEX_ORACLE_PROGRAM"
     );
   }
 }
