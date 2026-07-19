@@ -50,8 +50,30 @@ public record JupiterSwapInstructions(List<Instruction> computeBudgetInstruction
   }
 
   public Map<PublicKey, AccountMeta> createAccountsMap() {
-    final var feePayer = setupInstructions.getFirst().accounts().getFirst().publicKey();
-    return AccountMeta.createAccountsMap(64, feePayer);
+    return AccountMeta.createAccountsMap(64, feePayer());
+  }
+
+  /// The fee payer is the user's wallet. It was previously read unconditionally
+  /// from the first setup instruction's first account, but Jupiter returns
+  /// `setupInstructions: []` — or omits the field — whenever no associated token
+  /// account has to be created and no SOL wrapping is required, which made
+  /// [#serializeTransaction] throw `NoSuchElementException` on a perfectly valid
+  /// response.
+  ///
+  /// The setup instruction is still preferred, since it funds the ATA and so its
+  /// first account is the payer by construction. Otherwise the wallet is
+  /// recovered from the swap instruction, which it always signs.
+  private PublicKey feePayer() {
+    if (setupInstructions != null && !setupInstructions.isEmpty()) {
+      return setupInstructions.getFirst().accounts().getFirst().publicKey();
+    }
+    for (final var account : swapInstruction.accounts()) {
+      if (account.signer()) {
+        return account.publicKey();
+      }
+    }
+    throw new IllegalStateException(
+        "Cannot determine the fee payer: no setup instructions and no signer on the swap instruction.");
   }
 
   public int numInstructions() {

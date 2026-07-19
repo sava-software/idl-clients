@@ -436,7 +436,43 @@ final class DlmmUtilsTests {
     assertEquals(Long.MAX_VALUE, DlmmUtils.computeProtocolFee(halfShare, -1L));
 
     // (2^64 - 1) * 10_000 / 10_000 = 2^64 - 1 overflows a signed long.
+    //
+    // The message matters: without the explicit bit-length guard the value still
+    // fails, but inside `longValueExact()` and with BigInteger's own wording. A
+    // bare `assertThrows(ArithmeticException.class, ..)` passes either way, so it
+    // cannot tell the guard from its absence.
     final var fullShare = lbPair(staticParameters(10_000, 40_000, 10_000, 0), 10_000, 10, new long[16]);
-    assertThrows(ArithmeticException.class, () -> DlmmUtils.computeProtocolFee(fullShare, -1L));
+    final var overflow = assertThrows(ArithmeticException.class,
+        () -> DlmmUtils.computeProtocolFee(fullShare, -1L));
+    assertEquals("Protocol fee overflows u64", overflow.getMessage());
+  }
+
+  /// The `scaleFactor` overloads scale the price *up* before converting. A
+  /// divide here would still return a plausible bin id, so the test pins the
+  /// relationship to the unscaled overload and checks the direction.
+  @Test
+  void binIdScaleFactorOverloadsMultiply() {
+    final double price = 1.25d;
+    final double scaleFactor = 1_000d;
+    final double binStepBase = 1.0001d;
+    final double logBinStepBase = Math.log(binStepBase);
+
+    final double scaled = DlmmUtils.binId(price, scaleFactor, binStepBase);
+    assertEquals(DlmmUtils.binId(price * scaleFactor, binStepBase), scaled);
+    assertNotEquals(DlmmUtils.binId(price / scaleFactor, binStepBase), scaled,
+        "the price is scaled up, not down");
+    assertNotEquals(0d, scaled);
+    assertTrue(Double.isFinite(scaled));
+
+    final double scaledLog = DlmmUtils.binIdFromLogBinStepBase(price, scaleFactor, logBinStepBase);
+    assertEquals(DlmmUtils.binIdFromLogBinStepBase(price * scaleFactor, logBinStepBase), scaledLog);
+    assertNotEquals(DlmmUtils.binIdFromLogBinStepBase(price / scaleFactor, logBinStepBase), scaledLog);
+    assertNotEquals(0d, scaledLog);
+
+    // the two spellings agree, which is the point of keeping both
+    assertEquals(scaled, scaledLog, 1e-6d);
+
+    // a unit scale factor is the identity
+    assertEquals(DlmmUtils.binId(price, binStepBase), DlmmUtils.binId(price, 1d, binStepBase));
   }
 }

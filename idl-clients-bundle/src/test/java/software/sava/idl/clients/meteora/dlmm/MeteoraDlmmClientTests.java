@@ -232,4 +232,52 @@ final class MeteoraDlmmClientTests {
     assertTrue(small.accounts().stream().anyMatch(m -> m.publicKey().equals(OWNER) && m.signer()));
     assertEquals(METEORA_ACCOUNTS.invokedDlmmProgram(), small.programId());
   }
+
+  /// All three swap variants route their optional host-fee account through the
+  /// same substitution, so each is exercised in both directions. Unlike Kamino,
+  /// Meteora treats only a Java `null` as absent — `PublicKey.NONE` is passed
+  /// through as a real account.
+  @Test
+  void everySwapVariantSubstitutesTheHostFee() {
+    final var reserveX = key(0x31);
+    final var reserveY = key(0x32);
+    final var userIn = key(0x33);
+    final var userOut = key(0x34);
+    final var mintX = key(0x35);
+    final var mintY = key(0x36);
+    final var oracle = key(0x37);
+    final var hostFee = key(0x38);
+    final var tokenProgram = SOLANA_ACCOUNTS.tokenProgram();
+
+    final java.util.List<java.util.function.Function<PublicKey, Instruction>> variants = List.of(
+        h -> CLIENT.swap(LB_PAIR, null, reserveX, reserveY, userIn, userOut, mintX, mintY,
+            oracle, h, tokenProgram, tokenProgram, 1_000L, 900L, null),
+        h -> CLIENT.swapExactOut(LB_PAIR, null, reserveX, reserveY, userIn, userOut, mintX, mintY,
+            oracle, h, tokenProgram, tokenProgram, 1_000L, 900L, null),
+        h -> CLIENT.swapWithPriceImpact(LB_PAIR, null, reserveX, reserveY, userIn, userOut, mintX, mintY,
+            oracle, h, tokenProgram, tokenProgram, 1_000L, java.util.OptionalInt.of(5), 50, null));
+
+    final var discriminators = new java.util.HashSet<Integer>();
+    for (final var build : variants) {
+      final var with = build.apply(hostFee);
+      final var without = build.apply(null);
+      final var withKeys = keys(with.accounts());
+      final var withoutKeys = keys(without.accounts());
+
+      final int slot = withKeys.indexOf(hostFee);
+      assertTrue(slot >= 0, "the supplied host fee must appear");
+      assertEquals(withKeys.size(), withoutKeys.size(), "the account list must not shrink");
+      assertEquals(METEORA_ACCOUNTS.dlmmProgram(), withoutKeys.get(slot),
+          "an absent host fee is replaced by the program id");
+      for (int i = 0; i < withKeys.size(); i++) {
+        if (i != slot) {
+          assertEquals(withKeys.get(i), withoutKeys.get(i), "slot " + i);
+        }
+      }
+      assertEquals(METEORA_ACCOUNTS.invokedDlmmProgram(), with.programId());
+      discriminators.add(java.util.Arrays.hashCode(java.util.Arrays.copyOf(with.data(), 8)));
+    }
+
+    assertEquals(3, discriminators.size(), "the three swaps are distinct instructions");
+  }
 }

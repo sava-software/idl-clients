@@ -56,6 +56,8 @@ dependency and is owned by `idl-clients-spl`'s own suite.
 | 2026-07-19 | `scope` | 42 | 1 | 41 | 305/354 (86%) | 87% |
 | 2026-07-19 | `clients` | 794 | 746 | 48 | 559/1358 (41%) | 89% |
 | 2026-07-19 | `clients` | 747 | 681 | 66 | 608/1360 (45%) | 90% |
+| 2026-07-19 | `clients` | 722 | 665 | 57 | 632/1359 (47%) | 92% |
+| 2026-07-19 | `clients` | 655 | 590 | 65 | 707/1367 (52%) | 91% |
 
 **The seeded baseline is triage debt made explicit, not acceptance.** Priorities
 1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
@@ -168,6 +170,21 @@ is the remaining tranche.
      keypair and PDA account variants (the derived account cannot sign; the PDA
      form carries the instructions sysvar) and the fact that `placeOrder`'s
      position banks are instruction *data*, not accounts.
+
+   - **`JupiterSwapInstructions`.** The response-to-transaction merge writes
+     into an array sized by `numInstructions()`, with deliberately asymmetric
+     index arithmetic — the leading loops post-increment, the swap is written
+     *without* advancing, and everything after pre-increments, so a null cleanup
+     leaves no hole. Every combination of present/absent cleanup and
+     empty/non-empty lists is now driven, along with the parsers' rewind-and-retry
+     field lookup (`skipUntil` then `reset(0).skipUntil`, which finds a field
+     positioned before the cursor). **Fixed**: `createAccountsMap` read the fee
+     payer from `setupInstructions.getFirst()` unconditionally, so a response
+     with no setup instructions — which Jupiter returns whenever the ATAs already
+     exist and no SOL wrapping is needed — threw `NoSuchElementException` out of
+     `serializeTransaction`. The setup instruction is still preferred (it funds
+     the ATA, so its first account is the payer by construction); otherwise the
+     wallet is recovered from the swap instruction's signer.
 
    Remaining, in rough value order: the rest of the client impls
    (`MeteoraDlmmClient(Impl)` ~65 still, `LoopscaleClientImpl` 17,
@@ -412,6 +429,48 @@ mapping from Kamino's *semantic* null keys (`PublicKey.NONE`, `nu111…`) onto
 that positional convention, which `requireNonNullElse` alone would not catch.
 
 ## Triaged equivalent mutants (accepted with reasons)
+
+### DlmmUtils fee and Q64.64 `pow` domain equivalents (15 mutants, clients)
+
+Every remaining conditional in `DlmmUtils` guards a state its own inputs cannot
+reach. The bounds come from `LbClmmConstants`: `FEE_DENOMINATOR = 10^9` and
+`MAX_FEE_RATE = 10^8`, with `getTotalFee` capped at the latter.
+
+- **`computeFee:398`** (`denominator.signum() <= 0`, 2 mutants). `denominator =
+  10^9 - totalFeeRate` and `totalFeeRate <= 10^8`, so it is never below
+  `9 x 10^8`. The underflow guard cannot fire.
+- **`computeFee:404` / `computeFeeFromAmount:417`** (`fee.bitLength() > 63`,
+  4 mutants). `amt` is masked to u64, so the worst case is
+  `(2^64 - 1) x 10^8 / 9 x 10^8 ~ 2^60.8` and `(2^64 - 1) x 10^8 / 10^9 ~ 2^60.7`
+  respectively — both bounded at 61 bits, short of the 63-bit guard and of the
+  62/63 boundary a `>=` mutant would test. (`computeProtocolFee`'s matching
+  guard *is* reachable, because `protocolShare` scales by up to 10000/10000
+  rather than dividing down — it is tested, and asserts the guard's own message,
+  since without the guard `longValueExact()` throws `ArithmeticException` too.)
+- **`computeVariableFee:365`** (`variableFeeControl() <= 0`, 2 mutants). The
+  accessor is a widened u32, so it is never negative; at exactly zero the
+  fall-through computes `0 x sqVfaBin`, ceil-divided to `0` — the same
+  `BigInteger.ZERO` the guard returns.
+- **`pow:194`** (`exp < 0` -> `<= 0`). `exp == 0` returns at line 191, so the
+  mutated boundary is unreachable.
+- **`pow:195`** (`exp == Integer.MIN_VALUE ? 1L << 31 : Math.abs((long) exp)`).
+  Equivalent *because the cast to `long` precedes the `abs`*:
+  `Math.abs((long) Integer.MIN_VALUE)` is already `2^31`, so removing the special
+  case changes nothing. The branch documents the hazard rather than avoiding it.
+- **`pow:205`** (`squaredBase.signum() == 0`). Reached only inside
+  `squaredBase >= Q64X64_ONE`, i.e. `>= 2^64`, which is never zero.
+- **`pow:213`** (`bit < 19` -> `<= 19`). `absExp < Q64X64_MAX_EXPONENTIAL = 2^19`,
+  so bit 19 is never set; a twentieth iteration only squares `squaredBase` and
+  never reaches `result`.
+- **`pow:219`** (`result.bitLength() > 128`, 2 mutants). After the inversion
+  step `squaredBase <= 2^64`, and each update is `(result x squaredBase) >> 64`
+  masked to 128 bits, so `result` stays at 65 bits — far below both the guard and
+  its boundary.
+- **`binIdToArrayIndex:60`** (`binId < 0` -> `<= 0`). At `binId == 0` the second
+  conjunct `(0 % MAX_BIN_PER_ARRAY) != 0` is false, so both spellings yield `idx`.
+
+These are guards worth keeping — they are cheap, and they document the domain —
+but no input a caller can construct distinguishes them from their mutants.
 
 ### Hash-mixing arithmetic in hand-written hashCode (30 mutants, scope)
 
