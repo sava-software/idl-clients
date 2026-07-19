@@ -46,8 +46,8 @@ public interface ScopeProgramClient {
         configuration._address(),
         configuration.tokensMetadata(),
         configuration.oracleTwaps(),
-        configuration.oracleMappings(),
         configuration.oraclePrices(),
+        configuration.oracleMappings(),
         feedName
     );
   }

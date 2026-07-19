@@ -41,7 +41,8 @@ public record NotYetSupported(int index,
 
   @Override
   public int hashCode() {
-    int result = Objects.hashCode(priceAccount);
+    int result = Integer.hashCode(index);
+    result = 31 * result + Objects.hashCode(priceAccount);
     result = 31 * result + Objects.hashCode(oracleType);
     result = 31 * result + emaTypes.hashCode();
     result = 31 * result + Objects.hashCode(refPrice);

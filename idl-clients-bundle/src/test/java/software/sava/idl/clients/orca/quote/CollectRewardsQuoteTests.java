@@ -8,6 +8,7 @@ import software.sava.idl.clients.orca.whirlpools.gen.types.Whirlpool;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static software.sava.idl.clients.orca.quote.WhirlpoolQuoteTestSupport.*;
 
 /// Ported from `rust-sdk/core/src/quote/rewards.rs#tests`.
@@ -78,6 +79,33 @@ final class CollectRewardsQuoteTests {
     assertEquals(100L, q.rewards()[0].rewardsOwed());
     assertEquals(200L, q.rewards()[1].rewardsOwed());
     assertEquals(300L, q.rewards()[2].rewardsOwed());
+  }
+
+  /// The reward accrual depends only on `currentTimestamp - rewardLastUpdatedTimestamp`:
+  /// the same delta from a different origin must quote identically. The default fixtures
+  /// all use `lastUpdated = 0`, where a sign flip in the subtraction is invisible.
+  @Test
+  void rewardAccrualDependsOnlyOnTheTimestampDelta() {
+    final var fromZero = WhirlpoolQuote.collectRewardsQuote(
+        whirlpoolForRewards(7, 0L, DEFAULT_GROWTH_GLOBALS, DEFAULT_EMISSIONS, bi(50)),
+        defaultPos(), defaultTick(), defaultTick(), 6L, null, null, null);
+    final var fromFour = WhirlpoolQuote.collectRewardsQuote(
+        whirlpoolForRewards(7, 4L, DEFAULT_GROWTH_GLOBALS, DEFAULT_EMISSIONS, bi(50)),
+        defaultPos(), defaultTick(), defaultTick(), 10L, null, null, null);
+
+    for (int i = 0; i < 3; i++) {
+      assertEquals(fromZero.rewards()[i].rewardsOwed(), fromFour.rewards()[i].rewardsOwed(), "reward " + i);
+    }
+    // and a larger delta accrues more once emissions are large enough to survive
+    // the integer division by the pool liquidity
+    final BigInteger[] bigEmissions = {bi(1).shiftLeft(64), bi(2).shiftLeft(64), bi(3).shiftLeft(64)};
+    final var shortDelta = WhirlpoolQuote.collectRewardsQuote(
+        whirlpoolForRewards(7, 0L, DEFAULT_GROWTH_GLOBALS, bigEmissions, bi(50)),
+        defaultPos(), defaultTick(), defaultTick(), 6L, null, null, null);
+    final var longDelta = WhirlpoolQuote.collectRewardsQuote(
+        whirlpoolForRewards(7, 0L, DEFAULT_GROWTH_GLOBALS, bigEmissions, bi(50)),
+        defaultPos(), defaultTick(), defaultTick(), 14L, null, null, null);
+    assertTrue(Long.compareUnsigned(longDelta.rewards()[0].rewardsOwed(), shortDelta.rewards()[0].rewardsOwed()) > 0);
   }
 
   @Test
