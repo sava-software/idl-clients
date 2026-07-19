@@ -54,6 +54,7 @@ dependency and is owned by `idl-clients-spl`'s own suite.
 | seeded 2026-07-18 | `clients` | 1107 | 1065 | 42 | 229/1357 (17%) | 85% |
 | 2026-07-19 | `orca` | 109 | 55 | 54 | 430/541 (79%) | 88% |
 | 2026-07-19 | `scope` | 42 | 1 | 41 | 305/354 (86%) | 87% |
+| 2026-07-19 | `clients` | 913 | 865 | 48 | 437/1357 (32%) | 90% |
 
 **The seeded baseline is triage debt made explicit, not acceptance.** Priorities
 1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
@@ -87,17 +88,47 @@ is the remaining tranche.
    builder. A rewards-quote delta-invariance test pins the timestamp
    subtraction the all-zero fixture could not see. `meteora.dlmm.DlmmUtils`
    (16) remains untouched — same shape, next tranche.
-3. **`NO_COVERAGE` in RPC-facing plumbing** — `*Client`/`*ClientImpl`, request
-   and response DTOs and their builders (`KaminoLendClientImpl` 68,
-   `JupiterVoteClientImpl` 48, `MarinadeProgramClient` 44, `MeteoraDlmmClient`
-   42, `OrcaWhirlpoolsClient(Impl)` ~57 in the `orca` suite, the Jupiter REST
-   request/response records). Instruction assembly and JSON binding with no
-   unit coverage. The pattern to apply is idl-clients-spl's client-layer tests:
-   distinct keys per role, account lists asserted for order and
-   signer/writable flags, data decoded back through the generated `IxData`
-   records. That pass over the SPL module surfaced two real wiring bugs, and
-   the scope client's transposed-initialize above makes three — this block is
-   where the bugs live.
+3. **`NO_COVERAGE` in RPC-facing plumbing** — *in progress; 1107 rows → 913,
+   17% → 32% killed as of 2026-07-19.* Done so far:
+
+   - **Address constants and PDA helpers** (`KaminoAccounts`, `JupiterAccounts`,
+     `MarinadeAccounts`). These are tested by *property* rather than by pinned
+     address, since AGENTS.md forbids deriving a PDA helper's expected output
+     from the IDL alone: a derivation must be deterministic, every input must
+     participate (change one, the address moves), same-shaped neighbours must be
+     separated (Marinade's four authorities take identical `(program, state)`
+     inputs and differ only by seed suffix), and each `default` overload must
+     bind the *correct* program — Kamino's helpers span three. The exact seed
+     encodings stay pinned against real mainnet accounts in the per-program PDA
+     tests.
+   - **`MarinadeProgramClient`'s pure helpers.** `accountIndex` scans a raw list
+     account past an 8-byte discriminator at an item-size stride, and the index
+     it returns is passed straight into instructions acting on that validator or
+     stake account. Tested for stride, discriminator skipping, key-only
+     comparison, and per-list item sizes. Its lack of a tail bound check —
+     a truncated list throws `ArrayIndexOutOfBoundsException` rather than
+     reporting "not found" — is pinned as current behavior, not changed;
+     on-chain lists are exact multiples.
+   - **Jupiter quote and Ultra-order requests.** The query string *is* the
+     request: a dropped parameter silently reverts to a Jupiter-side default and
+     a misspelled key is ignored rather than rejected. Every parameter is
+     asserted under its own API name (which differs from the accessor name —
+     `inputMint`, not `inputTokenMint`), every optional one is asserted absent
+     when unset, and the five Ultra account parameters (`taker`/`receiver`/
+     `payer`/`closeAuthority`/`referralAccount`) use distinct keys so a
+     transposition between them is visible.
+
+   Remaining, in rough value order: the client impls (`KaminoLendClientImpl` 68,
+   `JupiterVoteClientImpl` 48, `MeteoraDlmmClient(Impl)` 74, `PhoenixClientImpl`
+   32, `MarginfiClientImpl` 22, `OrcaWhirlpoolsClient(Impl)` ~57 in the `orca`
+   suite), the swap-request JSON body and response parsers (`JupiterSwapRequest`
+   + builder 72, `JupiterSwapInstructions` 39, `JupiterSwapApiClientImpl` 37),
+   and `DlmmUtils` 22. For the client impls the pattern to apply is
+   idl-clients-spl's: distinct keys per role, account lists asserted for order
+   and signer/writable flags, data decoded back through the generated `IxData`
+   records. That pass over the SPL module surfaced two real wiring bugs and the
+   scope client's transposed `initialize` a third — this block is where the bugs
+   live.
 
 Shrinking the baseline is always an improvement; growing it requires a reason
 written here.
