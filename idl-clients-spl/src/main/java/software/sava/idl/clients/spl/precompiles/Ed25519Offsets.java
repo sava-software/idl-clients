@@ -11,7 +11,8 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 ///
 /// Each {@code *InstructionIndex} field is the transaction-instruction index that holds the
 /// corresponding region (signature / public key / message). The value
-/// {@link #ED25519_INSTRUCTION_INDEX_CURRENT} (0xFFFF) means "this instruction's own data".
+/// {@link SignatureVerifyProgram#ED25519_INSTRUCTION_INDEX_CURRENT} (0xFFFF) means "this
+/// instruction's own data".
 ///
 /// Use {@link #resolvePublicKey(byte[], List)}, {@link #resolveSignature(byte[], List)}, and
 /// {@link #resolveMessage(byte[], List)} to extract the referenced bytes given the precompile

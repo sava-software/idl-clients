@@ -1,51 +1,56 @@
-# Whitelist .gitignore: ignore everything by default, explicitly re-include tracked content.
+# Whitelist .gitignore: everything is ignored by default and tracked content is
+# re-included explicitly below. Adding a new kind of tracked file means adding a
+# rule here — that is the point. Build output, tool artifacts (Jazzer crash and
+# slow-unit reproducers, PIT reports) and scratch files cannot be committed by
+# accident, because nothing is tracked unless it is named here.
 
-# Ignore everything
-/*
+# Ignore everything, but keep descending into directories so the rules below can
+# re-include their contents.
+*
+!*/
 
-# Re-include explicitly
-!/.github/
+# Root
 !/.gitignore
 !/.release-please-manifest.json
 !/AGENTS.md
 !/CHANGELOG.md
 !/LICENSE
 !/README.md
-!/gradle/
 !/gradle.properties
 !/gradlew
 !/gradlew.bat
-!gradle/wrapper/gradle-wrapper.jar
-!/idl-clients-*/
-!/idls/
 !/main_net_programs.json
 !/release-please-config.json
 !/settings.gradle.kts
 
-# Ignore build/IDE/temp output within re-included directories
-.DS_Store
-._*
-*.log
-hs_err_pid*.log
-replay_pid*.log
-**/build/
-**/out/
-**/target/
-.gradle/
-*.iml
-.idea/
-.vscode/
-.project
-.classpath
-.settings/
-**/generated/
-*.swp
-*.swo
-*~
-node_modules/
-**/.cache/
+# CI, the Gradle wrapper, and shared build config
+!/.github/**
+!/gradle/**
+
+# IDLs the client sources are generated from
+!/idls/**
+
+# Modules: sources (hand-written and generated), build scripts, docs, the idl.json
+# each generated package was produced from, test fixtures and fuzz seed corpora,
+# and the mutation baselines the quality gate ratchets against
+!/idl-clients-*/**/*.java
+!/idl-clients-*/**/*.kts
+!/idl-clients-*/**/*.md
+!/idl-clients-*/**/*.json
+!/idl-clients-*/src/test/resources/**
+!/idl-clients-*/config/pitest/**
+
+# Integration-style scratch files are never committed, even though they are .java
+# and would otherwise match the source rule above (see AGENTS.md).
 Integ.*
-*.bin
-*.tar
-*.tar.gz
-*.tgz
+
+# Re-ignore tool and IDE output that the broad source rules above would otherwise
+# pull back in (build/generated/**/*.java, reports, ...). Last match wins, and an
+# ignored directory is never descended into.
+build/
+out/
+bin/
+.gradle/
+.idea/
+.kotlin/
+node_modules/

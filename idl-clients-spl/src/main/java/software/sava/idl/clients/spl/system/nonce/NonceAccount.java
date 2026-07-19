@@ -111,13 +111,17 @@ public record NonceAccount(PublicKey address,
     );
   }
 
-  public void setNonce(final Transaction transaction) {
-    setNonce(SolanaAccounts.MAIN_NET, transaction);
+  /// Returns the transaction to submit — [Transaction#prependIx] does not mutate in place, so
+  /// the result must be used. Discarding it yields a transaction carrying the nonce as its
+  /// blockhash but *without* the advance instruction, which the runtime rejects.
+  public Transaction setNonce(final Transaction transaction) {
+    return setNonce(SolanaAccounts.MAIN_NET, transaction);
   }
 
-  public void setNonce(final SolanaAccounts solanaAccounts, final Transaction transaction) {
+  /// @see #setNonce(Transaction)
+  public Transaction setNonce(final SolanaAccounts solanaAccounts, final Transaction transaction) {
     transaction.setRecentBlockHash(nonce);
     final var advanceNonceIx = advanceNonceAccount(solanaAccounts);
-    transaction.prependIx(advanceNonceIx);
+    return transaction.prependIx(advanceNonceIx);
   }
 }

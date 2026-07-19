@@ -3,12 +3,18 @@ package software.sava.idl.clients.spl.stake;
 import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.core.rpc.Filter;
 
 import java.util.Arrays;
 import java.util.Base64;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class StakeAccountTests {
 
@@ -72,6 +78,104 @@ final class StakeAccountTests {
     // A short buffer walks off the end (the voter pubkey read at offset 124).
     assertThrows(IndexOutOfBoundsException.class,
         () -> StakeAccount.read(null, new byte[100]));
+  }
+
+  /// `isSet` asks whether *every* bit of the mask is present, not whether any is. A
+  /// single-bit mask cannot tell those two readings apart, so the multi-bit cases are the
+  /// ones that matter.
+  @Test
+  void isSetRequiresEveryMaskBit() {
+    final int bit0 = 0b0000_0001;
+    final int bit1 = 0b0000_0010;
+    final int both = bit0 | bit1;
+
+    final var onlyBit0 = accountWithFlags((byte) bit0);
+    assertTrue(onlyBit0.isSet(bit0));
+    assertFalse(onlyBit0.isSet(bit1));
+    // a partial match is not a match
+    assertFalse(onlyBit0.isSet(both));
+
+    final var bothBits = accountWithFlags((byte) both);
+    assertTrue(bothBits.isSet(bit0));
+    assertTrue(bothBits.isSet(bit1));
+    assertTrue(bothBits.isSet(both));
+
+    final var noFlags = accountWithFlags((byte) 0);
+    assertFalse(noFlags.isSet(bit0));
+    assertFalse(noFlags.isSet(both));
+    // an empty mask is trivially present
+    assertTrue(noFlags.isSet(0));
+  }
+
+  /// The offset-taking overload reads a record embedded partway into a larger buffer.
+  @Test
+  void readAtOffset() {
+    final byte[] record = buildMinimal(StakeState.Stake, (byte) 3);
+    ByteUtil.putInt64LE(record, StakeAccount.STAKE_OFFSET, 12345L);
+
+    final int offset = 17;
+    final byte[] framed = new byte[offset + record.length];
+    System.arraycopy(record, 0, framed, offset, record.length);
+
+    final var account = StakeAccount.read(framed, offset);
+    assertNull(account.address());
+    assertEquals(StakeState.Stake, account.state());
+    assertEquals(12345L, account.stake());
+    assertEquals((byte) 3, account.stakeFlags());
+    // reading the same bytes from zero yields the same record, minus the framing
+    assertEquals(StakeAccount.read(null, record, 0), account);
+  }
+
+  /// Each filter must target the offset of the field it names — a memcmp filter pointed at the
+  /// wrong offset silently matches nothing (or the wrong accounts).
+  @Test
+  void accountFilters() {
+    // The state discriminant is encoded little-endian at offset 0, not left as zeroes.
+    final byte[] stakeBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(stakeBytes, 0, StakeState.Stake.ordinal());
+    assertArrayEquals(new byte[]{2, 0, 0, 0}, stakeBytes);
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.STATE_OFFSET, stakeBytes),
+        StakeAccount.createStateFilter(StakeState.Stake));
+
+    // A different state must produce a different filter.
+    final byte[] initializedBytes = new byte[Integer.BYTES];
+    ByteUtil.putInt32LE(initializedBytes, 0, StakeState.Initialized.ordinal());
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.STATE_OFFSET, initializedBytes),
+        StakeAccount.createStateFilter(StakeState.Initialized));
+    assertNotEquals(
+        StakeAccount.createStateFilter(StakeState.Stake),
+        StakeAccount.createStateFilter(StakeState.Initialized));
+
+    // Each key filter must target the offset of the field it names — a memcmp pointed at the
+    // wrong offset silently matches nothing, or the wrong accounts.
+    final var key = PublicKey.fromBase58Encoded("3ntfH5pyhTGePb2cv2gqhyBmZHVW3EggCnbq1ND7YmgX");
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.STAKE_AUTHORITY_OFFSET, key),
+        StakeAccount.createStakeAuthorityFilter(key));
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.WITHDRAW_AUTHORITY_OFFSET, key),
+        StakeAccount.createWithdrawAuthorityFilter(key));
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.LOCKUP_CUSTODIAN_OFFSET, key),
+        StakeAccount.createCustodianFilter(key));
+    assertEquals(
+        Filter.createMemCompFilter(StakeAccount.VOTER_PUBLIC_KEY_OFFSET, key),
+        StakeAccount.createVoterFilter(key));
+
+    // The four key filters address four distinct fields, so none is a copy of another.
+    assertEquals(4, java.util.Set.of(
+        StakeAccount.createStakeAuthorityFilter(key),
+        StakeAccount.createWithdrawAuthorityFilter(key),
+        StakeAccount.createCustodianFilter(key),
+        StakeAccount.createVoterFilter(key)).size());
+
+    assertEquals(Filter.createDataSizeFilter(StakeAccount.BYTES), StakeAccount.DATA_SIZE_FILTER);
+  }
+
+  private static StakeAccount accountWithFlags(final byte stakeFlags) {
+    return StakeAccount.read(null, buildMinimal(StakeState.Stake, stakeFlags));
   }
 
   private static StakeAccount stakeAccount(final long activationEpoch, final long deActivationEpoch) {

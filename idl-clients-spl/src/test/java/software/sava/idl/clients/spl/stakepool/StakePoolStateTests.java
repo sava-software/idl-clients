@@ -340,6 +340,13 @@ final class StakePoolStateTests {
     assertEquals(0, new Fee(1000L, 100L).compareTo(new Fee(10L, 1L))); // 0.1 == 0.1
     assertTrue(new Fee(1000L, 100L).compareTo(new Fee(10L, 5L)) < 0);  // 0.1 < 0.5 though 100 > 5
     assertTrue(new Fee(10L, 5L).compareTo(new Fee(1000L, 100L)) > 0);
+
+    // A zero *denominator* also ratios to zero, so ratio comparison cannot separate
+    // Fee(0, 5) from Fee(anything, 0) — only the raw-numerator branch can. These two cases
+    // pin that the zero-numerator test picks the branch, on either side of the comparison.
+    assertEquals(0.0d, new Fee(0L, 5L).toRatio()); // undefined ratio, reported as zero
+    assertTrue(new Fee(0L, 0L).compareTo(new Fee(0L, 5L)) < 0, "0 numerator sorts below 5");
+    assertTrue(new Fee(0L, 5L).compareTo(new Fee(100L, 0L)) > 0, "5 sorts above a 0 numerator");
   }
 
   @Test
@@ -358,6 +365,21 @@ final class StakePoolStateTests {
     final var zeroTotal = parse(null, minimalBlob(0L, 10L, 0, 0, 0, 0L, 0L));
     assertSame(ZERO, zeroTotal.calculateSolPrice(MC));
     assertSame(ZERO, zeroTotal.calculateSolPrice(6, HALF_UP));
+  }
+
+  /// The address-less overload parses the same bytes and leaves the address null, rather
+  /// than being a distinct code path.
+  @Test
+  void parseWithoutAddress() {
+    final byte[] data = minimalBlob(10L, 4L, 0, 0, 0, 0L, 0L);
+
+    final var anonymous = StakePoolState.parseProgramData(data);
+
+    assertNull(anonymous.address());
+    assertEquals(AccountType.StakePool, anonymous.accountType());
+    assertEquals(0, new BigDecimal("2.5").compareTo(anonymous.calculateSolPrice(MC)));
+    // identical to the addressed parse in every other respect
+    assertEquals(parse(null, data), anonymous);
   }
 
   @Test

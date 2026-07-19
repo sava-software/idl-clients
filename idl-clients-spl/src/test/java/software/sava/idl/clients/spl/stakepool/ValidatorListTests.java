@@ -6,6 +6,7 @@ import software.sava.core.encoding.ByteUtil;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 final class ValidatorListTests {
 
@@ -44,6 +45,56 @@ final class ValidatorListTests {
     assertEquals(StakeStatus.DeactivatingTransient.ordinal(), data[47]);
 
     assertEquals(info, ValidatorStakeInfo.read(data, 7));
+  }
+
+  /// The `unused` padding word is zero in every fixture above, and a zero write into a
+  /// zeroed buffer is indistinguishable from no write at all. A non-zero value pins that the
+  /// field is actually serialized — otherwise it would silently drop out of the record and
+  /// shift nothing, corrupting a round trip only for pools that populate it.
+  @Test
+  void unusedWordIsSerialized() {
+    final var base = stakeInfo(3, StakeStatus.Active);
+    final var info = new ValidatorStakeInfo(
+        base.activeStakeLamports(),
+        base.transientStakeLamports(),
+        base.lastUpdateEpoch(),
+        base.transientSeedSuffix(),
+        0x0BADF00D,
+        base.validatorSeedSuffix(),
+        base.podStakeStatus(),
+        base.voteAccountAddress()
+    );
+
+    final byte[] data = new byte[7 + ValidatorStakeInfo.BYTES];
+    assertEquals(ValidatorStakeInfo.BYTES, info.write(data, 7));
+
+    // 4 u64 fields precede it, so it lands 32 bytes into the record
+    assertEquals(0x0BADF00D, ByteUtil.getInt32LE(data, 7 + 32));
+    assertEquals(0x0BADF00D, ValidatorStakeInfo.read(data, 7).unused());
+    assertEquals(info, ValidatorStakeInfo.read(data, 7));
+  }
+
+  /// The address-less overload parses the same bytes and leaves the address null.
+  @Test
+  void readOverloads() {
+    final var validators = new ValidatorStakeInfo[]{stakeInfo(1, StakeStatus.Active)};
+    final var list = new ValidatorList(null, AccountType.ValidatorList, 5_000, validators);
+
+    final byte[] data = new byte[list.l()];
+    list.write(data, 0);
+
+    final var anonymous = ValidatorList.read(data, 0);
+    assertNull(anonymous.address());
+    assertEquals(AccountType.ValidatorList, anonymous.accountType());
+    assertEquals(5_000, anonymous.maxValidators());
+    assertArrayEquals(validators, anonymous.validators());
+
+    // the address-carrying overloads agree on everything else
+    final var key = PublicKey.createPubKey(new byte[PublicKey.PUBLIC_KEY_LENGTH]);
+    final var addressed = ValidatorList.read(key, data);
+    assertEquals(key, addressed.address());
+    assertArrayEquals(validators, addressed.validators());
+    assertEquals(key, ValidatorList.FACTORY.apply(key, data).address());
   }
 
   @Test

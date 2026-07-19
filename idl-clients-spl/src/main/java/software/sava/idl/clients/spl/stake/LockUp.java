@@ -29,7 +29,7 @@ public record LockUp(long unixTimestamp, long epoch, PublicKey custodian) implem
   @Override
   public int write(final byte[] data, final int offset) {
     ByteUtil.putInt64LE(data, offset, unixTimestamp);
-    ByteUtil.putInt64LE(data, offset + Long.BYTES, unixTimestamp);
+    ByteUtil.putInt64LE(data, offset + Long.BYTES, epoch);
     requireNonNullElse(custodian, PublicKey.NONE).write(data, offset + Long.BYTES + Long.BYTES);
     return BYTES;
   }

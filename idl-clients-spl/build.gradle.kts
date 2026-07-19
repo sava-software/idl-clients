@@ -8,16 +8,21 @@ testModuleInfo {
 }
 
 hardening {
-  mutation.register("encoders") {
-    targetClasses = listOf(
-      "software.sava.idl.clients.spl.precompiles.SignatureVerifyProgram",
-      "software.sava.idl.clients.spl.token_2022.Token2022Instructions",
-      "software.sava.idl.clients.spl.stakepool.StakePoolProgram",
-      "software.sava.idl.clients.spl.stakepool.StakePoolState",
-      "software.sava.idl.clients.spl.stakepool.ValidatorList",
-      "software.sava.idl.clients.spl.stakepool.ValidatorStakeInfo",
-      "software.sava.idl.clients.spl.stake.StakeAccount",
-      "software.sava.idl.clients.spl.system.nonce.NonceAccount"
+  mutation.register("spl") {
+    // catch-all by exclusion, so a new hand-written class is mutated by default
+    // instead of silently skipped — the whole module is account encode/decode
+    // and instruction building, which is exactly the money-critical shape
+    targetClasses = listOf("software.sava.idl.clients.spl.*")
+    excludedClasses = listOf(
+      // generated per-program code: correctness belongs to idl-src-gen, and
+      // mutating the boilerplate would bury the hand-written signal
+      "software.sava.idl.clients.*.gen.*",
+      // test and fuzz sources share the recompiled root
+      "software.sava.idl.clients.spl.*Test*",
+      "software.sava.idl.clients.spl.*Fuzz",
+      // 'Integ.*' scratch files are git-ignored: present on a dev machine and
+      // absent in CI, so mutating them would make the baseline machine-dependent
+      "software.sava.idl.clients.*.Integ"
     )
     targetTests = "software.sava.idl.clients.spl.*Test*"
   }

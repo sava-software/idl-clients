@@ -408,6 +408,14 @@ public final class SignatureVerifyProgram {
     return Instruction.createInstruction(secp256r1Program, List.of(), data);
   }
 
+  /// Resolves a `(instructionIndex, offset, length)` window against either the precompile
+  /// instruction's own data or another instruction's data in the same transaction.
+  ///
+  /// @param currentSentinel the index value meaning "this instruction's own data" (0xFFFF for
+  ///                        Ed25519 and Secp256r1), or `-1` for Secp256k1, which has no such
+  ///                        sentinel. Every caller derives `instructionIndex` from a masked
+  ///                        read, so it is never negative and `-1` therefore matches nothing —
+  ///                        no separate guard for the no-sentinel case is needed.
   static byte[] slice(final byte[] selfData,
                       final List<byte[]> txInstructionData,
                       final int instructionIndex,
@@ -415,7 +423,7 @@ public final class SignatureVerifyProgram {
                       final int length,
                       final int currentSentinel) {
     final byte[] source;
-    if (currentSentinel != -1 && instructionIndex == currentSentinel) {
+    if (instructionIndex == currentSentinel) {
       if (selfData == null) {
         throw new IllegalArgumentException("'current instruction' data not provided");
       }

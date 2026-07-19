@@ -178,6 +178,46 @@ These tasks are **not** part of `check`; run the relevant one when you change a
 targeted class — a fuzzer with `./gradlew :<module>:fuzz<Name> -PmaxFuzzTime=<seconds>`,
 a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
+### Quality gate & mutation ratchet
+
+The process contract for any change to main sources (full policy: sava-build's
+`HARDENING.md`; per-module acceptance records: `<module>/config/pitest/README.md`):
+
+- **Run `./gradlew qualityGate` after changing main sources** — unit tests plus
+  every PIT suite, each diffed against its accepted baseline in
+  `<module>/config/pitest/`. It is the definition of "safe to commit", and it
+  costs about 40s for the whole repo.
+- **While iterating, run only the suite that owns the code you touched**:
+  `pitestSpl` (~10s), `pitestOrca` (~20s), `pitestScope` (~5s), `pitestClients`
+  (~12s). `qualityGate` is the before-commit command, not the inner-loop one.
+- A new unkilled mutant has exactly three legal outcomes: **kill it** with a test
+  (prefer asserting the property it breaks — an overflow guard rejecting, a
+  quote's rounding direction, exact encoded byte positions — over restating the
+  implementation), **refactor** it out of existence, or **accept it** with a
+  written reason in that module's `config/pitest/README.md`. Never run
+  `-PupdateMutationBaseline` just to make the build pass.
+- Line-number churn from editing a mutated file shows up as paired stale + "new"
+  baseline entries; confirm they're the shifted old ones before refreshing.
+- **The baselines are triage debt, not acceptance.** They were seeded with the
+  full pre-existing survivor population in 2026-07 when the ratchet was adopted;
+  each module's README ranks what to pay down first. Shrinking a baseline is
+  always an improvement.
+- **Randomized tests use fixed seeds**: the ratchet needs deterministic kills,
+  and per-run exploration is the fuzz targets' job.
+- Fuzz findings become a committed seed input **and** a named regression test,
+  never just a fix.
+
+Mutation suites are targeted by **package wildcard with explicit exclusions,
+never by allowlist** — an allowlist silently exempts every class added after it
+was written. Adding a hand-written class therefore puts it under mutation
+automatically; if it lands with no coverage, the gate says so. Generated
+`**.gen.*` code is excluded everywhere (its correctness belongs to idl-src-gen),
+as are the git-ignored `Integ.*` scratch files, which would otherwise make the
+baseline differ between a dev machine and CI.
+
+CI runs `check`, not `qualityGate` (the shared sava-build workflows), so the gate
+is enforced at the point of commit rather than in the pipeline.
+
 Conventions when adding a target:
 
 - A fuzz harness is a `*Fuzz.java` in the test sources with
@@ -198,8 +238,11 @@ Conventions when adding a target:
 
 - Conventional commits; releases are cut by release-please (`fix:`/`feat:`
   bump patch/minor; a `BREAKING CHANGE:` footer bumps major).
-- The root `.gitignore` is a whitelist: everything at the repo root is ignored
-  unless explicitly re-included. New top-level files/directories that should be
-  tracked must be added there.
+- The root `.gitignore` is a **recursive** whitelist: every path in the repo is
+  ignored unless a rule re-includes it, not just the top level. A new kind of
+  tracked file — a new resource extension, a new config directory — needs an
+  explicit rule there or it will be silently untracked. The upside is that build
+  output, PIT reports and Jazzer reproducers (`crash-*`, `slow-unit-*`) cannot be
+  committed by accident, which had happened before the whitelist was tightened.
 - Generated code style (two-space indent, `final` params, records) is set by
   the generator; hand-written code follows the same style.
