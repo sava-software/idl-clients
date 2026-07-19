@@ -495,7 +495,7 @@ public final class JupStableProgram {
 
     @Override
     public int l() {
-      return 8 + 1 + _name.length + _symbol.length + _uri.length;
+      return 8 + 1 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
     }
   }
 

@@ -108,7 +108,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + _name.length + SerDeUtil.lenVector(4, signers);
+      return 8 + 4 + _name.length + SerDeUtil.lenVector(4, signers);
     }
   }
 
@@ -237,7 +237,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
+      return 8 + 4 + _name.length + 4 + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
     }
   }
 
@@ -468,7 +468,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + _description.length;
+      return 8 + 4 + _description.length;
     }
   }
 
@@ -1032,9 +1032,9 @@ public final class SolanaAttestationServiceProgram {
       return 8 + 32
            + SerDeUtil.lenVector(4, data)
            + 8
-           + _name.length
-           + _uri.length
-           + _symbol.length
+           + 4 + _name.length
+           + 4 + _uri.length
+           + 4 + _symbol.length
            + 2;
     }
   }

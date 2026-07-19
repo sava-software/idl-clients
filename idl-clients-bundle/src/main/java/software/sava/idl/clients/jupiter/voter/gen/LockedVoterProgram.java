@@ -937,7 +937,7 @@ public final class LockedVoterProgram {
 
     @Override
     public int l() {
-      return 8 + 8 + _memo.length;
+      return 8 + 8 + 4 + _memo.length;
     }
   }
 

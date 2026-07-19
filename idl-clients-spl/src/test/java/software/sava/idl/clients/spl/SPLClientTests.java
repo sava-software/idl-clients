@@ -211,12 +211,10 @@ final class SPLClientTests {
   /// the seed and its owning program have to reach the instruction data intact — the on-chain
   /// program re-derives the address from them and rejects a mismatch.
   ///
-  /// DISABLED: this path currently throws [ArrayIndexOutOfBoundsException] for every input.
-  /// `AuthorizeWithSeedArgs.l()` omits the 8-byte u64 length prefix that its `write()` emits
-  /// ahead of the seed, so the caller under-allocates by exactly 8 bytes. That record is
-  /// `@generated ... DO NOT EDIT`, so the fix belongs in idl-src-gen, not here. The assertions
-  /// below are the intended contract; re-enable once the generator is fixed and regenerated.
-  @org.junit.jupiter.api.Disabled("blocked on idl-src-gen: AuthorizeWithSeedArgs.l() omits the seed's 8-byte length prefix")
+  /// Regression: this path used to throw [ArrayIndexOutOfBoundsException] for every input —
+  /// `AuthorizeWithSeedArgs.l()` omitted the 8-byte length prefix its `write()` emits ahead of
+  /// the seed, so the caller under-allocated by exactly 8 bytes. Fixed in idl-src-gen
+  /// (`StringTypeNode.generateLength`) and regenerated.
   @Test
   void authorizeStakeAccountWithSeed() {
     final var base = key(0x31);
@@ -233,7 +231,8 @@ final class SPLClientTests {
     final var data = SolanaStakeInterfaceProgram.AuthorizeWithSeedIxData.read(ix);
     assertEquals(NEW_AUTHORITY, data.arg0().newAuthorizedPubkey());
     assertEquals(StakeAuthorize.staker, data.arg0().stakeAuthorize());
-    assertEquals("authority-seed", data.arg0().authoritySeed());
+    // the account's actual seed, not the requested one — the off-curve search may extend it
+    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.arg0().authoritySeed());
     assertEquals(PROGRAM_OWNER, data.arg0().authorityOwner());
 
     // the overload without a lockup authority omits that account
@@ -242,9 +241,8 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar()), keys(noLockup));
   }
 
-  /// DISABLED for the same reason as [#authorizeStakeAccountWithSeed] —
-  /// `AuthorizeCheckedWithSeedArgs.l()` is short by the same 8 bytes.
-  @org.junit.jupiter.api.Disabled("blocked on idl-src-gen: AuthorizeCheckedWithSeedArgs.l() omits the seed's 8-byte length prefix")
+  /// Covered by the same idl-src-gen fix as [#authorizeStakeAccountWithSeed] —
+  /// `AuthorizeCheckedWithSeedArgs.l()` was short by the same 8 bytes.
   @Test
   void authorizeStakeAccountCheckedWithSeed() {
     final var base = key(0x31);
@@ -260,7 +258,7 @@ final class SPLClientTests {
 
     final var data = SolanaStakeInterfaceProgram.AuthorizeCheckedWithSeedIxData.read(ix);
     assertEquals(StakeAuthorize.withdrawer, data.arg0().stakeAuthorize());
-    assertEquals("checked-seed", data.arg0().authoritySeed());
+    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.arg0().authoritySeed());
     assertEquals(PROGRAM_OWNER, data.arg0().authorityOwner());
   }
 

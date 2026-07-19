@@ -2558,7 +2558,7 @@ public final class Token2022Program {
                                              final List<AccountMeta> keys,
                                              final String uiAmount) {
     final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
-    final byte[] _data = new byte[5 + _uiAmount.length];
+    final byte[] _data = new byte[1 + 4 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) _uiAmount.length);
     i += 4;
@@ -2617,7 +2617,7 @@ public final class Token2022Program {
 
     @Override
     public int l() {
-      return 1 + _uiAmount.length;
+      return 1 + 4 + _uiAmount.length;
     }
   }
 
@@ -10761,7 +10761,7 @@ public final class Token2022Program {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
-    final byte[] _data = new byte[20 + _name.length + _symbol.length + _uri.length];
+    final byte[] _data = new byte[8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length];
     int i = INITIALIZE_TOKEN_METADATA_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) _name.length);
     i += 4;
@@ -10869,7 +10869,7 @@ public final class Token2022Program {
 
     @Override
     public int l() {
-      return 8 + _name.length + _symbol.length + _uri.length;
+      return 8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
     }
   }
 
@@ -10935,7 +10935,7 @@ public final class Token2022Program {
                                                    final boolean idempotent,
                                                    final String key) {
     final byte[] _key = key.getBytes(UTF_8);
-    final byte[] _data = new byte[13 + _key.length];
+    final byte[] _data = new byte[9 + 4 + _key.length];
     int i = REMOVE_TOKEN_METADATA_KEY_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) (idempotent ? 1 : 0);
     ++i;
@@ -11018,7 +11018,7 @@ public final class Token2022Program {
 
     @Override
     public int l() {
-      return 8 + 1 + _key.length;
+      return 8 + 1 + 4 + _key.length;
     }
   }
 

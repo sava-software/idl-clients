@@ -198,7 +198,7 @@ public record Pool(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + _name.length
+    return 8 + 4 + _name.length
          + SerDeUtil.lenVector(4, custodies)
          + 16
          + limit.l()

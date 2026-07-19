@@ -75,6 +75,6 @@ public record VaultTransactionCreateArgs(int vaultIndex,
 
   @Override
   public int l() {
-    return 1 + 1 + SerDeUtil.lenVector(4, transactionMessage) + (_memo == null || _memo.length == 0 ? 1 : (1 + _memo.length));
+    return 1 + 1 + SerDeUtil.lenVector(4, transactionMessage) + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
   }
 }

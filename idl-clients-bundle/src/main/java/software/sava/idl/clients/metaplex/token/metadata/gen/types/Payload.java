@@ -42,6 +42,6 @@ public record Payload(String key, byte[] _key, PayloadType payloadType) implemen
 
   @Override
   public int l() {
-    return _key.length + payloadType.l();
+    return 4 + _key.length + payloadType.l();
   }
 }

@@ -74,6 +74,6 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
 
   @Override
   public int l() {
-    return 8 + 32 + _shortUrl.length;
+    return 8 + 32 + 4 + _shortUrl.length;
   }
 }

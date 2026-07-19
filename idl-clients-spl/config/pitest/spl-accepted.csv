@@ -1,6 +1,3 @@
-software.sava.idl.clients.spl.SPLClient,authorizeStakeAccountWithSeed,191,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.spl.SPLClientImpl,authorizeStakeAccountCheckedWithSeed,279,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.spl.SPLClientImpl,authorizeStakeAccountWithSeed,257,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchProgramState,33,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchValidatorList,39,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,225,RemoveConditionalMutator_EQUAL_IF,SURVIVED

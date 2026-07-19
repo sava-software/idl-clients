@@ -51,6 +51,6 @@ public record ConfigTransactionCreateArgs(ConfigAction[] actions, String memo, b
 
   @Override
   public int l() {
-    return SerDeUtil.lenVector(4, actions) + (_memo == null || _memo.length == 0 ? 1 : (1 + _memo.length));
+    return SerDeUtil.lenVector(4, actions) + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
   }
 }

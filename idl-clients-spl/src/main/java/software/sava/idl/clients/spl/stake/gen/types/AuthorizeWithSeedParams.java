@@ -69,6 +69,6 @@ public record AuthorizeWithSeedParams(PublicKey newAuthorizedPubkey,
 
   @Override
   public int l() {
-    return 32 + stakeAuthorize.l() + _authoritySeed.length + 32;
+    return 32 + stakeAuthorize.l() + 8 + _authoritySeed.length + 32;
   }
 }

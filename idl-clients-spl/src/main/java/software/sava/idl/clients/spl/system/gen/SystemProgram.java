@@ -323,7 +323,7 @@ public final class SystemProgram {
                                                   final long space,
                                                   final PublicKey programAddress) {
     final byte[] _seed = seed.getBytes(UTF_8);
-    final byte[] _data = new byte[92 + _seed.length];
+    final byte[] _data = new byte[84 + 8 + _seed.length];
     int i = CREATE_ACCOUNT_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
     i += 32;
@@ -423,7 +423,7 @@ public final class SystemProgram {
     public int l() {
       return 4
            + 32
-           + _seed.length
+           + 8 + _seed.length
            + 8
            + 8
            + 32;
@@ -826,7 +826,7 @@ public final class SystemProgram {
                                              final long space,
                                              final PublicKey programAddress) {
     final byte[] _seed = seed.getBytes(UTF_8);
-    final byte[] _data = new byte[84 + _seed.length];
+    final byte[] _data = new byte[76 + 8 + _seed.length];
     int i = ALLOCATE_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
     i += 32;
@@ -915,7 +915,7 @@ public final class SystemProgram {
     public int l() {
       return 4
            + 32
-           + _seed.length
+           + 8 + _seed.length
            + 8
            + 32;
     }
@@ -956,7 +956,7 @@ public final class SystemProgram {
                                            final String seed,
                                            final PublicKey programAddress) {
     final byte[] _seed = seed.getBytes(UTF_8);
-    final byte[] _data = new byte[76 + _seed.length];
+    final byte[] _data = new byte[68 + 8 + _seed.length];
     int i = ASSIGN_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
     i += 32;
@@ -1032,7 +1032,7 @@ public final class SystemProgram {
 
     @Override
     public int l() {
-      return 4 + 32 + _seed.length + 32;
+      return 4 + 32 + 8 + _seed.length + 32;
     }
   }
 
@@ -1077,7 +1077,7 @@ public final class SystemProgram {
                                                 final String fromSeed,
                                                 final PublicKey fromOwner) {
     final byte[] _fromSeed = fromSeed.getBytes(UTF_8);
-    final byte[] _data = new byte[52 + _fromSeed.length];
+    final byte[] _data = new byte[44 + 8 + _fromSeed.length];
     int i = TRANSFER_SOL_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
     i += 8;
@@ -1154,7 +1154,7 @@ public final class SystemProgram {
 
     @Override
     public int l() {
-      return 4 + 8 + _fromSeed.length + 32;
+      return 4 + 8 + 8 + _fromSeed.length + 32;
     }
   }
 

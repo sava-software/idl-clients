@@ -101,6 +101,6 @@ public record MultisigCreateArgs(PublicKey configAuthority,
          + 2
          + SerDeUtil.lenVector(4, members)
          + 4
-         + (_memo == null || _memo.length == 0 ? 1 : (1 + _memo.length));
+         + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
   }
 }

@@ -170,9 +170,9 @@ public record AssetData(String name, byte[] _name,
 
   @Override
   public int l() {
-    return _name.length
-         + _symbol.length
-         + _uri.length
+    return 4 + _name.length
+         + 4 + _symbol.length
+         + 4 + _uri.length
          + 2
          + (creators == null || creators.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, creators)))
          + 1

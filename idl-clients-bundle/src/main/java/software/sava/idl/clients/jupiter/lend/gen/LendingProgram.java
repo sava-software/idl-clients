@@ -404,7 +404,7 @@ public final class LendingProgram {
 
     @Override
     public int l() {
-      return 8 + _symbol.length + 32;
+      return 8 + 4 + _symbol.length + 32;
     }
   }
 

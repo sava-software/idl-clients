@@ -67,6 +67,6 @@ public record SpendingLimitUseArgs(long amount,
 
   @Override
   public int l() {
-    return 8 + 1 + (_memo == null || _memo.length == 0 ? 1 : (1 + _memo.length));
+    return 8 + 1 + (_memo == null || _memo.length == 0 ? 1 : (1 + 4 + _memo.length));
   }
 }

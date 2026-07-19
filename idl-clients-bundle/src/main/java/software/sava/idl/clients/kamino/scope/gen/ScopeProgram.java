@@ -115,7 +115,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + _feedName.length;
+      return 8 + 4 + _feedName.length;
     }
   }
 
@@ -523,7 +523,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + _feedName.length + SerDeUtil.lenVector(4, updates);
+      return 8 + 4 + _feedName.length + SerDeUtil.lenVector(4, updates);
     }
   }
 
@@ -613,7 +613,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 8 + _feedName.length;
+      return 8 + 8 + 4 + _feedName.length;
     }
   }
 
@@ -692,7 +692,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 32 + _feedName.length;
+      return 8 + 32 + 4 + _feedName.length;
     }
   }
 
@@ -762,7 +762,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + _feedName.length;
+      return 8 + 4 + _feedName.length;
     }
   }
 
@@ -1010,7 +1010,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 2 + _feedName.length;
+      return 8 + 2 + 4 + _feedName.length;
     }
   }
 
@@ -1115,7 +1115,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 2 + _feedName.length + 1;
+      return 8 + 2 + 4 + _feedName.length + 1;
     }
   }
 
@@ -1194,7 +1194,7 @@ public final class ScopeProgram {
 
     @Override
     public int l() {
-      return 8 + 32 + _feedName.length;
+      return 8 + 32 + 4 + _feedName.length;
     }
   }
 

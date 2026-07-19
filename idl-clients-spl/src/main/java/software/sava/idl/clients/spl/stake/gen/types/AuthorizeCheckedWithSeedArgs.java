@@ -56,6 +56,6 @@ public record AuthorizeCheckedWithSeedArgs(StakeAuthorize stakeAuthorize,
 
   @Override
   public int l() {
-    return stakeAuthorize.l() + _authoritySeed.length + 32;
+    return stakeAuthorize.l() + 8 + _authoritySeed.length + 32;
   }
 }

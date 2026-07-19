@@ -4400,7 +4400,7 @@ public final class KaminoLendingProgram {
 
     @Override
     public int l() {
-      return 8 + _shortUrl.length;
+      return 8 + 4 + _shortUrl.length;
     }
   }
 

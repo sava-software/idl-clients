@@ -63,6 +63,6 @@ public record AddPoolParams(String name, byte[] _name,
 
   @Override
   public int l() {
-    return _name.length + limit.l() + fees.l() + 8;
+    return 4 + _name.length + limit.l() + fees.l() + 8;
   }
 }

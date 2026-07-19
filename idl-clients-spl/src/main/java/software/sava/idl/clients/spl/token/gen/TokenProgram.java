@@ -2548,7 +2548,7 @@ public final class TokenProgram {
                                              final List<AccountMeta> keys,
                                              final String uiAmount) {
     final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
-    final byte[] _data = new byte[5 + _uiAmount.length];
+    final byte[] _data = new byte[1 + 4 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) _uiAmount.length);
     i += 4;
@@ -2607,7 +2607,7 @@ public final class TokenProgram {
 
     @Override
     public int l() {
-      return 1 + _uiAmount.length;
+      return 1 + 4 + _uiAmount.length;
     }
   }
 

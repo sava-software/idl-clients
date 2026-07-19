@@ -140,6 +140,6 @@ public record PartialUnstaking(PublicKey _address,
          + 8
          + 8
          + SerDeUtil.lenU128Array(buffers)
-         + _memo.length;
+         + 4 + _memo.length;
   }
 }

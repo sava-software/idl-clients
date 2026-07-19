@@ -1090,7 +1090,7 @@ public final class GovernProgram {
 
     @Override
     public int l() {
-      return 8 + 1 + _title.length + _descriptionLink.length;
+      return 8 + 1 + 4 + _title.length + 4 + _descriptionLink.length;
     }
   }
 

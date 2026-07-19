@@ -84,8 +84,8 @@ public record TimelockCreatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + _timelockAddress.length
-         + _vaultAddress.length
+    return 8 + 4 + _timelockAddress.length
+         + 4 + _vaultAddress.length
          + timelockParams.l()
          + 8
          + 8;

@@ -44,6 +44,6 @@ public record TimelockExecutedEvent(Discriminator discriminator, String timelock
 
   @Override
   public int l() {
-    return 8 + _timelock.length;
+    return 8 + 4 + _timelock.length;
   }
 }

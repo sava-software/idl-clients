@@ -76,9 +76,9 @@ public record CreateVaultParams(String tokenName, byte[] _tokenName,
 
   @Override
   public int l() {
-    return _tokenName.length
-         + _tokenSymbol.length
-         + _tokenUri.length
+    return 4 + _tokenName.length
+         + 4 + _tokenSymbol.length
+         + 4 + _tokenUri.length
          + 32
          + createStrategyParams.l();
   }

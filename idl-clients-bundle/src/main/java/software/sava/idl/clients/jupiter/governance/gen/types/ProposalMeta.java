@@ -93,6 +93,6 @@ public record ProposalMeta(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + 32 + _title.length + _descriptionLink.length;
+    return 8 + 32 + 4 + _title.length + 4 + _descriptionLink.length;
   }
 }

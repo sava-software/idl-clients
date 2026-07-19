@@ -78,6 +78,6 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + 32 + 32 + _title.length + _descriptionLink.length;
+    return 8 + 32 + 32 + 4 + _title.length + 4 + _descriptionLink.length;
   }
 }

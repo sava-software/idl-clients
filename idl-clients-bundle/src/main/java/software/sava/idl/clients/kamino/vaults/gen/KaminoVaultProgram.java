@@ -1774,7 +1774,7 @@ public final class KaminoVaultProgram {
 
     @Override
     public int l() {
-      return 8 + _name.length + _symbol.length + _uri.length;
+      return 8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
     }
   }
 
@@ -1888,7 +1888,7 @@ public final class KaminoVaultProgram {
 
     @Override
     public int l() {
-      return 8 + _name.length + _symbol.length + _uri.length;
+      return 8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
     }
   }
 
