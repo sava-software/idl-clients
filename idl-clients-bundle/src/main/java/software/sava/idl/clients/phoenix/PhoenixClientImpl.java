@@ -2,6 +2,7 @@ package software.sava.idl.clients.phoenix;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
+import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.phoenix.ember.gen.EmberProgram;
 import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
@@ -26,6 +27,8 @@ import software.sava.idl.clients.phoenix.perpetuals.gen.types.RegisterTraderPara
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.TransferCollateralInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.UpsertEscrowRequestParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
+
+import java.util.List;
 
 final class PhoenixClientImpl implements PhoenixClient {
 
@@ -233,19 +236,29 @@ final class PhoenixClientImpl implements PhoenixClient {
     );
   }
 
+  /// The IDL declares `traderWallet` as a non-signer, but the program's own SDK
+  /// pushes it as `AccountMeta::readonly_signer`
+  /// (`rise/rust/ix/src/sync_parent_to_child.rs::build_accounts`) — the wallet
+  /// has to authorize moving collateral between its own trader accounts. The
+  /// generated builder follows the IDL, so the meta is rebuilt here.
+  ///
+  /// The IDL's other Eternal instructions agree with the SDK on every signer, so
+  /// this is a one-off omission rather than a systemic gap.
   @Override
   public Instruction syncParentToChild(final PublicKey traderWalletKey,
                                        final PublicKey parentTraderAccountKey,
                                        final PublicKey childTraderAccountKey) {
     return EternalProgram.syncParentToChild(
         accounts.invokedEternalProgram(),
-        eternalProgramId(),
-        accounts.eternalLogAuthority(),
-        accounts.eternalGlobalConfig(),
-        traderWalletKey,
-        parentTraderAccountKey,
-        childTraderAccountKey,
-        accounts.globalTraderIndex()
+        List.of(
+            AccountMeta.createRead(eternalProgramId()),
+            AccountMeta.createRead(accounts.eternalLogAuthority()),
+            AccountMeta.createRead(accounts.eternalGlobalConfig()),
+            AccountMeta.createReadOnlySigner(traderWalletKey),
+            AccountMeta.createRead(parentTraderAccountKey),
+            AccountMeta.createWrite(childTraderAccountKey),
+            AccountMeta.createWrite(accounts.globalTraderIndex())
+        )
     );
   }
 

@@ -133,6 +133,43 @@ final class PhoenixClientTests {
         ix.data()[0]);
   }
 
+  /// Regression: the Eternal IDL declares `SyncParentToChild`'s `traderWallet`
+  /// as a non-signer, but the program's own SDK pushes it as
+  /// `AccountMeta::readonly_signer` — the wallet authorizes moving collateral
+  /// between its own trader accounts. The generated builder follows the IDL, so
+  /// the client rebuilds the meta.
+  ///
+  /// This is easy to miss in practice because the trader wallet is usually also
+  /// the fee payer, and message compilation would then mark it a signer anyway —
+  /// masking the bug for exactly the callers least likely to hit it.
+  @Test
+  void syncParentToChildRequiresTheTraderWalletToSign() {
+    final var parent = key(0x41);
+    final var child = key(0x42);
+
+    final var ix = CLIENT.syncParentToChild(OWNER, parent, child);
+    final var accounts = keys(ix);
+
+    assertEquals(ACCOUNTS.invokedEternalProgram().publicKey(), accounts.getFirst(), "[0] phoenix program");
+    assertEquals(ACCOUNTS.eternalLogAuthority(), accounts.get(1), "[1] log authority");
+    assertEquals(ACCOUNTS.eternalGlobalConfig(), accounts.get(2), "[2] global configuration");
+    assertEquals(OWNER, accounts.get(3), "[3] trader wallet");
+    assertEquals(parent, accounts.get(4), "[4] parent trader account");
+    assertEquals(child, accounts.get(5), "[5] child trader account");
+    assertEquals(ACCOUNTS.globalTraderIndex(), accounts.get(6), "[6] global trader index");
+
+    final var wallet = ix.accounts().get(3);
+    assertTrue(wallet.signer(), "the trader wallet must sign");
+    assertFalse(wallet.write(), "and it is read-only");
+
+    // the child is mutated, the parent only read
+    assertTrue(ix.accounts().get(5).write(), "child trader account is writable");
+    assertFalse(ix.accounts().get(4).write(), "parent trader account is read-only");
+    assertTrue(ix.accounts().get(6).write(), "global trader index is writable");
+    // exactly one signer
+    assertEquals(1, ix.accounts().stream().filter(AccountMeta::signer).count());
+  }
+
   @Test
   void accountConstantsAreWiredAndDistinct() {
     assertEquals("EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",

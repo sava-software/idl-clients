@@ -411,4 +411,93 @@ final class KaminoLendClientTests {
     assertEquals(keys(borrow), keys(larger));
     assertFalse(Arrays.equals(borrow.data(), larger.data()));
   }
+
+  // ---------------------------------------------------------------------------
+  // sentinel substitution, exhaustively
+  // ---------------------------------------------------------------------------
+
+  /// Every builder that takes an optional account substitutes a program id when
+  /// it is absent, so the positional list keeps its length. The tests above pin
+  /// the interesting cases in detail; this one sweeps the *remaining* sites so
+  /// no substitution goes unexercised in both directions.
+  ///
+  /// Both directions matter: asserting only the absent case would pass even if
+  /// the builder ignored its argument and always emitted the sentinel, and
+  /// asserting only the present case would miss a missing substitution.
+  ///
+  /// Kamino treats three values as "absent" — `null`, `PublicKey.NONE`, and its
+  /// own `nu111...` key — and all three must map to the same sentinel.
+  private void assertSubstitutes(final String label,
+                                 final java.util.function.Function<PublicKey, Instruction> build,
+                                 final PublicKey sentinel) {
+    final var present = key(0x7E);
+    final var withKey = keys(build.apply(present));
+    final int slot = withKey.indexOf(present);
+    assertTrue(slot >= 0, label + ": the supplied key must appear");
+
+    for (final var absent : new PublicKey[]{null, PublicKey.NONE, KaminoAccounts.NULL_KEY}) {
+      final var without = keys(build.apply(absent));
+      assertEquals(withKey.size(), without.size(), label + ": the list must not shrink");
+      assertEquals(sentinel, without.get(slot), label + ": absent -> sentinel");
+      for (int i = 0; i < withKey.size(); i++) {
+        if (i != slot) {
+          assertEquals(withKey.get(i), without.get(i), label + ": slot " + i + " must not move");
+        }
+      }
+    }
+  }
+
+  @Test
+  void everyOptionalAccountSubstitutesItsSentinel() {
+    final var kLend = KAMINO_ACCOUNTS.kLendProgram();
+    final var farms = KAMINO_ACCOUNTS.farmProgram();
+    final var mint = key(0x21);
+    final var tokenProgram = SOLANA_ACCOUNTS.tokenProgram();
+
+    // referrers substitute the kLend program
+    assertSubstitutes("flashRepay.referrerTokenState",
+        k -> CLIENT.flashRepayReserveLiquidity(MARKET, RESERVE, mint, key(0x22), key(0x23),
+            key(0x24), k, key(0x25), tokenProgram, 1_000L, 3), kLend);
+    assertSubstitutes("flashRepay.referrerAccount",
+        k -> CLIENT.flashRepayReserveLiquidity(MARKET, RESERVE, mint, key(0x22), key(0x23),
+            key(0x24), key(0x26), k, tokenProgram, 1_000L, 3), kLend);
+    assertSubstitutes("borrowObligationLiquidity.referrerTokenState",
+        k -> CLIENT.borrowObligationLiquidity(key(0x27), MARKET, RESERVE, mint, key(0x28),
+            key(0x29), key(0x2A), k, tokenProgram, 1_000L), kLend);
+    assertSubstitutes("borrowObligationLiquidityV2.referrerTokenState",
+        k -> CLIENT.borrowObligationLiquidityV2(key(0x27), MARKET, RESERVE, mint, key(0x28),
+            key(0x29), key(0x2A), k, tokenProgram, key(0x2B), key(0x2C), 1_000L), kLend);
+
+    // scope prices substitute the farms program
+    assertSubstitutes("refreshFarmUserState.scopePrices",
+        k -> CLIENT.refreshFarmUserState(key(0x31), key(0x32), k), farms);
+    assertSubstitutes("stakeFarm.scopePrices",
+        k -> CLIENT.stakeFarm(key(0x31), key(0x32), key(0x33), key(0x34), mint, k,
+            tokenProgram, 1_000L), farms);
+    assertSubstitutes("unstakeFarm.scopePrices",
+        k -> CLIENT.unstakeFarm(key(0x31), key(0x32), k, java.math.BigInteger.TEN), farms);
+    assertSubstitutes("harvestFarmReward.scopePrices",
+        k -> CLIENT.harvestFarmReward(key(0x31), key(0x32), mint, key(0x35), key(0x36),
+            key(0x37), key(0x38), k, tokenProgram, 0L), farms);
+
+    assertSubstitutes("flashBorrow.referrerTokenState",
+        k -> CLIENT.flashBorrowReserveLiquidity(MARKET, RESERVE, mint, key(0x28), key(0x29),
+            key(0x2A), k, key(0x2B), tokenProgram, 1_000L), kLend);
+    assertSubstitutes("flashBorrow.referrerAccount",
+        k -> CLIENT.flashBorrowReserveLiquidity(MARKET, RESERVE, mint, key(0x28), key(0x29),
+            key(0x2A), key(0x2B), k, tokenProgram, 1_000L), kLend);
+
+    // refreshReserve's four oracles all fall back to the kLend program
+    assertSubstitutes("refreshReserve.pyth",
+        k -> CLIENT.refreshReserve(MARKET, RESERVE, k, SWITCHBOARD_PRICE, SWITCHBOARD_TWAP, SCOPE_PRICES), kLend);
+    assertSubstitutes("refreshReserve.switchboardPrice",
+        k -> CLIENT.refreshReserve(MARKET, RESERVE, PYTH, k, SWITCHBOARD_TWAP, SCOPE_PRICES), kLend);
+    assertSubstitutes("refreshReserve.switchboardTwap",
+        k -> CLIENT.refreshReserve(MARKET, RESERVE, PYTH, SWITCHBOARD_PRICE, k, SCOPE_PRICES), kLend);
+    assertSubstitutes("refreshReserve.scopePrices",
+        k -> CLIENT.refreshReserve(MARKET, RESERVE, PYTH, SWITCHBOARD_PRICE, SWITCHBOARD_TWAP, k), kLend);
+
+    // the two sentinels are genuinely different programs
+    assertNotEquals(kLend, farms);
+  }
 }

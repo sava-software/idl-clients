@@ -214,7 +214,30 @@ Result — **150 instructions verified, all matching** after one fix:
 | marginfi-v2 | 75 | two fixes — the on-chain IDL was stale, see below |
 
 Phoenix's Rust is not Anchor: `rise/rust/ix/src/*.rs` build their metas by hand
-in numbered `build_accounts()` blocks, so those were the authority. They showed
+in numbered `build_accounts()` blocks, so those were the authority — and, per the
+staleness sweep below, the *only* authority available, since the dispatch probe
+cannot speak to non-Anchor programs.
+
+The full diff (14 builders, all 16 `build_accounts` blocks) needed two extractor
+fixes before it meant anything: the helpers `push_trader_index_accounts` /
+`push_writable_accounts` append accounts **inline at their call position**, so
+without expanding them every builder looked mis-ordered by two slots; and
+`if let Some(..)` pushes are *optional* trailing accounts. With those modelled,
+**every account order matched**. Two flag differences remained:
+
+- **`SyncParentToChild.traderWallet` — a real defect, and an IDL one.** The IDL
+  declares it `signer: false`; the SDK pushes `AccountMeta::readonly_signer`. The
+  generated builder faithfully followed the IDL, so the fix belongs in the
+  hand-written layer, which now rebuilds the metas. Checked across every mapped
+  Eternal instruction: this is the *only* signer disagreement, so it is an
+  upstream omission rather than a systemic gap. It survives in the wild because
+  the trader wallet is usually also the fee payer, and message compilation then
+  marks it a signer regardless — masking the bug for most callers.
+- **`CancelStopLoss.globalConfiguration`** — the IDL marks it writable where the
+  SDK has it read-only. Harmless: an unnecessary write lock, not a failure. Left
+  as-is rather than diverging from the IDL for no behavioural gain.
+
+The earlier pass had already found the fund-movement bug: they showed
 `deposit_funds` / `withdraw_funds` taking the per-mint **global vault** in a slot
 where our client passed `eternalGlobalConfig()` — the same value it already
 supplies two slots earlier. The vault's seeds are not in the IDL; they come from
@@ -282,6 +305,41 @@ instructions, so byte-level searching is too noisy to rely on. And the live
 `FeeState` could not distinguish the versions — 0.1.9's new
 `pause_delegate_admin` is carved from the old `reserved1` and is currently zero,
 which both layouts predict.
+
+### Bundle-wide staleness sweep (2026-07-19)
+
+Marginfi's `clearEmissions` was a *dead* method — not wrong, but incapable of
+succeeding — and nothing in the mutation baseline could have found it. So the
+dispatch probe was run across every configured program to bound how much more of
+that exists: **1026 declared instructions across 34 Anchor programs**, each
+probed for `InstructionFallbackNotFound`, with a garbage-discriminator control
+per program to confirm the program is Anchor-dispatch-shaped before trusting any
+verdict.
+
+**Result: zero actionable defects.** Two instructions are declared but not
+deployed, both benign and neither wrapped by hand-written code:
+
+| Program | Instruction | Why it is fine |
+|---|---|---|
+| Meteora DLMM | `for_idl_type_generation_do_not_call` | A stub — one `dummy_zc_account`, one `_ix` arg — existing only to force the IDL to emit zero-copy types. Never deployed by design. |
+| Switchboard On-Demand | `pull_feed_submit_response_svm` | An other-SVM-chain variant not enabled on Solana mainnet; its four `pull_feed_submit_response*` siblings all dispatch. |
+
+Marginfi re-probes clean (100 instructions, 0 dead), which also serves as the
+positive control: the same sweep would have flagged `clearEmissions` before the
+fix.
+
+**Eight programs are INCONCLUSIVE** — their garbage-discriminator control did not
+return 101, meaning they do not use Anchor's dispatch (native, Shank, or a real
+fallback handler): Jupiter Swap, Metaplex Token Metadata, Phoenix Ember, Phoenix
+Perpetuals (+ Dev), Solana Attestation Service, and the two Wormhole shims. The
+probe cannot speak to these; they need the Rust-diff treatment instead — which is
+exactly how Phoenix's global-vault bug was found, so the gap is real rather than
+theoretical.
+
+Worth re-running after any upstream deploy. The script lives in the session
+scratchpad (`idl_staleness_sweep.py`); committing it would mean whitelisting a
+new tracked-file kind in `.gitignore`, which is a deliberate decision and has not
+been taken.
 
 ### Marinade: a stale *on-chain* IDL
 
