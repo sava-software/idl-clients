@@ -30,7 +30,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param depositLimit: u64
 /// @param totalAssetValueInitLimit: u64
 /// @param oracleMaxAge: u16
-/// @param reserved0 The following values are irrelevant because staked collateral positions do not support
+/// @param flags: u64 Desired bitmask for staked-bank transition flags. These bits are copied to `Bank.flags`
+///              when staked settings are propagated or when a new staked bank is created.
+///              * Bit 9 (512): `STAKED_ORACLE_DISABLED` — staked oracle pricing is temporarily disabled.
+///              * Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` — staked oracle pricing includes the SPL
+///              single-pool on-ramp account in NAV.
+/// @param reserved1 The following values are irrelevant because staked collateral positions do not support
 ///                  borrowing.
 public record StakedSettings(PublicKey _address,
                              Discriminator discriminator,
@@ -44,13 +49,12 @@ public record StakedSettings(PublicKey _address,
                              int oracleMaxAge,
                              RiskTier riskTier,
                              byte[] pad0,
-                             byte[] reserved0,
+                             long flags,
                              byte[] reserved1,
                              byte[] reserved2) implements SerDe {
 
   public static final int BYTES = 264;
   public static final int PAD_0_LEN = 5;
-  public static final int RESERVED_0_LEN = 8;
   public static final int RESERVED_1_LEN = 32;
   public static final int RESERVED_2_LEN = 64;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
@@ -68,7 +72,7 @@ public record StakedSettings(PublicKey _address,
   public static final int ORACLE_MAX_AGE_OFFSET = 152;
   public static final int RISK_TIER_OFFSET = 154;
   public static final int PAD_0_OFFSET = 155;
-  public static final int RESERVED_0_OFFSET = 160;
+  public static final int FLAGS_OFFSET = 160;
   public static final int RESERVED_1_OFFSET = 168;
   public static final int RESERVED_2_OFFSET = 200;
 
@@ -114,6 +118,12 @@ public record StakedSettings(PublicKey _address,
     return Filter.createMemCompFilter(RISK_TIER_OFFSET, riskTier.write());
   }
 
+  public static Filter createFlagsFilter(final long flags) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, flags);
+    return Filter.createMemCompFilter(FLAGS_OFFSET, _data);
+  }
+
   public static StakedSettings read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -154,8 +164,8 @@ public record StakedSettings(PublicKey _address,
     i += riskTier.l();
     final var pad0 = new byte[5];
     i += SerDeUtil.readArray(pad0, _data, i);
-    final var reserved0 = new byte[8];
-    i += SerDeUtil.readArray(reserved0, _data, i);
+    final var flags = getInt64LE(_data, i);
+    i += 8;
     final var reserved1 = new byte[32];
     i += SerDeUtil.readArray(reserved1, _data, i);
     final var reserved2 = new byte[64];
@@ -172,7 +182,7 @@ public record StakedSettings(PublicKey _address,
                               oracleMaxAge,
                               riskTier,
                               pad0,
-                              reserved0,
+                              flags,
                               reserved1,
                               reserved2);
   }
@@ -196,7 +206,8 @@ public record StakedSettings(PublicKey _address,
     i += 2;
     i += riskTier.write(_data, i);
     i += SerDeUtil.writeArrayChecked(pad0, 5, _data, i);
-    i += SerDeUtil.writeArrayChecked(reserved0, 8, _data, i);
+    putInt64LE(_data, i, flags);
+    i += 8;
     i += SerDeUtil.writeArrayChecked(reserved1, 32, _data, i);
     i += SerDeUtil.writeArrayChecked(reserved2, 64, _data, i);
     return i - _offset;

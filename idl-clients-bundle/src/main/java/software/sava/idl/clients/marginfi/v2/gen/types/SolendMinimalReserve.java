@@ -2,19 +2,12 @@
 package software.sava.idl.clients.marginfi.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
-import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.rpc.json.http.response.AccountInfo;
-
-import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param lastUpdateSlot: u64 Last slot when supply and rates updated
 /// @param lastUpdateStale: u8 True when marked stale
@@ -26,9 +19,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param configLoanToValueRatio: u8
 /// @param configLiquidationBonus: u8
 /// @param configLiquidationThreshold: u8
-public record SolendMinimalReserve(PublicKey _address,
-                                   Discriminator discriminator,
-                                   long lastUpdateSlot,
+public record SolendMinimalReserve(long lastUpdateSlot,
                                    int lastUpdateStale,
                                    PublicKey lendingMarket,
                                    PublicKey liquidityMintPubkey,
@@ -55,7 +46,7 @@ public record SolendMinimalReserve(PublicKey _address,
                                    byte[] paddingFinal32,
                                    byte[] paddingFinal6) implements SerDe {
 
-  public static final int BYTES = 626;
+  public static final int BYTES = 618;
   public static final int LIQUIDITY_BORROWED_AMOUNT_WADS_LEN = 16;
   public static final int LIQUIDITY_CUMULATIVE_BORROW_RATE_WADS_LEN = 16;
   public static final int LIQUIDITY_MARKET_PRICE_LEN = 16;
@@ -66,128 +57,39 @@ public record SolendMinimalReserve(PublicKey _address,
   public static final int PADDING_FINAL_66_LEN = 64;
   public static final int PADDING_FINAL_33_LEN = 32;
   public static final int PADDING_FINAL_6_LEN = 6;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(1, 0, 0, 0, 0, 0, 0, 0);
-  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
-
-  public static final int LAST_UPDATE_SLOT_OFFSET = 8;
-  public static final int LAST_UPDATE_STALE_OFFSET = 16;
-  public static final int LENDING_MARKET_OFFSET = 17;
-  public static final int LIQUIDITY_MINT_PUBKEY_OFFSET = 49;
-  public static final int LIQUIDITY_MINT_DECIMALS_OFFSET = 81;
-  public static final int LIQUIDITY_SUPPLY_PUBKEY_OFFSET = 82;
-  public static final int LIQUIDITY_PYTH_ORACLE_PUBKEY_OFFSET = 114;
-  public static final int LIQUIDITY_SWITCHBOARD_ORACLE_PUBKEY_OFFSET = 146;
-  public static final int LIQUIDITY_AVAILABLE_AMOUNT_OFFSET = 178;
-  public static final int LIQUIDITY_BORROWED_AMOUNT_WADS_OFFSET = 186;
-  public static final int LIQUIDITY_CUMULATIVE_BORROW_RATE_WADS_OFFSET = 202;
-  public static final int LIQUIDITY_MARKET_PRICE_OFFSET = 218;
-  public static final int COLLATERAL_MINT_PUBKEY_OFFSET = 234;
-  public static final int COLLATERAL_MINT_TOTAL_SUPPLY_OFFSET = 266;
-  public static final int COLLATERAL_SUPPLY_PUBKEY_OFFSET = 274;
-  public static final int CONFIG_OPTIMAL_UTILIZATION_RATE_OFFSET = 306;
-  public static final int CONFIG_LOAN_TO_VALUE_RATIO_OFFSET = 307;
-  public static final int CONFIG_LIQUIDATION_BONUS_OFFSET = 308;
-  public static final int CONFIG_LIQUIDATION_THRESHOLD_OFFSET = 309;
-  public static final int PADDING_TO_FEES_66_OFFSET = 310;
-  public static final int PADDING_TO_FEES_6_OFFSET = 374;
-  public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_OFFSET = 380;
-  public static final int PADDING_FINAL_111_OFFSET = 396;
-  public static final int PADDING_FINAL_66_OFFSET = 524;
-  public static final int PADDING_FINAL_33_OFFSET = 588;
-  public static final int PADDING_FINAL_6_OFFSET = 620;
-
-  public static Filter createLastUpdateSlotFilter(final long lastUpdateSlot) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, lastUpdateSlot);
-    return Filter.createMemCompFilter(LAST_UPDATE_SLOT_OFFSET, _data);
-  }
-
-  public static Filter createLastUpdateStaleFilter(final int lastUpdateStale) {
-    return Filter.createMemCompFilter(LAST_UPDATE_STALE_OFFSET, new byte[]{(byte) lastUpdateStale});
-  }
-
-  public static Filter createLendingMarketFilter(final PublicKey lendingMarket) {
-    return Filter.createMemCompFilter(LENDING_MARKET_OFFSET, lendingMarket);
-  }
-
-  public static Filter createLiquidityMintPubkeyFilter(final PublicKey liquidityMintPubkey) {
-    return Filter.createMemCompFilter(LIQUIDITY_MINT_PUBKEY_OFFSET, liquidityMintPubkey);
-  }
-
-  public static Filter createLiquidityMintDecimalsFilter(final int liquidityMintDecimals) {
-    return Filter.createMemCompFilter(LIQUIDITY_MINT_DECIMALS_OFFSET, new byte[]{(byte) liquidityMintDecimals});
-  }
-
-  public static Filter createLiquiditySupplyPubkeyFilter(final PublicKey liquiditySupplyPubkey) {
-    return Filter.createMemCompFilter(LIQUIDITY_SUPPLY_PUBKEY_OFFSET, liquiditySupplyPubkey);
-  }
-
-  public static Filter createLiquidityPythOraclePubkeyFilter(final PublicKey liquidityPythOraclePubkey) {
-    return Filter.createMemCompFilter(LIQUIDITY_PYTH_ORACLE_PUBKEY_OFFSET, liquidityPythOraclePubkey);
-  }
-
-  public static Filter createLiquiditySwitchboardOraclePubkeyFilter(final PublicKey liquiditySwitchboardOraclePubkey) {
-    return Filter.createMemCompFilter(LIQUIDITY_SWITCHBOARD_ORACLE_PUBKEY_OFFSET, liquiditySwitchboardOraclePubkey);
-  }
-
-  public static Filter createLiquidityAvailableAmountFilter(final long liquidityAvailableAmount) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, liquidityAvailableAmount);
-    return Filter.createMemCompFilter(LIQUIDITY_AVAILABLE_AMOUNT_OFFSET, _data);
-  }
-
-  public static Filter createCollateralMintPubkeyFilter(final PublicKey collateralMintPubkey) {
-    return Filter.createMemCompFilter(COLLATERAL_MINT_PUBKEY_OFFSET, collateralMintPubkey);
-  }
-
-  public static Filter createCollateralMintTotalSupplyFilter(final long collateralMintTotalSupply) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, collateralMintTotalSupply);
-    return Filter.createMemCompFilter(COLLATERAL_MINT_TOTAL_SUPPLY_OFFSET, _data);
-  }
-
-  public static Filter createCollateralSupplyPubkeyFilter(final PublicKey collateralSupplyPubkey) {
-    return Filter.createMemCompFilter(COLLATERAL_SUPPLY_PUBKEY_OFFSET, collateralSupplyPubkey);
-  }
-
-  public static Filter createConfigOptimalUtilizationRateFilter(final int configOptimalUtilizationRate) {
-    return Filter.createMemCompFilter(CONFIG_OPTIMAL_UTILIZATION_RATE_OFFSET, new byte[]{(byte) configOptimalUtilizationRate});
-  }
-
-  public static Filter createConfigLoanToValueRatioFilter(final int configLoanToValueRatio) {
-    return Filter.createMemCompFilter(CONFIG_LOAN_TO_VALUE_RATIO_OFFSET, new byte[]{(byte) configLoanToValueRatio});
-  }
-
-  public static Filter createConfigLiquidationBonusFilter(final int configLiquidationBonus) {
-    return Filter.createMemCompFilter(CONFIG_LIQUIDATION_BONUS_OFFSET, new byte[]{(byte) configLiquidationBonus});
-  }
-
-  public static Filter createConfigLiquidationThresholdFilter(final int configLiquidationThreshold) {
-    return Filter.createMemCompFilter(CONFIG_LIQUIDATION_THRESHOLD_OFFSET, new byte[]{(byte) configLiquidationThreshold});
-  }
+  public static final int LAST_UPDATE_SLOT_OFFSET = 0;
+  public static final int LAST_UPDATE_STALE_OFFSET = 8;
+  public static final int LENDING_MARKET_OFFSET = 9;
+  public static final int LIQUIDITY_MINT_PUBKEY_OFFSET = 41;
+  public static final int LIQUIDITY_MINT_DECIMALS_OFFSET = 73;
+  public static final int LIQUIDITY_SUPPLY_PUBKEY_OFFSET = 74;
+  public static final int LIQUIDITY_PYTH_ORACLE_PUBKEY_OFFSET = 106;
+  public static final int LIQUIDITY_SWITCHBOARD_ORACLE_PUBKEY_OFFSET = 138;
+  public static final int LIQUIDITY_AVAILABLE_AMOUNT_OFFSET = 170;
+  public static final int LIQUIDITY_BORROWED_AMOUNT_WADS_OFFSET = 178;
+  public static final int LIQUIDITY_CUMULATIVE_BORROW_RATE_WADS_OFFSET = 194;
+  public static final int LIQUIDITY_MARKET_PRICE_OFFSET = 210;
+  public static final int COLLATERAL_MINT_PUBKEY_OFFSET = 226;
+  public static final int COLLATERAL_MINT_TOTAL_SUPPLY_OFFSET = 258;
+  public static final int COLLATERAL_SUPPLY_PUBKEY_OFFSET = 266;
+  public static final int CONFIG_OPTIMAL_UTILIZATION_RATE_OFFSET = 298;
+  public static final int CONFIG_LOAN_TO_VALUE_RATIO_OFFSET = 299;
+  public static final int CONFIG_LIQUIDATION_BONUS_OFFSET = 300;
+  public static final int CONFIG_LIQUIDATION_THRESHOLD_OFFSET = 301;
+  public static final int PADDING_TO_FEES_66_OFFSET = 302;
+  public static final int PADDING_TO_FEES_6_OFFSET = 366;
+  public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_OFFSET = 372;
+  public static final int PADDING_FINAL_111_OFFSET = 388;
+  public static final int PADDING_FINAL_66_OFFSET = 516;
+  public static final int PADDING_FINAL_33_OFFSET = 580;
+  public static final int PADDING_FINAL_6_OFFSET = 612;
 
   public static SolendMinimalReserve read(final byte[] _data, final int _offset) {
-    return read(null, _data, _offset);
-  }
-
-  public static SolendMinimalReserve read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
-  }
-
-  public static SolendMinimalReserve read(final PublicKey _address, final byte[] _data) {
-    return read(_address, _data, 0);
-  }
-
-  public static final BiFunction<PublicKey, byte[], SolendMinimalReserve> FACTORY = SolendMinimalReserve::read;
-
-  public static SolendMinimalReserve read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var lastUpdateSlot = getInt64LE(_data, i);
     i += 8;
     final var lastUpdateStale = _data[i] & 0xFF;
@@ -240,9 +142,7 @@ public record SolendMinimalReserve(PublicKey _address,
     i += SerDeUtil.readArray(paddingFinal32, _data, i);
     final var paddingFinal6 = new byte[6];
     SerDeUtil.readArray(paddingFinal6, _data, i);
-    return new SolendMinimalReserve(_address,
-                                    discriminator,
-                                    lastUpdateSlot,
+    return new SolendMinimalReserve(lastUpdateSlot,
                                     lastUpdateStale,
                                     lendingMarket,
                                     liquidityMintPubkey,
@@ -272,7 +172,7 @@ public record SolendMinimalReserve(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, lastUpdateSlot);
     i += 8;
     _data[i] = (byte) lastUpdateStale;

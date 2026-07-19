@@ -885,12 +885,12 @@
             },
             {
               "name": "token_program"
+            },
+            {
+              "name": "validator_list",
+              "writable": true
             }
           ]
-        },
-        {
-          "name": "validator_list",
-          "writable": true
         }
       ],
       "args": [
@@ -961,6 +961,10 @@
             },
             {
               "name": "token_program"
+            },
+            {
+              "name": "validator_list",
+              "writable": true
             }
           ]
         },
@@ -975,6 +979,10 @@
       "args": [
         {
           "name": "stake_index",
+          "type": "u32"
+        },
+        {
+          "name": "validator_index",
           "type": "u32"
         }
       ]
@@ -1257,16 +1265,16 @@
       ]
     },
     {
-      "name": "redelegate",
+      "name": "create_canonical_stake",
       "discriminator": [
-        212,
-        82,
+        109,
+        2,
+        136,
+        224,
+        147,
         51,
-        160,
-        228,
-        80,
-        116,
-        35
+        182,
+        232
       ],
       "accounts": [
         {
@@ -1274,40 +1282,30 @@
           "writable": true
         },
         {
-          "name": "validator_list",
-          "writable": true
-        },
-        {
           "name": "stake_list",
           "writable": true
         },
         {
-          "name": "stake_account",
+          "name": "validator_list",
+          "writable": true
+        },
+        {
+          "name": "canonical_stake",
+          "writable": true
+        },
+        {
+          "name": "source_stake",
           "writable": true
         },
         {
           "name": "stake_deposit_authority"
         },
         {
-          "name": "reserve_pda"
+          "name": "stake_withdraw_authority"
         },
         {
-          "name": "split_stake_account",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "split_stake_rent_payer",
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "dest_validator_account"
-        },
-        {
-          "name": "redelegate_stake_account",
-          "writable": true,
-          "signer": true
+          "name": "operational_sol_account",
+          "writable": true
         },
         {
           "name": "clock"
@@ -1316,26 +1314,19 @@
           "name": "stake_history"
         },
         {
-          "name": "stake_config"
+          "name": "stake_program"
         },
         {
           "name": "system_program"
-        },
-        {
-          "name": "stake_program"
         }
       ],
       "args": [
         {
-          "name": "stake_index",
+          "name": "source_stake_index",
           "type": "u32"
         },
         {
-          "name": "source_validator_index",
-          "type": "u32"
-        },
-        {
-          "name": "dest_validator_index",
+          "name": "validator_index",
           "type": "u32"
         }
       ]
@@ -1563,6 +1554,35 @@
           "type": "u32"
         }
       ]
+    },
+    {
+      "name": "finalize_delinquent_upgrade",
+      "discriminator": [
+        173,
+        8,
+        90,
+        193,
+        222,
+        52,
+        169,
+        144
+      ],
+      "accounts": [
+        {
+          "name": "state",
+          "writable": true
+        },
+        {
+          "name": "validator_list",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "max_validators",
+          "type": "u32"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -1722,6 +1742,19 @@
         14,
         150,
         65
+      ]
+    },
+    {
+      "name": "CreateCanonicalStakeEvent",
+      "discriminator": [
+        113,
+        120,
+        191,
+        226,
+        195,
+        181,
+        14,
+        106
       ]
     },
     {
@@ -2354,6 +2387,36 @@
       "code": 6086,
       "name": "ShrinkingListWithDeletingContents",
       "msg": "Capacity of the list must be not less than it's current size"
+    },
+    {
+      "code": 6087,
+      "name": "UpgradingInvariantViolation",
+      "msg": "Upgrading invariant violation"
+    },
+    {
+      "code": 6088,
+      "name": "DelinquentUpgraderIsNotDone",
+      "msg": "Delinquent upgrader is not done"
+    },
+    {
+      "code": 6089,
+      "name": "CanonicalStakeAccountAlreadyCreated",
+      "msg": "Canonical stake account for this validator already exists"
+    },
+    {
+      "code": 6090,
+      "name": "InvalidCanonicalStakeAccountAddress",
+      "msg": "Invalid canonical stake account address"
+    },
+    {
+      "code": 6091,
+      "name": "DepositStakeAccountFeeIsTooHigh",
+      "msg": "Deposit stake account fee is too high"
+    },
+    {
+      "code": 6092,
+      "name": "DepositSolFeeIsTooHigh",
+      "msg": "Deposit SOL fee is too high"
     }
   ],
   "types": [
@@ -2653,6 +2716,26 @@
                 }
               }
             }
+          },
+          {
+            "name": "deposit_sol_fee",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "FeeCents"
+                }
+              }
+            }
+          },
+          {
+            "name": "deposit_stake_account_fee",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "FeeCents"
+                }
+              }
+            }
           }
         ]
       }
@@ -2900,7 +2983,15 @@
           },
           {
             "name": "is_emergency_unstaking",
-            "type": "u8"
+            "type": "bool"
+          },
+          {
+            "name": "last_update_status",
+            "type": {
+              "defined": {
+                "name": "StakeStatus"
+              }
+            }
           }
         ]
       }
@@ -2997,6 +3088,10 @@
           {
             "name": "duplication_flag_bump_seed",
             "type": "u8"
+          },
+          {
+            "name": "delinquent_upgrader_active_balance",
+            "type": "u64"
           }
         ]
       }
@@ -3041,6 +3136,64 @@
               "DEPRECATED, no longer used"
             ],
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DelinquentUpgraderState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "IteratingStakes",
+            "fields": [
+              {
+                "name": "visited_count",
+                "type": "u32"
+              },
+              {
+                "name": "total_active_balance",
+                "type": "u64"
+              },
+              {
+                "name": "total_delinquent_balance",
+                "type": "u64"
+              }
+            ]
+          },
+          {
+            "name": "IteratingValidators",
+            "fields": [
+              {
+                "name": "visited_count",
+                "type": "u32"
+              },
+              {
+                "name": "delinquent_balance_left",
+                "type": "u64"
+              }
+            ]
+          },
+          {
+            "name": "Done"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Unknown"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Deactivating"
           }
         ]
       }
@@ -3224,6 +3377,30 @@
             "type": {
               "defined": {
                 "name": "Fee"
+              }
+            }
+          },
+          {
+            "name": "delinquent_upgrader",
+            "type": {
+              "defined": {
+                "name": "DelinquentUpgraderState"
+              }
+            }
+          },
+          {
+            "name": "deposit_sol_fee",
+            "type": {
+              "defined": {
+                "name": "FeeCents"
+              }
+            }
+          },
+          {
+            "name": "deposit_stake_account_fee",
+            "type": {
+              "defined": {
+                "name": "FeeCents"
               }
             }
           }
@@ -3459,6 +3636,26 @@
               "option": {
                 "defined": {
                   "name": "FeeValueChange"
+                }
+              }
+            }
+          },
+          {
+            "name": "deposit_sol_fee_change",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "FeeCentsValueChange"
+                }
+              }
+            }
+          },
+          {
+            "name": "deposit_stake_account_fee_change",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "FeeCentsValueChange"
                 }
               }
             }
@@ -3704,6 +3901,58 @@
           {
             "name": "returned_stake_rent",
             "type": "u64"
+          },
+          {
+            "name": "validator_active_balance",
+            "type": "u64"
+          },
+          {
+            "name": "total_active_balance",
+            "type": "u64"
+          },
+          {
+            "name": "operational_sol_balance",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CreateCanonicalStakeEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "state",
+            "type": "pubkey"
+          },
+          {
+            "name": "epoch",
+            "type": "u64"
+          },
+          {
+            "name": "canonical_stake_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "source_stake_index",
+            "type": "u32"
+          },
+          {
+            "name": "source_stake_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "last_update_source_stake_delegation",
+            "type": "u64"
+          },
+          {
+            "name": "validator_index",
+            "type": "u32"
+          },
+          {
+            "name": "validator_vote",
+            "type": "pubkey"
           },
           {
             "name": "validator_active_balance",
@@ -4434,6 +4683,10 @@
           {
             "name": "msol_supply",
             "type": "u64"
+          },
+          {
+            "name": "sol_fees",
+            "type": "u64"
           }
         ]
       }
@@ -4493,6 +4746,10 @@
           },
           {
             "name": "msol_supply",
+            "type": "u64"
+          },
+          {
+            "name": "sol_fees",
             "type": "u64"
           }
         ]

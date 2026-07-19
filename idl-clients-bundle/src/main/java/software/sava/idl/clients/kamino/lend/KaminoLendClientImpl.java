@@ -72,7 +72,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         referrerKey,
         referrerTokenStateKey,
         reserveKey,
-        reservePDAs.collateralMint(),
+        reservePDAs.mint(),
         reservePDAs.liquiditySupplyVault(),
         referrerTokenAccountKey,
         reservePDAs.market(),

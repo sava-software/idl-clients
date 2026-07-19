@@ -5,6 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.marinade.stake_pool.gen.types.FeeCents;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.List;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.StakeSystem;
 import software.sava.idl.clients.marinade.stake_pool.gen.types.State;
@@ -62,8 +63,12 @@ final class MarinadeProgramClientTests {
                              final long msolSupply,
                              final int stakeItemSize,
                              final int validatorItemSize) {
-    final byte[] data = new byte[State.BYTES];
+    // State is no longer fixed-size: a variable-length DelinquentUpgraderState
+    // enum sits at DELINQUENT_UPGRADER_OFFSET, followed by two FeeCents. Size
+    // the buffer for the unit ("Done") variant plus that tail.
+    final byte[] data = new byte[State.DELINQUENT_UPGRADER_OFFSET + 1 + (2 * FeeCents.BYTES)];
     State.DISCRIMINATOR.write(data, 0);
+    data[State.DELINQUENT_UPGRADER_OFFSET] = 2; // Done — a unit variant
     ByteUtil.putInt64LE(data, TOTAL_ACTIVE_BALANCE, totalActiveBalance);
     ByteUtil.putInt64LE(data, DELAYED_UNSTAKE_COOLING_DOWN, delayedUnstakeCoolingDown);
     ByteUtil.putInt64LE(data, State.EMERGENCY_COOLING_DOWN_OFFSET, emergencyCoolingDown);
@@ -181,23 +186,32 @@ final class MarinadeProgramClientTests {
 
   }
 
-  /// The scan has no tail bound check: it reads a full key at every stride
-  /// without confirming one remains. A list whose length is not an exact
-  /// multiple of its item size — a truncated account, or an item size that
-  /// disagrees with the data — therefore throws rather than reporting "not
-  /// found". Pinned as current behavior; on-chain lists are exact multiples.
+  /// Regression: the scan used to read a full key at every stride without
+  /// confirming one remained, so a list whose length is not an exact multiple
+  /// of its item size — a truncated account, or an item size that disagrees
+  /// with the data — threw `ArrayIndexOutOfBoundsException` instead of
+  /// reporting "not found". It now stops when fewer than a whole key is left.
   @Test
-  void accountIndexOverrunsATruncatedList() {
+  void accountIndexStopsShortOfATruncatedRecord() {
     final int itemSize = 40;
-    // one whole record plus a partial second: the scan steps into the partial
-    // record and reads a full key off the end
-    final byte[] truncated = Arrays.copyOf(listAccount(itemSize, key(0x61), key(0x63)), 8 + itemSize + 10);
+    final var present = key(0x61);
+    // one whole record plus a partial second
+    final byte[] truncated = Arrays.copyOf(listAccount(itemSize, present, key(0x63)), 8 + itemSize + 10);
 
-    assertThrows(ArrayIndexOutOfBoundsException.class,
-        () -> MarinadeProgramClient.accountIndex(key(0x62).toByteArray(), truncated, itemSize));
+    assertEquals(-1, MarinadeProgramClient.accountIndex(key(0x62).toByteArray(), truncated, itemSize));
+    // the whole record that *is* present still resolves
+    assertEquals(0, MarinadeProgramClient.accountIndex(present.toByteArray(), truncated, itemSize));
 
-    // a well-formed list of the same item size is fine
-    assertEquals(-1, MarinadeProgramClient.accountIndex(key(0x62).toByteArray(), listAccount(itemSize, key(0x61)), itemSize));
+    // a list shorter than a single key, and an empty one, are both "not found"
+    assertEquals(-1, MarinadeProgramClient.accountIndex(present.toByteArray(), new byte[8 + 31], itemSize));
+    assertEquals(-1, MarinadeProgramClient.accountIndex(present.toByteArray(), new byte[0], itemSize));
+
+    // a well-formed list of the same item size is unaffected
+    assertEquals(-1, MarinadeProgramClient.accountIndex(key(0x62).toByteArray(), listAccount(itemSize, present), itemSize));
+    assertEquals(0, MarinadeProgramClient.accountIndex(present.toByteArray(), listAccount(itemSize, present), itemSize));
+
+    // and a mismatched stride no longer overruns — it just misses
+    assertEquals(-1, MarinadeProgramClient.accountIndex(present.toByteArray(), listAccount(61, key(0x64), present), 40));
   }
 
   // ---------------------------------------------------------------------------

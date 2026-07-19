@@ -10,18 +10,19 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// @param lastUpdateDelegatedLamports: u64
 /// @param lastUpdateEpoch: u64
-/// @param isEmergencyUnstaking: u8
 public record StakeRecord(PublicKey stakeAccount,
                           long lastUpdateDelegatedLamports,
                           long lastUpdateEpoch,
-                          int isEmergencyUnstaking) implements SerDe {
+                          boolean isEmergencyUnstaking,
+                          StakeStatus lastUpdateStatus) implements SerDe {
 
-  public static final int BYTES = 49;
+  public static final int BYTES = 50;
 
   public static final int STAKE_ACCOUNT_OFFSET = 0;
   public static final int LAST_UPDATE_DELEGATED_LAMPORTS_OFFSET = 32;
   public static final int LAST_UPDATE_EPOCH_OFFSET = 40;
   public static final int IS_EMERGENCY_UNSTAKING_OFFSET = 48;
+  public static final int LAST_UPDATE_STATUS_OFFSET = 49;
 
   public static StakeRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -34,11 +35,14 @@ public record StakeRecord(PublicKey stakeAccount,
     i += 8;
     final var lastUpdateEpoch = getInt64LE(_data, i);
     i += 8;
-    final var isEmergencyUnstaking = _data[i] & 0xFF;
+    final var isEmergencyUnstaking = _data[i] == 1;
+    ++i;
+    final var lastUpdateStatus = StakeStatus.read(_data, i);
     return new StakeRecord(stakeAccount,
                            lastUpdateDelegatedLamports,
                            lastUpdateEpoch,
-                           isEmergencyUnstaking);
+                           isEmergencyUnstaking,
+                           lastUpdateStatus);
   }
 
   @Override
@@ -50,8 +54,9 @@ public record StakeRecord(PublicKey stakeAccount,
     i += 8;
     putInt64LE(_data, i, lastUpdateEpoch);
     i += 8;
-    _data[i] = (byte) isEmergencyUnstaking;
+    _data[i] = (byte) (isEmergencyUnstaking ? 1 : 0);
     ++i;
+    i += lastUpdateStatus.write(_data, i);
     return i - _offset;
   }
 

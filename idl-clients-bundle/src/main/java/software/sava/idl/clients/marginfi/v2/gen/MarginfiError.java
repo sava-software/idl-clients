@@ -57,7 +57,7 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.PythPushStalePrice,
     MarginfiError.WrongNumberOfOracleAccounts,
     MarginfiError.WrongOracleAccountKeys,
-    MarginfiError.Vacated2,
+    MarginfiError.StakeOraclesDisabled,
     MarginfiError.Vacated3,
     MarginfiError.OracleMaxConfidenceExceeded,
     MarginfiError.PythPushInsufficientVerificationLevel,
@@ -136,6 +136,10 @@ public sealed interface MarginfiError extends ProgramError permits
     MarginfiError.DeleverageWithdrawalUpdateStale,
     MarginfiError.DeleverageWithdrawalUpdateOutOfOrderSlot,
     MarginfiError.DeleverageWithdrawalUpdateOutOfOrderSeq,
+    MarginfiError.UseSetFixedOraclePrice,
+    MarginfiError.InvalidGlobalFeeWallet,
+    MarginfiError.BankUninitialized,
+    MarginfiError.SlippageTooHigh,
     MarginfiError.WrongAssetTagForStandardInstructions,
     MarginfiError.WrongAssetTagForKaminoInstructions,
     MarginfiError.CantAddPool,
@@ -264,7 +268,7 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6050 -> PythPushStalePrice.INSTANCE;
       case 6051 -> WrongNumberOfOracleAccounts.INSTANCE;
       case 6052 -> WrongOracleAccountKeys.INSTANCE;
-      case 6053 -> Vacated2.INSTANCE;
+      case 6053 -> StakeOraclesDisabled.INSTANCE;
       case 6054 -> Vacated3.INSTANCE;
       case 6055 -> OracleMaxConfidenceExceeded.INSTANCE;
       case 6056 -> PythPushInsufficientVerificationLevel.INSTANCE;
@@ -343,6 +347,10 @@ public sealed interface MarginfiError extends ProgramError permits
       case 6129 -> DeleverageWithdrawalUpdateStale.INSTANCE;
       case 6130 -> DeleverageWithdrawalUpdateOutOfOrderSlot.INSTANCE;
       case 6131 -> DeleverageWithdrawalUpdateOutOfOrderSeq.INSTANCE;
+      case 6132 -> UseSetFixedOraclePrice.INSTANCE;
+      case 6133 -> InvalidGlobalFeeWallet.INSTANCE;
+      case 6134 -> BankUninitialized.INSTANCE;
+      case 6135 -> SlippageTooHigh.INSTANCE;
       case 6200 -> WrongAssetTagForStandardInstructions.INSTANCE;
       case 6201 -> WrongAssetTagForKaminoInstructions.INSTANCE;
       case 6202 -> CantAddPool.INSTANCE;
@@ -790,10 +798,10 @@ public sealed interface MarginfiError extends ProgramError permits
     );
   }
 
-  record Vacated2(int code, String msg) implements MarginfiError {
+  record StakeOraclesDisabled(int code, String msg) implements MarginfiError {
 
-    public static final Vacated2 INSTANCE = new Vacated2(
-        6053, "Vacated2"
+    public static final StakeOraclesDisabled INSTANCE = new StakeOraclesDisabled(
+        6053, "Stake oracles are temporarily disabled"
     );
   }
 
@@ -1178,7 +1186,7 @@ public sealed interface MarginfiError extends ProgramError permits
   record UnexpectedOrderExecutionState(int code, String msg) implements MarginfiError {
 
     public static final UnexpectedOrderExecutionState INSTANCE = new UnexpectedOrderExecutionState(
-        6108, "Order execution state issue. Check the necessary invariants i.e not in flashloan or disabled e.t.c"
+        6108, "Order execution state issue. Check not in flashloan, disabled, etc"
     );
   }
 
@@ -1340,6 +1348,34 @@ public sealed interface MarginfiError extends ProgramError permits
 
     public static final DeleverageWithdrawalUpdateOutOfOrderSeq INSTANCE = new DeleverageWithdrawalUpdateOutOfOrderSeq(
         6131, "Deleverage withdrawal admin update sequence is out of order"
+    );
+  }
+
+  record UseSetFixedOraclePrice(int code, String msg) implements MarginfiError {
+
+    public static final UseSetFixedOraclePrice INSTANCE = new UseSetFixedOraclePrice(
+        6132, "Use set_fixed_oracle_price instead"
+    );
+  }
+
+  record InvalidGlobalFeeWallet(int code, String msg) implements MarginfiError {
+
+    public static final InvalidGlobalFeeWallet INSTANCE = new InvalidGlobalFeeWallet(
+        6133, "Provided global fee wallet does not match group fee state cache"
+    );
+  }
+
+  record BankUninitialized(int code, String msg) implements MarginfiError {
+
+    public static final BankUninitialized INSTANCE = new BankUninitialized(
+        6134, "Bank has not completed one-time initialization"
+    );
+  }
+
+  record SlippageTooHigh(int code, String msg) implements MarginfiError {
+
+    public static final SlippageTooHigh INSTANCE = new SlippageTooHigh(
+        6135, "Max slippage exceeds the allowed cap"
     );
   }
 

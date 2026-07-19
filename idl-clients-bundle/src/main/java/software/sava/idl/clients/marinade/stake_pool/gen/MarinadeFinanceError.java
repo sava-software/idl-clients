@@ -90,7 +90,13 @@ public sealed interface MarinadeFinanceError extends ProgramError permits
     MarinadeFinanceError.DelayedUnstakeFeeIsTooHigh,
     MarinadeFinanceError.WithdrawStakeLamportsIsTooLow,
     MarinadeFinanceError.StakeAccountRemainderTooLow,
-    MarinadeFinanceError.ShrinkingListWithDeletingContents {
+    MarinadeFinanceError.ShrinkingListWithDeletingContents,
+    MarinadeFinanceError.UpgradingInvariantViolation,
+    MarinadeFinanceError.DelinquentUpgraderIsNotDone,
+    MarinadeFinanceError.CanonicalStakeAccountAlreadyCreated,
+    MarinadeFinanceError.InvalidCanonicalStakeAccountAddress,
+    MarinadeFinanceError.DepositStakeAccountFeeIsTooHigh,
+    MarinadeFinanceError.DepositSolFeeIsTooHigh {
 
   static MarinadeFinanceError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -181,6 +187,12 @@ public sealed interface MarinadeFinanceError extends ProgramError permits
       case 6084 -> WithdrawStakeLamportsIsTooLow.INSTANCE;
       case 6085 -> StakeAccountRemainderTooLow.INSTANCE;
       case 6086 -> ShrinkingListWithDeletingContents.INSTANCE;
+      case 6087 -> UpgradingInvariantViolation.INSTANCE;
+      case 6088 -> DelinquentUpgraderIsNotDone.INSTANCE;
+      case 6089 -> CanonicalStakeAccountAlreadyCreated.INSTANCE;
+      case 6090 -> InvalidCanonicalStakeAccountAddress.INSTANCE;
+      case 6091 -> DepositStakeAccountFeeIsTooHigh.INSTANCE;
+      case 6092 -> DepositSolFeeIsTooHigh.INSTANCE;
       default -> null;
     };
   }
@@ -791,6 +803,48 @@ public sealed interface MarinadeFinanceError extends ProgramError permits
 
     public static final ShrinkingListWithDeletingContents INSTANCE = new ShrinkingListWithDeletingContents(
         6086, "Capacity of the list must be not less than it's current size"
+    );
+  }
+
+  record UpgradingInvariantViolation(int code, String msg) implements MarinadeFinanceError {
+
+    public static final UpgradingInvariantViolation INSTANCE = new UpgradingInvariantViolation(
+        6087, "Upgrading invariant violation"
+    );
+  }
+
+  record DelinquentUpgraderIsNotDone(int code, String msg) implements MarinadeFinanceError {
+
+    public static final DelinquentUpgraderIsNotDone INSTANCE = new DelinquentUpgraderIsNotDone(
+        6088, "Delinquent upgrader is not done"
+    );
+  }
+
+  record CanonicalStakeAccountAlreadyCreated(int code, String msg) implements MarinadeFinanceError {
+
+    public static final CanonicalStakeAccountAlreadyCreated INSTANCE = new CanonicalStakeAccountAlreadyCreated(
+        6089, "Canonical stake account for this validator already exists"
+    );
+  }
+
+  record InvalidCanonicalStakeAccountAddress(int code, String msg) implements MarinadeFinanceError {
+
+    public static final InvalidCanonicalStakeAccountAddress INSTANCE = new InvalidCanonicalStakeAccountAddress(
+        6090, "Invalid canonical stake account address"
+    );
+  }
+
+  record DepositStakeAccountFeeIsTooHigh(int code, String msg) implements MarinadeFinanceError {
+
+    public static final DepositStakeAccountFeeIsTooHigh INSTANCE = new DepositStakeAccountFeeIsTooHigh(
+        6091, "Deposit stake account fee is too high"
+    );
+  }
+
+  record DepositSolFeeIsTooHigh(int code, String msg) implements MarinadeFinanceError {
+
+    public static final DepositSolFeeIsTooHigh INSTANCE = new DepositSolFeeIsTooHigh(
+        6092, "Deposit SOL fee is too high"
     );
   }
 }

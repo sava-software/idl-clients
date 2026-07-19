@@ -4,6 +4,7 @@ package software.sava.idl.clients.marginfi.v2.gen.events;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.marginfi.v2.gen.types.AccountEventHeader;
+import software.sava.idl.clients.marginfi.v2.gen.types.WrappedI80F48;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -16,7 +17,8 @@ public record LendingAccountDepositEvent(Discriminator discriminator,
                                          AccountEventHeader header,
                                          PublicKey bank,
                                          PublicKey mint,
-                                         long amount) implements MarginfiEvent {
+                                         long amount,
+                                         WrappedI80F48 shareAmount) implements MarginfiEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(161, 54, 237, 217, 105, 248, 122, 151);
 
@@ -35,11 +37,14 @@ public record LendingAccountDepositEvent(Discriminator discriminator,
     final var mint = readPubKey(_data, i);
     i += 32;
     final var amount = getInt64LE(_data, i);
+    i += 8;
+    final var shareAmount = WrappedI80F48.read(_data, i);
     return new LendingAccountDepositEvent(discriminator,
                                           header,
                                           bank,
                                           mint,
-                                          amount);
+                                          amount,
+                                          shareAmount);
   }
 
   @Override
@@ -52,11 +57,16 @@ public record LendingAccountDepositEvent(Discriminator discriminator,
     i += 32;
     putInt64LE(_data, i, amount);
     i += 8;
+    i += shareAmount.write(_data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return 8 + header.l() + 32 + 32 + 8;
+    return 8 + header.l()
+         + 32
+         + 32
+         + 8
+         + shareAmount.l();
   }
 }

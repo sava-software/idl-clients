@@ -7,6 +7,9 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
+/// @param placeholder0 DEPRECATED placeholder field. Formerly used for legacy curve math.
+/// @param placeholder1 DEPRECATED placeholder field. Formerly used for legacy curve math.
+/// @param placeholder2 DEPRECATED placeholder field. Formerly used for legacy curve math.
 /// @param insuranceFeeFixedApr Goes to insurance, funds `collected_insurance_fees_outstanding`
 /// @param insuranceIrFee Goes to insurance, funds `collected_insurance_fees_outstanding`
 /// @param protocolFixedFeeApr Earned by the group, goes to `collected_group_fees_outstanding`
@@ -20,11 +23,12 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 ///               * always in ascending order, e.g. points0 = first kink point, points1 = second kink
 ///               point, and so forth.
 ///               * points where util = 0 are unused
-/// @param curveType: u8 Determines which interest rate curve implementation is active. 0 (INTEREST_CURVE_LEGACY) =
-///                  legacy three point curve, 1 (INTEREST_CURVE_SEVEN_POINT) = multi-point curve.
-public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
-                                 WrappedI80F48 plateauInterestRate,
-                                 WrappedI80F48 maxInterestRate,
+/// @param curveType: u8 Determines which interest rate curve implementation is active.
+///                  - 0 (`INTEREST_CURVE_LEGACY`) is deprecated and unsupported.
+///                  - 1 (`INTEREST_CURVE_SEVEN_POINT`) is the active multi-point curve.
+public record InterestRateConfig(WrappedI80F48 placeholder0,
+                                 WrappedI80F48 placeholder1,
+                                 WrappedI80F48 placeholder2,
                                  WrappedI80F48 insuranceFeeFixedApr,
                                  WrappedI80F48 insuranceIrFee,
                                  WrappedI80F48 protocolFixedFeeApr,
@@ -46,9 +50,9 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
   public static final int PADDING_2_LEN = 16;
   public static final int PADDING_3_LEN = 8;
 
-  public static final int OPTIMAL_UTILIZATION_RATE_OFFSET = 0;
-  public static final int PLATEAU_INTEREST_RATE_OFFSET = 16;
-  public static final int MAX_INTEREST_RATE_OFFSET = 32;
+  public static final int PLACEHOLDER_0_OFFSET = 0;
+  public static final int PLACEHOLDER_1_OFFSET = 16;
+  public static final int PLACEHOLDER_2_OFFSET = 32;
   public static final int INSURANCE_FEE_FIXED_APR_OFFSET = 48;
   public static final int INSURANCE_IR_FEE_OFFSET = 64;
   public static final int PROTOCOL_FIXED_FEE_APR_OFFSET = 80;
@@ -68,12 +72,12 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
       return null;
     }
     int i = _offset;
-    final var optimalUtilizationRate = WrappedI80F48.read(_data, i);
-    i += optimalUtilizationRate.l();
-    final var plateauInterestRate = WrappedI80F48.read(_data, i);
-    i += plateauInterestRate.l();
-    final var maxInterestRate = WrappedI80F48.read(_data, i);
-    i += maxInterestRate.l();
+    final var placeholder0 = WrappedI80F48.read(_data, i);
+    i += placeholder0.l();
+    final var placeholder1 = WrappedI80F48.read(_data, i);
+    i += placeholder1.l();
+    final var placeholder2 = WrappedI80F48.read(_data, i);
+    i += placeholder2.l();
     final var insuranceFeeFixedApr = WrappedI80F48.read(_data, i);
     i += insuranceFeeFixedApr.l();
     final var insuranceIrFee = WrappedI80F48.read(_data, i);
@@ -100,9 +104,9 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
     i += SerDeUtil.readArray(padding2, _data, i);
     final var padding3 = new byte[8];
     SerDeUtil.readArray(padding3, _data, i);
-    return new InterestRateConfig(optimalUtilizationRate,
-                                  plateauInterestRate,
-                                  maxInterestRate,
+    return new InterestRateConfig(placeholder0,
+                                  placeholder1,
+                                  placeholder2,
                                   insuranceFeeFixedApr,
                                   insuranceIrFee,
                                   protocolFixedFeeApr,
@@ -121,9 +125,9 @@ public record InterestRateConfig(WrappedI80F48 optimalUtilizationRate,
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset;
-    i += optimalUtilizationRate.write(_data, i);
-    i += plateauInterestRate.write(_data, i);
-    i += maxInterestRate.write(_data, i);
+    i += placeholder0.write(_data, i);
+    i += placeholder1.write(_data, i);
+    i += placeholder2.write(_data, i);
     i += insuranceFeeFixedApr.write(_data, i);
     i += insuranceIrFee.write(_data, i);
     i += protocolFixedFeeApr.write(_data, i);

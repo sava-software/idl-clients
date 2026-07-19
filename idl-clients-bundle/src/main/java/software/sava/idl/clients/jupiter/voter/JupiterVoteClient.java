@@ -257,9 +257,12 @@ public interface JupiterVoteClient {
                              final int maxOption,
                              final ProposalInstruction[] instructions);
 
-  Instruction newClaimAndStake(final PublicKey distributor,
-                               final PublicKey claimStatusKey,
+  /// Parameter order matches the implementation: the claim-status account
+  /// first, then the distributor's token account it is funded from, then the
+  /// distributor itself.
+  Instruction newClaimAndStake(final PublicKey claimStatusKey,
                                final PublicKey fromKey,
+                               final PublicKey distributor,
                                final PublicKey operator,
                                final PublicKey escrowTokensKey,
                                final PublicKey tokenProgram,

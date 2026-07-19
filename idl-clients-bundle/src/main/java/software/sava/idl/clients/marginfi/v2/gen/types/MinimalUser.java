@@ -2,19 +2,12 @@
 package software.sava.idl.clients.marginfi.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
-import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.rpc.json.http.response.AccountInfo;
-
-import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Minimal representation of Drift's User account
 /// Only includes the fields we actually need
@@ -31,9 +24,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param padding6: u64[]
 /// @param padding7: u16[]
 /// @param subAccountId: u16 Sub account id for this user account
-public record MinimalUser(PublicKey _address,
-                          Discriminator discriminator,
-                          PublicKey authority,
+public record MinimalUser(PublicKey authority,
                           PublicKey delegate,
                           byte[] name,
                           SpotPosition[] spotPositions,
@@ -48,7 +39,7 @@ public record MinimalUser(PublicKey _address,
                           UserStatus status,
                           byte[] padding8) implements SerDe {
 
-  public static final int BYTES = 4376;
+  public static final int BYTES = 4368;
   public static final int NAME_LEN = 32;
   public static final int SPOT_POSITIONS_LEN = 8;
   public static final int PADDING_1_LEN = 256;
@@ -59,64 +50,27 @@ public record MinimalUser(PublicKey _address,
   public static final int PADDING_6_LEN = 2;
   public static final int PADDING_7_LEN = 1;
   public static final int PADDING_8_LEN = 27;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 117, 95, 227, 239, 151, 58, 236);
-  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
-
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int DELEGATE_OFFSET = 40;
-  public static final int NAME_OFFSET = 72;
-  public static final int SPOT_POSITIONS_OFFSET = 104;
-  public static final int PADDING_1_OFFSET = 424;
-  public static final int PADDING_2_OFFSET = 2472;
-  public static final int PADDING_3_OFFSET = 3496;
-  public static final int PADDING_4_OFFSET = 4008;
-  public static final int PADDING_5_OFFSET = 4264;
-  public static final int PADDING_6_OFFSET = 4328;
-  public static final int PADDING_7_OFFSET = 4344;
-  public static final int SUB_ACCOUNT_ID_OFFSET = 4346;
-  public static final int STATUS_OFFSET = 4348;
-  public static final int PADDING_8_OFFSET = 4349;
-
-  public static Filter createAuthorityFilter(final PublicKey authority) {
-    return Filter.createMemCompFilter(AUTHORITY_OFFSET, authority);
-  }
-
-  public static Filter createDelegateFilter(final PublicKey delegate) {
-    return Filter.createMemCompFilter(DELEGATE_OFFSET, delegate);
-  }
-
-  public static Filter createSubAccountIdFilter(final int subAccountId) {
-    final byte[] _data = new byte[2];
-    putInt16LE(_data, 0, subAccountId);
-    return Filter.createMemCompFilter(SUB_ACCOUNT_ID_OFFSET, _data);
-  }
-
-  public static Filter createStatusFilter(final UserStatus status) {
-    return Filter.createMemCompFilter(STATUS_OFFSET, status.write());
-  }
+  public static final int AUTHORITY_OFFSET = 0;
+  public static final int DELEGATE_OFFSET = 32;
+  public static final int NAME_OFFSET = 64;
+  public static final int SPOT_POSITIONS_OFFSET = 96;
+  public static final int PADDING_1_OFFSET = 416;
+  public static final int PADDING_2_OFFSET = 2464;
+  public static final int PADDING_3_OFFSET = 3488;
+  public static final int PADDING_4_OFFSET = 4000;
+  public static final int PADDING_5_OFFSET = 4256;
+  public static final int PADDING_6_OFFSET = 4320;
+  public static final int PADDING_7_OFFSET = 4336;
+  public static final int SUB_ACCOUNT_ID_OFFSET = 4338;
+  public static final int STATUS_OFFSET = 4340;
+  public static final int PADDING_8_OFFSET = 4341;
 
   public static MinimalUser read(final byte[] _data, final int _offset) {
-    return read(null, _data, _offset);
-  }
-
-  public static MinimalUser read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
-  }
-
-  public static MinimalUser read(final PublicKey _address, final byte[] _data) {
-    return read(_address, _data, 0);
-  }
-
-  public static final BiFunction<PublicKey, byte[], MinimalUser> FACTORY = MinimalUser::read;
-
-  public static MinimalUser read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var authority = readPubKey(_data, i);
     i += 32;
     final var delegate = readPubKey(_data, i);
@@ -145,9 +99,7 @@ public record MinimalUser(PublicKey _address,
     i += status.l();
     final var padding8 = new byte[27];
     SerDeUtil.readArray(padding8, _data, i);
-    return new MinimalUser(_address,
-                           discriminator,
-                           authority,
+    return new MinimalUser(authority,
                            delegate,
                            name,
                            spotPositions,
@@ -165,7 +117,7 @@ public record MinimalUser(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     authority.write(_data, i);
     i += 32;
     delegate.write(_data, i);

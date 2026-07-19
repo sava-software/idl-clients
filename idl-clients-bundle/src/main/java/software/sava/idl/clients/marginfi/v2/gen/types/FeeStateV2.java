@@ -18,9 +18,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-/// Unique per-program. The Program Owner uses this account to administrate fees collected by the protocol
+/// V2 fee state, currently unused by protocol logic. Mirrors `FeeState` with additional padding.
 ///
-/// @param key The fee state's own key. A PDA derived from just `b"feestate"`
+/// @param key The fee state's own key. A PDA derived from `b"feestate_v2"`
 /// @param globalFeeAdmin Can modify fees, pause the protocol, etc
 /// @param globalFeeWallet The base wallet for all protocol fees. All SOL fees go to this wallet. All non-SOL fees go
 ///                        to the cannonical ATA of this wallet for that asset.
@@ -46,30 +46,33 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                             pun intended) e.g. (1 + this) * amount repaid >= asset seized
 ///                             * A percentage
 /// @param pauseDelegateAdmin Can pause (not unpause) the protocol, but cannot modify any fee configuration.
-public record FeeState(PublicKey _address,
-                       Discriminator discriminator,
-                       PublicKey key,
-                       PublicKey globalFeeAdmin,
-                       PublicKey globalFeeWallet,
-                       long placeholder0,
-                       long bankInitFlatSolFee,
-                       int bumpSeed,
-                       byte[] padding0,
-                       WrappedI80F48 liquidationMaxFee,
-                       WrappedI80F48 programFeeFixed,
-                       WrappedI80F48 programFeeRate,
-                       PanicState panicState,
-                       long placeholder1,
-                       long liquidationFlatSolFee,
-                       long orderInitFlatSolFee,
-                       WrappedI80F48 orderExecutionMaxFee,
-                       PublicKey pauseDelegateAdmin) implements SerDe {
+/// @param padding1 Extra reserved bytes for future expansions.
+public record FeeStateV2(PublicKey _address,
+                         Discriminator discriminator,
+                         PublicKey key,
+                         PublicKey globalFeeAdmin,
+                         PublicKey globalFeeWallet,
+                         long placeholder0,
+                         long bankInitFlatSolFee,
+                         int bumpSeed,
+                         byte[] padding0,
+                         WrappedI80F48 liquidationMaxFee,
+                         WrappedI80F48 programFeeFixed,
+                         WrappedI80F48 programFeeRate,
+                         PanicState panicState,
+                         long placeholder1,
+                         long liquidationFlatSolFee,
+                         long orderInitFlatSolFee,
+                         WrappedI80F48 orderExecutionMaxFee,
+                         PublicKey pauseDelegateAdmin,
+                         byte[] padding1) implements SerDe {
 
-  public static final int BYTES = 264;
+  public static final int BYTES = 520;
   public static final int PADDING_0_LEN = 3;
+  public static final int PADDING_1_LEN = 256;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(63, 224, 16, 85, 193, 36, 235, 220);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(240, 43, 104, 108, 146, 39, 22, 38);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
   public static final int KEY_OFFSET = 8;
@@ -88,6 +91,7 @@ public record FeeState(PublicKey _address,
   public static final int ORDER_INIT_FLAT_SOL_FEE_OFFSET = 212;
   public static final int ORDER_EXECUTION_MAX_FEE_OFFSET = 216;
   public static final int PAUSE_DELEGATE_ADMIN_OFFSET = 232;
+  public static final int PADDING_1_OFFSET = 264;
 
   public static Filter createKeyFilter(final PublicKey key) {
     return Filter.createMemCompFilter(KEY_OFFSET, key);
@@ -159,21 +163,21 @@ public record FeeState(PublicKey _address,
     return Filter.createMemCompFilter(PAUSE_DELEGATE_ADMIN_OFFSET, pauseDelegateAdmin);
   }
 
-  public static FeeState read(final byte[] _data, final int _offset) {
+  public static FeeStateV2 read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
 
-  public static FeeState read(final AccountInfo<byte[]> accountInfo) {
+  public static FeeStateV2 read(final AccountInfo<byte[]> accountInfo) {
     return read(accountInfo.pubKey(), accountInfo.data(), 0);
   }
 
-  public static FeeState read(final PublicKey _address, final byte[] _data) {
+  public static FeeStateV2 read(final PublicKey _address, final byte[] _data) {
     return read(_address, _data, 0);
   }
 
-  public static final BiFunction<PublicKey, byte[], FeeState> FACTORY = FeeState::read;
+  public static final BiFunction<PublicKey, byte[], FeeStateV2> FACTORY = FeeStateV2::read;
 
-  public static FeeState read(final PublicKey _address, final byte[] _data, final int _offset) {
+  public static FeeStateV2 read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -210,24 +214,28 @@ public record FeeState(PublicKey _address,
     final var orderExecutionMaxFee = WrappedI80F48.read(_data, i);
     i += orderExecutionMaxFee.l();
     final var pauseDelegateAdmin = readPubKey(_data, i);
-    return new FeeState(_address,
-                        discriminator,
-                        key,
-                        globalFeeAdmin,
-                        globalFeeWallet,
-                        placeholder0,
-                        bankInitFlatSolFee,
-                        bumpSeed,
-                        padding0,
-                        liquidationMaxFee,
-                        programFeeFixed,
-                        programFeeRate,
-                        panicState,
-                        placeholder1,
-                        liquidationFlatSolFee,
-                        orderInitFlatSolFee,
-                        orderExecutionMaxFee,
-                        pauseDelegateAdmin);
+    i += 32;
+    final var padding1 = new byte[256];
+    SerDeUtil.readArray(padding1, _data, i);
+    return new FeeStateV2(_address,
+                          discriminator,
+                          key,
+                          globalFeeAdmin,
+                          globalFeeWallet,
+                          placeholder0,
+                          bankInitFlatSolFee,
+                          bumpSeed,
+                          padding0,
+                          liquidationMaxFee,
+                          programFeeFixed,
+                          programFeeRate,
+                          panicState,
+                          placeholder1,
+                          liquidationFlatSolFee,
+                          orderInitFlatSolFee,
+                          orderExecutionMaxFee,
+                          pauseDelegateAdmin,
+                          padding1);
   }
 
   @Override
@@ -259,6 +267,7 @@ public record FeeState(PublicKey _address,
     i += orderExecutionMaxFee.write(_data, i);
     pauseDelegateAdmin.write(_data, i);
     i += 32;
+    i += SerDeUtil.writeArrayChecked(padding1, 256, _data, i);
     return i - _offset;
   }
 

@@ -117,6 +117,7 @@ final class PhoenixClientImpl implements PhoenixClient {
   public Instruction depositFunds(final PublicKey traderWalletKey,
                                   final PublicKey traderTokenAccountKey,
                                   final PublicKey traderAccountKey,
+                                  final PublicKey globalVaultKey,
                                   final PublicKey tokenProgram,
                                   final DepositFundsInstruction depositFundsInstruction) {
     return EternalProgram.depositFunds(
@@ -127,7 +128,7 @@ final class PhoenixClientImpl implements PhoenixClient {
         traderWalletKey,
         traderTokenAccountKey,
         traderAccountKey,
-        accounts.eternalGlobalConfig(),
+        globalVaultKey,
         tokenProgram,
         accounts.globalTraderIndex(),
         accounts.activeTraderBuffer(),
@@ -139,6 +140,7 @@ final class PhoenixClientImpl implements PhoenixClient {
   public Instruction withdrawFunds(final PublicKey traderWalletKey,
                                    final PublicKey traderAccountKey,
                                    final PublicKey perpAssetMapKey,
+                                   final PublicKey globalVaultKey,
                                    final PublicKey destinationTokenAccountKey,
                                    final PublicKey tokenProgramKey,
                                    final PublicKey withdrawQueueKey,
@@ -151,7 +153,7 @@ final class PhoenixClientImpl implements PhoenixClient {
         traderWalletKey,
         traderAccountKey,
         perpAssetMapKey,
-        accounts.eternalGlobalConfig(),
+        globalVaultKey,
         destinationTokenAccountKey,
         tokenProgramKey,
         accounts.globalTraderIndex(),

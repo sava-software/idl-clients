@@ -25,7 +25,7 @@ final class MarinadeValidatorListTests {
   }
 
   private static ValidatorRecord record(final int fill, final long balance) {
-    return new ValidatorRecord(key(fill), balance, fill, 596L, fill & 0xFF);
+    return new ValidatorRecord(key(fill), balance, fill, 596L, fill & 0xFF, 0L);
   }
 
   /// magic + `live` active records + `stale` non-zero records (swap-remove leftovers) +

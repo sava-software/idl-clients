@@ -210,10 +210,6 @@ public interface MarginfiClient {
     return closeBalance(marginfiAccount, authority(), bank);
   }
 
-  /// (permissionless) Zero out `emissions_outstanding` on a balance after emissions are disabled
-  /// on the bank.
-  Instruction clearEmissions(final PublicKey marginfiAccount, final PublicKey bank);
-
   /// (permissionless) Refresh the internal risk-engine health cache of a marginfi account.
   ///
   /// The caller must append every active balance's bank and oracle as `remaining_accounts` on the

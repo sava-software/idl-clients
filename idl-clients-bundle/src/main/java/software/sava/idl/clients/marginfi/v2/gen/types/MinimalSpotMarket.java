@@ -2,13 +2,8 @@
 package software.sava.idl.clients.marginfi.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
-import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.rpc.json.http.response.AccountInfo;
-
-import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
@@ -17,8 +12,6 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// Minimal representation of Drift's SpotMarket account
 /// Only includes the fields we actually need for marginfi integration
@@ -39,9 +32,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param padding5: u16[]
 /// @param poolId: u8
 /// @param padding7: u64[] Padding to reach 776 bytes total (including discriminator)
-public record MinimalSpotMarket(PublicKey _address,
-                                Discriminator discriminator,
-                                PublicKey pubkey,
+public record MinimalSpotMarket(PublicKey pubkey,
                                 PublicKey oracle,
                                 PublicKey mint,
                                 PublicKey vault,
@@ -61,7 +52,7 @@ public record MinimalSpotMarket(PublicKey _address,
                                 int poolId,
                                 long[] padding7) implements SerDe {
 
-  public static final int BYTES = 776;
+  public static final int BYTES = 768;
   public static final int PADDING_1_LEN = 9;
   public static final int PADDING_2_LEN = 8;
   public static final int DEPOSIT_BALANCE_LEN = 16;
@@ -73,89 +64,32 @@ public record MinimalSpotMarket(PublicKey _address,
   public static final int PADDING_5_LEN = 24;
   public static final int PADDING_6_LEN = 1;
   public static final int PADDING_7_LEN = 5;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(100, 177, 8, 107, 168, 65, 65, 39);
-  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
-
-  public static final int PUBKEY_OFFSET = 8;
-  public static final int ORACLE_OFFSET = 40;
-  public static final int MINT_OFFSET = 72;
-  public static final int VAULT_OFFSET = 104;
-  public static final int PADDING_1_OFFSET = 136;
-  public static final int PADDING_2_OFFSET = 424;
-  public static final int DEPOSIT_BALANCE_OFFSET = 432;
-  public static final int BORROW_BALANCE_OFFSET = 448;
-  public static final int CUMULATIVE_DEPOSIT_INTEREST_OFFSET = 464;
-  public static final int CUMULATIVE_BORROW_INTEREST_OFFSET = 480;
-  public static final int PADDING_3_OFFSET = 496;
-  public static final int LAST_INTEREST_TS_OFFSET = 568;
-  public static final int PADDING_4_OFFSET = 576;
-  public static final int DECIMALS_OFFSET = 680;
-  public static final int MARKET_INDEX_OFFSET = 684;
-  public static final int PADDING_5_OFFSET = 686;
-  public static final int PADDING_6_OFFSET = 734;
-  public static final int POOL_ID_OFFSET = 735;
-  public static final int PADDING_7_OFFSET = 736;
-
-  public static Filter createPubkeyFilter(final PublicKey pubkey) {
-    return Filter.createMemCompFilter(PUBKEY_OFFSET, pubkey);
-  }
-
-  public static Filter createOracleFilter(final PublicKey oracle) {
-    return Filter.createMemCompFilter(ORACLE_OFFSET, oracle);
-  }
-
-  public static Filter createMintFilter(final PublicKey mint) {
-    return Filter.createMemCompFilter(MINT_OFFSET, mint);
-  }
-
-  public static Filter createVaultFilter(final PublicKey vault) {
-    return Filter.createMemCompFilter(VAULT_OFFSET, vault);
-  }
-
-  public static Filter createLastInterestTsFilter(final long lastInterestTs) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, lastInterestTs);
-    return Filter.createMemCompFilter(LAST_INTEREST_TS_OFFSET, _data);
-  }
-
-  public static Filter createDecimalsFilter(final long decimals) {
-    final byte[] _data = new byte[4];
-    putInt32LE(_data, 0, (int) decimals);
-    return Filter.createMemCompFilter(DECIMALS_OFFSET, _data);
-  }
-
-  public static Filter createMarketIndexFilter(final int marketIndex) {
-    final byte[] _data = new byte[2];
-    putInt16LE(_data, 0, marketIndex);
-    return Filter.createMemCompFilter(MARKET_INDEX_OFFSET, _data);
-  }
-
-  public static Filter createPoolIdFilter(final int poolId) {
-    return Filter.createMemCompFilter(POOL_ID_OFFSET, new byte[]{(byte) poolId});
-  }
+  public static final int PUBKEY_OFFSET = 0;
+  public static final int ORACLE_OFFSET = 32;
+  public static final int MINT_OFFSET = 64;
+  public static final int VAULT_OFFSET = 96;
+  public static final int PADDING_1_OFFSET = 128;
+  public static final int PADDING_2_OFFSET = 416;
+  public static final int DEPOSIT_BALANCE_OFFSET = 424;
+  public static final int BORROW_BALANCE_OFFSET = 440;
+  public static final int CUMULATIVE_DEPOSIT_INTEREST_OFFSET = 456;
+  public static final int CUMULATIVE_BORROW_INTEREST_OFFSET = 472;
+  public static final int PADDING_3_OFFSET = 488;
+  public static final int LAST_INTEREST_TS_OFFSET = 560;
+  public static final int PADDING_4_OFFSET = 568;
+  public static final int DECIMALS_OFFSET = 672;
+  public static final int MARKET_INDEX_OFFSET = 676;
+  public static final int PADDING_5_OFFSET = 678;
+  public static final int PADDING_6_OFFSET = 726;
+  public static final int POOL_ID_OFFSET = 727;
+  public static final int PADDING_7_OFFSET = 728;
 
   public static MinimalSpotMarket read(final byte[] _data, final int _offset) {
-    return read(null, _data, _offset);
-  }
-
-  public static MinimalSpotMarket read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
-  }
-
-  public static MinimalSpotMarket read(final PublicKey _address, final byte[] _data) {
-    return read(_address, _data, 0);
-  }
-
-  public static final BiFunction<PublicKey, byte[], MinimalSpotMarket> FACTORY = MinimalSpotMarket::read;
-
-  public static MinimalSpotMarket read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var pubkey = readPubKey(_data, i);
     i += 32;
     final var oracle = readPubKey(_data, i);
@@ -194,9 +128,7 @@ public record MinimalSpotMarket(PublicKey _address,
     ++i;
     final var padding7 = new long[5];
     SerDeUtil.readArray(padding7, _data, i);
-    return new MinimalSpotMarket(_address,
-                                 discriminator,
-                                 pubkey,
+    return new MinimalSpotMarket(pubkey,
                                  oracle,
                                  mint,
                                  vault,
@@ -219,7 +151,7 @@ public record MinimalSpotMarket(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     pubkey.write(_data, i);
     i += 32;
     oracle.write(_data, i);

@@ -14,6 +14,7 @@ public sealed interface MarinadeFinanceEvent extends SerDe permits
     ReallocStakeListEvent,
     DeactivateStakeEvent,
     MergeStakesEvent,
+    CreateCanonicalStakeEvent,
     RedelegateEvent,
     StakeReserveEvent,
     UpdateActiveEvent,
@@ -51,6 +52,8 @@ public sealed interface MarinadeFinanceEvent extends SerDe permits
       return DeactivateStakeEvent.read(_data, _offset);
     } else if (MergeStakesEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return MergeStakesEvent.read(_data, _offset);
+    } else if (CreateCanonicalStakeEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return CreateCanonicalStakeEvent.read(_data, _offset);
     } else if (RedelegateEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return RedelegateEvent.read(_data, _offset);
     } else if (StakeReserveEvent.DISCRIMINATOR.equals(_data, _offset)) {

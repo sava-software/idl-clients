@@ -4,8 +4,10 @@ package software.sava.idl.clients.marginfi.v2.gen.events;
 import software.sava.idl.clients.core.gen.SerDe;
 
 public sealed interface MarginfiEvent extends SerDe permits
+    AdminCloseAccountEvent,
     DeleverageEvent,
     DeleverageWithdrawFlowEvent,
+    DriftClaimBadDebtEvent,
     EditStakedSettingsEvent,
     HealthPulseEvent,
     KeeperCloseOrderEvent,
@@ -36,10 +38,14 @@ public sealed interface MarginfiEvent extends SerDe permits
     SetKeeperCloseFlagsEvent {
 
   static MarginfiEvent read(final byte[] _data, final int _offset) {
-    if (DeleverageEvent.DISCRIMINATOR.equals(_data, _offset)) {
+    if (AdminCloseAccountEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return AdminCloseAccountEvent.read(_data, _offset);
+    } else if (DeleverageEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return DeleverageEvent.read(_data, _offset);
     } else if (DeleverageWithdrawFlowEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return DeleverageWithdrawFlowEvent.read(_data, _offset);
+    } else if (DriftClaimBadDebtEvent.DISCRIMINATOR.equals(_data, _offset)) {
+      return DriftClaimBadDebtEvent.read(_data, _offset);
     } else if (EditStakedSettingsEvent.DISCRIMINATOR.equals(_data, _offset)) {
       return EditStakedSettingsEvent.read(_data, _offset);
     } else if (HealthPulseEvent.DISCRIMINATOR.equals(_data, _offset)) {

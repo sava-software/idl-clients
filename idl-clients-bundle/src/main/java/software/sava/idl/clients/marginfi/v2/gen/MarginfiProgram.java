@@ -43,6 +43,44 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public final class MarginfiProgram {
 
+  public static final Discriminator ADMIN_CLOSE_ACCOUNT_DISCRIMINATOR = toDiscriminator(131, 60, 75, 215, 109, 34, 157, 26);
+
+  /// (permissionless) Close an account that is empty, inactive for >60 days, and has no
+  /// blocking state flags. Rent is returned to the group's global fee wallet.
+  ///
+  public static List<AccountMeta> adminCloseAccountKeys(final PublicKey groupKey,
+                                                        final PublicKey marginfiAccountKey,
+                                                        final PublicKey globalFeeWalletKey) {
+    return List.of(
+      createRead(groupKey),
+      createWrite(marginfiAccountKey),
+      createWrite(globalFeeWalletKey)
+    );
+  }
+
+  /// (permissionless) Close an account that is empty, inactive for >60 days, and has no
+  /// blocking state flags. Rent is returned to the group's global fee wallet.
+  ///
+  public static Instruction adminCloseAccount(final AccountMeta invokedMarginfiProgramMeta,
+                                              final PublicKey groupKey,
+                                              final PublicKey marginfiAccountKey,
+                                              final PublicKey globalFeeWalletKey) {
+    final var keys = adminCloseAccountKeys(
+      groupKey,
+      marginfiAccountKey,
+      globalFeeWalletKey
+    );
+    return adminCloseAccount(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (permissionless) Close an account that is empty, inactive for >60 days, and has no
+  /// blocking state flags. Rent is returned to the group's global fee wallet.
+  ///
+  public static Instruction adminCloseAccount(final AccountMeta invokedMarginfiProgramMeta,
+                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, ADMIN_CLOSE_ACCOUNT_DISCRIMINATOR);
+  }
+
   public static final Discriminator CONFIG_GROUP_FEE_DISCRIMINATOR = toDiscriminator(231, 205, 66, 242, 220, 87, 145, 38);
 
   /// (global fee admin only) Enable or disable program fees for any group. Does not require the
@@ -407,6 +445,239 @@ public final class MarginfiProgram {
     @Override
     public int l() {
       return 8 + (hourlyMaxOutflowUsd == null || hourlyMaxOutflowUsd.isEmpty() ? 1 : (1 + 8)) + (dailyMaxOutflowUsd == null || dailyMaxOutflowUsd.isEmpty() ? 1 : (1 + 8));
+    }
+  }
+
+  public static final Discriminator COPY_FEE_STATE_TO_V_2_DISCRIMINATOR = toDiscriminator(100, 146, 124, 224, 95, 196, 206, 14);
+
+  /// (permissionless) Copy current FeeState values into FeeStateV2.
+  ///
+  public static List<AccountMeta> copyFeeStateToV2Keys(final PublicKey feeStateKey,
+                                                       final PublicKey feeStateV2Key) {
+    return List.of(
+      createRead(feeStateKey),
+      createWrite(feeStateV2Key)
+    );
+  }
+
+  /// (permissionless) Copy current FeeState values into FeeStateV2.
+  ///
+  public static Instruction copyFeeStateToV2(final AccountMeta invokedMarginfiProgramMeta,
+                                             final PublicKey feeStateKey,
+                                             final PublicKey feeStateV2Key) {
+    final var keys = copyFeeStateToV2Keys(
+      feeStateKey,
+      feeStateV2Key
+    );
+    return copyFeeStateToV2(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (permissionless) Copy current FeeState values into FeeStateV2.
+  ///
+  public static Instruction copyFeeStateToV2(final AccountMeta invokedMarginfiProgramMeta,
+                                             final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, COPY_FEE_STATE_TO_V_2_DISCRIMINATOR);
+  }
+
+  public static final Discriminator DISABLE_STAKED_ORACLES_DISCRIMINATOR = toDiscriminator(43, 90, 152, 55, 66, 101, 232, 200);
+
+  /// (admin only) Disable stake pricing, i.e. effectively forbidding all operations involving stake banks.
+  /// To be used during the rollout of the SVSP upgrade.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  ///
+  public static List<AccountMeta> disableStakedOraclesKeys(final PublicKey groupKey,
+                                                           final PublicKey adminKey,
+                                                           final PublicKey stakedSettingsKey) {
+    return List.of(
+      createRead(groupKey),
+      createReadOnlySigner(adminKey),
+      createWrite(stakedSettingsKey)
+    );
+  }
+
+  /// (admin only) Disable stake pricing, i.e. effectively forbidding all operations involving stake banks.
+  /// To be used during the rollout of the SVSP upgrade.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  ///
+  public static Instruction disableStakedOracles(final AccountMeta invokedMarginfiProgramMeta,
+                                                 final PublicKey groupKey,
+                                                 final PublicKey adminKey,
+                                                 final PublicKey stakedSettingsKey) {
+    final var keys = disableStakedOraclesKeys(
+      groupKey,
+      adminKey,
+      stakedSettingsKey
+    );
+    return disableStakedOracles(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (admin only) Disable stake pricing, i.e. effectively forbidding all operations involving stake banks.
+  /// To be used during the rollout of the SVSP upgrade.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  ///
+  public static Instruction disableStakedOracles(final AccountMeta invokedMarginfiProgramMeta,
+                                                 final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, DISABLE_STAKED_ORACLES_DISCRIMINATOR);
+  }
+
+  public static final Discriminator DRIFT_CLAIM_BAD_DEBT_DISCRIMINATOR = toDiscriminator(163, 67, 144, 231, 119, 20, 220, 33);
+
+  /// (permissionless) Claim a Drift bad-debt portal allocation for a Drift bank.
+  /// The merkle claimant is the bank's liquidity_vault_authority PDA, and claimed tokens are
+  /// swept to the global fee wallet's canonical ATA.
+  ///
+  /// @param payerKey Pays transaction fees, ATA creation, and ClaimStatus rent.
+  /// @param feeStateKey Global fee state containing the global_fee_wallet destination owner.
+  /// @param liquidityVaultAuthorityKey The bank's liquidity vault authority. This PDA is the claimant in Drift's merkle tree.
+  /// @param integrationAcc2Key Drift user account owned by liquidity_vault_authority.
+  /// @param integrationAcc3Key Drift user stats account owned by liquidity_vault_authority.
+  /// @param claimStatusKey program. The distributor initializes and validates this account.
+  /// @param fromKey Distributor token vault.
+  /// @param claimantTokenAccountKey Canonical ATA for the claim mint owned by liquidity_vault_authority.
+  /// @param destinationTokenAccountKey Canonical ATA for the claim mint owned by FeeState.global_fee_wallet.
+  public static List<AccountMeta> driftClaimBadDebtKeys(final SolanaAccounts solanaAccounts,
+                                                        final PublicKey payerKey,
+                                                        final PublicKey bankKey,
+                                                        final PublicKey feeStateKey,
+                                                        final PublicKey liquidityVaultAuthorityKey,
+                                                        final PublicKey integrationAcc2Key,
+                                                        final PublicKey integrationAcc3Key,
+                                                        final PublicKey distributorKey,
+                                                        final PublicKey claimStatusKey,
+                                                        final PublicKey fromKey,
+                                                        final PublicKey claimMintKey,
+                                                        final PublicKey globalFeeWalletKey,
+                                                        final PublicKey claimantTokenAccountKey,
+                                                        final PublicKey destinationTokenAccountKey,
+                                                        final PublicKey merkleDistributorProgramKey,
+                                                        final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createRead(bankKey),
+      createRead(feeStateKey),
+      createWrite(liquidityVaultAuthorityKey),
+      createRead(integrationAcc2Key),
+      createRead(integrationAcc3Key),
+      createWrite(distributorKey),
+      createWrite(claimStatusKey),
+      createWrite(fromKey),
+      createRead(claimMintKey),
+      createRead(globalFeeWalletKey),
+      createWrite(claimantTokenAccountKey),
+      createWrite(destinationTokenAccountKey),
+      createRead(merkleDistributorProgramKey),
+      createRead(solanaAccounts.associatedTokenAccountProgram()),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// (permissionless) Claim a Drift bad-debt portal allocation for a Drift bank.
+  /// The merkle claimant is the bank's liquidity_vault_authority PDA, and claimed tokens are
+  /// swept to the global fee wallet's canonical ATA.
+  ///
+  /// @param payerKey Pays transaction fees, ATA creation, and ClaimStatus rent.
+  /// @param feeStateKey Global fee state containing the global_fee_wallet destination owner.
+  /// @param liquidityVaultAuthorityKey The bank's liquidity vault authority. This PDA is the claimant in Drift's merkle tree.
+  /// @param integrationAcc2Key Drift user account owned by liquidity_vault_authority.
+  /// @param integrationAcc3Key Drift user stats account owned by liquidity_vault_authority.
+  /// @param claimStatusKey program. The distributor initializes and validates this account.
+  /// @param fromKey Distributor token vault.
+  /// @param claimantTokenAccountKey Canonical ATA for the claim mint owned by liquidity_vault_authority.
+  /// @param destinationTokenAccountKey Canonical ATA for the claim mint owned by FeeState.global_fee_wallet.
+  /// @param amount: u64
+  public static Instruction driftClaimBadDebt(final AccountMeta invokedMarginfiProgramMeta,
+                                              final SolanaAccounts solanaAccounts,
+                                              final PublicKey payerKey,
+                                              final PublicKey bankKey,
+                                              final PublicKey feeStateKey,
+                                              final PublicKey liquidityVaultAuthorityKey,
+                                              final PublicKey integrationAcc2Key,
+                                              final PublicKey integrationAcc3Key,
+                                              final PublicKey distributorKey,
+                                              final PublicKey claimStatusKey,
+                                              final PublicKey fromKey,
+                                              final PublicKey claimMintKey,
+                                              final PublicKey globalFeeWalletKey,
+                                              final PublicKey claimantTokenAccountKey,
+                                              final PublicKey destinationTokenAccountKey,
+                                              final PublicKey merkleDistributorProgramKey,
+                                              final PublicKey tokenProgramKey,
+                                              final long amount,
+                                              final byte[][] proof) {
+    final var keys = driftClaimBadDebtKeys(
+      solanaAccounts,
+      payerKey,
+      bankKey,
+      feeStateKey,
+      liquidityVaultAuthorityKey,
+      integrationAcc2Key,
+      integrationAcc3Key,
+      distributorKey,
+      claimStatusKey,
+      fromKey,
+      claimMintKey,
+      globalFeeWalletKey,
+      claimantTokenAccountKey,
+      destinationTokenAccountKey,
+      merkleDistributorProgramKey,
+      tokenProgramKey
+    );
+    return driftClaimBadDebt(invokedMarginfiProgramMeta, keys, amount, proof);
+  }
+
+  /// (permissionless) Claim a Drift bad-debt portal allocation for a Drift bank.
+  /// The merkle claimant is the bank's liquidity_vault_authority PDA, and claimed tokens are
+  /// swept to the global fee wallet's canonical ATA.
+  ///
+  /// @param amount: u64
+  public static Instruction driftClaimBadDebt(final AccountMeta invokedMarginfiProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final long amount,
+                                              final byte[][] proof) {
+    final byte[] _data = new byte[16 + SerDeUtil.lenVectorArray(4, proof)];
+    int i = DRIFT_CLAIM_BAD_DEBT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+    i += 8;
+    SerDeUtil.writeVectorArrayChecked(4, proof, 32, _data, i);
+
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
+  }
+
+  /// @param amount: u64
+  public record DriftClaimBadDebtIxData(Discriminator discriminator, long amount, byte[][] proof) implements SerDe {  
+
+    public static DriftClaimBadDebtIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int AMOUNT_OFFSET = 8;
+    public static final int PROOF_OFFSET = 16;
+
+    public static DriftClaimBadDebtIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      i += 8;
+      final var proof = SerDeUtil.readMultiDimensionbyteVectorArray(4, 32, _data, i);
+      return new DriftClaimBadDebtIxData(discriminator, amount, proof);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      i += SerDeUtil.writeVectorArrayChecked(4, proof, 32, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8 + SerDeUtil.lenVectorArray(4, proof);
     }
   }
 
@@ -836,6 +1107,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Drift spot market through a marginfi account
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - if true, withdraws entire position
   ///
   /// @param driftOracleKey The oracle account for the asset (not needed if using oracle type QuoteAsset)
@@ -910,6 +1183,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Drift spot market through a marginfi account
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - if true, withdraws entire position
   ///
   /// @param driftOracleKey The oracle account for the asset (not needed if using oracle type QuoteAsset)
@@ -990,6 +1265,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Drift spot market through a marginfi account
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - if true, withdraws entire position
   ///
   /// @param amount: u64
@@ -1056,7 +1333,7 @@ public final class MarginfiProgram {
 
   public static final Discriminator EDIT_GLOBAL_FEE_STATE_DISCRIMINATOR = toDiscriminator(52, 62, 35, 129, 93, 69, 165, 202);
 
-  /// (global fee admin only) Adjust fees, admin, or the destination wallet
+  /// (global fee admin only) Adjust fees, admin, wallet, or pause delegate admin
   ///
   /// @param globalFeeAdminKey Admin of the global FeeState
   public static List<AccountMeta> editGlobalFeeStateKeys(final PublicKey globalFeeAdminKey,
@@ -1067,24 +1344,28 @@ public final class MarginfiProgram {
     );
   }
 
-  /// (global fee admin only) Adjust fees, admin, or the destination wallet
+  /// (global fee admin only) Adjust fees, admin, wallet, or pause delegate admin
   ///
   /// @param globalFeeAdminKey Admin of the global FeeState
-  /// @param bankInitFlatSolFee: u32
-  /// @param liquidationFlatSolFee: u32
-  /// @param orderInitFlatSolFee: u32
+  /// @param admin: Option<publicKey>
+  /// @param feeWallet: Option<publicKey>
+  /// @param bankInitFlatSolFee: Option<u32>
+  /// @param liquidationFlatSolFee: Option<u32>
+  /// @param orderInitFlatSolFee: Option<u32>
+  /// @param pauseDelegateAdmin: Option<publicKey>
   public static Instruction editGlobalFeeState(final AccountMeta invokedMarginfiProgramMeta,
                                                final PublicKey globalFeeAdminKey,
                                                final PublicKey feeStateKey,
                                                final PublicKey admin,
                                                final PublicKey feeWallet,
-                                               final long bankInitFlatSolFee,
-                                               final long liquidationFlatSolFee,
-                                               final long orderInitFlatSolFee,
+                                               final OptionalLong bankInitFlatSolFee,
+                                               final OptionalLong liquidationFlatSolFee,
+                                               final OptionalLong orderInitFlatSolFee,
                                                final WrappedI80F48 programFeeFixed,
                                                final WrappedI80F48 programFeeRate,
                                                final WrappedI80F48 liquidationMaxFee,
-                                               final WrappedI80F48 orderExecutionMaxFee) {
+                                               final WrappedI80F48 orderExecutionMaxFee,
+                                               final PublicKey pauseDelegateAdmin) {
     final var keys = editGlobalFeeStateKeys(
       globalFeeAdminKey,
       feeStateKey
@@ -1100,75 +1381,82 @@ public final class MarginfiProgram {
       programFeeFixed,
       programFeeRate,
       liquidationMaxFee,
-      orderExecutionMaxFee
+      orderExecutionMaxFee,
+      pauseDelegateAdmin
     );
   }
 
-  /// (global fee admin only) Adjust fees, admin, or the destination wallet
+  /// (global fee admin only) Adjust fees, admin, wallet, or pause delegate admin
   ///
-  /// @param bankInitFlatSolFee: u32
-  /// @param liquidationFlatSolFee: u32
-  /// @param orderInitFlatSolFee: u32
+  /// @param admin: Option<publicKey>
+  /// @param feeWallet: Option<publicKey>
+  /// @param bankInitFlatSolFee: Option<u32>
+  /// @param liquidationFlatSolFee: Option<u32>
+  /// @param orderInitFlatSolFee: Option<u32>
+  /// @param pauseDelegateAdmin: Option<publicKey>
   public static Instruction editGlobalFeeState(final AccountMeta invokedMarginfiProgramMeta,
                                                final List<AccountMeta> keys,
                                                final PublicKey admin,
                                                final PublicKey feeWallet,
-                                               final long bankInitFlatSolFee,
-                                               final long liquidationFlatSolFee,
-                                               final long orderInitFlatSolFee,
+                                               final OptionalLong bankInitFlatSolFee,
+                                               final OptionalLong liquidationFlatSolFee,
+                                               final OptionalLong orderInitFlatSolFee,
                                                final WrappedI80F48 programFeeFixed,
                                                final WrappedI80F48 programFeeRate,
                                                final WrappedI80F48 liquidationMaxFee,
-                                               final WrappedI80F48 orderExecutionMaxFee) {
-    final byte[] _data = new byte[84 + programFeeFixed.l() + programFeeRate.l() + liquidationMaxFee.l() + orderExecutionMaxFee.l()];
+                                               final WrappedI80F48 orderExecutionMaxFee,
+                                               final PublicKey pauseDelegateAdmin) {
+    final byte[] _data = new byte[
+    8
+    + (admin == null ? 1 : 33)
+    + (feeWallet == null ? 1 : 33)
+    + (bankInitFlatSolFee == null || bankInitFlatSolFee.isEmpty() ? 1 : 5)
+    + (liquidationFlatSolFee == null || liquidationFlatSolFee.isEmpty() ? 1 : 5)
+    + (orderInitFlatSolFee == null || orderInitFlatSolFee.isEmpty() ? 1 : 5)
+    + (programFeeFixed == null ? 1 : (1 + programFeeFixed.l()))
+    + (programFeeRate == null ? 1 : (1 + programFeeRate.l()))
+    + (liquidationMaxFee == null ? 1 : (1 + liquidationMaxFee.l()))
+    + (orderExecutionMaxFee == null ? 1 : (1 + orderExecutionMaxFee.l()))
+    + (pauseDelegateAdmin == null ? 1 : 33)
+    ];
     int i = EDIT_GLOBAL_FEE_STATE_DISCRIMINATOR.write(_data, 0);
-    admin.write(_data, i);
-    i += 32;
-    feeWallet.write(_data, i);
-    i += 32;
-    putInt32LE(_data, i, (int) bankInitFlatSolFee);
-    i += 4;
-    putInt32LE(_data, i, (int) liquidationFlatSolFee);
-    i += 4;
-    putInt32LE(_data, i, (int) orderInitFlatSolFee);
-    i += 4;
-    i += programFeeFixed.write(_data, i);
-    i += programFeeRate.write(_data, i);
-    i += liquidationMaxFee.write(_data, i);
-    orderExecutionMaxFee.write(_data, i);
+    i += SerDeUtil.writeOptional(1, admin, _data, i);
+    i += SerDeUtil.writeOptional(1, feeWallet, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, bankInitFlatSolFee, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationFlatSolFee, _data, i);
+    i += SerDeUtil.writeOptionalUnsignedInt(1, orderInitFlatSolFee, _data, i);
+    i += SerDeUtil.writeOptional(1, programFeeFixed, _data, i);
+    i += SerDeUtil.writeOptional(1, programFeeRate, _data, i);
+    i += SerDeUtil.writeOptional(1, liquidationMaxFee, _data, i);
+    i += SerDeUtil.writeOptional(1, orderExecutionMaxFee, _data, i);
+    SerDeUtil.writeOptional(1, pauseDelegateAdmin, _data, i);
 
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
-  /// @param bankInitFlatSolFee: u32
-  /// @param liquidationFlatSolFee: u32
-  /// @param orderInitFlatSolFee: u32
+  /// @param admin: Option<publicKey>
+  /// @param feeWallet: Option<publicKey>
+  /// @param bankInitFlatSolFee: Option<u32>
+  /// @param liquidationFlatSolFee: Option<u32>
+  /// @param orderInitFlatSolFee: Option<u32>
+  /// @param pauseDelegateAdmin: Option<publicKey>
   public record EditGlobalFeeStateIxData(Discriminator discriminator,
                                          PublicKey admin,
                                          PublicKey feeWallet,
-                                         long bankInitFlatSolFee,
-                                         long liquidationFlatSolFee,
-                                         long orderInitFlatSolFee,
+                                         OptionalLong bankInitFlatSolFee,
+                                         OptionalLong liquidationFlatSolFee,
+                                         OptionalLong orderInitFlatSolFee,
                                          WrappedI80F48 programFeeFixed,
                                          WrappedI80F48 programFeeRate,
                                          WrappedI80F48 liquidationMaxFee,
-                                         WrappedI80F48 orderExecutionMaxFee) implements SerDe {  
+                                         WrappedI80F48 orderExecutionMaxFee,
+                                         PublicKey pauseDelegateAdmin) implements SerDe {  
 
     public static EditGlobalFeeStateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 148;
-
-    public static final int ADMIN_OFFSET = 8;
-    public static final int FEE_WALLET_OFFSET = 40;
-    public static final int BANK_INIT_FLAT_SOL_FEE_OFFSET = 72;
-    public static final int LIQUIDATION_FLAT_SOL_FEE_OFFSET = 76;
-    public static final int ORDER_INIT_FLAT_SOL_FEE_OFFSET = 80;
-    public static final int PROGRAM_FEE_FIXED_OFFSET = 84;
-    public static final int PROGRAM_FEE_RATE_OFFSET = 100;
-    public static final int LIQUIDATION_MAX_FEE_OFFSET = 116;
-    public static final int ORDER_EXECUTION_MAX_FEE_OFFSET = 132;
+    public static final int ADMIN_OFFSET = 9;
 
     public static EditGlobalFeeStateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1176,23 +1464,94 @@ public final class MarginfiProgram {
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var admin = readPubKey(_data, i);
-      i += 32;
-      final var feeWallet = readPubKey(_data, i);
-      i += 32;
-      final var bankInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
-      final var liquidationFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
-      final var orderInitFlatSolFee = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
-      final var programFeeFixed = WrappedI80F48.read(_data, i);
-      i += programFeeFixed.l();
-      final var programFeeRate = WrappedI80F48.read(_data, i);
-      i += programFeeRate.l();
-      final var liquidationMaxFee = WrappedI80F48.read(_data, i);
-      i += liquidationMaxFee.l();
-      final var orderExecutionMaxFee = WrappedI80F48.read(_data, i);
+      final PublicKey admin;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        admin = null;
+        ++i;
+      } else {
+        ++i;
+        admin = readPubKey(_data, i);
+        i += 32;
+      }
+      final PublicKey feeWallet;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        feeWallet = null;
+        ++i;
+      } else {
+        ++i;
+        feeWallet = readPubKey(_data, i);
+        i += 32;
+      }
+      final OptionalLong bankInitFlatSolFee;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        bankInitFlatSolFee = OptionalLong.empty();
+        ++i;
+      } else {
+        ++i;
+        bankInitFlatSolFee = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+        i += 4;
+      }
+      final OptionalLong liquidationFlatSolFee;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        liquidationFlatSolFee = OptionalLong.empty();
+        ++i;
+      } else {
+        ++i;
+        liquidationFlatSolFee = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+        i += 4;
+      }
+      final OptionalLong orderInitFlatSolFee;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        orderInitFlatSolFee = OptionalLong.empty();
+        ++i;
+      } else {
+        ++i;
+        orderInitFlatSolFee = OptionalLong.of(Integer.toUnsignedLong(getInt32LE(_data, i)));
+        i += 4;
+      }
+      final WrappedI80F48 programFeeFixed;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        programFeeFixed = null;
+        ++i;
+      } else {
+        ++i;
+        programFeeFixed = WrappedI80F48.read(_data, i);
+        i += programFeeFixed.l();
+      }
+      final WrappedI80F48 programFeeRate;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        programFeeRate = null;
+        ++i;
+      } else {
+        ++i;
+        programFeeRate = WrappedI80F48.read(_data, i);
+        i += programFeeRate.l();
+      }
+      final WrappedI80F48 liquidationMaxFee;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        liquidationMaxFee = null;
+        ++i;
+      } else {
+        ++i;
+        liquidationMaxFee = WrappedI80F48.read(_data, i);
+        i += liquidationMaxFee.l();
+      }
+      final WrappedI80F48 orderExecutionMaxFee;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        orderExecutionMaxFee = null;
+        ++i;
+      } else {
+        ++i;
+        orderExecutionMaxFee = WrappedI80F48.read(_data, i);
+        i += orderExecutionMaxFee.l();
+      }
+      final PublicKey pauseDelegateAdmin;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        pauseDelegateAdmin = null;
+      } else {
+        ++i;
+        pauseDelegateAdmin = readPubKey(_data, i);
+      }
       return new EditGlobalFeeStateIxData(discriminator,
                                           admin,
                                           feeWallet,
@@ -1202,32 +1561,38 @@ public final class MarginfiProgram {
                                           programFeeFixed,
                                           programFeeRate,
                                           liquidationMaxFee,
-                                          orderExecutionMaxFee);
+                                          orderExecutionMaxFee,
+                                          pauseDelegateAdmin);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      admin.write(_data, i);
-      i += 32;
-      feeWallet.write(_data, i);
-      i += 32;
-      putInt32LE(_data, i, (int) bankInitFlatSolFee);
-      i += 4;
-      putInt32LE(_data, i, (int) liquidationFlatSolFee);
-      i += 4;
-      putInt32LE(_data, i, (int) orderInitFlatSolFee);
-      i += 4;
-      i += programFeeFixed.write(_data, i);
-      i += programFeeRate.write(_data, i);
-      i += liquidationMaxFee.write(_data, i);
-      i += orderExecutionMaxFee.write(_data, i);
+      i += SerDeUtil.writeOptional(1, admin, _data, i);
+      i += SerDeUtil.writeOptional(1, feeWallet, _data, i);
+      i += SerDeUtil.writeOptionalUnsignedInt(1, bankInitFlatSolFee, _data, i);
+      i += SerDeUtil.writeOptionalUnsignedInt(1, liquidationFlatSolFee, _data, i);
+      i += SerDeUtil.writeOptionalUnsignedInt(1, orderInitFlatSolFee, _data, i);
+      i += SerDeUtil.writeOptional(1, programFeeFixed, _data, i);
+      i += SerDeUtil.writeOptional(1, programFeeRate, _data, i);
+      i += SerDeUtil.writeOptional(1, liquidationMaxFee, _data, i);
+      i += SerDeUtil.writeOptional(1, orderExecutionMaxFee, _data, i);
+      i += SerDeUtil.writeOptional(1, pauseDelegateAdmin, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return BYTES;
+      return 8 + (admin == null ? 1 : (1 + 32))
+           + (feeWallet == null ? 1 : (1 + 32))
+           + (bankInitFlatSolFee == null || bankInitFlatSolFee.isEmpty() ? 1 : (1 + 4))
+           + (liquidationFlatSolFee == null || liquidationFlatSolFee.isEmpty() ? 1 : (1 + 4))
+           + (orderInitFlatSolFee == null || orderInitFlatSolFee.isEmpty() ? 1 : (1 + 4))
+           + (programFeeFixed == null ? 1 : (1 + programFeeFixed.l()))
+           + (programFeeRate == null ? 1 : (1 + programFeeRate.l()))
+           + (liquidationMaxFee == null ? 1 : (1 + liquidationMaxFee.l()))
+           + (orderExecutionMaxFee == null ? 1 : (1 + orderExecutionMaxFee.l()))
+           + (pauseDelegateAdmin == null ? 1 : (1 + 32));
     }
   }
 
@@ -1301,6 +1666,50 @@ public final class MarginfiProgram {
     public int l() {
       return 8 + settings.l();
     }
+  }
+
+  public static final Discriminator ENABLE_STAKED_ORACLE_ONRAMP_DISCRIMINATOR = toDiscriminator(114, 248, 244, 6, 74, 212, 222, 230);
+
+  /// (admin only) Enable SPL single-pool on-ramp lamports in staked-collateral oracle pricing.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  /// This flips a per-group config flag so that every staked oracle uses the canonical single-pool NAV
+  /// formula.
+  ///
+  public static List<AccountMeta> enableStakedOracleOnrampKeys(final PublicKey groupKey,
+                                                               final PublicKey adminKey,
+                                                               final PublicKey stakedSettingsKey) {
+    return List.of(
+      createRead(groupKey),
+      createReadOnlySigner(adminKey),
+      createWrite(stakedSettingsKey)
+    );
+  }
+
+  /// (admin only) Enable SPL single-pool on-ramp lamports in staked-collateral oracle pricing.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  /// This flips a per-group config flag so that every staked oracle uses the canonical single-pool NAV
+  /// formula.
+  ///
+  public static Instruction enableStakedOracleOnramp(final AccountMeta invokedMarginfiProgramMeta,
+                                                     final PublicKey groupKey,
+                                                     final PublicKey adminKey,
+                                                     final PublicKey stakedSettingsKey) {
+    final var keys = enableStakedOracleOnrampKeys(
+      groupKey,
+      adminKey,
+      stakedSettingsKey
+    );
+    return enableStakedOracleOnramp(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (admin only) Enable SPL single-pool on-ramp lamports in staked-collateral oracle pricing.
+  /// To be removed once SVSP update is rolled out (likely in 1.10)
+  /// This flips a per-group config flag so that every staked oracle uses the canonical single-pool NAV
+  /// formula.
+  ///
+  public static Instruction enableStakedOracleOnramp(final AccountMeta invokedMarginfiProgramMeta,
+                                                     final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, ENABLE_STAKED_ORACLE_ONRAMP_DISCRIMINATOR);
   }
 
   public static final Discriminator END_DELEVERAGE_DISCRIMINATOR = toDiscriminator(114, 14, 250, 143, 252, 104, 214, 209);
@@ -1398,8 +1807,11 @@ public final class MarginfiProgram {
 
   public static final Discriminator INIT_BANK_METADATA_DISCRIMINATOR = toDiscriminator(94, 239, 50, 136, 137, 204, 254, 213);
 
-  /// (permissionless) pay the rent to open a bank's metadata.
+  /// (permissionless) pay the rent to open metadata for a bank. The bank account does not have
+  /// to exist yet — callers can pre-create metadata for an upcoming bank pubkey at their own
+  /// rent expense. When the bank is initialized and its seed is on-chain, the PDA is verified.
   ///
+  /// @param bankKey keypair-based bank. When initialized with a known seed, the PDA is verified in the handler.
   /// @param feePayerKey Pays the init fee
   /// @param metadataKey Note: unique per-bank.
   public static List<AccountMeta> initBankMetadataKeys(final SolanaAccounts solanaAccounts,
@@ -1414,8 +1826,11 @@ public final class MarginfiProgram {
     );
   }
 
-  /// (permissionless) pay the rent to open a bank's metadata.
+  /// (permissionless) pay the rent to open metadata for a bank. The bank account does not have
+  /// to exist yet — callers can pre-create metadata for an upcoming bank pubkey at their own
+  /// rent expense. When the bank is initialized and its seed is on-chain, the PDA is verified.
   ///
+  /// @param bankKey keypair-based bank. When initialized with a known seed, the PDA is verified in the handler.
   /// @param feePayerKey Pays the init fee
   /// @param metadataKey Note: unique per-bank.
   public static Instruction initBankMetadata(final AccountMeta invokedMarginfiProgramMeta,
@@ -1432,7 +1847,9 @@ public final class MarginfiProgram {
     return initBankMetadata(invokedMarginfiProgramMeta, keys);
   }
 
-  /// (permissionless) pay the rent to open a bank's metadata.
+  /// (permissionless) pay the rent to open metadata for a bank. The bank account does not have
+  /// to exist yet — callers can pre-create metadata for an upcoming bank pubkey at their own
+  /// rent expense. When the bank is initialized and its seed is on-chain, the PDA is verified.
   ///
   public static Instruction initBankMetadata(final AccountMeta invokedMarginfiProgramMeta,
                                              final List<AccountMeta> keys) {
@@ -1621,6 +2038,43 @@ public final class MarginfiProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator INIT_GLOBAL_FEE_STATE_V_2_DISCRIMINATOR = toDiscriminator(170, 82, 207, 84, 84, 17, 116, 124);
+
+  /// (Runs once per program) Initialize the V2 fee state PDA.
+  ///
+  /// @param payerKey Pays the init fee
+  public static List<AccountMeta> initGlobalFeeStateV2Keys(final SolanaAccounts solanaAccounts,
+                                                           final PublicKey payerKey,
+                                                           final PublicKey feeStateV2Key) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createWrite(feeStateV2Key),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  /// (Runs once per program) Initialize the V2 fee state PDA.
+  ///
+  /// @param payerKey Pays the init fee
+  public static Instruction initGlobalFeeStateV2(final AccountMeta invokedMarginfiProgramMeta,
+                                                 final SolanaAccounts solanaAccounts,
+                                                 final PublicKey payerKey,
+                                                 final PublicKey feeStateV2Key) {
+    final var keys = initGlobalFeeStateV2Keys(
+      solanaAccounts,
+      payerKey,
+      feeStateV2Key
+    );
+    return initGlobalFeeStateV2(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (Runs once per program) Initialize the V2 fee state PDA.
+  ///
+  public static Instruction initGlobalFeeStateV2(final AccountMeta invokedMarginfiProgramMeta,
+                                                 final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, INIT_GLOBAL_FEE_STATE_V_2_DISCRIMINATOR);
   }
 
   public static final Discriminator INIT_STAKED_SETTINGS_DISCRIMINATOR = toDiscriminator(52, 35, 149, 44, 69, 86, 69, 80);
@@ -2069,6 +2523,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a JupLend lending pool through a marginfi account.
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   ///
   /// @param destinationTokenAccountKey Token account that will receive the underlying withdrawal.
   ///                                   WARN: Completely unchecked!
@@ -2138,6 +2594,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a JupLend lending pool through a marginfi account.
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   ///
   /// @param destinationTokenAccountKey Token account that will receive the underlying withdrawal.
   ///                                   WARN: Completely unchecked!
@@ -2212,6 +2670,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a JupLend lending pool through a marginfi account.
   /// * amount - in the underlying token (e.g., USDC), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   ///
   /// @param amount: u64
   /// @param withdrawAll: Option<bool>
@@ -2359,6 +2819,7 @@ public final class MarginfiProgram {
   /// @param reserveFarmStateKey Required if the Kamino reserve has an active farm.
   /// @param farmsProgramKey Farms program for Kamino staking functionality
   /// @param amount: u64
+  /// @param refreshReserve: Option<bool>
   public static Instruction kaminoDeposit(final AccountMeta invokedMarginfiProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey groupKey,
@@ -2382,7 +2843,8 @@ public final class MarginfiProgram {
                                           final PublicKey farmsProgramKey,
                                           final PublicKey collateralTokenProgramKey,
                                           final PublicKey liquidityTokenProgramKey,
-                                          final long amount) {
+                                          final long amount,
+                                          final Boolean refreshReserve) {
     final var keys = kaminoDepositKeys(
       invokedMarginfiProgramMeta,
       solanaAccounts,
@@ -2408,7 +2870,7 @@ public final class MarginfiProgram {
       collateralTokenProgramKey,
       liquidityTokenProgramKey
     );
-    return kaminoDeposit(invokedMarginfiProgramMeta, keys, amount);
+    return kaminoDeposit(invokedMarginfiProgramMeta, keys, amount, refreshReserve);
   }
 
   /// (user) Deposit into a Kamino pool through a marginfi account
@@ -2416,26 +2878,33 @@ public final class MarginfiProgram {
   /// USDC desired), in native decimals.
   ///
   /// @param amount: u64
+  /// @param refreshReserve: Option<bool>
   public static Instruction kaminoDeposit(final AccountMeta invokedMarginfiProgramMeta,
                                           final List<AccountMeta> keys,
-                                          final long amount) {
-    final byte[] _data = new byte[16];
+                                          final long amount,
+                                          final Boolean refreshReserve) {
+    final byte[] _data = new byte[
+    16
+    + (refreshReserve == null ? 1 : 2)
+    ];
     int i = KAMINO_DEPOSIT_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
+    i += 8;
+    SerDeUtil.writeOptional(1, refreshReserve, _data, i);
 
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
   /// @param amount: u64
-  public record KaminoDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
+  /// @param refreshReserve: Option<bool>
+  public record KaminoDepositIxData(Discriminator discriminator, long amount, Boolean refreshReserve) implements SerDe {  
 
     public static KaminoDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
-
     public static final int AMOUNT_OFFSET = 8;
+    public static final int REFRESH_RESERVE_OFFSET = 17;
 
     public static KaminoDepositIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -2444,7 +2913,15 @@ public final class MarginfiProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var amount = getInt64LE(_data, i);
-      return new KaminoDepositIxData(discriminator, amount);
+      i += 8;
+      final Boolean refreshReserve;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        refreshReserve = null;
+      } else {
+        ++i;
+        refreshReserve = _data[i] == 1;
+      }
+      return new KaminoDepositIxData(discriminator, amount, refreshReserve);
     }
 
     @Override
@@ -2452,12 +2929,13 @@ public final class MarginfiProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
+      i += SerDeUtil.writeOptional(1, refreshReserve, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return BYTES;
+      return 8 + 8 + (refreshReserve == null ? 1 : (1 + 1));
     }
   }
 
@@ -2649,10 +3127,6 @@ public final class MarginfiProgram {
                                                            final PublicKey reserveLiquiditySupplyKey,
                                                            final PublicKey reserveCollateralMintKey,
                                                            final PublicKey reserveDestinationDepositCollateralKey,
-                                                           final PublicKey pythOracleKey,
-                                                           final PublicKey switchboardPriceOracleKey,
-                                                           final PublicKey switchboardTwapOracleKey,
-                                                           final PublicKey scopePricesKey,
                                                            final PublicKey obligationFarmUserStateKey,
                                                            final PublicKey reserveFarmStateKey,
                                                            final PublicKey kaminoProgramKey,
@@ -2674,10 +3148,6 @@ public final class MarginfiProgram {
       createWrite(reserveLiquiditySupplyKey),
       createWrite(reserveCollateralMintKey),
       createWrite(reserveDestinationDepositCollateralKey),
-      createRead(requireNonNullElse(pythOracleKey, invokedMarginfiProgramMeta.publicKey())),
-      createRead(requireNonNullElse(switchboardPriceOracleKey, invokedMarginfiProgramMeta.publicKey())),
-      createRead(requireNonNullElse(switchboardTwapOracleKey, invokedMarginfiProgramMeta.publicKey())),
-      createRead(requireNonNullElse(scopePricesKey, invokedMarginfiProgramMeta.publicKey())),
       createWrite(requireNonNullElse(obligationFarmUserStateKey, invokedMarginfiProgramMeta.publicKey())),
       createWrite(requireNonNullElse(reserveFarmStateKey, invokedMarginfiProgramMeta.publicKey())),
       createRead(kaminoProgramKey),
@@ -2732,10 +3202,6 @@ public final class MarginfiProgram {
                                                  final PublicKey reserveLiquiditySupplyKey,
                                                  final PublicKey reserveCollateralMintKey,
                                                  final PublicKey reserveDestinationDepositCollateralKey,
-                                                 final PublicKey pythOracleKey,
-                                                 final PublicKey switchboardPriceOracleKey,
-                                                 final PublicKey switchboardTwapOracleKey,
-                                                 final PublicKey scopePricesKey,
                                                  final PublicKey obligationFarmUserStateKey,
                                                  final PublicKey reserveFarmStateKey,
                                                  final PublicKey kaminoProgramKey,
@@ -2760,10 +3226,6 @@ public final class MarginfiProgram {
       reserveLiquiditySupplyKey,
       reserveCollateralMintKey,
       reserveDestinationDepositCollateralKey,
-      pythOracleKey,
-      switchboardPriceOracleKey,
-      switchboardTwapOracleKey,
-      scopePricesKey,
       obligationFarmUserStateKey,
       reserveFarmStateKey,
       kaminoProgramKey,
@@ -2830,8 +3292,11 @@ public final class MarginfiProgram {
   /// (user) Withdraw from a Kamino pool through a marginfi account
   /// * amount - in the collateral token (NOT liquidity token), in native decimals. Must convert
   /// from collateral to liquidity token amounts using the current exchange rate.
-  /// * withdraw_all - if true, withdraw the entire mrgn balance (Note: due to rounding down, a
-  /// deposit and withdraw back to back may result in several lamports less)
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
+  /// * flags - optional bitflags:
+  /// - bit 0 (`0x01`): withdraw all
+  /// - bit 1 (`0x02`): refresh reserve via batch refresh
   ///
   /// @param destinationTokenAccountKey Token account that will receive the withdrawn tokens. Mint/owner are validated by the
   ///                                   SPL transfer; the caller controls the destination.
@@ -2840,7 +3305,6 @@ public final class MarginfiProgram {
   /// @param integrationAcc1Key The Kamino reserve that holds liquidity
   /// @param mintKey The liquidity token mint (e.g., USDC)
   ///                Needs serde to get the mint decimals for transfer checked
-  ///                TODO: rename to just 'mint' to make use of has_one and to be consistent with deposit
   /// @param reserveLiquiditySupplyKey The reserve's liquidity supply account
   /// @param reserveCollateralMintKey The reserve's collateral mint
   /// @param reserveSourceCollateralKey The reserve's source for collateral tokens
@@ -2900,8 +3364,11 @@ public final class MarginfiProgram {
   /// (user) Withdraw from a Kamino pool through a marginfi account
   /// * amount - in the collateral token (NOT liquidity token), in native decimals. Must convert
   /// from collateral to liquidity token amounts using the current exchange rate.
-  /// * withdraw_all - if true, withdraw the entire mrgn balance (Note: due to rounding down, a
-  /// deposit and withdraw back to back may result in several lamports less)
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
+  /// * flags - optional bitflags:
+  /// - bit 0 (`0x01`): withdraw all
+  /// - bit 1 (`0x02`): refresh reserve via batch refresh
   ///
   /// @param destinationTokenAccountKey Token account that will receive the withdrawn tokens. Mint/owner are validated by the
   ///                                   SPL transfer; the caller controls the destination.
@@ -2910,7 +3377,6 @@ public final class MarginfiProgram {
   /// @param integrationAcc1Key The Kamino reserve that holds liquidity
   /// @param mintKey The liquidity token mint (e.g., USDC)
   ///                Needs serde to get the mint decimals for transfer checked
-  ///                TODO: rename to just 'mint' to make use of has_one and to be consistent with deposit
   /// @param reserveLiquiditySupplyKey The reserve's liquidity supply account
   /// @param reserveCollateralMintKey The reserve's collateral mint
   /// @param reserveSourceCollateralKey The reserve's source for collateral tokens
@@ -2919,7 +3385,7 @@ public final class MarginfiProgram {
   /// @param collateralTokenProgramKey The token program for the collateral token
   /// @param liquidityTokenProgramKey The token program for the liquidity token
   /// @param amount: u64
-  /// @param withdrawAll: Option<bool>
+  /// @param flags: Option<u8>
   public static Instruction kaminoWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final SolanaAccounts solanaAccounts,
                                            final PublicKey groupKey,
@@ -2944,7 +3410,7 @@ public final class MarginfiProgram {
                                            final PublicKey collateralTokenProgramKey,
                                            final PublicKey liquidityTokenProgramKey,
                                            final long amount,
-                                           final Boolean withdrawAll) {
+                                           final OptionalInt flags) {
     final var keys = kaminoWithdrawKeys(
       invokedMarginfiProgramMeta,
       solanaAccounts,
@@ -2970,43 +3436,46 @@ public final class MarginfiProgram {
       collateralTokenProgramKey,
       liquidityTokenProgramKey
     );
-    return kaminoWithdraw(invokedMarginfiProgramMeta, keys, amount, withdrawAll);
+    return kaminoWithdraw(invokedMarginfiProgramMeta, keys, amount, flags);
   }
 
   /// (user) Withdraw from a Kamino pool through a marginfi account
   /// * amount - in the collateral token (NOT liquidity token), in native decimals. Must convert
   /// from collateral to liquidity token amounts using the current exchange rate.
-  /// * withdraw_all - if true, withdraw the entire mrgn balance (Note: due to rounding down, a
-  /// deposit and withdraw back to back may result in several lamports less)
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
+  /// * flags - optional bitflags:
+  /// - bit 0 (`0x01`): withdraw all
+  /// - bit 1 (`0x02`): refresh reserve via batch refresh
   ///
   /// @param amount: u64
-  /// @param withdrawAll: Option<bool>
+  /// @param flags: Option<u8>
   public static Instruction kaminoWithdraw(final AccountMeta invokedMarginfiProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long amount,
-                                           final Boolean withdrawAll) {
+                                           final OptionalInt flags) {
     final byte[] _data = new byte[
     16
-    + (withdrawAll == null ? 1 : 2)
+    + (flags == null || flags.isEmpty() ? 1 : 2)
     ];
     int i = KAMINO_WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
     i += 8;
-    SerDeUtil.writeOptional(1, withdrawAll, _data, i);
+    SerDeUtil.writeOptionalbyte(1, flags, _data, i);
 
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
   }
 
   /// @param amount: u64
-  /// @param withdrawAll: Option<bool>
-  public record KaminoWithdrawIxData(Discriminator discriminator, long amount, Boolean withdrawAll) implements SerDe {  
+  /// @param flags: Option<u8>
+  public record KaminoWithdrawIxData(Discriminator discriminator, long amount, OptionalInt flags) implements SerDe {  
 
     public static KaminoWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static final int AMOUNT_OFFSET = 8;
-    public static final int WITHDRAW_ALL_OFFSET = 17;
+    public static final int FLAGS_OFFSET = 17;
 
     public static KaminoWithdrawIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -3016,14 +3485,14 @@ public final class MarginfiProgram {
       int i = _offset + discriminator.length();
       final var amount = getInt64LE(_data, i);
       i += 8;
-      final Boolean withdrawAll;
+      final OptionalInt flags;
       if (SerDeUtil.isAbsent(1, _data, i)) {
-        withdrawAll = null;
+        flags = OptionalInt.empty();
       } else {
         ++i;
-        withdrawAll = _data[i] == 1;
+        flags = OptionalInt.of(_data[i] & 0xFF);
       }
-      return new KaminoWithdrawIxData(discriminator, amount, withdrawAll);
+      return new KaminoWithdrawIxData(discriminator, amount, flags);
     }
 
     @Override
@@ -3031,20 +3500,22 @@ public final class MarginfiProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, amount);
       i += 8;
-      i += SerDeUtil.writeOptional(1, withdrawAll, _data, i);
+      i += SerDeUtil.writeOptionalbyte(1, flags, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 8 + 8 + (withdrawAll == null ? 1 : (1 + 1));
+      return 8 + 8 + (flags == null || flags.isEmpty() ? 1 : (1 + 1));
     }
   }
 
   public static final Discriminator LENDING_ACCOUNT_BORROW_DISCRIMINATOR = toDiscriminator(4, 126, 116, 53, 48, 5, 212, 31);
 
   /// (account authority) Borrow assets from a bank. Accrues interest, records liability, applies
-  /// origination fee, transfers tokens, and runs a health check.
+  /// origination fee, transfers tokens, and runs a health check. If group rate limits are
+  /// enabled, `remaining_accounts` must include the borrowed bank's oracle group for USD
+  /// pricing.
   ///
   public static List<AccountMeta> lendingAccountBorrowKeys(final PublicKey groupKey,
                                                            final PublicKey marginfiAccountKey,
@@ -3067,7 +3538,9 @@ public final class MarginfiProgram {
   }
 
   /// (account authority) Borrow assets from a bank. Accrues interest, records liability, applies
-  /// origination fee, transfers tokens, and runs a health check.
+  /// origination fee, transfers tokens, and runs a health check. If group rate limits are
+  /// enabled, `remaining_accounts` must include the borrowed bank's oracle group for USD
+  /// pricing.
   ///
   /// @param amount: u64
   public static Instruction lendingAccountBorrow(final AccountMeta invokedMarginfiProgramMeta,
@@ -3094,7 +3567,9 @@ public final class MarginfiProgram {
   }
 
   /// (account authority) Borrow assets from a bank. Accrues interest, records liability, applies
-  /// origination fee, transfers tokens, and runs a health check.
+  /// origination fee, transfers tokens, and runs a health check. If group rate limits are
+  /// enabled, `remaining_accounts` must include the borrowed bank's oracle group for USD
+  /// pricing.
   ///
   /// @param amount: u64
   public static Instruction lendingAccountBorrow(final AccountMeta invokedMarginfiProgramMeta,
@@ -3140,40 +3615,6 @@ public final class MarginfiProgram {
     public int l() {
       return BYTES;
     }
-  }
-
-  public static final Discriminator LENDING_ACCOUNT_CLEAR_EMISSIONS_DISCRIMINATOR = toDiscriminator(239, 4, 221, 98, 45, 167, 201, 244);
-
-  /// (permissionless) Zero out `emissions_outstanding` on a balance after emissions are disabled
-  /// on the bank.
-  ///
-  public static List<AccountMeta> lendingAccountClearEmissionsKeys(final PublicKey marginfiAccountKey,
-                                                                   final PublicKey bankKey) {
-    return List.of(
-      createWrite(marginfiAccountKey),
-      createRead(bankKey)
-    );
-  }
-
-  /// (permissionless) Zero out `emissions_outstanding` on a balance after emissions are disabled
-  /// on the bank.
-  ///
-  public static Instruction lendingAccountClearEmissions(final AccountMeta invokedMarginfiProgramMeta,
-                                                         final PublicKey marginfiAccountKey,
-                                                         final PublicKey bankKey) {
-    final var keys = lendingAccountClearEmissionsKeys(
-      marginfiAccountKey,
-      bankKey
-    );
-    return lendingAccountClearEmissions(invokedMarginfiProgramMeta, keys);
-  }
-
-  /// (permissionless) Zero out `emissions_outstanding` on a balance after emissions are disabled
-  /// on the bank.
-  ///
-  public static Instruction lendingAccountClearEmissions(final AccountMeta invokedMarginfiProgramMeta,
-                                                         final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, LENDING_ACCOUNT_CLEAR_EMISSIONS_DISCRIMINATOR);
   }
 
   public static final Discriminator LENDING_ACCOUNT_CLOSE_BALANCE_DISCRIMINATOR = toDiscriminator(245, 54, 41, 4, 243, 202, 31, 17);
@@ -3762,7 +4203,8 @@ public final class MarginfiProgram {
 
   /// (account authority, or any signer during receivership) Withdraw assets from a bank. Accrues
   /// interest, records withdrawal, transfers tokens, and runs a health check (skipped during
-  /// receivership).
+  /// receivership). If group rate limits are enabled, `remaining_accounts` must include the
+  /// withdrawn bank's oracle group for USD pricing.
   ///
   /// @param authorityKey Must be marginfi_account's authority, unless in liquidation/deleverage receivership or order execution
   ///                     
@@ -3790,7 +4232,8 @@ public final class MarginfiProgram {
 
   /// (account authority, or any signer during receivership) Withdraw assets from a bank. Accrues
   /// interest, records withdrawal, transfers tokens, and runs a health check (skipped during
-  /// receivership).
+  /// receivership). If group rate limits are enabled, `remaining_accounts` must include the
+  /// withdrawn bank's oracle group for USD pricing.
   ///
   /// @param authorityKey Must be marginfi_account's authority, unless in liquidation/deleverage receivership or order execution
   ///                     
@@ -3824,7 +4267,8 @@ public final class MarginfiProgram {
 
   /// (account authority, or any signer during receivership) Withdraw assets from a bank. Accrues
   /// interest, records withdrawal, transfers tokens, and runs a health check (skipped during
-  /// receivership).
+  /// receivership). If group rate limits are enabled, `remaining_accounts` must include the
+  /// withdrawn bank's oracle group for USD pricing.
   ///
   /// @param amount: u64
   /// @param withdrawAll: Option<bool>
@@ -4553,13 +4997,18 @@ public final class MarginfiProgram {
   ///                     
   ///                     If derives the same `bank_mint`, then this must be the correct stake pool for that mint, and
   ///                     we can subsequently use it to validate the `sol_pool`
+  /// @param validatorVoteAccountKey Validator vote account for this staked bank.
+  ///                                
+  ///                                vote -> stake_pool -> mint/stake/on-ramp.
   public static List<AccountMeta> lendingPoolAddBankPermissionlessKeys(final SolanaAccounts solanaAccounts,
                                                                        final PublicKey marginfiGroupKey,
                                                                        final PublicKey stakedSettingsKey,
                                                                        final PublicKey feePayerKey,
                                                                        final PublicKey bankMintKey,
                                                                        final PublicKey solPoolKey,
+                                                                       final PublicKey poolOnrampKey,
                                                                        final PublicKey stakePoolKey,
+                                                                       final PublicKey validatorVoteAccountKey,
                                                                        final PublicKey bankKey,
                                                                        final PublicKey liquidityVaultAuthorityKey,
                                                                        final PublicKey liquidityVaultKey,
@@ -4574,7 +5023,9 @@ public final class MarginfiProgram {
       createWritableSigner(feePayerKey),
       createRead(bankMintKey),
       createRead(solPoolKey),
+      createRead(poolOnrampKey),
       createRead(stakePoolKey),
+      createRead(validatorVoteAccountKey),
       createWrite(bankKey),
       createRead(liquidityVaultAuthorityKey),
       createWrite(liquidityVaultKey),
@@ -4597,6 +5048,9 @@ public final class MarginfiProgram {
   ///                     
   ///                     If derives the same `bank_mint`, then this must be the correct stake pool for that mint, and
   ///                     we can subsequently use it to validate the `sol_pool`
+  /// @param validatorVoteAccountKey Validator vote account for this staked bank.
+  ///                                
+  ///                                vote -> stake_pool -> mint/stake/on-ramp.
   /// @param bankSeed: u64
   public static Instruction lendingPoolAddBankPermissionless(final AccountMeta invokedMarginfiProgramMeta,
                                                              final SolanaAccounts solanaAccounts,
@@ -4605,7 +5059,9 @@ public final class MarginfiProgram {
                                                              final PublicKey feePayerKey,
                                                              final PublicKey bankMintKey,
                                                              final PublicKey solPoolKey,
+                                                             final PublicKey poolOnrampKey,
                                                              final PublicKey stakePoolKey,
+                                                             final PublicKey validatorVoteAccountKey,
                                                              final PublicKey bankKey,
                                                              final PublicKey liquidityVaultAuthorityKey,
                                                              final PublicKey liquidityVaultKey,
@@ -4622,7 +5078,9 @@ public final class MarginfiProgram {
       feePayerKey,
       bankMintKey,
       solPoolKey,
+      poolOnrampKey,
       stakePoolKey,
+      validatorVoteAccountKey,
       bankKey,
       liquidityVaultAuthorityKey,
       liquidityVaultKey,
@@ -4979,6 +5437,130 @@ public final class MarginfiProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator LENDING_POOL_BACKFILL_BANK_IS_T_22_FLAG_DISCRIMINATOR = toDiscriminator(189, 14, 205, 160, 172, 46, 157, 52);
+
+  /// (permissionless) Backfill `IS_T22` on existing banks created before this flag existed.
+  /// Also optionally backfills `bank_seed` in the same call.
+  /// Pass `None` to skip seed backfill, `Some(seed)` to backfill (including `Some(0)`).
+  ///
+  public static List<AccountMeta> lendingPoolBackfillBankIsT22FlagKeys(final PublicKey bankKey,
+                                                                       final PublicKey groupKey,
+                                                                       final PublicKey mintKey) {
+    return List.of(
+      createWrite(bankKey),
+      createRead(groupKey),
+      createRead(mintKey)
+    );
+  }
+
+  /// (permissionless) Backfill `IS_T22` on existing banks created before this flag existed.
+  /// Also optionally backfills `bank_seed` in the same call.
+  /// Pass `None` to skip seed backfill, `Some(seed)` to backfill (including `Some(0)`).
+  ///
+  /// @param bankSeed: Option<u64>
+  public static Instruction lendingPoolBackfillBankIsT22Flag(final AccountMeta invokedMarginfiProgramMeta,
+                                                             final PublicKey bankKey,
+                                                             final PublicKey groupKey,
+                                                             final PublicKey mintKey,
+                                                             final OptionalLong bankSeed) {
+    final var keys = lendingPoolBackfillBankIsT22FlagKeys(
+      bankKey,
+      groupKey,
+      mintKey
+    );
+    return lendingPoolBackfillBankIsT22Flag(invokedMarginfiProgramMeta, keys, bankSeed);
+  }
+
+  /// (permissionless) Backfill `IS_T22` on existing banks created before this flag existed.
+  /// Also optionally backfills `bank_seed` in the same call.
+  /// Pass `None` to skip seed backfill, `Some(seed)` to backfill (including `Some(0)`).
+  ///
+  /// @param bankSeed: Option<u64>
+  public static Instruction lendingPoolBackfillBankIsT22Flag(final AccountMeta invokedMarginfiProgramMeta,
+                                                             final List<AccountMeta> keys,
+                                                             final OptionalLong bankSeed) {
+    final byte[] _data = new byte[
+    8
+    + (bankSeed == null || bankSeed.isEmpty() ? 1 : 9)
+    ];
+    int i = LENDING_POOL_BACKFILL_BANK_IS_T_22_FLAG_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeOptional(1, bankSeed, _data, i);
+
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
+  }
+
+  /// @param bankSeed: Option<u64>
+  public record LendingPoolBackfillBankIsT22FlagIxData(Discriminator discriminator, OptionalLong bankSeed) implements SerDe {  
+
+    public static LendingPoolBackfillBankIsT22FlagIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BANK_SEED_OFFSET = 9;
+
+    public static LendingPoolBackfillBankIsT22FlagIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final OptionalLong bankSeed;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        bankSeed = OptionalLong.empty();
+      } else {
+        ++i;
+        bankSeed = OptionalLong.of(getInt64LE(_data, i));
+      }
+      return new LendingPoolBackfillBankIsT22FlagIxData(discriminator, bankSeed);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeOptional(1, bankSeed, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + (bankSeed == null || bankSeed.isEmpty() ? 1 : (1 + 8));
+    }
+  }
+
+  public static final Discriminator LENDING_POOL_BACKFILL_STAKED_BANK_VALIDATOR_VOTE_ACCOUNT_DISCRIMINATOR = toDiscriminator(141, 6, 23, 125, 72, 34, 199, 24);
+
+  /// (permissionless) Backfill validator vote account on existing staked-collateral banks.
+  /// No-op if already set to the same validator vote account.
+  ///
+  public static List<AccountMeta> lendingPoolBackfillStakedBankValidatorVoteAccountKeys(final PublicKey bankKey,
+                                                                                        final PublicKey validatorVoteAccountKey) {
+    return List.of(
+      createWrite(bankKey),
+      createRead(validatorVoteAccountKey)
+    );
+  }
+
+  /// (permissionless) Backfill validator vote account on existing staked-collateral banks.
+  /// No-op if already set to the same validator vote account.
+  ///
+  public static Instruction lendingPoolBackfillStakedBankValidatorVoteAccount(final AccountMeta invokedMarginfiProgramMeta,
+                                                                              final PublicKey bankKey,
+                                                                              final PublicKey validatorVoteAccountKey) {
+    final var keys = lendingPoolBackfillStakedBankValidatorVoteAccountKeys(
+      bankKey,
+      validatorVoteAccountKey
+    );
+    return lendingPoolBackfillStakedBankValidatorVoteAccount(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (permissionless) Backfill validator vote account on existing staked-collateral banks.
+  /// No-op if already set to the same validator vote account.
+  ///
+  public static Instruction lendingPoolBackfillStakedBankValidatorVoteAccount(final AccountMeta invokedMarginfiProgramMeta,
+                                                                              final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, LENDING_POOL_BACKFILL_STAKED_BANK_VALIDATOR_VOTE_ACCOUNT_DISCRIMINATOR);
   }
 
   public static final Discriminator LENDING_POOL_CLONE_BANK_DISCRIMINATOR = toDiscriminator(214, 93, 17, 236, 177, 228, 78, 17);
@@ -5705,6 +6287,107 @@ public final class MarginfiProgram {
     }
   }
 
+  public static final Discriminator LENDING_POOL_EMISSIONS_DEPOSIT_DISCRIMINATOR = toDiscriminator(121, 118, 123, 58, 59, 192, 74, 138);
+
+  /// (permissionless) Deposit same-bank emissions directly into liquidity vault and increase
+  /// depositors' value via `asset_share_value`.
+  ///
+  /// @param emissionsFundingAccountKey NOTE: This is a TokenAccount, spl transfer will validate it.
+  ///                                   
+  public static List<AccountMeta> lendingPoolEmissionsDepositKeys(final PublicKey groupKey,
+                                                                  final PublicKey bankKey,
+                                                                  final PublicKey mintKey,
+                                                                  final PublicKey emissionsFundingAccountKey,
+                                                                  final PublicKey depositorKey,
+                                                                  final PublicKey liquidityVaultKey,
+                                                                  final PublicKey tokenProgramKey) {
+    return List.of(
+      createRead(groupKey),
+      createWrite(bankKey),
+      createRead(mintKey),
+      createWrite(emissionsFundingAccountKey),
+      createWritableSigner(depositorKey),
+      createWrite(liquidityVaultKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  /// (permissionless) Deposit same-bank emissions directly into liquidity vault and increase
+  /// depositors' value via `asset_share_value`.
+  ///
+  /// @param emissionsFundingAccountKey NOTE: This is a TokenAccount, spl transfer will validate it.
+  ///                                   
+  /// @param amount: u64
+  public static Instruction lendingPoolEmissionsDeposit(final AccountMeta invokedMarginfiProgramMeta,
+                                                        final PublicKey groupKey,
+                                                        final PublicKey bankKey,
+                                                        final PublicKey mintKey,
+                                                        final PublicKey emissionsFundingAccountKey,
+                                                        final PublicKey depositorKey,
+                                                        final PublicKey liquidityVaultKey,
+                                                        final PublicKey tokenProgramKey,
+                                                        final long amount) {
+    final var keys = lendingPoolEmissionsDepositKeys(
+      groupKey,
+      bankKey,
+      mintKey,
+      emissionsFundingAccountKey,
+      depositorKey,
+      liquidityVaultKey,
+      tokenProgramKey
+    );
+    return lendingPoolEmissionsDeposit(invokedMarginfiProgramMeta, keys, amount);
+  }
+
+  /// (permissionless) Deposit same-bank emissions directly into liquidity vault and increase
+  /// depositors' value via `asset_share_value`.
+  ///
+  /// @param amount: u64
+  public static Instruction lendingPoolEmissionsDeposit(final AccountMeta invokedMarginfiProgramMeta,
+                                                        final List<AccountMeta> keys,
+                                                        final long amount) {
+    final byte[] _data = new byte[16];
+    int i = LENDING_POOL_EMISSIONS_DEPOSIT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, amount);
+
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
+  }
+
+  /// @param amount: u64
+  public record LendingPoolEmissionsDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
+
+    public static LendingPoolEmissionsDepositIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int AMOUNT_OFFSET = 8;
+
+    public static LendingPoolEmissionsDepositIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var amount = getInt64LE(_data, i);
+      return new LendingPoolEmissionsDepositIxData(discriminator, amount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, amount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator LENDING_POOL_FORCE_TOKENLESS_REPAY_COMPLETE_DISCRIMINATOR = toDiscriminator(15, 203, 147, 232, 199, 14, 231, 37);
 
   /// (risk_admin only) - Signals all of a bank's liability have been deleveraged. Used if a bank
@@ -5840,66 +6523,6 @@ public final class MarginfiProgram {
   public static Instruction lendingPoolPulseBankPriceCache(final AccountMeta invokedMarginfiProgramMeta,
                                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, LENDING_POOL_PULSE_BANK_PRICE_CACHE_DISCRIMINATOR);
-  }
-
-  public static final Discriminator LENDING_POOL_RECLAIM_EMISSIONS_VAULT_DISCRIMINATOR = toDiscriminator(206, 67, 186, 225, 41, 30, 95, 216);
-
-  /// (permissionless) Reclaim all remaining tokens from the emissions vault
-  /// to the global fee wallet ATA, and disable emissions on the bank.
-  ///
-  /// @param destinationAccountKey emissions mint (validated in handler).
-  public static List<AccountMeta> lendingPoolReclaimEmissionsVaultKeys(final PublicKey groupKey,
-                                                                       final PublicKey bankKey,
-                                                                       final PublicKey emissionsMintKey,
-                                                                       final PublicKey emissionsAuthKey,
-                                                                       final PublicKey emissionsVaultKey,
-                                                                       final PublicKey feeStateKey,
-                                                                       final PublicKey destinationAccountKey,
-                                                                       final PublicKey tokenProgramKey) {
-    return List.of(
-      createRead(groupKey),
-      createWrite(bankKey),
-      createRead(emissionsMintKey),
-      createRead(emissionsAuthKey),
-      createWrite(emissionsVaultKey),
-      createRead(feeStateKey),
-      createWrite(destinationAccountKey),
-      createRead(tokenProgramKey)
-    );
-  }
-
-  /// (permissionless) Reclaim all remaining tokens from the emissions vault
-  /// to the global fee wallet ATA, and disable emissions on the bank.
-  ///
-  /// @param destinationAccountKey emissions mint (validated in handler).
-  public static Instruction lendingPoolReclaimEmissionsVault(final AccountMeta invokedMarginfiProgramMeta,
-                                                             final PublicKey groupKey,
-                                                             final PublicKey bankKey,
-                                                             final PublicKey emissionsMintKey,
-                                                             final PublicKey emissionsAuthKey,
-                                                             final PublicKey emissionsVaultKey,
-                                                             final PublicKey feeStateKey,
-                                                             final PublicKey destinationAccountKey,
-                                                             final PublicKey tokenProgramKey) {
-    final var keys = lendingPoolReclaimEmissionsVaultKeys(
-      groupKey,
-      bankKey,
-      emissionsMintKey,
-      emissionsAuthKey,
-      emissionsVaultKey,
-      feeStateKey,
-      destinationAccountKey,
-      tokenProgramKey
-    );
-    return lendingPoolReclaimEmissionsVault(invokedMarginfiProgramMeta, keys);
-  }
-
-  /// (permissionless) Reclaim all remaining tokens from the emissions vault
-  /// to the global fee wallet ATA, and disable emissions on the bank.
-  ///
-  public static Instruction lendingPoolReclaimEmissionsVault(final AccountMeta invokedMarginfiProgramMeta,
-                                                             final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, LENDING_POOL_RECLAIM_EMISSIONS_VAULT_DISCRIMINATOR);
   }
 
   public static final Discriminator LENDING_POOL_SET_FIXED_ORACLE_PRICE_DISCRIMINATOR = toDiscriminator(28, 126, 127, 127, 60, 37, 211, 125);
@@ -6333,16 +6956,60 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, MARGINFI_ACCOUNT_CLOSE_DISCRIMINATOR);
   }
 
+  public static final Discriminator MARGINFI_ACCOUNT_CLOSE_LIQ_RECORD_DISCRIMINATOR = toDiscriminator(187, 222, 41, 134, 102, 10, 112, 147);
+
+  /// (permissionless) Close a liquidation record PDA and return rent to the original payer.
+  /// Rent always goes to `record_payer`. Fails if the account is in receivership or deleverage.
+  ///
+  /// @param recordPayerKey The wallet that originally paid to create this record.
+  ///                       Rent is returned here via Anchor's `close` constraint.
+  public static List<AccountMeta> marginfiAccountCloseLiqRecordKeys(final PublicKey marginfiAccountKey,
+                                                                    final PublicKey liquidationRecordKey,
+                                                                    final PublicKey recordPayerKey) {
+    return List.of(
+      createWrite(marginfiAccountKey),
+      createWrite(liquidationRecordKey),
+      createWrite(recordPayerKey)
+    );
+  }
+
+  /// (permissionless) Close a liquidation record PDA and return rent to the original payer.
+  /// Rent always goes to `record_payer`. Fails if the account is in receivership or deleverage.
+  ///
+  /// @param recordPayerKey The wallet that originally paid to create this record.
+  ///                       Rent is returned here via Anchor's `close` constraint.
+  public static Instruction marginfiAccountCloseLiqRecord(final AccountMeta invokedMarginfiProgramMeta,
+                                                          final PublicKey marginfiAccountKey,
+                                                          final PublicKey liquidationRecordKey,
+                                                          final PublicKey recordPayerKey) {
+    final var keys = marginfiAccountCloseLiqRecordKeys(
+      marginfiAccountKey,
+      liquidationRecordKey,
+      recordPayerKey
+    );
+    return marginfiAccountCloseLiqRecord(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (permissionless) Close a liquidation record PDA and return rent to the original payer.
+  /// Rent always goes to `record_payer`. Fails if the account is in receivership or deleverage.
+  ///
+  public static Instruction marginfiAccountCloseLiqRecord(final AccountMeta invokedMarginfiProgramMeta,
+                                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, MARGINFI_ACCOUNT_CLOSE_LIQ_RECORD_DISCRIMINATOR);
+  }
+
   public static final Discriminator MARGINFI_ACCOUNT_CLOSE_ORDER_DISCRIMINATOR = toDiscriminator(212, 223, 79, 182, 172, 183, 205, 237);
 
   /// (user) Close an existing Order, returning rent to the user
   ///
   public static List<AccountMeta> marginfiAccountCloseOrderKeys(final SolanaAccounts solanaAccounts,
+                                                                final PublicKey groupKey,
                                                                 final PublicKey marginfiAccountKey,
                                                                 final PublicKey authorityKey,
                                                                 final PublicKey orderKey,
                                                                 final PublicKey feeRecipientKey) {
     return List.of(
+      createRead(groupKey),
       createWrite(marginfiAccountKey),
       createReadOnlySigner(authorityKey),
       createWrite(orderKey),
@@ -6355,12 +7022,14 @@ public final class MarginfiProgram {
   ///
   public static Instruction marginfiAccountCloseOrder(final AccountMeta invokedMarginfiProgramMeta,
                                                       final SolanaAccounts solanaAccounts,
+                                                      final PublicKey groupKey,
                                                       final PublicKey marginfiAccountKey,
                                                       final PublicKey authorityKey,
                                                       final PublicKey orderKey,
                                                       final PublicKey feeRecipientKey) {
     final var keys = marginfiAccountCloseOrderKeys(
       solanaAccounts,
+      groupKey,
       marginfiAccountKey,
       authorityKey,
       orderKey,
@@ -6692,7 +7361,7 @@ public final class MarginfiProgram {
                                                                       final PublicKey feeRecipientKey,
                                                                       final PublicKey orderKey) {
     return List.of(
-      createRead(marginfiAccountKey),
+      createWrite(marginfiAccountKey),
       createWrite(feeRecipientKey),
       createWrite(orderKey)
     );
@@ -6919,9 +7588,11 @@ public final class MarginfiProgram {
   /// `marginfi_account_keeper_close_order` on associated Orders. Typically, use
   /// `marginfi_account_close_order` instead if trying to close an Order.
   ///
-  public static List<AccountMeta> marginfiAccountSetKeeperCloseFlagsKeys(final PublicKey marginfiAccountKey,
+  public static List<AccountMeta> marginfiAccountSetKeeperCloseFlagsKeys(final PublicKey groupKey,
+                                                                         final PublicKey marginfiAccountKey,
                                                                          final PublicKey authorityKey) {
     return List.of(
+      createRead(groupKey),
       createWrite(marginfiAccountKey),
       createReadOnlySigner(authorityKey)
     );
@@ -6933,10 +7604,12 @@ public final class MarginfiProgram {
   ///
   /// @param bankKeysOpt: Option<Vec<publicKey>>
   public static Instruction marginfiAccountSetKeeperCloseFlags(final AccountMeta invokedMarginfiProgramMeta,
+                                                               final PublicKey groupKey,
                                                                final PublicKey marginfiAccountKey,
                                                                final PublicKey authorityKey,
                                                                final PublicKey[] bankKeysOpt) {
     final var keys = marginfiAccountSetKeeperCloseFlagsKeys(
+      groupKey,
       marginfiAccountKey,
       authorityKey
     );
@@ -7137,6 +7810,8 @@ public final class MarginfiProgram {
   /// (admin only) Configure group admin keys and emode leverage caps. All admin keys must be
   /// provided on every call. Emode leverage caps are set if provided, otherwise the existing
   /// (non-zero) values are kept. Pass `Some(value)` to update, `None` to leave unchanged.
+  /// 
+  /// Note: `new_emissions_admin` is deprecated and currently has no on-chain effect.
   ///
   public static List<AccountMeta> marginfiGroupConfigureKeys(final PublicKey marginfiGroupKey,
                                                              final PublicKey adminKey) {
@@ -7149,6 +7824,8 @@ public final class MarginfiProgram {
   /// (admin only) Configure group admin keys and emode leverage caps. All admin keys must be
   /// provided on every call. Emode leverage caps are set if provided, otherwise the existing
   /// (non-zero) values are kept. Pass `Some(value)` to update, `None` to leave unchanged.
+  /// 
+  /// Note: `new_emissions_admin` is deprecated and currently has no on-chain effect.
   ///
   /// @param newAdmin: Option<publicKey>
   /// @param newEmodeAdmin: Option<publicKey>
@@ -7194,6 +7871,8 @@ public final class MarginfiProgram {
   /// (admin only) Configure group admin keys and emode leverage caps. All admin keys must be
   /// provided on every call. Emode leverage caps are set if provided, otherwise the existing
   /// (non-zero) values are kept. Pass `Some(value)` to update, `None` to leave unchanged.
+  /// 
+  /// Note: `new_emissions_admin` is deprecated and currently has no on-chain effect.
   ///
   /// @param newAdmin: Option<publicKey>
   /// @param newEmodeAdmin: Option<publicKey>
@@ -7446,68 +8125,38 @@ public final class MarginfiProgram {
     return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, MARGINFI_GROUP_INITIALIZE_DISCRIMINATOR);
   }
 
-  public static final Discriminator MIGRATE_CURVE_DISCRIMINATOR = toDiscriminator(151, 254, 50, 13, 112, 235, 152, 72);
-
-  /// (Permissionless) Convert a bank from the legacy curve setup to the new setup, with no effect
-  /// on how interest accrues.
-  ///
-  public static List<AccountMeta> migrateCurveKeys(final PublicKey bankKey) {
-    return List.of(
-      createWrite(bankKey)
-    );
-  }
-
-  /// (Permissionless) Convert a bank from the legacy curve setup to the new setup, with no effect
-  /// on how interest accrues.
-  ///
-  public static Instruction migrateCurve(final AccountMeta invokedMarginfiProgramMeta,
-                                         final PublicKey bankKey) {
-    final var keys = migrateCurveKeys(
-      bankKey
-    );
-    return migrateCurve(invokedMarginfiProgramMeta, keys);
-  }
-
-  /// (Permissionless) Convert a bank from the legacy curve setup to the new setup, with no effect
-  /// on how interest accrues.
-  ///
-  public static Instruction migrateCurve(final AccountMeta invokedMarginfiProgramMeta,
-                                         final List<AccountMeta> keys) {
-    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, MIGRATE_CURVE_DISCRIMINATOR);
-  }
-
   public static final Discriminator PANIC_PAUSE_DISCRIMINATOR = toDiscriminator(76, 164, 123, 25, 4, 43, 79, 165);
 
-  /// (global_fee_admin only) Pause the protocol. Auto-expires after 30 minutes. Limited to 3
-  /// pauses per day and 2 consecutive pauses.
+  /// (global_fee_admin or pause_delegate_admin only) Pause the protocol. Auto-expires after 6
+  /// hours. Limited to 3 pauses per day and 4 consecutive pauses.
   ///
-  /// @param globalFeeAdminKey Admin of the global FeeState (can trigger panic pause)
+  /// @param pauseAuthorityKey Global fee admin or the dedicated pause delegate admin.
   /// @param feeStateKey Global fee state account containing the panic state
-  public static List<AccountMeta> panicPauseKeys(final PublicKey globalFeeAdminKey,
+  public static List<AccountMeta> panicPauseKeys(final PublicKey pauseAuthorityKey,
                                                  final PublicKey feeStateKey) {
     return List.of(
-      createReadOnlySigner(globalFeeAdminKey),
+      createReadOnlySigner(pauseAuthorityKey),
       createWrite(feeStateKey)
     );
   }
 
-  /// (global_fee_admin only) Pause the protocol. Auto-expires after 30 minutes. Limited to 3
-  /// pauses per day and 2 consecutive pauses.
+  /// (global_fee_admin or pause_delegate_admin only) Pause the protocol. Auto-expires after 6
+  /// hours. Limited to 3 pauses per day and 4 consecutive pauses.
   ///
-  /// @param globalFeeAdminKey Admin of the global FeeState (can trigger panic pause)
+  /// @param pauseAuthorityKey Global fee admin or the dedicated pause delegate admin.
   /// @param feeStateKey Global fee state account containing the panic state
   public static Instruction panicPause(final AccountMeta invokedMarginfiProgramMeta,
-                                       final PublicKey globalFeeAdminKey,
+                                       final PublicKey pauseAuthorityKey,
                                        final PublicKey feeStateKey) {
     final var keys = panicPauseKeys(
-      globalFeeAdminKey,
+      pauseAuthorityKey,
       feeStateKey
     );
     return panicPause(invokedMarginfiProgramMeta, keys);
   }
 
-  /// (global_fee_admin only) Pause the protocol. Auto-expires after 30 minutes. Limited to 3
-  /// pauses per day and 2 consecutive pauses.
+  /// (global_fee_admin or pause_delegate_admin only) Pause the protocol. Auto-expires after 6
+  /// hours. Limited to 3 pauses per day and 4 consecutive pauses.
   ///
   public static Instruction panicPause(final AccountMeta invokedMarginfiProgramMeta,
                                        final List<AccountMeta> keys) {
@@ -7516,9 +8165,9 @@ public final class MarginfiProgram {
 
   public static final Discriminator PANIC_UNPAUSE_DISCRIMINATOR = toDiscriminator(236, 107, 194, 242, 99, 51, 121, 128);
 
-  /// (global_fee_admin only) Unpause the protocol before the auto-expiry.
+  /// (global_fee_admin only) Unpause the protocol before auto-expiry.
   ///
-  /// @param globalFeeAdminKey Admin of the global FeeState (can manually unpause)
+  /// @param globalFeeAdminKey Global fee admin only.
   public static List<AccountMeta> panicUnpauseKeys(final PublicKey globalFeeAdminKey,
                                                    final PublicKey feeStateKey) {
     return List.of(
@@ -7527,9 +8176,9 @@ public final class MarginfiProgram {
     );
   }
 
-  /// (global_fee_admin only) Unpause the protocol before the auto-expiry.
+  /// (global_fee_admin only) Unpause the protocol before auto-expiry.
   ///
-  /// @param globalFeeAdminKey Admin of the global FeeState (can manually unpause)
+  /// @param globalFeeAdminKey Global fee admin only.
   public static Instruction panicUnpause(final AccountMeta invokedMarginfiProgramMeta,
                                          final PublicKey globalFeeAdminKey,
                                          final PublicKey feeStateKey) {
@@ -7540,7 +8189,7 @@ public final class MarginfiProgram {
     return panicUnpause(invokedMarginfiProgramMeta, keys);
   }
 
-  /// (global_fee_admin only) Unpause the protocol before the auto-expiry.
+  /// (global_fee_admin only) Unpause the protocol before auto-expiry.
   ///
   public static Instruction panicUnpause(final AccountMeta invokedMarginfiProgramMeta,
                                          final List<AccountMeta> keys) {
@@ -8044,6 +8693,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Solend reserve through a marginfi account
   /// * amount - in collateral tokens (cTokens), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - withdraw entire position if true
   ///
   /// @param destinationTokenAccountKey Token account that will receive the withdrawn tokens. Mint/owner are validated by the
@@ -8099,6 +8750,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Solend reserve through a marginfi account
   /// * amount - in collateral tokens (cTokens), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - withdraw entire position if true
   ///
   /// @param destinationTokenAccountKey Token account that will receive the withdrawn tokens. Mint/owner are validated by the
@@ -8160,6 +8813,8 @@ public final class MarginfiProgram {
 
   /// (user) Withdraw from a Solend reserve through a marginfi account
   /// * amount - in collateral tokens (cTokens), in native decimals
+  /// * if group rate limits are enabled, include the withdrawn bank's oracle group in
+  /// `remaining_accounts`
   /// * withdraw_all - withdraw entire position if true
   ///
   /// @param amount: u64
@@ -8518,6 +9173,36 @@ public final class MarginfiProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator SYNC_INDEXER_FLAGS_DISCRIMINATOR = toDiscriminator(171, 146, 145, 43, 190, 175, 9, 32);
+
+  /// (Permissionless) Batch-sync balance-derived indexer flags for existing accounts.
+  /// Pass MarginfiAccounts as writable remaining_accounts.
+  ///
+  public static List<AccountMeta> syncIndexerFlagsKeys(final PublicKey payerKey) {
+    return List.of(
+      createWritableSigner(payerKey)
+    );
+  }
+
+  /// (Permissionless) Batch-sync balance-derived indexer flags for existing accounts.
+  /// Pass MarginfiAccounts as writable remaining_accounts.
+  ///
+  public static Instruction syncIndexerFlags(final AccountMeta invokedMarginfiProgramMeta,
+                                             final PublicKey payerKey) {
+    final var keys = syncIndexerFlagsKeys(
+      payerKey
+    );
+    return syncIndexerFlags(invokedMarginfiProgramMeta, keys);
+  }
+
+  /// (Permissionless) Batch-sync balance-derived indexer flags for existing accounts.
+  /// Pass MarginfiAccounts as writable remaining_accounts.
+  ///
+  public static Instruction syncIndexerFlags(final AccountMeta invokedMarginfiProgramMeta,
+                                             final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, SYNC_INDEXER_FLAGS_DISCRIMINATOR);
   }
 
   public static final Discriminator TRANSFER_TO_NEW_ACCOUNT_DISCRIMINATOR = toDiscriminator(28, 79, 129, 231, 169, 69, 69, 65);
@@ -9010,9 +9695,11 @@ public final class MarginfiProgram {
 
   public static final Discriminator WRITE_BANK_METADATA_DISCRIMINATOR = toDiscriminator(147, 78, 81, 133, 129, 138, 233, 59);
 
-  /// (metadata admin only) Write ticker/description information for a bank on-chain. Optional, not
-  /// all Banks are guaranteed to have metadata.
+  /// (metadata admin only) Write ticker/description for an initialized bank. The bank account
+  /// must exist; when its seed is on-chain, the canonical PDA is verified.
   ///
+  /// @param bankKey Must be initialized. The metadata-to-bank binding is enforced by `metadata.has_one = bank`,
+  ///                and `bank.has_one = group` ties this bank to the admin's group.
   public static List<AccountMeta> writeBankMetadataKeys(final PublicKey groupKey,
                                                         final PublicKey bankKey,
                                                         final PublicKey metadataAdminKey,
@@ -9025,9 +9712,11 @@ public final class MarginfiProgram {
     );
   }
 
-  /// (metadata admin only) Write ticker/description information for a bank on-chain. Optional, not
-  /// all Banks are guaranteed to have metadata.
+  /// (metadata admin only) Write ticker/description for an initialized bank. The bank account
+  /// must exist; when its seed is on-chain, the canonical PDA is verified.
   ///
+  /// @param bankKey Must be initialized. The metadata-to-bank binding is enforced by `metadata.has_one = bank`,
+  ///                and `bank.has_one = group` ties this bank to the admin's group.
   /// @param ticker: Option<Vec<u8>>
   /// @param description: Option<Vec<u8>>
   public static Instruction writeBankMetadata(final AccountMeta invokedMarginfiProgramMeta,
@@ -9046,8 +9735,8 @@ public final class MarginfiProgram {
     return writeBankMetadata(invokedMarginfiProgramMeta, keys, ticker, description);
   }
 
-  /// (metadata admin only) Write ticker/description information for a bank on-chain. Optional, not
-  /// all Banks are guaranteed to have metadata.
+  /// (metadata admin only) Write ticker/description for an initialized bank. The bank account
+  /// must exist; when its seed is on-chain, the canonical PDA is verified.
   ///
   /// @param ticker: Option<Vec<u8>>
   /// @param description: Option<Vec<u8>>
@@ -9133,6 +9822,159 @@ public final class MarginfiProgram {
     @Override
     public int l() {
       return 8 + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)));
+    }
+  }
+
+  public static final Discriminator WRITE_BANK_METADATA_PRE_INIT_DISCRIMINATOR = toDiscriminator(224, 124, 22, 73, 60, 209, 80, 170);
+
+  /// (metadata admin only) Write ticker/description before bank initialization, for canonical
+  /// seeded banks only.
+  ///
+  public static List<AccountMeta> writeBankMetadataPreInitKeys(final PublicKey groupKey,
+                                                               final PublicKey bankMintKey,
+                                                               final PublicKey bankKey,
+                                                               final PublicKey metadataAdminKey,
+                                                               final PublicKey metadataKey) {
+    return List.of(
+      createRead(groupKey),
+      createRead(bankMintKey),
+      createRead(bankKey),
+      createWritableSigner(metadataAdminKey),
+      createWrite(metadataKey)
+    );
+  }
+
+  /// (metadata admin only) Write ticker/description before bank initialization, for canonical
+  /// seeded banks only.
+  ///
+  /// @param bankSeed: u64
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
+  public static Instruction writeBankMetadataPreInit(final AccountMeta invokedMarginfiProgramMeta,
+                                                     final PublicKey groupKey,
+                                                     final PublicKey bankMintKey,
+                                                     final PublicKey bankKey,
+                                                     final PublicKey metadataAdminKey,
+                                                     final PublicKey metadataKey,
+                                                     final long bankSeed,
+                                                     final byte[] ticker,
+                                                     final byte[] description) {
+    final var keys = writeBankMetadataPreInitKeys(
+      groupKey,
+      bankMintKey,
+      bankKey,
+      metadataAdminKey,
+      metadataKey
+    );
+    return writeBankMetadataPreInit(
+      invokedMarginfiProgramMeta,
+      keys,
+      bankSeed,
+      ticker,
+      description
+    );
+  }
+
+  /// (metadata admin only) Write ticker/description before bank initialization, for canonical
+  /// seeded banks only.
+  ///
+  /// @param bankSeed: u64
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
+  public static Instruction writeBankMetadataPreInit(final AccountMeta invokedMarginfiProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final long bankSeed,
+                                                     final byte[] ticker,
+                                                     final byte[] description) {
+    final byte[] _data = new byte[
+    16
+    + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker)))
+    + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)))
+    ];
+    int i = WRITE_BANK_METADATA_PRE_INIT_DISCRIMINATOR.write(_data, 0);
+    putInt64LE(_data, i, bankSeed);
+    i += 8;
+    if (ticker == null || ticker.length == 0) {
+      _data[i++] = 0;
+    } else {
+      _data[i++] = 1;
+      i += SerDeUtil.writeVector(4, ticker, _data, i);
+    }
+    if (description == null || description.length == 0) {
+      _data[i++] = 0;
+    } else {
+      _data[i++] = 1;
+      SerDeUtil.writeVector(4, description, _data, i);
+    }
+
+    return Instruction.createInstruction(invokedMarginfiProgramMeta, keys, _data);
+  }
+
+  /// @param bankSeed: u64
+  /// @param ticker: Option<Vec<u8>>
+  /// @param description: Option<Vec<u8>>
+  public record WriteBankMetadataPreInitIxData(Discriminator discriminator,
+                                               long bankSeed,
+                                               byte[] ticker,
+                                               byte[] description) implements SerDe {  
+
+    public static WriteBankMetadataPreInitIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BANK_SEED_OFFSET = 8;
+    public static final int TICKER_OFFSET = 17;
+
+    public static WriteBankMetadataPreInitIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var bankSeed = getInt64LE(_data, i);
+      i += 8;
+      final byte[] ticker;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        ticker = null;
+        ++i;
+      } else {
+        ++i;
+        ticker = SerDeUtil.readbyteVector(4, _data, i);
+        i += SerDeUtil.lenVector(4, ticker);
+      }
+      final byte[] description;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        description = null;
+      } else {
+        ++i;
+        description = SerDeUtil.readbyteVector(4, _data, i);
+      }
+      return new WriteBankMetadataPreInitIxData(discriminator, bankSeed, ticker, description);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt64LE(_data, i, bankSeed);
+      i += 8;
+      if (ticker == null || ticker.length == 0) {
+        _data[i++] = 0;
+      } else {
+        _data[i++] = 1;
+        i += SerDeUtil.writeVector(4, ticker, _data, i);
+      }
+      if (description == null || description.length == 0) {
+        _data[i++] = 0;
+      } else {
+        _data[i++] = 1;
+        i += SerDeUtil.writeVector(4, description, _data, i);
+      }
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 8 + (ticker == null || ticker.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, ticker))) + (description == null || description.length == 0 ? 1 : (1 + SerDeUtil.lenVector(4, description)));
     }
   }
 

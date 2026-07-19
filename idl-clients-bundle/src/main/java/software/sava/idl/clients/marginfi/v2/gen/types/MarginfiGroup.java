@@ -35,8 +35,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                           under this group
 /// @param delegateLimitAdmin Can modify the `deposit_limit`, `borrow_limit`, `total_asset_value_init_limit` but nothing
 ///                           else, for every bank under this group
-/// @param delegateEmissionsAdmin Can modify the emissions `flags`, `emissions_rate` and `emissions_mint`, but nothing else,
-///                               for every bank under this group
+/// @param delegateEmissionsAdmin DEPRECATED: currently has no on-chain authority.
+///                               Preserved in account layout for backward compatibility and historical metadata only.
 /// @param panicStateCache When program keeper temporarily puts the program into panic mode, information about the
 ///                        duration of the lockup will be available here.
 /// @param deleverageWithdrawWindowCache Keeps track of the liquidity withdrawn from the group over the day as a result of

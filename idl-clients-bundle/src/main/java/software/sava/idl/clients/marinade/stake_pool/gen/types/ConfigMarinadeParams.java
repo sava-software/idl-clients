@@ -25,7 +25,9 @@ public record ConfigMarinadeParams(Fee rewardsFee,
                                    Boolean withdrawStakeAccountEnabled,
                                    FeeCents delayedUnstakeFee,
                                    FeeCents withdrawStakeAccountFee,
-                                   Fee maxStakeMovedPerEpoch) implements SerDe {
+                                   Fee maxStakeMovedPerEpoch,
+                                   FeeCents depositSolFee,
+                                   FeeCents depositStakeAccountFee) implements SerDe {
 
   public static final int REWARDS_FEE_OFFSET = 1;
 
@@ -127,9 +129,27 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     final Fee maxStakeMovedPerEpoch;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       maxStakeMovedPerEpoch = null;
+      ++i;
     } else {
       ++i;
       maxStakeMovedPerEpoch = Fee.read(_data, i);
+      i += maxStakeMovedPerEpoch.l();
+    }
+    final FeeCents depositSolFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      depositSolFee = null;
+      ++i;
+    } else {
+      ++i;
+      depositSolFee = FeeCents.read(_data, i);
+      i += depositSolFee.l();
+    }
+    final FeeCents depositStakeAccountFee;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      depositStakeAccountFee = null;
+    } else {
+      ++i;
+      depositStakeAccountFee = FeeCents.read(_data, i);
     }
     return new ConfigMarinadeParams(rewardsFee,
                                     slotsForStakeDelta,
@@ -141,7 +161,9 @@ public record ConfigMarinadeParams(Fee rewardsFee,
                                     withdrawStakeAccountEnabled,
                                     delayedUnstakeFee,
                                     withdrawStakeAccountFee,
-                                    maxStakeMovedPerEpoch);
+                                    maxStakeMovedPerEpoch,
+                                    depositSolFee,
+                                    depositStakeAccountFee);
   }
 
   @Override
@@ -158,6 +180,8 @@ public record ConfigMarinadeParams(Fee rewardsFee,
     i += SerDeUtil.writeOptional(1, delayedUnstakeFee, _data, i);
     i += SerDeUtil.writeOptional(1, withdrawStakeAccountFee, _data, i);
     i += SerDeUtil.writeOptional(1, maxStakeMovedPerEpoch, _data, i);
+    i += SerDeUtil.writeOptional(1, depositSolFee, _data, i);
+    i += SerDeUtil.writeOptional(1, depositStakeAccountFee, _data, i);
     return i - _offset;
   }
 
@@ -173,6 +197,8 @@ public record ConfigMarinadeParams(Fee rewardsFee,
          + (withdrawStakeAccountEnabled == null ? 1 : (1 + 1))
          + (delayedUnstakeFee == null ? 1 : (1 + delayedUnstakeFee.l()))
          + (withdrawStakeAccountFee == null ? 1 : (1 + withdrawStakeAccountFee.l()))
-         + (maxStakeMovedPerEpoch == null ? 1 : (1 + maxStakeMovedPerEpoch.l()));
+         + (maxStakeMovedPerEpoch == null ? 1 : (1 + maxStakeMovedPerEpoch.l()))
+         + (depositSolFee == null ? 1 : (1 + depositSolFee.l()))
+         + (depositStakeAccountFee == null ? 1 : (1 + depositStakeAccountFee.l()));
   }
 }

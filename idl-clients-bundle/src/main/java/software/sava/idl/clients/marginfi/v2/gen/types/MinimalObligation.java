@@ -2,19 +2,12 @@
 package software.sava.idl.clients.marginfi.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
-import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.rpc.json.http.response.AccountInfo;
-
-import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// A minimal copy of Kamino's Obligation for zero-copy deserialization
 ///
@@ -38,9 +31,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param owner For mrgn banks, the bank's Liquidity Vault Authority (a pda which can be derived if the bank
 ///              key is known)
 /// @param lowestReserveDepositLiquidationLtv: u64
-public record MinimalObligation(PublicKey _address,
-                                Discriminator discriminator,
-                                long tag,
+public record MinimalObligation(long tag,
                                 long lastUpdateSlot,
                                 int lastUpdateStale,
                                 int lastUpdatePriceStatus,
@@ -57,7 +48,7 @@ public record MinimalObligation(PublicKey _address,
                                 byte[] paddingPart5a,
                                 byte[] paddingPart5c) implements SerDe {
 
-  public static final int BYTES = 3344;
+  public static final int BYTES = 3336;
   public static final int LAST_UPDATE_PLACEHOLDER_LEN = 6;
   public static final int DEPOSITS_LEN = 8;
   public static final int DEPOSITED_VALUE_SF_LEN = 16;
@@ -67,82 +58,29 @@ public record MinimalObligation(PublicKey _address,
   public static final int PADDING_PART_4_LEN = 512;
   public static final int PADDING_PART_5A_LEN = 64;
   public static final int PADDING_PART_5C_LEN = 24;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(168, 206, 141, 106, 88, 76, 172, 167);
-  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
-
-  public static final int TAG_OFFSET = 8;
-  public static final int LAST_UPDATE_SLOT_OFFSET = 16;
-  public static final int LAST_UPDATE_STALE_OFFSET = 24;
-  public static final int LAST_UPDATE_PRICE_STATUS_OFFSET = 25;
-  public static final int LAST_UPDATE_PLACEHOLDER_OFFSET = 26;
-  public static final int LENDING_MARKET_OFFSET = 32;
-  public static final int OWNER_OFFSET = 64;
-  public static final int DEPOSITS_OFFSET = 96;
-  public static final int LOWEST_RESERVE_DEPOSIT_LIQUIDATION_LTV_OFFSET = 1184;
-  public static final int DEPOSITED_VALUE_SF_OFFSET = 1192;
-  public static final int PADDING_PART_1_OFFSET = 1208;
-  public static final int PADDING_PART_2_OFFSET = 1720;
-  public static final int PADDING_PART_3_OFFSET = 2232;
-  public static final int PADDING_PART_4_OFFSET = 2744;
-  public static final int PADDING_PART_5A_OFFSET = 3256;
-  public static final int PADDING_PART_5C_OFFSET = 3320;
-
-  public static Filter createTagFilter(final long tag) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, tag);
-    return Filter.createMemCompFilter(TAG_OFFSET, _data);
-  }
-
-  public static Filter createLastUpdateSlotFilter(final long lastUpdateSlot) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, lastUpdateSlot);
-    return Filter.createMemCompFilter(LAST_UPDATE_SLOT_OFFSET, _data);
-  }
-
-  public static Filter createLastUpdateStaleFilter(final int lastUpdateStale) {
-    return Filter.createMemCompFilter(LAST_UPDATE_STALE_OFFSET, new byte[]{(byte) lastUpdateStale});
-  }
-
-  public static Filter createLastUpdatePriceStatusFilter(final int lastUpdatePriceStatus) {
-    return Filter.createMemCompFilter(LAST_UPDATE_PRICE_STATUS_OFFSET, new byte[]{(byte) lastUpdatePriceStatus});
-  }
-
-  public static Filter createLendingMarketFilter(final PublicKey lendingMarket) {
-    return Filter.createMemCompFilter(LENDING_MARKET_OFFSET, lendingMarket);
-  }
-
-  public static Filter createOwnerFilter(final PublicKey owner) {
-    return Filter.createMemCompFilter(OWNER_OFFSET, owner);
-  }
-
-  public static Filter createLowestReserveDepositLiquidationLtvFilter(final long lowestReserveDepositLiquidationLtv) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, lowestReserveDepositLiquidationLtv);
-    return Filter.createMemCompFilter(LOWEST_RESERVE_DEPOSIT_LIQUIDATION_LTV_OFFSET, _data);
-  }
+  public static final int TAG_OFFSET = 0;
+  public static final int LAST_UPDATE_SLOT_OFFSET = 8;
+  public static final int LAST_UPDATE_STALE_OFFSET = 16;
+  public static final int LAST_UPDATE_PRICE_STATUS_OFFSET = 17;
+  public static final int LAST_UPDATE_PLACEHOLDER_OFFSET = 18;
+  public static final int LENDING_MARKET_OFFSET = 24;
+  public static final int OWNER_OFFSET = 56;
+  public static final int DEPOSITS_OFFSET = 88;
+  public static final int LOWEST_RESERVE_DEPOSIT_LIQUIDATION_LTV_OFFSET = 1176;
+  public static final int DEPOSITED_VALUE_SF_OFFSET = 1184;
+  public static final int PADDING_PART_1_OFFSET = 1200;
+  public static final int PADDING_PART_2_OFFSET = 1712;
+  public static final int PADDING_PART_3_OFFSET = 2224;
+  public static final int PADDING_PART_4_OFFSET = 2736;
+  public static final int PADDING_PART_5A_OFFSET = 3248;
+  public static final int PADDING_PART_5C_OFFSET = 3312;
 
   public static MinimalObligation read(final byte[] _data, final int _offset) {
-    return read(null, _data, _offset);
-  }
-
-  public static MinimalObligation read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
-  }
-
-  public static MinimalObligation read(final PublicKey _address, final byte[] _data) {
-    return read(_address, _data, 0);
-  }
-
-  public static final BiFunction<PublicKey, byte[], MinimalObligation> FACTORY = MinimalObligation::read;
-
-  public static MinimalObligation read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var tag = getInt64LE(_data, i);
     i += 8;
     final var lastUpdateSlot = getInt64LE(_data, i);
@@ -175,9 +113,7 @@ public record MinimalObligation(PublicKey _address,
     i += SerDeUtil.readArray(paddingPart5a, _data, i);
     final var paddingPart5c = new byte[24];
     SerDeUtil.readArray(paddingPart5c, _data, i);
-    return new MinimalObligation(_address,
-                                 discriminator,
-                                 tag,
+    return new MinimalObligation(tag,
                                  lastUpdateSlot,
                                  lastUpdateStale,
                                  lastUpdatePriceStatus,
@@ -197,7 +133,7 @@ public record MinimalObligation(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, tag);
     i += 8;
     putInt64LE(_data, i, lastUpdateSlot);

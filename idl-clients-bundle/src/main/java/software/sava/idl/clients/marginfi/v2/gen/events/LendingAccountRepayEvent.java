@@ -4,6 +4,7 @@ package software.sava.idl.clients.marginfi.v2.gen.events;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.marginfi.v2.gen.types.AccountEventHeader;
+import software.sava.idl.clients.marginfi.v2.gen.types.WrappedI80F48;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -17,7 +18,8 @@ public record LendingAccountRepayEvent(Discriminator discriminator,
                                        PublicKey bank,
                                        PublicKey mint,
                                        long amount,
-                                       boolean closeBalance) implements MarginfiEvent {
+                                       boolean closeBalance,
+                                       WrappedI80F48 shareAmount) implements MarginfiEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(16, 220, 55, 111, 7, 80, 16, 25);
 
@@ -38,12 +40,15 @@ public record LendingAccountRepayEvent(Discriminator discriminator,
     final var amount = getInt64LE(_data, i);
     i += 8;
     final var closeBalance = _data[i] == 1;
+    ++i;
+    final var shareAmount = WrappedI80F48.read(_data, i);
     return new LendingAccountRepayEvent(discriminator,
                                         header,
                                         bank,
                                         mint,
                                         amount,
-                                        closeBalance);
+                                        closeBalance,
+                                        shareAmount);
   }
 
   @Override
@@ -58,6 +63,7 @@ public record LendingAccountRepayEvent(Discriminator discriminator,
     i += 8;
     _data[i] = (byte) (closeBalance ? 1 : 0);
     ++i;
+    i += shareAmount.write(_data, i);
     return i - _offset;
   }
 
@@ -67,6 +73,7 @@ public record LendingAccountRepayEvent(Discriminator discriminator,
          + 32
          + 32
          + 8
-         + 1;
+         + 1
+         + shareAmount.l();
   }
 }

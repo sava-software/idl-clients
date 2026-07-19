@@ -25,7 +25,9 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
                                   BoolValueChange withdrawStakeAccountEnabledChange,
                                   FeeCentsValueChange delayedUnstakeFeeChange,
                                   FeeCentsValueChange withdrawStakeAccountFeeChange,
-                                  FeeValueChange maxStakeMovedPerEpochChange) implements MarinadeFinanceEvent {
+                                  FeeValueChange maxStakeMovedPerEpochChange,
+                                  FeeCentsValueChange depositSolFeeChange,
+                                  FeeCentsValueChange depositStakeAccountFeeChange) implements MarinadeFinanceEvent {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(159, 164, 245, 114, 94, 253, 3, 9);
 
@@ -133,9 +135,27 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
     final FeeValueChange maxStakeMovedPerEpochChange;
     if (SerDeUtil.isAbsent(1, _data, i)) {
       maxStakeMovedPerEpochChange = null;
+      ++i;
     } else {
       ++i;
       maxStakeMovedPerEpochChange = FeeValueChange.read(_data, i);
+      i += maxStakeMovedPerEpochChange.l();
+    }
+    final FeeCentsValueChange depositSolFeeChange;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      depositSolFeeChange = null;
+      ++i;
+    } else {
+      ++i;
+      depositSolFeeChange = FeeCentsValueChange.read(_data, i);
+      i += depositSolFeeChange.l();
+    }
+    final FeeCentsValueChange depositStakeAccountFeeChange;
+    if (SerDeUtil.isAbsent(1, _data, i)) {
+      depositStakeAccountFeeChange = null;
+    } else {
+      ++i;
+      depositStakeAccountFeeChange = FeeCentsValueChange.read(_data, i);
     }
     return new ConfigMarinadeEvent(discriminator,
                                    state,
@@ -149,7 +169,9 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
                                    withdrawStakeAccountEnabledChange,
                                    delayedUnstakeFeeChange,
                                    withdrawStakeAccountFeeChange,
-                                   maxStakeMovedPerEpochChange);
+                                   maxStakeMovedPerEpochChange,
+                                   depositSolFeeChange,
+                                   depositStakeAccountFeeChange);
   }
 
   @Override
@@ -168,6 +190,8 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
     i += SerDeUtil.writeOptional(1, delayedUnstakeFeeChange, _data, i);
     i += SerDeUtil.writeOptional(1, withdrawStakeAccountFeeChange, _data, i);
     i += SerDeUtil.writeOptional(1, maxStakeMovedPerEpochChange, _data, i);
+    i += SerDeUtil.writeOptional(1, depositSolFeeChange, _data, i);
+    i += SerDeUtil.writeOptional(1, depositStakeAccountFeeChange, _data, i);
     return i - _offset;
   }
 
@@ -184,6 +208,8 @@ public record ConfigMarinadeEvent(Discriminator discriminator,
          + (withdrawStakeAccountEnabledChange == null ? 1 : (1 + withdrawStakeAccountEnabledChange.l()))
          + (delayedUnstakeFeeChange == null ? 1 : (1 + delayedUnstakeFeeChange.l()))
          + (withdrawStakeAccountFeeChange == null ? 1 : (1 + withdrawStakeAccountFeeChange.l()))
-         + (maxStakeMovedPerEpochChange == null ? 1 : (1 + maxStakeMovedPerEpochChange.l()));
+         + (maxStakeMovedPerEpochChange == null ? 1 : (1 + maxStakeMovedPerEpochChange.l()))
+         + (depositSolFeeChange == null ? 1 : (1 + depositSolFeeChange.l()))
+         + (depositStakeAccountFeeChange == null ? 1 : (1 + depositStakeAccountFeeChange.l()));
   }
 }

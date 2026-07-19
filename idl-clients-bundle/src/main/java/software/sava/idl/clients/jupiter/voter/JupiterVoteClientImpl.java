@@ -86,7 +86,7 @@ final class JupiterVoteClientImpl implements JupiterVoteClient {
                                final PublicKey escrowKey,
                                final PublicKey payer) {
     return LockedVoterProgram.newEscrow(
-        jupiterAccounts.invokedGovProgram(),
+        jupiterAccounts.invokedVoteProgram(),
         jupiterAccounts.lockerKey(),
         escrowKey,
         escrowOwnerKey,

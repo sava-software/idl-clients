@@ -61,10 +61,10 @@ public record State(PublicKey _address,
                     boolean withdrawStakeAccountEnabled,
                     long lastStakeMoveEpoch,
                     long stakeMoved,
-                    Fee maxStakeMovedPerEpoch) implements SerDe {
-
-  public static final int BYTES = 638;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
+                    Fee maxStakeMovedPerEpoch,
+                    DelinquentUpgraderState delinquentUpgrader,
+                    FeeCents depositSolFee,
+                    FeeCents depositStakeAccountFee) implements SerDe {
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(216, 146, 107, 94, 104, 75, 182, 177);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -98,6 +98,7 @@ public record State(PublicKey _address,
   public static final int LAST_STAKE_MOVE_EPOCH_OFFSET = 618;
   public static final int STAKE_MOVED_OFFSET = 626;
   public static final int MAX_STAKE_MOVED_PER_EPOCH_OFFSET = 634;
+  public static final int DELINQUENT_UPGRADER_OFFSET = 638;
 
   public static Filter createMsolMintFilter(final PublicKey msolMint) {
     return Filter.createMemCompFilter(MSOL_MINT_OFFSET, msolMint);
@@ -241,6 +242,10 @@ public record State(PublicKey _address,
     return Filter.createMemCompFilter(MAX_STAKE_MOVED_PER_EPOCH_OFFSET, maxStakeMovedPerEpoch.write());
   }
 
+  public static Filter createDelinquentUpgraderFilter(final DelinquentUpgraderState delinquentUpgrader) {
+    return Filter.createMemCompFilter(DELINQUENT_UPGRADER_OFFSET, delinquentUpgrader.write());
+  }
+
   public static State read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -318,6 +323,12 @@ public record State(PublicKey _address,
     final var stakeMoved = getInt64LE(_data, i);
     i += 8;
     final var maxStakeMovedPerEpoch = Fee.read(_data, i);
+    i += maxStakeMovedPerEpoch.l();
+    final var delinquentUpgrader = DelinquentUpgraderState.read(_data, i);
+    i += delinquentUpgrader.l();
+    final var depositSolFee = FeeCents.read(_data, i);
+    i += depositSolFee.l();
+    final var depositStakeAccountFee = FeeCents.read(_data, i);
     return new State(_address,
                      discriminator,
                      msolMint,
@@ -348,7 +359,10 @@ public record State(PublicKey _address,
                      withdrawStakeAccountEnabled,
                      lastStakeMoveEpoch,
                      stakeMoved,
-                     maxStakeMovedPerEpoch);
+                     maxStakeMovedPerEpoch,
+                     delinquentUpgrader,
+                     depositSolFee,
+                     depositStakeAccountFee);
   }
 
   @Override
@@ -405,11 +419,45 @@ public record State(PublicKey _address,
     putInt64LE(_data, i, stakeMoved);
     i += 8;
     i += maxStakeMovedPerEpoch.write(_data, i);
+    i += delinquentUpgrader.write(_data, i);
+    i += depositSolFee.write(_data, i);
+    i += depositStakeAccountFee.write(_data, i);
     return i - _offset;
   }
 
   @Override
   public int l() {
-    return BYTES;
+    return 8 + 32
+         + 32
+         + 32
+         + 32
+         + 1
+         + 1
+         + 8
+         + rewardFee.l()
+         + stakeSystem.l()
+         + validatorSystem.l()
+         + liqPool.l()
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 8
+         + 32
+         + 1
+         + delayedUnstakeFee.l()
+         + withdrawStakeAccountFee.l()
+         + 1
+         + 8
+         + 8
+         + maxStakeMovedPerEpoch.l()
+         + delinquentUpgrader.l()
+         + depositSolFee.l()
+         + depositStakeAccountFee.l();
   }
 }

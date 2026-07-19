@@ -1,5 +1,6 @@
 package software.sava.idl.clients.phoenix;
 
+import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.idl.clients.phoenix.ember.gen.EmberPDAs;
@@ -42,6 +43,26 @@ public interface PhoenixAccounts {
         PublicKey.fromBase58Encoded(eternalProgram),
         PublicKey.fromBase58Encoded(usdcMint)
     );
+  }
+
+  /// The protocol's vault for `mint`, held by the Eternal (perpetuals) program.
+  ///
+  /// Seeds `["vault", mint]` — the IDL does not declare this PDA, so the seeds
+  /// are taken from the program's own SDK
+  /// (`rise/rust/ix/src/constants.rs::get_global_vault_address`). It is
+  /// per-mint, and distinct from the global *configuration* account.
+  static ProgramDerivedAddress globalVaultPDA(final PublicKey mint, final PublicKey eternalProgram) {
+    return PublicKey.findProgramAddress(
+        java.util.List.of(
+            "vault".getBytes(java.nio.charset.StandardCharsets.US_ASCII),
+            mint.toByteArray()
+        ),
+        eternalProgram
+    );
+  }
+
+  default ProgramDerivedAddress globalVaultPDA(final PublicKey mint) {
+    return globalVaultPDA(mint, invokedEternalProgram().publicKey());
   }
 
   AccountMeta invokedEmberProgram();

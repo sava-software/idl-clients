@@ -1469,7 +1469,7 @@ public final class MarinadeFinanceProgram {
                                                    final PublicKey commonStakeHistoryKey,
                                                    final PublicKey commonStakeProgramKey,
                                                    final PublicKey commonTokenProgramKey,
-                                                   final PublicKey validatorListKey) {
+                                                   final PublicKey commonValidatorListKey) {
     return List.of(
       createWrite(commonStateKey),
       createWrite(commonStakeListKey),
@@ -1483,7 +1483,7 @@ public final class MarinadeFinanceProgram {
       createRead(commonStakeHistoryKey),
       createRead(commonStakeProgramKey),
       createRead(commonTokenProgramKey),
-      createWrite(validatorListKey)
+      createWrite(commonValidatorListKey)
     );
   }
 
@@ -1502,7 +1502,7 @@ public final class MarinadeFinanceProgram {
                                          final PublicKey commonStakeHistoryKey,
                                          final PublicKey commonStakeProgramKey,
                                          final PublicKey commonTokenProgramKey,
-                                         final PublicKey validatorListKey,
+                                         final PublicKey commonValidatorListKey,
                                          final long stakeIndex,
                                          final long validatorIndex) {
     final var keys = updateActiveKeys(
@@ -1518,7 +1518,7 @@ public final class MarinadeFinanceProgram {
       commonStakeHistoryKey,
       commonStakeProgramKey,
       commonTokenProgramKey,
-      validatorListKey
+      commonValidatorListKey
     );
     return updateActive(invokedMarinadeFinanceProgramMeta, keys, stakeIndex, validatorIndex);
   }
@@ -1593,6 +1593,7 @@ public final class MarinadeFinanceProgram {
                                                         final PublicKey commonStakeHistoryKey,
                                                         final PublicKey commonStakeProgramKey,
                                                         final PublicKey commonTokenProgramKey,
+                                                        final PublicKey commonValidatorListKey,
                                                         final PublicKey operationalSolAccountKey,
                                                         final PublicKey systemProgramKey) {
     return List.of(
@@ -1608,12 +1609,14 @@ public final class MarinadeFinanceProgram {
       createRead(commonStakeHistoryKey),
       createRead(commonStakeProgramKey),
       createRead(commonTokenProgramKey),
+      createWrite(commonValidatorListKey),
       createWrite(operationalSolAccountKey),
       createRead(systemProgramKey)
     );
   }
 
   /// @param stakeIndex: u32
+  /// @param validatorIndex: u32
   public static Instruction updateDeactivated(final AccountMeta invokedMarinadeFinanceProgramMeta,
                                               final PublicKey commonStateKey,
                                               final PublicKey commonStakeListKey,
@@ -1627,9 +1630,11 @@ public final class MarinadeFinanceProgram {
                                               final PublicKey commonStakeHistoryKey,
                                               final PublicKey commonStakeProgramKey,
                                               final PublicKey commonTokenProgramKey,
+                                              final PublicKey commonValidatorListKey,
                                               final PublicKey operationalSolAccountKey,
                                               final PublicKey systemProgramKey,
-                                              final long stakeIndex) {
+                                              final long stakeIndex,
+                                              final long validatorIndex) {
     final var keys = updateDeactivatedKeys(
       commonStateKey,
       commonStakeListKey,
@@ -1643,33 +1648,40 @@ public final class MarinadeFinanceProgram {
       commonStakeHistoryKey,
       commonStakeProgramKey,
       commonTokenProgramKey,
+      commonValidatorListKey,
       operationalSolAccountKey,
       systemProgramKey
     );
-    return updateDeactivated(invokedMarinadeFinanceProgramMeta, keys, stakeIndex);
+    return updateDeactivated(invokedMarinadeFinanceProgramMeta, keys, stakeIndex, validatorIndex);
   }
 
   /// @param stakeIndex: u32
+  /// @param validatorIndex: u32
   public static Instruction updateDeactivated(final AccountMeta invokedMarinadeFinanceProgramMeta,
                                               final List<AccountMeta> keys,
-                                              final long stakeIndex) {
-    final byte[] _data = new byte[12];
+                                              final long stakeIndex,
+                                              final long validatorIndex) {
+    final byte[] _data = new byte[16];
     int i = UPDATE_DEACTIVATED_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) stakeIndex);
+    i += 4;
+    putInt32LE(_data, i, (int) validatorIndex);
 
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
   /// @param stakeIndex: u32
-  public record UpdateDeactivatedIxData(Discriminator discriminator, long stakeIndex) implements SerDe {  
+  /// @param validatorIndex: u32
+  public record UpdateDeactivatedIxData(Discriminator discriminator, long stakeIndex, long validatorIndex) implements SerDe {  
 
     public static UpdateDeactivatedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 12;
+    public static final int BYTES = 16;
 
     public static final int STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
 
     public static UpdateDeactivatedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1678,13 +1690,17 @@ public final class MarinadeFinanceProgram {
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
       final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
-      return new UpdateDeactivatedIxData(discriminator, stakeIndex);
+      i += 4;
+      final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new UpdateDeactivatedIxData(discriminator, stakeIndex, validatorIndex);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       putInt32LE(_data, i, (int) stakeIndex);
+      i += 4;
+      putInt32LE(_data, i, (int) validatorIndex);
       i += 4;
       return i - _offset;
     }
@@ -2213,149 +2229,116 @@ public final class MarinadeFinanceProgram {
     }
   }
 
-  public static final Discriminator REDELEGATE_DISCRIMINATOR = toDiscriminator(212, 82, 51, 160, 228, 80, 116, 35);
+  public static final Discriminator CREATE_CANONICAL_STAKE_DISCRIMINATOR = toDiscriminator(109, 2, 136, 224, 147, 51, 182, 232);
 
-  public static List<AccountMeta> redelegateKeys(final PublicKey stateKey,
-                                                 final PublicKey validatorListKey,
-                                                 final PublicKey stakeListKey,
-                                                 final PublicKey stakeAccountKey,
-                                                 final PublicKey stakeDepositAuthorityKey,
-                                                 final PublicKey reservePdaKey,
-                                                 final PublicKey splitStakeAccountKey,
-                                                 final PublicKey splitStakeRentPayerKey,
-                                                 final PublicKey destValidatorAccountKey,
-                                                 final PublicKey redelegateStakeAccountKey,
-                                                 final PublicKey clockKey,
-                                                 final PublicKey stakeHistoryKey,
-                                                 final PublicKey stakeConfigKey,
-                                                 final PublicKey systemProgramKey,
-                                                 final PublicKey stakeProgramKey) {
+  public static List<AccountMeta> createCanonicalStakeKeys(final PublicKey stateKey,
+                                                           final PublicKey stakeListKey,
+                                                           final PublicKey validatorListKey,
+                                                           final PublicKey canonicalStakeKey,
+                                                           final PublicKey sourceStakeKey,
+                                                           final PublicKey stakeDepositAuthorityKey,
+                                                           final PublicKey stakeWithdrawAuthorityKey,
+                                                           final PublicKey operationalSolAccountKey,
+                                                           final PublicKey clockKey,
+                                                           final PublicKey stakeHistoryKey,
+                                                           final PublicKey stakeProgramKey,
+                                                           final PublicKey systemProgramKey) {
     return List.of(
       createWrite(stateKey),
-      createWrite(validatorListKey),
       createWrite(stakeListKey),
-      createWrite(stakeAccountKey),
+      createWrite(validatorListKey),
+      createWrite(canonicalStakeKey),
+      createWrite(sourceStakeKey),
       createRead(stakeDepositAuthorityKey),
-      createRead(reservePdaKey),
-      createWritableSigner(splitStakeAccountKey),
-      createWritableSigner(splitStakeRentPayerKey),
-      createRead(destValidatorAccountKey),
-      createWritableSigner(redelegateStakeAccountKey),
+      createRead(stakeWithdrawAuthorityKey),
+      createWrite(operationalSolAccountKey),
       createRead(clockKey),
       createRead(stakeHistoryKey),
-      createRead(stakeConfigKey),
-      createRead(systemProgramKey),
-      createRead(stakeProgramKey)
+      createRead(stakeProgramKey),
+      createRead(systemProgramKey)
     );
   }
 
-  /// @param stakeIndex: u32
-  /// @param sourceValidatorIndex: u32
-  /// @param destValidatorIndex: u32
-  public static Instruction redelegate(final AccountMeta invokedMarinadeFinanceProgramMeta,
-                                       final PublicKey stateKey,
-                                       final PublicKey validatorListKey,
-                                       final PublicKey stakeListKey,
-                                       final PublicKey stakeAccountKey,
-                                       final PublicKey stakeDepositAuthorityKey,
-                                       final PublicKey reservePdaKey,
-                                       final PublicKey splitStakeAccountKey,
-                                       final PublicKey splitStakeRentPayerKey,
-                                       final PublicKey destValidatorAccountKey,
-                                       final PublicKey redelegateStakeAccountKey,
-                                       final PublicKey clockKey,
-                                       final PublicKey stakeHistoryKey,
-                                       final PublicKey stakeConfigKey,
-                                       final PublicKey systemProgramKey,
-                                       final PublicKey stakeProgramKey,
-                                       final long stakeIndex,
-                                       final long sourceValidatorIndex,
-                                       final long destValidatorIndex) {
-    final var keys = redelegateKeys(
+  /// @param sourceStakeIndex: u32
+  /// @param validatorIndex: u32
+  public static Instruction createCanonicalStake(final AccountMeta invokedMarinadeFinanceProgramMeta,
+                                                 final PublicKey stateKey,
+                                                 final PublicKey stakeListKey,
+                                                 final PublicKey validatorListKey,
+                                                 final PublicKey canonicalStakeKey,
+                                                 final PublicKey sourceStakeKey,
+                                                 final PublicKey stakeDepositAuthorityKey,
+                                                 final PublicKey stakeWithdrawAuthorityKey,
+                                                 final PublicKey operationalSolAccountKey,
+                                                 final PublicKey clockKey,
+                                                 final PublicKey stakeHistoryKey,
+                                                 final PublicKey stakeProgramKey,
+                                                 final PublicKey systemProgramKey,
+                                                 final long sourceStakeIndex,
+                                                 final long validatorIndex) {
+    final var keys = createCanonicalStakeKeys(
       stateKey,
-      validatorListKey,
       stakeListKey,
-      stakeAccountKey,
+      validatorListKey,
+      canonicalStakeKey,
+      sourceStakeKey,
       stakeDepositAuthorityKey,
-      reservePdaKey,
-      splitStakeAccountKey,
-      splitStakeRentPayerKey,
-      destValidatorAccountKey,
-      redelegateStakeAccountKey,
+      stakeWithdrawAuthorityKey,
+      operationalSolAccountKey,
       clockKey,
       stakeHistoryKey,
-      stakeConfigKey,
-      systemProgramKey,
-      stakeProgramKey
+      stakeProgramKey,
+      systemProgramKey
     );
-    return redelegate(
-      invokedMarinadeFinanceProgramMeta,
-      keys,
-      stakeIndex,
-      sourceValidatorIndex,
-      destValidatorIndex
-    );
+    return createCanonicalStake(invokedMarinadeFinanceProgramMeta, keys, sourceStakeIndex, validatorIndex);
   }
 
-  /// @param stakeIndex: u32
-  /// @param sourceValidatorIndex: u32
-  /// @param destValidatorIndex: u32
-  public static Instruction redelegate(final AccountMeta invokedMarinadeFinanceProgramMeta,
-                                       final List<AccountMeta> keys,
-                                       final long stakeIndex,
-                                       final long sourceValidatorIndex,
-                                       final long destValidatorIndex) {
-    final byte[] _data = new byte[20];
-    int i = REDELEGATE_DISCRIMINATOR.write(_data, 0);
-    putInt32LE(_data, i, (int) stakeIndex);
+  /// @param sourceStakeIndex: u32
+  /// @param validatorIndex: u32
+  public static Instruction createCanonicalStake(final AccountMeta invokedMarinadeFinanceProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final long sourceStakeIndex,
+                                                 final long validatorIndex) {
+    final byte[] _data = new byte[16];
+    int i = CREATE_CANONICAL_STAKE_DISCRIMINATOR.write(_data, 0);
+    putInt32LE(_data, i, (int) sourceStakeIndex);
     i += 4;
-    putInt32LE(_data, i, (int) sourceValidatorIndex);
-    i += 4;
-    putInt32LE(_data, i, (int) destValidatorIndex);
+    putInt32LE(_data, i, (int) validatorIndex);
 
     return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
   }
 
-  /// @param stakeIndex: u32
-  /// @param sourceValidatorIndex: u32
-  /// @param destValidatorIndex: u32
-  public record RedelegateIxData(Discriminator discriminator,
-                                 long stakeIndex,
-                                 long sourceValidatorIndex,
-                                 long destValidatorIndex) implements SerDe {  
+  /// @param sourceStakeIndex: u32
+  /// @param validatorIndex: u32
+  public record CreateCanonicalStakeIxData(Discriminator discriminator, long sourceStakeIndex, long validatorIndex) implements SerDe {  
 
-    public static RedelegateIxData read(final Instruction instruction) {
+    public static CreateCanonicalStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 20;
+    public static final int BYTES = 16;
 
-    public static final int STAKE_INDEX_OFFSET = 8;
-    public static final int SOURCE_VALIDATOR_INDEX_OFFSET = 12;
-    public static final int DEST_VALIDATOR_INDEX_OFFSET = 16;
+    public static final int SOURCE_STAKE_INDEX_OFFSET = 8;
+    public static final int VALIDATOR_INDEX_OFFSET = 12;
 
-    public static RedelegateIxData read(final byte[] _data, final int _offset) {
+    public static CreateCanonicalStakeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
       final var discriminator = createAnchorDiscriminator(_data, _offset);
       int i = _offset + discriminator.length();
-      final var stakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
+      final var sourceStakeIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var sourceValidatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
-      i += 4;
-      final var destValidatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
-      return new RedelegateIxData(discriminator, stakeIndex, sourceValidatorIndex, destValidatorIndex);
+      final var validatorIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new CreateCanonicalStakeIxData(discriminator, sourceStakeIndex, validatorIndex);
     }
 
     @Override
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
-      putInt32LE(_data, i, (int) stakeIndex);
+      putInt32LE(_data, i, (int) sourceStakeIndex);
       i += 4;
-      putInt32LE(_data, i, (int) sourceValidatorIndex);
-      i += 4;
-      putInt32LE(_data, i, (int) destValidatorIndex);
+      putInt32LE(_data, i, (int) validatorIndex);
       i += 4;
       return i - _offset;
     }
@@ -2738,6 +2721,74 @@ public final class MarinadeFinanceProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       putInt32LE(_data, i, (int) capacity);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator FINALIZE_DELINQUENT_UPGRADE_DISCRIMINATOR = toDiscriminator(173, 8, 90, 193, 222, 52, 169, 144);
+
+  public static List<AccountMeta> finalizeDelinquentUpgradeKeys(final PublicKey stateKey,
+                                                                final PublicKey validatorListKey) {
+    return List.of(
+      createWrite(stateKey),
+      createWrite(validatorListKey)
+    );
+  }
+
+  /// @param maxValidators: u32
+  public static Instruction finalizeDelinquentUpgrade(final AccountMeta invokedMarinadeFinanceProgramMeta,
+                                                      final PublicKey stateKey,
+                                                      final PublicKey validatorListKey,
+                                                      final long maxValidators) {
+    final var keys = finalizeDelinquentUpgradeKeys(
+      stateKey,
+      validatorListKey
+    );
+    return finalizeDelinquentUpgrade(invokedMarinadeFinanceProgramMeta, keys, maxValidators);
+  }
+
+  /// @param maxValidators: u32
+  public static Instruction finalizeDelinquentUpgrade(final AccountMeta invokedMarinadeFinanceProgramMeta,
+                                                      final List<AccountMeta> keys,
+                                                      final long maxValidators) {
+    final byte[] _data = new byte[12];
+    int i = FINALIZE_DELINQUENT_UPGRADE_DISCRIMINATOR.write(_data, 0);
+    putInt32LE(_data, i, (int) maxValidators);
+
+    return Instruction.createInstruction(invokedMarinadeFinanceProgramMeta, keys, _data);
+  }
+
+  /// @param maxValidators: u32
+  public record FinalizeDelinquentUpgradeIxData(Discriminator discriminator, long maxValidators) implements SerDe {  
+
+    public static FinalizeDelinquentUpgradeIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 12;
+
+    public static final int MAX_VALIDATORS_OFFSET = 8;
+
+    public static FinalizeDelinquentUpgradeIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var maxValidators = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new FinalizeDelinquentUpgradeIxData(discriminator, maxValidators);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt32LE(_data, i, (int) maxValidators);
       i += 4;
       return i - _offset;
     }

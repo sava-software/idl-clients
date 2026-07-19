@@ -70,6 +70,54 @@ source whenever it is available:
 - When a program has no published IDL (or a stale one), the Rust source — or,
   failing that, on-chain transaction inspection — is the only reliable way to
   build correct instructions.
+
+### Where an IDL is fetched from
+
+**Default to the on-chain IDL account.** It is the only artifact bound to the
+program address we actually call. A team failing to re-upload it on deploy is
+the exception, not the assumption — and an IDL committed to a repo or SDK
+carries the opposite risk: the default branch may describe code that is **not
+yet deployed**, which breaks the client just as badly and more quietly, because
+it still compiles.
+
+Two traps make this harder than it looks. **"The on-chain IDL agrees with our
+generated code" proves nothing** — it only shows our code matches *the IDL*,
+which is a separate account a deploy does not update. And **a repo that is not
+the original org may still be the program's home**: teams rebrand (marginfi's
+`mrgnlabs` → `0dotxyz`/p0), so treat provenance as a question to answer, not a
+disqualifier.
+
+The program itself is the authority, and it can be **asked directly**. Simulate a
+transaction carrying nothing but a candidate 8-byte discriminator, with
+`sigVerify: false` and `replaceRecentBlockhash: true`. The fee payer must be a
+real funded account, or simulation aborts with `AccountNotFound` before reaching
+the program.
+
+- **Not deployed** → `InstructionFallbackNotFound` (custom error 101), identical
+  to what a garbage discriminator returns — always probe one as a control.
+- **Deployed** → the program logs `Instruction: <Name>` first, then fails later
+  on account or argument validation (102, 3005, ...).
+
+This settles both halves at once: probe an instruction the candidate IDL *adds*
+and one it *removes*. Weaker signals worth knowing: `ProgramData.last_deploy_slot`
+(`getAccountInfo` on the program jsonParsed → programData address; then
+`dataSlice{offset:0,length:13}` base64 → `u32 enum (3) || u64 slot`; `getBlockTime`
+dates it) only shows the program was *touched* after the IDL, not what changed.
+Grepping the deployed `.so` for account-name literals gives real hits but is
+noisy — a discriminator scan of the same buffer matched only 13 of 88
+known-present instructions. And a changed struct cannot always distinguish
+versions: a new field carved from former padding reads as zero under both.
+
+`idl-clients-bundle/config/pitest/README.md` records the entries currently
+overridden (Marinade, marginfi) and the evidence for each. Diffing generated
+account orders against the program's Rust is what surfaces this class of drift in
+the first place.
+
+**Check how an `idlURL` versions itself.** A path that tracks a branch
+(`marinade_finance.json`) keeps following upstream; a version-pinned filename
+(`marginfi_0.1.9.json`) silently freezes at that release and fails closed into
+the staleness the override was meant to fix. Re-run the dispatch probe after any
+deploy of an overridden program.
 - When behavior changes upstream (new instruction versions, re-ordered or
   auto-wired accounts), update the generated code via idl-src-gen where the
   IDL covers it, and update the hand-written clients for everything the IDL

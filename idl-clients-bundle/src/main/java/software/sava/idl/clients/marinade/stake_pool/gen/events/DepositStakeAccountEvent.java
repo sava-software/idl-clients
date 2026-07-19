@@ -21,6 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param msolMinted: u64
 /// @param totalVirtualStakedLamports: u64
 /// @param msolSupply: u64
+/// @param solFees: u64
 public record DepositStakeAccountEvent(Discriminator discriminator,
                                        PublicKey state,
                                        PublicKey stake,
@@ -34,9 +35,10 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
                                        long userMsolBalance,
                                        long msolMinted,
                                        long totalVirtualStakedLamports,
-                                       long msolSupply) implements MarinadeFinanceEvent {
+                                       long msolSupply,
+                                       long solFees) implements MarinadeFinanceEvent {
 
-  public static final int BYTES = 200;
+  public static final int BYTES = 208;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(231, 203, 118, 96, 75, 116, 70, 228);
 
   public static final int STATE_OFFSET = 8;
@@ -52,6 +54,7 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
   public static final int MSOL_MINTED_OFFSET = 176;
   public static final int TOTAL_VIRTUAL_STAKED_LAMPORTS_OFFSET = 184;
   public static final int MSOL_SUPPLY_OFFSET = 192;
+  public static final int SOL_FEES_OFFSET = 200;
 
   public static DepositStakeAccountEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -84,6 +87,8 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
     final var totalVirtualStakedLamports = getInt64LE(_data, i);
     i += 8;
     final var msolSupply = getInt64LE(_data, i);
+    i += 8;
+    final var solFees = getInt64LE(_data, i);
     return new DepositStakeAccountEvent(discriminator,
                                         state,
                                         stake,
@@ -97,7 +102,8 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
                                         userMsolBalance,
                                         msolMinted,
                                         totalVirtualStakedLamports,
-                                        msolSupply);
+                                        msolSupply,
+                                        solFees);
   }
 
   @Override
@@ -128,6 +134,8 @@ public record DepositStakeAccountEvent(Discriminator discriminator,
     putInt64LE(_data, i, totalVirtualStakedLamports);
     i += 8;
     putInt64LE(_data, i, msolSupply);
+    i += 8;
+    putInt64LE(_data, i, solFees);
     i += 8;
     return i - _offset;
   }

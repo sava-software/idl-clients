@@ -15,7 +15,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Used to configure Solend banks. A simplified version of `BankConfigCompact` which omits most
 /// values related to interest since Solend banks cannot earn interest or be borrowed against.
 ///
-/// @param depositLimit: u64
+/// @param depositLimit: u64 Cap in **Solend collateral units**, not underlying. As the reserve collateral
+///                     exchange rate grows, the same cap admits more underlying — re-tune against the
+///                     current rate.
 /// @param oracleSetup Either `SolendPythPull` or `SolendSwitchboardPull`
 /// @param operationalState Bank operational state - allows starting banks in paused state
 /// @param riskTier Risk tier - determines if assets can be borrowed in isolation

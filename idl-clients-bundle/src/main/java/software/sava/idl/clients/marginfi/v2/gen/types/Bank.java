@@ -58,6 +58,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///              - Bit 4 (16): `CLOSE_ENABLED_FLAG` — bank can be closed (set at creation for banks >= 0.1.4)
 ///              - Bit 5 (32): `TOKENLESS_REPAYMENTS_ALLOWED` — risk admin can repay debt without tokens
 ///              - Bit 6 (64): `TOKENLESS_REPAYMENTS_COMPLETE` — all debt cleared, lender purge enabled
+///              - Bit 7 (128): `IS_T22` — 1 if T22, 0 if token classic
+///              - Bit 8 (256): `BANK_SEED_KNOWN` — bank is known to be PDA/seed-derived. If not set, bank
+///              may still be a PDA, but created before this flag launched (1.8 or earlier) or is a legacy
+///              keypair-based bank.
+///              - Bit 9 (512): `STAKED_ORACLE_DISABLED` — staked oracle pricing is temporarily disabled.
+///              - Bit 10 (1024): `STAKED_ORACLE_PRICE_USES_ONRAMP` — staked oracle pricing includes the SPL
+///              single-pool on-ramp account in NAV.
 /// @param emissionsRate: u64 Emissions APR. Number of emitted tokens (emissions_mint) per 1e(bank.mint_decimal) tokens
 ///                      (bank mint) (native amount) per 1 YEAR.
 /// @param emissionsRemaining Remaining emissions tokens available for distribution
@@ -85,6 +92,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        - Drift: spot market
 ///                        - Solend: reserve
 ///                        - JupLend: lending state
+///                        - Staked Collateral: Validator vote account
 /// @param integrationAcc2 Integration account slot 2 (default Pubkey for non-integrations).
 ///                        - Kamino: obligation
 ///                        - Drift: user
@@ -95,7 +103,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        - JupLend: withdraw intermediary ATA (ATA of liquidity_vault_authority for bank mint)
 /// @param rateLimiter Rate limiter for controlling withdraw/borrow outflow.
 ///                    Tracks net outflow (outflows - inflows) in native tokens.
-/// @param padding1: u64[][]
+/// @param bankSeed: u64 * `0` for legacy banks created via `lending_pool_add_bank` (created via keypair, not a PDA),
+///                 or pre-backfill banks (1.8 or earlier) where seed remains unknown.
+///                 * Otherwise the `bank_seed: u64` argument passed when creating the bank.
+///                 * Use `flags & BANK_SEED_KNOWN` to verify this value has known seed provenance.
+/// @param padding1: u64[]
 public record Bank(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey mint,
@@ -137,7 +149,8 @@ public record Bank(PublicKey _address,
                    PublicKey integrationAcc3,
                    BankRateLimiter rateLimiter,
                    byte[] pad01,
-                   long[][] padding1) implements SerDe {
+                   long bankSeed,
+                   long[] padding1) implements SerDe {
 
   public static final int BYTES = 1864;
   public static final int PAD_0_LEN = 7;
@@ -145,7 +158,7 @@ public record Bank(PublicKey _address,
   public static final int PAD_2_LEN = 6;
   public static final int PADDING_0_LEN = 16;
   public static final int PAD_00_LEN = 16;
-  public static final int PADDING_1_LEN = 7;
+  public static final int PADDING_1_LEN = 13;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(142, 49, 166, 242, 50, 66, 97, 188);
@@ -190,7 +203,8 @@ public record Bank(PublicKey _address,
   public static final int INTEGRATION_ACC_3_OFFSET = 1624;
   public static final int RATE_LIMITER_OFFSET = 1656;
   public static final int PAD_00_OFFSET = 1736;
-  public static final int PADDING_1_OFFSET = 1752;
+  public static final int BANK_SEED_OFFSET = 1752;
+  public static final int PADDING_1_OFFSET = 1760;
 
   public static Filter createMintFilter(final PublicKey mint) {
     return Filter.createMemCompFilter(MINT_OFFSET, mint);
@@ -326,6 +340,12 @@ public record Bank(PublicKey _address,
     return Filter.createMemCompFilter(RATE_LIMITER_OFFSET, rateLimiter.write());
   }
 
+  public static Filter createBankSeedFilter(final long bankSeed) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, bankSeed);
+    return Filter.createMemCompFilter(BANK_SEED_OFFSET, _data);
+  }
+
   public static Bank read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -424,7 +444,9 @@ public record Bank(PublicKey _address,
     i += rateLimiter.l();
     final var pad01 = new byte[16];
     i += SerDeUtil.readArray(pad01, _data, i);
-    final var padding1 = new long[7][2];
+    final var bankSeed = getInt64LE(_data, i);
+    i += 8;
+    final var padding1 = new long[13];
     SerDeUtil.readArray(padding1, _data, i);
     return new Bank(_address,
                     discriminator,
@@ -467,6 +489,7 @@ public record Bank(PublicKey _address,
                     integrationAcc3,
                     rateLimiter,
                     pad01,
+                    bankSeed,
                     padding1);
   }
 
@@ -534,7 +557,9 @@ public record Bank(PublicKey _address,
     i += 32;
     i += rateLimiter.write(_data, i);
     i += SerDeUtil.writeArrayChecked(pad01, 16, _data, i);
-    i += SerDeUtil.writeArrayChecked(padding1, 7, 2, _data, i);
+    putInt64LE(_data, i, bankSeed);
+    i += 8;
+    i += SerDeUtil.writeArrayChecked(padding1, 13, _data, i);
     return i - _offset;
   }
 

@@ -15,19 +15,22 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param score: u32
 /// @param lastStakeDeltaEpoch: u64
 /// @param duplicationFlagBumpSeed: u8
+/// @param delinquentUpgraderActiveBalance: u64
 public record ValidatorRecord(PublicKey validatorAccount,
                               long activeBalance,
                               long score,
                               long lastStakeDeltaEpoch,
-                              int duplicationFlagBumpSeed) implements SerDe {
+                              int duplicationFlagBumpSeed,
+                              long delinquentUpgraderActiveBalance) implements SerDe {
 
-  public static final int BYTES = 53;
+  public static final int BYTES = 61;
 
   public static final int VALIDATOR_ACCOUNT_OFFSET = 0;
   public static final int ACTIVE_BALANCE_OFFSET = 32;
   public static final int SCORE_OFFSET = 40;
   public static final int LAST_STAKE_DELTA_EPOCH_OFFSET = 44;
   public static final int DUPLICATION_FLAG_BUMP_SEED_OFFSET = 52;
+  public static final int DELINQUENT_UPGRADER_ACTIVE_BALANCE_OFFSET = 53;
 
   public static ValidatorRecord read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -43,11 +46,14 @@ public record ValidatorRecord(PublicKey validatorAccount,
     final var lastStakeDeltaEpoch = getInt64LE(_data, i);
     i += 8;
     final var duplicationFlagBumpSeed = _data[i] & 0xFF;
+    ++i;
+    final var delinquentUpgraderActiveBalance = getInt64LE(_data, i);
     return new ValidatorRecord(validatorAccount,
                                activeBalance,
                                score,
                                lastStakeDeltaEpoch,
-                               duplicationFlagBumpSeed);
+                               duplicationFlagBumpSeed,
+                               delinquentUpgraderActiveBalance);
   }
 
   @Override
@@ -63,6 +69,8 @@ public record ValidatorRecord(PublicKey validatorAccount,
     i += 8;
     _data[i] = (byte) duplicationFlagBumpSeed;
     ++i;
+    putInt64LE(_data, i, delinquentUpgraderActiveBalance);
+    i += 8;
     return i - _offset;
   }
 

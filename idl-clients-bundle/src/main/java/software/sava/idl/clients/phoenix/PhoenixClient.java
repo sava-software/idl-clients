@@ -64,15 +64,23 @@ public interface PhoenixClient {
                              final PublicKey traderAccountKey,
                              final RegisterTraderParams params);
 
+  /// @param globalVaultKey the protocol's vault for the deposited mint —
+  ///                       derive with [PhoenixAccounts#globalVaultPDA]. It is
+  ///                       *not* the global configuration account.
   Instruction depositFunds(final PublicKey traderWalletKey,
                            final PublicKey traderTokenAccountKey,
                            final PublicKey traderAccountKey,
+                           final PublicKey globalVaultKey,
                            final PublicKey tokenProgram,
                            final DepositFundsInstruction depositFundsInstruction);
 
+  /// @param globalVaultKey the protocol's vault for the withdrawn mint —
+  ///                       derive with [PhoenixAccounts#globalVaultPDA]. It is
+  ///                       *not* the global configuration account.
   Instruction withdrawFunds(final PublicKey traderWalletKey,
                             final PublicKey traderAccountKey,
                             final PublicKey perpAssetMapKey,
+                            final PublicKey globalVaultKey,
                             final PublicKey destinationTokenAccountKey,
                             final PublicKey tokenProgramKey,
                             final PublicKey withdrawQueueKey,

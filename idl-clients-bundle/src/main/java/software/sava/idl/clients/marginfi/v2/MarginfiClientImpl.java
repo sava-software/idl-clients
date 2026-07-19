@@ -259,15 +259,6 @@ final class MarginfiClientImpl implements MarginfiClient {
   }
 
   @Override
-  public Instruction clearEmissions(final PublicKey marginfiAccount, final PublicKey bank) {
-    return MarginfiProgram.lendingAccountClearEmissions(
-        accounts.invokedMarginfiProgram(),
-        marginfiAccount,
-        bank
-    );
-  }
-
-  @Override
   public Instruction pulseHealth(final PublicKey marginfiAccount) {
     return MarginfiProgram.lendingAccountPulseHealth(
         accounts.invokedMarginfiProgram(),
@@ -328,6 +319,7 @@ final class MarginfiClientImpl implements MarginfiClient {
     return MarginfiProgram.marginfiAccountCloseOrder(
         accounts.invokedMarginfiProgram(),
         solanaAccounts,
+        accounts.marginfiGroup(),
         marginfiAccount,
         authority,
         order,

@@ -2,19 +2,12 @@
 package software.sava.idl.clients.marginfi.v2.gen.types;
 
 import software.sava.core.accounts.PublicKey;
-import software.sava.core.programs.Discriminator;
-import software.sava.core.rpc.Filter;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.rpc.json.http.response.AccountInfo;
-
-import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
-import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param version: u64
 /// @param slot: u64 Kamino reserves are only good for one slot, e.g. `refresh_reserve` must have run within the
@@ -60,9 +53,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param mintTotalSupply: u64 Total number of collateral tokens
 ///                        * uses `mint_decimals`, even though it's technically 6 decimals under the hood
 /// @param collateralSupplyVault * A PDA
-public record MinimalReserve(PublicKey _address,
-                             Discriminator discriminator,
-                             long version,
+public record MinimalReserve(long version,
                              long slot,
                              int stale,
                              int priceStatus,
@@ -106,7 +97,7 @@ public record MinimalReserve(PublicKey _address,
                              byte[] padding4Part5,
                              byte[] padding4Part6) implements SerDe {
 
-  public static final int BYTES = 8624;
+  public static final int BYTES = 8616;
   public static final int PLACEHOLDER_LEN = 6;
   public static final int BORROWED_AMOUNT_SF_LEN = 16;
   public static final int MARKET_PRICE_SF_LEN = 16;
@@ -131,167 +122,56 @@ public record MinimalReserve(PublicKey _address,
   public static final int PADDING_4_PART_4_LEN = 64;
   public static final int PADDING_4_PART_5_LEN = 32;
   public static final int PADDING_4_PART_6_LEN = 8;
-  public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(43, 242, 204, 202, 26, 247, 59, 127);
-  public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
-
-  public static final int VERSION_OFFSET = 8;
-  public static final int SLOT_OFFSET = 16;
-  public static final int STALE_OFFSET = 24;
-  public static final int PRICE_STATUS_OFFSET = 25;
-  public static final int PLACEHOLDER_OFFSET = 26;
-  public static final int LENDING_MARKET_OFFSET = 32;
-  public static final int FARM_COLLATERAL_OFFSET = 64;
-  public static final int FARM_DEBT_OFFSET = 96;
-  public static final int MINT_PUBKEY_OFFSET = 128;
-  public static final int SUPPLY_VAULT_OFFSET = 160;
-  public static final int FEE_VAULT_OFFSET = 192;
-  public static final int AVAILABLE_AMOUNT_OFFSET = 224;
-  public static final int BORROWED_AMOUNT_SF_OFFSET = 232;
-  public static final int MARKET_PRICE_SF_OFFSET = 248;
-  public static final int MARKET_PRICE_LAST_UPDATED_TS_OFFSET = 264;
-  public static final int MINT_DECIMALS_OFFSET = 272;
-  public static final int DEPOSIT_LIMIT_CROSSED_TIMESTAMP_OFFSET = 280;
-  public static final int BORROW_LIMIT_CROSSED_TIMESTAMP_OFFSET = 288;
-  public static final int CUMULATIVE_BORROW_RATE_BSF_OFFSET = 296;
-  public static final int ACCUMULATED_PROTOCOL_FEES_SF_OFFSET = 344;
-  public static final int ACCUMULATED_REFERRER_FEES_SF_OFFSET = 360;
-  public static final int PENDING_REFERRER_FEES_SF_OFFSET = 376;
-  public static final int ABSOLUTE_REFERRAL_RATE_SF_OFFSET = 392;
-  public static final int TOKEN_PROGRAM_OFFSET = 408;
-  public static final int PADDING_2_PART_1_OFFSET = 440;
-  public static final int PADDING_2_PART_2_OFFSET = 696;
-  public static final int PADDING_2_PART_3_OFFSET = 824;
-  public static final int PADDING_3_OFFSET = 848;
-  public static final int PADDING_PART_1_OFFSET = 1360;
-  public static final int PADDING_PART_2_OFFSET = 1872;
-  public static final int PADDING_PART_3_OFFSET = 2384;
-  public static final int PADDING_PART_4_OFFSET = 2512;
-  public static final int COLLATERAL_MINT_PUBKEY_OFFSET = 2560;
-  public static final int MINT_TOTAL_SUPPLY_OFFSET = 2592;
-  public static final int COLLATERAL_SUPPLY_VAULT_OFFSET = 2600;
-  public static final int PADDING_1_RESERVE_COLLATERAL_OFFSET = 2632;
-  public static final int PADDING_2_RESERVE_COLLATERAL_OFFSET = 3144;
-  public static final int PADDING_4_PART_1_OFFSET = 3656;
-  public static final int PADDING_4_PART_2_OFFSET = 7752;
-  public static final int PADDING_4_PART_3_OFFSET = 8264;
-  public static final int PADDING_4_PART_4_OFFSET = 8520;
-  public static final int PADDING_4_PART_5_OFFSET = 8584;
-  public static final int PADDING_4_PART_6_OFFSET = 8616;
-
-  public static Filter createVersionFilter(final long version) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, version);
-    return Filter.createMemCompFilter(VERSION_OFFSET, _data);
-  }
-
-  public static Filter createSlotFilter(final long slot) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, slot);
-    return Filter.createMemCompFilter(SLOT_OFFSET, _data);
-  }
-
-  public static Filter createStaleFilter(final int stale) {
-    return Filter.createMemCompFilter(STALE_OFFSET, new byte[]{(byte) stale});
-  }
-
-  public static Filter createPriceStatusFilter(final int priceStatus) {
-    return Filter.createMemCompFilter(PRICE_STATUS_OFFSET, new byte[]{(byte) priceStatus});
-  }
-
-  public static Filter createLendingMarketFilter(final PublicKey lendingMarket) {
-    return Filter.createMemCompFilter(LENDING_MARKET_OFFSET, lendingMarket);
-  }
-
-  public static Filter createFarmCollateralFilter(final PublicKey farmCollateral) {
-    return Filter.createMemCompFilter(FARM_COLLATERAL_OFFSET, farmCollateral);
-  }
-
-  public static Filter createFarmDebtFilter(final PublicKey farmDebt) {
-    return Filter.createMemCompFilter(FARM_DEBT_OFFSET, farmDebt);
-  }
-
-  public static Filter createMintPubkeyFilter(final PublicKey mintPubkey) {
-    return Filter.createMemCompFilter(MINT_PUBKEY_OFFSET, mintPubkey);
-  }
-
-  public static Filter createSupplyVaultFilter(final PublicKey supplyVault) {
-    return Filter.createMemCompFilter(SUPPLY_VAULT_OFFSET, supplyVault);
-  }
-
-  public static Filter createFeeVaultFilter(final PublicKey feeVault) {
-    return Filter.createMemCompFilter(FEE_VAULT_OFFSET, feeVault);
-  }
-
-  public static Filter createAvailableAmountFilter(final long availableAmount) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, availableAmount);
-    return Filter.createMemCompFilter(AVAILABLE_AMOUNT_OFFSET, _data);
-  }
-
-  public static Filter createMarketPriceLastUpdatedTsFilter(final long marketPriceLastUpdatedTs) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, marketPriceLastUpdatedTs);
-    return Filter.createMemCompFilter(MARKET_PRICE_LAST_UPDATED_TS_OFFSET, _data);
-  }
-
-  public static Filter createMintDecimalsFilter(final long mintDecimals) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, mintDecimals);
-    return Filter.createMemCompFilter(MINT_DECIMALS_OFFSET, _data);
-  }
-
-  public static Filter createDepositLimitCrossedTimestampFilter(final long depositLimitCrossedTimestamp) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, depositLimitCrossedTimestamp);
-    return Filter.createMemCompFilter(DEPOSIT_LIMIT_CROSSED_TIMESTAMP_OFFSET, _data);
-  }
-
-  public static Filter createBorrowLimitCrossedTimestampFilter(final long borrowLimitCrossedTimestamp) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, borrowLimitCrossedTimestamp);
-    return Filter.createMemCompFilter(BORROW_LIMIT_CROSSED_TIMESTAMP_OFFSET, _data);
-  }
-
-  public static Filter createTokenProgramFilter(final PublicKey tokenProgram) {
-    return Filter.createMemCompFilter(TOKEN_PROGRAM_OFFSET, tokenProgram);
-  }
-
-  public static Filter createCollateralMintPubkeyFilter(final PublicKey collateralMintPubkey) {
-    return Filter.createMemCompFilter(COLLATERAL_MINT_PUBKEY_OFFSET, collateralMintPubkey);
-  }
-
-  public static Filter createMintTotalSupplyFilter(final long mintTotalSupply) {
-    final byte[] _data = new byte[8];
-    putInt64LE(_data, 0, mintTotalSupply);
-    return Filter.createMemCompFilter(MINT_TOTAL_SUPPLY_OFFSET, _data);
-  }
-
-  public static Filter createCollateralSupplyVaultFilter(final PublicKey collateralSupplyVault) {
-    return Filter.createMemCompFilter(COLLATERAL_SUPPLY_VAULT_OFFSET, collateralSupplyVault);
-  }
+  public static final int VERSION_OFFSET = 0;
+  public static final int SLOT_OFFSET = 8;
+  public static final int STALE_OFFSET = 16;
+  public static final int PRICE_STATUS_OFFSET = 17;
+  public static final int PLACEHOLDER_OFFSET = 18;
+  public static final int LENDING_MARKET_OFFSET = 24;
+  public static final int FARM_COLLATERAL_OFFSET = 56;
+  public static final int FARM_DEBT_OFFSET = 88;
+  public static final int MINT_PUBKEY_OFFSET = 120;
+  public static final int SUPPLY_VAULT_OFFSET = 152;
+  public static final int FEE_VAULT_OFFSET = 184;
+  public static final int AVAILABLE_AMOUNT_OFFSET = 216;
+  public static final int BORROWED_AMOUNT_SF_OFFSET = 224;
+  public static final int MARKET_PRICE_SF_OFFSET = 240;
+  public static final int MARKET_PRICE_LAST_UPDATED_TS_OFFSET = 256;
+  public static final int MINT_DECIMALS_OFFSET = 264;
+  public static final int DEPOSIT_LIMIT_CROSSED_TIMESTAMP_OFFSET = 272;
+  public static final int BORROW_LIMIT_CROSSED_TIMESTAMP_OFFSET = 280;
+  public static final int CUMULATIVE_BORROW_RATE_BSF_OFFSET = 288;
+  public static final int ACCUMULATED_PROTOCOL_FEES_SF_OFFSET = 336;
+  public static final int ACCUMULATED_REFERRER_FEES_SF_OFFSET = 352;
+  public static final int PENDING_REFERRER_FEES_SF_OFFSET = 368;
+  public static final int ABSOLUTE_REFERRAL_RATE_SF_OFFSET = 384;
+  public static final int TOKEN_PROGRAM_OFFSET = 400;
+  public static final int PADDING_2_PART_1_OFFSET = 432;
+  public static final int PADDING_2_PART_2_OFFSET = 688;
+  public static final int PADDING_2_PART_3_OFFSET = 816;
+  public static final int PADDING_3_OFFSET = 840;
+  public static final int PADDING_PART_1_OFFSET = 1352;
+  public static final int PADDING_PART_2_OFFSET = 1864;
+  public static final int PADDING_PART_3_OFFSET = 2376;
+  public static final int PADDING_PART_4_OFFSET = 2504;
+  public static final int COLLATERAL_MINT_PUBKEY_OFFSET = 2552;
+  public static final int MINT_TOTAL_SUPPLY_OFFSET = 2584;
+  public static final int COLLATERAL_SUPPLY_VAULT_OFFSET = 2592;
+  public static final int PADDING_1_RESERVE_COLLATERAL_OFFSET = 2624;
+  public static final int PADDING_2_RESERVE_COLLATERAL_OFFSET = 3136;
+  public static final int PADDING_4_PART_1_OFFSET = 3648;
+  public static final int PADDING_4_PART_2_OFFSET = 7744;
+  public static final int PADDING_4_PART_3_OFFSET = 8256;
+  public static final int PADDING_4_PART_4_OFFSET = 8512;
+  public static final int PADDING_4_PART_5_OFFSET = 8576;
+  public static final int PADDING_4_PART_6_OFFSET = 8608;
 
   public static MinimalReserve read(final byte[] _data, final int _offset) {
-    return read(null, _data, _offset);
-  }
-
-  public static MinimalReserve read(final AccountInfo<byte[]> accountInfo) {
-    return read(accountInfo.pubKey(), accountInfo.data(), 0);
-  }
-
-  public static MinimalReserve read(final PublicKey _address, final byte[] _data) {
-    return read(_address, _data, 0);
-  }
-
-  public static final BiFunction<PublicKey, byte[], MinimalReserve> FACTORY = MinimalReserve::read;
-
-  public static MinimalReserve read(final PublicKey _address, final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+    int i = _offset;
     final var version = getInt64LE(_data, i);
     i += 8;
     final var slot = getInt64LE(_data, i);
@@ -378,9 +258,7 @@ public record MinimalReserve(PublicKey _address,
     i += SerDeUtil.readArray(padding4Part5, _data, i);
     final var padding4Part6 = new byte[8];
     SerDeUtil.readArray(padding4Part6, _data, i);
-    return new MinimalReserve(_address,
-                              discriminator,
-                              version,
+    return new MinimalReserve(version,
                               slot,
                               stale,
                               priceStatus,
@@ -427,7 +305,7 @@ public record MinimalReserve(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     putInt64LE(_data, i, version);
     i += 8;
     putInt64LE(_data, i, slot);

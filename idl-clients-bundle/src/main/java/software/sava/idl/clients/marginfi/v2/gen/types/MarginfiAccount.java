@@ -49,6 +49,10 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        Note: use a unique seed to tag accounts related to some particular program or campaign so
 ///                        you can easily fetch them all later.
 /// @param bump: u8 This account's bump, if a PDA-based account (0.1.5 or later). Otherwise, does nothing.
+/// @param activeOrders: u8 Count of how many Orders this account has active. One is added when an Order is opened, and
+///                     subtracted when an Order is executed or cancelled.
+///                     * Accounts cannot open more than u8::MAX orders. Sorry power users: hopefully 256 stop
+///                     losses is enough for you.
 /// @param liquidationRecord Stores information related to liquidations made against this account. A pda of this
 ///                          account's key, and "liq_record"
 ///                          * Typically pubkey default if this account has never been liquidated or close to liquidation
@@ -69,13 +73,15 @@ public record MarginfiAccount(PublicKey _address,
                               int accountIndex,
                               int thirdPartyIndex,
                               int bump,
+                              int activeOrders,
                               byte[] pad0,
                               PublicKey liquidationRecord,
+                              IndexerFlags indexerFlags,
                               long[] padding0) implements SerDe {
 
   public static final int BYTES = 2312;
-  public static final int PAD_0_LEN = 3;
-  public static final int PADDING_0_LEN = 7;
+  public static final int PAD_0_LEN = 2;
+  public static final int PADDING_0_LEN = 4;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(67, 178, 130, 109, 126, 114, 28, 42);
@@ -93,9 +99,11 @@ public record MarginfiAccount(PublicKey _address,
   public static final int ACCOUNT_INDEX_OFFSET = 2216;
   public static final int THIRD_PARTY_INDEX_OFFSET = 2218;
   public static final int BUMP_OFFSET = 2220;
-  public static final int PAD_0_OFFSET = 2221;
+  public static final int ACTIVE_ORDERS_OFFSET = 2221;
+  public static final int PAD_0_OFFSET = 2222;
   public static final int LIQUIDATION_RECORD_OFFSET = 2224;
-  public static final int PADDING_0_OFFSET = 2256;
+  public static final int INDEXER_FLAGS_OFFSET = 2256;
+  public static final int PADDING_0_OFFSET = 2280;
 
   public static Filter createGroupFilter(final PublicKey group) {
     return Filter.createMemCompFilter(GROUP_OFFSET, group);
@@ -145,8 +153,16 @@ public record MarginfiAccount(PublicKey _address,
     return Filter.createMemCompFilter(BUMP_OFFSET, new byte[]{(byte) bump});
   }
 
+  public static Filter createActiveOrdersFilter(final int activeOrders) {
+    return Filter.createMemCompFilter(ACTIVE_ORDERS_OFFSET, new byte[]{(byte) activeOrders});
+  }
+
   public static Filter createLiquidationRecordFilter(final PublicKey liquidationRecord) {
     return Filter.createMemCompFilter(LIQUIDATION_RECORD_OFFSET, liquidationRecord);
+  }
+
+  public static Filter createIndexerFlagsFilter(final IndexerFlags indexerFlags) {
+    return Filter.createMemCompFilter(INDEXER_FLAGS_OFFSET, indexerFlags.write());
   }
 
   public static MarginfiAccount read(final byte[] _data, final int _offset) {
@@ -193,11 +209,15 @@ public record MarginfiAccount(PublicKey _address,
     i += 2;
     final var bump = _data[i] & 0xFF;
     ++i;
-    final var pad0 = new byte[3];
+    final var activeOrders = _data[i] & 0xFF;
+    ++i;
+    final var pad0 = new byte[2];
     i += SerDeUtil.readArray(pad0, _data, i);
     final var liquidationRecord = readPubKey(_data, i);
     i += 32;
-    final var padding0 = new long[7];
+    final var indexerFlags = IndexerFlags.read(_data, i);
+    i += indexerFlags.l();
+    final var padding0 = new long[4];
     SerDeUtil.readArray(padding0, _data, i);
     return new MarginfiAccount(_address,
                                discriminator,
@@ -213,8 +233,10 @@ public record MarginfiAccount(PublicKey _address,
                                accountIndex,
                                thirdPartyIndex,
                                bump,
+                               activeOrders,
                                pad0,
                                liquidationRecord,
+                               indexerFlags,
                                padding0);
   }
 
@@ -243,10 +265,13 @@ public record MarginfiAccount(PublicKey _address,
     i += 2;
     _data[i] = (byte) bump;
     ++i;
-    i += SerDeUtil.writeArrayChecked(pad0, 3, _data, i);
+    _data[i] = (byte) activeOrders;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(pad0, 2, _data, i);
     liquidationRecord.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding0, 7, _data, i);
+    i += indexerFlags.write(_data, i);
+    i += SerDeUtil.writeArrayChecked(padding0, 4, _data, i);
     return i - _offset;
   }
 

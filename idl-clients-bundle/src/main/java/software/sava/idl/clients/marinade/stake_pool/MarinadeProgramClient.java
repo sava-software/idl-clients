@@ -70,10 +70,15 @@ public interface MarinadeProgramClient {
     return totalVirtualStakedLamports(state) / (double) state.msolSupply();
   }
 
+  /// Returns the index of `key` within a raw list account, or `-1` when it is
+  /// absent. The scan skips the 8-byte discriminator and strides by `itemSize`,
+  /// stopping once fewer than a whole key remains — a truncated account, or an
+  /// `itemSize` that disagrees with the data, reports "not found" rather than
+  /// reading off the end.
   static int accountIndex(final byte[] key,
                           final byte[] listData,
                           final int itemSize) {
-    for (int i = 8, s = 0; i < listData.length; i += itemSize, ++s) {
+    for (int i = 8, s = 0, to = listData.length - PublicKey.PUBLIC_KEY_LENGTH; i <= to; i += itemSize, ++s) {
       if (Arrays.equals(
           key, 0, PublicKey.PUBLIC_KEY_LENGTH,
           listData, i, i + PublicKey.PUBLIC_KEY_LENGTH

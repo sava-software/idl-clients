@@ -192,14 +192,16 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "marginfi.v2",
-      "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA"
+      "program": "MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA",
+      "idlURL": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.9.json"
     },
     {
       "name": "Marinade Stake Pool",
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "marinade.stake_pool",
-      "program": "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD"
+      "program": "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+      "idlURL": "https://raw.githubusercontent.com/marinade-finance/marinade-ts-sdk/refs/heads/main/src/programs/idl/json/marinade_finance.json"
     },
     {
       "name": "Metaplex Token Metadata",

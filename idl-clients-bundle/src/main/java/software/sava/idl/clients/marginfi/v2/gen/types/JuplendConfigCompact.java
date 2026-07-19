@@ -15,10 +15,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// Used to configure JupLend banks. A simplified version of `BankConfigCompact` which omits most
 /// values related to interest since JupLend banks cannot earn interest or be borrowed against.
 /// 
-/// Note: JupLend banks do not take an Operational State, they always start in `Paused` state and
-/// are set to `Operational` via `juplend_init_position` (seed deposit + protocol fToken vault).
+/// Note: JupLend banks do not take an Operational State, they always start in `Uninitialized`
+/// state and are set to `Operational` via `juplend_init_position` (seed deposit + protocol fToken
+/// vault).
 ///
-/// @param depositLimit: u64
+/// @param depositLimit: u64 Cap in **fToken units**, not underlying. As `token_exchange_price` grows, the same
+///                     cap admits more underlying — re-tune against the current rate.
 /// @param oracleSetup Either `JuplendPythPull` or `JuplendSwitchboardPull`
 /// @param riskTier Isolated or Collateral
 /// @param configFlags: u8 Config flags for future-proofing, currently ignored

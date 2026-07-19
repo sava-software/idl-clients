@@ -54,7 +54,8 @@ dependency and is owned by `idl-clients-spl`'s own suite.
 | seeded 2026-07-18 | `clients` | 1107 | 1065 | 42 | 229/1357 (17%) | 85% |
 | 2026-07-19 | `orca` | 109 | 55 | 54 | 430/541 (79%) | 88% |
 | 2026-07-19 | `scope` | 42 | 1 | 41 | 305/354 (86%) | 87% |
-| 2026-07-19 | `clients` | 913 | 865 | 48 | 437/1357 (32%) | 90% |
+| 2026-07-19 | `clients` | 794 | 746 | 48 | 559/1358 (41%) | 89% |
+| 2026-07-19 | `clients` | 747 | 681 | 66 | 608/1360 (45%) | 90% |
 
 **The seeded baseline is triage debt made explicit, not acceptance.** Priorities
 1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
@@ -88,8 +89,8 @@ is the remaining tranche.
    builder. A rewards-quote delta-invariance test pins the timestamp
    subtraction the all-zero fixture could not see. `meteora.dlmm.DlmmUtils`
    (16) remains untouched — same shape, next tranche.
-3. **`NO_COVERAGE` in RPC-facing plumbing** — *in progress; 1107 rows → 913,
-   17% → 32% killed as of 2026-07-19.* Done so far:
+3. **`NO_COVERAGE` in RPC-facing plumbing** — *in progress; 1107 rows → 794,
+   17% → 41% killed as of 2026-07-19.* Done so far:
 
    - **Address constants and PDA helpers** (`KaminoAccounts`, `JupiterAccounts`,
      `MarinadeAccounts`). These are tested by *property* rather than by pinned
@@ -105,10 +106,30 @@ is the remaining tranche.
      account past an 8-byte discriminator at an item-size stride, and the index
      it returns is passed straight into instructions acting on that validator or
      stake account. Tested for stride, discriminator skipping, key-only
-     comparison, and per-list item sizes. Its lack of a tail bound check —
-     a truncated list throws `ArrayIndexOutOfBoundsException` rather than
-     reporting "not found" — is pinned as current behavior, not changed;
-     on-chain lists are exact multiples.
+     comparison, and per-list item sizes. **Fixed**: the scan had no tail bound
+     check, so a truncated account — or an item size disagreeing with the data —
+     read off the end and threw `ArrayIndexOutOfBoundsException` instead of
+     reporting "not found". It now stops when fewer than a whole key remains.
+   - **`JupiterVoteClient`.** The client spans three programs (locked-voter,
+     governance, merkle distributor), so the property under test is which one
+     each builder invokes. **Fixed**: `newEscrow` builds a `LockedVoterProgram`
+     instruction but invoked the *governance* program — the escrow PDA is
+     derived under the vote program, so it could never execute. Its twelve
+     sibling locked-voter builders all bind the vote program, which is precisely
+     what made the odd one out invisible. The interface's `newClaimAndStake`
+     parameter names also disagreed with the implementation's (`distributor,
+     claimStatusKey, fromKey` vs the actual `claimStatusKey, fromKey,
+     distributor`); behavior was correct — the default overload matches
+     positionally — but the names were a trap for a fresh implementor, and are
+     now aligned.
+   - **`KaminoLendClient`.** Its distinctive shape is *sentinel substitution*:
+     absent optional accounts are replaced by a program id to keep the
+     positional account list intact, with two different sentinels in play (the
+     kLend program for oracles and referrers, the farms program for scope
+     prices). Each substitution is asserted independently, by slot, so a
+     swapped-in sentinel at the wrong oracle position is caught — that failure
+     yields a plausible wrong price rather than an error. Both null sentinels
+     (`PublicKey.NONE` and Kamino's `nu111…`) are covered alongside `null`.
    - **Jupiter quote and Ultra-order requests.** The query string *is* the
      request: a dropped parameter silently reverts to a Jupiter-side default and
      a misspelled key is ignored rather than rejected. Every parameter is
@@ -118,20 +139,219 @@ is the remaining tranche.
      `payer`/`closeAuthority`/`referralAccount`) use distinct keys so a
      transposition between them is visible.
 
-   Remaining, in rough value order: the client impls (`KaminoLendClientImpl` 68,
-   `JupiterVoteClientImpl` 48, `MeteoraDlmmClient(Impl)` 74, `PhoenixClientImpl`
-   32, `MarginfiClientImpl` 22, `OrcaWhirlpoolsClient(Impl)` ~57 in the `orca`
-   suite), the swap-request JSON body and response parsers (`JupiterSwapRequest`
-   + builder 72, `JupiterSwapInstructions` 39, `JupiterSwapApiClientImpl` 37),
-   and `DlmmUtils` 22. For the client impls the pattern to apply is
-   idl-clients-spl's: distinct keys per role, account lists asserted for order
-   and signer/writable flags, data decoded back through the generated `IxData`
-   records. That pass over the SPL module surfaced two real wiring bugs and the
-   scope client's transposed `initialize` a third — this block is where the bugs
-   live.
+   - **Jupiter request builders** (`JupiterQuoteRequest`,
+     `JupiterUltraOrderRequest`, `JupiterSwapRequest`). The serialized request
+     *is* the call: a dropped parameter silently reverts to a Jupiter-side
+     default and a misspelled key is ignored rather than rejected. Every
+     parameter is asserted under its own API name (which differs from the
+     accessor name — `inputMint`, not `inputTokenMint`), every optional one is
+     asserted absent when unset, and mutually-exclusive pairs are pinned
+     (`dexes` beats `excludeDexes`; `destinationTokenAccount` beats
+     `nativeDestinationAccount`; `dynamicComputeUnitLimit` suppresses an
+     explicit unit price). The swap body inverts the usual polarity — three of
+     its booleans default to *true*, so an omission means "leave the API
+     default", not "unset".
+   - **`MeteoraDlmmClient.deriveBinAccounts`.** Liquidity operations span a
+     range of bins whose covering bin-arrays must be appended as extra
+     accounts; too few and the program cannot reach its bins, wrong indices and
+     it touches the wrong liquidity. The range→array map floors toward negative
+     infinity, so the tests cover ranges straddling zero and landing exactly on
+     an array boundary. Its swap builder uses the same optional-account sentinel
+     convention as Kamino (absent host fee → the DLMM program id).
+
+   - **`MarginfiClient`.** Its convenience overloads derive three keys off one
+     `bank` — the liquidity vault, that vault's *authority*, and the caller's
+     ATA — and `withdraw`/`borrow` take the vault authority in the slot directly
+     *before* the vault. Transposing two same-typed PDAs of the same bank
+     compiles and produces two real addresses, so only a positional assertion
+     catches it. The tests also pin the two genuine differences between the
+     keypair and PDA account variants (the derived account cannot sign; the PDA
+     form carries the instructions sysvar) and the fact that `placeOrder`'s
+     position banks are instruction *data*, not accounts.
+
+   Remaining, in rough value order: the rest of the client impls
+   (`MeteoraDlmmClient(Impl)` ~65 still, `LoopscaleClientImpl` 17,
+   `KaminoVaultsClient(Impl)` 20, plus `OrcaWhirlpoolsClient(Impl)` ~57 in the
+   `orca` suite), the Jupiter
+   response parsers (`JupiterSwapInstructions` 39, `JupiterSwapApiClientImpl`
+   37), and `DlmmUtils` 22 — the last of which is mostly unreachable guards, and
+   whose `variableFeeControl` is already widened to `long`, so there is no
+   signedness bug hiding there.
+
+   The pattern that works for the client impls is idl-clients-spl's: distinct
+   keys per role, account lists asserted by *slot* rather than membership, and
+   the invoked program asserted explicitly. Running score for this approach:
+   nine real defects across the two modules — two in SPL, the scope client's
+   transposed `initialize`, the lend client's wrong reserve mint, the vote
+   client's mis-bound `newEscrow`, Marinade's unbounded list scan, Phoenix's
+   global config standing in for the global vault, and marginfi's dead
+   `clearEmissions` and off-by-one-slot `closeOrder`. Nearly all were a
+   same-typed value in the wrong position, in code no test reached.
 
 Shrinking the baseline is always an improvement; growing it requires a reason
 written here.
+
+## Ground-truthing account order against the programs' Rust
+
+Anchor account order is positional and fixed by the `#[derive(Accounts)]` field
+order, so a program's Rust source is the authority. With the reference clones
+present (see `AGENTS.local.md`), the generated key builders were diffed against
+it mechanically — extract each struct's fields, flatten nested `Accounts`
+composites the way Anchor does, append the `event_authority` + `program` pair
+for any struct carrying `#[event_cpi]` (including a *nested* one, where the
+pair lands mid-list), then compare positionally to each `*Keys(...)` method.
+
+Result — **150 instructions verified, all matching** after one fix:
+
+| Program | Instructions | Result |
+|---|---|---|
+| klend | 59 | all match |
+| kfarms | 24 | all match |
+| kvault | 20 | all match |
+| marinade-finance | 27 | all match *(after re-pointing the IDL — see below)* |
+| jupiter-lend | 3 | all match (reference CPI files, not Anchor structs) |
+| phoenix (`rise-public`) | 12 | one fix — see below |
+| marginfi-v2 | 75 | two fixes — the on-chain IDL was stale, see below |
+
+Phoenix's Rust is not Anchor: `rise/rust/ix/src/*.rs` build their metas by hand
+in numbered `build_accounts()` blocks, so those were the authority. They showed
+`deposit_funds` / `withdraw_funds` taking the per-mint **global vault** in a slot
+where our client passed `eternalGlobalConfig()` — the same value it already
+supplies two slots earlier. The vault's seeds are not in the IDL; they come from
+the program's own `constants.rs::get_global_vault_address` (`["vault", mint]`),
+now `PhoenixAccounts.globalVaultPDA`. Both methods gained a `globalVaultKey`
+parameter (**breaking**).
+
+### Marginfi: a stale on-chain IDL hiding two live client bugs
+
+The diff reported 30 mismatches against `0dotxyz/marginfi-v2`; 27 were extractor
+artefacts (auto-wired `solanaAccounts.*()` sysvars and program ids the client
+resolves internally). Three were real: `kamino_init_obligation` (23 accounts vs
+our 27), `lending_pool_add_bank_permissionless` (17, adding `pool_onramp` and
+`validator_vote_account`), and `panic_pause` (`pause_authority` vs
+`global_fee_admin`).
+
+**The first pass got this wrong** and is worth recording as a trap. The
+reasoning was: the on-chain IDL is 0.1.8 and matches our client exactly, the repo
+is 0.1.9, and `0dotxyz` is not `mrgnlabs` — therefore a fork describing
+undeployed code, so leave it. Two errors. `0dotxyz`/**p0** is the marginfi team
+after a rebrand, not a third party. And "the on-chain IDL matches our client"
+only proves our client matches *the IDL* — it says nothing about the program.
+The IDL is a separate account that a deploy does not update.
+
+**The program is the authority, and it can be asked directly.** Simulate a
+transaction carrying just an 8-byte discriminator with `sigVerify: false` and
+`replaceRecentBlockhash: true` (the fee payer must be a real funded account, or
+simulation aborts with `AccountNotFound` before reaching the program):
+
+- **Not deployed** → `InstructionFallbackNotFound` (error 101), byte-identical to
+  a garbage discriminator.
+- **Deployed** → the program logs `Instruction: <Name>` first, then fails later
+  on account/arg validation (102, 3005, ...).
+
+That probe showed `lending_account_clear_emissions` returning 101 while
+0.1.9-only instructions (`lending_pool_emissions_deposit`,
+`init_global_fee_state_v2`) dispatched: **the deployed program is 0.1.9.** Two
+shipped client bugs followed, both in code no test reached:
+
+| Method | Defect |
+|---|---|
+| `clearEmissions` | 0.1.9 removed the instruction. Every call failed with 0x65. Wrapper **deleted**. |
+| `closeOrder` | 0.1.9 prepends `group`, shifting all five accounts down one slot. Now passes `marginfiGroup()` (**breaking**: the generated builder gained a `groupKey` parameter). |
+
+Everything else the client wraps — deposit, repay, withdraw, borrow, flashloans,
+`placeOrder`, the account lifecycle — is byte-identical across the two versions.
+
+Fixed by pointing the config at the IDL the team publishes in their TS SDK and
+regenerating (31 files, 0.1.8 → 0.1.9):
+
+```json
+"idlURL": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.9.json"
+```
+
+⚠️ **This URL is version-pinned.** Unlike Marinade's `marinade_finance.json`,
+which tracks `main`, a future 0.1.10 lands at a *new filename* and this override
+silently freezes at 0.1.9 — failing closed into exactly the staleness it was
+added to fix. Re-run the dispatch probe on a 0.1.9-only instruction after any
+marginfi deploy, and bump the path when the version changes.
+
+Techniques that did *not* settle this, for the record: grepping the deployed
+`.so` for account-name string literals found all three disputed names, but a
+discriminator scan of the same buffer matched only 13 of 88 known-present
+instructions, so byte-level searching is too noisy to rely on. And the live
+`FeeState` could not distinguish the versions — 0.1.9's new
+`pause_delegate_admin` is carved from the old `reserved1` and is currently zero,
+which both layouts predict.
+
+### Marinade: a stale *on-chain* IDL
+
+The diff first showed `update_deactivated` one account short — the Rust
+`UpdateCommon` carries `validator_list` as its 13th field (added Aug 2023), but
+our IDL modelled `common` as 12 accounts, shifting `operational_sol_account` and
+`system_program` down a slot.
+
+The cause was not a stale local file. Marinade's program has **no IDL committed
+in `liquid-staking-program`** (any branch, any point in history), so the config
+fetched it from the on-chain IDL account — and that account has not been
+re-uploaded since before Aug 2023, while the program itself was last deployed
+**2026-07-16**. The team upgraded the bytecode without refreshing the IDL, so
+the on-chain IDL describes a program that no longer exists.
+
+Verified by decoding the `ProgramData` account's `last_deploy_slot`
+(433290841 → 2026-07-16) against the IDL account's contents, and cross-checked
+against the Rust at both `main` and `mainnet`. Beyond the missing account, the
+stale IDL exposed a `redelegate` instruction the deployed program no longer has,
+and omitted `create_canonical_stake` / `finalize_delinquent_upgrade`, plus the
+`delinquentUpgrader` field on `State` and `delinquentUpgraderActiveBalance` on
+`ValidatorRecord`.
+
+Fixed by pointing this one entry at the IDL Marinade publish in their official
+TS SDK (`marinade-ts-sdk`, updated 2026-06-25 with "align SDK with program
+upgrade"):
+
+```json
+"idlURL": "https://raw.githubusercontent.com/marinade-finance/marinade-ts-sdk/refs/heads/main/src/programs/idl/json/marinade_finance.json"
+```
+
+### Policy: the on-chain IDL stays the default
+
+**Keep fetching from the on-chain IDL account.** It is the only artifact bound
+to the program address we actually call, and a team failing to re-upload it on
+deploy should be the exception, not the assumption. An IDL in a repo or SDK
+carries the opposite risk: `main` may describe code that is **not yet deployed**,
+which breaks the client just as badly and more subtly, because everything still
+compiles.
+
+So an `idlURL` override needs evidence that the on-chain IDL is stale *and* that
+the replacement matches what is deployed — read from the chain, not from the
+repo. For Marinade that was:
+
+1. **The program is newer than its IDL.** Decode `ProgramData.last_deploy_slot`
+   — `getAccountInfo` on the program (jsonParsed) gives the programData address;
+   `getAccountInfo` on that with `dataSlice{offset:0,length:13}` and base64 gives
+   `u32 enum (3 = ProgramData) || u64 last_deploy_slot`; `getBlockTime` dates it.
+   Marinade: slot 433290841 → 2026-07-16, versus an IDL account describing
+   pre-Aug-2023 code.
+2. **Live account data matches the new layout, not the old.** The upgrade
+   appended `delinquentUpgrader` to `State` at offset 638, exactly where the old
+   layout ended. On the live state account
+   (`8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC`) byte 638 is `2` — the `Done`
+   variant ordinal — and it is the *only* non-zero byte past the old boundary.
+   Under the old layout the program would never write there, so this is the
+   deployed program's own output confirming the field exists.
+
+Without both, prefer the on-chain IDL and leave the discrepancy documented
+instead. Re-verify step 2 if the SDK IDL later moves ahead of a deploy.
+
+The same diff also confirmed the Kamino oracle sentinels are correct: klend's
+`RefreshReserve` and kfarms' `RefreshFarm` both declare their optional accounts
+as `Option<...>`, and Anchor signals an absent optional account by passing the
+*invoked program's* id — which is exactly why `refreshReserve` substitutes the
+kLend program and the farms builders substitute the farms program. The generated
+`refreshReserveKeys` already encodes this as
+`requireNonNullElse(oracle, invokedProgram)`; the hand-written layer adds the
+mapping from Kamino's *semantic* null keys (`PublicKey.NONE`, `nu111…`) onto
+that positional convention, which `requireNonNullElse` alone would not catch.
 
 ## Triaged equivalent mutants (accepted with reasons)
 
