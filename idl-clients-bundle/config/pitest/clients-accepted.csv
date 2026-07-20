@@ -366,6 +366,11 @@ software.sava.idl.clients.loopscale.LoopscalePDAs,loan,31,VoidMethodCallMutator,
 software.sava.idl.clients.loopscale.LoopscalePDAs,loan,32,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.loopscale.LoopscalePDAs,userRewardsInfo,95,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.loopscale.LoopscalePDAs,vaultStake,84,NullReturnValsMutator,NO_COVERAGE
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,bank,128,NullReturnValsMutator,NO_COVERAGE
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts,accountsPerBank,79,PrimitiveReturnsMutator,NO_COVERAGE
 software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,113,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,84,NullReturnValsMutator,SURVIVED
 software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,97,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED

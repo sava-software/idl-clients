@@ -17,10 +17,15 @@ import java.util.OptionalInt;
 /// wrapped here.
 ///
 /// Health-affecting instructions ([#borrow], [#withdraw], [#pulseHealth]) require the marginfi risk
-/// engine to read every active balance's bank and oracle. Those accounts are passed as
+/// engine to read every active balance's bank and its price sources. Those accounts are passed as
 /// `remaining_accounts` and are **not** emitted by the generated builders: the caller must append
-/// them to the returned [Instruction] via [Instruction#extraAccounts] in the order
-/// `<bank1, oracle1, bank2, oracle2, ...>`.
+/// them to the returned [Instruction] via [Instruction#extraAccounts].
+///
+/// The payload is **not** a flat `<bank, oracle>` sequence. Each bank contributes between one and
+/// five accounts depending on its oracle setup and asset tag, and the token-moving instructions
+/// additionally require the bank's mint at the *front* when the bank is Token-2022. Use
+/// [MarginfiRemainingAccounts], which encodes both rules and validates each group's size, rather
+/// than assembling the list by hand.
 public interface MarginfiClient {
 
   static MarginfiClient createClient(final SPLAccountClient splAccountClient, final MarginfiAccounts accounts) {

@@ -105,7 +105,9 @@ Two things worth knowing before repeating this experiment:
 mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
 ```
 
-`scope` is left on plain `STRONGER` because the mutator fires zero times there.
+`scope` is left on plain `STRONGER` because the mutator fires zero times there;
+the same was measured for `idl-clients-spl`'s own suite (742 mutations with
+and without), so it is not enabled there either.
 Of the five new survivors, three were killed and two accepted (below).
 
 ## Baseline composition (seeded 2026-07-18)
@@ -410,6 +412,67 @@ supplies two slots earlier. The vault's seeds are not in the IDL; they come from
 the program's own `constants.rs::get_global_vault_address` (`["vault", mint]`),
 now `PhoenixAccounts.globalVaultPDA`. Both methods gained a `globalVaultKey`
 parameter (**breaking**).
+
+### Orca and Meteora: what could and could not be ground-truthed
+
+**Orca — 61 instructions, zero ordering defects.** The clone at
+`orca/whirlpools` carries the real program (`programs/whirlpool/src/instructions`,
+Anchor `#[derive(Accounts)]`). All 17 reported differences were the auto-wired
+class already seen with jupiter-lend and marginfi — `rent`,
+`associated_token_program` and `memo_program` resolved internally by the client
+instead of taken as parameters — with positions matching exactly. The memo
+program was checked rather than assumed: the IDL pins
+`MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr` and `solanaAccounts.memoProgramV2()`
+is that address, so v2-vs-v1 is correct.
+
+One structural surprise worth recording: the **published IDL declares
+`whirlpool_program` as a trailing account on all 66 instructions, and the repo's
+Rust declares it on none.** Verified against the live on-chain IDL account, not
+just our stored copy. Versions match (0.9.0 both, repo HEAD 2026-07-15), so this
+is not staleness — the published IDL simply does not correspond 1:1 to the
+repo's `#[derive(Accounts)]`. Our client follows the IDL, which is what every
+other Orca client does too. Normalise this away before reading an Orca diff or
+it swamps the real signal.
+
+**Meteora — cannot be ground-truthed at all.** `dlmm-sdk` contains only
+`commons` (math) and `cli`; there is no `programs/` directory, and
+`commons/src/lib.rs` opens with `declare_program!(dlmm)`, which generates the
+SDK's account structs *from `idls/dlmm.json`*. The SDK is therefore a sibling of
+our generated client, not an independent source — diffing against it would be
+circular. The program itself is closed-source. What *is* worth doing, and was
+done: comparing their IDL copy to ours as a staleness check. Identical —
+version 0.12.0, 76 instructions, every account list matching.
+
+### Extra (`remaining_accounts`) coverage
+
+Four programs already had helpers with derivation notes: `WhirlpoolRemainingAccounts`,
+`KaminoLendingRemainingAccounts`, `KaminoVaultsRemainingAccounts`,
+`MeteoraDlmmRemainingAccounts`. **Marginfi had none, and its client javadoc was
+wrong.**
+
+The javadoc said the risk engine reads `<bank1, oracle1, bank2, oracle2, ...>`.
+The program's own `get_remaining_accounts_per_bank` says the group size is *per
+bank*, from one to five:
+
+| Bank | Accounts |
+|---|---|
+| `OracleSetup.Fixed` | 1 — bank only |
+| `FixedKamino` / `FixedDrift` / `FixedJuplend` | 2 — bank + venue state |
+| asset tag `DEFAULT`(0) / `SOL`(1) | 2 — bank + oracle |
+| asset tag `KAMINO`/`DRIFT`/`SOLEND`/`JUPLEND`(3-6) | 3 — bank + oracle + reserve |
+| asset tag `STAKED`(2) | 5 — bank + oracle + lst mint + stake pool + onramp |
+
+A wrong count fails on chain with `WrongNumberOfOracleAccounts`. Separately,
+`maybe_take_bank_mint` splits the **first** remaining account off on the
+token-moving instructions and requires it to equal `bank.mint` — but only for
+Token-2022 banks; for SPL Token it consumes nothing and the mint must be absent.
+Getting that wrong fails with `T22MintRequired`. Transfer-hook accounts trail
+everything, since the program forwards the whole slice to the transfer CPI.
+
+Fixed by correcting the javadoc and adding `MarginfiRemainingAccounts`, a builder
+that validates each group against the bank it describes, so a miscount throws at
+build time with the expected and actual counts rather than surfacing as an opaque
+on-chain error.
 
 ### Marginfi: a stale on-chain IDL hiding two live client bugs
 
