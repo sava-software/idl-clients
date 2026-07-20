@@ -71,57 +71,60 @@ source whenever it is available:
   failing that, on-chain transaction inspection — is the only reliable way to
   build correct instructions.
 
-### Where an IDL is fetched from
+### Where an IDL is fetched from, and whether it is current
 
-**Default to the on-chain IDL account.** It is the only artifact bound to the
-program address we actually call. A team failing to re-upload it on deploy is
-the exception, not the assumption — and an IDL committed to a repo or SDK
-carries the opposite risk: the default branch may describe code that is **not
-yet deployed**, which breaks the client just as badly and more quietly, because
-it still compiles.
+**Default to the on-chain IDL account** — it is the only artifact bound to the
+program address we actually call. An IDL committed to a repo or SDK carries the
+opposite risk: the default branch may describe code that is **not yet deployed**,
+which breaks the client just as quietly because it still compiles.
 
-Two traps make this harder than it looks. **"The on-chain IDL agrees with our
-generated code" proves nothing** — it only shows our code matches *the IDL*,
-which is a separate account a deploy does not update. And **a repo that is not
-the original org may still be the program's home**: teams rebrand (marginfi's
-`mrgnlabs` → `0dotxyz`/p0), so treat provenance as a question to answer, not a
-disqualifier.
+Two traps are worth carrying around even when you are not investigating:
 
-The program itself is the authority, and it can be **asked directly**. Simulate a
-transaction carrying nothing but a candidate 8-byte discriminator, with
-`sigVerify: false` and `replaceRecentBlockhash: true`. The fee payer must be a
-real funded account, or simulation aborts with `AccountNotFound` before reaching
-the program.
+- **"The on-chain IDL agrees with our generated code" proves nothing.** It shows
+  our code matches *the IDL* — a separate account that a deploy does not update.
+- **A repo under a different org may still be the program's home.** Teams
+  rebrand; treat provenance as a question to answer, not a disqualifier.
 
-- **Not deployed** → `InstructionFallbackNotFound` (custom error 101), identical
-  to what a garbage discriminator returns — always probe one as a control.
-- **Deployed** → the program logs `Instruction: <Name>` first, then fails later
-  on account or argument validation (102, 3005, ...).
+The program can be asked directly, and there is a tool for it:
 
-This settles both halves at once: probe an instruction the candidate IDL *adds*
-and one it *removes*. Weaker signals worth knowing: `ProgramData.last_deploy_slot`
-(`getAccountInfo` on the program jsonParsed → programData address; then
-`dataSlice{offset:0,length:13}` base64 → `u32 enum (3) || u64 slot`; `getBlockTime`
-dates it) only shows the program was *touched* after the IDL, not what changed.
-Grepping the deployed `.so` for account-name literals gives real hits but is
-noisy — a discriminator scan of the same buffer matched only 13 of 88
-known-present instructions. And a changed struct cannot always distinguish
-versions: a new field carved from former padding reads as zero under both.
+```shell
+python3 tools/idl_probe.py     # every program in main_net_programs.json
+```
 
-`idl-clients-bundle/config/pitest/README.md` records the entries currently
-overridden (Marinade, marginfi) and the evidence for each. Diffing generated
-account orders against the program's Rust is what surfaces this class of drift in
-the first place.
+Run it after any upstream deploy. Full method — the dispatch probe, the weaker
+signals and why they disappoint, and the bar for an `idlURL` override — is in
+**[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md)**. Current
+overrides and their evidence: `idl-clients-bundle/config/pitest/README.md`.
 
-**Check how an `idlURL` versions itself.** A path that tracks a branch
-(`marinade_finance.json`) keeps following upstream; a version-pinned filename
-(`marginfi_0.1.9.json`) silently freezes at that release and fails closed into
-the staleness the override was meant to fix. Re-run the dispatch probe after any
-deploy of an overridden program.
-- When behavior changes upstream (new instruction versions, re-ordered or
-  auto-wired accounts), update the generated code via idl-src-gen where the
-  IDL covers it, and update the hand-written clients for everything the IDL
-  cannot express.
+### Diffing account order against the Rust
+
+```shell
+python3 tools/ground_truth.py anchor <rust-dir>        <Program.java>
+python3 tools/ground_truth.py shank  <instructions.rs> <Program.java>
+```
+
+This is what has surfaced most of the account-ordering defects fixed here — a
+transposed pair of same-typed `PublicKey` accounts compiles cleanly and fails
+only on chain. The tool is **assistive, not an oracle**: most differences it
+reports are artifacts, and `compared 0` means it matched no names, not that
+everything passed. Triage guidance and the per-program traps are in
+[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md); some programs
+(Meteora, Loopscale) have no independent source and cannot be ground-truthed at
+all.
+
+### Extra (`remaining_accounts`) conventions
+
+An IDL expresses neither accounts read from `ctx.remaining_accounts` nor a
+**trailing optional** account, so both are invisible to the generated builders
+and live in a hand-written `*RemainingAccounts` helper with the derivation cited
+in its javadoc. Two shapes that have already shipped as defects — variable-size
+per-account groups, and an account consumed off the *front* of the list — are
+described in [docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md).
+
+When behaviour changes upstream (new instruction versions, re-ordered or
+auto-wired accounts), update the generated code via idl-src-gen where the IDL
+covers it, and update the hand-written clients for everything the IDL cannot
+express.
 
 Reference clones of program repositories (and core repos like Agave and the
 Solana SDK) are kept locally for this purpose. Machine-specific locations —
@@ -132,22 +135,13 @@ cloned, clone it into the reference directory listed there.
 
 ### Reporting issues found in a third-party program's Rust source
 
-The Rust source is ground truth, but our job is to mirror the program's actual
-on-chain behavior, not to critique its code. When cross-checking against a
-**third-party** program's Rust (anything that is *not* a sava-software repo,
-e.g. the SPL, Kamino, Meteora, Orca, Jupiter, Marinade sources):
-
-- **Only surface a discrepancy if it is a genuine bug we would open an upstream
-  PR for.** If you find one, say so precisely (file, symbol, wrong vs correct
-  behavior) so a PR can follow.
-- **Do not report harmless divergences.** A Rust builder fn whose account flags
-  disagree with its own doc comment, dead code, style, naming — none of that is
-  actionable for us. Match whatever the deployed program actually enforces
-  (verify on-chain when in doubt) and move on without a note. These reports are
-  noise, not signal.
-
-This restriction is only for third-party sources. Issues in sava-software's own
-repos (sava, idl-src-gen, sava-build, ...) are reported and fixed normally.
+Mirror what the deployed program enforces; do not critique its code. Only
+surface a discrepancy if it is a genuine bug worth an upstream PR, and say it
+precisely (file, symbol, wrong vs correct behaviour). Harmless divergences —
+doc comments disagreeing with code, dead code, style — are noise, not signal.
+This restriction is for third-party sources only; issues in sava-software's own
+repos are reported and fixed normally. Detail:
+[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md).
 
 ### PDA helpers require the official program source
 
@@ -206,6 +200,15 @@ savaGithubPackagesPassword=GITHUB_TOKEN
 
 Integration-style tests named `Integ.*` are git-ignored scratch files.
 
+### Verification tools
+
+`tools/` holds two dependency-free scripts (Python 3 + `curl`) for the checks
+that are otherwise re-derived by hand: `idl_probe.py` asks each deployed program
+whether it still has the instructions our IDL declares, and `ground_truth.py`
+diffs a generated client's account order against the program's Rust. Neither is
+wired into Gradle or CI — `qualityGate` is the gate; these are investigative
+aids whose output needs triage. See [tools/README.md](tools/README.md).
+
 ## Hardening: mutation testing & fuzzing
 
 Money-critical hand-written parsers and math are covered by PIT mutation testing
@@ -233,11 +236,12 @@ The process contract for any change to main sources (full policy: sava-build's
 
 - **Run `./gradlew qualityGate` after changing main sources** — unit tests plus
   every PIT suite, each diffed against its accepted baseline in
-  `<module>/config/pitest/`. It is the definition of "safe to commit", and it
-  costs about 40s for the whole repo.
+  `<module>/config/pitest/`. It is the definition of "safe to commit". Budget
+  ~75s for the whole repo (indicative — these grow as suites do; re-measure
+  rather than trusting this line).
 - **While iterating, run only the suite that owns the code you touched**:
-  `pitestSpl` (~10s), `pitestOrca` (~20s), `pitestScope` (~5s), `pitestClients`
-  (~12s). `qualityGate` is the before-commit command, not the inner-loop one.
+  `pitestSpl`, `pitestScope` (~12s each), `pitestClients`, `pitestOrca` (~28s
+  each). `qualityGate` is the before-commit command, not the inner-loop one.
 - A new unkilled mutant has exactly three legal outcomes: **kill it** with a test
   (prefer asserting the property it breaks — an overflow guard rejecting, a
   quote's rounding direction, exact encoded byte positions — over restating the
@@ -254,6 +258,13 @@ The process contract for any change to main sources (full policy: sava-build's
   and per-run exploration is the fuzz targets' job.
 - Fuzz findings become a committed seed input **and** a named regression test,
   never just a fix.
+
+Mutator selection is per-suite. The default is PIT's `STRONGER` group, but
+`orca` and `clients` add `EXPERIMENTAL_BIG_INTEGER` because `MathMutator` only
+rewrites *primitive* bytecode arithmetic — `BigInteger`/`BigDecimal` arithmetic
+is method calls, so fixed-point and fee math would otherwise go entirely
+unmutated. See `idl-clients-bundle/config/pitest/README.md` for the measurements
+behind that, including why `EXPERIMENTAL_BIG_DECIMAL` is deliberately omitted.
 
 Mutation suites are targeted by **package wildcard with explicit exclusions,
 never by allowlist** — an allowlist silently exempts every class added after it

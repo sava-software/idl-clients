@@ -30,6 +30,12 @@
 # IDLs the client sources are generated from
 !/idls/**
 
+# Agent/developer tooling and the long-form docs AGENTS.md links to. Both are a
+# new kind of tracked file, so they need explicit rules under the whitelist.
+!/docs/**
+!/tools/*.py
+!/tools/*.md
+
 # Modules: sources (hand-written and generated), build scripts, docs, the idl.json
 # each generated package was produced from, test fixtures and fuzz seed corpora,
 # and the mutation baselines the quality gate ratchets against
