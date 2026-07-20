@@ -1,5 +1,33 @@
 # Changelog
 
+## [25.18.0](https://github.com/sava-software/idl-clients/compare/25.17.0...25.18.0) (2026-07-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* **idl-clients-spl:** NonceAccount.setNonce returns Transaction instead of void. Transaction.prependIx does not mutate in place, so the returned transaction is the one to sign; callers that ignored the result were building durable-nonce transactions with no AdvanceNonceAccount.
+
+### Features
+
+* **jupiter:** Add extra account builders for MarginFi. ([8c20645](https://github.com/sava-software/idl-clients/commit/8c206458777ee6cc0e7a576983afd3c45e2aa02a))
+* **token-metadata:** Helper for Token Metadata extra accounts. ([59cee2e](https://github.com/sava-software/idl-clients/commit/59cee2e58c842f2172d107532b469e67daea05af))
+
+
+### Bug Fixes
+
+* **deps:** upgrade Solana BOM to 25.28.0 and build plugins to 21.5.6 ([d8bea34](https://github.com/sava-software/idl-clients/commit/d8bea345f53721abfb91a45cf4fc4d1ebc266829))
+* Expand scope and orca tests. ([9835772](https://github.com/sava-software/idl-clients/commit/9835772922f71b72152a2cdb5c96f77dd2c1b583))
+* **gen-src:** Regenerate with fixed string length reporting. ([7229564](https://github.com/sava-software/idl-clients/commit/7229564b196bd40ff9e7c2cdb8164f1c08007cca))
+* **idl-clients-spl:** LockUp epoch and durable-nonce serialization ([8e6a742](https://github.com/sava-software/idl-clients/commit/8e6a7424fdb76633736907441ccc4388175b3006))
+* **jupiter:** Interpriting the jupiter swap fee payer. ([0bf8cc4](https://github.com/sava-software/idl-clients/commit/0bf8cc47b3bafe9fe65f6d3a564cce3901948b6a))
+* **marginfi, marinade:** update marginfi and marinade idl's ([0d8c2bd](https://github.com/sava-software/idl-clients/commit/0d8c2bd88d12c0c7a6ef7e3ce5c06f4a9cf8450f))
+* **phoenix:** IDL is incorrect, address syncParentToChild accounts. ([91bd554](https://github.com/sava-software/idl-clients/commit/91bd554b9c7ac76966de16e8c22a0f0e56f36447))
+
+
+### Miscellaneous Chores
+
+* release 25.18.0 ([643bb67](https://github.com/sava-software/idl-clients/commit/643bb671cd74fcf8421d7c951c47c9bf3a28d91b))
+
 ## [25.17.0](https://github.com/sava-software/idl-clients/compare/25.16.0...25.17.0) (2026-07-17)
 
 
