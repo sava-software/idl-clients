@@ -30,6 +30,11 @@ hardening {
     "software.sava.idl.clients.*.Integ"
   )
   mutation.register("orca") {
+    // BigInteger arithmetic is method calls, which MathMutator (primitive
+    // bytecode ops) cannot reach — see config/pitest/README.md. Requires
+    // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
+    // fires zero times anywhere in this module.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
     // quote math and tick/PDA derivation
     targetClasses = listOf("software.sava.idl.clients.orca.*")
     excludedClasses = notMutated
@@ -43,6 +48,11 @@ hardening {
     targetTests = "software.sava.idl.clients.kamino.*Test*"
   }
   mutation.register("clients") {
+    // BigInteger arithmetic is method calls, which MathMutator (primitive
+    // bytecode ops) cannot reach — see config/pitest/README.md. Requires
+    // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
+    // fires zero times anywhere in this module.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
     // everything else hand-written in this module
     targetClasses = listOf("software.sava.idl.clients.*")
     excludedClasses = notMutated + listOf(

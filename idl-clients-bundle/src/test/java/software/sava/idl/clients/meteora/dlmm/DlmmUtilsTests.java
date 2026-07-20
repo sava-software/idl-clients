@@ -420,6 +420,35 @@ final class DlmmUtilsTests {
     assertEquals(1_004_000L, DlmmUtils.computeFeeFromAmount(lbPair, 1_000_000_000L));
   }
 
+  /// `amountWithFees` is a u64 carried in a signed `long`, so it is masked with
+  /// `2^64 - 1` before the arithmetic. For any value below 2^63 the mask is a
+  /// no-op — it only earns its keep when the high bit is set, i.e. when the
+  /// `long` is negative and denotes a u64 above 2^63. Without such a case the
+  /// mask is indistinguishable from not masking at all.
+  @Test
+  void computeFeeFromAmountMasksTheHighU64Range() {
+    final var lbPair = lbPair(staticParameters(10_000, 40_000, 500, 0), 10_000, 10, new long[16]);
+
+    // -1L is u64 2^64 - 1: fee = ceil((2^64 - 1) * 1_004_000 / 1e9)
+    final var maxU64 = new java.math.BigInteger("18446744073709551615");
+    final var expected = maxU64
+        .multiply(java.math.BigInteger.valueOf(1_004_000L))
+        .add(java.math.BigInteger.valueOf(999_999_999L))
+        .divide(java.math.BigInteger.valueOf(1_000_000_000L));
+    assertEquals(expected.longValueExact(), DlmmUtils.computeFeeFromAmount(lbPair, -1L));
+
+    // a u64 above 2^63 must yield a strictly larger fee than the largest
+    // positive long — not a negative or wrapped one. (Adjacent u64 values are
+    // no good here: the rate is ~0.001, so a difference of one rounds away.)
+    final long atMaxLong = DlmmUtils.computeFeeFromAmount(lbPair, Long.MAX_VALUE);
+    final long atMaxU64 = DlmmUtils.computeFeeFromAmount(lbPair, -1L);
+    assertTrue(atMaxLong > 0L);
+    assertTrue(atMaxU64 > atMaxLong,
+        "u64 2^64-1 must charge more than u64 2^63-1");
+    // ~2x, since 2^64-1 is about twice 2^63-1
+    assertEquals(2L, Math.round((double) atMaxU64 / atMaxLong));
+  }
+
   @Test
   void computeProtocolFee() {
     // protocol fee = floor(feeAmount * protocol_share / 10_000).

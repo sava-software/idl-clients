@@ -45,6 +45,69 @@ mutating them would make the baseline machine-dependent), and
 `software.sava.idl.clients.spl.*`, which reaches this classpath as a project
 dependency and is owned by `idl-clients-spl`'s own suite.
 
+## Mutator set, and the BigInteger/BigDecimal gap
+
+The suites run PIT's **`STRONGER`** group. Decompiling
+`StandardMutatorGroups` in the pitest jar gives its exact membership:
+`DEFAULTS` + `CONDITIONALS_BOUNDARY`, `INCREMENTS`, `INVERT_NEGS`, `MATH`,
+`RETURNS`, `VOID_METHOD_CALLS`, the four `REMOVE_CONDITIONALS_*`, and
+`EXPERIMENTAL_SWITCH` — that last one being why `SwitchMutator` rows appear in
+the baselines at all.
+
+**What `STRONGER` does not include is the BigInteger/BigDecimal mutators.** They
+live in `org.pitest.mutationtest.engine.gregor.mutators.experimental`
+(`EXPERIMENTAL_BIG_INTEGER`, `EXPERIMENTAL_BIG_DECIMAL`) and must be named
+explicitly.
+
+That gap matters more here than in a typical codebase. `MathMutator` rewrites
+*primitive bytecode arithmetic* — `IADD`, `ISUB`, `LMUL` and friends. Arithmetic
+on `BigInteger`/`BigDecimal` is **method calls** (`add`, `subtract`, `multiply`,
+`divide`), which those opcodes never touch. So every Q64.64 fixed-point
+conversion, fee computation and liquidity estimate in `OrcaUtil`,
+`WhirlpoolQuote` and `DlmmUtils` — the arithmetic most likely to hide an
+off-by-one that silently misprices — was *completely unmutated* under the
+default configuration. A high kill rate on those classes measured the
+conditionals and the return values around the math, not the math itself.
+
+pitest **1.25.8** fixed these mutators for Java 25 (they misbehaved before), so
+enabling them is viable for the first time. Measured on 2026-07-20:
+
+| Suite | `STRONGER` | + Big mutators | New | New killed | New survivors |
+|---|---|---|---|---|---|
+| `orca` | 541 | 655 | +114 | 110 (96%) | 4 |
+| `clients` | 1367 | 1417 | +50 | 49 (98%) | 1 |
+| `scope` | 354 | 354 | 0 | — | — |
+
+Two things worth knowing before repeating this experiment:
+
+- **`EXPERIMENTAL_BIG_DECIMAL` contributed nothing.** All 164 new mutations came
+  from `EXPERIMENTAL_BIG_INTEGER`; the BigDecimal mutator fired zero times across
+  all three suites, including `scope`, which is the most `BigDecimal`-heavy code
+  in the module. Enabling it costs nothing but buys nothing here.
+- **The existing tests already kill 97% of them**, which is a real endorsement of
+  the property-style assertions: they were strong enough to catch a mutation
+  class they were never aimed at. The five survivors are the actual new signal:
+
+  | Class | Method | Line |
+  |---|---|---|
+  | `OrcaUtil` | `reverseApplyTransferFee` | 379 |
+  | `OrcaUtil` | `sqrtFloor` | 492 |
+  | `OrcaUtil` | `sqrtPriceX64ToTickIndex` | 681 |
+  | `WhirlpoolQuote` | `tokenBFromLiquidity` | 249 |
+  | `DlmmUtils` | `computeFeeFromAmount` | 414 |
+
+  Note that `sqrtPriceX64ToTickIndex` survives despite the whole-domain
+  round-trip sweep, so it is not merely a coverage gap.
+
+**Enabled on 2026-07-20** for `orca` and `clients`, via `build.gradle.kts`:
+
+```kotlin
+mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
+```
+
+`scope` is left on plain `STRONGER` because the mutator fires zero times there.
+Of the five new survivors, three were killed and two accepted (below).
+
 ## Baseline composition (seeded 2026-07-18)
 
 | Date | Suite | Rows | `NO_COVERAGE` | `SURVIVED` | Killed | Test strength |
@@ -58,6 +121,12 @@ dependency and is owned by `idl-clients-spl`'s own suite.
 | 2026-07-19 | `clients` | 747 | 681 | 66 | 608/1360 (45%) | 90% |
 | 2026-07-19 | `clients` | 722 | 665 | 57 | 632/1359 (47%) | 92% |
 | 2026-07-19 | `clients` | 655 | 590 | 65 | 707/1367 (52%) | 91% |
+| 2026-07-19 | `clients` | 643 | 578 | 65 | 719/1367 (53%) | 92% |
+| 2026-07-19 | `orca` | 100 | 46 | 54 | 439/541 (81%) | 89% |
+| 2026-07-20 | `clients` | 591 | 517 | 74 | 774/1367 (57%) | 91% |
+| 2026-07-20 | `clients` | 574 | 499 | 75 | 791/1367 (58%) | 91% |
+| 2026-07-20 | `orca` | 100 | 46 | 54 | 553/655 (84%) | 91% |
+| 2026-07-20 | `clients` | 574 | 499 | 75 | 839/1415 (59%) | 92% |
 
 **The seeded baseline is triage debt made explicit, not acceptance.** Priorities
 1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
@@ -185,6 +254,86 @@ is the remaining tranche.
      `serializeTransaction`. The setup instruction is still preferred (it funds
      the ATA, so its first account is the payer by construction); otherwise the
      wallet is recovered from the swap instruction's signer.
+
+   - **`JupiterVoteClient`'s convenience overloads.** Two shapes recur across
+     the client: read the four keys out of a fetched `Escrow` (locker, address,
+     owner, token account), or fall back to the client's own escrow identity.
+     They are the ergonomic entry points a caller actually reaches for, and none
+     were covered — the existing tests all used the explicit full-argument forms,
+     which is why the rows read as `NO_COVERAGE` despite the method names
+     appearing in the suite. Each overload is now checked against the explicit
+     call it delegates to, with every `Escrow` field varied independently, since
+     all four are `PublicKey` and a transposition compiles. `increaseLockedAmount`
+     gets an explicit anti-symmetry assertion: its short form supplies the
+     escrow's ATA as destination and the owner's as source, and swapping them
+     would move tokens the wrong way.
+
+   - **`OrcaWhirlpoolsClient`'s `default` overloads.** The full-argument
+     builders are thin delegations, but the short forms *derive* accounts the
+     caller would otherwise compute — the position PDA, the owner's ATA for the
+     position mint, and the whirlpool's oracle. Each is now checked against the
+     explicit call it delegates to, with the derivations themselves tested by
+     property (deterministic, every input participates, distinct from
+     same-shaped neighbours and from the mint/pool they derive from).
+
+     A note on where *not* to spend effort here: `OrcaUtil`'s remaining 31 rows
+     were re-examined and are the already-documented equivalents below
+     (BigInteger shift symmetry, log-approximation precision headroom). A
+     round-trip sweep of ~3600 ticks across the whole domain plus a strict
+     monotonicity check was added anyway — it killed nothing, as expected, but
+     it is a far better regression guard than the ten hand-picked ticks it
+     joins, and it is the test that would catch a real change to the tick math.
+     **Read the accepted-equivalents section before picking a target**; these
+     rows look like untested math and are not.
+
+   - **`JupiterSwapApiClient` over a mock HTTP server** — 34 rows -> 1. There
+     was no HTTP mocking in this module, so the harness (`JupiterRestTests`) is
+     adapted from sava-rpc's `RpcRequestTests`: an in-JVM `HttpServer` on an
+     ephemeral port, a queue of expected exchanges, and an `@AfterEach` that
+     fails on anything left unconsumed — so a client that silently stops issuing
+     a request cannot pass. The differences from the RPC version are that Jupiter
+     is REST (match on method + path + body, not a JSON-RPC envelope) and that
+     the response *status* has to be controllable, because the client's own
+     error handling keys off it. Build the client with `createLocalClient()`,
+     which uses unprefixed paths.
+
+     Two pieces here are logic rather than plumbing. `swap-instructions` gates
+     its raw response on an explicit `200 <= status < 300` before handing back
+     bytes, so an error page cannot be mistaken for instruction data; the
+     `>= 300` boundary is pinned at exactly 300. And the dex-label map inverts
+     `programId -> label` into a case-insensitive `label -> programId`, throwing
+     on a collision rather than letting one DEX silently overwrite another's
+     program id.
+
+   - **`JupiterTokenClient`** — 7 rows -> 0, and it took the
+     `JupiterTokenV2$Parser` rows with it, so the suite dropped 17. Every method
+     on this client is a *path builder*: the response parsing is shared, so what
+     distinguishes `search` from `forTag` from `forCategory` is only the URL
+     each resolves. A wrong segment returns a well-formed token map from the
+     wrong endpoint, so the tests assert the exact path and query rather than the
+     parsed result alone. `forCategory` is the one worth care — category and
+     interval are *path* segments while the limit is a query parameter, so its
+     three arguments each land somewhere different and transposing the first two
+     still yields a valid URL for a different listing.
+
+     `JupiterRestTests` is the shared harness for this and the swap client;
+     subclasses build their own client against its `endpoint`. Note that
+     `JupiterPriceClientTest` predates it and has its own bespoke `HttpServer`
+     setup — it is already at zero rows, so it was left alone rather than
+     churned onto the shared base for no gain.
+
+   - **The `EXPERIMENTAL_BIG_INTEGER` intake** (see the mutator section above).
+     Three of the five new survivors were killed, and each needed a case the
+     existing tests had no reason to construct:
+     `OrcaUtil.reverseApplyTransferFee` — the recovered fee feeds *only* the
+     max-fee cap, so with an unbounded cap the subtraction is unobservable; it
+     took a cap the correct fee stays under but the mutated one trips.
+     `WhirlpoolQuote.tokenBFromLiquidity` — the round-up flag is detected by
+     masking off the low 64 bits, and `and` and `or` agree on every input except
+     a product that is a whole multiple of 2^64, so the test constructs one via
+     `gcd`. `DlmmUtils.computeFeeFromAmount` — the u64 mask is a no-op below
+     2^63, so it only becomes observable for a negative `long` denoting a u64
+     above that.
 
    Remaining, in rough value order: the rest of the client impls
    (`MeteoraDlmmClient(Impl)` ~65 still, `LoopscaleClientImpl` 17,
@@ -429,6 +578,56 @@ mapping from Kamino's *semantic* null keys (`PublicKey.NONE`, `nu111…`) onto
 that positional convention, which `requireNonNullElse` alone would not catch.
 
 ## Triaged equivalent mutants (accepted with reasons)
+
+### BigInteger `sqrtFloor` initial guess (1 mutant, orca)
+
+`OrcaUtil.sqrtFloor:492` seeds Newton's integer square root with
+`value.shiftRight(1)`; the mutant seeds it with `shiftLeft(1)` instead. The
+iteration `next = (prev + value/prev) / 2` descends monotonically to
+`floor(sqrt(value))` from *any* starting point at or above the true root, and
+both `v/2` and `2v` qualify for `v >= 2` (`v < 2` returns early). Only the
+iteration count changes.
+
+Verified as well as reasoned: both variants were reimplemented and compared over
+200,490 inputs — every value below 200,000 plus `2^e ± 3` for `e` in 60..129 —
+with **zero** differences.
+
+### BigInteger tick-index lower error margin (1 mutant, orca)
+
+`OrcaUtil.sqrtPriceX64ToTickIndex:681` computes `tickLow` as
+`logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64)`; the mutant adds instead.
+
+**This one is accepted as untriaged, not proven equivalent.** Writing
+`x = logbpX64 / 2^64`, the margins are ~0.01 and ~0.856 of a tick, so
+`tickLow = floor(x - 0.01)`, the mutant's `floor(x + 0.01)`, and
+`tickHigh = floor(x + 0.856)`. The two agree unless `frac(x) < 0.01`, where the
+mutant collapses `tickLow` onto `tickHigh` and takes the equality fast path,
+returning `tickHigh` without the refinement step. That differs from the original
+only when the refinement would have chosen `tickLow` — i.e. when the 14-bit log
+approximation overshot by enough that the true tick is one below `floor(x)`,
+which is precisely the case the lower margin exists to absorb.
+
+So the guard is *not* dead code and must stay. It resists testing because the
+inputs that reach it are exactly the rare approximation-error cases, and the
+tests that would normally find them do not: the whole-domain round-trip sweep
+feeds exact tick boundaries, and the between-tick sweep (offsets at width/2
+through width/256 from both ends, over six ticks) also fails to distinguish it.
+Killing it would need a targeted search for a sqrt price whose log approximation
+errs by ~0.01 tick in the right direction.
+
+### HTTP 1xx unreachable through the JDK client (1 mutant, clients)
+
+`JupiterSwapApiClientImpl`'s raw `swap-instructions` handler rejects anything
+outside `200 <= status < 300`. The `>= 300` half is tested at exactly 300; the
+`< 200` half is not, and cannot be through this harness — `java.net.http`
+treats 1xx as *interim* responses and never surfaces one as a final status, so a
+server replying 199 just hangs up and the exchange dies with an `EOFException`
+before the client's own check runs.
+
+This is accepted as **untestable in-harness rather than equivalent**: a real 199
+would distinguish the mutant, so the guard is not dead code, and it should stay.
+Killing it would need a raw-socket stub speaking HTTP/1.1 by hand instead of an
+`HttpServer`, which is not worth it for one mutant.
 
 ### DlmmUtils fee and Q64.64 `pow` domain equivalents (15 mutants, clients)
 

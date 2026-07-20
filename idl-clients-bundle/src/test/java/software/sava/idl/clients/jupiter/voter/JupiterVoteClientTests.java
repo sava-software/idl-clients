@@ -1,6 +1,7 @@
 package software.sava.idl.clients.jupiter.voter;
 
 import org.junit.jupiter.api.Test;
+import software.sava.idl.clients.jupiter.voter.gen.types.Escrow;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
@@ -283,5 +284,183 @@ final class JupiterVoteClientTests {
         accounts.indexOf(claimStatus),
         accounts.indexOf(from),
         accounts.indexOf(operator)).size());
+  }
+
+  // ---------------------------------------------------------------------------
+  // convenience overloads
+  // ---------------------------------------------------------------------------
+
+  /// A fetched escrow, carrying its own address and the three keys the
+  /// `Escrow`-taking overloads read out of it.
+  private static Escrow escrow(final PublicKey address,
+                               final PublicKey locker,
+                               final PublicKey owner,
+                               final PublicKey tokens) {
+    return new Escrow(
+        address,
+        software.sava.core.programs.Discriminator.toDiscriminator(0, 1, 2, 3, 4, 5, 6, 7),
+        locker, owner, 255, tokens,
+        1_000L, 0L, 0L, owner, false, 0L, 0L, new java.math.BigInteger[0]);
+  }
+
+  /// The `Escrow`-taking overloads exist so a caller can act on an account it
+  /// just fetched rather than re-deriving four keys. Each field has to reach its
+  /// own slot: locker, escrow address, owner and token account are all
+  /// `PublicKey`, so a transposition compiles and produces a plausible
+  /// instruction.
+  @Test
+  void escrowOverloadsReadEveryFieldIntoItsOwnSlot() {
+    final var address = key(0x51);
+    final var locker = key(0x52);
+    final var owner = key(0x53);
+    final var tokens = key(0x54);
+    final var payer = key(0x55);
+    final var destination = key(0x56);
+    final var fetched = escrow(address, locker, owner, tokens);
+
+    final var fromEscrow = CLIENT.withdraw(fetched, payer, destination);
+    final var explicit = CLIENT.withdraw(locker, address, owner, tokens, payer, destination);
+    assertEquals(keys(explicit), keys(fromEscrow),
+        "the escrow's fields must land where the explicit call puts them");
+
+    // every field participates — moving any one moves the instruction
+    assertNotEquals(keys(fromEscrow),
+        keys(CLIENT.withdraw(escrow(address, key(0x57), owner, tokens), payer, destination)));
+    assertNotEquals(keys(fromEscrow),
+        keys(CLIENT.withdraw(escrow(key(0x57), locker, owner, tokens), payer, destination)));
+    assertNotEquals(keys(fromEscrow),
+        keys(CLIENT.withdraw(escrow(address, locker, key(0x57), tokens), payer, destination)));
+    assertNotEquals(keys(fromEscrow),
+        keys(CLIENT.withdraw(escrow(address, locker, owner, key(0x57)), payer, destination)));
+
+    assertEquals(JUPITER_ACCOUNTS.invokedVoteProgram(), fromEscrow.programId());
+  }
+
+  /// The single-argument `withdraw(Escrow)` defaults the payer to the escrow's
+  /// *owner* and the destination to the client's own ATA — not the escrow's.
+  @Test
+  void singleArgWithdrawDefaultsThePayerToTheEscrowOwner() {
+    final var address = key(0x51);
+    final var locker = key(0x52);
+    final var owner = key(0x53);
+    final var tokens = key(0x54);
+    final var fetched = escrow(address, locker, owner, tokens);
+
+    assertEquals(
+        keys(CLIENT.withdraw(fetched, owner, CLIENT.escrowOwnerKeyATA())),
+        keys(CLIENT.withdraw(fetched)));
+
+    // the destination is the owner's ATA, and is not the escrow's token account
+    final var accounts = keys(CLIENT.withdraw(fetched));
+    assertTrue(accounts.contains(CLIENT.escrowOwnerKeyATA()));
+    assertNotEquals(tokens, CLIENT.escrowOwnerKeyATA());
+  }
+
+  /// The no-argument and payer-only overloads fall back to the client's own
+  /// escrow identity rather than requiring it to be passed back in.
+  @Test
+  void payerOverloadsFallBackToTheClientsIdentity() {
+    final var payer = key(0x55);
+
+    assertEquals(
+        keys(CLIENT.withdraw(JUPITER_ACCOUNTS.lockerKey(), CLIENT.escrowKey(), CLIENT.escrowOwnerKey(),
+            CLIENT.escrowATA(), payer, CLIENT.escrowOwnerKeyATA())),
+        keys(CLIENT.withdraw(payer)));
+
+    // no-arg defaults the payer to the escrow owner
+    assertEquals(keys(CLIENT.withdraw(CLIENT.escrowOwnerKey())), keys(CLIENT.withdraw()));
+
+    // and a different payer really does change the instruction
+    assertNotEquals(keys(CLIENT.withdraw()), keys(CLIENT.withdraw(payer)));
+  }
+
+  /// The remaining convenience overloads follow the same two shapes: read the
+  /// four keys out of a fetched `Escrow`, or fall back to the client's own
+  /// escrow identity. Each is checked against the explicit call it delegates to,
+  /// so a field reaching the wrong slot shows up as a different account list.
+  @Test
+  void theRemainingOverloadsDelegateWithoutReshufflingKeys() {
+    final var address = key(0x51);
+    final var locker = key(0x52);
+    final var owner = key(0x53);
+    final var tokens = key(0x54);
+    final var payer = key(0x55);
+    final var fetched = escrow(address, locker, owner, tokens);
+
+    // Escrow-taking: locker, escrow address and owner, in that order
+    assertEquals(
+        keys(CLIENT.extendLockDuration(locker, address, owner, 42L)),
+        keys(CLIENT.extendLockDuration(fetched, 42L)));
+    assertEquals(
+        keys(CLIENT.toggleMaxLock(locker, address, owner, true)),
+        keys(CLIENT.toggleMaxLock(fetched, true)));
+
+    // identity fallbacks
+    assertEquals(
+        keys(CLIENT.extendLockDuration(JUPITER_ACCOUNTS.lockerKey(), CLIENT.escrowKey(),
+            CLIENT.escrowOwnerKey(), 42L)),
+        keys(CLIENT.extendLockDuration(42L)));
+    assertEquals(
+        keys(CLIENT.castVote(CLIENT.escrowKey(), CLIENT.escrowOwnerKey(), key(0x58), key(0x59), 1)),
+        keys(CLIENT.castVote(key(0x58), key(0x59), 1)));
+    assertEquals(
+        keys(CLIENT.setVoteDelegate(CLIENT.escrowOwnerKey(), CLIENT.escrowKey(), key(0x5A))),
+        keys(CLIENT.setVoteDelegate(key(0x5A))));
+
+    // increaseLockedAmount's short form supplies the escrow's ATA as the
+    // destination and the owner's as the source — swapping them would move
+    // tokens the wrong way, and both are same-typed
+    final var shortForm = keys(CLIENT.increaseLockedAmount(payer, 1_000L));
+    assertEquals(
+        keys(CLIENT.increaseLockedAmount(CLIENT.escrowATA(), payer, CLIENT.escrowOwnerKeyATA(), 1_000L)),
+        shortForm);
+    assertNotEquals(
+        keys(CLIENT.increaseLockedAmount(CLIENT.escrowOwnerKeyATA(), payer, CLIENT.escrowATA(), 1_000L)),
+        shortForm,
+        "source and destination token accounts must not be interchangeable");
+
+    // the duration/side/amount arguments are data: they must not move accounts
+    assertEquals(keys(CLIENT.extendLockDuration(42L)), keys(CLIENT.extendLockDuration(99L)));
+    assertEquals(keys(CLIENT.toggleMaxLock(fetched, true)), keys(CLIENT.toggleMaxLock(fetched, false)));
+    assertNotEquals(
+        CLIENT.toggleMaxLock(fetched, true).data()[8],
+        CLIENT.toggleMaxLock(fetched, false).data()[8]);
+
+    // every one of these is a locked-voter instruction
+    for (final var ix : List.of(
+        CLIENT.extendLockDuration(fetched, 42L),
+        CLIENT.toggleMaxLock(fetched, true),
+        CLIENT.castVote(key(0x58), key(0x59), 1),
+        CLIENT.setVoteDelegate(key(0x5A)),
+        CLIENT.increaseLockedAmount(payer, 1_000L))) {
+      assertEquals(JUPITER_ACCOUNTS.invokedVoteProgram(), ix.programId());
+    }
+  }
+
+  /// The partial-unstaking family shares the `Escrow` shape, and its short forms
+  /// default the payer to the client's own owner.
+  @Test
+  void partialUnstakingOverloadsDelegateConsistently() {
+    final var address = key(0x51);
+    final var locker = key(0x52);
+    final var owner = key(0x53);
+    final var tokens = key(0x54);
+    final var partialUnstake = key(0x5B);
+    final var fetched = escrow(address, locker, owner, tokens);
+
+    assertEquals(
+        keys(CLIENT.openPartialUnstaking(locker, address, owner, partialUnstake, 500L, "memo")),
+        keys(CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "memo")));
+    assertEquals(
+        keys(CLIENT.mergePartialUnstaking(locker, address, owner, partialUnstake)),
+        keys(CLIENT.mergePartialUnstaking(fetched, partialUnstake)));
+
+    // the memo is data, not an account
+    assertEquals(
+        keys(CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "memo")),
+        keys(CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "another memo")));
+    assertFalse(java.util.Arrays.equals(
+        CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "memo").data(),
+        CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "another memo").data()));
   }
 }

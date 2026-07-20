@@ -280,4 +280,175 @@ final class OrcaBoundaryTests {
     assertEquals(accounts.invokedWhirlpoolProgram().publicKey(), client.whirlpoolProgramKey());
     assertNotNull(OrcaWhirlpoolsClient.createClient(software.sava.core.accounts.SolanaAccounts.MAIN_NET, accounts));
   }
+
+  /// The hand-picked round trip above covers ten ticks; these mutants perturb
+  /// the conversion elsewhere in an 887k-wide domain, so this sweeps it.
+  ///
+  /// A prime stride is used rather than a round one so the samples do not align
+  /// with the algorithm's own power-of-two structure — the bit-precision loop,
+  /// the `msb >= 64` normalisation branch and the tick-refinement step all key
+  /// off binary boundaries, and a stride of 1024 would systematically miss them.
+  /// The sweep is kept to a few thousand points because PIT re-runs it once per
+  /// mutant in this class.
+  @Test
+  void tickSqrtPriceRoundTripsAcrossTheWholeDomain() {
+    final int stride = 439; // prime, ~2020 samples over the full range
+    for (int tick = OrcaUtil.MIN_TICK_INDEX; tick <= OrcaUtil.MAX_TICK_INDEX; tick += stride) {
+      final var sqrtPrice = OrcaUtil.tickIndexToSqrtPriceX64(tick);
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(sqrtPrice), "round trip at tick " + tick);
+    }
+
+    // dense around zero, where the positive and negative paths meet
+    for (int tick = -600; tick <= 600; tick++) {
+      final var sqrtPrice = OrcaUtil.tickIndexToSqrtPriceX64(tick);
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(sqrtPrice), "round trip at tick " + tick);
+    }
+
+    // dense at both extremes
+    for (int tick = OrcaUtil.MAX_TICK_INDEX - 300; tick <= OrcaUtil.MAX_TICK_INDEX; tick++) {
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(OrcaUtil.tickIndexToSqrtPriceX64(tick)),
+          "round trip at tick " + tick);
+    }
+    for (int tick = OrcaUtil.MIN_TICK_INDEX; tick <= OrcaUtil.MIN_TICK_INDEX + 300; tick++) {
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(OrcaUtil.tickIndexToSqrtPriceX64(tick)),
+          "round trip at tick " + tick);
+    }
+  }
+
+  /// `tickIndexToSqrtPriceX64` must be strictly increasing: the tick index is a
+  /// log-scale price, so a single inverted pair would let a position's lower
+  /// bound sit above its upper bound. This catches perturbations that preserve
+  /// the round trip but distort the curve between samples.
+  @Test
+  void sqrtPriceIsStrictlyIncreasingInTheTickIndex() {
+    final int stride = 439;
+    var previous = OrcaUtil.tickIndexToSqrtPriceX64(OrcaUtil.MIN_TICK_INDEX);
+    for (int tick = OrcaUtil.MIN_TICK_INDEX + stride; tick <= OrcaUtil.MAX_TICK_INDEX; tick += stride) {
+      final var current = OrcaUtil.tickIndexToSqrtPriceX64(tick);
+      assertTrue(current.compareTo(previous) > 0,
+          "sqrt price must increase with the tick index, at tick " + tick);
+      previous = current;
+    }
+
+    // strictly increasing step by step across the sign change too
+    previous = OrcaUtil.tickIndexToSqrtPriceX64(-600);
+    for (int tick = -599; tick <= 600; tick++) {
+      final var current = OrcaUtil.tickIndexToSqrtPriceX64(tick);
+      assertTrue(current.compareTo(previous) > 0, "adjacent ticks must differ, at tick " + tick);
+      previous = current;
+    }
+
+    // and the whole curve stays inside the declared bounds
+    assertEquals(OrcaUtil.MIN_SQRT_PRICE_X64, OrcaUtil.tickIndexToSqrtPriceX64(OrcaUtil.MIN_TICK_INDEX));
+    assertEquals(OrcaUtil.MAX_SQRT_PRICE_X64, OrcaUtil.tickIndexToSqrtPriceX64(OrcaUtil.MAX_TICK_INDEX));
+  }
+
+  // ---------------------------------------------------------------------------
+  // BigInteger arithmetic (EXPERIMENTAL_BIG_INTEGER)
+  // ---------------------------------------------------------------------------
+
+  /// `reverseApplyTransferFee` recovers the pre-fee amount with a ceiling
+  /// division written as `(n + d - 1) / d`. The `- 1` is what makes it a *ceil*
+  /// rather than a round-up-always: on an exact multiple it must contribute
+  /// nothing, so `d - 1` and `d + 1` differ by exactly one unit there and
+  /// nowhere else. Only an exactly-divisible case can tell them apart.
+  @Test
+  void reverseTransferFeeCeilingIsExactOnWholeMultiples() {
+    // feeBps = 1000 (10%) => denominator = 9000, and numerator = amount * 10000.
+    // amount = 9 gives numerator 90000 = 9000 * 10, an exact multiple.
+    final long exact = OrcaUtil.reverseApplyTransferFee(9L, 1_000, Long.MAX_VALUE);
+    assertEquals(10L, exact, "an exact multiple must not be rounded up again");
+
+    // one unit up is no longer a whole multiple, so the ceiling rounds:
+    // ceil(10 * 10000 / 9000) = ceil(11.11..) = 12
+    assertEquals(12L, OrcaUtil.reverseApplyTransferFee(10L, 1_000, Long.MAX_VALUE));
+
+    // a zero fee is the identity, whatever the rounding
+    assertEquals(1_234L, OrcaUtil.reverseApplyTransferFee(1_234L, 0, Long.MAX_VALUE));
+
+    // and the round trip holds: applying the fee to the recovered amount
+    // returns the original
+    assertEquals(9L, OrcaUtil.applyTransferFee(exact, 1_000, Long.MAX_VALUE));
+
+    // The recovered fee (rawPreFee - amount) is used for one thing only: the
+    // max-fee cap. With an unbounded cap the comparison never fires, so the
+    // subtraction is unobservable — it takes a cap the *correct* fee stays under
+    // to pin it. Here the fee is 1, so a cap of 5 must leave the result
+    // uncapped, while a cap of 0 must engage it.
+    assertEquals(10L, OrcaUtil.reverseApplyTransferFee(9L, 1_000, 5L),
+        "a fee of 1 is below the cap of 5, so the pre-fee amount stands");
+    assertEquals(9L, OrcaUtil.reverseApplyTransferFee(9L, 1_000, 0L),
+        "a zero cap forces amount + maxFee");
+    assertEquals(10L, OrcaUtil.reverseApplyTransferFee(9L, 1_000, 1L),
+        "the cap engages at exactly the fee, giving amount + maxFee");
+  }
+
+  /// `sqrtPriceX64ToTickIndex` brackets the answer with an error margin and then
+  /// picks between `tickLow` and `tickHigh`. The round-trip sweep only ever feeds
+  /// it *exact* tick boundaries, where the answer is always `tickHigh` — so the
+  /// `tickLow` subtraction is never the deciding term. Prices strictly between
+  /// two ticks exercise the other branch.
+  @Test
+  void tickIndexResolvesPricesBetweenTicks() {
+    for (final int tick : new int[]{-10_000, -1, 0, 1, 10_000, 100_000}) {
+      final var lower = OrcaUtil.tickIndexToSqrtPriceX64(tick);
+      final var upper = OrcaUtil.tickIndexToSqrtPriceX64(tick + 1);
+      assertTrue(upper.compareTo(lower) > 0);
+
+      // strictly inside [tick, tick+1) must still resolve to `tick`, at a spread
+      // of offsets across the interval — the error-margin bracket only stops
+      // agreeing with itself near the ends, so both ends and the middle matter
+      final var width = upper.subtract(lower);
+      for (final int denom : new int[]{2, 3, 4, 8, 16, 64, 256}) {
+        final var offset = width.divide(BigInteger.valueOf(denom));
+        assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(lower.add(offset)),
+            "tick " + tick + " + width/" + denom);
+        assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(upper.subtract(offset)),
+            "tick " + (tick + 1) + " - width/" + denom);
+      }
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(lower.add(BigInteger.ONE)),
+          "one above tick " + tick);
+      assertEquals(tick, OrcaUtil.sqrtPriceX64ToTickIndex(upper.subtract(BigInteger.ONE)),
+          "one below tick " + (tick + 1));
+    }
+  }
+
+  /// `tokenBFromLiquidity` rounds up only when the 64-bit shift actually
+  /// discarded something, detected by masking off the low 64 bits. Masking with
+  /// `and` and with `or` agree on almost every input — they diverge exactly when
+  /// the product is a whole multiple of 2^64 and there is nothing to round.
+  @Test
+  void tokenBRoundsUpOnlyWhenTheShiftDiscardsBits() {
+    // above the range, token B is liquidity * (upper - lower) >> 64
+    final int lowerTick = 0;
+    final int upperTick = 128;
+    final var lower = OrcaUtil.tickIndexToSqrtPriceX64(lowerTick);
+    final var upper = OrcaUtil.tickIndexToSqrtPriceX64(upperTick);
+    final var diff = upper.subtract(lower);
+    final var above = OrcaUtil.tickIndexToSqrtPriceX64(upperTick + 1);
+
+    // choose liquidity so that liquidity * diff is an exact multiple of 2^64
+    final var twoPow64 = BigInteger.ONE.shiftLeft(64);
+    final var gcd = diff.gcd(twoPow64);
+    final var liquidity = twoPow64.divide(gcd);
+    assertEquals(0, liquidity.multiply(diff).mod(twoPow64).signum(),
+        "the product must land exactly on a 2^64 boundary");
+
+    final long roundedUp = WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(
+        liquidity, above, lowerTick, upperTick, true)[1];
+    final long roundedDown = WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(
+        liquidity, above, lowerTick, upperTick, false)[1];
+
+    assertEquals(roundedDown, roundedUp,
+        "nothing was discarded by the shift, so rounding up must be a no-op");
+    assertTrue(roundedUp > 0L);
+
+    // and where the product is *not* a whole multiple, rounding up does add one
+    final var inexact = liquidity.add(BigInteger.ONE);
+    assertNotEquals(0, inexact.multiply(diff).mod(twoPow64).signum());
+    assertEquals(
+        WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(inexact, above, lowerTick, upperTick, false)[1] + 1L,
+        WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(inexact, above, lowerTick, upperTick, true)[1],
+        "a discarded remainder must round up by exactly one");
+  }
 }
