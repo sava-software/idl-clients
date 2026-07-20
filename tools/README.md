@@ -31,17 +31,12 @@ it, failing 100% of the time on mainnet.
 Reports non-Anchor programs as `INCONCLUSIVE` rather than guessing — they have
 no fallback handler, so the signal does not apply. Use `ground_truth.py` there.
 
-The classification and wire encoding also live in idl-src-gen as
-`DeployedInstructionProbe`, unit-tested and pinned byte-for-byte against the
-message this script sends. **Change both if you change the encoding.**
-
-That duplication is deliberate and expected to persist. Running the probe at
-generation time was considered and deferred — doing it properly means tracking
-program deploys over time, which is a monitoring service rather than a generator
-feature (the reasoning, including why an added/removed IDL diff is *not*
-sufficient, is recorded in idl-src-gen's `AGENTS.md`). So this script stays the
-runnable version, and the Java class is the tested primitive if that project
-happens.
+Running this at generation time inside idl-src-gen was considered and rejected:
+doing it properly means tracking program deploys over time, which is a
+monitoring service rather than a generator feature. See "If this ever becomes a
+service" in [../docs/PROGRAM_VERIFICATION.md](../docs/PROGRAM_VERIFICATION.md)
+for the design conclusion, which is worth reading first — the obvious approach
+does not work.
 
 ## `ground_truth.py`
 

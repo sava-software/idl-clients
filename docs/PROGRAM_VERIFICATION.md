@@ -77,6 +77,33 @@ the staleness the override was meant to fix.
 
 Current overrides and the evidence for each: `idl-clients-bundle/config/pitest/README.md`.
 
+### If this ever becomes a service
+
+Running the probe automatically — at generation time, or as a monitor — was
+considered and deferred. One conclusion is worth not rediscovering.
+
+**Probing only the instructions an IDL adds or removes is not sufficient.** That
+diff compares IDL to IDL, but the defect lives between the IDL and the *deployed
+program*, and a stale IDL is stale precisely because it stops changing. Marginfi
+is the counterexample: re-fetching returned the same 0.1.8 IDL, so an
+added/removed diff was empty and would have reported clean while
+`clearEmissions` was dead on mainnet.
+
+The trigger to key on is the **deploy**, not the IDL edit:
+
+| Signal | Probe scope |
+|---|---|
+| `ProgramData.last_deploy_slot` changed since the last clean probe | that program's full instruction set |
+| IDL content changed | the added and removed instructions — the right check for validating a deliberate `idlURL` switch |
+| neither | skip |
+
+Cache `(program id, last_deploy_slot, idl hash) -> clean`. The deploy-slot read
+is two `getAccountInfo` calls per program and batches 20 to a request, so the
+steady state is a handful of round-trips against ~52 for a full sweep.
+Non-upgradeable programs have no `ProgramData` account and cannot go stale by
+redeploy, so key those on the IDL hash alone — but handle the absent account
+rather than erroring on it.
+
 ---
 
 ## 2. Does the account order match the program's Rust?
