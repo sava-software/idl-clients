@@ -1,6 +1,9 @@
 package software.sava.idl.clients.jupiter.swap.rest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -18,6 +21,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /// error handling, and the dex-label map rejects labels that collide
 /// case-insensitively — a silent overwrite there would map a DEX to the wrong
 /// program id.
+/// `@Execution` and `@TestInstance` are not `@Inherited`, so the abstract
+/// base's copies do not reach this class — it shares one mock server and one
+/// expectation queue, which interleaving would corrupt.
+@Execution(ExecutionMode.SAME_THREAD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JupiterSwapApiClientTests extends JupiterRestTests {
 
   /// The *local* client is used because it serves unprefixed paths
@@ -275,5 +283,29 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
         {"requestId":"xyz","transaction":"AQID"}""");
     final var order = client.ultraOrder("inputMint=" + WSOL + "&amount=7", TIMEOUT).join();
     assertEquals("xyz", order.requestId());
+  }
+
+  /// The builder attaches the api key as an `x-api-key` header on every request.
+  /// A client built without it authenticates as nobody and the hosted API answers
+  /// 401, so this is worth asserting rather than assuming.
+  ///
+  /// It also pins `extendRequest`, whose only other caller is a field
+  /// initializer — coverage attributed to a field initializer is unstable under
+  /// PIT, which made the mutant flap between runs.
+  @Test
+  void theBuilderAttachesTheApiKeyHeader() {
+    final var builder = JupiterSwapApiClient.build();
+    builder.httpClient(HTTP_CLIENT);
+    builder.endpoint(endpoint);
+    builder.apiKey("a-distinct-key");
+    final var freshClient = builder.createLocalClient();
+
+    expectGet("/program-id-to-label", "{}");
+    assertTrue(freshClient.dexLabelToProgramIdMap().join().isEmpty());
+
+    final var headers = lastRequestHeaders;
+    assertNotNull(headers, "the server must have recorded the request");
+    assertEquals("a-distinct-key", headers.firstValue("x-api-key").orElse(null),
+        "the api key must reach the wire");
   }
 }

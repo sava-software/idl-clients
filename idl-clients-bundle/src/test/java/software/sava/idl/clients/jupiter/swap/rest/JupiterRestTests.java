@@ -83,6 +83,10 @@ abstract class JupiterRestTests implements HttpHandler {
                           int responseCode, String responseBody) {
   }
 
+  /// Headers seen on the most recent request, so a test can assert what the
+  /// builder attached (the api key in particular) rather than only the body.
+  protected volatile java.net.http.HttpHeaders lastRequestHeaders;
+
   /// Queue a `GET` that the client is expected to issue, with the response it
   /// should receive.
   protected final void expectGet(final String pathAndQuery, final String responseBody) {
@@ -125,6 +129,7 @@ abstract class JupiterRestTests implements HttpHandler {
         : uri.getRawPath() + '?' + uri.getRawQuery();
     final var actualBody = new String(exchange.getRequestBody().readAllBytes(), UTF_8);
     final var actualMethod = exchange.getRequestMethod();
+    this.lastRequestHeaders = java.net.http.HttpHeaders.of(exchange.getRequestHeaders(), (a, b) -> true);
 
     final var next = expected.poll();
     if (next == null) {

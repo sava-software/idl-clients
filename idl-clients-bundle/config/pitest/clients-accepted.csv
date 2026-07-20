@@ -51,7 +51,6 @@ software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,apiKey,12,NullR
 software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,16,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,16,RemoveConditionalMutator_EQUAL_IF,SURVIVED
 software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,17,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,19,NullReturnValsMutator,SURVIVED
 software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,lambda$extendRequest$0,17,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.jupiter.swap.rest.JupiterPriceClient$Builder,createClient,43,VoidMethodCallMutator,SURVIVED
 software.sava.idl.clients.jupiter.swap.rest.JupiterPriceClient$Builder,setURLs,35,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED

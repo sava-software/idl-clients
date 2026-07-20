@@ -413,6 +413,111 @@ the program's own `constants.rs::get_global_vault_address` (`["vault", mint]`),
 now `PhoenixAccounts.globalVaultPDA`. Both methods gained a `globalVaultKey`
 parameter (**breaking**).
 
+### A flaky mutant, and why `@Execution` is not inherited
+
+The mock-HTTP suites made the `clients` kill count wander (855/856/858 across
+runs), which the ratchet caught as `JupiterClientBuilder.extendRequest` appearing
+as a *new* unkilled mutant after a baseline happened to be written from a lucky
+run. Two distinct causes, both worth remembering:
+
+- **JUnit's `@Execution` and `@TestInstance` are not `@Inherited`.** They were on
+  the abstract `JupiterRestTests` base only, so the concrete subclasses were free
+  to interleave — and each shares one mock server and one expectation queue.
+  Annotating the concrete classes directly fixed it; three consecutive runs now
+  agree exactly, per-mutator sub-totals included.
+- **Coverage attributed to a field initializer is unstable under PIT.** The only
+  caller of `extendRequest` was the test base's client field. The same shape bit
+  the factory `NullReturnVals` mutants earlier. The fix is the same: exercise it
+  from inside a `@Test`. Here that produced a genuinely useful assertion — the
+  builder attaches the `x-api-key` auth header, so a null return means every
+  request goes out unauthenticated.
+
+A wandering kill count is worth chasing rather than re-ratcheting past: the
+baseline records whichever run wrote it, so a lucky run bakes in a row that later
+runs fail on.
+
+### Shank programs: Metaplex and SAS (2026-07-20)
+
+The last two of the eight programs the dispatch probe cannot reach. Both are
+**Shank**, not Anchor: account order is declared as indexed attributes on the
+instruction enum rather than in a `#[derive(Accounts)]` struct, so they need
+`extract_shank.py` rather than `extract_rust.py`.
+
+| Program | Instructions | Result |
+|---|---|---|
+| Solana Attestation Service | 12 | all match |
+| Metaplex Token Metadata | 58 | 57 match, 1 IDL gap |
+
+Two things the extractor has to get right:
+
+- **Attributes wrap across lines**, and `desc = ".."` strings may contain
+  parentheses, so a line-based regex silently drops accounts. The parser is
+  position-aware and quote-aware over the whole file.
+- **Shank declares an explicit index per account**, which is a free correctness
+  check the Anchor path does not have: after parsing, every instruction's indices
+  must read `0..n-1`. That check caught the multi-line drift on SAS immediately —
+  worth keeping, since a dropped account otherwise looks like a length mismatch
+  against the IDL and reads as a defect in *our* code.
+
+**`print` is missing two accounts, and it is an IDL gap rather than a bug.** The
+Rust declares 20; the IDL declares 18, omitting both trailing **optional**
+accounts:
+
+| Index | Account | Flags |
+|---|---|---|
+| 18 | `holder_delegate_record` | optional |
+| 19 | `delegate` | optional, **signer** |
+
+Together they let a *holder delegate*, rather than the token holder, authorize
+printing an edition. Since the IDL omits them the generated positional builder
+has no parameters for them, so that authority path was unreachable. Added
+`TokenMetadataRemainingAccounts.printHolderDelegate(..)`, which supplies the pair
+in program order with the delegate as a signer, to be appended to the account
+list. This is the same shape as Phoenix's optional `permission_account`: the IDL
+cannot express a trailing optional, so the hand-written layer carries it.
+
+### Squads, CCTP, Pyth and the Wormhole shims (2026-07-20)
+
+Six more programs diffed against newly cloned Rust. **45 instructions verified,
+zero defects.**
+
+| Program | Instructions | Result |
+|---|---|---|
+| Squads V4 | 18 | all match |
+| CCTP Message Transmitter V2 | 15 | all match |
+| Pyth Solana Receiver | 7 | all match |
+| Pyth Push Oracle | 1 | all match |
+| Wormhole Verify VAA Shim | 3 | all match |
+| Wormhole Post Message Shim | 1 | verified by hand — order *and* flags |
+| Pyth Lazer | 0 | Solana contract is not in `pyth-crosschain` |
+
+Three extractor traps, all worth knowing before repeating this:
+
+- **Match structs by program, not by name.** A monorepo contains several
+  programs, and `extract_rust.py` matches on struct name alone. It paired our
+  `postMessage` with `PostMessage` from
+  `anchor/programs/wormhole-integrator-example` — a *different* program that CPIs
+  into the shim — producing an alarming all-slots-differ diff that was pure
+  noise. Same trap hit Pyth Lazer, where the matched `Initialize` came from
+  pyth-solana-receiver.
+- **The shims are not Anchor.** They are hand-rolled for CU efficiency, so the
+  wire order lives in the `AccountMeta::new(..)` sequence inside
+  `crates/shim/src/post_message.rs::instruction()`, not in a `#[derive(Accounts)]`
+  struct. Checked against that: `core_bridge_config, message, emitter, sequence,
+  payer, fee_collector, clock, system_program, wormhole_program, event_authority,
+  program` — exactly our IDL, with `bridge` = `core_bridge_config`, and every
+  writability and signer flag agreeing.
+- **CCTP suffixes its account structs `Context`** (`AcceptOwnershipContext` for
+  `acceptOwnership`), so a name-keyed comparison silently matches nothing and
+  reports a clean zero. Strip the suffix before comparing — "0 compared, 0
+  differ" is a failure to compare, not a pass.
+
+Squads' only two flagged instructions were also artifacts: `config_transaction_execute`
+declares `rent_payer` and `system_program` as `Option<..>`, and the generated
+code implements Anchor's absent-optional convention (substitute the invoked
+program id) via a ternary the extractor could not parse. `extract_java2.py`
+handles both that shape and `requireNonNullElse(..)`.
+
 ### Orca and Meteora: what could and could not be ground-truthed
 
 **Orca — 61 instructions, zero ordering defects.** The clone at

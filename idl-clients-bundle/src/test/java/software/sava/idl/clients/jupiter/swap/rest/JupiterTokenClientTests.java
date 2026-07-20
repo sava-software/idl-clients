@@ -1,6 +1,9 @@
 package software.sava.idl.clients.jupiter.swap.rest;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.util.List;
 
@@ -13,6 +16,11 @@ import static org.junit.jupiter.api.Assertions.*;
 /// one resolves. A wrong segment or a query parameter attached to the wrong path
 /// still returns a well-formed token map — from the wrong endpoint — so the
 /// tests assert the exact path and query rather than just the parsed result.
+/// `@Execution` and `@TestInstance` are not `@Inherited`, so the abstract
+/// base's copies do not reach this class — it shares one mock server and one
+/// expectation queue, which interleaving would corrupt.
+@Execution(ExecutionMode.SAME_THREAD)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JupiterTokenClientTests extends JupiterRestTests {
 
   private final JupiterTokenClient client = buildClient();
