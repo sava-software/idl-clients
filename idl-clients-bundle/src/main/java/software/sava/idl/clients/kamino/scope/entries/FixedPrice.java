@@ -10,7 +10,10 @@ public record FixedPrice(int index, long value, int exp, BigDecimal decimal) imp
     final var decimal = value < 0
         ? new BigDecimal(Long.toUnsignedString(value))
         : BigDecimal.valueOf(value);
-    return new FixedPrice(index, value, exp, decimal.movePointLeft(Math.toIntExact(exp)).stripTrailingZeros());
+    // scaleByPowerOfTen, not movePointLeft: movePointLeft normalizes a negative
+    // resulting scale through setScale(0), materializing value*10^|exp| — a hostile
+    // exp from account bytes inflates that into a billion-digit BigInteger
+    return new FixedPrice(index, value, exp, decimal.scaleByPowerOfTen(-exp).stripTrailingZeros());
   }
 
   @Override

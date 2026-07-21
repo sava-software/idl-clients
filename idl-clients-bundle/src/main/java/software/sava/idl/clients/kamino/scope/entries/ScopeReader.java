@@ -40,7 +40,10 @@ public interface ScopeReader {
     final var price = val < 0
         ? new BigDecimal(Long.toUnsignedString(val))
         : new BigDecimal(val);
-    return price.movePointLeft(Math.toIntExact(scaledPrice.exp()));
+    // scaleByPowerOfTen, not movePointLeft: movePointLeft normalizes a negative
+    // resulting scale through setScale(0), materializing val*10^|exp| — a hostile
+    // exp inflates that into a billion-digit BigInteger (see FixedPrice.createEntry)
+    return price.scaleByPowerOfTen(Math.toIntExact(-scaledPrice.exp()));
   }
 
   static BigDecimal scaleScopePrice(final byte[] oraclePricesData, final int index) {
@@ -53,7 +56,7 @@ public interface ScopeReader {
           ? new BigDecimal(Long.toUnsignedString(val))
           : new BigDecimal(val);
       final long exp = ByteUtil.getInt64LE(oraclePricesData, offset + Long.BYTES);
-      return price.movePointLeft(Math.toIntExact(exp));
+      return price.scaleByPowerOfTen(Math.toIntExact(-exp));
     }
   }
 }

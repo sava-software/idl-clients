@@ -93,7 +93,13 @@ record ScopeReaderRecord(ScopeEntry[] entries,
     }
     visiting[i] = true;
     try {
-      return computeEntry(i);
+      // cache here, not only from readEntries' top-level loop: fan-out types
+      // (CappedFloored, MostRecentOf, Conditional, ...) share forward references,
+      // and recomputing them per visit is exponential in a crafted mapping —
+      // observed as ~50s parses of a single hostile 29KB account
+      final var computed = computeEntry(i);
+      entries[i] = computed;
+      return computed;
     } finally {
       visiting[i] = false;
     }

@@ -33,10 +33,10 @@ software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,parseChain,66,
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,readPriceChains,19,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,40,ConditionalsBoundaryMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,40,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,52,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,52,RemoveConditionalMutator_ORDER_IF,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,55,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,55,RemoveConditionalMutator_ORDER_IF,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,emaTypes,58,RemoveConditionalMutator_EQUAL_IF,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,entry,82,RemoveConditionalMutator_ORDER_IF,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,parseEntries,48,ConditionalsBoundaryMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,parseEntries,48,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,validateNoEmaTypes,274,RemoveConditionalMutator_EQUAL_IF,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,validateNoEmaTypes,280,RemoveConditionalMutator_EQUAL_IF,SURVIVED

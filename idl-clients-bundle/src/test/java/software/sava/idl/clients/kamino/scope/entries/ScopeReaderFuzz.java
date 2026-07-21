@@ -13,7 +13,11 @@ import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 /// contract forbids — hangs, memory exhaustion, and any non-[RuntimeException] throwable.
 /// A cyclic refPrice/source index used to recurse into a [StackOverflowError] here (an
 /// Error, not a RuntimeException) until the reader gained a cycle guard; this harness
-/// keeps that regression covered and the whole recursion surface exercised.
+/// keeps that regression covered and the whole recursion surface exercised. It also
+/// found ~50s parses from a hostile FixedPrice exp (BigDecimal.movePointLeft inflating
+/// a negative scale into a billion-digit BigInteger) — the slow-exp-* seeds and
+/// [ScopeReaderHostileInputTests] pin that fix and the entry-memoization that bounds
+/// fan-out re-walks.
 ///
 /// Seeded from real OracleMappings account dumps under
 /// src/test/resources/fuzz/scopeReader — the fixed 29704-byte layout is unreachable from

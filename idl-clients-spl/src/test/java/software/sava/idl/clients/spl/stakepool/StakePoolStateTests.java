@@ -14,11 +14,7 @@ import java.util.Base64;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.RoundingMode.HALF_UP;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 // Drives PIT mutation testing of StakePoolState.parseProgramData(PublicKey, byte[]).
 // There is no writer for StakePoolState, so every blob is assembled by hand with the
@@ -31,7 +27,6 @@ final class StakePoolStateTests {
 
   private static final MathContext MC = new MathContext(20);
 
-  // Real mainnet Jito stake-pool account data, base64 (idl-clients-spl/.../fuzz/stakePoolState/.jito.b64.txt).
   private static final String JITO_B64 =
       "AUUePdUNO3uFNgRcK3rC7CWUc+vCWuO8vh++sX1S+8e+eXhXwruGsaac0PTcoWwisNzj3eyWuEBcCPHEcDrQj9NUtd6+o5sz4PHc"
           + "+gqPYiqVuLTrluhPL6HjF2cPHpbB2P0j4HUJut3t/bUWqQuRl7tQR0MlXQ43xf9dzookHu3EMZ6naP7fZEyKrpuOIYit0GvFUPv3"
@@ -284,7 +279,8 @@ final class StakePoolStateTests {
     // Option byte > 2 is rejected at each of the three parse sites.
     for (final int[] opts : new int[][]{{3, 0, 0}, {0, 3, 0}, {0, 0, 3}}) {
       final var ex = assertThrows(IllegalStateException.class,
-          () -> parse(null, minimalBlob(1L, 1L, opts[0], opts[1], opts[2], 1L, 1L)));
+          () -> parse(null, minimalBlob(1L, 1L, opts[0], opts[1], opts[2], 1L, 1L))
+      );
       assertTrue(ex.getMessage().contains("3"), ex.getMessage());
     }
   }
