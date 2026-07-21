@@ -1,5 +1,13 @@
 # Changelog
 
+## [25.18.1](https://github.com/sava-software/idl-clients/compare/25.18.0...25.18.1) (2026-07-21)
+
+
+### Bug Fixes
+
+* Range check Pyth exponents. ([b9a9802](https://github.com/sava-software/idl-clients/commit/b9a9802118149c3747ff58eb09e102e59d439c8a))
+* Use scaleByPowerOfTen instead movePointLeft to avoid literally having to remove many zeroes on stripTrailingZeros when an exponent is very negative. ([1e83086](https://github.com/sava-software/idl-clients/commit/1e83086a1f63e50f71683de06ca49c7d0efcc215))
+
 ## [25.18.0](https://github.com/sava-software/idl-clients/compare/25.17.0...25.18.0) (2026-07-20)
 
 
