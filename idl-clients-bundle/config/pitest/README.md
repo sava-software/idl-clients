@@ -413,28 +413,50 @@ the program's own `constants.rs::get_global_vault_address` (`["vault", mint]`),
 now `PhoenixAccounts.globalVaultPDA`. Both methods gained a `globalVaultKey`
 parameter (**breaking**).
 
-### A flaky mutant, and why `@Execution` is not inherited
+### A flaky mutant, and the misattributed fix
 
 The mock-HTTP suites made the `clients` kill count wander (855/856/858 across
-runs), which the ratchet caught as `JupiterClientBuilder.extendRequest` appearing
-as a *new* unkilled mutant after a baseline happened to be written from a lucky
-run. Two distinct causes, both worth remembering:
+runs), which the ratchet caught as `JupiterClientBuilder.extendRequest`
+appearing as a *new* unkilled mutant after a baseline happened to be written
+from a lucky run.
 
-- **JUnit's `@Execution` and `@TestInstance` are not `@Inherited`.** They were on
-  the abstract `JupiterRestTests` base only, so the concrete subclasses were free
-  to interleave — and each shares one mock server and one expectation queue.
-  Annotating the concrete classes directly fixed it; three consecutive runs now
-  agree exactly, per-mutator sub-totals included.
-- **Coverage attributed to a field initializer is unstable under PIT.** The only
-  caller of `extendRequest` was the test base's client field. The same shape bit
-  the factory `NullReturnVals` mutants earlier. The fix is the same: exercise it
-  from inside a `@Test`. Here that produced a genuinely useful assertion — the
-  builder attaches the `x-api-key` auth header, so a null return means every
-  request goes out unauthenticated.
+**The real cause was field-initializer coverage.** The only caller of
+`extendRequest` was the test base's client field initializer, and coverage
+attributed to a field initializer is unstable under PIT — the same shape that
+bit the factory `NullReturnVals` mutants earlier. The fix is exercising it from
+inside a `@Test`, which also produced a genuinely useful assertion: the builder
+attaches the `x-api-key` auth header, so a null return means every request goes
+out unauthenticated.
+
+**A second fix was applied at the same time and was a no-op** — recorded here
+because the original version of this note attributed the convergence to it.
+`@Execution(SAME_THREAD)`/`@TestInstance` were copied from the abstract test
+base onto the concrete classes on the theory that neither annotation is
+`@Inherited`. That claim is version-dependent and false here: at JUnit 6.1.2
+both carry `@Inherited` (verified in the resolved jar's bytecode, not docs),
+and `@Execution` is moot regardless because parallel execution is not enabled
+in this repo. The duplicate annotations have been removed; the base's own
+annotations remain, and would take effect through inheritance if parallel
+execution were ever turned on. One `javap` settles this class of question
+before any test restructuring *(HARDENING_CASEBOOK: @Inherited is
+version-dependent)*.
+
+Post-correction convergence was re-verified: consecutive runs agree, and per
+the shared doc's method the report directories were checked to actually
+re-generate between runs (they do here — the pitest tasks re-execute on
+unchanged inputs, so back-to-back runs are real comparisons).
 
 A wandering kill count is worth chasing rather than re-ratcheting past: the
-baseline records whichever run wrote it, so a lucky run bakes in a row that later
-runs fail on.
+baseline records whichever run wrote it, so a lucky run bakes in a row that
+later runs fail on.
+
+### Fuzz corpus replay (open item)
+
+The shared doc now expects committed seed corpora to be replayed inside
+`check`. `stakePoolState`'s seed is loaded by `StakePoolStateTests` already;
+the `scopeReader` corpus (2 seeds) is read only by the fuzz harness, so it can
+rot between fuzz runs. A small replay test in the scope suite would close it —
+see json-iterator's `TestFuzzCorpusReplay` for the pattern.
 
 ### Shank programs: Metaplex and SAS (2026-07-20)
 

@@ -1,9 +1,6 @@
 package software.sava.idl.clients.jupiter.swap.rest;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.parallel.Execution;
-import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import java.math.BigInteger;
 import java.time.Duration;
@@ -21,11 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 /// error handling, and the dex-label map rejects labels that collide
 /// case-insensitively — a silent overwrite there would map a DEX to the wrong
 /// program id.
-/// `@Execution` and `@TestInstance` are not `@Inherited`, so the abstract
-/// base's copies do not reach this class — it shares one mock server and one
-/// expectation queue, which interleaving would corrupt.
-@Execution(ExecutionMode.SAME_THREAD)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 final class JupiterSwapApiClientTests extends JupiterRestTests {
 
   /// The *local* client is used because it serves unprefixed paths

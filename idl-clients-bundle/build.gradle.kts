@@ -22,7 +22,7 @@ hardening {
   val notMutated = listOf(
     "software.sava.idl.clients.*.gen.*",
     "software.sava.idl.clients.*Test*",
-    "software.sava.idl.clients.*Fuzz",
+    "software.sava.idl.clients.*Fuzz*",
     // a test helper whose name matches neither glob above; PIT cannot tell the
     // test root from the main root once they are merged for the recompile, so
     // any such helper has to be named here or it gets mutated

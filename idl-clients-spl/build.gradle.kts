@@ -19,7 +19,7 @@ hardening {
       "software.sava.idl.clients.*.gen.*",
       // test and fuzz sources share the recompiled root
       "software.sava.idl.clients.spl.*Test*",
-      "software.sava.idl.clients.spl.*Fuzz",
+      "software.sava.idl.clients.spl.*Fuzz*",
       // 'Integ.*' scratch files are git-ignored: present on a dev machine and
       // absent in CI, so mutating them would make the baseline machine-dependent
       "software.sava.idl.clients.*.Integ"

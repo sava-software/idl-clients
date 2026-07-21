@@ -231,33 +231,101 @@ a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
-The process contract for any change to main sources (full policy: sava-build's
-`HARDENING.md`; per-module acceptance records: `<module>/config/pitest/README.md`):
+<!-- hardening-template sha256:96ddf18dcc3a -->
 
-- **Run `./gradlew qualityGate` after changing main sources** — unit tests plus
-  every PIT suite, each diffed against its accepted baseline in
-  `<module>/config/pitest/`. It is the definition of "safe to commit". Budget
-  ~75s for the whole repo (indicative — these grow as suites do; re-measure
-  rather than trusting this line).
-- **While iterating, run only the suite that owns the code you touched**:
-  `pitestSpl`, `pitestScope` (~12s each), `pitestClients`, `pitestOrca` (~28s
-  each). `qualityGate` is the before-commit command, not the inner-loop one.
+Full policy: sava-build's `HARDENING.md` — the canonical source for the ratchet,
+its equivalence families, and the lifecycle. Per-module acceptance records:
+`<module>/config/pitest/README.md`. The load-bearing points, with this repo's
+specifics:
+
+- **Scale verification to the change.** Iterate with the module's `test` task;
+  before handing off, run only the `pitest<Suite>`(s) whose mutated code the
+  change can *reach*: `pitestSpl`, `pitestScope` (~12s each), `pitestClients`,
+  `pitestOrca` (~28s each; timings indicative — re-measure rather than trust
+  this line). Reachability, not file paths: editing an API also owes any suite
+  — including in a dependent module — whose mutated code calls it, and a
+  test-only edit still owes the suite those tests kill mutants in (a weakened
+  test is exactly what the ratchet catches). Doc and build-script changes owe
+  no suite.
+- **The full `qualityGate`** (every suite, serialized, diffed against
+  `config/pitest/`, ~75s) is the pre-release check, and — because CI here runs
+  `check`, not `qualityGate` — it must be run locally before a release and
+  after cross-cutting changes; it has no other enforcement point. Running it
+  per small change re-learns results the change could not have moved.
 - A new unkilled mutant has exactly three legal outcomes: **kill it** with a test
   (prefer asserting the property it breaks — an overflow guard rejecting, a
   quote's rounding direction, exact encoded byte positions — over restating the
   implementation), **refactor** it out of existence, or **accept it** with a
   written reason in that module's `config/pitest/README.md`. Never run
   `-PupdateMutationBaseline` just to make the build pass.
+- **`SURVIVED` and `NO_COVERAGE` are different problems.** The first is a
+  judgment call about equivalence; the second is an untested line and is
+  mechanical work. Never accept a `NO_COVERAGE` mutant as "equivalent" — its
+  behaviour has not been observed. Every accepted-equivalent note in this repo
+  refers to `SURVIVED` rows; keep it that way.
+- **A suite's percentage is not a target.** An accepted mutant with a written
+  reason is finished work. Before trying to raise a number, check whether the
+  remainder is `NO_COVERAGE` (real work) or documented equivalents (closed).
 - Line-number churn from editing a mutated file shows up as paired stale + "new"
   baseline entries; confirm they're the shifted old ones before refreshing.
 - **The baselines are triage debt, not acceptance.** They were seeded with the
   full pre-existing survivor population in 2026-07 when the ratchet was adopted;
   each module's README ranks what to pay down first. Shrinking a baseline is
   always an improvement.
-- **Randomized tests use fixed seeds**: the ratchet needs deterministic kills,
-  and per-run exploration is the fuzz targets' job.
+- **Randomized tests use fixed seeds, and never sleep**: the ratchet needs
+  deterministic kills, and PIT re-runs the covering tests once per mutant, so
+  one real wait costs minutes across a suite. Exploration belongs to the fuzz
+  targets.
+- **A flaky harness is worse than recorded debt.** If an interleaving or a
+  boundary cannot be made deterministic, accept the mutant with a written
+  reason rather than chasing it with sleeps, spin-waits, or thin-margin
+  measurement bounds.
+- **A wandering unkilled count is a defect, not noise** — chase it before
+  refreshing any baseline. Known causes: real waits, `TIMED_OUT` load flips,
+  and coverage attributed to field initializers. (Observed here:
+  unkilled-count flapping, fixed by exercising a builder from inside a `@Test`
+  — coverage attributed to a field initializer is unstable under PIT. A
+  same-commit annotation change was a no-op: at JUnit 6.1.2
+  `@Execution`/`@TestInstance` are both `@Inherited`, and `@Execution` is moot
+  without parallel execution — `javap` the resolved jar before restructuring
+  tests on inheritance theories.)
+- **Allocation and timing harnesses are a last resort**, reserved for
+  properties that are a stated design goal. They re-run once per mutant, need
+  a `volatile` sink so escape analysis cannot delete what they measure, and
+  flap when the margin is thin.
+- **Time-dependent code takes a clock**, so tests advance time instead of
+  waiting. Give test clocks a non-zero origin — a clock starting at 0 makes
+  every "start timestamp mutated to 0" mutant equivalent by accident.
+- **Do not rely on PIT's timeout to detect a mutant.** `TIMED_OUT` counts as
+  detected and is load-dependent: the same mutant can report `SURVIVED` alone
+  and `TIMED_OUT` under `qualityGate`. If a suite reports timed-out rows,
+  verify its baseline in both modes; union only rows observed to flip, never
+  every `TIMED_OUT` row.
+- When a test you believe in will not go green, **suspect the code before you
+  soften the assertion** — most of this repo's shipped-defect finds (the
+  Jupiter fee-payer crash among them) surfaced exactly this way.
+- **Verify by the absence of failures, not the presence of passes**: check the
+  failure count and that the task actually executed — a green cached build
+  proves nothing ran, and a *failed* PIT run leaves the previous run's report in
+  place, so a summary can describe a run that never happened. Trust the exit
+  code; delete report directories when comparing runs.
+- **A suite that got faster without getting narrower is a bug report.** Real
+  speedups come from fewer mutants or faster covering tests; an unexplained
+  one usually means the run did less than you think. (Arcmutate incremental
+  history — whose `[history]` summary marker is the one legitimate exception —
+  is not active in this repo: there is no `arcmutate-licence.txt`.)
+- **Transient infra failures are not results.** PIT `MINION_DIED` fails before
+  writing a report, so it cannot corrupt one — re-run the suite; a
+  Gradle-worker `EOFException` death is the same shape, and a per-mutant
+  `RUN_ERROR` under load is the same shape smaller (the summary names it, and
+  it is not counted as detected). The daemon log
+  (`~/.gradle/daemon/<version>/daemon-<pid>.out.log`) keeps a failed build's
+  full output even when the shell discarded it — read it before calling a
+  failure unexplained.
 - Fuzz findings become a committed seed input **and** a named regression test,
-  never just a fix.
+  never just a fix — and the committed corpus is replayed by a unit test
+  inside `check` (`*CorpusReplayTests` beside each seeded harness), so it
+  cannot rot between fuzz runs.
 
 Mutator selection is per-suite. The default is PIT's `STRONGER` group, but
 `orca` and `clients` add `EXPERIMENTAL_BIG_INTEGER` because `MathMutator` only
@@ -274,8 +342,16 @@ automatically; if it lands with no coverage, the gate says so. Generated
 as are the git-ignored `Integ.*` scratch files, which would otherwise make the
 baseline differ between a dev machine and CI.
 
-CI runs `check`, not `qualityGate` (the shared sava-build workflows), so the gate
-is enforced at the point of commit rather than in the pipeline.
+Exclusions must cover the **test source set**, not a naming convention — give
+patterns a trailing wildcard (`*Test*`, `*Fuzz*`, not `*Fuzz`) so nested
+helpers inside test classes stay excluded, and remember that shared fakes named
+for their role (`RecordingFoo`, `ResourceUtil`) match no pattern and need an
+explicit entry. `pitest<Suite>Verify` cross-references mutated classes against
+the test source directories and warns when a suite is mutating its own
+scaffolding.
+
+CI runs `check`, not `qualityGate` (the shared sava-build workflows) — see the
+first two bullets above for what that makes a local responsibility.
 
 Conventions when adding a target:
 
@@ -292,6 +368,14 @@ Conventions when adding a target:
   account dumps under `src/test/resources/fuzz/<name>/` and point the target's
   `seedCorpus` at that directory. Skip seeding only when every input prefix is already
   valid (a small count-prefixed record parser reaches its whole space from scratch).
+- A committed seed corpus gets a `*CorpusReplayTests` beside its harness that feeds
+  every seed through `fuzzerTestOneInput` (see `ScopeReaderCorpusReplayTests`,
+  `StakePoolStateCorpusReplayTests`), so the corpus is exercised on every `check`.
+- **When one thing has two representations, fuzz the differential** — an
+  encode/decode round trip, a fast path beside a reference path: assert the two
+  *agree* rather than that neither crashes. Crash-only fuzzing cannot see a wrong
+  answer. The re-parse determinism checks in the existing harnesses are the minimal
+  form of this.
 
 ## Conventions
 
