@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class OracleUtilTests {
 
@@ -72,6 +74,26 @@ final class OracleUtilTests {
         new BigDecimal("-0.00000001"),
         OracleUtil.scalePythPullPrice(priceUpdate(-1L, -8)));
     assertEquals(new BigDecimal("-1"), OracleUtil.scalePythPullPrice(priceUpdate(-1L, 0)));
+  }
+
+  /// A hostile exponent used to reach movePointRight, whose setScale(0)
+  /// normalization materializes value*10^exp — an OutOfMemoryError at account-byte
+  /// magnitudes. The guard must reject just past the bound and at the extremes,
+  /// and the bound itself must still scale.
+  @Test
+  void implausibleExponentsAreRejected() {
+    // both boundary values still scale, and keep the capped zero scale
+    final var atBound = OracleUtil.scalePrice(1L, OracleUtil.MAX_ABS_EXPONENT);
+    assertEquals(BigDecimal.TEN.pow(64), atBound);
+    assertEquals(0, atBound.scale());
+    assertEquals(new BigDecimal(BigInteger.ONE, 64), OracleUtil.scalePrice(1L, -OracleUtil.MAX_ABS_EXPONENT));
+
+    for (final int exponent : new int[]{65, -65, 2_000_000_000, Integer.MIN_VALUE}) {
+      final var longEx = assertThrows(IllegalStateException.class, () -> OracleUtil.scalePrice(1L, exponent));
+      assertTrue(longEx.getMessage().contains(Integer.toString(exponent)), longEx.getMessage());
+      assertThrows(IllegalStateException.class, () -> OracleUtil.scalePrice(BigInteger.ONE, exponent));
+      assertThrows(IllegalStateException.class, () -> OracleUtil.scalePythPullPrice(priceUpdate(1L, exponent)));
+    }
   }
 
   private static PriceUpdateV2 priceUpdate(final long price, final int exponent) {

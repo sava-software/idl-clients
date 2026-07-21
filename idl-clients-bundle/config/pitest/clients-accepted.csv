@@ -543,8 +543,8 @@ software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAcc
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,71,EmptyObjectReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,lambda$deriveBinAccounts$0,72,NullReturnValsMutator,NO_COVERAGE
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,transferHooks,91,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,21,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,21,RemoveConditionalMutator_ORDER_IF,SURVIVED
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,RemoveConditionalMutator_ORDER_IF,SURVIVED
 software.sava.idl.clients.phoenix.PhoenixAccounts,createAccounts,40,NullReturnValsMutator,SURVIVED
 software.sava.idl.clients.phoenix.PhoenixClient,createClient,31,NullReturnValsMutator,SURVIVED
 software.sava.idl.clients.phoenix.PhoenixClient,createClient,35,NullReturnValsMutator,NO_COVERAGE
