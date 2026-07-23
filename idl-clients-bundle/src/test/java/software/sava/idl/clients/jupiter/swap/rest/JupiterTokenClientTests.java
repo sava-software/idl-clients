@@ -103,4 +103,27 @@ final class JupiterTokenClientTests extends JupiterRestTests {
     expectGet("/tokens/v2/recent", "[]");
     assertTrue(client.recentTokens().join().isEmpty());
   }
+
+  /// The shared client field initializes once under `PER_CLASS`, so PIT
+  /// attributes the builder's `setURLs` coverage to whichever test runs first —
+  /// which can never pair the URL wiring with the request each URL serves (the
+  /// same instability as coverage attributed to a field initializer). Building
+  /// the client inside the test body makes each resolved path's mutant die
+  /// against the request that exercises it.
+  @Test
+  void urlWiringIsCoveredFromInsideTheTest() {
+    final var builder = JupiterTokenClient.build();
+    builder.httpClient(HTTP_CLIENT);
+    builder.endpoint(endpoint);
+    builder.apiKey("test-api-key");
+    final var fresh = builder.createClient();
+
+    // v2RecentTokenPath = endpoint.resolve("/tokens/v2/recent")
+    expectGet("/tokens/v2/recent", TOKENS);
+    assertEquals(2, fresh.recentTokens().join().size());
+
+    // v2TokenPath = endpoint.resolve("/tokens/v2/") anchors every other path
+    expectGet("/tokens/v2/search?query=SOL", TOKENS);
+    assertEquals(2, fresh.search("SOL").join().size());
+  }
 }

@@ -231,7 +231,7 @@ a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
-<!-- hardening-template sha256:96ddf18dcc3a -->
+<!-- hardening-template sha256:2c504992c917 -->
 
 Full policy: sava-build's `HARDENING.md` — the canonical source for the ratchet,
 its equivalence families, and the lifecycle. Per-module acceptance records:
@@ -266,8 +266,19 @@ specifics:
 - **A suite's percentage is not a target.** An accepted mutant with a written
   reason is finished work. Before trying to raise a number, check whether the
   remainder is `NO_COVERAGE` (real work) or documented equivalents (closed).
-- Line-number churn from editing a mutated file shows up as paired stale + "new"
-  baseline entries; confirm they're the shifted old ones before refreshing.
+- Pure line drift — every new baseline entry a same-status shift of a stale
+  one, populations unchanged — passes on its own with a notice; refresh at a
+  convenient moment. Anything mixed in (newly covered, unexplained, changed
+  counts) still fails and is triage first, refresh after.
+- **Iterate with `-PmutateOnly=<class-glob>`** while killing a cluster —
+  seconds instead of the full suite — then re-run unscoped before any refresh;
+  the tooling refuses to let a scoped report touch the baseline.
+  `pitest<Suite>Debt` ranks where the remaining debt lives; `-PlistUnkilled`
+  annotates each unkilled row with PIT's mutation description.
+- Identical baseline rows are sibling mutants of one compound condition and
+  the comparison is a multiset: never hand-dedupe. When one sibling survives,
+  the verify names the killed sibling's test — the survivor is the opposite
+  branch direction; triage it as its own mutant.
 - **The baselines are triage debt, not acceptance.** They were seeded with the
   full pre-existing survivor population in 2026-07 when the ratchet was adopted;
   each module's README ranks what to pay down first. Shrinking a baseline is
@@ -280,6 +291,13 @@ specifics:
   boundary cannot be made deterministic, accept the mutant with a written
   reason rather than chasing it with sleeps, spin-waits, or thin-margin
   measurement bounds.
+- **Build the client under test inside the test body, not in a field.** Under
+  `PER_CLASS` lifecycle a field-initialized client's construction coverage
+  attaches to whichever test runs first, so URL-wiring mutants can never pair
+  with the test that drives what they wire — they survive even under a
+  harness that asserts every request (observed here: the Jupiter REST
+  clients; `urlWiringIsCoveredFromInsideTheTest` in both client test classes
+  is the pattern).
 - **A wandering unkilled count is a defect, not noise** — chase it before
   refreshing any baseline. Known causes: real waits, `TIMED_OUT` load flips,
   and coverage attributed to field initializers. (Observed here:
@@ -300,7 +318,9 @@ specifics:
   detected and is load-dependent: the same mutant can report `SURVIVED` alone
   and `TIMED_OUT` under `qualityGate`. If a suite reports timed-out rows,
   verify its baseline in both modes; union only rows observed to flip, never
-  every `TIMED_OUT` row.
+  every `TIMED_OUT` row. The comparison is scripted: `pitestModeSnapshot
+  -PpitestMode=<label>` / `pitestModeCompare`, with `-PunionModeFlips` writing
+  the observed-flip unions; `pitestConverge` checks run-to-run determinism.
 - When a test you believe in will not go green, **suspect the code before you
   soften the assertion** — most of this repo's shipped-defect finds (the
   Jupiter fee-payer crash among them) surfaced exactly this way.
@@ -323,16 +343,26 @@ specifics:
   full output even when the shell discarded it — read it before calling a
   failure unexplained.
 - Fuzz findings become a committed seed input **and** a named regression test,
-  never just a fix — and the committed corpus is replayed by a unit test
-  inside `check` (`*CorpusReplayTests` beside each seeded harness), so it
-  cannot rot between fuzz runs.
+  never just a fix — and the committed corpus is replayed by a plugin-generated
+  `<Harness>SeedReplayTest` inside `check` (it fails on a missing or emptied
+  corpus), so it cannot rot between fuzz runs. Seed provenance lives in the
+  README next to (never inside) each corpus directory.
+- **PIT minions run on the class path**, even though this repo's tasks run on
+  the module path: `module-info` services are invisible to them, and a
+  test-resources `META-INF/services` is invisible to the module-path `test`
+  task. Real services are declared in both places; a harness whose result
+  depends on which task ran it is never committed.
 
-Mutator selection is per-suite. The default is PIT's `STRONGER` group, but
-`orca` and `clients` add `EXPERIMENTAL_BIG_INTEGER` because `MathMutator` only
+Mutator selection is per-suite. The default is PIT's `STRONGER` group; `orca`
+and `clients` add `EXPERIMENTAL_BIG_INTEGER` because `MathMutator` only
 rewrites *primitive* bytecode arithmetic — `BigInteger`/`BigDecimal` arithmetic
 is method calls, so fixed-point and fee math would otherwise go entirely
-unmutated. See `idl-clients-bundle/config/pitest/README.md` for the measurements
-behind that, including why `EXPERIMENTAL_BIG_DECIMAL` is deliberately omitted.
+unmutated — and every suite adds `EXPERIMENTAL_NAKED_RECEIVER` because fluent
+calls returning their receiver are expressions, invisible to
+`VoidMethodCallMutator` (dropped `stripTrailingZeros`, `URI::resolve`, and
+`StringBuilder.append` calls were all inexpressible before it). See each
+module's `config/pitest/README.md` for the trial measurements, including why
+`EXPERIMENTAL_BIG_DECIMAL` is deliberately omitted.
 
 Mutation suites are targeted by **package wildcard with explicit exclusions,
 never by allowlist** — an allowlist silently exempts every class added after it
@@ -368,9 +398,11 @@ Conventions when adding a target:
   account dumps under `src/test/resources/fuzz/<name>/` and point the target's
   `seedCorpus` at that directory. Skip seeding only when every input prefix is already
   valid (a small count-prefixed record parser reaches its whole space from scratch).
-- A committed seed corpus gets a `*CorpusReplayTests` beside its harness that feeds
-  every seed through `fuzzerTestOneInput` (see `ScopeReaderCorpusReplayTests`,
-  `StakePoolStateCorpusReplayTests`), so the corpus is exercised on every `check`.
+- A committed seed corpus is replayed on every `check` by a plugin-generated
+  `<Harness>SeedReplayTest` (e.g. `ScopeReaderFuzzSeedReplayTest`) — do not
+  hand-write replay tests. Record what each seed pins in the README next to the
+  corpus directory (`src/test/resources/fuzz/README.md`), never inside the
+  corpus directory itself, where the file would be fed to the harness as a seed.
 - **When one thing has two representations, fuzz the differential** — an
   encode/decode round trip, a fast path beside a reference path: assert the two
   *agree* rather than that neither crashes. Crash-only fuzzing cannot see a wrong

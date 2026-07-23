@@ -18,10 +18,11 @@ A new unkilled mutant has exactly three legal outcomes:
    test".
 
 Line numbers are part of the baseline key, so unrelated edits to a mutated file
-shift entries: the verify task then reports both stale and "new" rows. Confirm
-the new rows are the shifted old ones, then refresh with
-`-PupdateMutationBaseline`. Baseline rows are deduplicated by key, so the
-suite's row count is at or below the mutant count its report prints.
+shift entries: pure line drift — every new row a same-status shift of a stale
+one, populations unchanged — passes on its own with a notice (sava-build
+21.5.9); anything mixed in still fails and is triage first, refresh after.
+Duplicate rows are sibling mutants of one compound condition and the comparison
+is a **multiset** — never hand-dedupe the file.
 
 ## Suite
 
@@ -37,6 +38,25 @@ and fuzz sources sharing the recompiled root, and the git-ignored `Integ.*`
 scratch files — present on a dev machine and absent in CI, so mutating them
 would make the baseline machine-dependent.
 
+## Mutator set
+
+`STRONGER,EXPERIMENTAL_NAKED_RECEIVER`. `EXPERIMENTAL_BIG_INTEGER` is
+deliberately off: it fires zero times in this module (742 mutations with and
+without, measured 2026-07-20 — see the bundle README for the method).
+
+`EXPERIMENTAL_NAKED_RECEIVER` (replace a fluent call with its receiver — calls
+returning their own receiver type are expressions, invisible to
+`VoidMethodCallMutator`) was trialed 2026-07-23 with sava-build 21.5.9's
+`pitestMutatorTrial -PtrialMutators=EXPERIMENTAL_NAKED_RECEIVER`: **19
+generated, 15 killed by existing tests, 4 unkilled**. Enabled the same day. The
+four survivors were all dropped `stripTrailingZeros` calls in
+`StakePoolState.Fee.toRatio` and `StakePoolState.calculateSolPrice` (both
+`BigDecimal` overloads of each): the existing assertions used scale-blind
+`compareTo`, so the canonical-form contract was unpinned. Killed by asserting
+the stripped representation with scale-sensitive `BigDecimal.equals` on inputs
+whose division leaves trailing zeros (`StakePoolStateTests.feeToRatio`,
+`calculateSolPriceStripsToCanonicalForm`).
+
 ## Baseline composition
 
 | Date | Rows | `NO_COVERAGE` | `SURVIVED` | Killed | Test strength |
@@ -45,6 +65,10 @@ would make the baseline machine-dependent.
 | 2026-07-19 | 175 | 170 | 5 | 563/741 (76%) | 99% |
 | 2026-07-19 | 10 | 5 | 5 | 732/742 (99%) | 99% |
 | 2026-07-19 | 7 | 2 | 5 | 735/742 (99%) | 99% |
+| 2026-07-23 | 7 | 2 | 5 | 754/761 (99%) | 99% |
+
+The 2026-07-23 row is the `EXPERIMENTAL_NAKED_RECEIVER` intake (below): +19
+mutants, all four initial survivors killed, baseline unchanged.
 
 The baseline was seeded with the full pre-existing survivor population when the
 ratchet was adopted, per HARDENING.md's adoption path — triage debt made

@@ -60,8 +60,9 @@ final class KaminoLendClientTests {
   /// reached for `collateralMint()`, which is a different (derived) account.
   @Test
   void withdrawReferrerFeesUsesTheLiquidityMint() {
+    // createPDAs takes (programId, market) — in that order
     final var reservePDAs = KAMINO_ACCOUNTS.createReservePDAs(
-        software.sava.idl.clients.kamino.lend.KaminoMarketPDAs.createPDAs(MARKET, KAMINO_ACCOUNTS.kLendProgram()),
+        software.sava.idl.clients.kamino.lend.KaminoMarketPDAs.createPDAs(KAMINO_ACCOUNTS.kLendProgram(), MARKET),
         key(0x41),
         SOLANA_ACCOUNTS.tokenProgram());
 

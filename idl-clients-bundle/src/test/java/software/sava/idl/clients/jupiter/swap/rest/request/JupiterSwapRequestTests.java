@@ -204,10 +204,13 @@ final class JupiterSwapRequestTests {
     final int feeIdx = both.indexOf("priorityLevelWithMaxLamports");
     final int tipIdx = both.indexOf("jitoTipLamports");
     assertTrue(feeIdx < tipIdx, "the priority level leads");
-    assertTrue(both.substring(feeIdx, tipIdx).contains(","), "the two entries must be comma separated");
 
-    // the object is closed before the quote is appended
-    assertTrue(both.contains("}"), both);
+    // The exact object, built from the same toJson() the body embeds: the fee
+    // and tip JSON both contain commas and braces of their own, so containment
+    // checks on "," or "}" cannot tell the separator and the closing brace of
+    // the shared object from their lookalikes inside the entries.
+    final String expectedObject = "\"prioritizationFeeLamports\":{" + fee.toJson() + "," + tip.toJson() + '}';
+    assertTrue(both.contains(expectedObject), both);
   }
 
   /// Every setter round-trips through the record, so a builder that drops a

@@ -105,10 +105,61 @@ Two things worth knowing before repeating this experiment:
 mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
 ```
 
-`scope` is left on plain `STRONGER` because the mutator fires zero times there;
-the same was measured for `idl-clients-spl`'s own suite (742 mutations with
-and without), so it is not enabled there either.
+`scope` is left off `EXPERIMENTAL_BIG_INTEGER` because the mutator fires zero
+times there; the same was measured for `idl-clients-spl`'s own suite (742
+mutations with and without), so it is not enabled there either.
 Of the five new survivors, three were killed and two accepted (below).
+
+### `EXPERIMENTAL_NAKED_RECEIVER` (enabled 2026-07-23, all suites)
+
+The structural sibling of the BigInteger gap: a call whose return type is its
+receiver type is an *expression*, so `VoidMethodCallMutator` never fires on it —
+builder-style writes, `StringBuilder.append` chains, `BigDecimal`/`BigInteger`
+fluent math. sava-build 21.5.9's scripted trial
+(`pitestMutatorTrial -PtrialMutators=EXPERIMENTAL_NAKED_RECEIVER`), 2026-07-23:
+
+| Suite | Generated | Killed by existing tests | Unkilled |
+|---|---|---|---|
+| `scope` | 6 | 6 (100%) | 0 |
+| `orca` | 119 | 113 (94%) | 6 |
+| `clients` | 245 | 179 (73%) | 66 |
+| `spl` (idl-clients-spl) | 19 | 15 (78%) | 4 |
+
+Fired everywhere, so it is enabled everywhere. Every `SURVIVED` row from the
+intake is now resolved (2026-07-23); only the 52 `NO_COVERAGE` rows on the
+untested client-impl tranche (priority 3 below) remain `# untriaged`:
+
+- **Killed — dropped `stripTrailingZeros` (5)**: `Fee.toRatio` /
+  `StakePoolState.calculateSolPrice` (spl) and `KaminoUtil.fromSf` here. The
+  recurring reason these survive is scale-blind `compareTo` assertions; the
+  kills assert the canonical stripped form with `BigDecimal.equals`.
+- **Killed — URL wiring and response mapping (4 + 2 siblings)**: the local
+  `swapURI`, `executeUltraOrderURI`, and token `v2RecentTokenPath` resolves,
+  and the query-only `quote` overload's `thenApply`. These survived a harness
+  that *does* assert paths because the shared client is built in a field
+  initializer under `PER_CLASS` lifecycle — coverage attaches to whichever
+  test runs first, so PIT can never pair the wiring with the request that
+  exercises it. `urlWiringIsCoveredFromInsideTheTest` (both client test
+  classes) builds the client inside the test body. The same fixture divergence
+  killed both `JupiterSwapInstructions.feePayer` guard siblings: every real
+  response has setup payer == swap signer, so only a fixture where they differ
+  can observe the documented setup-first preference.
+- **Killed — `preSerialize` separator and closing brace (2)**: the fee/tip
+  JSON both contain commas and braces, so `contains(",")`-style checks pass
+  with the separator dropped; the test now asserts the exact
+  `prioritizationFeeLamports` object built from the same `toJson()` calls.
+- **Killed — `DlmmUtils.pow:200` initial mask (1)**: the Rust `u128` parameter
+  boundary, pinned by `pow(base) == pow(base + 2^128)`.
+- **Killed — `collectRewardsQuote:144` dropped `divide(poolLiquidity)` (1)**:
+  a real gap — every prior fixture's emissions were sub-X64 dust that
+  truncated to zero divided or not; the new fixture uses X64-scaled emissions.
+- **Accepted (families below)**: the four redundant explicit `.GET()` calls
+  (`HttpRequest.Builder` defaults to GET; killable only via an `extendRequest`
+  that sets another method), `sqrtFloor`'s initial guess (sweep-verified),
+  the three u128 truncation masks (tick masks sweep-verified over every valid
+  tick; the rewards mask guard-bounded), `DlmmUtils.pow`'s two loop masks
+  (bounded post-inversion), and `sqrtPriceX64ToTickIndex:681` joining the
+  lower-error-margin family (accepted as untriaged there).
 
 ## Baseline composition (seeded 2026-07-18)
 
@@ -129,6 +180,42 @@ Of the five new survivors, three were killed and two accepted (below).
 | 2026-07-20 | `clients` | 574 | 499 | 75 | 791/1367 (58%) | 91% |
 | 2026-07-20 | `orca` | 100 | 46 | 54 | 553/655 (84%) | 91% |
 | 2026-07-20 | `clients` | 574 | 499 | 75 | 839/1415 (59%) | 92% |
+| 2026-07-23 | `orca` | 108 | 46 | 62 | 666/774 (86%) | 91% |
+| 2026-07-23 | `scope` | 49 | 1 | 48 | 314/363 (86%) | 87% |
+| 2026-07-23 | `clients` | 645 | 554 | 91 | 1043/1688 (61%) | 92% |
+| 2026-07-23 | `orca` | 106 | 46 | 60 | 668/774 (86%) | 91% |
+| 2026-07-23 | `clients` | 635 | 554 | 81 | 1053/1688 (62%) | 92% |
+
+The second pair of 2026-07-23 rows is the NAKED_RECEIVER survivor triage (see
+that section): every intake `SURVIVED` row killed or accepted with a reason,
+including two bonus kills of pre-existing rows the strengthened assertions
+reached (`preSerialize:46`, `collectRewardsQuote:128`).
+
+| 2026-07-23 | `clients` | 436 | 361 | 75 | 1250/1688 (74%) | 94% |
+
+The final 2026-07-23 row is two follow-up passes over the `NO_COVERAGE`
+tranche. (1) **Parser unknown-field alignment**: every Jupiter REST
+request/response parser fed fixtures with unknown neighbors at each nesting
+level (`JupiterResponseParserAlignmentTests`, `ClaimProofTests`, and the
+request-record parse tests) — 34 targeted rows plus ~100 collateral kills, and
+the newly-covered triage that followed pinned the route `percent`/`bps` null
+sentinels, the full audit field set, and the `stats` suffix arithmetic.
+(2) **Remaining-accounts wiring**: `MeteoraDlmmRemainingAccountsTests`
+(bin-array ranges, transfer-hook slice/meta pairing, the u8 slice-length
+boundary), Kamino lend/vaults append order and flags, the Marginfi
+fetched-`Bank` overload, Marinade `claimTickets`, and the Jupiter remote-URL +
+`extendRequest`-composition path. The fluent-return `NullReturnVals` cluster
+on builder methods dies by asserting the chaining contract (`assertSame` on
+each returned builder).
+
+The 2026-07-23 rows fold in two sava-build 21.5.9 effects at once: the
+`EXPERIMENTAL_NAKED_RECEIVER` intake (above), and the ratchet's comparison
+tightening from unique-row to **multiset** — sibling mutants sharing a
+`class,method,line,mutator` key are now counted, so 11 pre-existing survivors
+the unique comparison had collapsed became visible rows (7 `scope`
+equals/hashCode siblings, 2 `orca` line-663 siblings, 2 `clients`). They are
+annotated in the CSVs and folded into their families below — surfaced debt,
+not new mutants.
 
 **The seeded baseline is triage debt made explicit, not acceptance.** Priorities
 1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
@@ -769,23 +856,29 @@ that positional convention, which `requireNonNullElse` alone would not catch.
 
 ## Triaged equivalent mutants (accepted with reasons)
 
-### BigInteger `sqrtFloor` initial guess (1 mutant, orca)
+### BigInteger `sqrtFloor` initial guess (2 mutants, orca)
 
 `OrcaUtil.sqrtFloor:492` seeds Newton's integer square root with
-`value.shiftRight(1)`; the mutant seeds it with `shiftLeft(1)` instead. The
-iteration `next = (prev + value/prev) / 2` descends monotonically to
-`floor(sqrt(value))` from *any* starting point at or above the true root, and
-both `v/2` and `2v` qualify for `v >= 2` (`v < 2` returns early). Only the
-iteration count changes.
+`value.shiftRight(1)`; the `EXPERIMENTAL_BIG_INTEGER` mutant seeds it with
+`shiftLeft(1)`, and the `NakedReceiver` mutant drops the shift entirely,
+seeding with `value` itself. The iteration `next = (prev + value/prev) / 2`
+descends monotonically to `floor(sqrt(value))` from *any* starting point at or
+above the true root, and `v/2`, `2v` and `v` all qualify for `v >= 2` (`v < 2`
+returns early). Only the iteration count changes.
 
-Verified as well as reasoned: both variants were reimplemented and compared over
+Verified as well as reasoned: the variants were reimplemented and compared over
 200,490 inputs — every value below 200,000 plus `2^e ± 3` for `e` in 60..129 —
-with **zero** differences.
+with **zero** differences; the `guess = v` variant additionally over 122,765
+cases (0..1999, `2^k ± 1` for k in 2..256, and 120k random values up to
+256 bits), all also agreeing with `math.isqrt`.
 
-### BigInteger tick-index lower error margin (1 mutant, orca)
+### BigInteger tick-index lower error margin (2 mutants, orca)
 
 `OrcaUtil.sqrtPriceX64ToTickIndex:681` computes `tickLow` as
-`logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64)`; the mutant adds instead.
+`logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64)`; the `BIG_INTEGER` mutant
+adds instead, and the `NakedReceiver` mutant drops the subtraction —
+`tickLow = floor(x)` rather than `floor(x - 0.01)`, which diverges in the same
+`frac(x) < 0.01` sliver the analysis below covers, so both siblings share it.
 
 **This one is accepted as untriaged, not proven equivalent.** Writing
 `x = logbpX64 / 2^64`, the margins are ~0.01 and ~0.856 of a tick, so
@@ -819,7 +912,7 @@ would distinguish the mutant, so the guard is not dead code, and it should stay.
 Killing it would need a raw-socket stub speaking HTTP/1.1 by hand instead of an
 `HttpServer`, which is not worth it for one mutant.
 
-### DlmmUtils fee and Q64.64 `pow` domain equivalents (15 mutants, clients)
+### DlmmUtils fee and Q64.64 `pow` domain equivalents (17 mutants, clients)
 
 Every remaining conditional in `DlmmUtils` guards a state its own inputs cannot
 reach. The bounds come from `LbClmmConstants`: `FEE_DENOMINATOR = 10^9` and
@@ -855,13 +948,19 @@ reach. The bounds come from `LbClmmConstants`: `FEE_DENOMINATOR = 10^9` and
   step `squaredBase <= 2^64`, and each update is `(result x squaredBase) >> 64`
   masked to 128 bits, so `result` stays at 65 bits — far below both the guard and
   its boundary.
+- **`pow:215` / `pow:218`** (`NakedReceiver` dropping the loop `.and(U128_MASK)`,
+  2 mutants). Identity by the same bounds: post-inversion `squaredBase <= 2^64`
+  and `result <= 2^65`, so both `>> 64` results already fit far inside 128 bits.
+  The *initial* mask at `pow:200` is different — it is the Rust `u128` parameter
+  type boundary, observable to a Java caller passing a bit-128 base — and is
+  killed by `powExactValues` asserting `pow(base) == pow(base + 2^128)`.
 - **`binIdToArrayIndex:60`** (`binId < 0` -> `<= 0`). At `binId == 0` the second
   conjunct `(0 % MAX_BIN_PER_ARRAY) != 0` is false, so both spellings yield `idx`.
 
 These are guards worth keeping — they are cheap, and they document the domain —
 but no input a caller can construct distinguishes them from their mutants.
 
-### Hash-mixing arithmetic in hand-written hashCode (30 mutants, scope)
+### Hash-mixing arithmetic in hand-written hashCode (34 mutants, scope)
 
 `MathMutator` hits on the `31 * result + component` mixing steps in
 `MostRecentOfEntry`, `CappedMostRecentOf`, `Conditional`, `NotYetSupported`,
@@ -869,16 +968,21 @@ but no input a caller can construct distinguishes them from their mutants.
 the compared components satisfies the `hashCode` contract — the tests assert
 equal-objects-equal-hashes and that each component perturbs the hash, and both
 properties hold under any mixing formula. Killing these would mean asserting
-literal hash values, which restates the implementation.
+literal hash values, which restates the implementation. Four of the 34 are
+same-coordinate siblings (a `31 * result + c` line holds one multiplication and
+one addition mutant) surfaced by the 21.5.9 multiset comparison — same
+reasoning, annotated `# hash-mixing sibling` in the CSV.
 
-### Record-pattern deconstruction conditionals (10 mutants, scope)
+### Record-pattern deconstruction conditionals (13 mutants, scope)
 
 `RemoveConditionalMutator_EQUAL_IF` on the `o instanceof Type(...)` record
 deconstruction lines in the same equals methods. The tests cover a matching
 twin, a mismatching variant per component, a null, and a different type; the
 surviving conditionals are the compiler-synthesized component-extraction checks
 inside the pattern, which cannot take their alternate branch once the
-`instanceof` has matched.
+`instanceof` has matched. Three of the 13 are same-coordinate siblings (one per
+synthesized extraction check on the deconstruction line) surfaced by the
+21.5.9 multiset comparison — annotated `# record-pattern sibling` in the CSV.
 
 ### Zero fast paths in front of arithmetic that yields zero anyway (scope + orca)
 
@@ -916,14 +1020,29 @@ The `msb >= 64` normalize conditional and its boundary variants in
 `shiftRight(n)`, so both branches compute the same expression and the
 conditional is purely cosmetic.
 
-### Log-approximation precision headroom (3 mutants, orca)
+### Log-approximation precision headroom (5 mutants, orca)
 
 The `precision < BIT_PRECISION` loop bound and `precision++` in
 `sqrtPriceX64ToTickIndex`, and the `tickLow == tickHigh` fast return: the
 tick is derived from a 14-bit log approximation with error margins
 (`LOG_B_P_ERR_MARGIN_*`) sized so that *extra* iterations or taking the slow
 path cannot change the resolved tick — verified by round-trip tests across the
-full tick range including both extremes.
+full tick range including both extremes. Two of the 5 are same-coordinate
+siblings on the line-663 comparison surfaced by the 21.5.9 multiset
+comparison — annotated `# log-approx headroom sibling` in the CSV.
+
+### u128 truncation masks that cannot fire (3 mutants, orca)
+
+The `NakedReceiver` mutants dropping `.and(U128_MASK)` in
+`sqrtPriceFromPositiveTick:599` / `sqrtPriceFromNegativeTick:612`, and
+`.and(U64_MAX)` in `collectRewardsQuote:173`. The tick masks mirror the Rust
+reference's `as_u128()` truncation, but no valid tick reaches it:
+**sweep-verified** — both variants reimplemented from the factor tables and
+compared over every tick in `[-443636, 443636]`, zero differences (invalid
+ticks are rejected by the public entry point's bounds guard, pinned by the
+guard-rejection tests). The rewards mask sits directly under the
+`product > U128` overflow guard, so `product >> 64` already fits u64 and the
+mask is identity by the guard above it.
 
 ### Rewards-quote domain equivalents (4 mutants, orca)
 

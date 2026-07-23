@@ -136,6 +136,28 @@ final class CollectRewardsQuoteTests {
     assertEquals(0L, r.rewards()[2].rewardsOwed());
   }
 
+  /// The per-liquidity division is the only thing separating "reward per unit
+  /// of liquidity" from "total reward". The other fixtures cannot see it
+  /// dropped: their raw (sub-X64) emissions leave a quotient — divided or not —
+  /// that truncates to zero in the final `>> 64`. X64-scaled emissions over a
+  /// small pool make the quotient exact: 8*2^64/s x 5s / 4 liquidity, held by
+  /// 3 position liquidity = (10*2^64 * 3) >> 64 = 30.
+  @Test
+  void emissionsAccrueDividedByPoolLiquidity() {
+    final var pool = whirlpoolForRewards(5, 10L,
+        new BigInteger[]{ZERO, ZERO, ZERO},
+        new BigInteger[]{bi(8).shiftLeft(64), ZERO, ZERO}, bi(4));
+    final var p = positionForRewards(bi(3), 0, 10,
+        new BigInteger[]{ZERO, ZERO, ZERO}, new long[]{0L, 0L, 0L});
+    final var tl = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+    final var tu = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+
+    final var r = WhirlpoolQuote.collectRewardsQuote(pool, p, tl, tu, 15L, null, null, null);
+    assertEquals(30L, r.rewards()[0].rewardsOwed());
+    assertEquals(0L, r.rewards()[1].rewardsOwed());
+    assertEquals(0L, r.rewards()[2].rewardsOwed());
+  }
+
   @Test
   void forceProductOverflow() {
     final BigInteger half = OrcaUtilU128Max().shiftRight(1);

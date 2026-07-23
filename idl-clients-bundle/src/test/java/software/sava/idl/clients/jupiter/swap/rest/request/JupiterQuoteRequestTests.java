@@ -314,4 +314,49 @@ final class JupiterQuoteRequestTests {
     assertEquals(32, parsed.maxAccounts(), "the prototype field survives");
     assertEquals(INPUT_MINT, parsed.inputTokenMint());
   }
+
+  /// Every parseable field lands from its API name, and unknown fields —
+  /// leading, mid-object, and trailing; scalar and structured — are skipped
+  /// without shifting the fields after them. The builder's setters and
+  /// `ji.skip()` all return their receiver, so a dropped call is an
+  /// expressible mutation; each field asserts a non-default value so a
+  /// dropped setter cannot hide behind the builder's default.
+  @Test
+  void parsedRequestReadsEveryFieldPastUnknownNeighbors() {
+    final var json = """
+        {
+          "unknownLeading": {"nested": [1, {"deep": true}]},
+          "amount": 123456789,
+          "swapMode": "exactout",
+          "inputMint": "%s",
+          "unknownMid": ["s", 2.5, false],
+          "outputMint": "%s",
+          "slippageBps": 75,
+          "dexes": ["Orca", "Meteora DLMM"],
+          "excludeDexes": ["Phoenix"],
+          "restrictIntermediateTokens": true,
+          "onlyDirectRoutes": true,
+          "asLegacyTransaction": true,
+          "platformFeeBps": 85,
+          "maxAccounts": 33,
+          "instructionVersion": "V2",
+          "unknownTrailing": "ignored"
+        }""".formatted(INPUT_MINT.toBase58(), OUTPUT_MINT.toBase58());
+
+    final var parsed = JupiterQuoteRequest.parseRequest(JsonIterator.parse(json.getBytes(UTF_8)));
+
+    assertEquals(BigInteger.valueOf(123_456_789L), parsed.amount());
+    assertEquals(SwapMode.ExactOut, parsed.swapMode(), "swapMode matches case-insensitively");
+    assertEquals(INPUT_MINT, parsed.inputTokenMint());
+    assertEquals(OUTPUT_MINT, parsed.outputTokenMint());
+    assertEquals(75, parsed.slippageBps());
+    assertEquals(List.of("Orca", "Meteora DLMM"), List.copyOf(parsed.dexes()));
+    assertEquals(List.of("Phoenix"), List.copyOf(parsed.excludeDexes()));
+    assertTrue(parsed.restrictIntermediateTokens());
+    assertTrue(parsed.onlyDirectRoutes());
+    assertTrue(parsed.asLegacyTransaction());
+    assertEquals(85, parsed.platformFeeBps());
+    assertEquals(33, parsed.maxAccounts());
+    assertEquals("V2", parsed.instructionVersion());
+  }
 }

@@ -264,4 +264,25 @@ final class MarinadeProgramClientTests {
     assertNotNull(explicit);
     assertEquals(MarinadeAccounts.MAIN_NET, explicit.marinadeAccounts());
   }
+
+  /// `claimTickets` maps each ticket to its own `claimTicket` instruction. The
+  /// mapping step is the mutant target: dropped, the raw keys ride the list in
+  /// the instructions' place, and each element access below fails the cast.
+  @Test
+  void claimTicketsMapsEachTicketToItsOwnInstruction() {
+    final var client = MarinadeProgramClient.createClient(ACCOUNT_CLIENT);
+    final var first = key(0x31);
+    final var second = key(0x32);
+
+    final var instructions = client.claimTickets(java.util.List.of(first, second));
+    assertEquals(2, instructions.size());
+
+    final var firstIx = instructions.get(0);
+    final var secondIx = instructions.get(1);
+    assertTrue(firstIx.accounts().stream().anyMatch(a -> a.publicKey().equals(first)),
+        "the first instruction claims the first ticket");
+    assertFalse(firstIx.accounts().stream().anyMatch(a -> a.publicKey().equals(second)));
+    assertTrue(secondIx.accounts().stream().anyMatch(a -> a.publicKey().equals(second)),
+        "the second instruction claims the second ticket");
+  }
 }

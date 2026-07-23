@@ -14,7 +14,7 @@ public record Delegation(PublicKey voterPubkey,
                          long stake,
                          Epoch activationEpoch,
                          Epoch deactivationEpoch,
-                         int[] reserved) implements SerDe {
+                         byte[] reserved) implements SerDe {
 
   public static final int BYTES = 64;
   public static final int RESERVED_LEN = 8;
@@ -38,7 +38,7 @@ public record Delegation(PublicKey voterPubkey,
     i += activationEpoch.l();
     final var deactivationEpoch = Epoch.read(_data, i);
     i += deactivationEpoch.l();
-    final var reserved = new int[8];
+    final var reserved = new byte[8];
     SerDeUtil.readArray(reserved, _data, i);
     return new Delegation(voterPubkey,
                           stake,

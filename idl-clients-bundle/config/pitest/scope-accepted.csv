@@ -1,10 +1,15 @@
-software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,equals,22,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,37,MathMutator,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,equals,22,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,equals,22,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,equals,22,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,37,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,37,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
 software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,38,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,39,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.CappedMostRecentOf,hashCode,40,MathMutator,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.Conditional,equals,21,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.Conditional,hashCode,35,MathMutator,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.Conditional,equals,21,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.Conditional,equals,21,RemoveConditionalMutator_EQUAL_IF,SURVIVED # record-pattern sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.Conditional,hashCode,35,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.Conditional,hashCode,35,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
 software.sava.idl.clients.kamino.scope.entries.Conditional,hashCode,36,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.Conditional,hashCode,37,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.FixedPrice,createEntry,10,ConditionalsBoundaryMutator,SURVIVED
@@ -12,13 +17,15 @@ software.sava.idl.clients.kamino.scope.entries.FixedPrice,createEntry,10,RemoveC
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,equals,24,RemoveConditionalMutator_EQUAL_IF,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,equals,26,RemoveConditionalMutator_EQUAL_IF,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,equals,27,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,45,MathMutator,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,45,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,45,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,46,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,47,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,48,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.MostRecentOfEntry,hashCode,49,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,equals,28,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,45,MathMutator,SURVIVED
+software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,45,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,45,MathMutator,SURVIVED # hash-mixing sibling (multiset ratchet, sava-build 21.5.9)
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,46,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,47,MathMutator,SURVIVED
 software.sava.idl.clients.kamino.scope.entries.NotYetSupported,hashCode,48,MathMutator,SURVIVED

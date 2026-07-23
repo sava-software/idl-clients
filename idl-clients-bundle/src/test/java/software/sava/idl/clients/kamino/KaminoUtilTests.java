@@ -81,6 +81,9 @@ final class KaminoUtilTests {
     // 2^-60 at scale 20 is 0.0000000000000000008673... => 8.6E-19 DOWN / 8.7E-19 UP.
     assertEquals(new BigDecimal("8.6E-19"), KaminoUtil.fromSf(BigInteger.ONE, 20, RoundingMode.DOWN));
     assertEquals(new BigDecimal("8.7E-19"), KaminoUtil.fromSf(BigInteger.ONE, 20, RoundingMode.UP));
+    // stripTrailingZeros is the contract: 2^58/2^60 divides to 0.250000 at scale 6,
+    // and scale-sensitive equals must see the canonical stripped 0.25.
+    assertEquals(new BigDecimal("0.25"), KaminoUtil.fromSf(new BigInteger("288230376151711744"), 6, RoundingMode.HALF_UP));
   }
 
   @Test

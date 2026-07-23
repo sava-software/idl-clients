@@ -312,6 +312,12 @@ final class StakePoolStateTests {
     assertEquals(0, new BigDecimal("0.25").compareTo(fee.toRatio(6, HALF_UP)));
     assertEquals(0.25d, fee.toRatio());
 
+    // stripTrailingZeros is the contract: the ratio comes back in canonical form,
+    // so scale-sensitive BigDecimal.equals must see the stripped value, not the
+    // scale the division produced (0.250000 at scale 6; 0.30 at precision 2).
+    assertEquals(new BigDecimal("0.25"), fee.toRatio(6, HALF_UP));
+    assertEquals(new BigDecimal("0.3"), new Fee(10_000L, 2_999L).toRatio(new MathContext(2)));
+
     // Zero numerator -> ZERO / 0.0.
     final var zeroNum = new Fee(4L, 0L);
     assertSame(ZERO, zeroNum.toRatio(MC));
@@ -323,6 +329,18 @@ final class StakePoolStateTests {
     assertSame(ZERO, zeroDen.toRatio(MC));
     assertSame(ZERO, zeroDen.toRatio(6, HALF_UP));
     assertEquals(0.0d, zeroDen.toRatio());
+  }
+
+  @Test
+  void calculateSolPriceStripsToCanonicalForm() {
+    // 1/4 at scale 6 divides to 0.250000; stripTrailingZeros is the contract, so
+    // scale-sensitive BigDecimal.equals must see the canonical 0.25.
+    final var state = parse(null, minimalBlob(1L, 4L, 0, 0, 0, 0L, 0L));
+    assertEquals(new BigDecimal("0.25"), state.calculateSolPrice(6, HALF_UP));
+
+    // 2999/10000 rounds to 0.30 at precision 2; canonical form drops the zero.
+    final var rounded = parse(null, minimalBlob(2_999L, 10_000L, 0, 0, 0, 0L, 0L));
+    assertEquals(new BigDecimal("0.3"), rounded.calculateSolPrice(new MathContext(2)));
   }
 
   @Test

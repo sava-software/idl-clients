@@ -33,8 +33,10 @@ hardening {
     // BigInteger arithmetic is method calls, which MathMutator (primitive
     // bytecode ops) cannot reach — see config/pitest/README.md. Requires
     // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
-    // fires zero times anywhere in this module.
-    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
+    // fires zero times anywhere in this module. NAKED_RECEIVER makes dropped
+    // fluent calls (receiver-returning expressions) expressible — trial
+    // numbers in config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
     // quote math and tick/PDA derivation
     targetClasses = listOf("software.sava.idl.clients.orca.*")
     excludedClasses = notMutated
@@ -42,7 +44,10 @@ hardening {
   }
   mutation.register("scope") {
     // the oracle price readers: a fixed-layout account walked by offset, where a
-    // wrong branch yields a plausible wrong price rather than a failure
+    // wrong branch yields a plausible wrong price rather than a failure.
+    // NAKED_RECEIVER fired 6 times at zero baseline cost — see
+    // config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
     targetClasses = listOf("software.sava.idl.clients.kamino.scope.*")
     excludedClasses = notMutated
     targetTests = "software.sava.idl.clients.kamino.*Test*"
@@ -51,8 +56,10 @@ hardening {
     // BigInteger arithmetic is method calls, which MathMutator (primitive
     // bytecode ops) cannot reach — see config/pitest/README.md. Requires
     // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
-    // fires zero times anywhere in this module.
-    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
+    // fires zero times anywhere in this module. NAKED_RECEIVER makes dropped
+    // fluent calls (receiver-returning expressions) expressible — trial
+    // numbers in config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
     // everything else hand-written in this module
     targetClasses = listOf("software.sava.idl.clients.*")
     excludedClasses = notMutated + listOf(

@@ -3,6 +3,8 @@ package software.sava.idl.clients.marginfi.v2;
 import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
+import software.sava.idl.clients.marginfi.v2.gen.types.Bank;
+import software.sava.idl.clients.marginfi.v2.gen.types.BankConfig;
 import software.sava.idl.clients.marginfi.v2.gen.types.OracleSetup;
 
 import java.util.Arrays;
@@ -149,5 +151,42 @@ final class MarginfiRemainingAccountsTests {
 
     // an empty payload is legitimate: an account with no active balances
     assertTrue(MarginfiRemainingAccounts.builder().build().isEmpty());
+  }
+
+  /// A `Bank` fetched from chain carries its own address, oracle setup and
+  /// asset tag; the overload must feed exactly those three into the manual
+  /// path — a dropped delegate silently contributes no group at all.
+  @Test
+  void aFetchedBankContributesItsOwnAddressSetupAndTag() {
+    final var bankKey = key(0x41);
+    final var oracle = key(0x42);
+    final var reserve = key(0x43);
+    final var bank = syntheticBank(bankKey, OracleSetup.PythPushOracle, ASSET_TAG_KAMINO);
+
+    final var viaBank = MarginfiRemainingAccounts.builder()
+        .bank(bank, oracle, reserve)
+        .build();
+    final var direct = MarginfiRemainingAccounts.builder()
+        .bank(bankKey, OracleSetup.PythPushOracle, ASSET_TAG_KAMINO, oracle, reserve)
+        .build();
+
+    assertEquals(keys(direct), keys(viaBank));
+    assertEquals(List.of(bankKey, oracle, reserve), keys(viaBank));
+  }
+
+  /// Only the three fields the overload reads are populated; a generated
+  /// record accepts null for everything else.
+  private static Bank syntheticBank(final PublicKey address,
+                                    final OracleSetup oracleSetup,
+                                    final int assetTag) {
+    final var config = new BankConfig(
+        null, null, null, null, 0L, null, null, oracleSetup, null, null,
+        0L, null, assetTag, 0, null, 0L, 0, null, 0L, null, null);
+    return new Bank(
+        address, null, null, 0, null, null, null, null, null, 0,
+        0, null, 0, 0, null, null, null, 0, 0, null,
+        null, null, null, 0L, config, 0L, 0L, null, null, null,
+        null, null, null, 0, 0, null, null, null, null, null,
+        null, 0L, null);
   }
 }

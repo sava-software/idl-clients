@@ -11,7 +11,10 @@ hardening {
   mutation.register("spl") {
     // catch-all by exclusion, so a new hand-written class is mutated by default
     // instead of silently skipped — the whole module is account encode/decode
-    // and instruction building, which is exactly the money-critical shape
+    // and instruction building, which is exactly the money-critical shape.
+    // NAKED_RECEIVER makes dropped fluent calls (receiver-returning
+    // expressions) expressible — trial numbers in config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
     targetClasses = listOf("software.sava.idl.clients.spl.*")
     excludedClasses = listOf(
       // generated per-program code: correctness belongs to idl-src-gen, and

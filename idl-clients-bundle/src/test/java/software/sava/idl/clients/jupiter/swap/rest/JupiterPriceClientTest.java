@@ -83,6 +83,19 @@ final class JupiterPriceClientTest {
     httpServer.stop(0);
   }
 
+  /// `priceForKeys` renders each `PublicKey` as base58 before joining — the
+  /// mapping step is the mutant target: dropped, the joiner is handed raw
+  /// `PublicKey` objects instead of strings.
+  @Test
+  void priceForKeysJoinsBase58Keys() {
+    final var prices = priceClient.priceForKeys(List.of(
+        PublicKey.fromBase58Encoded(SOL_MINT),
+        PublicKey.fromBase58Encoded(USDC_MINT))).join();
+
+    assertEquals("ids=" + SOL_MINT + "," + USDC_MINT, capturedQuery);
+    assertEquals(2, prices.size());
+  }
+
   @Test
   void testPriceRequestAndResponse() {
     final var prices = priceClient.price(List.of(SOL_MINT, USDC_MINT)).join();

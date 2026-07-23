@@ -16,15 +16,21 @@ software.sava.idl.clients.orca.OrcaUtil,requireU128,774,NullReturnValsMutator,SU
 software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,364,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,380,ConditionalsBoundaryMutator,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,492,BigIntegerMutator,SURVIVED
+software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,492,NakedReceiverMutator,SURVIVED # sqrtFloor initial-guess family — sweep-verified vs isqrt over 122k cases to 2^256 (see README)
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromNegativeTick,608,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromNegativeTick,612,NakedReceiverMutator,SURVIVED # u128 truncation mask, identity for every valid tick — sweep-verified over [-443636, 443636] (see README)
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromPositiveTick,595,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromPositiveTick,599,NakedReceiverMutator,SURVIVED # u128 truncation mask, identity for every valid tick — sweep-verified over [-443636, 443636] (see README)
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,655,ConditionalsBoundaryMutator,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,655,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,655,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,RemoveConditionalMutator_ORDER_IF,SURVIVED
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,ConditionalsBoundaryMutator,SURVIVED # log-approx headroom sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,ConditionalsBoundaryMutator,SURVIVED # log-approx headroom sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,RemoveConditionalMutator_ORDER_IF,SURVIVED # log-approx headroom sibling (multiset ratchet, sava-build 21.5.9)
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,663,RemoveConditionalMutator_ORDER_IF,SURVIVED # log-approx headroom sibling (multiset ratchet, sava-build 21.5.9)
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,672,IncrementsMutator,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,681,BigIntegerMutator,SURVIVED
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,681,NakedReceiverMutator,SURVIVED # untriaged
 software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,684,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,startTickIndex,114,ConditionalsBoundaryMutator,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,tickIndexToSqrtPriceX64,622,ConditionalsBoundaryMutator,SURVIVED
@@ -75,10 +81,10 @@ software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,updateFeesAndRewards,638
 software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addSupplementalTickArrays,144,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addTransferHook,127,MathMutator,SURVIVED
 software.sava.idl.clients.orca.WhirlpoolRemainingAccounts,append,81,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,128,MathMutator,SURVIVED
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,163,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,163,RemoveConditionalMutator_EQUAL_IF,SURVIVED
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,169,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,173,NakedReceiverMutator,SURVIVED # guard-bounded mask: the product <= U128 guard above makes >>64 already fit u64 (see README)
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuote,283,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,306,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,307,NullReturnValsMutator,NO_COVERAGE

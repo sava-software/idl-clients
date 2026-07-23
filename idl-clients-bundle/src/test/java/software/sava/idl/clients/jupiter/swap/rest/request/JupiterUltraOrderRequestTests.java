@@ -225,4 +225,42 @@ final class JupiterUltraOrderRequestTests {
         minimal().amount(BigInteger.valueOf(1_500L)).taker(TAKER).createRequest().serialize(),
         parsed.serialize());
   }
+
+  /// Every parseable field lands from its API name, and unknown fields —
+  /// leading, mid-object, and trailing; scalar and structured — are skipped
+  /// without shifting the fields after them. Five fields are bare public keys
+  /// carrying distinct fill bytes, so a setter dropped (they return their
+  /// receiver) or a mis-slotted key is visible by identity.
+  @Test
+  void parsedRequestReadsEveryFieldPastUnknownNeighbors() {
+    final var json = """
+        {
+          "unknownLeading": {"nested": [1, {"deep": true}]},
+          "amount": 98765432109876543210,
+          "inputMint": "%s",
+          "outputMint": "%s",
+          "unknownMid": ["s", 2.5, false],
+          "taker": "%s",
+          "receiver": "%s",
+          "payer": "%s",
+          "closeAuthority": "%s",
+          "referralAccount": "%s",
+          "referralFeeBps": 42,
+          "unknownTrailing": "ignored"
+        }""".formatted(INPUT_MINT.toBase58(), OUTPUT_MINT.toBase58(), TAKER.toBase58(),
+        RECEIVER.toBase58(), PAYER.toBase58(), CLOSE_AUTHORITY.toBase58(), REFERRAL.toBase58());
+
+    final var parsed = JupiterUltraOrderRequest.parseRequest(JsonIterator.parse(json.getBytes(UTF_8)));
+
+    assertEquals(new BigInteger("98765432109876543210"), parsed.amount(),
+        "amount is a BigInteger read, wider than long");
+    assertEquals(INPUT_MINT, parsed.inputMint());
+    assertEquals(OUTPUT_MINT, parsed.outputMint());
+    assertEquals(TAKER, parsed.taker());
+    assertEquals(RECEIVER, parsed.receiver());
+    assertEquals(PAYER, parsed.payer());
+    assertEquals(CLOSE_AUTHORITY, parsed.closeAuthority());
+    assertEquals(REFERRAL, parsed.referralAccount());
+    assertEquals(42, parsed.referralFeeBps());
+  }
 }

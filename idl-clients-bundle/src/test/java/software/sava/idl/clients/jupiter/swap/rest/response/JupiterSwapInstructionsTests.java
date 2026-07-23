@@ -238,6 +238,25 @@ final class JupiterSwapInstructionsTests {
     assertThrows(IllegalStateException.class, unsigned::createAccountsMap);
   }
 
+  /// The setup instruction is *preferred* as the fee-payer source: its first
+  /// account funds the ATA. In every real response that account and the swap's
+  /// signer are the same wallet, so only a divergent fixture can observe the
+  /// preference — which is exactly what the guard's forced-false mutants
+  /// exploit: skipping straight to the swap-signer fallback returns the same
+  /// key on every agreeing fixture.
+  @Test
+  void theFeePayerPrefersTheSetupInstructionOverTheSwapSigner() {
+    final var setupPayer = key(5); // ix(5)'s first account
+    final var instructions = of(List.of(), ixs(5), swapIx(3), null, List.of());
+
+    final var accounts = instructions.createAccountsMap();
+    final var payer = accounts.get(setupPayer);
+    assertNotNull(payer, "the setup instruction's first account must seed the map as the fee payer");
+    assertTrue(payer.feePayer());
+    assertFalse(accounts.containsKey(WALLET),
+        "with a setup instruction present, the swap signer must not be the payer");
+  }
+
   // ---------------------------------------------------------------------------
   // response parsing
   // ---------------------------------------------------------------------------
@@ -299,6 +318,35 @@ final class JupiterSwapInstructionsTests {
         {"unknown":123,"programId":"%s","accounts":[],"data":"AQ==","alsoUnknown":{"a":[1]}}"""
             .formatted(PROGRAM_B58)));
     assertEquals(PROGRAM_B58, extra.programId().publicKey().toBase58());
+
+    // ... at every nesting level: inside an account object, in the full
+    // instructions response, and in the swap-instruction wrapper — each parser
+    // has its own skip, and a dropped one misreads every field after it
+    final var accountExtra = JupiterSwapInstructions.parseInstruction(ji(
+        """
+        {"programId":"%s","accounts":[{"unknownAcct":{"n":[1]},"pubkey":"%s",\
+        "isSigner":true,"unknownMid":2.5,"isWritable":true,"unknownTail":false}],"data":"AQ=="}"""
+            .formatted(PROGRAM_B58, WALLET_B58)));
+    assertEquals(WALLET_B58, accountExtra.accounts().getFirst().publicKey().toBase58());
+    assertTrue(accountExtra.accounts().getFirst().signer());
+    assertTrue(accountExtra.accounts().getFirst().write());
+
+    final var response = JupiterSwapInstructions.parseInstructions(ji(
+        """
+        {"unknownLeading":{"a":1},"computeBudgetInstructions":[],"setupInstructions":[],\
+        "unknownMid":[true],"swapInstruction":%s,"cleanupInstruction":null,\
+        "otherInstructions":[],"addressLookupTableAddresses":["%s"],"unknownTrailing":"x"}"""
+            .formatted(instructionJson(PROGRAM_B58), TABLE_B58)));
+    assertEquals(PROGRAM_B58, response.swapInstruction().programId().publicKey().toBase58());
+    assertEquals(TABLE_B58, response.addressLookupTableAddresses().getFirst().toBase58());
+
+    final var swapIx = JupiterSwapIx.parse(ji(
+        """
+        {"unknownLeading":0,"swapInstruction":%s,"unknownMid":{"z":[]},\
+        "addressLookupTableAddresses":["%s"],"unknownTrailing":[1]}"""
+            .formatted(instructionJson(PROGRAM_B58), TABLE_B58)));
+    assertEquals(PROGRAM_B58, swapIx.swapInstruction().programId().publicKey().toBase58());
+    assertEquals(TABLE_B58, swapIx.addressLookupTableAddresses().iterator().next().toBase58());
     assertArrayEquals(new byte[]{1}, extra.data());
   }
 

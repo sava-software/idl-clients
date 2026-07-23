@@ -132,6 +132,11 @@ final class DlmmUtilsTests {
     assertEquals(new BigInteger("36893488147419103236"), DlmmUtils.pow(two, 1));
     // 2^-1 = 0.5, inversion cancels the negative exponent: 2^63 - 1.
     assertEquals(BigInteger.ONE.shiftLeft(63).subtract(BigInteger.ONE), DlmmUtils.pow(two, -1));
+
+    // The Rust reference takes a u128, so a Java caller's base is read modulo
+    // 2^128 — the initial mask is the type boundary, not decoration. Unmasked,
+    // a bit-128 base rides the inversion path into a zero quotient and null.
+    assertEquals(DlmmUtils.pow(half, 2), DlmmUtils.pow(half.add(BigInteger.ONE.shiftLeft(128)), 2));
   }
 
   @Test

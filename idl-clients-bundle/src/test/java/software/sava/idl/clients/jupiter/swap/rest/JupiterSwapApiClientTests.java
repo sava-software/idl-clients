@@ -267,6 +267,87 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
     }
   }
 
+  /// The shared client field initializes once under `PER_CLASS`, so PIT
+  /// attributes the builder's and the impl constructor's coverage to whichever
+  /// test runs first — which can never pair the URL wiring with the request
+  /// each URL serves (the same instability as coverage attributed to a field
+  /// initializer). Building the client inside the test body makes each
+  /// resolved URI's mutant die against the request that exercises it, and the
+  /// query-only quote overload's parser mapping die against a field assertion.
+  @Test
+  void urlWiringIsCoveredFromInsideTheTest() {
+    final var builder = JupiterSwapApiClient.build();
+    builder.httpClient(HTTP_CLIENT);
+    builder.endpoint(endpoint);
+    builder.apiKey("test-api-key");
+    final var fresh = builder.createLocalClient();
+
+    // swapURI = endpoint.resolve("/swap")
+    final String prefix = "{\"userPublicKey\":\"" + WSOL + "\",";
+    final String quoteJson = "\"quoteResponse\":{}";
+    expectPost("/swap", prefix + quoteJson + '}', 200, """
+        {"swapTransaction":"AQID","lastValidBlockHeight":123}""");
+    assertNotNull(fresh.swap(prefix, quoteJson.getBytes(UTF_8)).join());
+
+    // executeUltraOrderURI = endpoint.resolve("/ultra/v1/execute")
+    expectPost("/ultra/v1/execute", null, 200, """
+        {"status":"Success","signature":"sig"}""");
+    assertNotNull(fresh.executeOrder("AQID", "abc").join());
+
+    // the query-only quote overload maps the response through the quote
+    // parser: the parsed fields must come back, not just a completed future
+    final String quote = """
+        {"inputMint":"%s","inAmount":"1000","outputMint":"%s","outAmount":"25",\
+        "otherAmountThreshold":"24","swapMode":"ExactIn","slippageBps":50,\
+        "priceImpactPct":"0","routePlan":[],"contextSlot":1,"timeTaken":0.1}"""
+        .formatted(WSOL, USDC);
+    expectGet("/quote?amount=7&inputMint=" + WSOL, quote);
+    final var parsed = fresh.quote("amount=7&inputMint=" + WSOL).join();
+    assertEquals(1_000L, parsed.inAmount());
+    assertEquals(WSOL, parsed.inputMint().toBase58());
+  }
+
+  /// The hosted-API twin of the local wiring test: `createClient` resolves
+  /// everything under the `/swap/v1` prefix, the `String` endpoint overload
+  /// must delegate to the `URI` one (dropped, the endpoint is silently never
+  /// set), and a caller-supplied `extendRequest` composes with — not replaces —
+  /// the api-key header.
+  @Test
+  void remoteUrlWiringAndExtendRequestComposeFromInsideTheTest() {
+    final var builder = JupiterSwapApiClient.build();
+    builder.httpClient(HTTP_CLIENT);
+    // the String overload delegates to the URI one and returns the builder —
+    // both halves of that contract are load-bearing for chained use
+    assertSame(builder, builder.endpoint(endpoint.toString()));
+    builder.apiKey("composed-key");
+    assertSame(builder, builder.extendRequest(r -> r.header("x-custom", "yes")));
+    final var remote = builder.createClient();
+
+    final String prefix = "{\"userPublicKey\":\"" + WSOL + "\",";
+    final String quoteJson = "\"quoteResponse\":{}";
+    final String body = prefix + quoteJson + '}';
+
+    // swapURI = endpoint.resolve("/swap/v1/swap")
+    expectPost("/swap/v1/swap", body, 200, """
+        {"swapTransaction":"AQID","lastValidBlockHeight":123}""");
+    assertNotNull(remote.swap(prefix, quoteJson.getBytes(UTF_8)).join());
+
+    // swapInstructionsURI = endpoint.resolve("/swap/v1/swap-instructions")
+    expectPost("/swap/v1/swap-instructions", body, 200, "{}");
+    assertNotNull(remote.swapInstructions(prefix, quoteJson.getBytes(UTF_8), TIMEOUT).join());
+
+    // programIdToLabelURI = endpoint.resolve("/swap/v1/program-id-to-label")
+    expectGet("/swap/v1/program-id-to-label", "{}");
+    assertTrue(remote.dexLabelToProgramIdMap().join().isEmpty());
+
+    final var headers = lastRequestHeaders;
+    assertNotNull(headers);
+    assertEquals("composed-key", headers.firstValue("x-api-key").orElse(null),
+        "the api key must survive a caller-supplied extendRequest");
+    assertEquals("yes", headers.firstValue("x-custom").orElse(null),
+        "the caller's extension must be applied on top of the api key");
+  }
+
   /// The query-only `ultraOrder` overload resolves against the ultra path
   /// without formatting an amount into it.
   @Test
