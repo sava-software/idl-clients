@@ -86,4 +86,32 @@ hardening {
     maxLen = 30000
     seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/scopeReader")
   }
+  fuzz.register("orcaTickMath") {
+    targetClass = "software.sava.idl.clients.orca.OrcaTickMathFuzz"
+    // the harness folds the bytes into a u128 sqrt price; 17 bytes covers the
+    // whole domain (selector byte + 16-byte value), and every prefix is valid,
+    // so no seed corpus
+    maxLen = 32
+  }
+  fuzz.register("jupiterResponse") {
+    targetClass = "software.sava.idl.clients.jupiter.swap.rest.response.JupiterResponseFuzz"
+    // REST bodies: a selector byte then JSON. Real responses run to a few KB;
+    // seeds are the test-fixture bodies for each parser, prefixed with their
+    // selector, since structured JSON is slow to reach from scratch
+    maxLen = 8192
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/jupiterResponse")
+  }
+  fuzz.register("whirlpoolQuote") {
+    targetClass = "software.sava.idl.clients.orca.quote.WhirlpoolQuoteFuzz"
+    // the harness carves a fixed 64-byte tuple (liquidity, price, ticks,
+    // slippage, fees); every prefix is valid, so no seed corpus
+    maxLen = 64
+  }
+  fuzz.register("dlmmPrice") {
+    targetClass = "software.sava.idl.clients.meteora.dlmm.DlmmPriceFuzz"
+    // (binStep, binId) packs into 7 bytes; the space is reachable from scratch —
+    // the committed seeds are minimized findings pinning the truncation envelope
+    maxLen = 8
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/dlmmPrice")
+  }
 }

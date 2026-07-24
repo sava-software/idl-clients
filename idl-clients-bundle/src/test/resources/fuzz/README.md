@@ -20,3 +20,25 @@ mutator, so every seed is either a real account or a minimized finding:
   very negative scale into a billion-digit `BigInteger`). Fixed by
   `scaleByPowerOfTen` plus Pyth exponent range checks; also pinned by
   `ScopeReaderHostileInputTests`.
+
+## `jupiterResponse/`
+
+The harness reads `data[0]` as a parser selector and the rest as the JSON
+body, so every seed leads with its selector byte. Each seed is the test-fixture
+body for one parser family (quote, full swap-instructions response with a
+present cleanup, the two field-scan orderings, the swap-ix wrapper, swap-tx,
+ultra order, price/token maps, the ASR claim envelope, and the request
+records), assembled 2026-07-23 from the fixtures in
+`JupiterSwapApiClientTests` / `JupiterSwapInstructionsTests` /
+`ClaimProofTests` — structured JSON is slow to reach from a scratch mutator.
+
+## `dlmmPrice/`
+
+- `trunc-envelope-step511-id353`, `trunc-envelope-step8129-id36` — minimized
+  findings from the harness's original fixed `1e-12` tolerance. Not code
+  defects: at exponent budgets near 20 the Q64.64 `pow`'s inverted-fraction
+  intermediates shrink and per-step truncation legitimately costs
+  `~e^budget * 2^-64` relative (2e-12 and 1.7e-11 here, bit-for-bit the Rust
+  reference's own answers). The harness bound is budget-scaled accordingly;
+  the exact values and both sides of the envelope are pinned by
+  `DlmmUtilsTests.truncationEnvelopeAtHighExponentBudgets`.

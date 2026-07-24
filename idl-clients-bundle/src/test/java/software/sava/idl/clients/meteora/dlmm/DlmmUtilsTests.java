@@ -208,6 +208,42 @@ final class DlmmUtilsTests {
     );
   }
 
+  /// Fuzz findings (`fuzzDlmmPrice`, seeds `trunc-envelope-*`): at high
+  /// exponent budgets — `|binId * ln(1 + binStep/10000)|` near 20 — the
+  /// Q64.64 `pow`'s inverted-fraction intermediates shrink toward
+  /// `2^64 * e^-budget`, so per-step truncation costs `~e^budget * 2^-64`
+  /// relative and the error legitimately exceeds the 1e-13 bound that holds
+  /// for realistic pools. The values are pinned exactly (the port mirrors the
+  /// Rust `u64x64_math::pow` truncation bit-for-bit), and the divergence is
+  /// asserted from *both* sides: inside the budget-scaled envelope, outside
+  /// the small-budget bound — so a harness tolerance can neither flap nor be
+  /// silently tightened past what the algorithm delivers.
+  @Test
+  void truncationEnvelopeAtHighExponentBudgets() {
+    final var mathContext = new MathContext(60);
+    record Envelope(int binStep, int binId, String exact) {
+    }
+    for (final var found : new Envelope[]{
+        new Envelope(511, 353, "805869021559655837811513157"),
+        new Envelope(8129, 36, "36929913069675045973175790145")}) {
+      final var fixedPoint = DlmmUtils.getPriceFromId(found.binId(), found.binStep());
+      assertEquals(new BigInteger(found.exact()), fixedPoint,
+          "the truncation sequence is deterministic and mirrors the Rust reference");
+
+      final var oracle = DlmmUtils.binStepBase(found.binStep())
+          .pow(found.binId(), mathContext)
+          .multiply(new BigDecimal(BigInteger.ONE.shiftLeft(64)));
+      final var relativeError = new BigDecimal(fixedPoint).subtract(oracle).abs()
+          .divide(oracle, MathContext.DECIMAL64);
+      final double budget = found.binId() * Math.log1p(found.binStep() * 1e-4);
+      final var envelope = BigDecimal.valueOf(1e3 * Math.exp(budget) * 0x1p-64);
+      assertTrue(relativeError.compareTo(envelope) < 0,
+          "within the budget-scaled envelope: " + relativeError + " vs " + envelope);
+      assertTrue(relativeError.compareTo(new BigDecimal("1e-12")) > 0,
+          "outside the small-budget bound — the envelope is real: " + relativeError);
+    }
+  }
+
   @Test
   void getPriceFromIdMatchesBinPriceOracle() {
     // The already-tested BigDecimal binPrice path serves as an independent oracle. The fixed-point

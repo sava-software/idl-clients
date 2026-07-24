@@ -48,4 +48,12 @@ hardening {
     // record; the whole space is reachable from scratch, so no seed corpus
     maxLen = 256
   }
+  fuzz.register("stakeAccount") {
+    targetClass = "software.sava.idl.clients.spl.stake.StakeAccountFuzz"
+    // the account is a fixed 200-byte layout; headroom lets the mutator probe
+    // over-long inputs. Seeded with a real mainnet stake account so the Stake
+    // state's populated tail is reachable
+    maxLen = 256
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/stakeAccount")
+  }
 }
