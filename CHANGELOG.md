@@ -1,5 +1,21 @@
 # Changelog
 
+## [25.18.2](https://github.com/sava-software/idl-clients/compare/25.18.1...25.18.2) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **tools:** Mutant validation workflow adjusted to depend on detailed row-label triage and domain sweeps, requiring re-validation for specific future factor table changes.
+
+### Features
+
+* **tools:** add tick margin sweep script for log-margin mutants validation ([5abaed3](https://github.com/sava-software/idl-clients/commit/5abaed36f417ad2d9e049eba2814d2080f8c5b33))
+
+
+### Bug Fixes
+
+* **spl:** correct uiAmountToAmount encoding and Delegation.reserved type ([22cf4e9](https://github.com/sava-software/idl-clients/commit/22cf4e9cdae3d7f2bb7de3265ccc308e0b162a15))
+
 ## [25.18.1](https://github.com/sava-software/idl-clients/compare/25.18.0...25.18.1) (2026-07-21)
 
 
