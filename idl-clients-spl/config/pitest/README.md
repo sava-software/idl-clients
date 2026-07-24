@@ -66,6 +66,7 @@ whose division leaves trailing zeros (`StakePoolStateTests.feeToRatio`,
 | 2026-07-19 | 10 | 5 | 5 | 732/742 (99%) | 99% |
 | 2026-07-19 | 7 | 2 | 5 | 735/742 (99%) | 99% |
 | 2026-07-23 | 7 | 2 | 5 | 754/761 (99%) | 99% |
+| 2026-07-24 | 5 | 0 | 5 | 756/761 (99%) | 99% |
 
 The 2026-07-23 row is the `EXPERIMENTAL_NAKED_RECEIVER` intake (below): +19
 mutants, all four initial survivors killed, baseline unchanged.
@@ -78,11 +79,15 @@ below were worked down; every one of the 7 remaining rows is analyzed:
 | Rows | Group | Status |
 |---|---|---|
 | 5 | Redundant zero short-circuits | equivalent — accepted, reasoned below |
-| 2 | `fetchProgramState` / `fetchValidatorList` | need a live `SolanaRpcClient` |
 
-The two RPC fetchers are one-line delegations to `rpcClient.getAccountInfo`
-with a parser reference; covering them means standing up an HTTP mock for no
-behavior this module owns. Left uncovered deliberately.
+The two RPC fetchers (`fetchProgramState` / `fetchValidatorList`) were
+covered 2026-07-24 by `StakePoolRpcFetcherTests` against an in-JVM JSON-RPC
+capture server (the compact sibling of the bundle's
+`SolanaRpcCaptureTests`): the earlier "needs a live `SolanaRpcClient`"
+acceptance had gone stale — `SolanaRpcClient.build()` takes any endpoint —
+and the requests each fetcher emits are the wiring worth pinning: the pool
+account it was given, and the validator-list key *stored in the fetched
+state*. The state response is the committed real Jito account.
 
 ## Untriaged debt, in priority order
 
@@ -159,9 +164,9 @@ written here.
 
 ## Triaged equivalent mutants (accepted with reasons)
 
-Rows are labeled per the sava-build 21.5.12 convention: `# zero-fast-path
-family` marks the five redundant zero short-circuits argued below, and
-`# rpc-fetcher family` the two live-client delegations described above.
+Rows are labeled per the sava-build convention (the verify resolves each
+label by searching this file for its literal text): `# zero-fast-path family`
+marks the five redundant zero short-circuits argued below.
 
 ### Redundant zero short-circuits in front of a division (5 mutants)
 

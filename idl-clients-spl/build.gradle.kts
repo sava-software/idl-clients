@@ -3,6 +3,8 @@ plugins {
 }
 
 testModuleInfo {
+  // the RPC-fetcher wiring tests stand up an in-JVM JSON-RPC capture server
+  requires("jdk.httpserver")
   requires("org.junit.jupiter.api")
   runtimeOnly("org.junit.jupiter.engine")
 }

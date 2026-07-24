@@ -195,6 +195,8 @@ reached (`preSerialize:46`, `collectRewardsQuote:128`).
 | 2026-07-23 | `clients` | 436 | 361 | 75 | 1250/1688 (74%) | 94% |
 | 2026-07-23 | `clients` | 57 | 19 | 38 | 1630/1688 (96%) | 97% |
 | 2026-07-23 | `orca` | 52 | 0 | 52 | 722/774 (93%) | 93% |
+| 2026-07-24 | `clients` | 38 | 0 | 38 | 1650/1688 (97%) | 97% |
+| 2026-07-24 | `scope` | 48 | 0 | 48 | 315/363 (86%) | 87% |
 
 The 57-row 2026-07-23 entry is the priority-3 discharge — the client-impl and
 request/response tranche worked down from 436 rows. In order of volume:
@@ -298,10 +300,21 @@ annotated in the CSVs and folded into their families below — surfaced debt,
 not new mutants.
 
 **The seeded baseline is triage debt made explicit, not acceptance — and it is
-now fully discharged across all three suites.** Every `SURVIVED` row remaining
-in `scope`, `orca` and `clients` is analyzed (see the accepted-equivalents
-section and the per-row CSV annotations); the only `NO_COVERAGE` rows left in
-the module are the `clients` RPC-fetcher delegations, and `orca` has none.
+now fully discharged across all three suites, with zero `NO_COVERAGE` rows
+anywhere.** Every remaining row is an analyzed `SURVIVED` equivalent (see the
+accepted-equivalents section and the per-row CSV labels). The last coverage
+tranche fell 2026-07-24: the RPC-fetcher delegations are covered by
+`SolanaRpcCaptureTests` — an in-JVM JSON-RPC capture server (the sibling of
+sava-rpc's `RpcRequestTests`) whose tests assert the *request* each fetcher
+emits: which RPC method, which program, and the exact `Filter.toJson()`
+fragments, since a wrong filter offset or transposed program id returns a
+plausible empty list rather than an error. The old "needs a live
+`SolanaRpcClient`" acceptance had gone stale — `SolanaRpcClient.build()`
+takes any endpoint. The Marinade tests additionally thread real payloads
+through the parsers (the State's `count` bounding the validator-list read,
+the ticket-size rent-exemption request), and the scope `readPriceChains
+(Reserve)` row fell to the null-padded synthetic `Reserve` pattern the
+wiring tests already used elsewhere.
 
 ## Untriaged debt, in priority order
 
@@ -316,9 +329,9 @@ the module are the `clients` RPC-fetcher delegations, and `orca` has none.
    `ScopeProgramClient.initialize(Configuration, feedName)` passed
    `oracleMappings()` and `oraclePrices()` into each other's slots —
    transposed accounts on-chain — and `NotYetSupported.hashCode` omitted the
-   `index` its equals compares. The remaining 42 rows: 41 accepted equivalents
-   (below) plus the `readPriceChains(Reserve)` overload, which needs a full
-   kamino `Reserve` fixture for a two-line delegation.
+   `index` its equals compares. The remaining rows are all accepted equivalents
+   (below); the `readPriceChains(Reserve)` overload was covered 2026-07-24
+   via a null-padded synthetic `Reserve`.
 2. ~~**Money math with unasserted boundaries.**~~ — *largely discharged
    2026-07-19*, `orca` 142 → 109 rows. `OrcaBoundaryTests` asserts the guard
    rejections and exact-boundary behavior the happy-path tests skipped: u64
@@ -941,24 +954,27 @@ Every accepted row carries a short `# <name> family` label; the verify summary
 counts rows per label, and the full argument for each family lives in the
 sections below. The families:
 
+The label column is the literal row text — the verify resolves each label by
+searching this file for it, so a renamed family must be renamed here too.
+
 | Label | Argument (section below / note) |
 |---|---|
-| `zero-fast-path` | a redundant short-circuit; the fall-through computes the identical result (zero the long way, the shared `ZERO` quote constants, `scaled <= 0` doubles, the unsigned-decode branch, `rangeClosed(lo,lo)`, a full bitmap byte scanned bit-by-bit) |
-| `defensive-guard` | guards a state no producer can construct (unreachable negative/equal halves, the tick-ladder's bit-19 iteration — `2 << 18` exceeds `MAX_TICK_INDEX`, so the factor lookup never runs — and the floor-division/`isValidStartTickIndex` branches already excluded by earlier checks) |
-| `callee-subsumed-guard` | the callee performs the identical check or substitution (`Instruction.extraAccounts` on empty, `addSlice` dropping empty slices, `swap2Keys`'s `requireNonNullElse` host-fee sentinel, a zero denominator that `divide` rejects with the same exception) |
-| `equal-operands` | a comparison boundary where both branches produce the same value (`orderTicks`/`orderPrices` at equal operands, clamps at their exact bound, the transfer-fee cap at exactly `maxFee`, tick 0 routing to either ladder, min/max mint sort with equal mints) |
-| `shift-symmetry` | `BigInteger.shiftLeft(-n)` **is** `shiftRight(n)` |
-| `log-approx-headroom` | extra precision iterations / the equality fast return cannot change the resolved tick |
-| `log-margin` | the lower error margin — sweep-verified equivalent, see its section |
-| `sqrtFloor-guess` | Newton seed variants — sweep-verified, see its section |
-| `u128-mask` | truncation masks that are identity under the guards above them |
-| `domain-guard` | DlmmUtils fee/pow bounds unreachable from `LbClmmConstants` |
-| `hash-mixing` / `record-pattern` / `trim-on-exact-fit` | the scope families below |
-| `capacity-hint` | allocation-size-only arithmetic feeding an `ArrayList` capacity |
-| `redundant-GET` | `HttpRequest.Builder` defaults to GET |
-| `http-1xx-unreachable` | the JDK client never surfaces a 1xx final status |
-| `rpc-fetcher` | one-line RPC delegations; need a live `SolanaRpcClient` |
-| `needs-reserve-fixture` | `readPriceChains(Reserve)`, a two-line delegation awaiting a full kamino `Reserve` fixture |
+| `# zero-fast-path family` | a redundant short-circuit; the fall-through computes the identical result (zero the long way, the shared `ZERO` quote constants, `scaled <= 0` doubles, the unsigned-decode branch, `rangeClosed(lo,lo)`, a full bitmap byte scanned bit-by-bit) |
+| `# defensive-guard family` | guards a state no producer can construct (unreachable negative/equal halves, the tick-ladder's bit-19 iteration — `2 << 18` exceeds `MAX_TICK_INDEX`, so the factor lookup never runs — and the floor-division/`isValidStartTickIndex` branches already excluded by earlier checks) |
+| `# callee-subsumed-guard family` | the callee performs the identical check or substitution (`Instruction.extraAccounts` on empty, `addSlice` dropping empty slices, `swap2Keys`'s `requireNonNullElse` host-fee sentinel, a zero denominator that `divide` rejects with the same exception) |
+| `# equal-operands family` | a comparison boundary where both branches produce the same value (`orderTicks`/`orderPrices` at equal operands, clamps at their exact bound, the transfer-fee cap at exactly `maxFee`, tick 0 routing to either ladder, min/max mint sort with equal mints) |
+| `# shift-symmetry family` | `BigInteger.shiftLeft(-n)` **is** `shiftRight(n)` |
+| `# log-approx-headroom family` | extra precision iterations / the equality fast return cannot change the resolved tick |
+| `# log-margin family` | the lower error margin — sweep-verified equivalent, see its section |
+| `# sqrtFloor-guess family` | Newton seed variants — sweep-verified, see its section |
+| `# u128-mask family` | truncation masks that are identity under the guards above them |
+| `# domain-guard family` | DlmmUtils fee/pow bounds unreachable from `LbClmmConstants` |
+| `# hash-mixing family` | any deterministic mix satisfies the contract — the scope section below |
+| `# record-pattern family` | compiler-synthesized deconstruction checks — the scope section below |
+| `# trim-on-exact-fit family` | a full-array copy is content-identical — the scope section below |
+| `# capacity-hint family` | allocation-size-only arithmetic feeding an `ArrayList` capacity |
+| `# redundant-GET family` | `HttpRequest.Builder` defaults to GET |
+| `# http-1xx-unreachable family` | the JDK client never surfaces a 1xx final status |
 
 ### BigInteger `sqrtFloor` initial guess (2 mutants, orca)
 

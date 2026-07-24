@@ -231,7 +231,7 @@ a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
-<!-- hardening-template sha256:cdac2e3852a9 -->
+<!-- hardening-template sha256:7f9eb869ee7e -->
 
 Full policy: sava-build's `HARDENING.md` — the canonical source for the ratchet,
 its equivalence families, and the lifecycle. Per-module acceptance records:
@@ -282,6 +282,14 @@ specifics:
   the comparison is a multiset: never hand-dedupe. When one sibling survives,
   the verify names the killed sibling's test — the survivor is the opposite
   branch direction; triage it as its own mutant.
+- **Stubs and fixtures return distinguishable, non-default values.** A stub
+  returning null/0/""/true/empty makes the matching return-value mutant
+  equivalent by accident of the fixture — the clock non-zero-origin rule
+  generalized to every stubbed return.
+- **Copy-on-write clusters split by direction.** Assert immutability of
+  returned collections (`assertThrows(UnsupportedOperationException, ...)`)
+  at every size: the mutable-escape direction is a kill, not an acceptance;
+  only the content-equal siblings are family-accepted equivalents.
 - **The baselines are triage debt, not acceptance.** They were seeded with the
   full pre-existing survivor population in 2026-07 when the ratchet was adopted;
   each module's README ranks what to pay down first. Shrinking a baseline is

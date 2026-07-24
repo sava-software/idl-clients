@@ -149,4 +149,42 @@ final class ScopeEntriesRecordTests {
     ByteUtil.putInt64LE(data, OraclePrices.PRICES_OFFSET + Long.BYTES, 0L);
     assertEquals(new BigDecimal("18446744073709551615"), ScopeReader.scaleScopePrice(data, 0));
   }
+
+  /// The `Reserve` overload reads exactly two paths out of a fetched reserve —
+  /// the liquidity mint and the token info's scope configuration — and must
+  /// agree with the explicit two-arg call on both, including the null-mint
+  /// sentinel short-circuit.
+  @Test
+  void reserveOverloadReadsTheMintAndScopeConfiguration() {
+    final var mint = key(9);
+    final var scopeConfig = new ScopeConfiguration(
+        key(2), new int[]{3, 1, CHAIN_END, CHAIN_END}, new int[]{5, CHAIN_END, CHAIN_END, CHAIN_END});
+    final var entries = entries();
+
+    final var fromReserve = entries.readPriceChains(reserve(mint, scopeConfig));
+    final var explicit = entries.readPriceChains(mint, scopeConfig);
+    assertNotNull(fromReserve);
+    assertArrayEquals(explicit.priceChain(), fromReserve.priceChain());
+    assertArrayEquals(explicit.twapChain(), fromReserve.twapChain());
+
+    // the null-mint sentinels short-circuit through the reserve path too
+    assertNull(entries.readPriceChains(reserve(PublicKey.NONE, scopeConfig)));
+    assertNull(entries.readPriceChains(reserve(KaminoAccounts.NULL_KEY, scopeConfig)));
+  }
+
+  /// Only the two paths the overload reads are populated; a generated record
+  /// accepts null/zero for everything else.
+  private static software.sava.idl.clients.kamino.lend.gen.types.Reserve reserve(
+      final PublicKey mint,
+      final ScopeConfiguration scopeConfiguration) {
+    final var liquidity = new software.sava.idl.clients.kamino.lend.gen.types.ReserveLiquidity(
+        mint, null, null, 0, null, null, 0, 0, 0, 0, null, null, null, null, null, null, 0, null, null);
+    final var tokenInfo = new software.sava.idl.clients.kamino.lend.gen.types.TokenInfo(
+        null, null, 0, 0, 0, scopeConfiguration, null, null, 0, null, null);
+    final var config = new software.sava.idl.clients.kamino.lend.gen.types.ReserveConfig(
+        0, 0, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, null, null, 0, 0, 0,
+        tokenInfo, null, null, null, 0, 0, 0, 0, 0, null, 0, 0, 0, 0, 0);
+    return new software.sava.idl.clients.kamino.lend.gen.types.Reserve(
+        null, null, 0, null, null, null, null, liquidity, null, null, null, config, null, 0, null, null, null);
+  }
 }

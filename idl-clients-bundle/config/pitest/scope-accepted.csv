@@ -37,7 +37,6 @@ software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,hashCode,84,Ma
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,hashCode,85,MathMutator,SURVIVED # hash-mixing family
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,parseChain,66,ConditionalsBoundaryMutator,SURVIVED # trim-on-exact-fit family
 software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,parseChain,66,RemoveConditionalMutator_ORDER_IF,SURVIVED # trim-on-exact-fit family
-software.sava.idl.clients.kamino.scope.entries.ScopeEntriesRecord,readPriceChains,19,NullReturnValsMutator,NO_COVERAGE # needs-reserve-fixture
 software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,40,ConditionalsBoundaryMutator,SURVIVED # zero-fast-path family
 software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,40,RemoveConditionalMutator_ORDER_IF,SURVIVED # zero-fast-path family
 software.sava.idl.clients.kamino.scope.entries.ScopeReader,scaleScopePrice,55,ConditionalsBoundaryMutator,SURVIVED # zero-fast-path family
