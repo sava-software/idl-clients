@@ -1,7 +1,7 @@
-software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchProgramState,33,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchValidatorList,39,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,225,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,230,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,235,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.spl.stakepool.StakePoolState,calculateSolPrice,67,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.spl.stakepool.StakePoolState,calculateSolPrice,73,RemoveConditionalMutator_EQUAL_IF,SURVIVED
+software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchProgramState,33,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.spl.stakepool.StakePoolProgramClient,fetchValidatorList,39,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,225,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
+software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,230,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
+software.sava.idl.clients.spl.stakepool.StakePoolState$Fee,toRatio,235,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
+software.sava.idl.clients.spl.stakepool.StakePoolState,calculateSolPrice,67,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
+software.sava.idl.clients.spl.stakepool.StakePoolState,calculateSolPrice,73,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family

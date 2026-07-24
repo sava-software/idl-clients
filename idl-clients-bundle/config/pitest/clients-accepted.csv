@@ -1,57 +1,57 @@
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,37,RemoveConditionalMutator_ORDER_IF,SURVIVED # HTTP 1xx unreachable through the JDK client (see README)
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,115,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,121,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,237,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,244,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchEscrowAccountsForDelegate,41,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchProposals,54,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.KaminoAccounts,fetchVaults,279,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchFarmStateAccounts,28,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchLendingMarkets,37,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReferrerStateAccounts,65,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReferrerTokenStateAccounts,74,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReserveAccounts,46,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReserveAccounts,56,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,45,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,RemoveConditionalMutator_EQUAL_IF,SURVIVED # allocation-size only: the null-referrer ternary feeds the capacity hint
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # allocation-size only: ArrayList capacity hint
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED # allocation-size only: ArrayList capacity hint
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchMSolTokenAccounts,175,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchProgramState,179,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,183,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,44,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchValidatorList,55,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,getMinimumBalanceForTicketAccount,38,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,lambda$fetchValidatorList$0,57,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,22,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,60,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,194,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,205,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,213,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,215,NakedReceiverMutator,SURVIVED # Q64.64 pow loop mask, identity post-inversion (DlmmUtils pow family, see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,218,NakedReceiverMutator,SURVIVED # Q64.64 pow loop mask, identity post-inversion (DlmmUtils pow family, see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,65,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # fast-path routing: rangeClosed(lo;lo) builds the same single-element list
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,53,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,67,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPositions,40,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,597,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # sentinel duplicated by the generated builder: swap2Keys requireNonNullElse substitutes the program id for a null host fee
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,159,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # guard subsumed by callee: Instruction.extraAccounts returns this on an empty list
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,66,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # fast-path routing: rangeClosed(lo;lo) builds the same single-element list
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,ConditionalsBoundaryMutator,SURVIVED # unsigned-decode fast path: both branches produce the same BigDecimal for any non-negative long
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,RemoveConditionalMutator_ORDER_IF,SURVIVED # unsigned-decode fast path: both branches produce the same BigDecimal for any non-negative long
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,37,RemoveConditionalMutator_ORDER_IF,SURVIVED # http-1xx-unreachable family
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,115,NakedReceiverMutator,SURVIVED # redundant-GET family
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,121,NakedReceiverMutator,SURVIVED # redundant-GET family
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,237,NakedReceiverMutator,SURVIVED # redundant-GET family
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,244,NakedReceiverMutator,SURVIVED # redundant-GET family
+software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchEscrowAccountsForDelegate,41,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchProposals,54,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.KaminoAccounts,fetchVaults,279,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchFarmStateAccounts,28,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchLendingMarkets,37,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReferrerStateAccounts,65,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReferrerTokenStateAccounts,74,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReserveAccounts,46,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReserveAccounts,56,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,45,MathMutator,SURVIVED # capacity-hint family
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,MathMutator,SURVIVED # capacity-hint family
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED # capacity-hint family
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchMSolTokenAccounts,175,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchProgramState,179,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,183,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,44,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchValidatorList,55,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,getMinimumBalanceForTicketAccount,38,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,lambda$fetchValidatorList$0,57,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,22,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
+software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,60,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,194,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,205,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,213,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,215,NakedReceiverMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,218,NakedReceiverMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,65,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,53,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,67,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPositions,40,NullReturnValsMutator,NO_COVERAGE # rpc-fetcher family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,597,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,159,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,66,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,ConditionalsBoundaryMutator,SURVIVED # zero-fast-path family
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,RemoveConditionalMutator_ORDER_IF,SURVIVED # zero-fast-path family

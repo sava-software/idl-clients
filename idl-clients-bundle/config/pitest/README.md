@@ -159,7 +159,8 @@ untested client-impl tranche (priority 3 below) remain `# untriaged`:
   the three u128 truncation masks (tick masks sweep-verified over every valid
   tick; the rewards mask guard-bounded), `DlmmUtils.pow`'s two loop masks
   (bounded post-inversion), and `sqrtPriceX64ToTickIndex:681` joining the
-  lower-error-margin family (accepted as untriaged there).
+  lower-error-margin family (since sweep-verified equivalent — see that
+  section).
 
 ## Baseline composition (seeded 2026-07-18)
 
@@ -934,6 +935,31 @@ that positional convention, which `requireNonNullElse` alone would not catch.
 
 ## Triaged equivalent mutants (accepted with reasons)
 
+### Row-label legend (2026-07-23, sava-build 21.5.12 convention)
+
+Every accepted row carries a short `# <name> family` label; the verify summary
+counts rows per label, and the full argument for each family lives in the
+sections below. The families:
+
+| Label | Argument (section below / note) |
+|---|---|
+| `zero-fast-path` | a redundant short-circuit; the fall-through computes the identical result (zero the long way, the shared `ZERO` quote constants, `scaled <= 0` doubles, the unsigned-decode branch, `rangeClosed(lo,lo)`, a full bitmap byte scanned bit-by-bit) |
+| `defensive-guard` | guards a state no producer can construct (unreachable negative/equal halves, the tick-ladder's bit-19 iteration — `2 << 18` exceeds `MAX_TICK_INDEX`, so the factor lookup never runs — and the floor-division/`isValidStartTickIndex` branches already excluded by earlier checks) |
+| `callee-subsumed-guard` | the callee performs the identical check or substitution (`Instruction.extraAccounts` on empty, `addSlice` dropping empty slices, `swap2Keys`'s `requireNonNullElse` host-fee sentinel, a zero denominator that `divide` rejects with the same exception) |
+| `equal-operands` | a comparison boundary where both branches produce the same value (`orderTicks`/`orderPrices` at equal operands, clamps at their exact bound, the transfer-fee cap at exactly `maxFee`, tick 0 routing to either ladder, min/max mint sort with equal mints) |
+| `shift-symmetry` | `BigInteger.shiftLeft(-n)` **is** `shiftRight(n)` |
+| `log-approx-headroom` | extra precision iterations / the equality fast return cannot change the resolved tick |
+| `log-margin` | the lower error margin — sweep-verified equivalent, see its section |
+| `sqrtFloor-guess` | Newton seed variants — sweep-verified, see its section |
+| `u128-mask` | truncation masks that are identity under the guards above them |
+| `domain-guard` | DlmmUtils fee/pow bounds unreachable from `LbClmmConstants` |
+| `hash-mixing` / `record-pattern` / `trim-on-exact-fit` | the scope families below |
+| `capacity-hint` | allocation-size-only arithmetic feeding an `ArrayList` capacity |
+| `redundant-GET` | `HttpRequest.Builder` defaults to GET |
+| `http-1xx-unreachable` | the JDK client never surfaces a 1xx final status |
+| `rpc-fetcher` | one-line RPC delegations; need a live `SolanaRpcClient` |
+| `needs-reserve-fixture` | `readPriceChains(Reserve)`, a two-line delegation awaiting a full kamino `Reserve` fixture |
+
 ### BigInteger `sqrtFloor` initial guess (2 mutants, orca)
 
 `OrcaUtil.sqrtFloor:492` seeds Newton's integer square root with
@@ -958,23 +984,24 @@ adds instead, and the `NakedReceiver` mutant drops the subtraction —
 `tickLow = floor(x)` rather than `floor(x - 0.01)`, which diverges in the same
 `frac(x) < 0.01` sliver the analysis below covers, so both siblings share it.
 
-**This one is accepted as untriaged, not proven equivalent.** Writing
-`x = logbpX64 / 2^64`, the margins are ~0.01 and ~0.856 of a tick, so
-`tickLow = floor(x - 0.01)`, the mutant's `floor(x + 0.01)`, and
-`tickHigh = floor(x + 0.856)`. The two agree unless `frac(x) < 0.01`, where the
-mutant collapses `tickLow` onto `tickHigh` and takes the equality fast path,
-returning `tickHigh` without the refinement step. That differs from the original
-only when the refinement would have chosen `tickLow` — i.e. when the 14-bit log
-approximation overshot by enough that the true tick is one below `floor(x)`,
-which is precisely the case the lower margin exists to absorb.
-
-So the guard is *not* dead code and must stay. It resists testing because the
-inputs that reach it are exactly the rare approximation-error cases, and the
-tests that would normally find them do not: the whole-domain round-trip sweep
-feeds exact tick boundaries, and the between-tick sweep (offsets at width/2
-through width/256 from both ends, over six ticks) also fails to distinguish it.
-Killing it would need a targeted search for a sqrt price whose log approximation
-errs by ~0.01 tick in the right direction.
+**Sweep-verified equivalent over the whole valid domain (2026-07-23;
+previously "accepted as untriaged").** Writing `x = logbpX64 / 2^64`, the
+margins are ~0.01 and ~0.856 of a tick, so `tickLow = floor(x - 0.01)`, the
+mutants' `floor(x)` / `floor(x + 0.01)`, and `tickHigh = floor(x + 0.856)`.
+Working through every case: the only reachable divergence is when
+`frac(x) < 0.01` collapses the mutant's `tickLow` onto `tickHigh` and skips
+the refinement that would have chosen `tickLow` — which requires the 14-bit
+log approximation to *overshoot*: some price `p` below the tick-`k` boundary
+with `x(p) >= k`. Because `x(p)` is (weakly) monotone in `p`, overshoot at
+boundary `k` is equivalent to `x(sqrtPrice(k) - 1) >= k` — one evaluation per
+boundary is an exhaustive search. `tools/tick_margin_sweep.py` (a Python
+mirror of both ladders, pinned to `MIN/MAX_SQRT_PRICE_X64` and tick 0) ran
+all 887,272 boundaries: **zero overshoots**, monotonicity violated nowhere.
+The approximation only ever errs downward in the valid domain, so the lower
+margin never changes an output — it is genuine safety margin, kept as such.
+`fuzzOrcaTickMath` independently drives the same bracketing contract on the
+unmutated code (21M+ random in-range prices, clean). Re-run the sweep if the
+log constants, margins, or factor tables ever change.
 
 ### HTTP 1xx unreachable through the JDK client (1 mutant, clients)
 

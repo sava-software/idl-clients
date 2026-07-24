@@ -231,7 +231,7 @@ a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
-<!-- hardening-template sha256:2c504992c917 -->
+<!-- hardening-template sha256:cdac2e3852a9 -->
 
 Full policy: sava-build's `HARDENING.md` — the canonical source for the ratchet,
 its equivalence families, and the lifecycle. Per-module acceptance records:
@@ -256,8 +256,11 @@ specifics:
   (prefer asserting the property it breaks — an overflow guard rejecting, a
   quote's rounding direction, exact encoded byte positions — over restating the
   implementation), **refactor** it out of existence, or **accept it** with a
-  written reason in that module's `config/pitest/README.md`. Never run
-  `-PupdateMutationBaseline` just to make the build pass.
+  written reason in that module's `config/pitest/README.md` **and a short
+  family label on the row itself** — refreshes seed new rows `# untriaged`,
+  and triage means replacing that label, so the baseline always says which
+  rows are argued and which are debt (the verify summary counts rows per
+  label). Never run `-PupdateMutationBaseline` just to make the build pass.
 - **`SURVIVED` and `NO_COVERAGE` are different problems.** The first is a
   judgment call about equivalence; the second is an untested line and is
   mechanical work. Never accept a `NO_COVERAGE` mutant as "equivalent" — its

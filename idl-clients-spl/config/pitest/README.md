@@ -159,6 +159,10 @@ written here.
 
 ## Triaged equivalent mutants (accepted with reasons)
 
+Rows are labeled per the sava-build 21.5.12 convention: `# zero-fast-path
+family` marks the five redundant zero short-circuits argued below, and
+`# rpc-fetcher family` the two live-client delegations described above.
+
 ### Redundant zero short-circuits in front of a division (5 mutants)
 
 | Class | Method | Line |

@@ -68,6 +68,18 @@ Known-good invocations, useful as a smoke test after changing the script:
 
 Paths to the Rust live in `AGENTS.local.md`.
 
+## `tick_margin_sweep.py`
+
+Proves the equivalence of the `OrcaUtil.sqrtPriceX64ToTickIndex` lower-margin
+mutants (the `log-margin family` rows in
+`idl-clients-bundle/config/pitest/orca-accepted.csv`): a Python mirror of both
+tick ladders and the 14-bit log approximation, pinned to
+`MIN/MAX_SQRT_PRICE_X64` and tick 0, that checks every one of the 887,272 tick
+boundaries for an approximation overshoot — the only condition under which the
+mutants could diverge (see the sweep's docstring and the acceptance section in
+the bundle's `config/pitest/README.md`). Zero overshoots as of 2026-07-23;
+re-run after any change to the log constants, error margins, or factor tables.
+
 ## Adding to these
 
 Keep them dependency-free and runnable from the repo root. If a script starts
