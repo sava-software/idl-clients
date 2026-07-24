@@ -202,4 +202,28 @@ final class PhoenixClientTests {
     assertEquals(ACCOUNTS.emberStateProgram(), fromKeys.emberStateProgram());
     assertEquals(ACCOUNTS.emberVaultProgram(), fromKeys.emberVaultProgram());
   }
+
+  /// The factories are exercised from inside the test body — `MAIN_NET` and
+  /// the shared `CLIENT` field are built during class initialization, whose
+  /// coverage attribution is unstable under PIT.
+  @Test
+  void factoriesBuildFromInsideATestBody() {
+    final var client = PhoenixClient.createClient(SOLANA_ACCOUNTS, ACCOUNTS);
+    assertEquals(SOLANA_ACCOUNTS, client.solanaAccounts());
+    assertSame(ACCOUNTS, client.phoenixAccounts());
+
+    final var defaulted = PhoenixClient.createClient(ACCOUNTS);
+    assertEquals(SolanaAccounts.MAIN_NET, defaulted.solanaAccounts(), "one-arg factory defaults to main net");
+    assertSame(ACCOUNTS, defaulted.phoenixAccounts());
+
+    final var fromStrings = PhoenixAccounts.createAccounts(
+        "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
+        "PhUsd11YkbjSaWjFncfAAmatntsjx3MgDR9B6g1ks3A",
+        "EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih",
+        "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
+    assertEquals(ACCOUNTS.invokedEmberProgram().publicKey(), fromStrings.invokedEmberProgram().publicKey());
+    assertEquals(ACCOUNTS.emberUSDCMint(), fromStrings.emberUSDCMint());
+    assertEquals(ACCOUNTS.eternalGlobalConfig(), fromStrings.eternalGlobalConfig());
+    assertEquals(ACCOUNTS.usdcMint(), fromStrings.usdcMint());
+  }
 }

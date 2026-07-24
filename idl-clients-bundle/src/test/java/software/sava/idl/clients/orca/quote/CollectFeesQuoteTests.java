@@ -8,6 +8,7 @@ import software.sava.idl.clients.orca.whirlpools.gen.types.Whirlpool;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static software.sava.idl.clients.orca.quote.WhirlpoolQuoteTestSupport.*;
 
 /// Ported from `rust-sdk/core/src/quote/fees.rs#tests`.
@@ -68,6 +69,28 @@ final class CollectFeesQuoteTests {
         TransferFee.of(2000), TransferFee.of(5000));
     assertEquals(623L, r.feeOwedA());
     assertEquals(560L, r.feeOwedB());
+  }
+
+  /// The u64 range boundary, both sides. Regression: `toU64` used
+  /// `longValueExact`, which rejects the valid u64 range above
+  /// `Long.MAX_VALUE` — a position owed more than 2^63-1 lamports of fees
+  /// threw instead of quoting. Exactly u64::MAX must come back as unsigned
+  /// bits; one past it must throw.
+  @Test
+  void feeOwedCoversTheFullU64Range() {
+    // no growth: the withdrawable fee is exactly the stored feeOwed
+    final var maxOwed = position(ZERO, 5, 10, ZERO, -1L, ZERO, 0L);
+    final var flat = whirlpool(0, ZERO, ZERO);
+    final var quote = WhirlpoolQuote.collectFeesQuote(flat, maxOwed, tick(ZERO, ZERO), tick(ZERO, ZERO), null, null);
+    assertEquals(-1L, quote.feeOwedA(), "u64::MAX survives as unsigned long bits");
+    assertEquals(0L, quote.feeOwedB());
+
+    // an accrued delta of 1 on top of u64::MAX overflows and must throw:
+    // in range, feeGrowthInsideA = 1, liquidity = 2^64 -> delta = 1
+    final var growth = whirlpool(7, BigInteger.ONE, ZERO);
+    final var overflowing = position(BigInteger.ONE.shiftLeft(64), 5, 10, ZERO, -1L, ZERO, 0L);
+    assertThrows(ArithmeticException.class, () ->
+        WhirlpoolQuote.collectFeesQuote(growth, overflowing, tick(ZERO, ZERO), tick(ZERO, ZERO), null, null));
   }
 
   @Test

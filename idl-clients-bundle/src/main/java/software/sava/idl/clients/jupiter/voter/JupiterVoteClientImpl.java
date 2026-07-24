@@ -392,11 +392,16 @@ final class JupiterVoteClientImpl implements JupiterVoteClient {
   @Override
   public Instruction newVote(final PublicKey proposal, final PublicKey payer) {
     final var voteKey = deriveVoteKey(proposal);
+    // The voter is the escrow *owner*, matching deriveVoteKey's seeds: on-chain
+    // Vote accounts carry the owner wallet as `voter`, and new_vote validates
+    // the vote PDA against ["Vote", proposal, voter]. Passing the escrow here
+    // paired a voter with a vote key derived from a different seed, which the
+    // program rejects unconditionally.
     return newVote(
         proposal,
         voteKey,
         payer,
-        escrowKey
+        escrowOwnerKey
     );
   }
 

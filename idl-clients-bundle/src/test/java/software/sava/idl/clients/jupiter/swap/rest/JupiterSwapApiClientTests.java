@@ -174,6 +174,37 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
     assertNotNull(client.quote("amount=1000&inputMint=" + WSOL).join());
   }
 
+  /// The request-object overloads serialize the request into the query string
+  /// — the exact-path expectation is what pins the delegation.
+  @Test
+  void requestObjectOverloadsSerializeIntoTheQuery() {
+    final String quoteJson = """
+        {"inputMint":"%s","inAmount":"1000","outputMint":"%s","outAmount":"25",\
+        "otherAmountThreshold":"24","swapMode":"ExactIn","slippageBps":50,\
+        "priceImpactPct":"0","routePlan":[],"contextSlot":1,"timeTaken":0.1}"""
+        .formatted(WSOL, USDC);
+    final var quoteRequest = software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequest.buildRequest()
+        .inputTokenMint(software.sava.core.accounts.PublicKey.fromBase58Encoded(WSOL))
+        .outputTokenMint(software.sava.core.accounts.PublicKey.fromBase58Encoded(USDC))
+        .create();
+
+    expectGet("/quote?" + quoteRequest.serialize(), quoteJson);
+    assertNotNull(client.quote(quoteRequest).join());
+    expectGet("/quote?" + quoteRequest.serialize(), quoteJson);
+    assertNotNull(client.quote(quoteRequest, TIMEOUT).join());
+
+    final var ultraRequest = software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequest.build()
+        .inputMint(software.sava.core.accounts.PublicKey.fromBase58Encoded(WSOL))
+        .outputMint(software.sava.core.accounts.PublicKey.fromBase58Encoded(USDC))
+        .createRequest();
+    final String orderResponse = """
+        {"requestId":"abc","transaction":"AQID"}""";
+    expectGet("/ultra/v1/order?" + ultraRequest.serialize(), orderResponse);
+    assertNotNull(client.ultraOrder(ultraRequest).join());
+    expectGet("/ultra/v1/order?" + ultraRequest.serialize(), orderResponse);
+    assertNotNull(client.ultraOrder(ultraRequest, TIMEOUT).join());
+  }
+
   /// `swap` posts to its own endpoint and returns the serialized transaction.
   @Test
   void swapPostsTheQuoteAndReturnsTheTransaction() {

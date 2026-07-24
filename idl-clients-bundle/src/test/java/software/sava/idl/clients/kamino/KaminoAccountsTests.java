@@ -260,5 +260,31 @@ final class KaminoAccountsTests {
     assertEquals(KaminoAccounts.scopeFeedConfiguration("hubble", scope).publicKey(), ACCOUNTS.scopeFeedConfiguration("hubble").publicKey());
     assertNotEquals(KaminoAccounts.scopeFeedConfiguration("hubble", kLend).publicKey(), ACCOUNTS.scopeFeedConfiguration("hubble").publicKey());
     assertEquals(KaminoAccounts.mintsToScopeChain(MARKET, MINT, 7L, scope).publicKey(), ACCOUNTS.mintsToScopeChain(MARKET, MINT, 7L).publicKey());
+
+    // the scope event authority is the standard Anchor PDA under the *scope* program
+    assertEquals(
+        PublicKey.findProgramAddress(
+            java.util.List.of("__event_authority".getBytes(java.nio.charset.StandardCharsets.US_ASCII)),
+            scope
+        ).publicKey(),
+        ACCOUNTS.scopeEventAuthority());
+  }
+
+  /// The base58 factory is exercised from inside the test body — `MAIN_NET`'s
+  /// own construction runs in `<clinit>`, whose coverage attribution is
+  /// unstable under PIT.
+  @Test
+  void base58FactoryBuildsFromInsideATestBody() {
+    final var fromStrings = KaminoAccounts.createAccounts(
+        "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+        "284iwGtA9X9aLy3KsyV8uT2pXLARhYbiSi5SiM2g47M2",
+        "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+        "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
+        "6UodrBjL2ZreDy7QdR4YV1oxqMBjVYSEyrFpctqqwGwL",
+        "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd"
+    );
+    assertEquals(ACCOUNTS.kLendProgram(), fromStrings.kLendProgram());
+    assertEquals(ACCOUNTS.scopePricesProgram(), fromStrings.scopePricesProgram());
+    assertEquals(ACCOUNTS.scopeEventAuthority(), fromStrings.scopeEventAuthority());
   }
 }

@@ -263,4 +263,52 @@ final class JupiterUltraOrderRequestTests {
     assertEquals(REFERRAL, parsed.referralAccount());
     assertEquals(42, parsed.referralFeeBps());
   }
+
+  /// The builder's own accessors report what was set — read from inside the
+  /// test body, since nothing on the serialize path observes them.
+  @Test
+  void builderAccessorsReportEverySetField() {
+    final var builder = minimal()
+        .amount(BigInteger.valueOf(42L))
+        .taker(TAKER)
+        .receiver(RECEIVER)
+        .payer(PAYER)
+        .closeAuthority(CLOSE_AUTHORITY)
+        .referralAccount(REFERRAL)
+        .referralFeeBps(7)
+        .excludeRouters(Set.of("metis"))
+        .excludeDexes(Set.of("Orca"));
+
+    assertEquals(INPUT_MINT, builder.inputMint());
+    assertEquals(OUTPUT_MINT, builder.outputMint());
+    assertEquals(BigInteger.valueOf(42L), builder.amount());
+    assertEquals(TAKER, builder.taker());
+    assertEquals(RECEIVER, builder.receiver());
+    assertEquals(PAYER, builder.payer());
+    assertEquals(CLOSE_AUTHORITY, builder.closeAuthority());
+    assertEquals(REFERRAL, builder.referralAccount());
+    assertEquals(7, builder.referralFeeBps());
+    assertEquals(Set.of("metis"), Set.copyOf(builder.excludeRouters()));
+    assertEquals(Set.of("Orca"), Set.copyOf(builder.excludeDexes()));
+  }
+
+  /// `createRequest()` substitutes empty sets, so the `serialize()` null
+  /// guards are reachable only through an implementation whose sets are still
+  /// null — the builder itself is one. Null must mean "omit", not NPE.
+  @Test
+  void nullSetsSerializeAsOmitted() {
+    final var builder = minimal();
+    assertNull(builder.excludeRouters());
+    assertNull(builder.excludeDexes());
+    assertEquals(
+        "inputMint=" + INPUT_MINT.toBase58() + "&outputMint=" + OUTPUT_MINT.toBase58(),
+        builder.serialize()
+    );
+
+    // an explicitly empty set is also omitted — not emitted as "&excludeRouters="
+    assertEquals(
+        "inputMint=" + INPUT_MINT.toBase58() + "&outputMint=" + OUTPUT_MINT.toBase58(),
+        minimal().excludeRouters(Set.of()).excludeDexes(Set.of()).createRequest().serialize()
+    );
+  }
 }

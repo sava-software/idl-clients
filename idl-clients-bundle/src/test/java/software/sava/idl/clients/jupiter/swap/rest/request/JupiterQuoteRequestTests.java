@@ -359,4 +359,56 @@ final class JupiterQuoteRequestTests {
     assertEquals(33, parsed.maxAccounts());
     assertEquals("V2", parsed.instructionVersion());
   }
+
+  /// The builder's own accessors report what was set — read from inside the
+  /// test body, since nothing on the serialize path observes them.
+  @Test
+  void builderAccessorsReportEverySetField() {
+    final var builder = minimal()
+        .amount(BigInteger.valueOf(42L))
+        .swapMode(SwapMode.ExactOut)
+        .slippageBps(7)
+        .dexes(List.of("Meteora"))
+        .excludeDexes(List.of("Orca"))
+        .restrictIntermediateTokens(true)
+        .onlyDirectRoutes(true)
+        .asLegacyTransaction(true)
+        .platformFeeBps(11)
+        .maxAccounts(13)
+        .instructionVersion("v2");
+
+    assertEquals(INPUT_MINT, builder.inputTokenMint());
+    assertEquals(OUTPUT_MINT, builder.outputTokenMint());
+    assertEquals(BigInteger.valueOf(42L), builder.amount());
+    assertEquals(SwapMode.ExactOut, builder.swapMode());
+    assertEquals(7, builder.slippageBps());
+    assertEquals(List.of("Meteora"), List.copyOf(builder.dexes()));
+    assertEquals(List.of("Orca"), List.copyOf(builder.excludeDexes()));
+    assertTrue(builder.restrictIntermediateTokens());
+    assertTrue(builder.onlyDirectRoutes());
+    assertTrue(builder.asLegacyTransaction());
+    assertEquals(11, builder.platformFeeBps());
+    assertEquals(13, builder.maxAccounts());
+    assertEquals("v2", builder.instructionVersion());
+
+    // the boolean accessors report false as false, not a constant
+    final var unset = JupiterQuoteRequest.buildRequest();
+    assertFalse(unset.restrictIntermediateTokens());
+    assertFalse(unset.onlyDirectRoutes());
+    assertFalse(unset.asLegacyTransaction());
+  }
+
+  /// `create()` substitutes empty lists, so the `serialize()` null guards are
+  /// reachable only through an implementation whose collections are still
+  /// null — the builder itself is one. Null must mean "omit", not NPE.
+  @Test
+  void nullCollectionsSerializeAsOmitted() {
+    final var builder = minimal();
+    assertNull(builder.dexes());
+    assertNull(builder.excludeDexes());
+    assertEquals(
+        "inputMint=" + INPUT_MINT.toBase58() + "&outputMint=" + OUTPUT_MINT.toBase58(),
+        builder.serialize()
+    );
+  }
 }

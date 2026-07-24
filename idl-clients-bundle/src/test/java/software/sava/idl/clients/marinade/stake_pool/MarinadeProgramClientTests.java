@@ -212,6 +212,11 @@ final class MarinadeProgramClientTests {
 
     // and a mismatched stride no longer overruns — it just misses
     assertEquals(-1, MarinadeProgramClient.accountIndex(present.toByteArray(), listAccount(61, key(0x64), present), 40));
+
+    // a key ending flush with the buffer — payload truncated, key complete —
+    // is exactly the inclusive scan bound, and must still be found
+    final byte[] flush = Arrays.copyOf(listAccount(itemSize, key(0x64), present), 8 + itemSize + PublicKey.PUBLIC_KEY_LENGTH);
+    assertEquals(1, MarinadeProgramClient.accountIndex(present.toByteArray(), flush, itemSize));
   }
 
   // ---------------------------------------------------------------------------

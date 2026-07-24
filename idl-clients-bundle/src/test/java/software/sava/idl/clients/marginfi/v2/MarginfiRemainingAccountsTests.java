@@ -60,6 +60,16 @@ final class MarginfiRemainingAccountsTests {
     // the fixed setups win over the asset tag
     assertEquals(1, accountsPerBank(OracleSetup.Fixed, ASSET_TAG_STAKED));
     assertEquals(2, accountsPerBank(OracleSetup.FixedKamino, ASSET_TAG_STAKED));
+
+    // the fetched-Bank overload reads the setup and tag out of the config
+    assertEquals(
+        accountsPerBank(OracleSetup.StakedWithPythPush, ASSET_TAG_STAKED),
+        MarginfiRemainingAccounts.accountsPerBank(
+            syntheticBank(key(0x11), OracleSetup.StakedWithPythPush, ASSET_TAG_STAKED)));
+    assertEquals(
+        accountsPerBank(OracleSetup.Fixed, ASSET_TAG_DEFAULT),
+        MarginfiRemainingAccounts.accountsPerBank(
+            syntheticBank(key(0x11), OracleSetup.Fixed, ASSET_TAG_DEFAULT)));
   }
 
   /// Groups are laid out in the order they are added, bank first.

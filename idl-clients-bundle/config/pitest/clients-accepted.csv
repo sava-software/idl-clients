@@ -1,154 +1,11 @@
-software.sava.idl.clients.jupiter.JupiterAccounts,createAccounts,77,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.JupiterAccounts,deriveClaimStatus,284,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.JupiterAccounts,deriveFTokenMint,288,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.JupiterAccounts,deriveLending,292,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClient,createClient,16,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClient,createClient,20,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClientImpl,getExchangePrices,128,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClientImpl,initPosition,26,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClientImpl,operate,80,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.borrow.JupiterBorrowClientImpl,updateExchangePrices,143,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClient,createClient,13,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClient,createClient,17,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,deposit,28,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,depositWithMinAmountOut,66,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,mint,104,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,mintWithMaxAssets,142,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,redeem,181,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,redeemWithMinAmountOut,221,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,updateRate,331,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,withdraw,261,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.lend.JupiterLendClientImpl,withdrawWithMaxSharesBurn,301,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,23,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,23,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,23,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,24,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,24,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,25,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,amountsMatch,25,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,inverseQuotePrice,45,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,inverseQuotePrice,53,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,quotePrice,29,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,quotePrice,37,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,61,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,61,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,63,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,68,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,68,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,readData,70,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.RouteV2Data,toString,82,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,httpClient,49,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,requestTimeout,54,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,setDefaults,23,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,setDefaults,26,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,setDefaults,29,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.HttpClientBuilder,testResponse,64,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,apiKey,12,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,16,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,extendRequest,17,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,lambda$extendRequest$0,17,NakedReceiverMutator,NO_COVERAGE # untriaged
-software.sava.idl.clients.jupiter.swap.rest.JupiterClientBuilder,lambda$extendRequest$0,17,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterPriceClient$Builder,createClient,43,VoidMethodCallMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.JupiterPriceClient$Builder,setURLs,35,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient$Builder,setLocalURLs,123,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient$Builder,setRemoteURLs,134,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # default-endpoint guard: observable only by omitting the endpoint — the test would hit the hosted API
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient,quote,32,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient,quote,42,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient,ultraOrder,105,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClient,ultraOrder,109,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,37,RemoveConditionalMutator_ORDER_IF,SURVIVED
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,37,RemoveConditionalMutator_ORDER_IF,SURVIVED # HTTP 1xx unreachable through the JDK client (see README)
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,115,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,121,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,237,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
 software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,244,NakedReceiverMutator,SURVIVED # redundant explicit GET: HttpRequest.Builder defaults to GET; killable only via an extendRequest that sets another method
-software.sava.idl.clients.jupiter.swap.rest.JupiterTokenClient$Builder,setURLs,37,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JitoTip,toJson,14,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JitoTip,toJson,8,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JitoTip,toJson,8,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequest,serialize,73,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequest,serialize,77,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,amount,218,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,asLegacyTransaction,263,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,asLegacyTransaction,263,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,dexes,243,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,excludeDexes,248,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,inputTokenMint,228,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,instructionVersion,278,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,maxAccounts,273,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,onlyDirectRoutes,258,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,onlyDirectRoutes,258,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,outputTokenMint,233,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,platformFeeBps,268,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,restrictIntermediateTokens,253,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,restrictIntermediateTokens,253,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,slippageBps,238,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterQuoteRequestRecord$BuilderImpl,swapMode,223,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,asLegacyTransaction,231,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,asLegacyTransaction,231,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,blockhashSlotsToExpiry,251,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,computeUnitPriceMicroLamports,219,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,destinationTokenAccount,235,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,dynamicComputeUnitLimit,243,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,dynamicComputeUnitLimit,243,BooleanTrueReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,jitoTip,227,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,nativeDestinationAccount,239,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,payer,199,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,prioritizationFeeLamports,223,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,skipUserAccountsRpcCalls,247,BooleanTrueReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,trackingAccount,215,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,useSharedAccounts,207,BooleanTrueReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest$Builder,wrapAndUnwrapSol,203,BooleanTrueReturnValsMutator,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterSwapRequest,preSerialize,46,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequest,serialize,70,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,amount,214,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,closeAuthority,254,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,excludeDexes,239,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,excludeRouters,234,EmptyObjectReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,inputMint,204,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,outputMint,209,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,payer,249,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,receiver,244,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,referralAccount,224,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,referralFeeBps,229,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.request.JupiterUltraOrderRequestRecord$BuilderImpl,taker,219,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote,inverseQuotePrice,48,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote,inverseQuotePrice,56,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote,quotePrice,32,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterQuote,quotePrice,40,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions$Parser,test,250,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions,parseLookupTables,44,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions,parseLookupTables,45,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions,parseSwapInstruction,31,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions,parseSwapInstruction,32,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapInstructions,serializeTransaction,130,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.swap.rest.response.JupiterSwapIx,readData,20,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchEscrowAccountsForDelegate,41,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchProposals,54,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,increaseLockedAmount,122,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,increaseLockedAmount,134,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,newClaimAndStake,290,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,newClaimAndStake,304,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,newClaimAndStake,308,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClient,withdrawPartialUnstaking,224,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,createProposal,335,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,mergePartialUnstaking,574,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,newLocker,270,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,newVote,389,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,newVote,395,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,openPartialUnstaking,552,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,setLockerParams,297,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,withdrawPartialUnstaking,587,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.JupiterVoteClientImpl,withdrawPartialUnstaking,600,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,get,28,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,test,34,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,test,34,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,test,36,RemoveConditionalMutator_EQUAL_ELSE,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,test,36,RemoveConditionalMutator_EQUAL_IF,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof$Parser,test,41,BooleanFalseReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.jupiter.voter.rest.response.ClaimAsrProof,parseProof,14,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.kamino.KaminoAccounts,createAccounts,80,NullReturnValsMutator,SURVIVED
+software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchEscrowAccountsForDelegate,41,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.jupiter.voter.JupiterVoteClient,fetchProposals,54,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
 software.sava.idl.clients.kamino.KaminoAccounts,fetchVaults,279,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.kamino.KaminoAccounts,scopeEventAuthority,324,NullReturnValsMutator,SURVIVED
 software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchFarmStateAccounts,28,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
 software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchLendingMarkets,37,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
 software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReferrerStateAccounts,65,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: getProgramAccounts/filter delegation; needs a live SolanaRpcClient
@@ -158,124 +15,43 @@ software.sava.idl.clients.kamino.lend.KaminoLendClient,fetchReserveAccounts,56,N
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,45,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
 software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,RemoveConditionalMutator_EQUAL_IF,SURVIVED # allocation-size only: the null-referrer ternary feeds the capacity hint
-software.sava.idl.clients.loopscale.LoopscaleAccounts,createAccounts,15,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleAccounts,createAccounts,24,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleAccounts,loanPda,43,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleAccounts,loopscaleProgram,33,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClient,create,15,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,borrowPrincipal,174,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,borrowPrincipal,204,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,createLoan,78,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,createLoan,94,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,depositCollateral,106,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,depositCollateral,133,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,feePayer,52,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,loanTokenAccount,57,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,loanTokenAccount,62,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,loopscaleAccounts,37,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,owner,47,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,solanaAccounts,32,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,splClient,42,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,strategyTokenAccount,67,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,strategyTokenAccount,72,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,updateWeightMatrix,149,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscaleClientImpl,updateWeightMatrix,161,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscalePDAs,eventAuthority,21,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscalePDAs,loan,31,VoidMethodCallMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscalePDAs,loan,32,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscalePDAs,userRewardsInfo,95,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.loopscale.LoopscalePDAs,vaultStake,84,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts,accountsPerBank,79,PrimitiveReturnsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,113,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,84,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,97,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeAccounts,createAddressConstants,97,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,accountIndex,81,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,addLiquidity,334,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,addLiquidityATA,338,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,createOffCurveAccountWithSeed,201,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,depositStakeAccount,216,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,depositStakeAccount,232,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,deriveATA,191,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchMSolTokenAccounts,175,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchProgramState,179,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,183,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,44,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchValidatorList,55,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,findDuplicationKey,187,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,getMinimumBalanceForTicketAccount,38,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,lambda$fetchValidatorList$0,57,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,liquidUnstake,330,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,removeLiquidity,344,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,removeLiquidityATA,350,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,withdrawStakeAccount,261,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,withdrawStakeAccount,285,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,withdrawStakeAccount,311,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,addLiquidity,192,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,depositStakeAccount,78,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,liquidUnstake,154,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,marinadeDeposit,53,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,orderUnstake,174,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,removeLiquidity,212,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClientImpl,withdrawStakeAccount,125,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,lambda$static$0,64,MathMutator,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,lambda$static$0,65,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,lambda$static$0,65,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,reverseLookup,54,VoidMethodCallMutator,SURVIVED
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,validatorRecord,21,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,validatorRecord,26,ConditionalsBoundaryMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,validatorRecord,26,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,validatorRecord,26,RemoveConditionalMutator_ORDER_ELSE,NO_COVERAGE
-software.sava.idl.clients.marinade.stake_pool.MarinadeValidatorList,validatorRecord,26,RemoveConditionalMutator_ORDER_IF,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraAccounts,createAccounts,37,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.meteora.MeteoraAccounts,createAccounts,63,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,ConditionalsBoundaryMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,RemoveConditionalMutator_ORDER_ELSE,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,RemoveConditionalMutator_ORDER_IF,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,57,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,22,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,ConditionalsBoundaryMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,RemoveConditionalMutator_ORDER_ELSE,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,RemoveConditionalMutator_ORDER_IF,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,149,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,ConditionalsBoundaryMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,RemoveConditionalMutator_ORDER_ELSE,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,RemoveConditionalMutator_ORDER_IF,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,81,VoidMethodCallMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,83,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,presetParameterPDA,131,VoidMethodCallMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.MeteoraPDAs,presetParameterPDA,132,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,60,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,binPrice,111,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,binStepBase,93,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,194,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,205,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,213,ConditionalsBoundaryMutator,SURVIVED
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # allocation-size only: ArrayList capacity hint
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED # allocation-size only: ArrayList capacity hint
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchMSolTokenAccounts,175,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchProgramState,179,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,183,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchTicketAccounts,44,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,fetchValidatorList,55,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,getMinimumBalanceForTicketAccount,38,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.marinade.stake_pool.MarinadeProgramClient,lambda$fetchValidatorList$0,57,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line rpcClient delegation; needs a live SolanaRpcClient
+software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,22,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
+software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,ConditionalsBoundaryMutator,SURVIVED # min/max mint sort boundary: at compareTo==0 the mints are equal, either assignment yields the same seeds
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,60,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,398,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,404,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,417,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,365,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,194,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,205,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,213,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,215,NakedReceiverMutator,SURVIVED # Q64.64 pow loop mask, identity post-inversion (DlmmUtils pow family, see README)
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,218,NakedReceiverMutator,SURVIVED # Q64.64 pow loop mask, identity post-inversion (DlmmUtils pow family, see README)
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,65,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,ConditionalsBoundaryMutator,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain equivalent: DlmmUtils fee/pow guard family (see README)
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,65,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # fast-path routing: rangeClosed(lo;lo) builds the same single-element list
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,53,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPairs,67,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,fetchPositions,40,NullReturnValsMutator,NO_COVERAGE # RPC fetcher: one-line getProgramAccounts delegation; needs a live SolanaRpcClient
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,597,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,597,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # sentinel duplicated by the generated builder: swap2Keys requireNonNullElse substitutes the program id for a null host fee
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,159,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # guard subsumed by callee: Instruction.extraAccounts returns this on an empty list
 software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,66,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # fast-path routing: rangeClosed(lo;lo) builds the same single-element list
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.phoenix.PhoenixAccounts,createAccounts,40,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.phoenix.PhoenixClient,createClient,31,NullReturnValsMutator,SURVIVED
-software.sava.idl.clients.phoenix.PhoenixClient,createClient,35,NullReturnValsMutator,NO_COVERAGE
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,ConditionalsBoundaryMutator,SURVIVED # unsigned-decode fast path: both branches produce the same BigDecimal for any non-negative long
+software.sava.idl.clients.oracles.OracleUtil,scalePrice,35,RemoveConditionalMutator_ORDER_IF,SURVIVED # unsigned-decode fast path: both branches produce the same BigDecimal for any non-negative long

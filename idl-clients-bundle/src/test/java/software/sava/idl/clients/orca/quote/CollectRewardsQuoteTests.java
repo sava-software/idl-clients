@@ -177,4 +177,32 @@ final class CollectRewardsQuoteTests {
   private static BigInteger OrcaUtilU128Max() {
     return software.sava.idl.clients.orca.OrcaUtil.U128_MASK;
   }
+
+  /// The overflow guard's exact boundary: `liquidity * growthDelta` landing on
+  /// precisely u128::MAX is NOT an overflow — the quote is `(product >> 64)`,
+  /// which is exactly u64::MAX. One notch tighter and the guard would zero a
+  /// maximal-but-valid reward; this also pins `toU64` accepting the full
+  /// unsigned range (a `longValueExact` there threw on any amount above
+  /// `Long.MAX_VALUE`).
+  @Test
+  void productAtExactlyU128MaxIsNotAnOverflow() {
+    // 2^128-1 is divisible by 3: liquidity 3 times this growth delta lands
+    // exactly on the mask
+    final BigInteger third = OrcaUtilU128Max().divide(bi(3));
+    assertEquals(OrcaUtilU128Max(), third.multiply(bi(3)), "u128::MAX splits into thirds exactly");
+
+    // zero pool liquidity skips accrual; in range, zero tick outsides and a
+    // zero checkpoint leave growthDelta = growthGlobal
+    final var pool = whirlpoolForRewards(0, 0L,
+        new BigInteger[]{third, ZERO, ZERO},
+        new BigInteger[]{ZERO, ZERO, ZERO}, ZERO);
+    final var p = positionForRewards(bi(3), -10, 10,
+        new BigInteger[]{ZERO, ZERO, ZERO}, new long[]{0L, 0L, 0L});
+    final var zeros = tickRewards(new BigInteger[]{ZERO, ZERO, ZERO});
+
+    final var r = WhirlpoolQuote.collectRewardsQuote(pool, p, zeros, zeros, 0L, null, null, null);
+    assertEquals(-1L, r.rewards()[0].rewardsOwed(), "(u128::MAX >> 64) is u64::MAX, kept as unsigned bits");
+    assertEquals(0L, r.rewards()[1].rewardsOwed());
+    assertEquals(0L, r.rewards()[2].rewardsOwed());
+  }
 }

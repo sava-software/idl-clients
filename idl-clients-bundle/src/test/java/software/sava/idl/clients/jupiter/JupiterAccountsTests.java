@@ -117,6 +117,24 @@ final class JupiterAccountsTests {
     assertEquals(ACCOUNTS.jupTokenMint(), fromKeys.jupTokenMint());
     assertEquals(ACCOUNTS.jupBaseKey(), fromKeys.jupBaseKey());
     assertEquals(ACCOUNTS.lendingProgram(), fromKeys.lendingProgram());
+
+    // and the String overload decodes each argument into the same slot
+    final var fromStrings = JupiterAccounts.createAccounts(
+        ACCOUNTS.swapProgram().toBase58(),
+        ACCOUNTS.limitOrderProgram().toBase58(),
+        ACCOUNTS.dcaProgram().toBase58(),
+        ACCOUNTS.voteProgram().toBase58(),
+        ACCOUNTS.govProgram().toBase58(),
+        ACCOUNTS.jupTokenMint().toBase58(),
+        ACCOUNTS.jupBaseKey().toBase58(),
+        ACCOUNTS.invokedMerkleDistributorProgram().publicKey().toBase58(),
+        ACCOUNTS.lendingProgram().toBase58(),
+        ACCOUNTS.vaultsProgram().toBase58());
+    assertEquals(ACCOUNTS.swapProgram(), fromStrings.swapProgram());
+    assertEquals(ACCOUNTS.jupBaseKey(), fromStrings.jupBaseKey());
+    assertEquals(ACCOUNTS.lockerKey(), fromStrings.lockerKey());
+    assertEquals(ACCOUNTS.vaultsProgram(), fromStrings.vaultsProgram());
+
     // the derived members come out identical too
     assertEquals(ACCOUNTS.lockerKey(), fromKeys.lockerKey());
     assertEquals(ACCOUNTS.governorKey(), fromKeys.governorKey());
@@ -223,5 +241,51 @@ final class JupiterAccountsTests {
     assertNotEquals(
         JupiterAccounts.deriveClaimStatus(program, 1L, DISTRIBUTOR).publicKey(),
         JupiterAccounts.deriveClaimStatus(program, 1L << 32, DISTRIBUTOR).publicKey());
+
+    // the claimant/distributor default binds the merkle-distributor program,
+    // and the two same-typed keys are ordered
+    assertEquals(
+        software.sava.idl.clients.jupiter.merkle_distributor.gen.MerkleDistributorPDAs
+            .claimStatusPDA(program, OWNER, DISTRIBUTOR).publicKey(),
+        ACCOUNTS.deriveClaimStatus(OWNER, DISTRIBUTOR).publicKey());
+    assertNotEquals(
+        ACCOUNTS.deriveClaimStatus(OWNER, DISTRIBUTOR).publicKey(),
+        ACCOUNTS.deriveClaimStatus(DISTRIBUTOR, OWNER).publicKey());
+  }
+
+  /// The lending PDA defaults bind the lending program and pass their seeds in
+  /// order — mint and fToken mint are same-typed, so order matters.
+  @Test
+  void lendingDerivations() {
+    final var mint = key(0x18);
+    final var fTokenMint = ACCOUNTS.deriveFTokenMint(mint).publicKey();
+    assertEquals(
+        software.sava.idl.clients.jupiter.lend.gen.LendingPDAs
+            .fTokenMintPDA(ACCOUNTS.lendingProgram(), mint).publicKey(),
+        fTokenMint);
+    assertNotEquals(fTokenMint, ACCOUNTS.deriveFTokenMint(OTHER).publicKey());
+
+    assertEquals(
+        software.sava.idl.clients.jupiter.lend.gen.LendingPDAs
+            .lendingPDA(ACCOUNTS.lendingProgram(), mint, fTokenMint).publicKey(),
+        ACCOUNTS.deriveLending(mint, fTokenMint).publicKey());
+    assertNotEquals(
+        ACCOUNTS.deriveLending(mint, fTokenMint).publicKey(),
+        ACCOUNTS.deriveLending(fTokenMint, mint).publicKey());
+  }
+
+  /// Pinned against a real mainnet Vote account: on-chain
+  /// `8XCPonZ4rVg914tNFFXBnLActCnQY4863LmAqwD5ykdK` stores this proposal and
+  /// voter, and its own address is the program's PDA output for them — the
+  /// voter is the escrow *owner's wallet*, which is what anchors the client's
+  /// newVote overloads to the owner.
+  @Test
+  void voteDerivationMatchesARealOnChainVote() {
+    assertEquals(
+        PublicKey.fromBase58Encoded("8XCPonZ4rVg914tNFFXBnLActCnQY4863LmAqwD5ykdK"),
+        ACCOUNTS.deriveVote(
+            PublicKey.fromBase58Encoded("Es5gz2LLUqAno4tB6kLFeqsCqH38KWMtaF4tN46GGDy"),
+            PublicKey.fromBase58Encoded("GMtwcuktJfrRcnyGktWW4Vab8cfjPcBy3xbuZgRegw6E")
+        ).publicKey());
   }
 }

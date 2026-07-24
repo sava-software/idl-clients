@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /// Ported from `rust-sdk/core/src/quote/liquidity.rs#tests`.
 final class LiquidityQuoteTests {
@@ -174,5 +174,87 @@ final class LiquidityQuoteTests {
     final var r = WhirlpoolQuote.increaseLiquidityQuoteB(1000L, 100, ABOVE, -10, 10, null, null);
     assertEquals(BigInteger.valueOf(1_000_049L), r.liquidityDelta());
     assertEquals(1000L, r.tokenEstB());
+  }
+
+  // ----- guards and boundaries -----
+
+  /// The zero fast paths return the shared `ZERO` constants without touching
+  /// the math — pinned by identity, matching the spl `Fee.toRatio` precedent.
+  @Test
+  void zeroInputsReturnTheSharedZeroQuotes() {
+    assertSame(DecreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.decreaseLiquidityQuote(BigInteger.ZERO, 100, IN, -10, 10, null, null));
+    assertSame(IncreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.increaseLiquidityQuote(BigInteger.ZERO, 100, IN, -10, 10, null, null));
+    assertSame(DecreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.decreaseLiquidityQuoteA(0L, 100, IN, -10, 10, null, null));
+    assertSame(DecreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.decreaseLiquidityQuoteB(0L, 100, IN, -10, 10, null, null));
+    assertSame(IncreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.increaseLiquidityQuoteA(0L, 100, IN, -10, 10, null, null));
+    assertSame(IncreaseLiquidityQuote.ZERO,
+        WhirlpoolQuote.increaseLiquidityQuoteB(0L, 100, IN, -10, 10, null, null));
+  }
+
+  /// The tick arguments are order-insensitive: every quote sorts them before
+  /// deriving prices. An unsorted range would put the larger sqrt price in the
+  /// lower slot and blow up the estimates.
+  @Test
+  void tickOrderDoesNotMatter() {
+    assertEquals(
+        WhirlpoolQuote.decreaseLiquidityQuote(BigInteger.valueOf(1_000_000), 100, IN, -10, 10, null, null),
+        WhirlpoolQuote.decreaseLiquidityQuote(BigInteger.valueOf(1_000_000), 100, IN, 10, -10, null, null));
+    assertEquals(
+        WhirlpoolQuote.decreaseLiquidityQuoteA(1000L, 100, BELOW, -10, 10, null, null),
+        WhirlpoolQuote.decreaseLiquidityQuoteA(1000L, 100, BELOW, 10, -10, null, null));
+    assertEquals(
+        WhirlpoolQuote.increaseLiquidityQuote(BigInteger.valueOf(1_000_000), 100, IN, -10, 10, null, null),
+        WhirlpoolQuote.increaseLiquidityQuote(BigInteger.valueOf(1_000_000), 100, IN, 10, -10, null, null));
+    assertEquals(
+        WhirlpoolQuote.increaseLiquidityQuoteB(1000L, 100, ABOVE, -10, 10, null, null),
+        WhirlpoolQuote.increaseLiquidityQuoteB(1000L, 100, ABOVE, 10, -10, null, null));
+  }
+
+  /// A same-tick range has no width: the estimator reports it as invalid and
+  /// returns zero for both tokens rather than deriving prices from it.
+  @Test
+  void equalTicksAreAnInvalidRange() {
+    assertArrayEquals(new long[]{0L, 0L},
+        WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(BigInteger.valueOf(1_000_000), IN, 10, 10, false));
+    assertArrayEquals(new long[]{0L, 0L},
+        WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(BigInteger.valueOf(1_000_000), IN, 10, 10, true));
+  }
+
+  /// An increase quote's estimates are grossed *up* for a transfer fee — the
+  /// caller must send more so the pool receives the estimate.
+  @Test
+  void transferFeeGrossesUpAnIncreaseEstimate() {
+    final var noFee = WhirlpoolQuote.increaseLiquidityQuote(
+        BigInteger.valueOf(1_000_000), 100, IN, -10, 10, null, null);
+    final var withFee = WhirlpoolQuote.increaseLiquidityQuote(
+        BigInteger.valueOf(1_000_000), 100, IN, -10, 10, TransferFee.of(100), null);
+    assertTrue(Long.compareUnsigned(withFee.tokenEstA(), noFee.tokenEstA()) > 0,
+        "a 1% transfer fee on mint A must inflate the token A estimate");
+    assertEquals(noFee.tokenEstB(), withFee.tokenEstB(), "mint B carries no fee");
+  }
+
+  /// Round-up must only fire on an inexact division. `delta = sqrtPriceUpper`
+  /// with `sqrtPriceLower = 2^64` (tick 0) makes `tokenA = delta * diff * 2^64
+  /// / (upper * lower)` collapse to exactly `diff`, so the rounded-up and
+  /// truncated results agree.
+  @Test
+  void roundUpLeavesAnExactDivisionAlone() {
+    final var lower = software.sava.idl.clients.orca.OrcaUtil.tickIndexToSqrtPriceX64(0);
+    assertEquals(BigInteger.ONE.shiftLeft(64), lower, "tick 0 is exactly 1.0 in X64");
+    final var upper = software.sava.idl.clients.orca.OrcaUtil.tickIndexToSqrtPriceX64(64);
+    final var diff = upper.subtract(lower);
+
+    final long[] roundedUp = WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(
+        upper, lower.shiftRight(1), 0, 64, true);
+    final long[] truncated = WhirlpoolQuote.tryGetTokenEstimatesFromLiquidity(
+        upper, lower.shiftRight(1), 0, 64, false);
+    assertEquals(diff.longValueExact(), roundedUp[0]);
+    assertEquals(diff.longValueExact(), truncated[0], "the division is exact, so both roundings agree");
+    assertEquals(0L, roundedUp[1]);
   }
 }

@@ -100,7 +100,8 @@ public final class WhirlpoolQuote {
     if (value.signum() < 0 || value.compareTo(U64_MAX) > 0) {
       throw new ArithmeticException("amount exceeds u64: " + value);
     }
-    return value.longValueExact();
+    // longValueExact would reject the valid u64 range above Long.MAX_VALUE
+    return value.longValue(); // returns as unsigned long bits
   }
 
   private static long addU64(final long a, final long b) {

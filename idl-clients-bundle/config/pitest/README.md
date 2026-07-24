@@ -192,8 +192,87 @@ including two bonus kills of pre-existing rows the strengthened assertions
 reached (`preSerialize:46`, `collectRewardsQuote:128`).
 
 | 2026-07-23 | `clients` | 436 | 361 | 75 | 1250/1688 (74%) | 94% |
+| 2026-07-23 | `clients` | 57 | 19 | 38 | 1630/1688 (96%) | 97% |
+| 2026-07-23 | `orca` | 52 | 0 | 52 | 722/774 (93%) | 93% |
 
-The final 2026-07-23 row is two follow-up passes over the `NO_COVERAGE`
+The 57-row 2026-07-23 entry is the priority-3 discharge — the client-impl and
+request/response tranche worked down from 436 rows. In order of volume:
+Marinade (wiring tests mirroring the generated builders, plus the
+validator-list reverse-lookup sort pinned with descending keys and the
+exact-fit scan boundaries), Loopscale (full wiring + PDA property tests — 27
+rows to zero), the Jupiter request builders (every builder accessor read from
+inside a test body; the whole `rest.request` package now kills 322/322),
+RouteV2Data/JupiterQuote/JupiterSwapIx (deterministic companions to the fuzz
+harness; both v2 discriminators, `amountsMatch` quadrants, price-helper
+delegation), MeteoraPDAs (property tests for the four pair flavors),
+JupiterVoteClient (locker-admin/proposal builders, the `ClaimProof`-derived
+overloads, the partial-unstaking identity fallbacks, and the ASR envelope
+parser), the lend/borrow clients (full positional mirrors, including the
+33-account `operate`), and the HTTP client builders (a direct test subclass
+observing `setDefaults`, plus build-time URL resolution — see below). Every
+remaining row is annotated in the CSV; the `# untriaged` marker is gone.
+
+**One shipped defect surfaced**: `JupiterVoteClientImpl.newVote(proposal,
+payer)` passed the *escrow* as the `new_vote` voter argument while deriving
+the vote key from the escrow *owner* — a pair the program rejects
+unconditionally (the vote PDA is `["Vote", proposal, voter]`), so the
+two-arg overload could never execute. Verified against mainnet before fixing:
+real Vote accounts carry the owner's wallet as `voter` (system-owned, and each
+sampled voter owns an escrow), and the derivation is now pinned to on-chain
+Vote `8XCPonZ4rVg914tNFFXBnLActCnQY4863LmAqwD5ykdK` in `JupiterAccountsTests`.
+Same shape as the mis-bound `newEscrow` this client already had: a same-typed
+key in the wrong slot, in code no test reached.
+
+**A prior acceptance was retracted as wrong**: `setRemoteURLs`'s
+default-endpoint guard was recorded as "observable only by omitting the
+endpoint — the test would hit the hosted API". False: every Jupiter builder
+resolves its URLs at *build* time, so a no-endpoint `createClient()` observes
+the default without issuing any request (`ClientBuildersTests`
+`defaultEndpointsResolveAtBuildTime` now pins the hosted and local URL sets
+exactly, killing that whole guard family plus the price/token equivalents).
+
+New accepted families (annotated in the CSV): the four `MeteoraPDAs`
+min/max-sort `ConditionalsBoundary` mutants (at `compareTo == 0` the two mints
+are identical, so either assignment yields the same seed pair — the boundary
+is unreachable with distinct mints and harmless without),
+`OracleUtil.scalePrice`'s unsigned-decode fast path (both branches produce the
+same `BigDecimal` for any non-negative long; the branch only avoids string
+parsing), `MeteoraDlmmClientImpl.hostFeeInOrSentinel` (the generated
+`swap2Keys` already substitutes the program id via `requireNonNullElse`, so
+the hand-written sentinel is belt-and-braces the callee duplicates), and the
+`MarginfiRemainingAccounts.Builder` capacity-hint arithmetic (same
+allocation-size-only family as Kamino's).
+
+The `orca` 52-row 2026-07-23 entry is the `OrcaWhirlpoolsClient(Impl)` block
+discharge plus the `WhirlpoolQuote`/`WhirlpoolRemainingAccounts` triage — the
+suite's last `NO_COVERAGE` rows are gone, and every remaining row is a
+documented `SURVIVED` equivalent. `OrcaWhirlpoolsClientWiringTests` mirrors
+all 28 impl builders (including both two-hop swaps) and checks every `default`
+overload against the explicit call it delegates to — the property pinned is
+which derived key (position PDA, ATA, lock config, bundled position, oracle)
+lands in which slot, and that the position families derive their ATAs under
+the right token program (classic vs 2022 differs per family). The quote kills
+each needed a case the ported Rust tests had no reason to construct: quotes
+with *reversed* tick arguments (the sort is only observable when the input is
+unsorted), an increase quote with a real `TransferFee` (grossing *up* the
+estimate), an exact division under `roundUp` (delta = sqrtPriceUpper with
+tick-0's exact 2^64 lower bound), the u64 boundary from both sides, and a
+`liquidity * growthDelta` product landing on exactly u128::MAX.
+
+**One shipped defect surfaced (fixed)**: `WhirlpoolQuote.toU64` used
+`longValueExact`, which rejects the valid u64 range above `Long.MAX_VALUE` —
+any fee, reward, or token estimate in `[2^63, 2^64)` threw
+`ArithmeticException` instead of quoting. This is the *same* defect found and
+fixed in `OrcaUtil.toU64` on 2026-07-16; the private sibling copy in the quote
+layer was missed. Both boundary tests now pin the unsigned-bits contract
+(`u64::MAX` survives, one past it throws). New accepted families are
+annotated in the CSV: the quote zero fast paths whose fall-through computes
+the same shared `ZERO` result the long way, `orderTicks` at equal operands,
+the rewards u64 mask under the u128 guard, `toU64`'s unreachable-negative
+half, and the remaining-accounts guards subsumed by their callees
+(`Instruction.extraAccounts` and `addSlice` both drop empty input themselves).
+
+The 436-row 2026-07-23 entry is two follow-up passes over the `NO_COVERAGE`
 tranche. (1) **Parser unknown-field alignment**: every Jupiter REST
 request/response parser fed fixtures with unknown neighbors at each nesting
 level (`JupiterResponseParserAlignmentTests`, `ClaimProofTests`, and the
@@ -217,11 +296,11 @@ equals/hashCode siblings, 2 `orca` line-663 siblings, 2 `clients`). They are
 annotated in the CSVs and folded into their families below — surfaced debt,
 not new mutants.
 
-**The seeded baseline is triage debt made explicit, not acceptance.** Priorities
-1 and 2 below have been worked down; every `SURVIVED` row remaining in `scope`
-and `orca` is analyzed (see the accepted-equivalents section). Priority 3 —
-the client/DTO plumbing, including `orca`'s `OrcaWhirlpoolsClient(Impl)` block —
-is the remaining tranche.
+**The seeded baseline is triage debt made explicit, not acceptance — and it is
+now fully discharged across all three suites.** Every `SURVIVED` row remaining
+in `scope`, `orca` and `clients` is analyzed (see the accepted-equivalents
+section and the per-row CSV annotations); the only `NO_COVERAGE` rows left in
+the module are the `clients` RPC-fetcher delegations, and `orca` has none.
 
 ## Untriaged debt, in priority order
 
@@ -424,24 +503,23 @@ is the remaining tranche.
      2^63, so it only becomes observable for a negative `long` denoting a u64
      above that.
 
-   Remaining, in rough value order: the rest of the client impls
-   (`MeteoraDlmmClient(Impl)` ~65 still, `LoopscaleClientImpl` 17,
-   `KaminoVaultsClient(Impl)` 20, plus `OrcaWhirlpoolsClient(Impl)` ~57 in the
-   `orca` suite), the Jupiter
-   response parsers (`JupiterSwapInstructions` 39, `JupiterSwapApiClientImpl`
-   37), and `DlmmUtils` 22 — the last of which is mostly unreachable guards, and
-   whose `variableFeeControl` is already widened to `long`, so there is no
-   signedness bug hiding there.
+   Remaining in this suite: nothing untriaged — the client-impl tranche was
+   discharged 2026-07-23 (see the 57-row baseline entry above). The one block
+   left from priority 3 is `OrcaWhirlpoolsClient(Impl)` ~57 rows, which lives
+   in the `orca` suite's baseline, not this one. `DlmmUtils`'s remaining rows
+   are the documented unreachable-guard family; its `variableFeeControl` is
+   already widened to `long`, so there is no signedness bug hiding there.
 
    The pattern that works for the client impls is idl-clients-spl's: distinct
    keys per role, account lists asserted by *slot* rather than membership, and
    the invoked program asserted explicitly. Running score for this approach:
-   nine real defects across the two modules — two in SPL, the scope client's
+   ten real defects across the two modules — two in SPL, the scope client's
    transposed `initialize`, the lend client's wrong reserve mint, the vote
-   client's mis-bound `newEscrow`, Marinade's unbounded list scan, Phoenix's
-   global config standing in for the global vault, and marginfi's dead
-   `clearEmissions` and off-by-one-slot `closeOrder`. Nearly all were a
-   same-typed value in the wrong position, in code no test reached.
+   client's mis-bound `newEscrow` and dead two-arg `newVote` (the escrow in
+   the voter slot), Marinade's unbounded list scan, Phoenix's global config
+   standing in for the global vault, and marginfi's dead `clearEmissions` and
+   off-by-one-slot `closeOrder`. Nearly all were a same-typed value in the
+   wrong position, in code no test reached.
 
 Shrinking the baseline is always an improvement; growing it requires a reason
 written here.

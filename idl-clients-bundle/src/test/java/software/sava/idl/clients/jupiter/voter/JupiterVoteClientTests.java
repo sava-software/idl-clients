@@ -1,7 +1,12 @@
 package software.sava.idl.clients.jupiter.voter;
 
 import org.junit.jupiter.api.Test;
+import software.sava.idl.clients.jupiter.governance.gen.GovernProgram;
+import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstruction;
+import software.sava.idl.clients.jupiter.voter.gen.LockedVoterProgram;
 import software.sava.idl.clients.jupiter.voter.gen.types.Escrow;
+import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
+import software.sava.idl.clients.jupiter.voter.rest.response.ClaimProof;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
@@ -462,5 +467,135 @@ final class JupiterVoteClientTests {
     assertFalse(java.util.Arrays.equals(
         CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "memo").data(),
         CLIENT.openPartialUnstaking(fetched, partialUnstake, 500L, "another memo").data()));
+
+    // the identity-fallback short forms bind the client's own escrow
+    assertEquals(
+        keys(CLIENT.openPartialUnstaking(JUPITER_ACCOUNTS.lockerKey(), CLIENT.escrowKey(),
+            CLIENT.escrowOwnerKey(), partialUnstake, 500L, "memo")),
+        keys(CLIENT.openPartialUnstaking(partialUnstake, 500L, "memo")));
+    assertEquals(
+        keys(CLIENT.mergePartialUnstaking(JUPITER_ACCOUNTS.lockerKey(), CLIENT.escrowKey(),
+            CLIENT.escrowOwnerKey(), partialUnstake)),
+        keys(CLIENT.mergePartialUnstaking(partialUnstake)));
+
+    // withdraw-partial-unstaking: the Escrow form reads all four escrow fields
+    final var payerKey = key(0x5C);
+    assertEquals(
+        keys(CLIENT.withdrawPartialUnstaking(locker, address, owner, tokens, partialUnstake, payerKey, DESTINATION_TOKENS)),
+        keys(CLIENT.withdrawPartialUnstaking(fetched, partialUnstake, payerKey, DESTINATION_TOKENS)));
+    // its payer-less default falls back to the escrow's *owner*
+    assertEquals(
+        keys(CLIENT.withdrawPartialUnstaking(fetched, partialUnstake, owner, DESTINATION_TOKENS)),
+        keys(CLIENT.withdrawPartialUnstaking(fetched, partialUnstake, DESTINATION_TOKENS)));
+    // and the identity fallback unstakes from the escrow's JUP ATA to the owner's
+    assertEquals(
+        keys(CLIENT.withdrawPartialUnstaking(JUPITER_ACCOUNTS.lockerKey(), CLIENT.escrowKey(),
+            CLIENT.escrowOwnerKey(), CLIENT.escrowATA(), partialUnstake, payerKey, CLIENT.escrowOwnerKeyATA())),
+        keys(CLIENT.withdrawPartialUnstaking(partialUnstake, payerKey)));
+
+    // increaseLockedAmount's Escrow overloads read the escrow address and its
+    // token account, and the payer-less form defaults to the escrow's owner
+    assertEquals(
+        keys(CLIENT.increaseLockedAmount(address, tokens, payerKey, SOURCE_TOKENS, 5L)),
+        keys(CLIENT.increaseLockedAmount(fetched, payerKey, SOURCE_TOKENS, 5L)));
+    assertEquals(
+        keys(CLIENT.increaseLockedAmount(fetched, owner, SOURCE_TOKENS, 5L)),
+        keys(CLIENT.increaseLockedAmount(fetched, SOURCE_TOKENS, 5L)));
+  }
+
+  /// The `voter` in `new_vote` is instruction *data*, not an account: on-chain
+  /// Vote accounts carry the escrow owner's wallet as `voter`, and the vote
+  /// PDA is derived from `["Vote", proposal, voter]`. Regression: the two-arg
+  /// overload passed the *escrow* as the voter while deriving the vote key
+  /// from the owner — a pair the program rejects unconditionally, so the
+  /// instruction could never execute.
+  @Test
+  void newVoteOverloadsVoteForTheEscrowOwner() {
+    final var explicit = CLIENT.newVote(PROPOSAL, VOTE, FEE_PAYER, OWNER);
+    final var threeArg = CLIENT.newVote(PROPOSAL, VOTE, FEE_PAYER);
+    assertEquals(keys(explicit), keys(threeArg));
+    assertArrayEquals(explicit.data(), threeArg.data(), "the voter argument rides in the data");
+
+    final var derived = CLIENT.newVote(PROPOSAL, FEE_PAYER);
+    final var explicitDerived = CLIENT.newVote(PROPOSAL, CLIENT.deriveVoteKey(PROPOSAL), FEE_PAYER, OWNER);
+    assertEquals(keys(explicitDerived), keys(derived));
+    assertArrayEquals(explicitDerived.data(), derived.data(),
+        "the vote key is derived from the owner, so the voter must be the owner too");
+  }
+
+  /// The locker-admin and proposal builders are thin delegations to the
+  /// generated calls, with the client's locker/governor and the system program
+  /// auto-wired; the generated builders' parameter names are the reference.
+  @Test
+  void adminBuildersBindTheGeneratedCalls() {
+    final var params = new LockerParams(10, 60L, 3_600L, 1_000L);
+    final var base = key(0x61);
+    final var locker = key(0x62);
+    final var mint = key(0x63);
+    final var governor = key(0x64);
+    final var proposer = key(0x66);
+    final var eventAuthority = key(0x67);
+
+    var expected = LockedVoterProgram.newLocker(
+        JUPITER_ACCOUNTS.invokedVoteProgram(), base, locker, mint, governor,
+        FEE_PAYER, SOLANA_ACCOUNTS.systemProgram(), params);
+    var actual = CLIENT.newLocker(base, locker, mint, governor, FEE_PAYER, params);
+    assertEquals(expected.programId(), actual.programId());
+    assertEquals(keys(expected), keys(actual));
+    assertArrayEquals(expected.data(), actual.data());
+
+    expected = LockedVoterProgram.setLockerParams(
+        JUPITER_ACCOUNTS.invokedVoteProgram(), JUPITER_ACCOUNTS.lockerKey(),
+        JUPITER_ACCOUNTS.governorKey(), SMART_WALLET, params);
+    actual = CLIENT.setLockerParams(SMART_WALLET, params);
+    assertEquals(expected.programId(), actual.programId());
+    assertEquals(keys(expected), keys(actual));
+    assertArrayEquals(expected.data(), actual.data());
+
+    expected = GovernProgram.createProposal(
+        JUPITER_ACCOUNTS.invokedGovProgram(), governor, PROPOSAL, SMART_WALLET, proposer,
+        FEE_PAYER, SOLANA_ACCOUNTS.systemProgram(), eventAuthority, JUPITER_ACCOUNTS.govProgram(),
+        1, 2, new ProposalInstruction[0]);
+    actual = CLIENT.createProposal(governor, PROPOSAL, SMART_WALLET, proposer, FEE_PAYER, eventAuthority,
+        1, 2, new ProposalInstruction[0]);
+    assertEquals(expected.programId(), actual.programId());
+    assertEquals(keys(expected), keys(actual));
+    assertArrayEquals(expected.data(), actual.data());
+  }
+
+  /// The `ClaimProof`-taking overloads derive everything from the proof: the
+  /// distributor is the proof's merkle tree, the claim status is the owner's
+  /// PDA under it, and both token accounts are ATAs of the distributor and of
+  /// the client's escrow — for the proof's own mint.
+  @Test
+  void newClaimAndStakeDerivesEverythingFromTheProof() {
+    final var merkleTree = key(0x65);
+    final var operator = key(0x44);
+    final var mint = JUPITER_ACCOUNTS.jupTokenMint();
+    final var proof = new byte[][]{new byte[32]};
+    final var claimProof = new ClaimProof(mint, merkleTree, 100L, 900L, proof);
+    final var tokenProgram = SOLANA_ACCOUNTS.tokenProgram();
+    final var splClient = ACCOUNT_CLIENT.splClient();
+
+    final var explicit = CLIENT.newClaimAndStake(
+        JUPITER_ACCOUNTS.deriveClaimStatus(OWNER, merkleTree).publicKey(),
+        splClient.findATA(merkleTree, tokenProgram, mint).publicKey(),
+        merkleTree,
+        operator,
+        splClient.findATA(CLIENT.escrowKey(), tokenProgram, mint).publicKey(),
+        tokenProgram,
+        100L,
+        900L,
+        proof);
+    final var fromProof = CLIENT.newClaimAndStake(operator, tokenProgram, claimProof);
+    assertEquals(keys(explicit), keys(fromProof));
+    assertArrayEquals(explicit.data(), fromProof.data());
+
+    // the shorter forms default the token program, then the operator
+    assertEquals(keys(fromProof), keys(CLIENT.newClaimAndStake(operator, claimProof)));
+    assertEquals(
+        keys(CLIENT.newClaimAndStake(FEE_PAYER, claimProof)),
+        keys(CLIENT.newClaimAndStake(claimProof)),
+        "the operator defaults to the fee payer");
   }
 }

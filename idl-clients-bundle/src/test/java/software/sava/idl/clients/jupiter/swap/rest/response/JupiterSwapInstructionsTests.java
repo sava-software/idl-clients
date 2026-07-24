@@ -420,4 +420,70 @@ final class JupiterSwapInstructionsTests {
     assertDoesNotThrow(() -> parsed.serializeTransaction(
         (software.sava.core.accounts.lookup.AddressLookupTable) null));
   }
+
+  /// A present cleanup instruction is parsed into its own slot — Jupiter sends
+  /// one whenever wrapped SOL has to be closed. A dropped `cleanupInstruction`
+  /// branch silently skips it and the transaction leaks the wSOL account.
+  @Test
+  void parsesAFullResponseWithAPresentCleanup() {
+    final String cleanupProgram = TABLE_B58; // any valid base58, distinct from PROGRAM_B58
+    final var json = """
+        {"computeBudgetInstructions":[],\
+        "setupInstructions":[],\
+        "swapInstruction":%s,\
+        "cleanupInstruction":%s,\
+        "otherInstructions":[],\
+        "addressLookupTableAddresses":[]}"""
+        .formatted(instructionJson(PROGRAM_B58), instructionJson(cleanupProgram));
+
+    final var parsed = JupiterSwapInstructions.parseInstructions(ji(json));
+    assertNotNull(parsed.cleanupInstruction());
+    assertEquals(cleanupProgram, parsed.cleanupInstruction().programId().publicKey().toBase58());
+    assertEquals(2, parsed.numInstructions(), "the cleanup occupies its own slot");
+
+    // the LookupTableAccountMeta[] overload sizes and fills the same array
+    assertNotNull(parsed.serializeTransaction(
+        (software.sava.core.accounts.meta.LookupTableAccountMeta[]) null));
+  }
+
+  /// The rewind is only *needed* when the cursor already sits past the field —
+  /// a fresh iterator finds any field by scanning forward. These cases drive
+  /// the retry to a successful find, and pin which occurrence wins when the
+  /// field appears twice: the cursor-forward one, not a restart-from-zero one.
+  @Test
+  void fieldLookupRetrySucceedsFromAnAdvancedCursor() {
+    final String swapField = "\"swapInstruction\":" + instructionJson(PROGRAM_B58);
+    final String tablesField = "\"addressLookupTableAddresses\":[\"" + TABLE_B58 + "\"]";
+
+    // consume past the swap field first: the second lookup must rewind and find it
+    final var swapBehind = ji("{" + swapField + "," + tablesField + "}");
+    assertEquals(1, JupiterSwapInstructions.parseLookupTables(swapBehind).size());
+    assertNotNull(JupiterSwapInstructions.parseSwapInstruction(swapBehind),
+        "the swap instruction sits before the cursor and is found only via the rewind");
+
+    // and symmetrically for the lookup tables
+    final var tablesBehind = ji("{" + tablesField + "," + swapField + "}");
+    assertNotNull(JupiterSwapInstructions.parseSwapInstruction(tablesBehind));
+    assertEquals(1, JupiterSwapInstructions.parseLookupTables(tablesBehind).size(),
+        "the tables sit before the cursor and are found only via the rewind");
+
+    // two occurrences with the cursor between them: the forward scan wins, so
+    // the second occurrence is returned — a retry-always mutant restarts at
+    // zero and resurrects the first
+    final String firstSwap = "\"swapInstruction\":" + instructionJson(PROGRAM_B58);
+    final String secondSwap = "\"swapInstruction\":" + instructionJson(TABLE_B58);
+    final var twoSwaps = ji("{" + firstSwap + "," + secondSwap + "}");
+    assertEquals(PROGRAM_B58,
+        JupiterSwapInstructions.parseSwapInstruction(twoSwaps).programId().publicKey().toBase58());
+    assertEquals(TABLE_B58,
+        JupiterSwapInstructions.parseSwapInstruction(twoSwaps).programId().publicKey().toBase58(),
+        "the cursor-forward occurrence wins");
+
+    final String firstTables = "\"addressLookupTableAddresses\":[\"" + TABLE_B58 + "\"]";
+    final String secondTables = "\"addressLookupTableAddresses\":[\"" + PROGRAM_B58 + "\",\"" + TABLE_B58 + "\"]";
+    final var twoTables = ji("{" + firstTables + "," + secondTables + "}");
+    assertEquals(1, JupiterSwapInstructions.parseLookupTables(twoTables).size());
+    assertEquals(2, JupiterSwapInstructions.parseLookupTables(twoTables).size(),
+        "the cursor-forward occurrence wins");
+  }
 }

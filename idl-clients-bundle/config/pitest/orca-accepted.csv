@@ -37,70 +37,16 @@ software.sava.idl.clients.orca.OrcaUtil,tickIndexToSqrtPriceX64,622,Conditionals
 software.sava.idl.clients.orca.OrcaUtil,toU64,294,RemoveConditionalMutator_ORDER_IF,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,tryGetAmountDeltaA,797,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
 software.sava.idl.clients.orca.OrcaUtil,u64,287,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,closeBundledPosition,661,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,closePosition,569,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,closePositionWithTokenExtensions,583,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,deriveBundledPositionKey,474,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,deriveLockConfigKey,466,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,derivePositionBundleKey,470,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,deriveTickArrayKey,478,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,lockPosition,600,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,openBundledPosition,642,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,openPositionWithMetadata,525,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,openPositionWithTokenExtensions,550,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,swapV2,727,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClient,transferLockedPosition,619,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,closeBundledPosition,339,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,closePosition,139,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,closePositionWithTokenExtensions,158,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,collectFees,658,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,collectFeesV2,687,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,collectReward,716,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,collectRewardV2,741,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,decreaseLiquidity,519,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,decreaseLiquidityV2,558,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,deletePositionBundle,294,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,increaseLiquidity,400,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,increaseLiquidityByTokenAmountsV2,481,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,increaseLiquidityV2,439,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,initializeDynamicTickArray,373,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,initializePositionBundle,248,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,initializePositionBundleWithMetadata,271,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,initializeTickArray,356,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,lockPosition,202,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,openBundledPosition,316,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,openPositionWithMetadata,82,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,openPositionWithTokenExtensions,114,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,repositionLiquidityV2,605,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,resetPositionRange,178,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,swapV2,818,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,transferLockedPosition,227,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,twoHopSwap,873,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,twoHopSwapV2,938,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.OrcaWhirlpoolsClientImpl,updateFeesAndRewards,638,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addSupplementalTickArrays,144,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addTransferHook,127,MathMutator,SURVIVED
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts,append,81,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,163,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,163,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,169,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,173,NakedReceiverMutator,SURVIVED # guard-bounded mask: the product <= U128 guard above makes >>64 already fit u64 (see README)
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuote,283,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,306,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,307,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteB,332,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteB,333,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuote,356,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteA,379,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteA,380,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteB,405,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteB,406,NullReturnValsMutator,NO_COVERAGE
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,orderTicks,187,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,orderTicks,187,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,reverseTransferFee,41,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,toU64,100,ConditionalsBoundaryMutator,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,toU64,100,RemoveConditionalMutator_ORDER_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,toU64,100,RemoveConditionalMutator_ORDER_IF,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,tokenAFromLiquidity,235,RemoveConditionalMutator_EQUAL_IF,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,tryGetTokenEstimatesFromLiquidity,198,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,tryGetTokenEstimatesFromLiquidity,221,NullReturnValsMutator,NO_COVERAGE
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addSupplementalTickArrays,144,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # guard subsumed by callee: addSlice drops empty slices itself
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addTransferHook,127,MathMutator,SURVIVED # allocation-size only: ArrayList capacity hint
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts,append,81,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # guard subsumed by callee: Instruction.extraAccounts returns this on an empty list
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,164,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: a zero growth delta computes a zero reward the long way; the liquidity-clause jump is killed by the u128 boundary test
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,164,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero fast path: a zero growth delta computes a zero reward the long way; the liquidity-clause jump is killed by the u128 boundary test
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,174,NakedReceiverMutator,SURVIVED # u64 mask is identity under the u128 overflow guard directly above
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,307,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: the fall-through computes the same shared ZERO result the long way
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteB,333,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: the fall-through computes the same shared ZERO result the long way
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteA,380,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: the fall-through computes the same shared ZERO result the long way
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteB,406,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: the fall-through computes the same shared ZERO result the long way
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,orderTicks,188,ConditionalsBoundaryMutator,SURVIVED # equal operands: at t1==t2 both orderings are the same pair
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,toU64,100,RemoveConditionalMutator_ORDER_IF,SURVIVED # negative unreachable: every producer is a masked u128 subtraction, an unsigned sum, or a positionStatus-sorted range
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,tryGetTokenEstimatesFromLiquidity,199,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero fast path: the fall-through computes the same shared ZERO result the long way

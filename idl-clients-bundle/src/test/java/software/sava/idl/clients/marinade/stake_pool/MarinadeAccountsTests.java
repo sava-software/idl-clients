@@ -100,6 +100,57 @@ final class MarinadeAccountsTests {
     assertNotEquals(duplicate.publicKey(), ACCOUNTS.findDuplicationKey(key(0x42)).publicKey());
   }
 
+  /// The base58 String factories are exercised from inside the test body —
+  /// `MAIN_NET`'s own construction runs in the interface's `<clinit>`, whose
+  /// coverage attribution is unstable under PIT. The stake list account is the
+  /// one nullable slot: supplied, it must decode; omitted (or via the 12-arg
+  /// overload), it must stay null rather than NPE inside the ternary.
+  @Test
+  void base58StringFactoriesBindEveryField() {
+    final var withStakeList = MarinadeAccounts.createAddressConstants(
+        "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+        "3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+        "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+        "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC",
+        "Du3Ysj1wKbxPKkuPPnvzQLQh8oMSVifs3jGZjJWXFmHN",
+        "B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR",
+        "LPmSozJJ8Jh69ut2WP3XmVohTjL4ipR18yiCzxrUmVj",
+        "HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA",
+        "7GgPYjS5Dza89wV6FpZ23kUJRG5vbQ1GM25ezspYFSoE",
+        "EyaSjUtSgo9aRD1f8LWXwdvkpDTmXAW54yoSHZRF14WL",
+        "UefNb6z6yvArqe4cJHTXCqStRsKmWhGxnZzuHbikP5Q",
+        "DwFYJNnhLmw19FBTrVaLWZ8SZJpxdPoSYVSJaio9tjbY",
+        "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC"
+    );
+    assertEquals(ACCOUNTS.mSolTokenMint(), withStakeList.mSolTokenMint());
+    assertEquals(ACCOUNTS.marinadeProgram(), withStakeList.marinadeProgram());
+    assertEquals(ACCOUNTS.stakeWithdrawAuthority(), withStakeList.stakeWithdrawAuthority());
+    assertEquals(
+        PublicKey.fromBase58Encoded("8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC"),
+        withStakeList.stakeListAccount(),
+        "a supplied stake list account decodes rather than nulling out"
+    );
+
+    final var withoutStakeList = MarinadeAccounts.createAddressConstants(
+        "mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So",
+        "3JLPCS1qM2zRw3Dp6V4hZnYHd4toMNPkNesXdX9tg6KM",
+        "MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD",
+        "8szGkuLTAux9XMgZ2vtY39jVSowEcpBfFfD8hXSEqdGC",
+        "Du3Ysj1wKbxPKkuPPnvzQLQh8oMSVifs3jGZjJWXFmHN",
+        "B1aLzaNMeFVAyQ6f3XbbUyKcH2YPHu2fqiEagmiF23VR",
+        "LPmSozJJ8Jh69ut2WP3XmVohTjL4ipR18yiCzxrUmVj",
+        "HZsepB79dnpvH6qfVgvMpS738EndHw3qSHo4Gv5WX1KA",
+        "7GgPYjS5Dza89wV6FpZ23kUJRG5vbQ1GM25ezspYFSoE",
+        "EyaSjUtSgo9aRD1f8LWXwdvkpDTmXAW54yoSHZRF14WL",
+        "UefNb6z6yvArqe4cJHTXCqStRsKmWhGxnZzuHbikP5Q",
+        "DwFYJNnhLmw19FBTrVaLWZ8SZJpxdPoSYVSJaio9tjbY"
+    );
+    assertNull(withoutStakeList.stakeListAccount(), "the 12-arg overload leaves the stake list unset");
+    assertEquals(ACCOUNTS.mSolTokenMint(), withoutStakeList.mSolTokenMint());
+    assertEquals(ACCOUNTS.stakeDepositAuthority(), withoutStakeList.stakeDepositAuthority());
+    assertEquals(ACCOUNTS.validatorListAccount(), withoutStakeList.validatorListAccount());
+  }
+
   @Test
   void base58FactoryMatchesTheKeyFactory() {
     final var fromKeys = MarinadeAccounts.createAddressConstants(

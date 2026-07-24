@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /// Pins the hand-written Meteora DLMM PDA-derivation helpers against a real
 /// mainnet LbPair. A wrong seed encoding (mint ordering, u16 little-endian bin
@@ -58,6 +59,93 @@ final class MeteoraPDATests {
     assertEquals(
         RESERVE_Y.toBase58(),
         MeteoraPDAs.reservePDA(LB_PAIR, TOKEN_Y_MINT, DLMM_PROGRAM).publicKey().toBase58()
+    );
+  }
+
+  // The pair-flavor helpers below have no real on-chain anchor fetched yet, so
+  // they are tested by property rather than pinned value (see AGENTS.md and
+  // the KaminoAccounts precedent): mint order must not matter (the seeds are
+  // min/max sorted, matching the verified `lbPairPDA` above), every input must
+  // participate, and the flavors must separate from each other. The u16 seed
+  // encodes little-endian, so an index above 0xFF pins the second byte.
+
+  @Test
+  void customizablePermissionlessLbPairIsMintOrderInvariant() {
+    final var pair = MeteoraPDAs.customizablePermissionlessLbPairPDA(TOKEN_X_MINT, TOKEN_Y_MINT, DLMM_PROGRAM);
+    assertEquals(
+        pair.publicKey(),
+        MeteoraPDAs.customizablePermissionlessLbPairPDA(TOKEN_Y_MINT, TOKEN_X_MINT, DLMM_PROGRAM).publicKey()
+    );
+    // both mints participate
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.customizablePermissionlessLbPairPDA(TOKEN_X_MINT, LB_PAIR, DLMM_PROGRAM).publicKey()
+    );
+    // the ILM base seed separates it from a preset-parameter pair of the same mints
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.lbPairWithPresetParamPDA(LB_PAIR, TOKEN_X_MINT, TOKEN_Y_MINT, DLMM_PROGRAM).publicKey()
+    );
+  }
+
+  @Test
+  void permissionLbPairIsMintOrderInvariantAndBindsEverySeed() {
+    final var base = LB_PAIR; // any key distinct from the mints
+    final var pair = MeteoraPDAs.permissionLbPairPDA(base, TOKEN_X_MINT, TOKEN_Y_MINT, BIN_STEP, DLMM_PROGRAM);
+    assertEquals(
+        pair.publicKey(),
+        MeteoraPDAs.permissionLbPairPDA(base, TOKEN_Y_MINT, TOKEN_X_MINT, BIN_STEP, DLMM_PROGRAM).publicKey()
+    );
+    // the base key, each mint, and the bin step all participate
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.permissionLbPairPDA(TOKEN_X_MINT, TOKEN_X_MINT, TOKEN_Y_MINT, BIN_STEP, DLMM_PROGRAM).publicKey()
+    );
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.permissionLbPairPDA(base, TOKEN_X_MINT, RESERVE_X, BIN_STEP, DLMM_PROGRAM).publicKey()
+    );
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.permissionLbPairPDA(base, TOKEN_X_MINT, TOKEN_Y_MINT, BIN_STEP + 1, DLMM_PROGRAM).publicKey(),
+        "a dropped bin-step encoding collapses every bin step onto zero"
+    );
+    // the little-endian u16's high byte participates too
+    assertNotEquals(
+        MeteoraPDAs.permissionLbPairPDA(base, TOKEN_X_MINT, TOKEN_Y_MINT, 0x0100, DLMM_PROGRAM).publicKey(),
+        MeteoraPDAs.permissionLbPairPDA(base, TOKEN_X_MINT, TOKEN_Y_MINT, 0x0001, DLMM_PROGRAM).publicKey()
+    );
+  }
+
+  @Test
+  void presetParameterPDABindsTheIndex() {
+    final var preset = MeteoraPDAs.presetParameterPDA(3, DLMM_PROGRAM);
+    assertEquals(preset.publicKey(), MeteoraPDAs.presetParameterPDA(3, DLMM_PROGRAM).publicKey());
+    assertNotEquals(preset.publicKey(), MeteoraPDAs.presetParameterPDA(4, DLMM_PROGRAM).publicKey());
+    assertNotEquals(preset.publicKey(), MeteoraPDAs.presetParameterPDA(0, DLMM_PROGRAM).publicKey(),
+        "a dropped index encoding collapses every index onto zero");
+    assertNotEquals(
+        MeteoraPDAs.presetParameterPDA(0x0100, DLMM_PROGRAM).publicKey(),
+        MeteoraPDAs.presetParameterPDA(0x0001, DLMM_PROGRAM).publicKey(),
+        "the u16 encodes little-endian, so the high byte must land in the second slot"
+    );
+  }
+
+  @Test
+  void lbPairWithPresetParamIsMintOrderInvariantAndBindsThePreset() {
+    final var preset = MeteoraPDAs.presetParameterPDA(3, DLMM_PROGRAM).publicKey();
+    final var pair = MeteoraPDAs.lbPairWithPresetParamPDA(preset, TOKEN_X_MINT, TOKEN_Y_MINT, DLMM_PROGRAM);
+    assertEquals(
+        pair.publicKey(),
+        MeteoraPDAs.lbPairWithPresetParamPDA(preset, TOKEN_Y_MINT, TOKEN_X_MINT, DLMM_PROGRAM).publicKey()
+    );
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.lbPairWithPresetParamPDA(LB_PAIR, TOKEN_X_MINT, TOKEN_Y_MINT, DLMM_PROGRAM).publicKey()
+    );
+    assertNotEquals(
+        pair.publicKey(),
+        MeteoraPDAs.lbPairWithPresetParamPDA(preset, TOKEN_X_MINT, RESERVE_X, DLMM_PROGRAM).publicKey()
     );
   }
 }

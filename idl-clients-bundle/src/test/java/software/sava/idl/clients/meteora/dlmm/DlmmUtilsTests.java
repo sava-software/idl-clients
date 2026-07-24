@@ -191,6 +191,23 @@ final class DlmmUtilsTests {
     assertEquals(new BigInteger("4215778900974969"), DlmmUtils.getPriceFromId(lbPair, -8388));
   }
 
+  /// The LbPair overload reads the pair's own bin step, and the binStep-taking
+  /// binPrice computes the base itself — both must agree with the explicit
+  /// base-first forms.
+  @Test
+  void lbPairAndBinStepOverloadsDelegate() {
+    final var lbPair = lbPair(staticParameters(10_000, 40_000, 500, 0), 0, 25, new long[16]);
+    assertEquals(DlmmUtils.binStepBase(25), DlmmUtils.binStepBase(lbPair));
+    assertNotEquals(DlmmUtils.binStepBase(10), DlmmUtils.binStepBase(lbPair),
+        "the pair's own bin step participates");
+
+    final var mathContext = MathContext.DECIMAL64;
+    assertEquals(
+        DlmmUtils.binPrice(DlmmUtils.binStepBase(25), 7, 3, mathContext),
+        DlmmUtils.binPrice(25, 7, 3, mathContext)
+    );
+  }
+
   @Test
   void getPriceFromIdMatchesBinPriceOracle() {
     // The already-tested BigDecimal binPrice path serves as an independent oracle. The fixed-point

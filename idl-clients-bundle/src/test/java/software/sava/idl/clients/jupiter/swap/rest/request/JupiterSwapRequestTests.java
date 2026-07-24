@@ -211,6 +211,10 @@ final class JupiterSwapRequestTests {
     // the shared object from their lookalikes inside the entries.
     final String expectedObject = "\"prioritizationFeeLamports\":{" + fee.toJson() + "," + tip.toJson() + '}';
     assertTrue(both.contains(expectedObject), both);
+
+    // fee alone: no separator — a stray trailing comma is invalid JSON
+    assertTrue(feeOnly.contains("\"prioritizationFeeLamports\":{" + fee.toJson() + '}'), feeOnly);
+    assertTrue(tipOnly.contains("\"prioritizationFeeLamports\":{" + tip.toJson() + '}'), tipOnly);
   }
 
   /// Every setter round-trips through the record, so a builder that drops a
@@ -261,5 +265,49 @@ final class JupiterSwapRequestTests {
     assertTrue(builder.wrapAndUnwrapSol(), "defaults visible through the builder too");
     assertTrue(builder.useSharedAccounts());
     assertTrue(builder.skipUserAccountsRpcCalls());
+
+    // every remaining accessor, on a builder where each field differs from its
+    // default — including the true-by-default booleans read back as false
+    final var full = JupiterSwapRequest.buildRequest()
+        .payer(PAYER)
+        .trackingAccount(TRACKING)
+        .prioritizationFeeLamports(fee)
+        .jitoTip(tip)
+        .asLegacyTransaction(true)
+        .destinationTokenAccount(DESTINATION)
+        .nativeDestinationAccount(NATIVE_DESTINATION)
+        .dynamicComputeUnitLimit(true)
+        .computeUnitPriceMicroLamports(7)
+        .blockhashSlotsToExpiry(42)
+        .wrapAndUnwrapSol(false)
+        .useSharedAccounts(false)
+        .skipUserAccountsRpcCalls(false);
+    assertEquals(PAYER, full.payer());
+    assertEquals(TRACKING, full.trackingAccount());
+    assertEquals(fee, full.prioritizationFeeLamports());
+    assertEquals(tip, full.jitoTip());
+    assertTrue(full.asLegacyTransaction());
+    assertEquals(DESTINATION, full.destinationTokenAccount());
+    assertEquals(NATIVE_DESTINATION, full.nativeDestinationAccount());
+    assertTrue(full.dynamicComputeUnitLimit());
+    assertEquals(7, full.computeUnitPriceMicroLamports());
+    assertEquals(42, full.blockhashSlotsToExpiry());
+    assertFalse(full.wrapAndUnwrapSol());
+    assertFalse(full.useSharedAccounts());
+    assertFalse(full.skipUserAccountsRpcCalls());
+    assertFalse(JupiterSwapRequest.buildRequest().asLegacyTransaction());
+    assertFalse(JupiterSwapRequest.buildRequest().dynamicComputeUnitLimit());
+  }
+
+  /// The tip renders under two different field names — payer-less lamports, or
+  /// lamports with an explicit payer — and never a null payer.
+  @Test
+  void jitoTipRendersWithAndWithoutPayer() {
+    assertEquals("""
+        "jitoTipLamports": {"lamports": 50000}
+        """, new JitoTip(50_000L, null).toJson());
+    assertEquals("""
+        "jitoTipLamportsWithPayer": {"lamports": 50000, "payer": "%s"}
+        """.formatted(PAYER), new JitoTip(50_000L, PAYER).toJson());
   }
 }
