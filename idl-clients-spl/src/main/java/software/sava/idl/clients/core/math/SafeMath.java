@@ -30,9 +30,14 @@ import java.math.BigInteger;
 /// part of decoding it — not an arithmetic one.
 ///
 /// Raw little-endian decoding is likewise `ByteUtil`'s, publicly for `u128` and
-/// `u256`; a width the public API does not yet cover (a `u192` pod decimal) is
-/// zero-extended into the next width up rather than re-implemented — a second
-/// decoder in a second module is how the two helpers drift.
+/// `u256`, and there is deliberately **no** decoding method here to go looking
+/// for. A width the public API does not yet cover — a `u192` pod decimal — is
+/// the caller's job to zero-extend: copy the bytes into a buffer of the next
+/// covered width and read that, since a little-endian value zero-extended into
+/// a wider field is the same number. Do not add the missing width here. This
+/// class once carried such a decoder; it was removed because a second decoder
+/// in a second module is how the two drift, and the width belongs to `ByteUtil`
+/// whenever its own reader is opened up.
 ///
 /// There is deliberately **no** signed-to-unsigned `u128` reinterpretation
 /// helper. Generated readers decode `u128` fields with `getUInt128LE`, so a
