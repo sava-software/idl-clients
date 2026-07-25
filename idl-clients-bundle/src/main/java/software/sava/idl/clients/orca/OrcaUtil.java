@@ -580,7 +580,7 @@ public final class OrcaUtil {
       final int mask = 2 << i; // 2, 4, 8, ..., 262144
       if ((tick & mask) != 0) {
         // mul_shift_96: (ratio * factor) >> 96, truncated to u128.
-        ratio = ratio.multiply(POS_FACTORS[i]).shiftRight(96).and(U128_MASK);
+        ratio = SafeMath.mulShiftTruncateU128(ratio, POS_FACTORS[i], 96);
       }
     }
     return ratio.shiftRight(32);
@@ -593,7 +593,7 @@ public final class OrcaUtil {
       final int mask = 2 << i;
       if ((absTick & mask) != 0) {
         // (ratio * factor) >> 64, truncated to u128.
-        ratio = ratio.multiply(NEG_FACTORS[i]).shiftRight(64).and(U128_MASK);
+        ratio = SafeMath.mulShiftTruncateU128(ratio, NEG_FACTORS[i], 64);
       }
     }
     return ratio;
@@ -801,14 +801,8 @@ public final class OrcaUtil {
     requireU128(liquidity, "liquidity");
     final BigInteger[] ordered = orderPrices(sqrtPrice1, sqrtPrice2);
     final BigInteger sqrtPriceDiff = ordered[1].subtract(ordered[0]);
-    final BigInteger product = liquidity.multiply(sqrtPriceDiff);
-    BigInteger quotient = product.shiftRight(64);
-    // round when low-64 bits are non-zero (product & u64::MAX > 0).
-    final boolean shouldRound = roundUp && product.and(SafeMath.U64_MAX).signum() > 0;
-    if (shouldRound) {
-      quotient = quotient.add(BigInteger.ONE);
-    }
-    return quotient;
+    // rounds up when any of the shifted-out low 64 bits is set
+    return SafeMath.mulShiftRight(liquidity, sqrtPriceDiff, 64, roundUp);
   }
 
   private static BigInteger requireSqrtPriceBounds(final BigInteger result) {

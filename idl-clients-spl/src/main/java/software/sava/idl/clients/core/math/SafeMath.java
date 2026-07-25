@@ -84,16 +84,121 @@ public final class SafeMath {
   /// was read from. Deliberately not `longValueExact`, which throws for the
   /// perfectly valid `u64` range `[2^63, 2^64)`.
   public static long toU64(final BigInteger value) {
-    if (value.signum() < 0 || value.compareTo(U64_MAX) > 0) {
+    // A negative does not "exceed" anything, and saying so sends the reader
+    // looking for an overflow that is not there. The two are different
+    // diagnoses: one means the arithmetic went below zero, the other that it
+    // outgrew the field.
+    if (value.signum() < 0) {
+      throw new ArithmeticException("amount is negative, not a u64: " + value);
+    }
+    if (value.compareTo(U64_MAX) > 0) {
       throw new ArithmeticException("amount exceeds u64: " + value);
     }
     return value.longValue();
   }
 
+  /// Narrows an intermediate back to a `u128` field, as Rust's
+  /// `try_into()` does. The counterpart to [#toU64] and, like it, an
+  /// **arithmetic** contract: the operand is a computed result that has to fit,
+  /// so out-of-range throws [ArithmeticException].
+  ///
+  /// Not to be confused with validating a caller-supplied argument, which is an
+  /// [IllegalArgumentException] contract and stays with the API that takes the
+  /// argument — `OrcaUtil.requireU128` looks like a duplicate of this method and
+  /// is deliberately not one.
+  public static BigInteger toU128(final BigInteger value) {
+    if (value.signum() < 0) {
+      throw new ArithmeticException("amount is negative, not a u128: " + value);
+    }
+    if (value.compareTo(U128_MASK) > 0) {
+      throw new ArithmeticException("amount exceeds u128: " + value);
+    }
+    return value;
+  }
+
   /// `a.checked_add(b)` over `u64`: both operands are unsigned bit patterns,
   /// and a sum that will not fit throws rather than wrapping.
+  ///
+  /// Computed in `long`, not through [BigInteger]: the wrapped sum is below
+  /// either operand exactly when the true sum overflowed, which is the standard
+  /// unsigned carry test. The allocating form would undo the fast path
+  /// [#toUnsignedBigInteger] exists to preserve.
   public static long checkedAddU64(final long a, final long b) {
-    return toU64(toUnsignedBigInteger(a).add(toUnsignedBigInteger(b)));
+    final long sum = a + b;
+    if (Long.compareUnsigned(sum, a) < 0) {
+      throw new ArithmeticException(
+          "sum exceeds u64: " + Long.toUnsignedString(a) + " + " + Long.toUnsignedString(b));
+    }
+    return sum;
+  }
+
+  /// `a.checked_sub(b)` over `u64`: an unsigned difference that would go below
+  /// zero throws rather than wrapping to a huge value.
+  ///
+  /// The counterpart to [#checkedAddU64], and the one that actually bites:
+  /// subtraction is where an unsigned underflow turns a small negative into
+  /// something near `2^64`, which downstream reads as a real balance.
+  public static long checkedSubU64(final long a, final long b) {
+    if (Long.compareUnsigned(a, b) < 0) {
+      throw new ArithmeticException(
+          "difference is negative, not a u64: " + Long.toUnsignedString(a) + " - " + Long.toUnsignedString(b));
+    }
+    return a - b;
+  }
+
+  /// `a.saturating_sub(b)` over `u64`: an underflow clamps to zero instead of
+  /// throwing, matching the Rust operator of that name.
+  public static long saturatingSubU64(final long a, final long b) {
+    return Long.compareUnsigned(a, b) < 0 ? 0L : a - b;
+  }
+
+  /// `a.checked_mul(b).checked_div(c)` over `u64` with the product computed at
+  /// full width, as Rust's `checked_mul_div` helpers do: the intermediate is
+  /// allowed to exceed `u64` so long as the quotient does not.
+  ///
+  /// Rounds toward zero, like integer division on chain. Division by zero
+  /// throws [ArithmeticException] rather than returning a sentinel — a zero
+  /// denominator here is a liquidity or supply that should have been checked.
+  public static long mulDivU64(final long a, final long b, final long c) {
+    final var denominator = toUnsignedBigInteger(c);
+    if (denominator.signum() == 0) {
+      throw new ArithmeticException("mulDiv denominator is zero");
+    }
+    return toU64(toUnsignedBigInteger(a).multiply(toUnsignedBigInteger(b)).divide(denominator));
+  }
+
+  /// `a.wrapping_add(b)` over `u128`, the counterpart to [#wrappingSubU128]:
+  /// a sum past `u128::MAX` truncates rather than widening, which is how an
+  /// on-chain growth accumulator is defined to roll over.
+  public static BigInteger wrappingAddU128(final BigInteger a, final BigInteger b) {
+    return a.add(b).and(U128_MASK);
+  }
+
+  /// `(a * b) >> shift`, optionally rounding up when any bit is shifted out —
+  /// Rust's `checked_mul_shift_right` family, the Q64.64 arithmetic every
+  /// concentrated-liquidity program is written in.
+  ///
+  /// The product is not truncated: callers narrow with [#toU64] or [#toU128]
+  /// according to the field they are writing back to, because the same shift
+  /// feeds both an uncapped result and an `as u64` cast depending on the
+  /// caller.
+  public static BigInteger mulShiftRight(final BigInteger a,
+                                         final BigInteger b,
+                                         final int shift,
+                                         final boolean roundUp) {
+    final var product = a.multiply(b);
+    final var quotient = product.shiftRight(shift);
+    if (roundUp && product.and(BigInteger.ONE.shiftLeft(shift).subtract(BigInteger.ONE)).signum() > 0) {
+      return quotient.add(BigInteger.ONE);
+    }
+    return quotient;
+  }
+
+  /// `(a * b) >> shift` truncated to `u128`, mirroring a Rust fixed-point step
+  /// whose intermediate is a `u128` register: the high bits are discarded, not
+  /// carried.
+  public static BigInteger mulShiftTruncateU128(final BigInteger a, final BigInteger b, final int shift) {
+    return a.multiply(b).shiftRight(shift).and(U128_MASK);
   }
 
   /// `a.wrapping_sub(b)` over `u128`, matching on-chain Rust accumulator

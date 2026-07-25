@@ -213,7 +213,7 @@ public final class DlmmUtils {
     // 19 binary-expansion steps (matches Rust loop unrolled in u64x64_math::pow).
     for (int bit = 0; bit < 19; bit++) {
       if (bit > 0) {
-        squaredBase = squaredBase.multiply(squaredBase).shiftRight(Q64X64_SCALE_OFFSET).and(U128_MASK);
+        squaredBase = SafeMath.mulShiftTruncateU128(squaredBase, squaredBase, Q64X64_SCALE_OFFSET);
       }
       if ((e & (1 << bit)) != 0) {
         result = result.multiply(squaredBase).shiftRight(Q64X64_SCALE_OFFSET).and(U128_MASK);

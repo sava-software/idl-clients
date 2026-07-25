@@ -108,4 +108,95 @@ final class SafeMathTests {
     assertEquals(TWO_POW_64.subtract(BigInteger.ONE), SafeMath.U64_MAX);
     assertEquals(TWO_POW_128.subtract(BigInteger.ONE), SafeMath.U128_MASK);
   }
+
+
+  @Test
+  void checkedSubTreatsBothOperandsAsUnsigned() {
+    assertEquals(3L, SafeMath.checkedSubU64(5L, 2L));
+    assertEquals(0L, SafeMath.checkedSubU64(7L, 7L));
+    // -1 is u64::MAX, so the difference is a valid u64 the signed view calls negative
+    assertEquals(-2L, SafeMath.checkedSubU64(-1L, 1L));
+    assertEquals("18446744073709551614", Long.toUnsignedString(SafeMath.checkedSubU64(-1L, 1L)));
+    // an unsigned underflow is the case that must not wrap to a huge balance
+    assertThrows(ArithmeticException.class, () -> SafeMath.checkedSubU64(1L, 2L));
+    assertThrows(ArithmeticException.class, () -> SafeMath.checkedSubU64(1L, -1L));
+  }
+
+  @Test
+  void saturatingSubClampsInsteadOfThrowing() {
+    assertEquals(3L, SafeMath.saturatingSubU64(5L, 2L));
+    assertEquals(0L, SafeMath.saturatingSubU64(1L, 2L));
+    assertEquals(0L, SafeMath.saturatingSubU64(1L, -1L), "b is u64::MAX, so the difference clamps");
+    assertEquals(-2L, SafeMath.saturatingSubU64(-1L, 1L));
+  }
+
+  @Test
+  void mulDivComputesTheProductAtFullWidth() {
+    assertEquals(50L, SafeMath.mulDivU64(10L, 20L, 4L));
+    // the intermediate exceeds u64 while the quotient does not: 2^63 * 4 / 8 = 2^62
+    assertEquals(1L << 62, SafeMath.mulDivU64(1L << 63, 4L, 8L));
+    // truncates toward zero, like integer division on chain
+    assertEquals(3L, SafeMath.mulDivU64(10L, 1L, 3L));
+    // operands are unsigned: u64::MAX * 1 / 1 round-trips
+    assertEquals(-1L, SafeMath.mulDivU64(-1L, 1L, 1L));
+    assertThrows(ArithmeticException.class, () -> SafeMath.mulDivU64(10L, 20L, 0L));
+    // a quotient past u64 is an error, not a truncation
+    assertThrows(ArithmeticException.class, () -> SafeMath.mulDivU64(-1L, 4L, 1L));
+  }
+
+  @Test
+  void wrappingAddTruncatesAtTwoPow128() {
+    final var max = SafeMath.U128_MASK;
+    assertEquals(BigInteger.valueOf(5), SafeMath.wrappingAddU128(BigInteger.TWO, BigInteger.valueOf(3)));
+    assertEquals(BigInteger.ZERO, SafeMath.wrappingAddU128(max, BigInteger.ONE), "u128::MAX + 1 rolls to zero");
+    assertEquals(BigInteger.ONE, SafeMath.wrappingAddU128(max, BigInteger.TWO));
+    // the inverse of wrappingSubU128 across the boundary
+    assertEquals(max, SafeMath.wrappingSubU128(SafeMath.wrappingAddU128(max, BigInteger.ONE), BigInteger.ONE));
+  }
+
+  @Test
+  void mulShiftRightRoundsOnlyWhenBitsAreDiscarded() {
+    final var q64 = BigInteger.ONE.shiftLeft(64);
+    // exact: nothing is shifted out, so roundUp cannot change the result
+    assertEquals(BigInteger.valueOf(3), SafeMath.mulShiftRight(BigInteger.valueOf(3), q64, 64, false));
+    assertEquals(BigInteger.valueOf(3), SafeMath.mulShiftRight(BigInteger.valueOf(3), q64, 64, true));
+    // inexact: exactly one ulp of difference between the two directions
+    final var inexact = q64.add(BigInteger.ONE);
+    assertEquals(BigInteger.ONE, SafeMath.mulShiftRight(inexact, BigInteger.ONE, 64, false));
+    assertEquals(BigInteger.TWO, SafeMath.mulShiftRight(inexact, BigInteger.ONE, 64, true));
+    // the product is NOT truncated — callers narrow deliberately
+    assertEquals(q64, SafeMath.mulShiftRight(q64.multiply(q64), BigInteger.ONE, 64, false));
+  }
+
+  @Test
+  void mulShiftTruncateDiscardsTheHighBits() {
+    final var max = SafeMath.U128_MASK;
+    assertEquals(BigInteger.valueOf(6), SafeMath.mulShiftTruncateU128(BigInteger.valueOf(3), BigInteger.valueOf(4), 1));
+    // a product wider than u128 keeps only the low 128 bits after the shift
+    final var wide = SafeMath.mulShiftTruncateU128(max, max, 0);
+    assertEquals(BigInteger.ONE, wide, "(2^128-1)^2 mod 2^128 == 1");
+    assertTrue(wide.compareTo(max) <= 0, "result must always fit u128");
+  }
+
+  @Test
+  void toU128NarrowsAndRejectsBothSides() {
+    final var max = SafeMath.U128_MASK;
+    assertEquals(BigInteger.ZERO, SafeMath.toU128(BigInteger.ZERO));
+    assertSame(max, SafeMath.toU128(max));
+    assertThrows(ArithmeticException.class, () -> SafeMath.toU128(BigInteger.valueOf(-1)));
+    assertThrows(ArithmeticException.class, () -> SafeMath.toU128(max.add(BigInteger.ONE)));
+  }
+
+  @Test
+  void rangeFailuresNameWhichSideWasViolated() {
+    // a negative does not "exceed" the field; sending the reader after an
+    // overflow that never happened is the whole reason these differ
+    final var negative = assertThrows(ArithmeticException.class,
+        () -> SafeMath.toU64(BigInteger.valueOf(-1)));
+    assertTrue(negative.getMessage().contains("negative"), negative.getMessage());
+
+    final var tooBig = assertThrows(ArithmeticException.class,
+        () -> SafeMath.toU64(SafeMath.U64_MAX.add(BigInteger.ONE)));
+    assertTrue(tooBig.getMessage().contains("exceeds"), tooBig.getMessage());
+  }
 }
