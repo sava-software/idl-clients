@@ -1,5 +1,22 @@
 # Changelog
 
+## [25.18.3](https://github.com/sava-software/idl-clients/compare/25.18.2...25.18.3) (2026-07-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* **idl:** Generated uppercase constants with numbers now properly reflect the variable name they are referring to.
+
+### Features
+
+* **math:** add and integrate additional u64/u128 arithmetic utilities ([f3f4a01](https://github.com/sava-software/idl-clients/commit/f3f4a01cf628b6767583ca86c01423263107c092))
+* **math:** enhance and integrate u64/u128 arithmetic utilities ([3d0a663](https://github.com/sava-software/idl-clients/commit/3d0a663b0268ad82b0ef617aa5769fab393aff51))
+
+
+### Code Refactoring
+
+* **idl:** Regenerate with fixed snake case number handling. ([d2afd97](https://github.com/sava-software/idl-clients/commit/d2afd97df7b7a16f01df6190d1d5506e5f93460c))
+
 ## [25.18.2](https://github.com/sava-software/idl-clients/compare/25.18.1...25.18.2) (2026-07-24)
 
 
