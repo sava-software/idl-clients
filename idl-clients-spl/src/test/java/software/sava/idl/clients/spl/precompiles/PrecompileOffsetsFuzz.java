@@ -14,7 +14,8 @@ import java.util.Arrays;
 /// element re-derives from its own computed offset.
 ///
 /// The header count is a single byte (max 255) with fixed 11/14-byte records, so the whole
-/// input space is reachable from scratch; no seed corpus is needed.
+/// input space is reachable from scratch — the committed corpus is not a bootstrap but the
+/// slot a finding lands in, replayed by `check` (see the corpus README).
 ///
 /// Deliberately free of Jazzer imports so it compiles with the regular test sources.
 ///

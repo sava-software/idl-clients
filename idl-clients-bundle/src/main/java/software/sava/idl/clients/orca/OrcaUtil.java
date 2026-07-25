@@ -2,6 +2,7 @@ package software.sava.idl.clients.orca;
 
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.orca.whirlpools.gen.WhirlpoolPDAs;
 
@@ -278,25 +279,8 @@ public final class OrcaUtil {
   /// `Whirlpool.protocol_fee_rate` semantics).
   public static final int FEE_RATE_DENOMINATOR = 1_000_000;
 
-  private static final BigInteger U64_MAX = BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE);
   private static final BigInteger BPS_DENOMINATOR_BI = BigInteger.valueOf(BPS_DENOMINATOR);
   private static final BigInteger FEE_RATE_DENOMINATOR_BI = BigInteger.valueOf(FEE_RATE_DENOMINATOR);
-
-  private static BigInteger u64(final long unsignedAmount) {
-    final var bi = new BigInteger(Long.toUnsignedString(unsignedAmount));
-    if (bi.compareTo(U64_MAX) > 0) {
-      throw new ArithmeticException("amount exceeds u64: " + bi);
-    }
-    return bi;
-  }
-
-  private static long toU64(final BigInteger value) {
-    if (value.signum() < 0 || value.compareTo(U64_MAX) > 0) {
-      throw new ArithmeticException("amount exceeds u64: " + value);
-    }
-    // longValueExact would reject the valid u64 range above Long.MAX_VALUE
-    return value.longValue(); // returns as unsigned long bits
-  }
 
   private static long mulDivU64(final long amount,
                                 final BigInteger numeratorFactor,
@@ -305,12 +289,12 @@ public final class OrcaUtil {
     if (amount == 0L || numeratorFactor.signum() == 0) {
       return 0L;
     }
-    final var numerator = u64(amount).multiply(numeratorFactor);
+    final var numerator = SafeMath.toUnsignedBigInteger(amount).multiply(numeratorFactor);
     var quotient = numerator.divide(denominator);
     if (roundUp && numerator.mod(denominator).signum() != 0) {
       quotient = quotient.add(BigInteger.ONE);
     }
-    return toU64(quotient);
+    return SafeMath.toU64(quotient);
   }
 
   /// Apply a swap fee to `amount`. `feeRate` is in 1e-6 units (i.e.
@@ -344,14 +328,14 @@ public final class OrcaUtil {
     if (feeBps == 0 || amount == 0L) {
       return amount;
     }
-    final var amountBi = u64(amount);
+    final var amountBi = SafeMath.toUnsignedBigInteger(amount);
     final var numerator = amountBi.multiply(BigInteger.valueOf(feeBps));
     // div_ceil
     final var rawFee = numerator.add(BPS_DENOMINATOR_BI.subtract(BigInteger.ONE))
         .divide(BPS_DENOMINATOR_BI);
-    final var maxFeeBi = u64(maxFee);
+    final var maxFeeBi = SafeMath.toUnsignedBigInteger(maxFee);
     final var feeAmount = rawFee.min(maxFeeBi);
-    return toU64(amountBi.subtract(feeAmount));
+    return SafeMath.toU64(amountBi.subtract(feeAmount));
   }
 
   /// Inverse of [#applyTransferFee(long, int, long)] — given the post-fee
@@ -367,10 +351,10 @@ public final class OrcaUtil {
     if (amount == 0L) {
       return 0L;
     }
-    final var amountBi = u64(amount);
-    final var maxFeeBi = u64(maxFee);
+    final var amountBi = SafeMath.toUnsignedBigInteger(amount);
+    final var maxFeeBi = SafeMath.toUnsignedBigInteger(maxFee);
     if (feeBps == BPS_DENOMINATOR) {
-      return toU64(amountBi.add(maxFeeBi));
+      return SafeMath.toU64(amountBi.add(maxFeeBi));
     }
     final var numerator = amountBi.multiply(BPS_DENOMINATOR_BI);
     final var denominator = BPS_DENOMINATOR_BI.subtract(BigInteger.valueOf(feeBps));
@@ -378,9 +362,9 @@ public final class OrcaUtil {
     final var rawPreFee = numerator.add(denominator.subtract(BigInteger.ONE)).divide(denominator);
     final var feeAmount = rawPreFee.subtract(amountBi);
     if (feeAmount.compareTo(maxFeeBi) >= 0) {
-      return toU64(amountBi.add(maxFeeBi));
+      return SafeMath.toU64(amountBi.add(maxFeeBi));
     }
-    return toU64(rawPreFee);
+    return SafeMath.toU64(rawPreFee);
   }
 
   /// Maximum amount the caller might end up sending given an estimate and a
@@ -540,7 +524,7 @@ public final class OrcaUtil {
 
   /// u128 bit mask (`2^128 - 1`). Exposed for the `quote/` helpers that need
   /// to model Rust `wrapping_sub` on u128.
-  public static final BigInteger U128_MASK = BigInteger.ONE.shiftLeft(128).subtract(BigInteger.ONE);
+  public static final BigInteger U128_MASK = SafeMath.U128_MASK;
 
   // Positive-tick magic constants (U256 multiplicands; rounded with >> 96 by mul_shift_96).
   private static final BigInteger POS_BASE_EVEN = new BigInteger("79228162514264337593543950336");
@@ -820,7 +804,7 @@ public final class OrcaUtil {
     final BigInteger product = liquidity.multiply(sqrtPriceDiff);
     BigInteger quotient = product.shiftRight(64);
     // round when low-64 bits are non-zero (product & u64::MAX > 0).
-    final boolean shouldRound = roundUp && product.and(U64_MAX).signum() > 0;
+    final boolean shouldRound = roundUp && product.and(SafeMath.U64_MAX).signum() > 0;
     if (shouldRound) {
       quotient = quotient.add(BigInteger.ONE);
     }
@@ -844,7 +828,7 @@ public final class OrcaUtil {
                                                     final boolean specifiedInput) {
     requireU128(currentSqrtPrice, "currentSqrtPrice");
     requireU128(currentLiquidity, "currentLiquidity");
-    final BigInteger amountBi = u64(amount);
+    final BigInteger amountBi = SafeMath.toUnsignedBigInteger(amount);
     if (amountBi.signum() == 0) {
       return currentSqrtPrice;
     }
@@ -874,7 +858,7 @@ public final class OrcaUtil {
                                                     final boolean specifiedInput) {
     requireU128(currentSqrtPrice, "currentSqrtPrice");
     requireU128(currentLiquidity, "currentLiquidity");
-    final BigInteger amountBi = u64(amount);
+    final BigInteger amountBi = SafeMath.toUnsignedBigInteger(amount);
     if (amountBi.signum() == 0) {
       return currentSqrtPrice;
     }

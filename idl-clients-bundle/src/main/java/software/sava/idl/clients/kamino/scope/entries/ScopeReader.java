@@ -1,6 +1,7 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OraclePrices;
@@ -37,9 +38,7 @@ public interface ScopeReader {
   static BigDecimal scaleScopePrice(final DatedPrice datedPrice) {
     final var scaledPrice = datedPrice.price();
     final long val = scaledPrice.value();
-    final var price = val < 0
-        ? new BigDecimal(Long.toUnsignedString(val))
-        : new BigDecimal(val);
+    final var price = SafeMath.toUnsignedBigDecimal(val);
     // scaleByPowerOfTen, not movePointLeft: movePointLeft normalizes a negative
     // resulting scale through setScale(0), materializing val*10^|exp| — a hostile
     // exp inflates that into a billion-digit BigInteger (see FixedPrice.createEntry)
@@ -52,9 +51,7 @@ public interface ScopeReader {
     if (val == 0) {
       return BigDecimal.ZERO;
     } else {
-      final var price = val < 0
-          ? new BigDecimal(Long.toUnsignedString(val))
-          : new BigDecimal(val);
+      final var price = SafeMath.toUnsignedBigDecimal(val);
       final long exp = ByteUtil.getInt64LE(oraclePricesData, offset + Long.BYTES);
       return price.scaleByPowerOfTen(Math.toIntExact(-exp));
     }

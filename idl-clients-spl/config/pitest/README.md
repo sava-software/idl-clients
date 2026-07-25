@@ -40,9 +40,29 @@ would make the baseline machine-dependent.
 
 ## Mutator set
 
-`STRONGER,EXPERIMENTAL_NAKED_RECEIVER`. `EXPERIMENTAL_BIG_INTEGER` is
-deliberately off: it fires zero times in this module (742 mutations with and
-without, measured 2026-07-20 — see the bundle README for the method).
+`STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER`.
+
+`EXPERIMENTAL_BIG_INTEGER` was off until 2026-07-25, correctly: it fired zero
+times when measured 2026-07-20 (742 mutations with and without). It fires now
+because `core.math.SafeMath` arrived — the u64/u128 helpers are `BigInteger` method
+calls, which `MathMutator` (primitive bytecode ops) cannot see. Re-trialed
+2026-07-25 with sava-build 21.5.14's blind-spot advice: **3 generated, 3 killed
+by existing tests, 0 unkilled** — after the consolidation the same three sit at
+`checkedAddU64` line 93 and `wrappingSubU128` lines 100-101, all killed by
+`SafeMathTests`. Enabled at zero baseline cost. The lesson is the mechanism's,
+not the module's: a measured "fires zero times" decays as code is added, and
+only a per-run scan notices.
+
+`EXPERIMENTAL_BIG_DECIMAL` is declined on the suite (`declineMutator` in
+`build.gradle.kts`), which is what silences the advice for the four
+`BigDecimal` arithmetic call sites the scan sees. Trialed 2026-07-25:
+**0 generated**. It rewrites only `(BigDecimal)BigDecimal` arithmetic, and
+every one of those sites is a `divide(BigDecimal, MathContext)` or
+`divide(BigDecimal, int, RoundingMode)` overload in
+`StakePoolState.calculateSolPrice` / `Fee.toRatio`, which it does not rewrite.
+Those four sites are covered instead by `EXPERIMENTAL_NAKED_RECEIVER` (the
+dropped `stripTrailingZeros` family below) and by `StakePoolStateTests`'
+exact-value assertions.
 
 `EXPERIMENTAL_NAKED_RECEIVER` (replace a fluent call with its receiver — calls
 returning their own receiver type are expressions, invisible to
@@ -67,18 +87,32 @@ whose division leaves trailing zeros (`StakePoolStateTests.feeToRatio`,
 | 2026-07-19 | 7 | 2 | 5 | 735/742 (99%) | 99% |
 | 2026-07-23 | 7 | 2 | 5 | 754/761 (99%) | 99% |
 | 2026-07-24 | 5 | 0 | 5 | 756/761 (99%) | 99% |
+| 2026-07-25 | 5 | 0 | 5 | 778/783 (99%) | 99% |
+| 2026-07-25 | 9 | 0 | 9 | 778/787 (99%) | 99% |
 
 The 2026-07-23 row is the `EXPERIMENTAL_NAKED_RECEIVER` intake (below): +19
 mutants, all four initial survivors killed, baseline unchanged.
 
+The first 2026-07-25 row is `core.math.SafeMath` arriving with its tests, plus the
+`EXPERIMENTAL_BIG_INTEGER` intake it triggered: +22 mutants (19 `STRONGER` /
+`NAKED_RECEIVER`, 3 `BIG_INTEGER`), all 22 killed, baseline unchanged.
+
+The second is the u64-helper consolidation: `toU64`, the unsigned widening,
+`wrappingSubU128` and the `U64_MAX` / `U128_MASK` constants moved out of
+`OrcaUtil`, `WhirlpoolQuote`, `DlmmUtils` and the scope/oracle readers into
+`SafeMath`. This suite absorbs the moved population (+4 rows, the fast-path
+guard argued below) while `orca` loses 3, `scope` 6 and `clients` 2 — 143
+accepted rows across the four suites became 136.
+
 The baseline was seeded with the full pre-existing survivor population when the
 ratchet was adopted, per HARDENING.md's adoption path — triage debt made
 explicit, not acceptance. **That debt is now discharged.** All three priorities
-below were worked down; every one of the 7 remaining rows is analyzed:
+below were worked down; every one of the 9 remaining rows is analyzed:
 
 | Rows | Group | Status |
 |---|---|---|
 | 5 | Redundant zero short-circuits | equivalent — accepted, reasoned below |
+| 4 | Unsigned-widening fast path | equivalent — accepted, reasoned below |
 
 The two RPC fetchers (`fetchProgramState` / `fetchValidatorList`) were
 covered 2026-07-24 by `StakePoolRpcFetcherTests` against an in-JVM JSON-RPC
@@ -165,18 +199,22 @@ written here.
 ## Triaged equivalent mutants (accepted with reasons)
 
 Rows are labeled per the sava-build convention (the verify resolves each
-label by searching this file for its literal text): `# zero-fast-path family`
-marks the five redundant zero short-circuits argued below.
+label by searching this file for its literal text):
+
+| Label | Rows | Argument |
+|---|---|---|
+| `# zero-fast-path family` | 5 | redundant zero short-circuits in front of a division |
+| `# fast-path-guard family` | 4 | a guard choosing the cheaper of two identical computations |
 
 ### Redundant zero short-circuits in front of a division (5 mutants)
 
 | Class | Method | Line |
 |---|---|---|
-| `stakepool.StakePoolState$Fee` | `toRatio(MathContext)` | 225 |
-| `stakepool.StakePoolState$Fee` | `toRatio(int, RoundingMode)` | 230 |
-| `stakepool.StakePoolState$Fee` | `toRatio()` | 235 |
-| `stakepool.StakePoolState` | `calculateSolPrice(MathContext)` | 67 |
-| `stakepool.StakePoolState` | `calculateSolPrice(int, RoundingMode)` | 73 |
+| `stakepool.StakePoolState$Fee` | `toRatio(MathContext)` | 226 |
+| `stakepool.StakePoolState$Fee` | `toRatio(int, RoundingMode)` | 231 |
+| `stakepool.StakePoolState$Fee` | `toRatio()` | 236 |
+| `stakepool.StakePoolState` | `calculateSolPrice(MathContext)` | 68 |
+| `stakepool.StakePoolState` | `calculateSolPrice(int, RoundingMode)` | 74 |
 
 All five are `RemoveConditionalMutator_EQUAL_IF` against the **first** clause of
 a two-clause guard: `numerator == 0 || denominator == 0`, and the
@@ -205,3 +243,36 @@ it is a deliberate fast path that avoids `BigDecimal` division and allocation
 for the common zero-fee case, and a mutation score is not a reason to give that
 up. Note the same `numerator == 0` test in `Fee.compareTo` is *not* equivalent —
 there it selects a genuinely different ordering, and it is covered.
+
+### The unsigned-widening fast path (4 mutants)
+
+| Class | Method | Line | Mutators |
+|---|---|---|---|
+| `core.math.SafeMath` | `toUnsignedBigInteger` | 66 | `ConditionalsBoundaryMutator`, `RemoveConditionalMutator_ORDER_IF` |
+| `core.math.SafeMath` | `toUnsignedBigDecimal` | 76 | `ConditionalsBoundaryMutator`, `RemoveConditionalMutator_ORDER_IF` |
+
+Both methods are `value < 0 ? <reinterpret the bits> : <valueOf(value)>`, and
+the two branches **agree on every input the guard can route either way**. The
+`< 0` test is not a correctness branch at all: the reinterpretation is correct
+for non-negative values too, and is merely more expensive, so the guard picks
+the cheaper of two identical answers. Every mutant that widens the negative
+branch is therefore equivalent by construction:
+
+- `ORDER_IF` (always take the reinterpretation) is the unconditional
+  implementation — correct, just slower. Its sibling `ORDER_ELSE` is **not**
+  equivalent and is killed, because `valueOf` on a negative value returns a
+  negative number rather than a `u64`.
+- `ConditionalsBoundaryMutator` (`< 0` becomes `<= 0`) moves only the value
+  `0` across, and both branches return zero there.
+
+This is the structural shape to recognize, because it will recur: a guard
+introduced purely as an optimization, whose arms compute the same value, can
+never be killed from the outside — the only way to make it observable would be
+to make one arm wrong. The alternative is to drop the guard and call
+`ByteUtil.toUnsignedBigInteger` unconditionally, which erases all four rows —
+that was tried on 2026-07-25 and reverted, because it costs an allocation per
+non-negative read on the oracle and pool parsers, and sava-core's own javadoc
+explicitly tells hot callers to keep the guard. Four permanently accepted rows
+is the price of the fast path, recorded here so the trade is not re-litigated
+from the CSV alone. Holding the guard in one place is also what stops each
+parser from open-coding it — this family replaced nine hand-written copies.

@@ -1,6 +1,6 @@
 module software.sava.idl.clients.spl {
   exports software.sava.idl.clients.core.gen;
-  exports software.sava.idl.clients.core;
+  exports software.sava.idl.clients.core.math;
   exports software.sava.idl.clients.spl.associated_token.gen;
   exports software.sava.idl.clients.spl.attestation_service.gen.types;
   exports software.sava.idl.clients.spl.attestation_service.gen;

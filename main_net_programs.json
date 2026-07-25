@@ -172,10 +172,7 @@
           "refProgram": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
           "srcMismatch": "KEEP_LOCAL",
           "matchOnTypeName": true,
-          "excludeTypes": [
-            "GlobalConfig",
-            "TimeUnit"
-          ],
+          "excludeTypes": [],
           "explicitRules": []
         }
       ]

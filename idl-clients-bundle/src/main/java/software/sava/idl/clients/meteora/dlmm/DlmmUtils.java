@@ -1,6 +1,7 @@
 package software.sava.idl.clients.meteora.dlmm;
 
 
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.meteora.dlmm.gen.types.LbPair;
 import software.sava.idl.clients.meteora.dlmm.gen.types.RemainingAccountsInfo;
 import software.sava.idl.clients.meteora.dlmm.gen.types.RemainingAccountsSlice;
@@ -29,7 +30,7 @@ public final class DlmmUtils {
   public static final BigInteger Q64X64_ONE = BigInteger.ONE.shiftLeft(Q64X64_SCALE_OFFSET);
 
   /// `1 << 128 - 1`, mask for the 128-bit truncation applied by u128 arithmetic in Rust.
-  public static final BigInteger U128_MASK = BigInteger.ONE.shiftLeft(128).subtract(BigInteger.ONE);
+  public static final BigInteger U128_MASK = SafeMath.U128_MASK;
 
   /// Maximum exponential supported by [#pow(BigInteger, int)] (matches Rust `MAX_EXPONENTIAL`).
   private static final int Q64X64_MAX_EXPONENTIAL = 0x80000;
@@ -292,7 +293,7 @@ public final class DlmmUtils {
     BigInteger acc = BigInteger.ZERO;
     for (int i = 0; i < limbs.length; i++) {
       // Treat each limb as unsigned u64.
-      final var unsigned = limbs[i] >= 0 ? BigInteger.valueOf(limbs[i]) : BigInteger.valueOf(limbs[i]).add(BigInteger.ONE.shiftLeft(64));
+      final var unsigned = SafeMath.toUnsignedBigInteger(limbs[i]);
       acc = acc.or(unsigned.shiftLeft(i * 64));
     }
     return acc;
@@ -398,7 +399,7 @@ public final class DlmmUtils {
     if (denominator.signum() <= 0) {
       throw new ArithmeticException("Fee denominator underflow");
     }
-    final var amt = BigInteger.valueOf(amount).and(BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE));
+    final var amt = SafeMath.toUnsignedBigInteger(amount);
     final var num = amt.multiply(totalFeeRate).add(denominator).subtract(BigInteger.ONE);
     final var fee = num.divide(denominator);
     if (fee.bitLength() > 63) {
@@ -411,7 +412,7 @@ public final class DlmmUtils {
   /// `LbPairExtension::compute_fee_from_amount`).
   public static long computeFeeFromAmount(final LbPair lbPair, final long amountWithFees) {
     final var totalFeeRate = getTotalFee(lbPair);
-    final var amt = BigInteger.valueOf(amountWithFees).and(BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE));
+    final var amt = SafeMath.toUnsignedBigInteger(amountWithFees);
     final var num = amt.multiply(totalFeeRate).add(BigInteger.valueOf(FEE_DENOMINATOR - 1));
     final var fee = num.divide(BigInteger.valueOf(FEE_DENOMINATOR));
     if (fee.bitLength() > 63) {
@@ -422,7 +423,7 @@ public final class DlmmUtils {
 
   /// Protocol-share split of the fee (`protocol_share * fee / BASIS_POINT_MAX`).
   public static long computeProtocolFee(final LbPair lbPair, final long feeAmount) {
-    final var amt = BigInteger.valueOf(feeAmount).and(BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE));
+    final var amt = SafeMath.toUnsignedBigInteger(feeAmount);
     final var share = BigInteger.valueOf(lbPair.parameters().protocolShare() & 0xFFFFL);
     final var pf = amt.multiply(share).divide(BigInteger.valueOf(BASIS_POINT_MAX));
     if (pf.bitLength() > 63) {

@@ -15,8 +15,21 @@ hardening {
     // instead of silently skipped — the whole module is account encode/decode
     // and instruction building, which is exactly the money-critical shape.
     // NAKED_RECEIVER makes dropped fluent calls (receiver-returning
-    // expressions) expressible — trial numbers in config/pitest/README.md.
-    mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
+    // expressions) expressible; BIG_INTEGER reaches the u64/u128
+    // reinterpretation math in core.math.SafeMath, which is method calls that
+    // MathMutator (primitive bytecode ops) cannot see — trial numbers in
+    // config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
+    declineMutator(
+      "EXPERIMENTAL_BIG_DECIMAL",
+      "trialed 2026-07-25: generated 0 against 4 call sites. It rewrites only " +
+          "(BigDecimal)BigDecimal arithmetic, and every BigDecimal operation here is a " +
+          "divide(BigDecimal, MathContext) / divide(BigDecimal, int, RoundingMode) " +
+          "overload in StakePoolState.calculateSolPrice and Fee.toRatio, which it does " +
+          "not rewrite. Those four sites are covered instead by NAKED_RECEIVER (the " +
+          "dropped stripTrailingZeros family) and by StakePoolStateTests' exact-value " +
+          "assertions.",
+    )
     targetClasses = listOf("software.sava.idl.clients.spl.*", "software.sava.idl.clients.core.*")
     excludedClasses = listOf(
       // generated per-program code: correctness belongs to idl-src-gen, and
@@ -35,8 +48,11 @@ hardening {
   fuzz.register("validatorList") {
     targetClass = "software.sava.idl.clients.spl.stakepool.ValidatorListFuzz"
     // header (9) plus a few dozen 73-byte validator entries reaches every parse
-    // path; larger inputs only slow executions down
+    // path; larger inputs only slow executions down. Seeded with the head of a
+    // real mainnet list — every prefix is valid, so the corpus is here to hold
+    // findings, not to bootstrap coverage
     maxLen = 4096
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/validatorList")
   }
   fuzz.register("stakePoolState") {
     targetClass = "software.sava.idl.clients.spl.stakepool.StakePoolStateFuzz"
@@ -48,8 +64,10 @@ hardening {
   fuzz.register("precompileOffsets") {
     targetClass = "software.sava.idl.clients.spl.precompiles.PrecompileOffsetsFuzz"
     // a u8 count (max 255) with 11/14-byte records: 2 + 255*14 ~= 3.5KB covers every
-    // record; the whole space is reachable from scratch, so no seed corpus
+    // record; the whole space is reachable from scratch, so the corpus is a place
+    // for findings to land rather than a bootstrap
     maxLen = 256
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/precompileOffsets")
   }
   fuzz.register("stakeAccount") {
     targetClass = "software.sava.idl.clients.spl.stake.StakeAccountFuzz"

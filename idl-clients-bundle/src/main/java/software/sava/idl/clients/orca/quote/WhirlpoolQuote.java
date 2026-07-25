@@ -1,5 +1,6 @@
 package software.sava.idl.clients.orca.quote;
 
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.orca.OrcaUtil;
 import software.sava.idl.clients.orca.OrcaUtil.PositionStatus;
 import software.sava.idl.clients.orca.whirlpools.gen.types.Position;
@@ -26,11 +27,6 @@ import java.math.BigInteger;
 public final class WhirlpoolQuote {
 
   private WhirlpoolQuote() {
-  }
-
-  // u128 wrapping subtraction (`a.wrapping_sub(b)` in Rust).
-  private static BigInteger wrappingSubU128(final BigInteger a, final BigInteger b) {
-    return a.subtract(b).and(OrcaUtil.U128_MASK);
   }
 
   private static long transferFee(final long amount, final TransferFee fee) {
@@ -67,47 +63,31 @@ public final class WhirlpoolQuote {
     final BigInteger feeGrowthGlobalB = whirlpool.feeGrowthGlobalB();
 
     if (tickCurrent < position.tickLowerIndex()) {
-      feeGrowthBelowA = wrappingSubU128(feeGrowthGlobalA, feeGrowthBelowA);
-      feeGrowthBelowB = wrappingSubU128(feeGrowthGlobalB, feeGrowthBelowB);
+      feeGrowthBelowA = SafeMath.wrappingSubU128(feeGrowthGlobalA, feeGrowthBelowA);
+      feeGrowthBelowB = SafeMath.wrappingSubU128(feeGrowthGlobalB, feeGrowthBelowB);
     }
     if (tickCurrent >= position.tickUpperIndex()) {
-      feeGrowthAboveA = wrappingSubU128(feeGrowthGlobalA, feeGrowthAboveA);
-      feeGrowthAboveB = wrappingSubU128(feeGrowthGlobalB, feeGrowthAboveB);
+      feeGrowthAboveA = SafeMath.wrappingSubU128(feeGrowthGlobalA, feeGrowthAboveA);
+      feeGrowthAboveB = SafeMath.wrappingSubU128(feeGrowthGlobalB, feeGrowthAboveB);
     }
 
-    final BigInteger feeGrowthInsideA = wrappingSubU128(
-        wrappingSubU128(feeGrowthGlobalA, feeGrowthBelowA), feeGrowthAboveA);
-    final BigInteger feeGrowthInsideB = wrappingSubU128(
-        wrappingSubU128(feeGrowthGlobalB, feeGrowthBelowB), feeGrowthAboveB);
+    final BigInteger feeGrowthInsideA = SafeMath.wrappingSubU128(
+        SafeMath.wrappingSubU128(feeGrowthGlobalA, feeGrowthBelowA), feeGrowthAboveA);
+    final BigInteger feeGrowthInsideB = SafeMath.wrappingSubU128(
+        SafeMath.wrappingSubU128(feeGrowthGlobalB, feeGrowthBelowB), feeGrowthAboveB);
 
-    final BigInteger feeGrowthDeltaA = wrappingSubU128(feeGrowthInsideA, position.feeGrowthCheckpointA());
-    final BigInteger feeGrowthDeltaB = wrappingSubU128(feeGrowthInsideB, position.feeGrowthCheckpointB());
+    final BigInteger feeGrowthDeltaA = SafeMath.wrappingSubU128(feeGrowthInsideA, position.feeGrowthCheckpointA());
+    final BigInteger feeGrowthDeltaB = SafeMath.wrappingSubU128(feeGrowthInsideB, position.feeGrowthCheckpointB());
 
     final BigInteger feeOwedDeltaA = feeGrowthDeltaA.multiply(position.liquidity()).shiftRight(64);
     final BigInteger feeOwedDeltaB = feeGrowthDeltaB.multiply(position.liquidity()).shiftRight(64);
 
-    final long withdrawableFeeA = addU64(position.feeOwedA(), toU64(feeOwedDeltaA));
-    final long withdrawableFeeB = addU64(position.feeOwedB(), toU64(feeOwedDeltaB));
+    final long withdrawableFeeA = SafeMath.checkedAddU64(position.feeOwedA(), SafeMath.toU64(feeOwedDeltaA));
+    final long withdrawableFeeB = SafeMath.checkedAddU64(position.feeOwedB(), SafeMath.toU64(feeOwedDeltaB));
 
     return new CollectFeesQuote(
         transferFee(withdrawableFeeA, transferFeeA),
         transferFee(withdrawableFeeB, transferFeeB));
-  }
-
-  private static final BigInteger U64_MAX = BigInteger.ONE.shiftLeft(64).subtract(BigInteger.ONE);
-
-  private static long toU64(final BigInteger value) {
-    if (value.signum() < 0 || value.compareTo(U64_MAX) > 0) {
-      throw new ArithmeticException("amount exceeds u64: " + value);
-    }
-    // longValueExact would reject the valid u64 range above Long.MAX_VALUE
-    return value.longValue(); // returns as unsigned long bits
-  }
-
-  private static long addU64(final long a, final long b) {
-    final BigInteger sum = new BigInteger(Long.toUnsignedString(a))
-        .add(new BigInteger(Long.toUnsignedString(b)));
-    return toU64(sum);
   }
 
   // ===========================================================================
@@ -149,16 +129,16 @@ public final class WhirlpoolQuote {
       BigInteger rewardGrowthBelow = tickLowerRgo[i];
       BigInteger rewardGrowthAbove = tickUpperRgo[i];
       if (whirlpool.tickCurrentIndex() < position.tickLowerIndex()) {
-        rewardGrowthBelow = wrappingSubU128(rewardGrowth, rewardGrowthBelow);
+        rewardGrowthBelow = SafeMath.wrappingSubU128(rewardGrowth, rewardGrowthBelow);
       }
       if (whirlpool.tickCurrentIndex() >= position.tickUpperIndex()) {
-        rewardGrowthAbove = wrappingSubU128(rewardGrowth, rewardGrowthAbove);
+        rewardGrowthAbove = SafeMath.wrappingSubU128(rewardGrowth, rewardGrowthAbove);
       }
 
-      final BigInteger rewardGrowthInside = wrappingSubU128(
-          wrappingSubU128(rewardGrowth, rewardGrowthBelow), rewardGrowthAbove);
+      final BigInteger rewardGrowthInside = SafeMath.wrappingSubU128(
+          SafeMath.wrappingSubU128(rewardGrowth, rewardGrowthBelow), rewardGrowthAbove);
       final BigInteger rewardGrowthDelta =
-          wrappingSubU128(rewardGrowthInside, pri[i].growthInsideCheckpoint());
+          SafeMath.wrappingSubU128(rewardGrowthInside, pri[i].growthInsideCheckpoint());
 
       final long rewardOwedDelta;
       if (rewardGrowthDelta.signum() == 0 || position.liquidity().signum() == 0) {
@@ -167,14 +147,14 @@ public final class WhirlpoolQuote {
         // checked_mul fallback to 0 on overflow; in BigInteger we don't overflow,
         // but Rust uses `unwrap_or(0)` so on overflow we mirror by checking u128 range.
         final BigInteger product = position.liquidity().multiply(rewardGrowthDelta);
-        if (product.compareTo(OrcaUtil.U128_MASK) > 0) {
+        if (product.compareTo(SafeMath.U128_MASK) > 0) {
           rewardOwedDelta = 0L;
         } else {
           // `(product >> 64) as u64` — truncate to u64 low bits.
-          rewardOwedDelta = product.shiftRight(64).and(U64_MAX).longValue();
+          rewardOwedDelta = product.shiftRight(64).and(SafeMath.U64_MAX).longValue();
         }
       }
-      final long withdrawableReward = addU64(pri[i].amountOwed(), rewardOwedDelta);
+      final long withdrawableReward = SafeMath.checkedAddU64(pri[i].amountOwed(), rewardOwedDelta);
       out[i] = new CollectRewardQuote(transferFee(withdrawableReward, fees[i]));
     }
     return new CollectRewardsQuote(out);
@@ -236,7 +216,7 @@ public final class WhirlpoolQuote {
     if (roundUp && qr[1].signum() != 0) {
       q = q.add(BigInteger.ONE);
     }
-    return toU64(q);
+    return SafeMath.toU64(q);
   }
 
   // try_get_token_b_from_liquidity
@@ -247,10 +227,10 @@ public final class WhirlpoolQuote {
     final BigInteger diff = sqrtPriceUpper.subtract(sqrtPriceLower);
     final BigInteger mul = liquidityDelta.multiply(diff);
     BigInteger result = mul.shiftRight(64);
-    if (roundUp && mul.and(U64_MAX).signum() > 0) {
+    if (roundUp && mul.and(SafeMath.U64_MAX).signum() > 0) {
       result = result.add(BigInteger.ONE);
     }
-    return toU64(result);
+    return SafeMath.toU64(result);
   }
 
   // try_get_liquidity_from_a
@@ -258,7 +238,7 @@ public final class WhirlpoolQuote {
                                            final BigInteger sqrtPriceLower,
                                            final BigInteger sqrtPriceUpper) {
     final BigInteger diff = sqrtPriceUpper.subtract(sqrtPriceLower);
-    final BigInteger mul = new BigInteger(Long.toUnsignedString(tokenDeltaA))
+    final BigInteger mul = SafeMath.toUnsignedBigInteger(tokenDeltaA)
         .multiply(sqrtPriceLower)
         .multiply(sqrtPriceUpper);
     return mul.divide(diff).shiftRight(64);
@@ -268,7 +248,7 @@ public final class WhirlpoolQuote {
   private static BigInteger liquidityFromB(final long tokenDeltaB,
                                            final BigInteger sqrtPriceLower,
                                            final BigInteger sqrtPriceUpper) {
-    final BigInteger numerator = new BigInteger(Long.toUnsignedString(tokenDeltaB)).shiftLeft(64);
+    final BigInteger numerator = SafeMath.toUnsignedBigInteger(tokenDeltaB).shiftLeft(64);
     final BigInteger diff = sqrtPriceUpper.subtract(sqrtPriceLower);
     return numerator.divide(diff);
   }

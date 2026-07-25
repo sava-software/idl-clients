@@ -2,6 +2,7 @@ package software.sava.idl.clients.spl.stakepool;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.spl.stake.LockUp;
 
@@ -189,8 +190,8 @@ public record StakePoolState(PublicKey address,
     offset += Long.BYTES;
     final long lastEpochTotalLamports = ByteUtil.getInt64LE(data, offset);
 
-    final var bigLamports = new BigDecimal(Long.toUnsignedString(totalLamports));
-    final var bigSupply = new BigDecimal(Long.toUnsignedString(poolTokenSupply));
+    final var bigLamports = SafeMath.toUnsignedBigDecimal(totalLamports);
+    final var bigSupply = SafeMath.toUnsignedBigDecimal(poolTokenSupply);
 
     return new StakePoolState(
         address,

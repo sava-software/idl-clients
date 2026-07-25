@@ -32,10 +32,11 @@ hardening {
   mutation.register("orca") {
     // BigInteger arithmetic is method calls, which MathMutator (primitive
     // bytecode ops) cannot reach — see config/pitest/README.md. Requires
-    // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
-    // fires zero times anywhere in this module. NAKED_RECEIVER makes dropped
-    // fluent calls (receiver-returning expressions) expressible — trial
-    // numbers in config/pitest/README.md.
+    // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted because these classes
+    // hold no BigDecimal arithmetic at all — the blind-spot scan finds nothing
+    // to advise here, so there is nothing to decline either. NAKED_RECEIVER
+    // makes dropped fluent calls (receiver-returning expressions) expressible —
+    // trial numbers in config/pitest/README.md.
     mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
     // quote math and tick/PDA derivation
     targetClasses = listOf("software.sava.idl.clients.orca.*")
@@ -53,13 +54,12 @@ hardening {
     targetTests = "software.sava.idl.clients.kamino.*Test*"
   }
   mutation.register("clients") {
-    // BigInteger arithmetic is method calls, which MathMutator (primitive
-    // bytecode ops) cannot reach — see config/pitest/README.md. Requires
-    // pitest >= 1.25.8 on Java 25. BIG_DECIMAL is omitted deliberately: it
-    // fires zero times anywhere in this module. NAKED_RECEIVER makes dropped
-    // fluent calls (receiver-returning expressions) expressible — trial
-    // numbers in config/pitest/README.md.
-    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_NAKED_RECEIVER"
+    // BigInteger and BigDecimal arithmetic are method calls, which MathMutator
+    // (primitive bytecode ops) cannot reach — see config/pitest/README.md.
+    // Requires pitest >= 1.25.8 on Java 25. NAKED_RECEIVER makes dropped fluent
+    // calls (receiver-returning expressions) expressible — trial numbers in
+    // config/pitest/README.md.
+    mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER,EXPERIMENTAL_BIG_DECIMAL,EXPERIMENTAL_NAKED_RECEIVER"
     // everything else hand-written in this module
     targetClasses = listOf("software.sava.idl.clients.*")
     excludedClasses = notMutated + listOf(
@@ -75,8 +75,11 @@ hardening {
   fuzz.register("routeV2") {
     targetClass = "software.sava.idl.clients.jupiter.swap.RouteV2DataFuzz"
     // route instructions are a few hundred bytes on-chain; the harness supplies
-    // the discriminator, so the budget is all payload
+    // the discriminator, so the budget is all payload. Seeded with real mainnet
+    // route payloads: the Swap enum has ~150 ordinals, most carrying their own
+    // fields, so a valid route plan is slow to reach from scratch
     maxLen = 1024
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/routeV2")
   }
   fuzz.register("scopeReader") {
     targetClass = "software.sava.idl.clients.kamino.scope.entries.ScopeReaderFuzz"
@@ -90,8 +93,10 @@ hardening {
     targetClass = "software.sava.idl.clients.orca.OrcaTickMathFuzz"
     // the harness folds the bytes into a u128 sqrt price; 17 bytes covers the
     // whole domain (selector byte + 16-byte value), and every prefix is valid,
-    // so no seed corpus
+    // so the corpus pins the domain edges and holds findings rather than
+    // bootstrapping coverage
     maxLen = 32
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/orcaTickMath")
   }
   fuzz.register("jupiterResponse") {
     targetClass = "software.sava.idl.clients.jupiter.swap.rest.response.JupiterResponseFuzz"
@@ -104,8 +109,10 @@ hardening {
   fuzz.register("whirlpoolQuote") {
     targetClass = "software.sava.idl.clients.orca.quote.WhirlpoolQuoteFuzz"
     // the harness carves a fixed 64-byte tuple (liquidity, price, ticks,
-    // slippage, fees); every prefix is valid, so no seed corpus
+    // slippage, fees); every prefix is valid, so the corpus pins the position
+    // shapes and holds findings rather than bootstrapping coverage
     maxLen = 64
+    seedCorpus = layout.projectDirectory.dir("src/test/resources/fuzz/whirlpoolQuote")
   }
   fuzz.register("dlmmPrice") {
     targetClass = "software.sava.idl.clients.meteora.dlmm.DlmmPriceFuzz"

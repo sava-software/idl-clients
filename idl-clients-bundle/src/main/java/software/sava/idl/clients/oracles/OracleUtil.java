@@ -1,5 +1,6 @@
 package software.sava.idl.clients.oracles;
 
+import software.sava.idl.clients.core.math.SafeMath;
 import software.sava.idl.clients.oracles.pyth.receiver.gen.types.PriceUpdateV2;
 
 import java.math.BigDecimal;
@@ -32,9 +33,7 @@ public final class OracleUtil {
   /// unsigned. Signed i64 prices must not go through this overload — a negative
   /// value would come back as a number near 2^64.
   public static BigDecimal scalePrice(final long scaledPrice, final int exponent) {
-    final var price = scaledPrice < 0
-        ? new BigDecimal(Long.toUnsignedString(scaledPrice))
-        : new BigDecimal(scaledPrice);
+    final var price = SafeMath.toUnsignedBigDecimal(scaledPrice);
     return price.movePointRight(checkExponent(exponent));
   }
 

@@ -106,9 +106,28 @@ mutators = "STRONGER,EXPERIMENTAL_BIG_INTEGER"
 ```
 
 `scope` is left off `EXPERIMENTAL_BIG_INTEGER` because the mutator fires zero
-times there; the same was measured for `idl-clients-spl`'s own suite (742
-mutations with and without), so it is not enabled there either.
-Of the five new survivors, three were killed and two accepted (below).
+times there. Of the five new survivors, three were killed and two accepted
+(below).
+
+### `EXPERIMENTAL_BIG_DECIMAL` (enabled on `clients` 2026-07-25)
+
+"Contributed nothing" was true when it was measured and stopped being true as
+code was added, which is the whole argument for sava-build 21.5.14's per-run
+blind-spot scan: each `pitest<Suite>` now reads the classes it is about to
+mutate, and warns when `BigDecimal`/`BigInteger` arithmetic is present but the
+matching mutator is not enabled. It fired on `clients` — 3 classes, 8 call
+sites — and the re-trial found **2 generated, 2 killed, 0 unkilled**
+(`DlmmUtils.binStepBase:73`, `KaminoUtil.toSf:39`). Enabled the same day at zero
+baseline cost; `orca` and `scope` still hold no `BigDecimal` arithmetic at all,
+so the scan finds nothing to advise there and there is nothing to decline
+either. The re-trial also confirmed `EXPERIMENTAL_BIG_INTEGER` is still earning
+its place: 114 mutants on `orca`, 48 on `clients`, with the same two accepted
+`OrcaUtil` survivors and no new ones.
+
+`idl-clients-spl` took the mirror-image outcome the same day: the scan pushed
+`EXPERIMENTAL_BIG_INTEGER` on (3 mutants, all killed, once `core.math.SafeMath`
+arrived) and its `BigDecimal` advice was answered with a recorded
+`declineMutator` — see that module's README.
 
 ### `EXPERIMENTAL_NAKED_RECEIVER` (enabled 2026-07-23, all suites)
 
@@ -197,6 +216,10 @@ reached (`preSerialize:46`, `collectRewardsQuote:128`).
 | 2026-07-23 | `orca` | 52 | 0 | 52 | 722/774 (93%) | 93% |
 | 2026-07-24 | `clients` | 38 | 0 | 38 | 1650/1688 (97%) | 97% |
 | 2026-07-24 | `scope` | 48 | 0 | 48 | 315/363 (86%) | 87% |
+| 2026-07-25 | `clients` | 38 | 0 | 38 | 1652/1690 (98%) | 98% |
+| 2026-07-25 | `orca` | 49 | 0 | 49 | 699/748 (93%) | 93% |
+| 2026-07-25 | `scope` | 42 | 0 | 42 | 312/354 (88%) | 88% |
+| 2026-07-25 | `clients` | 36 | 0 | 36 | 1626/1662 (98%) | 98% |
 
 The 57-row 2026-07-23 entry is the priority-3 discharge — the client-impl and
 request/response tranche worked down from 436 rows. In order of volume:
@@ -268,7 +291,10 @@ any fee, reward, or token estimate in `[2^63, 2^64)` threw
 `ArithmeticException` instead of quoting. This is the *same* defect found and
 fixed in `OrcaUtil.toU64` on 2026-07-16; the private sibling copy in the quote
 layer was missed. Both boundary tests now pin the unsigned-bits contract
-(`u64::MAX` survives, one past it throws). New accepted families are
+(`u64::MAX` survives, one past it throws). *The duplication itself was removed
+on 2026-07-25*: `toU64`, the u64 widening, `wrappingSubU128` and the `U64_MAX` /
+`U128_MASK` constants now live once in `core.math.SafeMath`, so there is no longer a
+second copy for the next fix to miss. New accepted families are
 annotated in the CSV: the quote zero fast paths whose fall-through computes
 the same shared `ZERO` result the long way, `orderTicks` at equal operands,
 the rewards u64 mask under the u128 guard, `toU64`'s unreachable-negative
@@ -1128,11 +1154,18 @@ array with identical content, indistinguishable through every consumer.
 
 The `i < 0` half of `ScopeReaderRecord.entry`'s bounds check (every index is
 read masked-unsigned), the `emaTypes != null` clause in `validateNoEmaTypes`
-(its one producer never returns null), `OrcaUtil.u64`'s `> U64_MAX` check (an
-unsigned long cannot exceed it), the `signum() < 0` halves of both `toU64`s
-behind subtractions that cannot go negative, and `requireU128`'s return value
+(its one producer never returns null), and `requireU128`'s return value
 (callers use it for the throw, not the value). Removing any of them is
 unobservable without constructing states the codebase cannot produce.
+
+Three rows left this family on 2026-07-25 when the u64 helpers moved to
+`core.math.SafeMath`: `OrcaUtil.u64`'s `> U64_MAX` check was not merely unobservable
+but **dead** — no `long` widens above `u64::MAX` — and disappeared with the
+method; the `signum() < 0` halves of the two byte-identical `toU64` copies
+collapsed into one row, which is now covered by `SafeMathTests` asserting both
+sides of the range and so is killed rather than accepted. That is the argument
+for consolidation stated as a baseline diff: the same guard accepted twice in
+two files became one guard with a test.
 
 ### BigInteger shift symmetry (5 mutants, orca)
 
