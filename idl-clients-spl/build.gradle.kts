@@ -17,7 +17,7 @@ hardening {
     // NAKED_RECEIVER makes dropped fluent calls (receiver-returning
     // expressions) expressible — trial numbers in config/pitest/README.md.
     mutators = "STRONGER,EXPERIMENTAL_NAKED_RECEIVER"
-    targetClasses = listOf("software.sava.idl.clients.spl.*")
+    targetClasses = listOf("software.sava.idl.clients.spl.*", "software.sava.idl.clients.core.*")
     excludedClasses = listOf(
       // generated per-program code: correctness belongs to idl-src-gen, and
       // mutating the boilerplate would bury the hand-written signal
@@ -25,11 +25,12 @@ hardening {
       // test and fuzz sources share the recompiled root
       "software.sava.idl.clients.spl.*Test*",
       "software.sava.idl.clients.spl.*Fuzz*",
+      "software.sava.idl.clients.core.*Test*",
       // 'Integ.*' scratch files are git-ignored: present on a dev machine and
       // absent in CI, so mutating them would make the baseline machine-dependent
       "software.sava.idl.clients.*.Integ"
     )
-    targetTests = "software.sava.idl.clients.spl.*Test*"
+    targetTests = "software.sava.idl.clients.*Test*"
   }
   fuzz.register("validatorList") {
     targetClass = "software.sava.idl.clients.spl.stakepool.ValidatorListFuzz"

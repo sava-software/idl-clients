@@ -50,12 +50,12 @@ public record SolendMinimalReserve(long lastUpdateSlot,
   public static final int LIQUIDITY_BORROWED_AMOUNT_WADS_LEN = 16;
   public static final int LIQUIDITY_CUMULATIVE_BORROW_RATE_WADS_LEN = 16;
   public static final int LIQUIDITY_MARKET_PRICE_LEN = 16;
-  public static final int PADDING_TO_FEES_66_LEN = 64;
+  public static final int PADDING_TO_FEES_64_LEN = 64;
   public static final int PADDING_TO_FEES_6_LEN = 6;
   public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_LEN = 16;
-  public static final int PADDING_FINAL_111_LEN = 128;
-  public static final int PADDING_FINAL_66_LEN = 64;
-  public static final int PADDING_FINAL_33_LEN = 32;
+  public static final int PADDING_FINAL_128_LEN = 128;
+  public static final int PADDING_FINAL_64_LEN = 64;
+  public static final int PADDING_FINAL_32_LEN = 32;
   public static final int PADDING_FINAL_6_LEN = 6;
 
   public static final int LAST_UPDATE_SLOT_OFFSET = 0;
@@ -77,12 +77,12 @@ public record SolendMinimalReserve(long lastUpdateSlot,
   public static final int CONFIG_LOAN_TO_VALUE_RATIO_OFFSET = 299;
   public static final int CONFIG_LIQUIDATION_BONUS_OFFSET = 300;
   public static final int CONFIG_LIQUIDATION_THRESHOLD_OFFSET = 301;
-  public static final int PADDING_TO_FEES_66_OFFSET = 302;
+  public static final int PADDING_TO_FEES_64_OFFSET = 302;
   public static final int PADDING_TO_FEES_6_OFFSET = 366;
   public static final int LIQUIDITY_ACCUMULATED_PROTOCOL_FEES_WADS_OFFSET = 372;
-  public static final int PADDING_FINAL_111_OFFSET = 388;
-  public static final int PADDING_FINAL_66_OFFSET = 516;
-  public static final int PADDING_FINAL_33_OFFSET = 580;
+  public static final int PADDING_FINAL_128_OFFSET = 388;
+  public static final int PADDING_FINAL_64_OFFSET = 516;
+  public static final int PADDING_FINAL_32_OFFSET = 580;
   public static final int PADDING_FINAL_6_OFFSET = 612;
 
   public static SolendMinimalReserve read(final byte[] _data, final int _offset) {

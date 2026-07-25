@@ -7133,7 +7133,7 @@ public final class WhirlpoolProgram {
     public static final int BYTES = 25;
 
     public static final int REWARD_INDEX_OFFSET = 8;
-    public static final int EMISSIONS_PER_SECOND_X_66_OFFSET = 9;
+    public static final int EMISSIONS_PER_SECOND_X_64_OFFSET = 9;
 
     public static SetRewardEmissionsIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -7329,7 +7329,7 @@ public final class WhirlpoolProgram {
     public static final int BYTES = 25;
 
     public static final int REWARD_INDEX_OFFSET = 8;
-    public static final int EMISSIONS_PER_SECOND_X_66_OFFSET = 9;
+    public static final int EMISSIONS_PER_SECOND_X_64_OFFSET = 9;
 
     public static SetRewardEmissionsV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {

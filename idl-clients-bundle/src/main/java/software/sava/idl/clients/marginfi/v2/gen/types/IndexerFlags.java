@@ -68,8 +68,8 @@ public record IndexerFlags(int isLendingOnly,
   public static final int HAS_JUPLEND_OFFSET = 10;
   public static final int WAS_LIQUIDATABLE_OFFSET = 11;
   public static final int WAS_UNDERWATER_OFFSET = 12;
-  public static final int WAS_ACTIVE_33D_OFFSET = 13;
-  public static final int WAS_ACTIVE_66D_OFFSET = 14;
+  public static final int WAS_ACTIVE_30D_OFFSET = 13;
+  public static final int WAS_ACTIVE_60D_OFFSET = 14;
   public static final int HAS_TRIVIAL_BALANCE_OFFSET = 15;
   public static final int PAD_OFFSET = 16;
 

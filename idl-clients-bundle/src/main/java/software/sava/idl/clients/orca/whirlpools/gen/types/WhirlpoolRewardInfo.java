@@ -40,8 +40,8 @@ public record WhirlpoolRewardInfo(PublicKey mint,
   public static final int MINT_OFFSET = 0;
   public static final int VAULT_OFFSET = 32;
   public static final int EXTENSION_OFFSET = 64;
-  public static final int EMISSIONS_PER_SECOND_X_66_OFFSET = 96;
-  public static final int GROWTH_GLOBAL_X_66_OFFSET = 112;
+  public static final int EMISSIONS_PER_SECOND_X_64_OFFSET = 96;
+  public static final int GROWTH_GLOBAL_X_64_OFFSET = 112;
 
   public static WhirlpoolRewardInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

@@ -18,9 +18,9 @@ public record CapMonitor(long startTime1hr,
   public static final int BYTES = 32;
 
   public static final int START_TIME_1HR_OFFSET = 0;
-  public static final int START_TIME_22HR_OFFSET = 8;
+  public static final int START_TIME_24HR_OFFSET = 8;
   public static final int PRINCIPAL_1HR_OFFSET = 16;
-  public static final int PRINCIPAL_22HR_OFFSET = 24;
+  public static final int PRINCIPAL_24HR_OFFSET = 24;
 
   public static CapMonitor read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

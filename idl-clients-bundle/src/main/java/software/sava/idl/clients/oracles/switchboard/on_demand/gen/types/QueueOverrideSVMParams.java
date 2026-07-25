@@ -14,10 +14,10 @@ public record QueueOverrideSVMParams(byte[] secp256k1Signer,
                                      long slot) implements SerDe {
 
   public static final int BYTES = 112;
-  public static final int SECP_222K_1_SIGNER_LEN = 64;
+  public static final int SECP_256K_1_SIGNER_LEN = 64;
   public static final int MR_ENCLAVE_LEN = 32;
 
-  public static final int SECP_222K_1_SIGNER_OFFSET = 0;
+  public static final int SECP_256K_1_SIGNER_OFFSET = 0;
   public static final int MAX_QUOTE_VERIFICATION_AGE_OFFSET = 64;
   public static final int MR_ENCLAVE_OFFSET = 72;
   public static final int SLOT_OFFSET = 104;

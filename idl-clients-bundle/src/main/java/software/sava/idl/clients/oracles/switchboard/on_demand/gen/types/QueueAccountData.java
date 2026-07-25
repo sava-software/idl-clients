@@ -88,7 +88,7 @@ public record QueueAccountData(PublicKey _address,
   public static final int ORACLE_KEYS_LEN = 78;
   public static final int RESERVED_1_LEN = 40;
   public static final int SECP_ORACLE_SIGNING_KEYS_LEN = 30;
-  public static final int ED_22222_ORACLE_SIGNING_KEYS_LEN = 30;
+  public static final int ED_25519_ORACLE_SIGNING_KEYS_LEN = 30;
   public static final int EBUF_6_LEN = 15;
   public static final int VAULTS_LEN = 4;
   public static final int EBUF_4_LEN = 32;
@@ -104,7 +104,7 @@ public record QueueAccountData(PublicKey _address,
   public static final int ORACLE_KEYS_OFFSET = 1064;
   public static final int RESERVED_1_OFFSET = 3560;
   public static final int SECP_ORACLE_SIGNING_KEYS_OFFSET = 3600;
-  public static final int ED_22222_ORACLE_SIGNING_KEYS_OFFSET = 4200;
+  public static final int ED_25519_ORACLE_SIGNING_KEYS_OFFSET = 4200;
   public static final int MAX_QUOTE_VERIFICATION_AGE_OFFSET = 5160;
   public static final int LAST_HEARTBEAT_OFFSET = 5168;
   public static final int NODE_TIMEOUT_OFFSET = 5176;

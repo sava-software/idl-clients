@@ -26,13 +26,13 @@ public record GuardianQuoteVerifyParams(long timestamp,
                                         long[] advisories) implements SerDe {
 
   public static final int MR_ENCLAVE_LEN = 32;
-  public static final int SECP_222K_1_KEY_LEN = 64;
+  public static final int SECP_256K_1_KEY_LEN = 64;
   public static final int SIGNATURE_LEN = 64;
   public static final int TIMESTAMP_OFFSET = 0;
   public static final int MR_ENCLAVE_OFFSET = 8;
   public static final int RESERVED_1_OFFSET = 40;
-  public static final int ED_22222_KEY_OFFSET = 44;
-  public static final int SECP_222K_1_KEY_OFFSET = 76;
+  public static final int ED_25519_KEY_OFFSET = 44;
+  public static final int SECP_256K_1_KEY_OFFSET = 76;
   public static final int SLOT_OFFSET = 140;
   public static final int SIGNATURE_OFFSET = 148;
   public static final int RECOVERY_ID_OFFSET = 212;

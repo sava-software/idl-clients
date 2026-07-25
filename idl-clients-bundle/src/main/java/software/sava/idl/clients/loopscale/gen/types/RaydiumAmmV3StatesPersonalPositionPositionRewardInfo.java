@@ -15,7 +15,7 @@ public record RaydiumAmmV3StatesPersonalPositionPositionRewardInfo(BigInteger gr
 
   public static final int BYTES = 24;
 
-  public static final int GROWTH_INSIDE_LAST_X_66_OFFSET = 0;
+  public static final int GROWTH_INSIDE_LAST_X_64_OFFSET = 0;
   public static final int REWARD_AMOUNT_OWED_OFFSET = 16;
 
   public static RaydiumAmmV3StatesPersonalPositionPositionRewardInfo read(final byte[] _data, final int _offset) {

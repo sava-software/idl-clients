@@ -129,12 +129,12 @@ public record PoolState(PublicKey _address,
   public static final int MINT_DECIMALS_1_OFFSET = 234;
   public static final int TICK_SPACING_OFFSET = 235;
   public static final int LIQUIDITY_OFFSET = 237;
-  public static final int SQRT_PRICE_X_66_OFFSET = 253;
+  public static final int SQRT_PRICE_X_64_OFFSET = 253;
   public static final int TICK_CURRENT_OFFSET = 269;
   public static final int PADDING_3_OFFSET = 273;
   public static final int PADDING_4_OFFSET = 275;
-  public static final int FEE_GROWTH_GLOBAL_0_X_66_OFFSET = 277;
-  public static final int FEE_GROWTH_GLOBAL_1_X_66_OFFSET = 293;
+  public static final int FEE_GROWTH_GLOBAL_0_X_64_OFFSET = 277;
+  public static final int FEE_GROWTH_GLOBAL_1_X_64_OFFSET = 293;
   public static final int PROTOCOL_FEES_TOKEN_0_OFFSET = 309;
   public static final int PROTOCOL_FEES_TOKEN_1_OFFSET = 317;
   public static final int SWAP_IN_AMOUNT_TOKEN_0_OFFSET = 325;
@@ -207,7 +207,7 @@ public record PoolState(PublicKey _address,
   public static Filter createSqrtPriceX64Filter(final BigInteger sqrtPriceX64) {
     final byte[] _data = new byte[16];
     putInt128LE(_data, 0, sqrtPriceX64);
-    return Filter.createMemCompFilter(SQRT_PRICE_X_66_OFFSET, _data);
+    return Filter.createMemCompFilter(SQRT_PRICE_X_64_OFFSET, _data);
   }
 
   public static Filter createTickCurrentFilter(final int tickCurrent) {
@@ -231,13 +231,13 @@ public record PoolState(PublicKey _address,
   public static Filter createFeeGrowthGlobal0X64Filter(final BigInteger feeGrowthGlobal0X64) {
     final byte[] _data = new byte[16];
     putInt128LE(_data, 0, feeGrowthGlobal0X64);
-    return Filter.createMemCompFilter(FEE_GROWTH_GLOBAL_0_X_66_OFFSET, _data);
+    return Filter.createMemCompFilter(FEE_GROWTH_GLOBAL_0_X_64_OFFSET, _data);
   }
 
   public static Filter createFeeGrowthGlobal1X64Filter(final BigInteger feeGrowthGlobal1X64) {
     final byte[] _data = new byte[16];
     putInt128LE(_data, 0, feeGrowthGlobal1X64);
-    return Filter.createMemCompFilter(FEE_GROWTH_GLOBAL_1_X_66_OFFSET, _data);
+    return Filter.createMemCompFilter(FEE_GROWTH_GLOBAL_1_X_64_OFFSET, _data);
   }
 
   public static Filter createProtocolFeesToken0Filter(final long protocolFeesToken0) {

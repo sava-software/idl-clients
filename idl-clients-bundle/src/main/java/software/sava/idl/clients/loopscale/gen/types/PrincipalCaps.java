@@ -16,7 +16,7 @@ public record PrincipalCaps(long max1hr,
   public static final int BYTES = 24;
 
   public static final int MAX_1HR_OFFSET = 0;
-  public static final int MAX_22HR_OFFSET = 8;
+  public static final int MAX_24HR_OFFSET = 8;
   public static final int MAX_OUTSTANDING_OFFSET = 16;
 
   public static PrincipalCaps read(final byte[] _data, final int _offset) {

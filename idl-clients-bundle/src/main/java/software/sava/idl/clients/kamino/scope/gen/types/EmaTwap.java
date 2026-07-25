@@ -38,9 +38,9 @@ public record EmaTwap(long lastUpdateSlot,
   public static final int UPDATES_TRACKER_1H_OFFSET = 32;
   public static final int UPDATES_TRACKER_7D_OFFSET = 40;
   public static final int CURRENT_EMA_8H_OFFSET = 48;
-  public static final int CURRENT_EMA_22H_OFFSET = 64;
+  public static final int CURRENT_EMA_24H_OFFSET = 64;
   public static final int UPDATES_TRACKER_8H_OFFSET = 80;
-  public static final int UPDATES_TRACKER_22H_OFFSET = 88;
+  public static final int UPDATES_TRACKER_24H_OFFSET = 88;
   public static final int CURRENT_EMA_7D_OFFSET = 96;
   public static final int PADDING_1_OFFSET = 112;
 

@@ -42,13 +42,13 @@ public record RewardInfo(int rewardState,
   public static final int OPEN_TIME_OFFSET = 1;
   public static final int END_TIME_OFFSET = 9;
   public static final int LAST_UPDATE_TIME_OFFSET = 17;
-  public static final int EMISSIONS_PER_SECOND_X_66_OFFSET = 25;
+  public static final int EMISSIONS_PER_SECOND_X_64_OFFSET = 25;
   public static final int REWARD_TOTAL_EMISSIONED_OFFSET = 41;
   public static final int REWARD_CLAIMED_OFFSET = 49;
   public static final int TOKEN_MINT_OFFSET = 57;
   public static final int TOKEN_VAULT_OFFSET = 89;
   public static final int AUTHORITY_OFFSET = 121;
-  public static final int REWARD_GROWTH_GLOBAL_X_66_OFFSET = 153;
+  public static final int REWARD_GROWTH_GLOBAL_X_64_OFFSET = 153;
 
   public static RewardInfo read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {

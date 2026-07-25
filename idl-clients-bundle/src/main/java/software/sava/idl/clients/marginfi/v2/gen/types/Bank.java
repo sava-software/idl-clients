@@ -157,7 +157,7 @@ public record Bank(PublicKey _address,
   public static final int PAD_1_LEN = 4;
   public static final int PAD_2_LEN = 6;
   public static final int PADDING_0_LEN = 16;
-  public static final int PAD_00_LEN = 16;
+  public static final int PAD_01_LEN = 16;
   public static final int PADDING_1_LEN = 13;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -202,7 +202,7 @@ public record Bank(PublicKey _address,
   public static final int INTEGRATION_ACC_2_OFFSET = 1592;
   public static final int INTEGRATION_ACC_3_OFFSET = 1624;
   public static final int RATE_LIMITER_OFFSET = 1656;
-  public static final int PAD_00_OFFSET = 1736;
+  public static final int PAD_01_OFFSET = 1736;
   public static final int BANK_SEED_OFFSET = 1752;
   public static final int PADDING_1_OFFSET = 1760;
 
