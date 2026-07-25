@@ -26,7 +26,6 @@ software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,ConditionalsBoundaryMut
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,196,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,206,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,214,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,216,NakedReceiverMutator,SURVIVED # domain-guard family
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,NakedReceiverMutator,SURVIVED # domain-guard family
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,220,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
 software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,220,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family

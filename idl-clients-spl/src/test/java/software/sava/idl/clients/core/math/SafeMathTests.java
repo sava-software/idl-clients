@@ -69,6 +69,13 @@ final class SafeMathTests {
   @Test
   void checkedAddTreatsBothOperandsAsUnsigned() {
     assertEquals(3L, SafeMath.checkedAddU64(1L, 2L));
+    // a zero addend leaves the carry test exactly at its boundary (sum == a),
+    // and it is the common case on chain: WhirlpoolQuote adds a fee delta of
+    // zero to an owed balance whenever nothing has accrued
+    assertEquals(5L, SafeMath.checkedAddU64(5L, 0L));
+    assertEquals(5L, SafeMath.checkedAddU64(0L, 5L));
+    assertEquals(0L, SafeMath.checkedAddU64(0L, 0L));
+    assertEquals(-1L, SafeMath.checkedAddU64(-1L, 0L), "u64::MAX + 0 is still u64::MAX");
     // Long.MAX_VALUE + 1 is a u64 overflow only in signed arithmetic
     assertEquals(Long.MIN_VALUE, SafeMath.checkedAddU64(Long.MAX_VALUE, 1L));
     // -2 is u64 2^64-2, so adding 1 stays in range and adding 2 does not
@@ -139,9 +146,54 @@ final class SafeMathTests {
     assertEquals(3L, SafeMath.mulDivU64(10L, 1L, 3L));
     // operands are unsigned: u64::MAX * 1 / 1 round-trips
     assertEquals(-1L, SafeMath.mulDivU64(-1L, 1L, 1L));
-    assertThrows(ArithmeticException.class, () -> SafeMath.mulDivU64(10L, 20L, 0L));
+    // BigInteger.divide throws ArithmeticException on a zero denominator all by
+    // itself, so the type alone cannot tell the guard from its absence — the
+    // guard is here for the diagnosis, and only the message pins it
+    final var zeroDenominator = assertThrows(ArithmeticException.class,
+        () -> SafeMath.mulDivU64(10L, 20L, 0L));
+    assertTrue(zeroDenominator.getMessage().contains("denominator is zero"), zeroDenominator.getMessage());
     // a quotient past u64 is an error, not a truncation
     assertThrows(ArithmeticException.class, () -> SafeMath.mulDivU64(-1L, 4L, 1L));
+  }
+
+  /// The overload OrcaUtil's fee math uses: a BigInteger rate against its bps
+  /// or 1e-6 denominator, with the rounding direction the program charges in.
+  @Test
+  void mulDivRoundsAwayFromZeroOnlyWhenAsked() {
+    final var bps = BigInteger.valueOf(10_000L);
+    final var factor = BigInteger.valueOf(9_999L);
+    // 100 * 9999 / 10000 = 99.99 — the direction decides who absorbs the ulp
+    assertEquals(99L, SafeMath.mulDivU64(100L, factor, bps, false));
+    assertEquals(100L, SafeMath.mulDivU64(100L, factor, bps, true));
+    // an exact division has no remainder, so rounding up must not add one
+    assertEquals(50L, SafeMath.mulDivU64(100L, BigInteger.valueOf(5_000L), bps, true));
+    assertEquals(50L, SafeMath.mulDivU64(100L, BigInteger.valueOf(5_000L), bps, false));
+    // the zero short-circuit and the long way agree, in both directions
+    assertEquals(0L, SafeMath.mulDivU64(0L, factor, bps, true));
+    assertEquals(0L, SafeMath.mulDivU64(100L, BigInteger.ZERO, bps, true));
+    // unsigned operand, and a quotient past u64 is still an error
+    assertEquals(-1L, SafeMath.mulDivU64(-1L, BigInteger.ONE, BigInteger.ONE, false));
+    assertThrows(ArithmeticException.class,
+        () -> SafeMath.mulDivU64(-1L, BigInteger.TWO, BigInteger.ONE, false));
+    // the denominator is checked before the short-circuit, so a zero
+    // denominator is an error even when the amount would have returned early
+    final var zeroDenominator = assertThrows(ArithmeticException.class,
+        () -> SafeMath.mulDivU64(0L, factor, BigInteger.ZERO, false));
+    assertTrue(zeroDenominator.getMessage().contains("denominator is zero"), zeroDenominator.getMessage());
+  }
+
+  /// BigInteger reads shiftRight(-n) as shiftLeft(n), so an unguarded negative
+  /// shift moves the value the wrong way and inverts the rounding test instead
+  /// of failing. Both shift helpers reject it as a caller error.
+  @Test
+  void shiftHelpersRejectANegativeShift() {
+    final var two = BigInteger.TWO;
+    assertThrows(IllegalArgumentException.class, () -> SafeMath.mulShiftRight(two, two, -1, false));
+    assertThrows(IllegalArgumentException.class, () -> SafeMath.mulShiftRight(two, two, -1, true));
+    assertThrows(IllegalArgumentException.class, () -> SafeMath.mulShiftTruncateU128(two, two, -1));
+    // zero is a legal shift: nothing is discarded, so roundUp cannot fire
+    assertEquals(BigInteger.valueOf(4), SafeMath.mulShiftRight(two, two, 0, true));
+    assertEquals(BigInteger.valueOf(4), SafeMath.mulShiftTruncateU128(two, two, 0));
   }
 
   @Test

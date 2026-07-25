@@ -160,11 +160,34 @@ public final class SafeMath {
   /// throws [ArithmeticException] rather than returning a sentinel — a zero
   /// denominator here is a liquidity or supply that should have been checked.
   public static long mulDivU64(final long a, final long b, final long c) {
-    final var denominator = toUnsignedBigInteger(c);
+    return mulDivU64(a, toUnsignedBigInteger(b), toUnsignedBigInteger(c), false);
+  }
+
+  /// [#mulDivU64(long, long, long)] for callers whose factor and denominator are
+  /// already `BigInteger` — a fee rate against its 1e-6 or bps denominator —
+  /// and who need the rounding direction the on-chain program uses.
+  ///
+  /// `roundUp` rounds away from zero whenever the division leaves a remainder,
+  /// which is how a program charges a fee it must not under-collect; the
+  /// truncating direction is the one that must not over-credit. Both operands
+  /// are unsigned, and the quotient still has to fit `u64`.
+  public static long mulDivU64(final long amount,
+                               final BigInteger numeratorFactor,
+                               final BigInteger denominator,
+                               final boolean roundUp) {
     if (denominator.signum() == 0) {
       throw new ArithmeticException("mulDiv denominator is zero");
     }
-    return toU64(toUnsignedBigInteger(a).multiply(toUnsignedBigInteger(b)).divide(denominator));
+    // the fall-through computes this same zero the long way; the short-circuit
+    // only skips the allocation
+    if (amount == 0L || numeratorFactor.signum() == 0) {
+      return 0L;
+    }
+    final var numerator = toUnsignedBigInteger(amount).multiply(numeratorFactor);
+    final var quotient = numerator.divide(denominator);
+    return toU64(roundUp && numerator.mod(denominator).signum() != 0
+        ? quotient.add(BigInteger.ONE)
+        : quotient);
   }
 
   /// `a.wrapping_add(b)` over `u128`, the counterpart to [#wrappingSubU128]:
@@ -182,10 +205,19 @@ public final class SafeMath {
   /// according to the field they are writing back to, because the same shift
   /// feeds both an uncapped result and an `as u64` cast depending on the
   /// caller.
+  ///
+  /// A negative `shift` is rejected rather than interpreted. `BigInteger`
+  /// defines `shiftRight(-n)` as `shiftLeft(n)`, so it would silently move the
+  /// value the wrong way *and* invert the rounding test — `ONE.shiftLeft(-n)`
+  /// is zero, whose `- 1` is the all-ones mask, which makes every non-zero
+  /// product look like it discarded bits. That is a caller mistake, so it is an
+  /// [IllegalArgumentException] and not the [ArithmeticException] this class
+  /// throws for a result that will not fit.
   public static BigInteger mulShiftRight(final BigInteger a,
                                          final BigInteger b,
                                          final int shift,
                                          final boolean roundUp) {
+    requireNonNegativeShift(shift);
     final var product = a.multiply(b);
     final var quotient = product.shiftRight(shift);
     if (roundUp && product.and(BigInteger.ONE.shiftLeft(shift).subtract(BigInteger.ONE)).signum() > 0) {
@@ -197,8 +229,19 @@ public final class SafeMath {
   /// `(a * b) >> shift` truncated to `u128`, mirroring a Rust fixed-point step
   /// whose intermediate is a `u128` register: the high bits are discarded, not
   /// carried.
+  ///
+  /// Rejects a negative `shift` for the same reason [#mulShiftRight] does,
+  /// where it is spelled out — here it would shift the value left and then mask
+  /// the overshoot away, which loses the high bits silently instead of loudly.
   public static BigInteger mulShiftTruncateU128(final BigInteger a, final BigInteger b, final int shift) {
+    requireNonNegativeShift(shift);
     return a.multiply(b).shiftRight(shift).and(U128_MASK);
+  }
+
+  private static void requireNonNegativeShift(final int shift) {
+    if (shift < 0) {
+      throw new IllegalArgumentException("shift must be non-negative: " + shift);
+    }
   }
 
   /// `a.wrapping_sub(b)` over `u128`, matching on-chain Rust accumulator

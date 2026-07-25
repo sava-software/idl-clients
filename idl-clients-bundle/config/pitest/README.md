@@ -220,6 +220,9 @@ reached (`preSerialize:46`, `collectRewardsQuote:128`).
 | 2026-07-25 | `orca` | 49 | 0 | 49 | 699/748 (93%) | 93% |
 | 2026-07-25 | `scope` | 42 | 0 | 42 | 312/354 (88%) | 88% |
 | 2026-07-25 | `clients` | 36 | 0 | 36 | 1626/1662 (98%) | 98% |
+| 2026-07-25 | `orca` | 47 | 0 | 47 | 674/721 (93%) | 93% |
+| 2026-07-25 | `clients` | 35 | 0 | 35 | 1621/1656 (98%) | 98% |
+| 2026-07-25 | `orca` | 45 | 0 | 45 | 659/704 (94%) | 94% |
 
 The 57-row 2026-07-23 entry is the priority-3 discharge — the client-impl and
 request/response tranche worked down from 436 rows. In order of volume:
@@ -1157,6 +1160,10 @@ read masked-unsigned), the `emaTypes != null` clause in `validateNoEmaTypes`
 (its one producer never returns null), and `requireU128`'s return value
 (callers use it for the throw, not the value). Removing any of them is
 unobservable without constructing states the codebase cannot produce.
+
+Two more left on 2026-07-25 when `tryGetAmountDeltaB`'s inline product /
+shift / round block became a single `SafeMath.mulShiftRight` call — the mask
+and rounding mutants they covered no longer exist as separate statements.
 
 Three rows left this family on 2026-07-25 when the u64 helpers moved to
 `core.math.SafeMath`: `OrcaUtil.u64`'s `> U64_MAX` check was not merely unobservable

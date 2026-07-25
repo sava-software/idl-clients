@@ -89,6 +89,8 @@ whose division leaves trailing zeros (`StakePoolStateTests.feeToRatio`,
 | 2026-07-24 | 5 | 0 | 5 | 756/761 (99%) | 99% |
 | 2026-07-25 | 5 | 0 | 5 | 778/783 (99%) | 99% |
 | 2026-07-25 | 9 | 0 | 9 | 778/787 (99%) | 99% |
+| 2026-07-25 | 10 | 0 | 10 | 834/844 (99%) | 99% |
+| 2026-07-25 | 12 | 0 | 12 | 850/862 (99%) | 99% |
 
 The 2026-07-23 row is the `EXPERIMENTAL_NAKED_RECEIVER` intake (below): +19
 mutants, all four initial survivors killed, baseline unchanged.
@@ -107,12 +109,13 @@ accepted rows across the four suites became 136.
 The baseline was seeded with the full pre-existing survivor population when the
 ratchet was adopted, per HARDENING.md's adoption path — triage debt made
 explicit, not acceptance. **That debt is now discharged.** All three priorities
-below were worked down; every one of the 9 remaining rows is analyzed:
+below were worked down; every one of the 12 remaining rows is analyzed:
 
 | Rows | Group | Status |
 |---|---|---|
-| 5 | Redundant zero short-circuits | equivalent — accepted, reasoned below |
+| 7 | Redundant zero short-circuits | equivalent — accepted, reasoned below |
 | 4 | Unsigned-widening fast path | equivalent — accepted, reasoned below |
+| 1 | Saturating-subtraction boundary | equivalent — accepted, reasoned below |
 
 The two RPC fetchers (`fetchProgramState` / `fetchValidatorList`) were
 covered 2026-07-24 by `StakePoolRpcFetcherTests` against an in-JVM JSON-RPC
@@ -203,8 +206,9 @@ label by searching this file for its literal text):
 
 | Label | Rows | Argument |
 |---|---|---|
-| `# zero-fast-path family` | 5 | redundant zero short-circuits in front of a division |
+| `# zero-fast-path family` | 7 | redundant zero short-circuits in front of a division |
 | `# fast-path-guard family` | 4 | a guard choosing the cheaper of two identical computations |
+| `# equal-operands family` | 1 | a comparison boundary where both branches compute the same value |
 
 ### Redundant zero short-circuits in front of a division (5 mutants)
 
@@ -215,8 +219,17 @@ label by searching this file for its literal text):
 | `stakepool.StakePoolState$Fee` | `toRatio()` | 236 |
 | `stakepool.StakePoolState` | `calculateSolPrice(MathContext)` | 68 |
 | `stakepool.StakePoolState` | `calculateSolPrice(int, RoundingMode)` | 74 |
+| `core.math.SafeMath` | `mulDivU64(long, BigInteger, BigInteger, boolean)` | 183 |
+| `core.math.SafeMath` | `mulDivU64(long, BigInteger, BigInteger, boolean)` | 183 |
 
-All five are `RemoveConditionalMutator_EQUAL_IF` against the **first** clause of
+The last two arrived on 2026-07-25 with `OrcaUtil.mulDivU64`, which moved here
+whole; they were carrying the identical acceptance in the orca baseline. Its
+guard is `amount == 0L || numeratorFactor.signum() == 0`, and each clause's
+replace-with-**false** mutant falls through to compute the same zero the long
+way (`0 * factor / denominator`, remainder zero so no rounding). The
+replace-with-**true** siblings return zero unconditionally and are killed.
+
+All five of the originals are `RemoveConditionalMutator_EQUAL_IF` against the **first** clause of
 a two-clause guard: `numerator == 0 || denominator == 0`, and the
 `totalLamports.signum() == 0 || poolTokenSupply.signum() == 0` analogue.
 
@@ -243,6 +256,24 @@ it is a deliberate fast path that avoids `BigDecimal` division and allocation
 for the common zero-fee case, and a mutation score is not a reason to give that
 up. Note the same `numerator == 0` test in `Fee.compareTo` is *not* equivalent —
 there it selects a genuinely different ordering, and it is covered.
+
+### The saturating-subtraction boundary (1 mutant)
+
+| Class | Method | Line | Mutator |
+|---|---|---|---|
+| `core.math.SafeMath` | `saturatingSubU64` | 152 | `ConditionalsBoundaryMutator` |
+
+`saturatingSubU64` is `Long.compareUnsigned(a, b) < 0 ? 0L : a - b`, and widening
+the comparison to `<=` moves exactly one case across: `a == b`, where the
+subtraction the mutant skips would have produced `0` anyway. Equal operands make
+the two branches agree, so no input separates them.
+
+Distinguish this from the neighbouring `checkedAddU64` boundary, which looks
+identical and is **not** equivalent: there the equality case (`b == 0`) selects
+between returning a value and throwing, so it is a kill — pinned by
+`checkedAddTreatsBothOperandsAsUnsigned`. The shared label is
+`# equal-operands family`, and it means the branches agree *on a value*, never
+that a boundary is merely hard to reach.
 
 ### The unsigned-widening fast path (4 mutants)
 

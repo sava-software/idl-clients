@@ -282,21 +282,6 @@ public final class OrcaUtil {
   private static final BigInteger BPS_DENOMINATOR_BI = BigInteger.valueOf(BPS_DENOMINATOR);
   private static final BigInteger FEE_RATE_DENOMINATOR_BI = BigInteger.valueOf(FEE_RATE_DENOMINATOR);
 
-  private static long mulDivU64(final long amount,
-                                final BigInteger numeratorFactor,
-                                final BigInteger denominator,
-                                final boolean roundUp) {
-    if (amount == 0L || numeratorFactor.signum() == 0) {
-      return 0L;
-    }
-    final var numerator = SafeMath.toUnsignedBigInteger(amount).multiply(numeratorFactor);
-    var quotient = numerator.divide(denominator);
-    if (roundUp && numerator.mod(denominator).signum() != 0) {
-      quotient = quotient.add(BigInteger.ONE);
-    }
-    return SafeMath.toU64(quotient);
-  }
-
   /// Apply a swap fee to `amount`. `feeRate` is in 1e-6 units (i.e.
   /// `Whirlpool.fee_rate`). Returns the amount the user keeps after the fee.
   /// Mirrors `try_apply_swap_fee`.
@@ -305,7 +290,7 @@ public final class OrcaUtil {
       throw new IllegalArgumentException("feeRate out of range: " + feeRate);
     }
     final var product = FEE_RATE_DENOMINATOR_BI.subtract(BigInteger.valueOf(feeRate));
-    return mulDivU64(amount, product, FEE_RATE_DENOMINATOR_BI, false);
+    return SafeMath.mulDivU64(amount, product, FEE_RATE_DENOMINATOR_BI, false);
   }
 
   /// Inverse of [#applySwapFee(long, int)] — given the post-fee amount,
@@ -315,7 +300,7 @@ public final class OrcaUtil {
       throw new IllegalArgumentException("feeRate out of range: " + feeRate);
     }
     final var denominator = FEE_RATE_DENOMINATOR_BI.subtract(BigInteger.valueOf(feeRate));
-    return mulDivU64(amount, FEE_RATE_DENOMINATOR_BI, denominator, true);
+    return SafeMath.mulDivU64(amount, FEE_RATE_DENOMINATOR_BI, denominator, true);
   }
 
   /// Apply a Token-2022 transfer fee to `amount`. `feeBps` is in basis
@@ -376,7 +361,7 @@ public final class OrcaUtil {
       throw new IllegalArgumentException("slippageBps out of range: " + slippageBps);
     }
     final var product = BPS_DENOMINATOR_BI.add(BigInteger.valueOf(slippageBps));
-    return mulDivU64(amount, product, BPS_DENOMINATOR_BI, true);
+    return SafeMath.mulDivU64(amount, product, BPS_DENOMINATOR_BI, true);
   }
 
   /// Minimum amount the caller is willing to receive given an estimate and
@@ -388,7 +373,7 @@ public final class OrcaUtil {
       throw new IllegalArgumentException("slippageBps out of range: " + slippageBps);
     }
     final var product = BPS_DENOMINATOR_BI.subtract(BigInteger.valueOf(slippageBps));
-    return mulDivU64(amount, product, BPS_DENOMINATOR_BI, false);
+    return SafeMath.mulDivU64(amount, product, BPS_DENOMINATOR_BI, false);
   }
 
   // --------------------------------------------------------------------------

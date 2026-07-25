@@ -1,3 +1,6 @@
+software.sava.idl.clients.core.math.SafeMath,mulDivU64,183,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
+software.sava.idl.clients.core.math.SafeMath,mulDivU64,183,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
+software.sava.idl.clients.core.math.SafeMath,saturatingSubU64,152,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
 software.sava.idl.clients.core.math.SafeMath,toUnsignedBigDecimal,76,ConditionalsBoundaryMutator,SURVIVED # fast-path-guard family
 software.sava.idl.clients.core.math.SafeMath,toUnsignedBigDecimal,76,RemoveConditionalMutator_ORDER_IF,SURVIVED # fast-path-guard family
 software.sava.idl.clients.core.math.SafeMath,toUnsignedBigInteger,66,ConditionalsBoundaryMutator,SURVIVED # fast-path-guard family
