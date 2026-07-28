@@ -231,7 +231,7 @@ a PIT suite with `./gradlew :<module>:pitest<Name>`.
 
 ### Quality gate & mutation ratchet
 
-<!-- hardening-template sha256:7f9eb869ee7e -->
+<!-- hardening-template sha256:f6dea3f41ab7 -->
 
 Full policy: sava-build's `HARDENING.md` — the canonical source for the ratchet,
 its equivalence families, and the lifecycle. Per-module acceptance records:
@@ -332,6 +332,18 @@ specifics:
   every `TIMED_OUT` row. The comparison is scripted: `pitestModeSnapshot
   -PpitestMode=<label>` / `pitestModeCompare`, with `-PunionModeFlips` writing
   the observed-flip unions; `pitestConverge` checks run-to-run determinism.
+- **A new timed-out mutant is a reviewer-stop, not detection noise.** For
+  exactly these mutants the ratchet cannot see a weakened covering assertion —
+  a timeout keeps "detecting" whatever the test asserts — so each suite's
+  timeouts are an audited set, not a count:
+  `config/pitest/<suite>-timeouts.csv` holds line-less `class,method,mutator`
+  keys, and `config/pitest/README.md` the structural cause per member (the
+  removed loop exit, the reversed cursor, the leaked unlock). The verify warns
+  on any timeout outside the set — paste the printed row, then write the
+  cause — and on members matching no mutant; admit a newcomer only with its
+  cause written. The key is the check's resolution: a new timed-out mutant in
+  an already-audited method+mutator draws no warning, so name the line in the
+  README cause and re-read it when that code changes.
 - When a test you believe in will not go green, **suspect the code before you
   soften the assertion** — most of this repo's shipped-defect finds (the
   Jupiter fee-payer crash among them) surfaced exactly this way.

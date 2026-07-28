@@ -1,0 +1,4 @@
+# Audited timeout-detected mutants for the 'scope' suite — line-less
+# class,method,mutator keys (HARDENING.md, the audited-set bullet). Structural
+# cause per member: README.md, 'Audited timeout-detected mutants'.
+software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,entry,RemoveConditionalMutator_EQUAL_ELSE # line 86

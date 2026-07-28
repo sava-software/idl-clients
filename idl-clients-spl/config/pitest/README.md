@@ -126,6 +126,15 @@ and the requests each fetcher emits are the wiring worth pinning: the pool
 account it was given, and the validator-list key *stored in the fetched
 state*. The state response is the committed real Jito account.
 
+## Audited timeout-detected mutants (armed 2026-07-28, sava-build 21.5.17)
+
+`spl-timeouts.csv` is present but empty: the suite currently has no
+timeout-detected mutants. The file exists to arm the verify's audit — a first
+timed-out mutant here warns as an unaudited newcomer (a reviewer-stop, since
+for a timed-out mutant the ratchet cannot see a weakened covering assertion)
+instead of passing as an anonymous count. Admit a member only with its
+structural cause written here (HARDENING.md, the audited-set bullet).
+
 ## Untriaged debt, in priority order
 
 1. ~~**`precompiles.SignatureVerifyProgram` and the offsets records**~~ —

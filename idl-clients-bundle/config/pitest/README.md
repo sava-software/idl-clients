@@ -975,6 +975,44 @@ kLend program and the farms builders substitute the farms program. The generated
 mapping from Kamino's *semantic* null keys (`PublicKey.NONE`, `nu111…`) onto
 that positional convention, which `requireNonNullElse` alone would not catch.
 
+## Audited timeout-detected mutants (seeded 2026-07-28, sava-build 21.5.17)
+
+`TIMED_OUT` counts as detected, but for exactly these mutants the ratchet
+cannot see a weakened covering assertion — a timeout keeps "detecting"
+whatever the test asserts. Each suite's timeouts are therefore an audited
+membership in `<suite>-timeouts.csv` (line-less `class,method,mutator` keys;
+the verify warns on any timed-out mutant outside the set, and on members
+matching no mutant). Advisory only, never a failure. The structural cause per
+member:
+
+### `clients`: `DlmmUtils.pow` binary-expansion loop exit (line 214)
+
+`RemoveConditionalMutator_ORDER_IF` on `for (int bit = 0; bit < 19; bit++)`
+removes the loop exit: the Q64.64 binary-expansion loop squares and masks
+forever instead of running its fixed 19 steps. Deterministically infinite —
+only the watchdog can stop it, in any load mode.
+
+### `orca`: `OrcaUtil.sqrtFloor` Newton convergence exit (line 463)
+
+Two mutators on the convergence check `while (next.compareTo(prev) < 0)`:
+
+- `ConditionalsBoundaryMutator` (`<` → `<=`): at the fixed point
+  (`next == prev`) the iteration recomputes the same value forever instead of
+  exiting.
+- `RemoveConditionalMutator_ORDER_IF`: removes the exit outright.
+
+Both are the removed/weakened loop exit of an otherwise-correct Newton
+iteration; no assertion can observe wrongness because the loop never returns.
+
+### `scope`: `ScopeReaderRecord.entry` memo-cache hit (line 86)
+
+`RemoveConditionalMutator_EQUAL_ELSE` on the cache check `if (entry != null)`
+makes the cached-entry return unreachable, so every visit recomputes via
+`computeEntry`. Fan-out types share forward references, and recomputing them
+per visit is exponential in the mapping (the code comment at that site records
+a ~50s parse of one hostile 29KB account). Results stay *correct* — the mutant
+is slow, not wrong — so timing is the only possible detection.
+
 ## Triaged equivalent mutants (accepted with reasons)
 
 ### Row-label legend (2026-07-23, sava-build 21.5.12 convention)

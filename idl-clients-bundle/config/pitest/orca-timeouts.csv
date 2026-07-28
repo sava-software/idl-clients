@@ -1,0 +1,5 @@
+# Audited timeout-detected mutants for the 'orca' suite — line-less
+# class,method,mutator keys (HARDENING.md, the audited-set bullet). Structural
+# cause per member: README.md, 'Audited timeout-detected mutants'.
+software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,ConditionalsBoundaryMutator # line 463
+software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,RemoveConditionalMutator_ORDER_IF # line 463
