@@ -1004,6 +1004,21 @@ Two mutators on the convergence check `while (next.compareTo(prev) < 0)`:
 Both are the removed/weakened loop exit of an otherwise-correct Newton
 iteration; no assertion can observe wrongness because the loop never returns.
 
+### `orca`: `OrcaUtil.sqrtPriceFromPositiveTick` binary-expansion loop exit (line 564)
+
+`RemoveConditionalMutator_ORDER_IF` on `for (int i = 0; i < POS_FACTORS.length; i++)`
+removes the loop exit of the 18-step binary-expansion loop — the same idiom as
+the audited `DlmmUtils.pow` member in `clients`. The flavour is input-dependent:
+for tick 0 no factor bit is ever set, so the body never touches `POS_FACTORS[i]`
+and the loop is deterministically infinite; for a nonzero tick the mask
+(`2 << i`, shift distance mod 32) eventually cycles back onto a set bit and
+`POS_FACTORS[i]` throws AIOOBE, which is why this mutant can also register as
+`KILLED` — a legitimate `KILLED`↔`TIMED_OUT` flip depending on which covering
+test the watchdog interrupts first (surfaced 2026-07-29, sava-build 21.5.18).
+`sqrtPriceFromNegativeTick` (line 577) is the same shape and will belong here
+too if it ever times out; per the one-reviewed-row-at-a-time rule it is not
+added speculatively.
+
 ### `scope`: `ScopeReaderRecord.entry` memo-cache hit (line 86)
 
 `RemoveConditionalMutator_EQUAL_ELSE` on the cache check `if (entry != null)`
