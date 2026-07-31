@@ -1,5 +1,15 @@
 # Changelog
 
+## [25.18.4](https://github.com/sava-software/idl-clients/compare/25.18.3...25.18.4) (2026-07-31)
+
+
+### Features
+
+* **idl:** add audited timeout-detected mutant tracking for clients ([1609812](https://github.com/sava-software/idl-clients/commit/16098127a853ab6cabd0cbb618a1f1e76c514158))
+* **idl:** synchronize updated IDL and regenerate code for Pyth Pro receiver ([26c5f95](https://github.com/sava-software/idl-clients/commit/26c5f95f682ff82343a7228b68f269ca1a5b1df2))
+* **idl:** track timeout-detected mutant for sqrtPriceFromPositiveTick ([73ea2c4](https://github.com/sava-software/idl-clients/commit/73ea2c4e367f08aaa82679266659199d0d6454df))
+* **idl:** update Scope program with resume authority and PythLazer enhancements ([2b506ee](https://github.com/sava-software/idl-clients/commit/2b506eeac580a3fbb9a0783ab805844d4c3ac092))
+
 ## [25.18.3](https://github.com/sava-software/idl-clients/compare/25.18.2...25.18.3) (2026-07-25)
 
 
