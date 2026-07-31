@@ -18,18 +18,22 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param singleUpdateFeeInLamports: u64
 /// @param numTrustedSigners: u8
+/// @param numTrustedEcdsaSigners: u8
 public record Storage(PublicKey _address,
                       Discriminator discriminator,
                       PublicKey topAuthority,
                       PublicKey treasury,
                       long singleUpdateFeeInLamports,
                       int numTrustedSigners,
-                      TrustedSignerInfo[] trustedSigners,
+                      TrustedSignerInfoPublicKey[] trustedSigners,
+                      int numTrustedEcdsaSigners,
+                      TrustedSignerInfoU8Array20[] trustedEcdsaSigners,
                       byte[] extraSpace) implements SerDe {
 
   public static final int BYTES = 381;
   public static final int TRUSTED_SIGNERS_LEN = 5;
-  public static final int EXTRA_SPACE_LEN = 100;
+  public static final int TRUSTED_ECDSA_SIGNERS_LEN = 2;
+  public static final int EXTRA_SPACE_LEN = 43;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(209, 117, 255, 185, 196, 175, 68, 9);
@@ -40,7 +44,9 @@ public record Storage(PublicKey _address,
   public static final int SINGLE_UPDATE_FEE_IN_LAMPORTS_OFFSET = 72;
   public static final int NUM_TRUSTED_SIGNERS_OFFSET = 80;
   public static final int TRUSTED_SIGNERS_OFFSET = 81;
-  public static final int EXTRA_SPACE_OFFSET = 281;
+  public static final int NUM_TRUSTED_ECDSA_SIGNERS_OFFSET = 281;
+  public static final int TRUSTED_ECDSA_SIGNERS_OFFSET = 282;
+  public static final int EXTRA_SPACE_OFFSET = 338;
 
   public static Filter createTopAuthorityFilter(final PublicKey topAuthority) {
     return Filter.createMemCompFilter(TOP_AUTHORITY_OFFSET, topAuthority);
@@ -58,6 +64,10 @@ public record Storage(PublicKey _address,
 
   public static Filter createNumTrustedSignersFilter(final int numTrustedSigners) {
     return Filter.createMemCompFilter(NUM_TRUSTED_SIGNERS_OFFSET, new byte[]{(byte) numTrustedSigners});
+  }
+
+  public static Filter createNumTrustedEcdsaSignersFilter(final int numTrustedEcdsaSigners) {
+    return Filter.createMemCompFilter(NUM_TRUSTED_ECDSA_SIGNERS_OFFSET, new byte[]{(byte) numTrustedEcdsaSigners});
   }
 
   public static Storage read(final byte[] _data, final int _offset) {
@@ -88,9 +98,13 @@ public record Storage(PublicKey _address,
     i += 8;
     final var numTrustedSigners = _data[i] & 0xFF;
     ++i;
-    final var trustedSigners = new TrustedSignerInfo[5];
-    i += SerDeUtil.readArray(trustedSigners, TrustedSignerInfo::read, _data, i);
-    final var extraSpace = new byte[100];
+    final var trustedSigners = new TrustedSignerInfoPublicKey[5];
+    i += SerDeUtil.readArray(trustedSigners, TrustedSignerInfoPublicKey::read, _data, i);
+    final var numTrustedEcdsaSigners = _data[i] & 0xFF;
+    ++i;
+    final var trustedEcdsaSigners = new TrustedSignerInfoU8Array20[2];
+    i += SerDeUtil.readArray(trustedEcdsaSigners, TrustedSignerInfoU8Array20::read, _data, i);
+    final var extraSpace = new byte[43];
     SerDeUtil.readArray(extraSpace, _data, i);
     return new Storage(_address,
                        discriminator,
@@ -99,6 +113,8 @@ public record Storage(PublicKey _address,
                        singleUpdateFeeInLamports,
                        numTrustedSigners,
                        trustedSigners,
+                       numTrustedEcdsaSigners,
+                       trustedEcdsaSigners,
                        extraSpace);
   }
 
@@ -114,7 +130,10 @@ public record Storage(PublicKey _address,
     _data[i] = (byte) numTrustedSigners;
     ++i;
     i += SerDeUtil.writeArrayChecked(trustedSigners, 5, _data, i);
-    i += SerDeUtil.writeArrayChecked(extraSpace, 100, _data, i);
+    _data[i] = (byte) numTrustedEcdsaSigners;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(trustedEcdsaSigners, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(extraSpace, 43, _data, i);
     return i - _offset;
   }
 

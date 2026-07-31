@@ -267,7 +267,8 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "oracles.pyth.lazer",
-      "program": "pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt"
+      "program": "pytd2yyk641x7ak7mkaasSJVXh6YYZnC7wTmtgAyxPt",
+      "idlURL": "https://raw.githubusercontent.com/pyth-network/pyth-lazer-public/refs/heads/main/sdk/js-solana/src/idl/pyth-lazer-solana-contract.json"
     },
     {
       "name": "Pyth Push",
@@ -285,6 +286,33 @@
       "typeRefs": [
         {
           "refProgram": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT",
+          "srcMismatch": "ERROR",
+          "matchOnTypeName": true,
+          "excludeTypes": [],
+          "explicitRules": []
+        }
+      ]
+    },
+    {
+      "name": "Pyth Pro Push",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "oracles.pyth.pro.push",
+      "program": "pyt2F414BA6dPttK6RddPZUdHfapoBN24GL5wbrPCou",
+      "syncIdl": true,
+      "idlFile": "idls/anchor/pyth/pyth_push_oracle.json"
+    },
+    {
+      "name": "Pyth Pro Receiver",
+      "source": "idl-clients-bundle",
+      "module": "bundle",
+      "package": "oracles.pyth.pro.receiver",
+      "program": "rec2HHDDnjLfj4kE7VyEtFA1HPGQLK33259532cRyHp",
+      "syncIdl": true,
+      "idlFile": "idls/anchor/pyth/pyth_solana_receiver.json",
+      "typeRefs": [
+        {
+          "refProgram": "pyt2F414BA6dPttK6RddPZUdHfapoBN24GL5wbrPCou",
           "srcMismatch": "ERROR",
           "matchOnTypeName": true,
           "excludeTypes": [],

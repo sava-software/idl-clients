@@ -177,6 +177,149 @@ public final class PythLazerSolanaContractProgram {
     }
   }
 
+  public static final Discriminator UPDATE_ECDSA_SIGNER_DISCRIMINATOR = toDiscriminator(22, 110, 222, 141, 112, 219, 27, 200);
+
+  public static List<AccountMeta> updateEcdsaSignerKeys(final PublicKey topAuthorityKey,
+                                                        final PublicKey storageKey) {
+    return List.of(
+      createReadOnlySigner(topAuthorityKey),
+      createWrite(storageKey)
+    );
+  }
+
+  public static Instruction updateEcdsaSigner(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
+                                              final PublicKey topAuthorityKey,
+                                              final PublicKey storageKey,
+                                              final byte[] trustedSigner,
+                                              final long expiresAt) {
+    final var keys = updateEcdsaSignerKeys(
+      topAuthorityKey,
+      storageKey
+    );
+    return updateEcdsaSigner(invokedPythLazerSolanaContractProgramMeta, keys, trustedSigner, expiresAt);
+  }
+
+  public static Instruction updateEcdsaSigner(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final byte[] trustedSigner,
+                                              final long expiresAt) {
+    final byte[] _data = new byte[16 + SerDeUtil.lenArray(trustedSigner)];
+    int i = UPDATE_ECDSA_SIGNER_DISCRIMINATOR.write(_data, 0);
+    i += SerDeUtil.writeArrayChecked(trustedSigner, 20, _data, i);
+    putInt64LE(_data, i, expiresAt);
+
+    return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
+  }
+
+  public record UpdateEcdsaSignerIxData(Discriminator discriminator, byte[] trustedSigner, long expiresAt) implements SerDe {  
+
+    public static UpdateEcdsaSignerIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 36;
+    public static final int TRUSTED_SIGNER_LEN = 20;
+
+    public static final int TRUSTED_SIGNER_OFFSET = 8;
+    public static final int EXPIRES_AT_OFFSET = 28;
+
+    public static UpdateEcdsaSignerIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var trustedSigner = new byte[20];
+      i += SerDeUtil.readArray(trustedSigner, _data, i);
+      final var expiresAt = getInt64LE(_data, i);
+      return new UpdateEcdsaSignerIxData(discriminator, trustedSigner, expiresAt);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeArrayChecked(trustedSigner, 20, _data, i);
+      putInt64LE(_data, i, expiresAt);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator VERIFY_ECDSA_MESSAGE_DISCRIMINATOR = toDiscriminator(207, 170, 89, 179, 216, 67, 129, 146);
+
+  public static List<AccountMeta> verifyEcdsaMessageKeys(final SolanaAccounts solanaAccounts,
+                                                         final PublicKey payerKey,
+                                                         final PublicKey storageKey,
+                                                         final PublicKey treasuryKey) {
+    return List.of(
+      createWritableSigner(payerKey),
+      createRead(storageKey),
+      createWrite(treasuryKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction verifyEcdsaMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
+                                               final SolanaAccounts solanaAccounts,
+                                               final PublicKey payerKey,
+                                               final PublicKey storageKey,
+                                               final PublicKey treasuryKey,
+                                               final byte[] messageData) {
+    final var keys = verifyEcdsaMessageKeys(
+      solanaAccounts,
+      payerKey,
+      storageKey,
+      treasuryKey
+    );
+    return verifyEcdsaMessage(invokedPythLazerSolanaContractProgramMeta, keys, messageData);
+  }
+
+  public static Instruction verifyEcdsaMessage(final AccountMeta invokedPythLazerSolanaContractProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final byte[] messageData) {
+    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, messageData)];
+    int i = VERIFY_ECDSA_MESSAGE_DISCRIMINATOR.write(_data, 0);
+    SerDeUtil.writeVector(4, messageData, _data, i);
+
+    return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
+  }
+
+  public record VerifyEcdsaMessageIxData(Discriminator discriminator, byte[] messageData) implements SerDe {  
+
+    public static VerifyEcdsaMessageIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int MESSAGE_DATA_OFFSET = 8;
+
+    public static VerifyEcdsaMessageIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var messageData = SerDeUtil.readbyteVector(4, _data, i);
+      return new VerifyEcdsaMessageIxData(discriminator, messageData);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += SerDeUtil.writeVector(4, messageData, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + SerDeUtil.lenVector(4, messageData);
+    }
+  }
+
   public static final Discriminator VERIFY_MESSAGE_DISCRIMINATOR = toDiscriminator(180, 193, 120, 55, 189, 135, 203, 83);
 
   /// Verifies a ed25519 signature on Solana by checking that the transaction contains
@@ -199,7 +342,7 @@ public final class PythLazerSolanaContractProgram {
     return List.of(
       createWritableSigner(payerKey),
       createRead(storageKey),
-      createRead(treasuryKey),
+      createWrite(treasuryKey),
       createRead(solanaAccounts.systemProgram()),
       createRead(instructionsSysvarKey)
     );

@@ -82,6 +82,10 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.nt.bundle.gen;
   exports software.sava.idl.clients.oracles.pyth.lazer.gen.types;
   exports software.sava.idl.clients.oracles.pyth.lazer.gen;
+  exports software.sava.idl.clients.oracles.pyth.pro.push.gen.types;
+  exports software.sava.idl.clients.oracles.pyth.pro.push.gen;
+  exports software.sava.idl.clients.oracles.pyth.pro.receiver.gen.types;
+  exports software.sava.idl.clients.oracles.pyth.pro.receiver.gen;
   exports software.sava.idl.clients.oracles.pyth.push.gen.types;
   exports software.sava.idl.clients.oracles.pyth.push.gen;
   exports software.sava.idl.clients.oracles.pyth.receiver.gen.types;
