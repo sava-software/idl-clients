@@ -366,20 +366,21 @@ final class ScopeComputeEntryTests {
   void pythLazerCarriesItsFeedConfiguration() {
     final var entries = new Mappings()
         .slot(0, OracleType.PythLazer)
-        .generic(0, new PythLazerData(7, 8, 1_000L, false, 0L))
+        .generic(0, new PythLazerData(7, 8, 1_000L, false, 0L, 2_000L))
         .parse();
 
     final var lazer = assertInstanceOf(PythLazer.class, entries.scopeEntry(0));
     assertEquals(7, lazer.feedId());
     assertEquals(8, lazer.exponent());
-    assertEquals(1_000L, lazer.confidenceFactor());
+    assertEquals(1_000L, lazer.bidAskSpreadFactor());
+    assertEquals(2_000L, lazer.priceConfidenceFactor());
   }
 
   @Test
   void pythLazerEmaReferencesItsSourceEntry() {
     final var entries = new Mappings()
         .slot(1, OracleType.PythLazer)
-        .generic(1, new PythLazerData(7, 8, 1_000L, false, 0L))
+        .generic(1, new PythLazerData(7, 8, 1_000L, false, 0L, 2_000L))
         .slot(0, OracleType.PythLazerEMA)
         .generic(0, new PythLazerEmaRefData(1))
         .parse();

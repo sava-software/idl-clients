@@ -24,10 +24,11 @@ public record Configuration(PublicKey _address,
                             PublicKey oracleTwaps,
                             PublicKey adminCached,
                             PublicKey emergencyCouncil,
+                            PublicKey resumeAuthority,
                             long[] padding) implements SerDe {
 
   public static final int BYTES = 10240;
-  public static final int PADDING_LEN = 1251;
+  public static final int PADDING_LEN = 1247;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(192, 79, 172, 30, 21, 173, 25, 43);
@@ -40,7 +41,8 @@ public record Configuration(PublicKey _address,
   public static final int ORACLE_TWAPS_OFFSET = 136;
   public static final int ADMIN_CACHED_OFFSET = 168;
   public static final int EMERGENCY_COUNCIL_OFFSET = 200;
-  public static final int PADDING_OFFSET = 232;
+  public static final int RESUME_AUTHORITY_OFFSET = 232;
+  public static final int PADDING_OFFSET = 264;
 
   public static Filter createAdminFilter(final PublicKey admin) {
     return Filter.createMemCompFilter(ADMIN_OFFSET, admin);
@@ -68,6 +70,10 @@ public record Configuration(PublicKey _address,
 
   public static Filter createEmergencyCouncilFilter(final PublicKey emergencyCouncil) {
     return Filter.createMemCompFilter(EMERGENCY_COUNCIL_OFFSET, emergencyCouncil);
+  }
+
+  public static Filter createResumeAuthorityFilter(final PublicKey resumeAuthority) {
+    return Filter.createMemCompFilter(RESUME_AUTHORITY_OFFSET, resumeAuthority);
   }
 
   public static Configuration read(final byte[] _data, final int _offset) {
@@ -104,7 +110,9 @@ public record Configuration(PublicKey _address,
     i += 32;
     final var emergencyCouncil = readPubKey(_data, i);
     i += 32;
-    final var padding = new long[1251];
+    final var resumeAuthority = readPubKey(_data, i);
+    i += 32;
+    final var padding = new long[1247];
     SerDeUtil.readArray(padding, _data, i);
     return new Configuration(_address,
                              discriminator,
@@ -115,6 +123,7 @@ public record Configuration(PublicKey _address,
                              oracleTwaps,
                              adminCached,
                              emergencyCouncil,
+                             resumeAuthority,
                              padding);
   }
 
@@ -135,7 +144,9 @@ public record Configuration(PublicKey _address,
     i += 32;
     emergencyCouncil.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding, 1251, _data, i);
+    resumeAuthority.write(_data, i);
+    i += 32;
+    i += SerDeUtil.writeArrayChecked(padding, 1247, _data, i);
     return i - _offset;
   }
 

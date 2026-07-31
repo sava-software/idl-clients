@@ -2,7 +2,7 @@
   "address": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
   "metadata": {
     "name": "scope",
-    "version": "0.37.0",
+    "version": "0.39.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -491,7 +491,7 @@
       ],
       "accounts": [
         {
-          "name": "admin",
+          "name": "authority",
           "signer": true
         },
         {
@@ -584,6 +584,39 @@
       "args": [
         {
           "name": "new_emergency_council",
+          "type": "pubkey"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "set_resume_authority",
+      "discriminator": [
+        191,
+        152,
+        68,
+        90,
+        221,
+        93,
+        245,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "configuration",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_resume_authority",
           "type": "pubkey"
         },
         {
@@ -1038,6 +1071,16 @@
       "code": 6072,
       "name": "PythLazerEmaNotEnabledOnSource",
       "msg": "PythLazerEMA source entry does not have EMA enabled"
+    },
+    {
+      "code": 6073,
+      "name": "UnauthorizedResume",
+      "msg": "Signer is not authorized to resume"
+    },
+    {
+      "code": 6074,
+      "name": "PythLazerConfidenceNotPresent",
+      "msg": "Property fields in the feed of the PythLazer payload do not contain a confidence"
     }
   ],
   "types": [
@@ -1615,7 +1658,12 @@
             "type": "u8"
           },
           {
-            "name": "confidence_factor",
+            "name": "bid_ask_spread_factor",
+            "docs": [
+              "Tolerance factor for the bid/ask spread check (`ask - bid` against the",
+              "price). `0` disables the spread check entirely, in which case the payload",
+              "is not required to carry `BestBidPrice`/`BestAskPrice`."
+            ],
             "type": "u32"
           },
           {
@@ -1624,6 +1672,13 @@
           },
           {
             "name": "ema_confidence_factor",
+            "type": "u32"
+          },
+          {
+            "name": "price_confidence_factor",
+            "docs": [
+              "Tolerance factor for the native Lazer `Confidence` check; `0` disables it."
+            ],
             "type": "u32"
           }
         ]
@@ -2330,11 +2385,15 @@
             "type": "pubkey"
           },
           {
+            "name": "resume_authority",
+            "type": "pubkey"
+          },
+          {
             "name": "padding",
             "type": {
               "array": [
                 "u64",
-                1251
+                1247
               ]
             }
           }

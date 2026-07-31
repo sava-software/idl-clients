@@ -922,13 +922,13 @@ public final class ScopeProgram {
 
   public static final Discriminator RESUME_CHAINLINKX_PRICE_DISCRIMINATOR = toDiscriminator(136, 48, 103, 146, 227, 97, 87, 108);
 
-  public static List<AccountMeta> resumeChainlinkxPriceKeys(final PublicKey adminKey,
+  public static List<AccountMeta> resumeChainlinkxPriceKeys(final PublicKey authorityKey,
                                                             final PublicKey configurationKey,
                                                             final PublicKey oraclePricesKey,
                                                             final PublicKey oracleMappingsKey,
                                                             final PublicKey tokensMetadataKey) {
     return List.of(
-      createReadOnlySigner(adminKey),
+      createReadOnlySigner(authorityKey),
       createRead(configurationKey),
       createWrite(oraclePricesKey),
       createRead(oracleMappingsKey),
@@ -938,7 +938,7 @@ public final class ScopeProgram {
 
   /// @param token: u16
   public static Instruction resumeChainlinkxPrice(final AccountMeta invokedScopeProgramMeta,
-                                                  final PublicKey adminKey,
+                                                  final PublicKey authorityKey,
                                                   final PublicKey configurationKey,
                                                   final PublicKey oraclePricesKey,
                                                   final PublicKey oracleMappingsKey,
@@ -946,7 +946,7 @@ public final class ScopeProgram {
                                                   final int token,
                                                   final String feedName) {
     final var keys = resumeChainlinkxPriceKeys(
-      adminKey,
+      authorityKey,
       configurationKey,
       oraclePricesKey,
       oracleMappingsKey,
@@ -1187,6 +1187,85 @@ public final class ScopeProgram {
     public int write(final byte[] _data, final int _offset) {
       int i = _offset + discriminator.write(_data, _offset);
       newEmergencyCouncil.write(_data, i);
+      i += 32;
+      i += SerDeUtil.writeVector(4, _feedName, _data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + 32 + 4 + _feedName.length;
+    }
+  }
+
+  public static final Discriminator SET_RESUME_AUTHORITY_DISCRIMINATOR = toDiscriminator(191, 152, 68, 90, 221, 93, 245, 30);
+
+  public static List<AccountMeta> setResumeAuthorityKeys(final PublicKey adminKey,
+                                                         final PublicKey configurationKey) {
+    return List.of(
+      createReadOnlySigner(adminKey),
+      createWrite(configurationKey)
+    );
+  }
+
+  public static Instruction setResumeAuthority(final AccountMeta invokedScopeProgramMeta,
+                                               final PublicKey adminKey,
+                                               final PublicKey configurationKey,
+                                               final PublicKey newResumeAuthority,
+                                               final String feedName) {
+    final var keys = setResumeAuthorityKeys(
+      adminKey,
+      configurationKey
+    );
+    return setResumeAuthority(invokedScopeProgramMeta, keys, newResumeAuthority, feedName);
+  }
+
+  public static Instruction setResumeAuthority(final AccountMeta invokedScopeProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final PublicKey newResumeAuthority,
+                                               final String feedName) {
+    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _data = new byte[44 + _feedName.length];
+    int i = SET_RESUME_AUTHORITY_DISCRIMINATOR.write(_data, 0);
+    newResumeAuthority.write(_data, i);
+    i += 32;
+    SerDeUtil.writeVector(4, _feedName, _data, i);
+
+    return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
+  }
+
+  public record SetResumeAuthorityIxData(Discriminator discriminator, PublicKey newResumeAuthority, String feedName, byte[] _feedName) implements SerDe {  
+
+    public static SetResumeAuthorityIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int NEW_RESUME_AUTHORITY_OFFSET = 8;
+    public static final int FEED_NAME_OFFSET = 40;
+
+    public static SetResumeAuthorityIxData createRecord(final Discriminator discriminator, final PublicKey newResumeAuthority, final String feedName) {
+      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+    }
+
+    public static SetResumeAuthorityIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var newResumeAuthority = readPubKey(_data, i);
+      i += 32;
+      final int _feedNameLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
+      final var feedName = new String(_feedName, UTF_8);
+      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      newResumeAuthority.write(_data, i);
       i += 32;
       i += SerDeUtil.writeVector(4, _feedName, _data, i);
       return i - _offset;

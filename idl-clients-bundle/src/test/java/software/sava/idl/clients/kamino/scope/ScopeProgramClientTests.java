@@ -106,6 +106,7 @@ final class ScopeProgramClientTests {
         ORACLE_TWAPS,
         key(0x44), // adminCached
         key(0x45), // emergencyCouncil
+        key(0x46), // resumeAuthority
         new long[software.sava.idl.clients.kamino.scope.gen.types.Configuration.PADDING_LEN]
     );
   }

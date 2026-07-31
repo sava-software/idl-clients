@@ -76,7 +76,9 @@ public sealed interface ScopeError extends ProgramError permits
     ScopeError.UnauthorizedFreeze,
     ScopeError.PythLazerEmaPriceNotPresent,
     ScopeError.PythLazerEmaConfidenceNotPresent,
-    ScopeError.PythLazerEmaNotEnabledOnSource {
+    ScopeError.PythLazerEmaNotEnabledOnSource,
+    ScopeError.UnauthorizedResume,
+    ScopeError.PythLazerConfidenceNotPresent {
 
   static ScopeError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -153,6 +155,8 @@ public sealed interface ScopeError extends ProgramError permits
       case 6070 -> PythLazerEmaPriceNotPresent.INSTANCE;
       case 6071 -> PythLazerEmaConfidenceNotPresent.INSTANCE;
       case 6072 -> PythLazerEmaNotEnabledOnSource.INSTANCE;
+      case 6073 -> UnauthorizedResume.INSTANCE;
+      case 6074 -> PythLazerConfidenceNotPresent.INSTANCE;
       default -> null;
     };
   }
@@ -665,6 +669,20 @@ public sealed interface ScopeError extends ProgramError permits
 
     public static final PythLazerEmaNotEnabledOnSource INSTANCE = new PythLazerEmaNotEnabledOnSource(
         6072, "PythLazerEMA source entry does not have EMA enabled"
+    );
+  }
+
+  record UnauthorizedResume(int code, String msg) implements ScopeError {
+
+    public static final UnauthorizedResume INSTANCE = new UnauthorizedResume(
+        6073, "Signer is not authorized to resume"
+    );
+  }
+
+  record PythLazerConfidenceNotPresent(int code, String msg) implements ScopeError {
+
+    public static final PythLazerConfidenceNotPresent INSTANCE = new PythLazerConfidenceNotPresent(
+        6074, "Property fields in the feed of the PythLazer payload do not contain a confidence"
     );
   }
 }
