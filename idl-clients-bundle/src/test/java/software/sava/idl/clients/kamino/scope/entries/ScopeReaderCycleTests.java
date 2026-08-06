@@ -10,8 +10,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-/// A cyclic refPrice/source index in hostile Scope account data must resolve the
-/// back-reference to an absent entry rather than recurse into a StackOverflowError.
+/// A cyclic refPrice/source index must resolve the back-reference to an absent entry
+/// rather than recurse into a StackOverflowError.
+///
+/// Not only hostile data: the program stores no graph and never recurses — a reference
+/// price and a composite's sources are read as the referenced slot's last *stored*
+/// price out of the OraclePrices account — so a self- or mutual reference is a
+/// configuration it accepts and acts on, and `MappingRefPrice` validates only that the
+/// index is in range. Resolving those references into an object graph is this reader's
+/// choice, so breaking the cycle is this reader's problem. `ScopeEntries` resolves the
+/// reference price again after the walk, where there is no cycle left to break.
 final class ScopeReaderCycleTests {
 
   private static final int SLOTS = OracleMappings.PRICE_INFO_ACCOUNTS_LEN;

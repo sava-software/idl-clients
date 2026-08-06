@@ -826,11 +826,15 @@ final class ScopeComputeEntryTests {
         "7 is not a tolerance here — the program never gets far enough to read it");
   }
 
-  /// A reference-price cycle is the one place the entry-level field and the
-  /// mapping-level view disagree, and the mapping-level one is the faithful answer:
-  /// `get_ref_price` has no cycle guard, so the program reads the index whatever it
-  /// points at. The entry-level field is resolved mid-walk, where the reader's cycle
-  /// guard has to break the recursion, and only the second slot of the pair loses it.
+  /// A slot may reference itself, and the program is untroubled by it: reference
+  /// prices are read as the referenced slot's *last stored* price out of the
+  /// OraclePrices account, never recomputed, so `ref_price[i] == i` just bounds how
+  /// far one refresh may move slot i's price. Nothing on-chain recurses, which is why
+  /// nothing on-chain guards against this.
+  ///
+  /// Building a graph of entries does recurse, so the reader has to break the cycle,
+  /// and the entry-level field loses the reference. The mapping-level view resolves it
+  /// after the walk and is the complete answer.
   @Test
   void aCyclicReferencePriceIsResolvedAtTheMappingLevel() {
     final var entries = new Mappings()

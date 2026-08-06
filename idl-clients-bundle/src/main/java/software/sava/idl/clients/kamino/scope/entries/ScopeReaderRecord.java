@@ -109,8 +109,14 @@ record ScopeReaderRecord(ScopeEntry[] entries,
       return entry;
     }
     if (visiting[i]) {
-      // a cyclic refPrice/source index (never produced on-chain) would recurse forever;
-      // treat the back-reference as an absent entry instead of overflowing the stack
+      // A reference cycle is legal on-chain and the program never notices one, because
+      // it does not recurse: a reference price and a composite's sources are read as
+      // the *last stored* price of that slot out of the OraclePrices account, so
+      // `ref_price[i] == i` is simply "bound this refresh against my own previous
+      // price". Building a graph of entries does recurse, so the cycle has to be broken
+      // here; the back-reference reads as absent rather than overflowing the stack.
+      // ScopeEntries.referencePrice(int) resolves these after the walk and is the
+      // complete view.
       return null;
     }
     visiting[i] = true;

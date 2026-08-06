@@ -45,12 +45,19 @@ public interface ScopeEntries {
   /// decodes byte for byte like a live one.
   boolean frozen(final int index);
 
-  /// The reference price configured for this slot, or `null`.
+  /// The slot whose price bounds this one on refresh, or `null` if none is configured.
   ///
   /// Every slot can carry one: the program sets it without consulting the oracle
-  /// type, and enforces the divergence bound on refresh whatever the type is. Only
+  /// type, and enforces the divergence bound whatever the type is. Only
   /// [ReferencesEntry] models it on the entry itself, so this is the uniform way to
   /// ask, and the only way for the types that have no field for it.
+  ///
+  /// It names a slot, not a nested computation. On refresh the program compares
+  /// against that slot's *last stored* price, so a slot may legitimately reference
+  /// itself — that configuration bounds how far each refresh may move the price — and
+  /// two slots may reference each other. Those resolve here; the entry-level
+  /// [ReferencesEntry#refPrice()] cannot see them, because it is built while the
+  /// graph is still being walked.
   ScopeEntry referencePrice(final int index);
 
   /// Max divergence from [#referencePrice(int)] tolerated on refresh, in bps.
