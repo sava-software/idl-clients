@@ -809,6 +809,45 @@ that validates each group against the bank it describes, so a miscount throws at
 build time with the expected and actual counts rather than surfacing as an opaque
 on-chain error.
 
+#### Phoenix Ember: the IDL's PDA seeds derive accounts that do not exist (2026-08-06)
+
+`PhoenixAccounts` took Ember's state and vault from the generated
+`EmberPDAs.statePDA` / `vaultPDA`, whose seeds are `["state"]` and `["vault"]`
+alone. Both derived addresses have never been created on chain, so every
+`deposit` and `withdraw` the client built named two accounts that do not exist.
+
+The real seeds are `[phoenix_program_id, "state"]` and
+`[phoenix_program_id, "vault"]` against the Ember program — `phoenix_program_id`
+being `EtrnLzgb…`, what this library calls the Eternal program. One Ember
+deployment serves both Phoenix deployments, so an un-keyed state could not work;
+the beta program's state is live at its own address under the same formula. The
+Rust says so (`rise/rust/ix/src/constants.rs::get_ember_state_address`) and a
+live deposit confirms it: Ember owns exactly two accounts, `6ur7v6…` (prod, with
+`EtrnLzgb…` in its trailing field) and `HVpfk2…` (beta, `phDEVv4w…`), and the
+prod deposit `2inFMjAp…` passes `6ur7v6…` in slot 1 and `FKcEb4Td…` in slot 6.
+
+Fixed by deriving both in `PhoenixAccounts`, alongside the Eternal
+`globalVaultPDA` that the IDL also fails to declare. `EmberPDAs` is generated and
+untouched; `PhoenixClientTests` asserts the derivations equal the live keys and
+that the IDL's seeds do *not* reach them, so the two cannot be confused again.
+
+This is upstream's own published metadata (`sources.json` resolves the IDL from
+program-metadata account `HBWQuFtc…`, `matchesDeployed: true`) — the check
+confirms the IDL is the one the program published, not that it describes the
+program. **The same IDL is stale about `EmberState` itself**, which the generated
+code inherits and which is *not* fixed here:
+
+| | IDL / generated | on chain |
+|---|---|---|
+| discriminator | `[0, 208, 11, 177, 63, 157, 55, 98]` | `[142, 206, 11, 177, 63, 157, 55, 98]` |
+| size | 104 | 136 |
+
+Both live accounts agree, and the trailing 32 bytes are the Phoenix program the
+state is keyed on — a fourth field the IDL does not declare. `EmberState.read`
+still returns the right `authority`, `inputMint` and `outputMint` (their offsets
+are unchanged) but `BYTES`, `SIZE_FILTER` and `DISCRIMINATOR_FILTER` match
+nothing, so any account *scan* for Ember state silently returns empty.
+
 #### kvault: the lending-market block was missing entirely (2026-08-06)
 
 `KaminoVaultsRemainingAccounts.appendVaultReserves` appended the vault's

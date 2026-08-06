@@ -5,6 +5,8 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
+import software.sava.idl.clients.phoenix.ember.gen.EmberPDAs;
+import software.sava.idl.clients.phoenix.ember.gen.types.DepositParams;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalPDAs;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.DepositFundsInstruction;
 import software.sava.idl.clients.phoenix.perpetuals.gen.types.WithdrawFundsInstruction;
@@ -201,6 +203,62 @@ final class PhoenixClientTests {
     assertEquals(ACCOUNTS.eternalGlobalConfig(), fromKeys.eternalGlobalConfig());
     assertEquals(ACCOUNTS.emberStateProgram(), fromKeys.emberStateProgram());
     assertEquals(ACCOUNTS.emberVaultProgram(), fromKeys.emberVaultProgram());
+  }
+
+  /// Ember's state and vault, pinned against the live mainnet accounts.
+  ///
+  /// These are the exact keys a real Ember deposit passes in slots 1 and 6 (see
+  /// `2inFMjAp…` on `6ur7v6…`), and they are not what the IDL's declared seeds derive —
+  /// `["state"]` and `["vault"]` alone give addresses that have never been created. The
+  /// program keys its state on the Phoenix deployment it wraps.
+  @Test
+  void emberPdasSeedOnThePhoenixProgram() {
+    assertEquals("6ur7v6AXNpnHeEb6xuk7PyezvZ1i5GrgYyWZkNCpzbRz",
+        ACCOUNTS.emberStateProgram().toBase58());
+    assertEquals("FKcEb4TdPDTRuMnQDpSEPQBcrm15S73xiUD6Qf8ZLUkq",
+        ACCOUNTS.emberVaultProgram().toBase58());
+
+    final var ember = ACCOUNTS.invokedEmberProgram().publicKey();
+    final var phoenix = ACCOUNTS.invokedEternalProgram().publicKey();
+    assertEquals(ACCOUNTS.emberStateProgram(),
+        PhoenixAccounts.emberStatePDA(phoenix, ember).publicKey());
+    assertEquals(ACCOUNTS.emberVaultProgram(),
+        PhoenixAccounts.emberVaultPDA(phoenix, ember).publicKey());
+
+    // the seed the IDL declares, which derives neither
+    assertNotEquals(ACCOUNTS.emberStateProgram(), EmberPDAs.statePDA(ember).publicKey());
+    assertNotEquals(ACCOUNTS.emberVaultProgram(), EmberPDAs.vaultPDA(ember).publicKey());
+
+    // one Ember deployment, one state per Phoenix deployment: the beta program's state is
+    // live too, at a different address the same formula reaches
+    assertEquals("HVpfk2HMkR85rvaXezoNjXfB5J4ds4PurSfi6n4DPm2Z",
+        PhoenixAccounts.emberStatePDA(
+            PublicKey.fromBase58Encoded("phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf"),
+            ember).publicKey().toBase58());
+  }
+
+  /// And they reach the instructions: a deposit puts the state in slot 1 and the vault in
+  /// slot 6, matching the live transaction.
+  @Test
+  void emberDepositCarriesTheDerivedStateAndVault() {
+    final var ix = CLIENT.deposit(
+        OWNER,
+        ACCOUNTS.usdcMint(),
+        ACCOUNTS.emberUSDCMint(),
+        TRADER_TOKEN_ACCOUNT,
+        DESTINATION,
+        SOLANA_ACCOUNTS.tokenProgram(),
+        new DepositParams(1_000L));
+    final var accounts = keys(ix);
+
+    assertEquals(OWNER, accounts.get(0), "[0] owner");
+    assertEquals("6ur7v6AXNpnHeEb6xuk7PyezvZ1i5GrgYyWZkNCpzbRz", accounts.get(1).toBase58(), "[1] state");
+    assertEquals(ACCOUNTS.usdcMint(), accounts.get(2), "[2] input mint");
+    assertEquals(ACCOUNTS.emberUSDCMint(), accounts.get(3), "[3] output mint");
+    assertEquals(TRADER_TOKEN_ACCOUNT, accounts.get(4), "[4] input token account");
+    assertEquals(DESTINATION, accounts.get(5), "[5] output token account");
+    assertEquals("FKcEb4TdPDTRuMnQDpSEPQBcrm15S73xiUD6Qf8ZLUkq", accounts.get(6).toBase58(), "[6] vault");
+    assertEquals(SOLANA_ACCOUNTS.tokenProgram(), accounts.get(7), "[7] token program");
   }
 
   /// The factories are exercised from inside the test body — `MAIN_NET` and

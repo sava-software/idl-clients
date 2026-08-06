@@ -3,8 +3,11 @@ package software.sava.idl.clients.phoenix;
 import software.sava.core.accounts.ProgramDerivedAddress;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.meta.AccountMeta;
-import software.sava.idl.clients.phoenix.ember.gen.EmberPDAs;
 import software.sava.idl.clients.phoenix.perpetuals.gen.EternalPDAs;
+
+import java.util.List;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public interface PhoenixAccounts {
 
@@ -21,8 +24,8 @@ public interface PhoenixAccounts {
                                         final PublicKey usdcMint) {
     return new PhoenixAccountsRecord(
         AccountMeta.createInvoked(emberProgram),
-        EmberPDAs.statePDA(emberProgram).publicKey(),
-        EmberPDAs.vaultPDA(emberProgram).publicKey(),
+        emberStatePDA(eternalProgram, emberProgram).publicKey(),
+        emberVaultPDA(eternalProgram, emberProgram).publicKey(),
         emberUSDCMint,
         AccountMeta.createInvoked(eternalProgram),
         EternalPDAs.globalConfigurationPDA(eternalProgram).publicKey(),
@@ -45,6 +48,39 @@ public interface PhoenixAccounts {
     );
   }
 
+  /// Ember's state account for the Phoenix deployment it wraps.
+  ///
+  /// Seeds `[phoenixProgram, "state"]` — where `phoenixProgram` is what this library
+  /// calls the Eternal program, the name the Rust uses for the same key
+  /// (`PROD_PHOENIX_PROGRAM_ID` is `EtrnLzgb…`).
+  ///
+  /// **The IDL is wrong here**, and it is the program's own published metadata, so the
+  /// generated `EmberPDAs.statePDA` inherits the error: it declares the seed as `"state"`
+  /// alone, which derives an address that has never existed. One Ember deployment serves
+  /// both Phoenix deployments — mainnet and beta each get their own state, keyed on the
+  /// program — so a single un-keyed account could not work. Seeds taken from the
+  /// program's SDK (`rise/rust/ix/src/constants.rs::get_ember_state_address`) and pinned
+  /// against the live accounts in `PhoenixAccountsTests`.
+  static ProgramDerivedAddress emberStatePDA(final PublicKey phoenixProgram,
+                                             final PublicKey emberProgram) {
+    return PublicKey.findProgramAddress(
+        List.of(phoenixProgram.toByteArray(), "state".getBytes(US_ASCII)),
+        emberProgram
+    );
+  }
+
+  /// Ember's token vault for the Phoenix deployment it wraps.
+  ///
+  /// Seeds `[phoenixProgram, "vault"]`; see [#emberStatePDA(PublicKey, PublicKey)] for
+  /// why the IDL's `"vault"`-only seed does not derive it.
+  static ProgramDerivedAddress emberVaultPDA(final PublicKey phoenixProgram,
+                                             final PublicKey emberProgram) {
+    return PublicKey.findProgramAddress(
+        List.of(phoenixProgram.toByteArray(), "vault".getBytes(US_ASCII)),
+        emberProgram
+    );
+  }
+
   /// The protocol's vault for `mint`, held by the Eternal (perpetuals) program.
   ///
   /// Seeds `["vault", mint]` — the IDL does not declare this PDA, so the seeds
@@ -53,10 +89,7 @@ public interface PhoenixAccounts {
   /// per-mint, and distinct from the global *configuration* account.
   static ProgramDerivedAddress globalVaultPDA(final PublicKey mint, final PublicKey eternalProgram) {
     return PublicKey.findProgramAddress(
-        java.util.List.of(
-            "vault".getBytes(java.nio.charset.StandardCharsets.US_ASCII),
-            mint.toByteArray()
-        ),
+        List.of("vault".getBytes(US_ASCII), mint.toByteArray()),
         eternalProgram
     );
   }
