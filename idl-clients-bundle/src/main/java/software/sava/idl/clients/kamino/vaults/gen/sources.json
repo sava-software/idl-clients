@@ -1,0 +1,18 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "CEMRqxNQ9UKW5LaxGwFSbYY63DCyHwpX2XYKcyDmmdVL",
+      "hash": "c7995cf5a47207fd9369774f72654f2abf09d4c89759927016dfef0308b21d6c",
+      "matchesDeployed": true,
+      "verbatim": "anchor.original.json"
+    },
+    "vcs": {
+      "origin": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json",
+      "hash": "619d8eefc50309a639201b3c75a16dfd48539fd6205157178237d2edd76a8e09",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.original.json"
+    }
+  }
+}

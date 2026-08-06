@@ -1,0 +1,11 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/idl.json",
+      "hash": "94491b922b4c820f2f4f74228d067c5d48793dc6cebda495c83db61bfbe0370e",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

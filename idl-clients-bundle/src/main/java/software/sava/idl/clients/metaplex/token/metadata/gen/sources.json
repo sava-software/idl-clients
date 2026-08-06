@@ -1,0 +1,12 @@
+{
+  "deployed": null,
+  "channels": {
+    "vcs": {
+      "origin": "github:metaplex-foundation/mpl-token-metadata@main/idls/token_metadata.json",
+      "hash": "33dbdd8327c730556e860d699e8025af3948e8754f65fc1c41e59f1b8e04493a",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

@@ -1,0 +1,2176 @@
+{
+  "address": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+  "metadata": {
+    "name": "scope",
+    "version": "0.26.1",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "configuration",
+          "writable": true
+        },
+        {
+          "name": "token_metadatas",
+          "writable": true
+        },
+        {
+          "name": "oracle_twaps",
+          "writable": true
+        },
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "feed_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "refresh_price_list",
+      "discriminator": [
+        83,
+        186,
+        207,
+        131,
+        203,
+        254,
+        198,
+        130
+      ],
+      "accounts": [
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings"
+        },
+        {
+          "name": "oracle_twaps",
+          "writable": true
+        },
+        {
+          "name": "instruction_sysvar_account_info"
+        }
+      ],
+      "args": [
+        {
+          "name": "tokens",
+          "type": {
+            "vec": "u16"
+          }
+        }
+      ]
+    },
+    {
+      "name": "refresh_chainlink_price",
+      "discriminator": [
+        97,
+        9,
+        20,
+        115,
+        72,
+        255,
+        4,
+        140
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "signer": true
+        },
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings"
+        },
+        {
+          "name": "oracle_twaps",
+          "writable": true
+        },
+        {
+          "name": "verifier_account"
+        },
+        {
+          "name": "access_controller"
+        },
+        {
+          "name": "config_account"
+        },
+        {
+          "name": "verifier_program_id"
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "u16"
+        },
+        {
+          "name": "serialized_chainlink_report",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "refresh_pyth_lazer_price",
+      "discriminator": [
+        122,
+        47,
+        177,
+        133,
+        177,
+        35,
+        93,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "oracle_prices",
+          "writable": true
+        },
+        {
+          "name": "oracle_mappings"
+        },
+        {
+          "name": "oracle_twaps",
+          "writable": true
+        },
+        {
+          "name": "pyth_program"
+        },
+        {
+          "name": "pyth_storage"
+        },
+        {
+          "name": "pyth_treasury",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "instructions_sysvar"
+        }
+      ],
+      "args": [
+        {
+          "name": "tokens",
+          "type": {
+            "vec": "u16"
+          }
+        },
+        {
+          "name": "serialized_pyth_message",
+          "type": "bytes"
+        },
+        {
+          "name": "ed25519_instruction_index",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "update_mapping",
+      "discriminator": [
+        56,
+        102,
+        90,
+        236,
+        243,
+        21,
+        185,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "oracle_mappings",
+          "writable": true
+        },
+        {
+          "name": "price_info",
+          "optional": true
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "u16"
+        },
+        {
+          "name": "price_type",
+          "type": "u8"
+        },
+        {
+          "name": "twap_enabled",
+          "type": "bool"
+        },
+        {
+          "name": "twap_source",
+          "type": "u16"
+        },
+        {
+          "name": "ref_price_index",
+          "type": "u16"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        },
+        {
+          "name": "generic_data",
+          "type": {
+            "array": [
+              "u8",
+              20
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "reset_twap",
+      "discriminator": [
+        101,
+        216,
+        28,
+        92,
+        154,
+        79,
+        49,
+        187
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "oracle_twaps",
+          "writable": true
+        },
+        {
+          "name": "instruction_sysvar_account_info"
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "u64"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_token_metadata",
+      "discriminator": [
+        243,
+        6,
+        8,
+        23,
+        126,
+        181,
+        251,
+        158
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "tokens_metadata",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u64"
+        },
+        {
+          "name": "mode",
+          "type": "u64"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        },
+        {
+          "name": "value",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "set_admin_cached",
+      "discriminator": [
+        114,
+        14,
+        105,
+        205,
+        216,
+        148,
+        30,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "configuration",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_admin",
+          "type": "pubkey"
+        },
+        {
+          "name": "feed_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "approve_admin_cached",
+      "discriminator": [
+        101,
+        149,
+        97,
+        58,
+        48,
+        79,
+        16,
+        105
+      ],
+      "accounts": [
+        {
+          "name": "admin_cached",
+          "signer": true
+        },
+        {
+          "name": "configuration",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "feed_name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_mint_map",
+      "discriminator": [
+        216,
+        218,
+        224,
+        60,
+        23,
+        31,
+        193,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "mappings",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "seed_pk",
+          "type": "pubkey"
+        },
+        {
+          "name": "seed_id",
+          "type": "u64"
+        },
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "scope_chains",
+          "type": {
+            "vec": {
+              "array": [
+                "u16",
+                4
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_mint_map",
+      "discriminator": [
+        146,
+        212,
+        203,
+        239,
+        191,
+        104,
+        38,
+        102
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "configuration"
+        },
+        {
+          "name": "mappings",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "OracleTwaps",
+      "discriminator": [
+        192,
+        139,
+        27,
+        250,
+        53,
+        166,
+        101,
+        61
+      ]
+    },
+    {
+      "name": "OraclePrices",
+      "discriminator": [
+        89,
+        128,
+        118,
+        221,
+        6,
+        72,
+        180,
+        146
+      ]
+    },
+    {
+      "name": "OracleMappings",
+      "discriminator": [
+        40,
+        244,
+        110,
+        80,
+        255,
+        214,
+        243,
+        188
+      ]
+    },
+    {
+      "name": "TokenMetadatas",
+      "discriminator": [
+        221,
+        107,
+        64,
+        103,
+        67,
+        0,
+        165,
+        22
+      ]
+    },
+    {
+      "name": "Configuration",
+      "discriminator": [
+        192,
+        79,
+        172,
+        30,
+        21,
+        173,
+        25,
+        43
+      ]
+    },
+    {
+      "name": "MintsToScopeChains",
+      "discriminator": [
+        156,
+        236,
+        56,
+        20,
+        39,
+        141,
+        42,
+        183
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "IntegerOverflow",
+      "msg": "Integer overflow"
+    },
+    {
+      "code": 6001,
+      "name": "ConversionFailure",
+      "msg": "Conversion failure"
+    },
+    {
+      "code": 6002,
+      "name": "MathOverflow",
+      "msg": "Mathematical operation with overflow"
+    },
+    {
+      "code": 6003,
+      "name": "OutOfRangeIntegralConversion",
+      "msg": "Out of range integral conversion attempted"
+    },
+    {
+      "code": 6004,
+      "name": "UnexpectedAccount",
+      "msg": "Unexpected account in instruction"
+    },
+    {
+      "code": 6005,
+      "name": "PriceNotValid",
+      "msg": "Price is not valid"
+    },
+    {
+      "code": 6006,
+      "name": "AccountsAndTokenMismatch",
+      "msg": "The number of tokens is different from the number of received accounts"
+    },
+    {
+      "code": 6007,
+      "name": "BadTokenNb",
+      "msg": "The token index received is out of range"
+    },
+    {
+      "code": 6008,
+      "name": "BadTokenType",
+      "msg": "The token type received is invalid"
+    },
+    {
+      "code": 6009,
+      "name": "SwitchboardV2Error",
+      "msg": "There was an error with the Switchboard V2 retrieval"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidAccountDiscriminator",
+      "msg": "Invalid account discriminator"
+    },
+    {
+      "code": 6011,
+      "name": "UnableToDeserializeAccount",
+      "msg": "Unable to deserialize account"
+    },
+    {
+      "code": 6012,
+      "name": "BadScopeChainOrPrices",
+      "msg": "Error while computing price with ScopeChain"
+    },
+    {
+      "code": 6013,
+      "name": "RefreshInCPI",
+      "msg": "Refresh price instruction called in a CPI"
+    },
+    {
+      "code": 6014,
+      "name": "RefreshWithUnexpectedIxs",
+      "msg": "Refresh price instruction preceded by unexpected ixs"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidTokenUpdateMode",
+      "msg": "Invalid token metadata update mode"
+    },
+    {
+      "code": 6016,
+      "name": "UnableToDerivePDA",
+      "msg": "Unable to derive PDA address"
+    },
+    {
+      "code": 6017,
+      "name": "BadTimestamp",
+      "msg": "Invalid timestamp"
+    },
+    {
+      "code": 6018,
+      "name": "BadSlot",
+      "msg": "Invalid slot"
+    },
+    {
+      "code": 6019,
+      "name": "PriceAccountNotExpected",
+      "msg": "TWAP price account is different than Scope ID"
+    },
+    {
+      "code": 6020,
+      "name": "TwapSourceIndexOutOfRange",
+      "msg": "TWAP source index out of range"
+    },
+    {
+      "code": 6021,
+      "name": "TwapSampleTooFrequent",
+      "msg": "TWAP sample is too close to the previous one"
+    },
+    {
+      "code": 6022,
+      "name": "UnexpectedJlpConfiguration",
+      "msg": "Unexpected JLP configuration"
+    },
+    {
+      "code": 6023,
+      "name": "TwapNotEnoughSamplesInPeriod",
+      "msg": "Not enough price samples in period to compute TWAP"
+    },
+    {
+      "code": 6024,
+      "name": "EmptyTokenList",
+      "msg": "The provided token list to refresh is empty"
+    },
+    {
+      "code": 6025,
+      "name": "StakeFeeTooHigh",
+      "msg": "The stake pool fee is higher than the maximum allowed"
+    },
+    {
+      "code": 6026,
+      "name": "KTokenUnderlyingPriceNotValid",
+      "msg": "Cannot get a valid price for the tokens composing the Ktoken"
+    },
+    {
+      "code": 6027,
+      "name": "KTokenHoldingsCalculationError",
+      "msg": "Error while computing the Ktoken pool holdings"
+    },
+    {
+      "code": 6028,
+      "name": "CannotResizeAccount",
+      "msg": "Cannot resize the account we only allow it to grow in size"
+    },
+    {
+      "code": 6029,
+      "name": "FixedPriceInvalid",
+      "msg": "The provided fixed price is invalid"
+    },
+    {
+      "code": 6030,
+      "name": "SwitchboardOnDemandError",
+      "msg": "Switchboard On Demand price derive error"
+    },
+    {
+      "code": 6031,
+      "name": "ConfidenceIntervalCheckFailed",
+      "msg": "Confidence interval check failed"
+    },
+    {
+      "code": 6032,
+      "name": "InvalidGenericData",
+      "msg": "Invalid generic data"
+    },
+    {
+      "code": 6033,
+      "name": "NoChainlinkReportData",
+      "msg": "No valid Chainlink report data found"
+    },
+    {
+      "code": 6034,
+      "name": "InvalidChainlinkReportData",
+      "msg": "Invalid Chainlink report data format"
+    },
+    {
+      "code": 6035,
+      "name": "MostRecentOfInvalidSourceIndices",
+      "msg": "MostRecentOf config must contain at least one valid source index"
+    },
+    {
+      "code": 6036,
+      "name": "MostRecentOfInvalidMaxDivergence",
+      "msg": "Invalid max divergence (bps) for MostRecentOf oracle"
+    },
+    {
+      "code": 6037,
+      "name": "MostRecentOfInvalidMaxAge",
+      "msg": "Invalid max age (s) for MostRecentOf oracle"
+    },
+    {
+      "code": 6038,
+      "name": "MostRecentOfMaxAgeViolated",
+      "msg": "Max age diff constraint violated for MostRecentOf oracle"
+    },
+    {
+      "code": 6039,
+      "name": "MostRecentOfMaxDivergenceBpsViolated",
+      "msg": "Max divergence bps constraint violated for MostRecentOf oracle"
+    },
+    {
+      "code": 6040,
+      "name": "PythLazerVerifyIxFailed",
+      "msg": "The invoked pyth lazer verify instruction failed"
+    },
+    {
+      "code": 6041,
+      "name": "PythLazerInvalidFeedID",
+      "msg": "Invalid feed id passed in to PythLazer oracle"
+    },
+    {
+      "code": 6042,
+      "name": "PythLazerInvalidExponent",
+      "msg": "Invalid exponent passed in to PythLazer oracle"
+    },
+    {
+      "code": 6043,
+      "name": "PythLazerInvalidConfidenceFactor",
+      "msg": "Invalid confidence factor passed in to PythLazer oracle"
+    },
+    {
+      "code": 6044,
+      "name": "PythLazerInvalidMessagePayload",
+      "msg": "Received an invalid message payload in the PythLazer oracle when refreshing price"
+    },
+    {
+      "code": 6045,
+      "name": "PythLazerInvalidChannel",
+      "msg": "Received an invalid channel in the PythLazer payload when refreshing price"
+    },
+    {
+      "code": 6046,
+      "name": "PythLazerInvalidFeedsLength",
+      "msg": "Payload should have a single feed in the PythLazer payload when refreshing price"
+    },
+    {
+      "code": 6047,
+      "name": "PythLazerInvalidFeedId",
+      "msg": "Invalid feed id in the PythLazer payload when refreshing price"
+    },
+    {
+      "code": 6048,
+      "name": "PythLazerPriceNotPresent",
+      "msg": "Property fields in the feed of the PythLazer payload do not contain a price"
+    },
+    {
+      "code": 6049,
+      "name": "PythLazerBestBidPriceNotPresent",
+      "msg": "Property fields in the feed of the PythLazer payload do not contain a best bid price"
+    },
+    {
+      "code": 6050,
+      "name": "PythLazerBestAskPriceNotPresent",
+      "msg": "Property fields in the feed of the PythLazer payload do not contain a best ask price"
+    },
+    {
+      "code": 6051,
+      "name": "PythLazerInvalidAskBidPrices",
+      "msg": "Invalid ask/bid prices provided in the feed of the PythLazer payload"
+    },
+    {
+      "code": 6052,
+      "name": "ExpectedPriceAccount",
+      "msg": "Price account expected when updating mapping"
+    },
+    {
+      "code": 6053,
+      "name": "WrongAccountOwner",
+      "msg": "Provided account has a different owner than expected"
+    },
+    {
+      "code": 6054,
+      "name": "CompositeOracleInvalidSourceIndex",
+      "msg": "Provided source index is invalid"
+    },
+    {
+      "code": 6055,
+      "name": "CappedFlooredBothCapAndFloorAreNone",
+      "msg": "Can't set both cap and floor to None for CappedFloored oracle"
+    }
+  ],
+  "types": [
+    {
+      "name": "CappedFlooredData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "source_entry",
+            "type": "u16"
+          },
+          {
+            "name": "cap_entry",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "floor_entry",
+            "type": {
+              "option": "u16"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DiscountToMaturityData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "discount_per_year_bps",
+            "type": "u16"
+          },
+          {
+            "name": "maturity_timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MostRecentOfData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "source_entries",
+            "type": {
+              "array": [
+                "u16",
+                4
+              ]
+            }
+          },
+          {
+            "name": "max_divergence_bps",
+            "type": "u16"
+          },
+          {
+            "name": "sources_max_age_s",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CappedMostRecentOfData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "source_entries",
+            "type": {
+              "array": [
+                "u16",
+                4
+              ]
+            }
+          },
+          {
+            "name": "max_divergence_bps",
+            "type": "u16"
+          },
+          {
+            "name": "sources_max_age_s",
+            "type": "u64"
+          },
+          {
+            "name": "cap_entry",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fee",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "basis_points",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LiqPool",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lp_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_mint_authority_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "sol_leg_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "msol_leg_authority_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "msol_leg",
+            "type": "pubkey"
+          },
+          {
+            "name": "lp_liquidity_target",
+            "type": "u64"
+          },
+          {
+            "name": "lp_max_fee",
+            "type": {
+              "defined": {
+                "name": "Fee"
+              }
+            }
+          },
+          {
+            "name": "lp_min_fee",
+            "type": {
+              "defined": {
+                "name": "Fee"
+              }
+            }
+          },
+          {
+            "name": "treasury_cut",
+            "type": {
+              "defined": {
+                "name": "Fee"
+              }
+            }
+          },
+          {
+            "name": "lp_supply",
+            "type": "u64"
+          },
+          {
+            "name": "lent_from_sol_leg",
+            "type": "u64"
+          },
+          {
+            "name": "liquidity_sol_cap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "List",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account",
+            "type": "pubkey"
+          },
+          {
+            "name": "item_size",
+            "type": "u32"
+          },
+          {
+            "name": "count",
+            "type": "u32"
+          },
+          {
+            "name": "new_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "copied_count",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeSystem",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "stake_list",
+            "type": {
+              "defined": {
+                "name": "List"
+              }
+            }
+          },
+          {
+            "name": "delayed_unstake_cooling_down",
+            "type": "u64"
+          },
+          {
+            "name": "stake_deposit_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "stake_withdraw_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "slots_for_stake_delta",
+            "type": "u64"
+          },
+          {
+            "name": "last_stake_delta_epoch",
+            "type": "u64"
+          },
+          {
+            "name": "min_stake",
+            "type": "u64"
+          },
+          {
+            "name": "extra_stake_delta_runs",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidatorSystem",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "validator_list",
+            "type": {
+              "defined": {
+                "name": "List"
+              }
+            }
+          },
+          {
+            "name": "manager_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_validator_score",
+            "type": "u32"
+          },
+          {
+            "name": "total_active_balance",
+            "type": "u64"
+          },
+          {
+            "name": "auto_add_validator_enabled",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "State",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "msol_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "operational_sol_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury_msol_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "reserve_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "msol_mint_authority_bump_seed",
+            "type": "u8"
+          },
+          {
+            "name": "rent_exempt_for_token_acc",
+            "type": "u64"
+          },
+          {
+            "name": "reward_fee",
+            "type": {
+              "defined": {
+                "name": "Fee"
+              }
+            }
+          },
+          {
+            "name": "stake_system",
+            "type": {
+              "defined": {
+                "name": "StakeSystem"
+              }
+            }
+          },
+          {
+            "name": "validator_system",
+            "type": {
+              "defined": {
+                "name": "ValidatorSystem"
+              }
+            }
+          },
+          {
+            "name": "liq_pool",
+            "type": {
+              "defined": {
+                "name": "LiqPool"
+              }
+            }
+          },
+          {
+            "name": "available_reserve_balance",
+            "type": "u64"
+          },
+          {
+            "name": "msol_supply",
+            "type": "u64"
+          },
+          {
+            "name": "msol_price",
+            "type": "u64"
+          },
+          {
+            "name": "circulating_ticket_count",
+            "type": "u64"
+          },
+          {
+            "name": "circulating_ticket_balance",
+            "type": "u64"
+          },
+          {
+            "name": "lent_from_reserve",
+            "type": "u64"
+          },
+          {
+            "name": "min_deposit",
+            "type": "u64"
+          },
+          {
+            "name": "min_withdraw",
+            "type": "u64"
+          },
+          {
+            "name": "staking_sol_cap",
+            "type": "u64"
+          },
+          {
+            "name": "emergency_cooling_down",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PythLazerData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "feed_id",
+            "type": "u16"
+          },
+          {
+            "name": "exponent",
+            "type": "u8"
+          },
+          {
+            "name": "confidence_factor",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwitchboardDecimal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mantissa",
+            "type": "i128"
+          },
+          {
+            "name": "scale",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AggregatorAccountData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "metadata",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "author_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "queue_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_request_batch_size",
+            "type": "u32"
+          },
+          {
+            "name": "min_oracle_results",
+            "type": "u32"
+          },
+          {
+            "name": "min_job_results",
+            "type": "u32"
+          },
+          {
+            "name": "min_update_delay_seconds",
+            "type": "u32"
+          },
+          {
+            "name": "start_after",
+            "type": "i64"
+          },
+          {
+            "name": "variance_threshold",
+            "type": {
+              "defined": {
+                "name": "SwitchboardDecimal"
+              }
+            }
+          },
+          {
+            "name": "force_report_period",
+            "type": "i64"
+          },
+          {
+            "name": "expiration",
+            "type": "i64"
+          },
+          {
+            "name": "consecutive_failure_count",
+            "type": "u64"
+          },
+          {
+            "name": "next_allowed_update_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_locked",
+            "type": "bool"
+          },
+          {
+            "name": "schedule",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "latest_confirmed_round",
+            "type": {
+              "defined": {
+                "name": "AggregatorRound"
+              }
+            }
+          },
+          {
+            "name": "current_round",
+            "type": {
+              "defined": {
+                "name": "AggregatorRound"
+              }
+            }
+          },
+          {
+            "name": "job_pubkeys_data",
+            "type": {
+              "array": [
+                "pubkey",
+                16
+              ]
+            }
+          },
+          {
+            "name": "job_hashes",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "Hash"
+                  }
+                },
+                16
+              ]
+            }
+          },
+          {
+            "name": "job_pubkeys_size",
+            "type": "u32"
+          },
+          {
+            "name": "jobs_checksum",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "ebuf",
+            "type": {
+              "array": [
+                "u8",
+                224
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AggregatorRound",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "num_success",
+            "type": "u32"
+          },
+          {
+            "name": "num_error",
+            "type": "u32"
+          },
+          {
+            "name": "is_closed",
+            "type": "bool"
+          },
+          {
+            "name": "round_open_slot",
+            "type": "u64"
+          },
+          {
+            "name": "round_open_timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "result",
+            "type": {
+              "defined": {
+                "name": "SwitchboardDecimal"
+              }
+            }
+          },
+          {
+            "name": "std_deviation",
+            "type": {
+              "defined": {
+                "name": "SwitchboardDecimal"
+              }
+            }
+          },
+          {
+            "name": "min_response",
+            "type": {
+              "defined": {
+                "name": "SwitchboardDecimal"
+              }
+            }
+          },
+          {
+            "name": "max_response",
+            "type": {
+              "defined": {
+                "name": "SwitchboardDecimal"
+              }
+            }
+          },
+          {
+            "name": "oracle_pubkeys_data",
+            "type": {
+              "array": [
+                "pubkey",
+                16
+              ]
+            }
+          },
+          {
+            "name": "medians_data",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "SwitchboardDecimal"
+                  }
+                },
+                16
+              ]
+            }
+          },
+          {
+            "name": "current_payout",
+            "type": {
+              "array": [
+                "i64",
+                16
+              ]
+            }
+          },
+          {
+            "name": "medians_fulfilled",
+            "type": {
+              "array": [
+                "bool",
+                16
+              ]
+            }
+          },
+          {
+            "name": "errors_fulfilled",
+            "type": {
+              "array": [
+                "bool",
+                16
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hash",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "data",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Price",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "value",
+            "type": "u64"
+          },
+          {
+            "name": "exp",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DatedPrice",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price",
+            "type": {
+              "defined": {
+                "name": "Price"
+              }
+            }
+          },
+          {
+            "name": "last_updated_slot",
+            "type": "u64"
+          },
+          {
+            "name": "unix_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "generic_data",
+            "type": {
+              "array": [
+                "u8",
+                24
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EmaTwap",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "last_update_slot",
+            "type": "u64"
+          },
+          {
+            "name": "last_update_unix_timestamp",
+            "type": "u64"
+          },
+          {
+            "name": "current_ema1h",
+            "type": "u128"
+          },
+          {
+            "name": "updates_tracker1h",
+            "type": "u64"
+          },
+          {
+            "name": "padding0",
+            "type": "u64"
+          },
+          {
+            "name": "padding1",
+            "type": {
+              "array": [
+                "u128",
+                39
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMetadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "max_age_price_slots",
+            "type": "u64"
+          },
+          {
+            "name": "group_ids_bitset",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u64",
+                15
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintToScopeChain",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "scope_chain",
+            "type": {
+              "array": [
+                "u16",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateTokenMetadataMode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Name"
+          },
+          {
+            "name": "MaxPriceAgeSlots"
+          },
+          {
+            "name": "GroupIds"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportDataV8MarketStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Unknown"
+          },
+          {
+            "name": "Closed"
+          },
+          {
+            "name": "Open"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MarketStatusBehavior",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "AllUpdates"
+          },
+          {
+            "name": "Open"
+          },
+          {
+            "name": "OpenAndPrePost"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReportDataV9RipcordFlag",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Normal"
+          },
+          {
+            "name": "Paused"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenTypes",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TokenA"
+          },
+          {
+            "name": "TokenB"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pyth"
+          },
+          {
+            "name": "DeprecatedPlaceholder1"
+          },
+          {
+            "name": "SwitchboardV2"
+          },
+          {
+            "name": "DeprecatedPlaceholder2"
+          },
+          {
+            "name": "CToken"
+          },
+          {
+            "name": "SplStake"
+          },
+          {
+            "name": "KToken"
+          },
+          {
+            "name": "PythEMA"
+          },
+          {
+            "name": "MsolStake"
+          },
+          {
+            "name": "KTokenToTokenA"
+          },
+          {
+            "name": "KTokenToTokenB"
+          },
+          {
+            "name": "JupiterLpFetch"
+          },
+          {
+            "name": "ScopeTwap"
+          },
+          {
+            "name": "OrcaWhirlpoolAtoB"
+          },
+          {
+            "name": "OrcaWhirlpoolBtoA"
+          },
+          {
+            "name": "RaydiumAmmV3AtoB"
+          },
+          {
+            "name": "RaydiumAmmV3BtoA"
+          },
+          {
+            "name": "JupiterLpCompute"
+          },
+          {
+            "name": "MeteoraDlmmAtoB"
+          },
+          {
+            "name": "MeteoraDlmmBtoA"
+          },
+          {
+            "name": "JupiterLpScope"
+          },
+          {
+            "name": "PythPull"
+          },
+          {
+            "name": "PythPullEMA"
+          },
+          {
+            "name": "FixedPrice"
+          },
+          {
+            "name": "SwitchboardOnDemand"
+          },
+          {
+            "name": "JitoRestaking"
+          },
+          {
+            "name": "Chainlink"
+          },
+          {
+            "name": "DiscountToMaturity"
+          },
+          {
+            "name": "MostRecentOf"
+          },
+          {
+            "name": "PythLazer"
+          },
+          {
+            "name": "RedStone"
+          },
+          {
+            "name": "AdrenaLp"
+          },
+          {
+            "name": "Securitize"
+          },
+          {
+            "name": "CappedFloored"
+          },
+          {
+            "name": "ChainlinkRWA"
+          },
+          {
+            "name": "ChainlinkNAV"
+          },
+          {
+            "name": "FlashtradeLp"
+          },
+          {
+            "name": "ChainlinkX"
+          },
+          {
+            "name": "ChainlinkExchangeRate"
+          },
+          {
+            "name": "CappedMostRecentOf"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EmaType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Ema1h"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScopeChainError",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PriceChainTooLong"
+          },
+          {
+            "name": "PriceChainConversionFailure"
+          },
+          {
+            "name": "NoChainForToken"
+          },
+          {
+            "name": "InvalidPricesInChain"
+          },
+          {
+            "name": "MathOverflow"
+          },
+          {
+            "name": "IntegerConversionOverflow"
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleTwaps",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_prices",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_mappings",
+            "type": "pubkey"
+          },
+          {
+            "name": "twaps",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "EmaTwap"
+                  }
+                },
+                512
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OraclePrices",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_mappings",
+            "type": "pubkey"
+          },
+          {
+            "name": "prices",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "DatedPrice"
+                  }
+                },
+                512
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OracleMappings",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "price_info_accounts",
+            "type": {
+              "array": [
+                "pubkey",
+                512
+              ]
+            }
+          },
+          {
+            "name": "price_types",
+            "type": {
+              "array": [
+                "u8",
+                512
+              ]
+            }
+          },
+          {
+            "name": "twap_source",
+            "type": {
+              "array": [
+                "u16",
+                512
+              ]
+            }
+          },
+          {
+            "name": "twap_enabled",
+            "type": {
+              "array": [
+                "u8",
+                512
+              ]
+            }
+          },
+          {
+            "name": "ref_price",
+            "type": {
+              "array": [
+                "u16",
+                512
+              ]
+            }
+          },
+          {
+            "name": "generic",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    20
+                  ]
+                },
+                512
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenMetadatas",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "metadatas_array",
+            "type": {
+              "array": [
+                {
+                  "defined": {
+                    "name": "TokenMetadata"
+                  }
+                },
+                512
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Configuration",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_mappings",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_prices",
+            "type": "pubkey"
+          },
+          {
+            "name": "tokens_metadata",
+            "type": "pubkey"
+          },
+          {
+            "name": "oracle_twaps",
+            "type": "pubkey"
+          },
+          {
+            "name": "admin_cached",
+            "type": "pubkey"
+          },
+          {
+            "name": "padding",
+            "type": {
+              "array": [
+                "u64",
+                1255
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MintsToScopeChains",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "oracle_prices",
+            "type": "pubkey"
+          },
+          {
+            "name": "seed_pk",
+            "type": "pubkey"
+          },
+          {
+            "name": "seed_id",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "mapping",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "MintToScopeChain"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "anchor": {
+      "origin": "9tb2tzSkQqDng2h8dC2xbuKHfQpmPoZP4vnd5Y1rkmmK",
+      "hash": "efeec0f01055c3991f485f82b388dfbb46d7c6cdac868d10bfe8a6a7796bdab2",
+      "matchesDeployed": false,
+      "file": "anchor.json",
+      "verbatim": "anchor.json"
+    },
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/0dotxyz/p0-ts-sdk/refs/heads/main/src/idl/marginfi_0.1.9.json",
+      "hash": "da5708f80f979e729ace989f797b9b92646300ca458893cdd4dffca8277faa15",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

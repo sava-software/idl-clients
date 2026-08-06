@@ -1,0 +1,25 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "2KFqE4RWoPVbvodo8vbggCFeHPS8TDvgpwp79ALMrcyn",
+      "hash": "9693abb7d53cc644731c34cf97ece6aadd906a75a993bfbf948aac4d55355abb",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "metadata": {
+      "origin": "9fQgUeE2BpGXLHopvZhDKTskXV2druezgX6hpmscbya5",
+      "hash": "996ef0f68eeb474b4a9ec645c969d8832bfc29e6fe2153cf73c77a5300b33b18",
+      "matchesDeployed": false,
+      "file": "metadata.json",
+      "verbatim": "metadata.json"
+    },
+    "vcs": {
+      "origin": "https://cdn.jsdelivr.net/npm/@orca-so/whirlpools-sdk@latest/dist/artifacts/whirlpool.json",
+      "hash": "c9f46c8047179ed9b60738e7407b681b5a18ee73861b5ac21bb7f34b32b9c9ec",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

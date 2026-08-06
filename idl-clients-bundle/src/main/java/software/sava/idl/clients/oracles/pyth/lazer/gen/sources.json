@@ -1,0 +1,18 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "anchor": {
+      "origin": "AUuHVnggr2prrwaNdZhCHXucvD8QJEmfMKXRAhBTFfF4",
+      "hash": "2f80f9445405a2a8fd48d7d4420d11d4f920da90c8897eafe1a1948a1d80e810",
+      "matchesDeployed": false,
+      "file": "anchor.json",
+      "verbatim": "anchor.json"
+    },
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/pyth-network/pyth-lazer-public/refs/heads/main/sdk/js-solana/src/idl/pyth-lazer-solana-contract.json",
+      "hash": "721d3863c0f776704026288a110a2bd8313343561fb69e263bcd3915b374c467",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

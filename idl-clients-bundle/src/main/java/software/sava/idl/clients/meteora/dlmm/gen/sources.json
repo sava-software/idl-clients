@@ -1,0 +1,18 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "7UZRobkzaKVm1RbCH5WdFaYCGzCRjnu3prziHAsYiSyr",
+      "hash": "734b23a1c763c61907e57fc8d05300ab739369dcb24a2f481f73564ffab05c9d",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "vcs": {
+      "origin": "github:MeteoraAg/dlmm-sdk@main/idls/dlmm.json",
+      "hash": "31d4bb697a33b81a270438682a606e846ba69c7639d0f448200710858242ac81",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

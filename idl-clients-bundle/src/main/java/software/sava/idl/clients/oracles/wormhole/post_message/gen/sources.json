@@ -1,0 +1,11 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_post_message_shim.json",
+      "hash": "9ce8bde0e0d1bd89e0263e6e968e54db333e2866bda34e7922d12c73ee19da32",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

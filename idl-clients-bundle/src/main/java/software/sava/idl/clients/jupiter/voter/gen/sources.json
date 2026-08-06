@@ -1,0 +1,11 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "k5XMAWnYZZQUNoz7hgky35uuGu1vYmqkPx11arNMy2X",
+      "hash": "2bcaa7c215405197eb6e9a382e9e5d06a4c107b2393174347b0f72a6f6b5d797",
+      "matchesDeployed": true,
+      "verbatim": "anchor.original.json"
+    }
+  }
+}

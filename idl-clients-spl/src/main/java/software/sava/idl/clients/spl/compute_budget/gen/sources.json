@@ -1,0 +1,11 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json",
+      "hash": "72815adca6fb6f9127ccb31216a335a7bcb2ed955e710ebd033a767c60236489",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

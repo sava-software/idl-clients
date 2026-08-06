@@ -1,0 +1,18 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "C88XWfp26heEmDkmfSzeXP7Fd7GQJ2j9dDTUsyiZbUTa",
+      "hash": "27a84dee64afa4527b4bf1c567babced3c0e59e538c1c10938042b30936ffbe1",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "vcs": {
+      "origin": "github:jup-ag/jupiter-amm-implementation@main/idls/jupiter_aggregator_v6.json",
+      "hash": "c7353b35a80cd93cd4f73cf1f720524599ec126236627e7309f3008ea6d817ad",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

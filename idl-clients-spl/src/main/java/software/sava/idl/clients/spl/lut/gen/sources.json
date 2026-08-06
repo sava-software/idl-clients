@@ -1,0 +1,11 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/idl.json",
+      "hash": "f1b98bfdea01eabba840427ca7461a790e70fbdc70d392a42d042f7e954bb6b0",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "DZYp1XtNGAFdTu5Vt8m27MD8wsxNecPeAPZrtXj97tRJ",
+      "hash": "3a922b6d99af2f7e84043b9c2e4d73f54ba8948a61b6a3d0e5bf3b6202736926",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

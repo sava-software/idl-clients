@@ -1,0 +1,18 @@
+{
+  "deployed": "metadata",
+  "channels": {
+    "metadata": {
+      "origin": "3vhS1co9J1Av1TeHwxSNtjmcf77csfD2z92jfU5jVfvZ",
+      "hash": "8411d1b267aac17b57e7123407b20d03db2d78aa4e15d7d13528a26146fe20a0",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    },
+    "vcs": {
+      "origin": "github:neutral-trade/sdk@main/src/idl/ntbundle.json",
+      "hash": "e546e0827ec3d87619f05faaf4be6d84b5af4239fd8709c94e476b1ece8ac99c",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

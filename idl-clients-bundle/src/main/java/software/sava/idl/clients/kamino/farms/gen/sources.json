@@ -1,0 +1,18 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "Ey7rZRLbKdhDqcUuSpAkApk3S3dK7RHoKPJST1RRVJAp",
+      "hash": "c3add8d94d4fa9f99b3ff0d404d05319f5a8b57189165527f9f088782ee2bde7",
+      "matchesDeployed": true,
+      "verbatim": "anchor.original.json"
+    },
+    "vcs": {
+      "origin": "github:Kamino-Finance/farms-sdk@master/src/idl/farms.json",
+      "hash": "29b6dd539a273a06e3da875a06d21e8354700a743ccbc201471183e8d4ae9606",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.original.json"
+    }
+  }
+}

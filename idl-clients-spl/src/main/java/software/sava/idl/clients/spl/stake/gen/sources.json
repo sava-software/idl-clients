@@ -1,0 +1,12 @@
+{
+  "deployed": null,
+  "channels": {
+    "vcs": {
+      "origin": "github:solana-program/stake@main/idl.json",
+      "hash": "80bf2498a84e02fd82193e30b4fe679b90a28e5a61422a958cf54a845d71b536",
+      "matchesDeployed": false,
+      "file": "vcs.json",
+      "verbatim": "vcs.json"
+    }
+  }
+}

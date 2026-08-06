@@ -24,7 +24,12 @@
       "source": "idl-clients-bundle",
       "package": "cctp.message_transmitter.v2",
       "module": "bundle",
-      "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC"
+      "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC",
+      "vcs": {
+        "repo": "circlefin/solana-cctp-contracts",
+        "path": "examples/target/idl/message_transmitter_v2.json",
+        "ref": "master"
+      }
     },
     {
       "name": "Compute Budget",
@@ -93,7 +98,11 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "jupiter.order_engine",
-      "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH"
+      "program": "61DFfeTKM7trxYcPQCM78bJ794ddZprZpAwAnLiwTpYH",
+      "vcs": {
+        "repo": "jup-ag/rfq-webhook-toolkit",
+        "path": "idls/order_engine.json"
+      }
     },
     {
       "name": "Jupiter Perpetuals",
@@ -107,7 +116,11 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "jupiter.swap",
-      "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4"
+      "program": "JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4",
+      "vcs": {
+        "repo": "jup-ag/jupiter-amm-implementation",
+        "path": "idls/jupiter_aggregator_v6.json"
+      }
     },
     {
       "name": "Jupiter Stable Program",
@@ -122,6 +135,11 @@
       "module": "bundle",
       "package": "kamino.farms",
       "program": "FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr",
+      "vcs": {
+        "repo": "Kamino-Finance/farms-sdk",
+        "path": "src/idl/farms.json",
+        "ref": "master"
+      },
       "typeRefs": [
         {
           "refProgram": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
@@ -139,14 +157,22 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "kamino.lend",
-      "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD"
+      "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "vcs": {
+        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/klend.json"
+      }
     },
     {
       "name": "Kamino Scope",
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "kamino.scope",
-      "program": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ"
+      "program": "HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ",
+      "vcs": {
+        "repo": "Kamino-Finance/scope-sdk",
+        "path": "src/idl/scope.json",
+        "ref": "master"
+      }
     },
     {
       "name": "Kamino Vaults",
@@ -154,6 +180,9 @@
       "module": "bundle",
       "package": "kamino.vaults",
       "program": "KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd",
+      "vcs": {
+        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/kvault.json"
+      },
       "typeRefs": [
         {
           "refProgram": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
@@ -206,6 +235,10 @@
       "module": "bundle",
       "package": "metaplex.token.metadata",
       "program": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
+      "vcs": {
+        "repo": "metaplex-foundation/mpl-token-metadata",
+        "path": "idls/token_metadata.json"
+      },
       "idlFile": "idls/shank/metaplex/token_metadata.json",
       "accountsHaveDiscriminators": false
     },
@@ -214,7 +247,11 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "meteora.dlmm",
-      "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo"
+      "program": "LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo",
+      "vcs": {
+        "repo": "MeteoraAg/dlmm-sdk",
+        "path": "idls/dlmm.json"
+      }
     },
     {
       "name": "Neutral Trade",
@@ -222,6 +259,10 @@
       "module": "bundle",
       "package": "nt.bundle",
       "program": "BUNDDh4P5XviMm1f3gCvnq2qKx6TGosAGnoUK12e7cXU",
+      "vcs": {
+        "repo": "neutral-trade/sdk",
+        "path": "src/idl/ntbundle.json"
+      },
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
       "idlType": "anchor"
     },
@@ -231,6 +272,9 @@
       "module": "bundle",
       "package": "orca.whirlpools",
       "program": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
+      "vcs": {
+        "url": "https://cdn.jsdelivr.net/npm/@orca-so/whirlpools-sdk@latest/dist/artifacts/whirlpool.json"
+      },
       "idlType": "anchor"
     },
     {
@@ -283,6 +327,10 @@
       "module": "bundle",
       "package": "oracles.pyth.receiver",
       "program": "rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ",
+      "vcs": {
+        "repo": "pyth-network/pyth-crosschain",
+        "path": "target_chains/solana/sdk/js/pyth_solana_receiver/src/idl/pyth_solana_receiver.json"
+      },
       "typeRefs": [
         {
           "refProgram": "pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT",
@@ -308,6 +356,10 @@
       "module": "bundle",
       "package": "oracles.pyth.pro.receiver",
       "program": "rec2HHDDnjLfj4kE7VyEtFA1HPGQLK33259532cRyHp",
+      "vcs": {
+        "repo": "pyth-network/pyth-crosschain",
+        "path": "target_chains/solana/sdk/js/pyth_solana_receiver/src/idl/pyth_solana_receiver.json"
+      },
       "syncIdl": true,
       "idlFile": "idls/anchor/pyth/pyth_solana_receiver.json",
       "typeRefs": [
@@ -333,7 +385,11 @@
       "source": "idl-clients-bundle",
       "module": "bundle",
       "package": "squads.v4",
-      "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf"
+      "program": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
+      "vcs": {
+        "repo": "Squads-Protocol/v4",
+        "path": "sdk/multisig/idl/squads_multisig_program.json"
+      }
     },
     {
       "name": "Stake",
@@ -341,6 +397,10 @@
       "module": "spl",
       "package": "spl.stake",
       "program": "Stake11111111111111111111111111111111111111",
+      "vcs": {
+        "repo": "solana-program/stake",
+        "path": "idl.json"
+      },
       "idlFile": "idls/codama/spl/stake.json",
       "idlType": "codama",
       "definedTypes": [

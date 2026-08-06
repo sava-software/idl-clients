@@ -1,0 +1,17 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "9jWC3EixD3D7ChMrrSRw3opnGHQ8YxZGJqGkzcup3tAn",
+      "hash": "ca38d85d3baea568dc77c869f4177cd52b1fb1491270664cfcd615d70946dc54",
+      "matchesDeployed": true,
+      "verbatim": "anchor.original.json"
+    },
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/marinade-finance/marinade-ts-sdk/refs/heads/main/src/programs/idl/json/marinade_finance.json",
+      "hash": "ca38d85d3baea568dc77c869f4177cd52b1fb1491270664cfcd615d70946dc54",
+      "matchesDeployed": true,
+      "verbatim": "vcs.original.json"
+    }
+  }
+}

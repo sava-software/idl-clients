@@ -1,0 +1,17 @@
+{
+  "deployed": "anchor",
+  "channels": {
+    "anchor": {
+      "origin": "68r7YcKwR5n8sV3Ngnt7Du28BabWNjZWMFQkkwSeg2A3",
+      "hash": "6dd8e5611745404029cd0fe247a74728dc0fb6420a686523e59525d794624685",
+      "matchesDeployed": true,
+      "verbatim": "anchor.original.json"
+    },
+    "vcs": {
+      "origin": "github:pyth-network/pyth-crosschain@main/target_chains/solana/sdk/js/pyth_solana_receiver/src/idl/pyth_solana_receiver.json",
+      "hash": "6dd8e5611745404029cd0fe247a74728dc0fb6420a686523e59525d794624685",
+      "matchesDeployed": true,
+      "verbatim": "vcs.original.json"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "deployed": "metadata",
+  "channels": {
+    "metadata": {
+      "origin": "H6r3zQwpMdsuSgoCFm39WjP6F9sMNyxwe3F3F9PhbqkQ",
+      "hash": "da6fae462b31121bc4be0620003b7771c2f1337350bea911d77aeb6dcf32f078",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}

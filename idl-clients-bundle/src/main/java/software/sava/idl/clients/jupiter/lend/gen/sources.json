@@ -1,0 +1,11 @@
+{
+  "deployed": "vcs",
+  "channels": {
+    "vcs": {
+      "origin": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json",
+      "hash": "3117ffee9e8deb63d9c7e9dd8e36511bf260af2b11edfacbb892f02ca94c86d8",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
+    }
+  }
+}
