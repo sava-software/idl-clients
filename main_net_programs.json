@@ -239,7 +239,7 @@
         "repo": "metaplex-foundation/mpl-token-metadata",
         "path": "idls/token_metadata.json"
       },
-      "idlFile": "idls/shank/metaplex/token_metadata.json",
+      "deployed": "vcs",
       "accountsHaveDiscriminators": false
     },
     {

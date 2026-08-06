@@ -5682,13 +5682,14 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "key",
-            "type": "string"
-          },
-          {
-            "name": "payloadType",
+            "name": "map",
             "type": {
-              "defined": "PayloadType"
+              "hashMap": [
+                "string",
+                {
+                  "defined": "PayloadType"
+                }
+              ]
             }
           }
         ]
