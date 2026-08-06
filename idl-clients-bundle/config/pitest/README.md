@@ -991,19 +991,23 @@ completion guarantee. A mutant that merely gets slower terminates, so it owes a
 deterministic contract test or a fix — the scope member below was retired that
 way rather than reclassified. The structural cause per member:
 
-### `clients`: `DlmmUtils.pow` binary-expansion loop exit (line 214) — `cause:liveness`
+### `clients`: `DlmmUtils.pow` binary-expansion loop exit (line 214) — retired 2026-08-06
 
 `RemoveConditionalMutator_ORDER_IF` on `for (int bit = 0; bit < 19; bit++)`
-removes the loop exit: the Q64.64 binary-expansion loop squares and masks
+removed the loop exit: the Q64.64 binary-expansion loop squared and masked
 forever instead of running its fixed 19 steps. Deterministically infinite —
-only the watchdog can stop it, in any load mode.
+only the watchdog could stop it, in any load mode. That was a genuine
+`cause:liveness` member while the mutant existed.
 
-The line-less key is broader than that one site. Since the ArcMutate licence
-landed (2026-08-03) the licensed population no longer generates `ORDER_IF` at
-line 214 at all, and the remaining `DlmmUtils.pow` `ORDER_IF` mutants (lines
-197 and 205) are finite and `KILLED`. The row is kept as insurance for the
-liveness site rather than retired on a single observation; if it stays quiet
-the plugin's own three-consecutive-quiet-run notice is what should retire it.
+It no longer does. Since the ArcMutate licence landed (2026-08-03) the licensed
+population does not generate `ORDER_IF` at line 214 at all; the only surviving
+`DlmmUtils.pow` `ORDER_IF` mutants are at lines 197 and 205, both finite and
+both `KILLED`. The row was held as insurance rather than retired on one
+observation, and the plugin's own quiet-run counter then reached its threshold
+across five consecutive fresh runs — including a `qualityGate` run, so this is
+not the solo-load streak that notice warns can be misread. Retired on that
+evidence. If the mutant is ever generated and times out again it arrives as an
+unaudited newcomer, which is the reviewer-stop the audit exists for.
 
 ### `orca`: `OrcaUtil.sqrtFloor` Newton convergence exit (line 463) — `cause:liveness`
 

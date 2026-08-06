@@ -1,45 +1,38 @@
-software.sava.idl.clients.orca.OrcaUtil,applyTransferFee,313,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,applyTransferFee,313,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,boundTickIndex,62,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.orca.OrcaUtil,firstUnoccupiedPositionInBundle,228,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,firstUnoccupiedPositionInBundle,229,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,firstUnoccupiedPositionInBundle,229,RemoveConditionalMutator_ORDER_IF,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,isValidStartTickIndex,136,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,isValidStartTickIndex,136,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,orderPrices,747,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.orca.OrcaUtil,positionStatus,421,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,priceToSqrtPriceX64,683,ConditionalsBoundaryMutator,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,priceToSqrtPriceX64,683,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,requireU128,743,NullReturnValsMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,333,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,349,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,461,BigIntegerMutator,SURVIVED # sqrtFloor-guess family
-software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,461,NakedReceiverMutator,SURVIVED # sqrtFloor-guess family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromNegativeTick,577,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromPositiveTick,564,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,624,ConditionalsBoundaryMutator,SURVIVED # shift-symmetry family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,624,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # shift-symmetry family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,624,RemoveConditionalMutator_ORDER_IF,SURVIVED # shift-symmetry family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,632,ConditionalsBoundaryMutator,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,632,ConditionalsBoundaryMutator,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,632,RemoveConditionalMutator_ORDER_IF,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,632,RemoveConditionalMutator_ORDER_IF,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,641,IncrementsMutator,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,650,BigIntegerMutator,SURVIVED # log-margin family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,650,NakedReceiverMutator,SURVIVED # log-margin family
-software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,653,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # log-approx-headroom family
-software.sava.idl.clients.orca.OrcaUtil,startTickIndex,115,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family
-software.sava.idl.clients.orca.OrcaUtil,tickIndexToSqrtPriceX64,591,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.orca.OrcaUtil,tryGetAmountDeltaA,766,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addSupplementalTickArrays,144,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addTransferHook,127,MathMutator,SURVIVED # capacity-hint family
-software.sava.idl.clients.orca.WhirlpoolRemainingAccounts,append,81,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,144,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,144,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,154,NakedReceiverMutator,SURVIVED # u128-mask family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,287,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteB,313,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteA,360,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteB,386,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,orderTicks,168,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.orca.quote.WhirlpoolQuote,tryGetTokenEstimatesFromLiquidity,179,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
+software.sava.idl.clients.orca.OrcaUtil,applyTransferFee,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 313
+software.sava.idl.clients.orca.OrcaUtil,boundTickIndex,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 62
+software.sava.idl.clients.orca.OrcaUtil,firstUnoccupiedPositionInBundle,RemoveConditionalMutator_EQUAL_IF,SURVIVED # zero-fast-path family # line 228
+software.sava.idl.clients.orca.OrcaUtil,firstUnoccupiedPositionInBundle,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 229
+software.sava.idl.clients.orca.OrcaUtil,isValidStartTickIndex,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 136
+software.sava.idl.clients.orca.OrcaUtil,isValidStartTickIndex,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # defensive-guard family # line 136
+software.sava.idl.clients.orca.OrcaUtil,orderPrices,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 747
+software.sava.idl.clients.orca.OrcaUtil,positionStatus,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 421
+software.sava.idl.clients.orca.OrcaUtil,priceToSqrtPriceX64,ConditionalsBoundaryMutator,SURVIVED # zero-fast-path family # line 683
+software.sava.idl.clients.orca.OrcaUtil,requireU128,NullReturnValsMutator,SURVIVED # defensive-guard family # line 743
+software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 333
+software.sava.idl.clients.orca.OrcaUtil,reverseApplyTransferFee,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 349
+software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,BigIntegerMutator,SURVIVED # sqrtFloor-guess family # line 461
+software.sava.idl.clients.orca.OrcaUtil,sqrtFloor,NakedReceiverMutator,SURVIVED # sqrtFloor-guess family # line 461
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromNegativeTick,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 577
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceFromPositiveTick,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 564
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,ConditionalsBoundaryMutator,SURVIVED # shift-symmetry family # line 624
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,RemoveConditionalMutator_ORDER_IF,SURVIVED # shift-symmetry family # line 624
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,ConditionalsBoundaryMutator,SURVIVED # log-approx-headroom family # line 632
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,ConditionalsBoundaryMutator,SURVIVED # log-approx-headroom family # line 632
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,IncrementsMutator,SURVIVED # log-approx-headroom family # line 641
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,BigIntegerMutator,SURVIVED # log-margin family # line 650
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,NakedReceiverMutator,SURVIVED # log-margin family # line 650
+software.sava.idl.clients.orca.OrcaUtil,sqrtPriceX64ToTickIndex,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # log-approx-headroom family # line 653
+software.sava.idl.clients.orca.OrcaUtil,startTickIndex,ConditionalsBoundaryMutator,SURVIVED # defensive-guard family # line 115
+software.sava.idl.clients.orca.OrcaUtil,tickIndexToSqrtPriceX64,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 591
+software.sava.idl.clients.orca.OrcaUtil,tryGetAmountDeltaA,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 766
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addSupplementalTickArrays,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 144
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts$Builder,addTransferHook,MathMutator,SURVIVED # capacity-hint family # line 127
+software.sava.idl.clients.orca.WhirlpoolRemainingAccounts,append,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 81
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 144
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,collectRewardsQuote,NakedReceiverMutator,SURVIVED # u128-mask family # line 154
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteA,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 287
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,decreaseLiquidityQuoteB,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 313
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteA,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 360
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,increaseLiquidityQuoteB,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 386
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,orderTicks,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 168
+software.sava.idl.clients.orca.quote.WhirlpoolQuote,tryGetTokenEstimatesFromLiquidity,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 179

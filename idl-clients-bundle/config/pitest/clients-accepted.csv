@@ -1,35 +1,33 @@
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,37,RemoveConditionalMutator_ORDER_IF,SURVIVED # http-1xx-unreachable family
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,115,NakedReceiverMutator,SURVIVED # redundant-GET family
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,121,NakedReceiverMutator,SURVIVED # redundant-GET family
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,237,NakedReceiverMutator,SURVIVED # redundant-GET family
-software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,244,NakedReceiverMutator,SURVIVED # redundant-GET family
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,45,MathMutator,SURVIVED # capacity-hint family
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,MathMutator,SURVIVED # capacity-hint family
-software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,46,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,MathMutator,SURVIVED # capacity-hint family
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family
-software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,145,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family
-software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,49,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,22,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,141,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,72,ConditionalsBoundaryMutator,SURVIVED # equal-operands family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,61,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,399,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,399,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,405,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,405,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,418,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,418,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,366,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,366,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,195,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,196,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,206,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,214,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,219,NakedReceiverMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,220,ConditionalsBoundaryMutator,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,220,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,65,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,597,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,159,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family
-software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,66,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,lambda$static$0,RemoveConditionalMutator_ORDER_IF,SURVIVED # http-1xx-unreachable family # line 37
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,NakedReceiverMutator,SURVIVED # redundant-GET family # line 115
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,quote,NakedReceiverMutator,SURVIVED # redundant-GET family # line 121
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,NakedReceiverMutator,SURVIVED # redundant-GET family # line 237
+software.sava.idl.clients.jupiter.swap.rest.JupiterSwapApiClientImpl,ultraOrder,NakedReceiverMutator,SURVIVED # redundant-GET family # line 244
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,MathMutator,SURVIVED # capacity-hint family # line 45
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,MathMutator,SURVIVED # capacity-hint family # line 46
+software.sava.idl.clients.kamino.lend.KaminoLendingRemainingAccounts,appendObligationRefreshAccounts,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 46
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,MathMutator,SURVIVED # capacity-hint family # line 145
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # capacity-hint family # line 145
+software.sava.idl.clients.marginfi.v2.MarginfiRemainingAccounts$Builder,build,RemoveConditionalMutator_EQUAL_IF,SURVIVED # capacity-hint family # line 145
+software.sava.idl.clients.meteora.MeteoraPDAs,customizablePermissionlessLbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 49
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 22
+software.sava.idl.clients.meteora.MeteoraPDAs,lbPairWithPresetParamPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 141
+software.sava.idl.clients.meteora.MeteoraPDAs,permissionLbPairPDA,ConditionalsBoundaryMutator,SURVIVED # equal-operands family # line 72
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,binIdToArrayIndex,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 61
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 399
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 405
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFee,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family # line 405
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 418
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeFeeFromAmount,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family # line 418
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,computeVariableFee,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 366
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 195
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family # line 196
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # domain-guard family # line 206
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 214
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,NakedReceiverMutator,SURVIVED # domain-guard family # line 219
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,ConditionalsBoundaryMutator,SURVIVED # domain-guard family # line 220
+software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,RemoveConditionalMutator_ORDER_ELSE,SURVIVED # domain-guard family # line 220
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClient,deriveBinAccounts,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 65
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmClientImpl,hostFeeInOrSentinel,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 597
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts$TransferHookExtras,append,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # callee-subsumed-guard family # line 159
+software.sava.idl.clients.meteora.dlmm.MeteoraDlmmRemainingAccounts,deriveBinAccounts,RemoveConditionalMutator_EQUAL_ELSE,SURVIVED # zero-fast-path family # line 66

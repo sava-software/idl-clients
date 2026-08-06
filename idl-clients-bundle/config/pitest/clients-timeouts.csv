@@ -1,4 +1,7 @@
 # Audited timeout-detected mutants for the 'clients' suite — line-less
-# class,method,mutator keys with a reviewed cause category. Structural cause per
-# member: README.md, 'Audited timeout-detected mutants'.
-software.sava.idl.clients.meteora.dlmm.DlmmUtils,pow,RemoveConditionalMutator_ORDER_IF # cause:liveness # line 214
+# class,method,mutator keys with a reviewed cause category. Currently empty:
+# the suite has no timeout-detected mutants. DlmmUtils.pow's binary-expansion
+# loop exit was the one member and was retired after the plugin's quiet-run
+# counter reached its threshold (README.md, 'Audited timeout-detected mutants').
+# The file exists to arm the verify's audit — a first timed-out mutant here
+# should warn (reviewer-stop), not pass as an unaudited count.

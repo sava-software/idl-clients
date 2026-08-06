@@ -53,9 +53,10 @@ final class StakeAccountTests {
     assertEquals(StakeAccount.State.INACTIVE, deactivating.state(250L));
     assertEquals(StakeAccount.State.DE_ACTIVATING, deactivating.state(200L)); // == boundary is still deactivating
 
-    // deActivationEpoch < 0 branch with activationEpoch == 0 -> ACTIVATING (not > 0).
-    final var justActivated = stakeAccount(0L, -1L);
-    assertEquals(StakeAccount.State.ACTIVATING, justActivated.state(10L));
+    // deActivationEpoch < 0 branch: activating in its own delegation epoch, active after.
+    final var justActivated = stakeAccount(9L, -1L);
+    assertEquals(StakeAccount.State.ACTIVATING, justActivated.state(9L));
+    assertEquals(StakeAccount.State.ACTIVE, justActivated.state(10L));
   }
 
   /// Both epoch comparisons in `state` are strict, and the two properties that
@@ -63,9 +64,7 @@ final class StakeAccountTests {
   ///
   /// - `deactivation_epoch` is an ordinary `u64` epoch whose only "not
   ///   deactivating" value is `u64::MAX`. Epoch **0** is therefore a real
-  ///   deactivation epoch, not a second sentinel — a delegation deactivated in
-  ///   epoch 0 is `DE_ACTIVATING` during epoch 0 and `INACTIVE` after it, never
-  ///   activating.
+  ///   deactivation epoch, not a second sentinel.
   /// - `stake_and_activating` returns *all* of the stake as activating when
   ///   `target_epoch == activation_epoch`; effective stake only appears in the
   ///   epoch after. So the activation epoch itself is still `ACTIVATING`.
@@ -75,10 +74,10 @@ final class StakeAccountTests {
   /// agree with it everywhere else.
   @Test
   void epochComparisonsAreStrictAtTheirBoundaries() {
-    // deactivation epoch 0 is a real epoch, not a "never deactivating" sentinel
-    final var deactivatedAtGenesis = stakeAccount(100L, 0L);
-    assertEquals(StakeAccount.State.DE_ACTIVATING, deactivatedAtGenesis.state(0L));
-    assertEquals(StakeAccount.State.INACTIVE, deactivatedAtGenesis.state(1L));
+    // deactivation epoch 0 is a real epoch, not a "never deactivating" sentinel:
+    // delegated and deactivated at genesis holds no stake, it does not activate
+    final var deactivatedAtGenesis = stakeAccount(0L, 0L);
+    assertEquals(StakeAccount.State.INACTIVE, deactivatedAtGenesis.state(0L));
     assertEquals(StakeAccount.State.INACTIVE, deactivatedAtGenesis.state(500L));
 
     // only u64::MAX means "never deactivating"
@@ -89,6 +88,47 @@ final class StakeAccountTests {
     assertEquals(StakeAccount.State.ACTIVATING, activatingNow.state(199L));
     assertEquals(StakeAccount.State.ACTIVATING, activatingNow.state(200L));
     assertEquals(StakeAccount.State.ACTIVE, activatingNow.state(201L));
+  }
+
+  /// `u64::MAX` is `activation_epoch`'s sentinel too, and it means the opposite of
+  /// what it means in `deactivation_epoch`: `Delegation::is_bootstrap` treats such a
+  /// delegation as *fully effective immediately*, and the stake program checks it
+  /// before every other case. Epoch 0 is otherwise an ordinary activation epoch, so
+  /// a delegation made at genesis becomes effective the epoch after, exactly like
+  /// one made in any other epoch.
+  @Test
+  void bootstrapAndGenesisDelegationsBecomeActive() {
+    final var genesisDelegation = stakeAccount(0L, -1L);
+    assertEquals(StakeAccount.State.ACTIVATING, genesisDelegation.state(0L),
+        "its own activation epoch is still warming up");
+    assertEquals(StakeAccount.State.ACTIVE, genesisDelegation.state(1L));
+    assertEquals(StakeAccount.State.ACTIVE, genesisDelegation.state(500L));
+
+    final var bootstrap = stakeAccount(-1L, -1L);
+    assertEquals(StakeAccount.State.ACTIVE, bootstrap.state(0L),
+        "is_bootstrap() stake is effective immediately, with no activation epoch to wait out");
+    assertEquals(StakeAccount.State.ACTIVE, bootstrap.state(500L));
+  }
+
+  /// `Delegation::stake_and_activating` has a dedicated case for
+  /// `activation_epoch == deactivation_epoch` — "activated but instantly
+  /// deactivated; no stake at all regardless of target_epoch" — placed after the
+  /// bootstrap check and before the all-is-activating one. Nothing was ever
+  /// effective, so there is nothing winding down: the deactivation overlay reports
+  /// zero deactivating stake, not a live cooldown.
+  @Test
+  void delegationDeactivatedInItsActivationEpochNeverHoldsStake() {
+    final var instantlyDeactivated = stakeAccount(100L, 100L);
+    assertEquals(StakeAccount.State.INACTIVE, instantlyDeactivated.state(100L));
+    assertEquals(StakeAccount.State.INACTIVE, instantlyDeactivated.state(101L));
+    assertEquals(StakeAccount.State.INACTIVE, instantlyDeactivated.state(500L));
+
+    // an all-zero (undelegated) Delegation is that same shape, and reads the same
+    assertEquals(StakeAccount.State.INACTIVE, stakeAccount(0L, 0L).state(0L));
+
+    // but the bootstrap check comes first: u64::MAX in both fields is bootstrap
+    // stake that never deactivates, not an instant deactivation
+    assertEquals(StakeAccount.State.ACTIVE, stakeAccount(-1L, -1L).state(500L));
   }
 
   @Test

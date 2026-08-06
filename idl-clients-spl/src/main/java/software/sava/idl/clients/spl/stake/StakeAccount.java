@@ -35,12 +35,48 @@ public record StakeAccount(PublicKey address,
     INACTIVE
   }
 
+  /// The coarse activation state at `currentEpoch`, following the case order in the
+  /// stake program's `Delegation::stake_activating_and_deactivating`. Both epoch
+  /// fields use `u64::MAX` as their sentinel — which reads as a negative `long`
+  /// here — but it means opposite things in each: in `deactivationEpoch` it is
+  /// "never deactivating", and in `activationEpoch` it marks bootstrap stake, which
+  /// is effective immediately.
+  ///
+  /// This is deliberately coarser than the program's own accounting, which ramps
+  /// effective stake across epochs using the cluster's stake history: `ACTIVE` here
+  /// means the activation epoch has passed, not that the whole delegation has
+  /// finished warming up.
   public State state(final long currentEpoch) {
     if (deActivationEpoch < 0) {
-      return activationEpoch > 0 && activationEpoch < currentEpoch ? State.ACTIVE : State.ACTIVATING;
+      return isEffectiveAt(currentEpoch) ? State.ACTIVE : State.ACTIVATING;
+    } else if (!isEffectiveAt(currentEpoch)) {
+      // nothing was ever effective, so there is nothing to wind down — the program
+      // reports zero deactivating stake for this account, not a live cooldown
+      return State.INACTIVE;
     } else {
       return deActivationEpoch < currentEpoch ? State.INACTIVE : State.DE_ACTIVATING;
     }
+  }
+
+  /// The effective-stake half of `Delegation::stake_and_activating`: stake becomes
+  /// effective the epoch after it was delegated.
+  ///
+  /// Two of the program's cases collapse into that one comparison rather than
+  /// earning a branch here, and both are worth spelling out because the code no
+  /// longer shows them:
+  ///
+  /// - `is_bootstrap()` — `activation_epoch == u64::MAX` — is effective
+  ///   immediately. Read as a signed `long` that sentinel is negative, so it is
+  ///   below every real epoch and this already returns `true` for it.
+  /// - `activation_epoch == deactivation_epoch` ("activated but instantly
+  ///   deactivated; no stake at all regardless of target_epoch") needs no case
+  ///   either: with both equal, every epoch this returns `true` for is also past
+  ///   the deactivation epoch, so [#state] reports `INACTIVE` either way.
+  ///
+  /// Neither shortcut is observable from outside, and neither buys anything at
+  /// runtime, so writing them out would only add branches no test could kill.
+  private boolean isEffectiveAt(final long currentEpoch) {
+    return activationEpoch < currentEpoch;
   }
 
   public static final int BYTES = 200;

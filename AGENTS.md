@@ -452,12 +452,15 @@ whose mutated code calls it. Doc and build-script changes owe no suite.
 **Measured 2026-08-06 on sava-build 21.5.24** (re-measure rather than trust this
 line; PIT engine time, one suite at a time):
 
-| suite | detected | survived | timed out | engine |
-|---|---|---|---|---|
-| `spl` | 820/824 (99%) | 4 | 0 | 17s |
-| `orca` | 596/634 (94%) | 38 | 1 (audited) | 19s |
-| `scope` | 298/335 (88%) | 37 | 0 | 25s |
-| `clients` | 1570/1603 (97%) | 33 | 0 | 1m 10s |
+| suite | detected | survived | timed out | accepted rows | engine |
+|---|---|---|---|---|---|
+| `spl` | 824/828 (99%) | 4 | 0 | 4 | 20s |
+| `orca` | 596/634 (94%) | 38 | 1 (audited) | 38 | 19s |
+| `scope` | 298/335 (88%) | 37 | 0 | 37 | 20s |
+| `clients` | 1570/1603 (97%) | 33 | 0 | 33 | 51s |
+
+Every accepted row matches a mutant in the current population — the baselines
+carry no stale rows.
 
 **Who owns certification.** CI runs `check`, which includes
 `agentsTemplateInSync` but no mutation suite. `hardeningCertify` and a local
@@ -477,16 +480,18 @@ play today (no `.hist` file exists), but every record decision still runs
 2026-08-06 (`pitest<Suite>BaselineRebase`), which is what bound the PIT version
 and toolchain that the pre-21.5.22 records left unstated. The committed
 provenance lives beside each baseline as `<suite>-pitest-version` and
-`<suite>-pitest-toolchain.tsv`. 22 rows across the four baselines currently
-match no mutant in the licensed population; they are retained deliberately —
-one history-free run cannot tell a stable removal from an uninsured flip.
+`<suite>-pitest-toolchain.tsv`. The rebase carried all 134 rows forward; 22 of
+them then matched no mutant in the licensed population and were pruned after two
+independent history-free measurements — one solo, one under `qualityGate` load —
+produced identical unmatched sets. Eleven of the 22 were coordinates the
+licensed population no longer generates at all; the rest were surplus siblings
+at coordinates that now report fewer survivors than the baseline held.
 
-**Audited timeouts.** `orca` holds one member (`OrcaUtil.sqrtFloor`,
-`cause:liveness`); `clients` holds one (`DlmmUtils.pow`, `cause:liveness`);
-`scope` and `spl` are armed but empty, so a first timeout in either is a
-reviewer-stop. The structural argument for every member, and for the two orca
-rows and one scope row retired in 2026-08, is in the bundle README under
-"Audited timeout-detected mutants".
+**Audited timeouts.** `orca` holds the only member, `OrcaUtil.sqrtFloor`
+(`cause:liveness`). `spl`, `scope` and `clients` are armed but empty, so a first
+timeout in any of them is a reviewer-stop. The structural argument for the live
+member, and for the four rows retired during the 21.5.24 adoption, is in the
+bundle README under "Audited timeout-detected mutants".
 
 **Exclusion ownership.** Suites are targeted by package wildcard with explicit
 exclusions, **never by allowlist** — an allowlist silently exempts every class
