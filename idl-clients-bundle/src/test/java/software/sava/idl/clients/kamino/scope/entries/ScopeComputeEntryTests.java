@@ -62,6 +62,16 @@ final class ScopeComputeEntryTests {
       return this;
     }
 
+    Mappings bitmask(final int i, final int bitmask) {
+      twapBitmasks[i] = new TwapEnabledBitmask(bitmask);
+      return this;
+    }
+
+    Mappings refPrice(final int i, final int sourceSlot) {
+      refPrice[i] = sourceSlot;
+      return this;
+    }
+
     ScopeEntries parse() {
       return ScopeReader.parseEntries(42L, new OracleMappings(
           key(0x77), null, priceInfoAccounts, priceTypes, tolerance, twapBitmasks, refPrice, generic
@@ -102,13 +112,16 @@ final class ScopeComputeEntryTests {
     assertEquals(new BigDecimal("0.18446744073709551615"), scaled.decimal());
   }
 
+  /// A TWAP bitmask is settable on any slot and does not disturb the decode of the
+  /// type's own config — the price still reads exactly as it does without one.
   @Test
-  void fixedPriceRejectsEmaTypes() {
+  void fixedPriceDecodesTheSameWithATwapBitmaskSet() {
     final var mappings = new Mappings()
         .slot(0, OracleType.FixedPrice)
-        .generic(0, new Price(1L, 0L));
-    mappings.twapBitmasks[0] = new TwapEnabledBitmask(1); // Ema1h enabled
-    assertThrows(IllegalStateException.class, mappings::parse);
+        .generic(0, new Price(1L, 0L))
+        .bitmask(0, 1); // Ema1h enabled
+    final var fixed = assertInstanceOf(FixedPrice.class, mappings.parse().scopeEntry(0));
+    assertEquals(BigDecimal.ONE, fixed.decimal());
   }
 
   // ---------------------------------------------------------------------------
@@ -249,14 +262,19 @@ final class ScopeComputeEntryTests {
     assertEquals(2, assertInstanceOf(Conditional.class, gt.scopeEntry(0)).sources().length);
   }
 
+  /// `MappingRefPrice` sets a ref price on any slot without consulting the oracle
+  /// type, so a Conditional can carry one. `Conditional` has no field for it, but the
+  /// sources it does model must still resolve — the ref price is dropped, not the entry.
   @Test
-  void conditionalRejectsARefPrice() {
+  void conditionalResolvesItsSourcesWithARefPriceSet() {
     final var mappings = new Mappings()
         .slot(1, OracleType.PythPull)
         .slot(0, OracleType.Conditional)
-        .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 0, new int[]{1, NONE, NONE}));
-    mappings.refPrice[0] = 1;
-    assertThrows(IllegalStateException.class, mappings::parse);
+        .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 0, new int[]{1, NONE, NONE}))
+        .refPrice(0, 1);
+    final var conditional = assertInstanceOf(Conditional.class, mappings.parse().scopeEntry(0));
+    assertEquals(Condition.NonZero, conditional.condition());
+    assertEquals(1, conditional.sources().length);
   }
 
   // ---------------------------------------------------------------------------
@@ -418,23 +436,29 @@ final class ScopeComputeEntryTests {
     assertEquals(1_800_000_000L, dtm.maturityTimestamp());
   }
 
+  /// The balance types carry no ref-price field, and the program sets ref prices
+  /// without consulting the oracle type — so all four decode identically whether or
+  /// not one is configured. `SplStake` used to be the lone tolerated exception here;
+  /// nothing distinguished it, and now nothing does.
   @Test
-  void balanceTypesRejectARefPrice() {
+  void balanceTypesDecodeWithOrWithoutARefPrice() {
     for (final var type : new OracleType[]{
-        OracleType.SplBalance, OracleType.StakedSolBalance, OracleType.TotalMintSupply
+        OracleType.SplBalance, OracleType.StakedSolBalance,
+        OracleType.TotalMintSupply, OracleType.SplStake
     }) {
-      final var mappings = new Mappings()
+      final var withRef = new Mappings()
           .slot(1, OracleType.PythPull)
-          .slot(0, type);
-      mappings.refPrice[0] = 1;
-      assertThrows(IllegalStateException.class, mappings::parse, type.name());
+          .slot(0, type)
+          .refPrice(0, 1)
+          .parse();
+      final var without = new Mappings()
+          .slot(1, OracleType.PythPull)
+          .slot(0, type)
+          .parse();
+      // these four hold no arrays, so record equality is value equality here
+      assertEquals(without.scopeEntry(0), withRef.scopeEntry(0), type.name());
+      assertEquals(without.scopeEntry(0).getClass(), withRef.scopeEntry(0).getClass(), type.name());
     }
-    // SplStake deliberately tolerates one
-    final var splStake = new Mappings()
-        .slot(1, OracleType.PythPull)
-        .slot(0, OracleType.SplStake);
-    splStake.refPrice[0] = 1;
-    assertInstanceOf(SplStake.class, splStake.parse().scopeEntry(0));
   }
 
   @Test
@@ -454,11 +478,16 @@ final class ScopeComputeEntryTests {
     assertInstanceOf(Unused.class, entries.scopeEntry(4));
   }
 
-  /// Every oracle type that forbids EMA configuration must reject a set TWAP
-  /// bitmask — each call site is an independent guard, so each type is driven
-  /// through it.
+  /// No oracle type forbids a TWAP bitmask. The program's writer validates the
+  /// bitmask's range and nothing else, and `refresh_prices` gates the EMA update on
+  /// `is_twap_enabled(token)` without consulting the type — so every one of these
+  /// slots is a mapping an admin can actually write, and each must decode to its own
+  /// entry rather than failing the parse of all 512.
+  ///
+  /// This list is every type whose entry record has no EMA field, which is where a
+  /// type-keyed guard would previously have fired.
   @Test
-  void emaTypesRejectedByEveryGuardedType() {
+  void everyOracleTypeToleratesATwapBitmask() {
     for (final var type : new OracleType[]{
         OracleType.FixedPrice, OracleType.CappedFloored, OracleType.CappedMostRecentOf,
         OracleType.Conditional, OracleType.DiscountToMaturity, OracleType.MostRecentOf,
@@ -467,9 +496,16 @@ final class ScopeComputeEntryTests {
         OracleType.SplStake, OracleType.StakedSolBalance, OracleType.Unused,
         OracleType.DeprecatedPlaceholder1
     }) {
-      final var mappings = new Mappings().slot(0, type);
-      mappings.twapBitmasks[0] = new TwapEnabledBitmask(1); // Ema1h enabled
-      assertThrows(IllegalStateException.class, mappings::parse, type.name());
+      final var entries = new Mappings().slot(0, type).bitmask(0, 1).parse(); // Ema1h
+      assertEquals(SLOTS, entries.numEntries(), type.name());
+      final var entry = entries.scopeEntry(0);
+      assertNotNull(entry, type.name());
+      // and it decodes to the same shape an unset bitmask produces. Compared by class
+      // and index rather than by equals: the composite entries hold their sources in
+      // an array, so record equality on those is identity, not value.
+      final var without = new Mappings().slot(0, type).parse().scopeEntry(0);
+      assertEquals(without.getClass(), entry.getClass(), type.name());
+      assertEquals(without.index(), entry.index(), type.name());
     }
   }
 
@@ -588,5 +624,60 @@ final class ScopeComputeEntryTests {
     final var mostRecent = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(0));
     assertSame(entries.scopeEntry(1), mostRecent.sources()[0],
         "slot 1 was resolved while slot 0 was parsed, and slot 1's own turn must publish that entry");
+  }
+
+  /// A TWAP bitmask is legal on any slot. The program's only writer of the field,
+  /// `MappingTwapEnabledBitmask`, validates the bitmask alone — `bitmask < 1 <<
+  /// EmaType::COUNT` — and never the oracle type, and `refresh_prices` gates the EMA
+  /// update on `is_twap_enabled(token)` alone, so a composite really does accumulate
+  /// EMAs. The parse must therefore not treat a bitmask on a composite as impossible.
+  ///
+  /// The blast radius is what makes this matter: these entries are produced by one
+  /// walk over all 512 slots, so a throw on one slot discards the whole account.
+  @Test
+  void aTwapBitmaskOnAnyOracleTypeStillParses() {
+    final var entries = new Mappings()
+        .slot(3, OracleType.PythPull)
+        .slot(0, OracleType.MostRecentOf)
+        .generic(0, new MostRecentOfData(new int[]{3, NONE, NONE, NONE}, 0, 0L))
+        .slot(1, OracleType.CappedFloored)
+        .generic(1, new CappedFlooredData(3, OptionalInt.empty(), OptionalInt.empty()))
+        .slot(2, OracleType.FixedPrice)
+        .generic(2, new Price(5L, 0L))
+        .bitmask(0, 0b0001)
+        .bitmask(1, 0b0011)
+        .bitmask(2, 0b1111)
+        .parse();
+
+    assertEquals(SLOTS, entries.numEntries());
+    assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(0));
+    assertInstanceOf(CappedFloored.class, entries.scopeEntry(1));
+    assertInstanceOf(FixedPrice.class, entries.scopeEntry(2));
+    // and the rest of the account survives
+    assertInstanceOf(PythPull.class, entries.scopeEntry(3));
+    assertInstanceOf(Unused.class, entries.scopeEntry(SLOTS - 1));
+  }
+
+  /// Same shape for a reference price. `MappingRefPrice` sets the index and tolerance
+  /// with no oracle-type gate, so a slot the model has no ref-price field for can
+  /// still carry one on-chain. Decoding must drop the field, not the account.
+  @Test
+  void aReferencePriceOnAnyOracleTypeStillParses() {
+    final var entries = new Mappings()
+        .slot(5, OracleType.PythPull)
+        .slot(0, OracleType.Conditional)
+        .generic(0, new ConditionalData(Condition.NonZero.ordinal(), 0, new int[]{5, NONE, NONE}))
+        .slot(1, OracleType.SplBalance)
+        .slot(2, OracleType.TotalMintSupply)
+        .refPrice(0, 5)
+        .refPrice(1, 5)
+        .refPrice(2, 5)
+        .parse();
+
+    assertEquals(SLOTS, entries.numEntries());
+    assertInstanceOf(Conditional.class, entries.scopeEntry(0));
+    assertInstanceOf(SplBalance.class, entries.scopeEntry(1));
+    assertInstanceOf(TotalMintSupply.class, entries.scopeEntry(2));
+    assertInstanceOf(PythPull.class, entries.scopeEntry(5));
   }
 }

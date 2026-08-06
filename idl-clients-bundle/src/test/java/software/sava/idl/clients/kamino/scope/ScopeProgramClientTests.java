@@ -78,6 +78,12 @@ final class ScopeProgramClientTests {
 
   /// Token types whose refresh needs asset mints cannot be refreshed through
   /// this path — a plain read meta would produce a failing on-chain refresh.
+  ///
+  /// The list is every arm of the program's `refresh_prices` dispatch that pulls
+  /// from `extra_accounts`. `SplBalance` is one of them: `spl_balance::get_price`
+  /// takes a mint account, so a token of that type anywhere but last in the batch
+  /// makes the handler read the *next* token's base account as its mint and fail
+  /// the whole transaction.
   @Test
   void refreshPriceListExtraAccountsRejectsMintDependentTypes() {
     for (final var type : new OracleType[]{
@@ -85,7 +91,8 @@ final class ScopeProgramClientTests {
         OracleType.JupiterLpFetch,
         OracleType.MeteoraDlmmAtoB, OracleType.MeteoraDlmmBtoA,
         OracleType.OrcaWhirlpoolAtoB, OracleType.OrcaWhirlpoolBtoA,
-        OracleType.Securitize
+        OracleType.Securitize,
+        OracleType.SplBalance
     }) {
       final var mappings = mappings();
       mappings.priceTypes()[1] = (byte) type.ordinal();
@@ -93,6 +100,47 @@ final class ScopeProgramClientTests {
           () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}),
           type.name());
     }
+  }
+
+  /// Bit 7 of a `price_types` byte is the program's frozen flag, not part of the
+  /// oracle type. Freezing an entry is a live admin/emergency-council action and
+  /// does not change how many accounts the refresh consumes, so a frozen token
+  /// must build exactly the meta its unfrozen self would.
+  ///
+  /// Read as a signed byte the flag makes the type negative, so an unmasked read
+  /// indexes the enum out of bounds rather than mis-typing the entry.
+  @Test
+  void refreshPriceListExtraAccountsIgnoresTheFrozenFlag() {
+    final var mappings = mappings();
+    final byte plain = mappings.priceTypes()[1];
+    mappings.priceTypes()[1] = (byte) (plain | 0x80);
+
+    assertEquals(
+        List.of(AccountMeta.createRead(mappings.priceInfoAccounts()[1])),
+        ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
+
+    // and the frozen flag does not smuggle a mint-dependent type past the guard
+    mappings.priceTypes()[1] = (byte) (OracleType.KToken.ordinal() | 0x80);
+    assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
+  }
+
+  /// A deployed program can carry an oracle type newer than the IDL this client
+  /// was generated from. That must be a diagnosable failure, not an
+  /// ArrayIndexOutOfBoundsException from indexing the enum with a raw byte.
+  @Test
+  void refreshPriceListExtraAccountsRejectsAnUnknownOracleType() {
+    final var mappings = mappings();
+    mappings.priceTypes()[1] = (byte) 0x7E; // within the mask, beyond the enum
+    final var ex = assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
+    assertTrue(ex.getMessage().contains("0x7e"), ex.getMessage());
+
+    // a frozen unknown type reports the whole byte, so the flag is visible too
+    mappings.priceTypes()[1] = (byte) 0xFE;
+    final var frozen = assertThrows(IllegalStateException.class,
+        () -> ScopeProgramClient.refreshPriceListExtraAccounts(mappings, new int[]{1}));
+    assertTrue(frozen.getMessage().contains("0xfe"), frozen.getMessage());
   }
 
   private static software.sava.idl.clients.kamino.scope.gen.types.Configuration configuration() {

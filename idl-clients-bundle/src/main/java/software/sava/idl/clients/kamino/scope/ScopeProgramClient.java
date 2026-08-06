@@ -5,6 +5,7 @@ import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.kamino.KaminoAccounts;
+import software.sava.idl.clients.kamino.scope.entries.ScopeReader;
 import software.sava.idl.clients.kamino.scope.gen.types.Configuration;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleType;
@@ -66,20 +67,35 @@ public interface ScopeProgramClient {
     );
   }
 
+  /// One read-only meta per requested token, in request order.
+  ///
+  /// The rejected types are every arm of the program's `refresh_prices` dispatch that
+  /// pulls an account out of `extra_accounts`: a plain read meta for one of those makes
+  /// the handler consume the following token's base account as its mint, which fails the
+  /// whole transaction rather than just that entry.
   static List<AccountMeta> refreshPriceListExtraAccounts(final OracleMappings oracleMappings, final int[] tokens) {
     final var priceInfoAccounts = oracleMappings.priceInfoAccounts();
-    final var oracleTypes = oracleMappings.priceTypes();
+    final var priceTypes = oracleMappings.priceTypes();
     final var oracleTypeEnums = OracleType.values();
     final var accountMetas = new AccountMeta[tokens.length];
     for (int i = 0; i < tokens.length; i++) {
       final int token = tokens[i];
-      final var oracleType = oracleTypeEnums[oracleTypes[token]];
+      // masked: a frozen entry sets bit 7 in place, and the refresh consumes the same
+      // one account whether or not it is frozen
+      final var oracleType = ScopeReader.oracleType(oracleTypeEnums, priceTypes[token]);
+      if (oracleType == null) {
+        // the whole byte, frozen flag included, so the report is unambiguous
+        throw new IllegalStateException("Unknown oracle type 0x"
+            + Integer.toHexString(Byte.toUnsignedInt(priceTypes[token]))
+            + " at token " + token + "; the deployed program is ahead of this IDL.");
+      }
       switch (oracleType) {
         case KToken, KTokenToTokenA, KTokenToTokenB,
              JupiterLpFetch,
              MeteoraDlmmAtoB, MeteoraDlmmBtoA,
              OrcaWhirlpoolAtoB, OrcaWhirlpoolBtoA,
-             Securitize -> throw new IllegalStateException(oracleType + "Requires asset mints as well.");
+             Securitize,
+             SplBalance -> throw new IllegalStateException(oracleType + " requires asset mints as well.");
       }
       accountMetas[i] = AccountMeta.createRead(priceInfoAccounts[token]);
     }

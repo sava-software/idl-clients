@@ -12,6 +12,23 @@ import java.math.BigDecimal;
 
 public interface ScopeReader {
 
+  /// Resolve a raw `OracleMappings.price_types` byte to its oracle type, or `null`
+  /// when the deployed program carries a type newer than the IDL this client was
+  /// generated from.
+  ///
+  /// Bit 7 of the byte is the program's frozen flag (`FROZEN_FLAG = 0x80`), not part
+  /// of the oracle type — freezing an entry sets it in place. This masks it off, which
+  /// the program calls `strip_frozen_flag`. Reading the byte without that mask is not
+  /// a mis-typing but an out-of-bounds index, because a Java `byte` carrying bit 7 is
+  /// negative.
+  ///
+  /// Takes the values array rather than calling `OracleType.values()` itself, because
+  /// that clones on every call and this runs once per slot across 512 slots.
+  static OracleType oracleType(final OracleType[] oracleTypes, final byte priceType) {
+    final int ordinal = priceType & ScopeReaderRecord.ORACLE_TYPE_MASK;
+    return ordinal < oracleTypes.length ? oracleTypes[ordinal] : null;
+  }
+
   static ScopeEntries parseEntries(final AccountInfo<byte[]> accountInfo) {
     final long slot = accountInfo.context().slot();
     final var mappings = OracleMappings.read(accountInfo);
