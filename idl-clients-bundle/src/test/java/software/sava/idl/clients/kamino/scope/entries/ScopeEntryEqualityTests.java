@@ -135,8 +135,8 @@ final class ScopeEntryEqualityTests {
   @Test
   void scopeEntriesRecord() {
     final var entries = new ScopeEntry[]{new Unused(0), FixedPrice.createEntry(1, 100L, 2)};
-    final var base = new ScopeEntriesRecord(key(1), 42L, entries);
-    final var twin = new ScopeEntriesRecord(key(1), 42L, new ScopeEntry[]{new Unused(0), FixedPrice.createEntry(1, 100L, 2)});
+    final var base = entriesRecord(key(1), 42L, entries);
+    final var twin = entriesRecord(key(1), 42L, new ScopeEntry[]{new Unused(0), FixedPrice.createEntry(1, 100L, 2)});
 
     assertEquals(base, twin);
     assertEquals(twin, base);
@@ -144,9 +144,22 @@ final class ScopeEntryEqualityTests {
     assertNotEquals(base, null);
     assertNotEquals(base, new Unused(1));
 
-    assertBothDiffer(base, new ScopeEntriesRecord(key(2), 42L, entries), "pubKey");
-    assertBothDiffer(base, new ScopeEntriesRecord(key(1), 43L, entries), "slot");
-    assertBothDiffer(base, new ScopeEntriesRecord(key(1), 42L, new ScopeEntry[]{new Unused(0)}), "scopeEntries");
+    assertBothDiffer(base, entriesRecord(key(2), 42L, entries), "pubKey");
+    assertBothDiffer(base, entriesRecord(key(1), 43L, entries), "slot");
+    assertBothDiffer(base, entriesRecord(key(1), 42L, new ScopeEntry[]{new Unused(0)}), "scopeEntries");
+
+    // The bound feed is part of identity: two records over the same bytes behave
+    // differently if one knows its feed — it refuses a reserve the other resolves.
+    final var bound = entriesRecord(key(1), key(0x50), 42L, entries);
+    assertBothDiffer(base, bound, "oraclePrices bound vs unbound");
+    assertBothDiffer(bound, entriesRecord(key(1), key(0x51), 42L, entries), "oraclePrices");
+    assertEquals(bound, entriesRecord(key(1), key(0x50), 42L, entries));
+
+    // pubKey is null when the mappings came from raw bytes rather than an AccountInfo
+    final var anonymous = entriesRecord(null, 42L, entries);
+    assertEquals(anonymous, entriesRecord(null, 42L, entries));
+    assertEquals(anonymous.hashCode(), entriesRecord(null, 42L, entries).hashCode());
+    assertBothDiffer(base, anonymous, "null pubKey");
   }
 
   /// The hand-written toStrings render arrays by content — the default record
@@ -159,7 +172,7 @@ final class ScopeEntryEqualityTests {
     assertTrue(capped.toString().contains("maxDivergenceBps=100"), capped.toString());
     final var conditional = new Conditional(1, Condition.Gt, 50, sources());
     assertTrue(conditional.toString().contains("Gt"), conditional.toString());
-    final var entriesRecord = new ScopeEntriesRecord(key(1), 42L, sources());
+    final var entriesRecord = entriesRecord(key(1), 42L, sources());
     assertTrue(entriesRecord.toString().contains("slot=42"), entriesRecord.toString());
     final var chains = new PriceChainsRecord(sources(), new ScopeEntry[0]);
     assertTrue(chains.toString().contains("priceChain"), chains.toString());
@@ -206,4 +219,25 @@ final class ScopeEntryEqualityTests {
     // the two chains are compared to their own counterparts, not to each other
     assertNotEquals(base, new PriceChainsRecord(twap, price));
   }
+
+  /// The per-slot mapping views are not part of record identity and are not exercised
+  /// here, so they are built empty: no frozen flags, no reference prices, and a
+  /// reference-price index out of range on every slot, which is how a mapping with
+  /// none configured reads.
+  private static ScopeEntriesRecord entriesRecord(final PublicKey pubKey,
+                                                  final long slot,
+                                                  final ScopeEntry[] entries) {
+    return entriesRecord(pubKey, null, slot, entries);
+  }
+
+  private static ScopeEntriesRecord entriesRecord(final PublicKey pubKey,
+                                                  final PublicKey oraclePrices,
+                                                  final long slot,
+                                                  final ScopeEntry[] entries) {
+    final int n = entries.length;
+    final int[] none = new int[n];
+    java.util.Arrays.fill(none, 0xFFFF);
+    return new ScopeEntriesRecord(pubKey, oraclePrices, slot, entries, new byte[n], new ScopeEntry[n], none, none);
+  }
+
 }

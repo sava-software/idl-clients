@@ -23,13 +23,34 @@ record ScopeReaderRecord(ScopeEntry[] entries,
   /// type is bits 0-6. Package-private on purpose — [ScopeReader#oracleType] is the
   /// only supported way to apply it, so a caller cannot mask by hand and drift.
   static final int ORACLE_TYPE_MASK = 0x7F;
+  /// Bit 7 of `OracleMappings.price_types[i]`: the program's `FROZEN_FLAG`.
+  static final int FROZEN_FLAG = 0x80;
   private static final int NO_REF_PRICE_TOLERANCE = 0xFFFF;
 
-  ScopeEntries readEntries(final PublicKey pubKey, final long slot) {
+  ScopeEntries readEntries(final PublicKey pubKey, final PublicKey oraclePrices, final long slot) {
     for (int i = 0; i < priceInfoAccounts.length; ++i) {
       entries[i] = entry(i);
     }
-    return new ScopeEntriesRecord(pubKey, slot, entries);
+    // Resolved after the walk, from the memoized entries: a reference price is
+    // configurable on every slot, but only the ReferencesEntry types have a field
+    // for it, so this is where the rest of them keep theirs.
+    final var referencePrices = new ScopeEntry[priceInfoAccounts.length];
+    for (int i = 0; i < referencePrices.length; ++i) {
+      referencePrices[i] = entry(this.refPrice[i]);
+    }
+    // Cloned: these three come straight from the caller's OracleMappings, and the
+    // parsed entries are a snapshot of one slot. `entries` and `referencePrices` are
+    // allocated here so they need no copy.
+    return new ScopeEntriesRecord(
+        pubKey,
+        oraclePrices,
+        slot,
+        entries,
+        priceTypes.clone(),
+        referencePrices,
+        refPrice.clone(),
+        twapSourceOrRefPriceToleranceBps.clone()
+    );
   }
 
   private ScopeEntry entry(final OptionalInt i) {

@@ -36,7 +36,45 @@ final class ScopeEntriesRecordTests {
     for (int i = 0; i < 8; ++i) {
       scopeEntries[i] = FixedPrice.createEntry(i, 100L + i, 2);
     }
-    return new ScopeEntriesRecord(key(1), 42L, scopeEntries);
+    return entriesRecord(key(1), 42L, scopeEntries);
+  }
+
+  /// A price chain is a list of slot indices, and slot N is a different token in a
+  /// different feed — so resolving a reserve's chain against the wrong feed's entries
+  /// yields a plausible wrong price rather than an error. `ScopeConfiguration.priceFeed`
+  /// names the feed's *prices* account (klend compares it against `scope_prices`, not
+  /// against the mappings account), so entries that were told which feed they came from
+  /// can tell the two apart.
+  @Test
+  void chainsRefuseAReserveFromADifferentFeed() {
+    final var prices = key(0x50);
+    final var scopeEntries = new ScopeEntry[CHAIN_END];
+    for (int i = 0; i < 8; ++i) {
+      scopeEntries[i] = FixedPrice.createEntry(i, 100L + i, 2);
+    }
+    final var bound = entriesRecord(key(1), prices, 42L, scopeEntries);
+    final int[] chain = {0, CHAIN_END, CHAIN_END, CHAIN_END};
+    final int[] noTwap = {CHAIN_END, CHAIN_END, CHAIN_END, CHAIN_END};
+
+    // same feed: resolves
+    assertNotNull(bound.readPriceChains(key(9), new ScopeConfiguration(prices, chain, noTwap)));
+
+    // a different feed: refused, naming both
+    final var otherFeed = key(0x51);
+    final var ex = assertThrows(IllegalArgumentException.class,
+        () -> bound.readPriceChains(key(9), new ScopeConfiguration(otherFeed, chain, noTwap)));
+    assertTrue(ex.getMessage().contains(otherFeed.toBase58()), ex.getMessage());
+    assertTrue(ex.getMessage().contains(prices.toBase58()), ex.getMessage());
+
+    // scope pricing disabled: `is_enabled` is false on-chain and the program prices
+    // the reserve from elsewhere, so there is no chain to hand back — and a disabled
+    // config is allowed to keep stale indices, which resolving would turn into a price
+    assertNull(bound.readPriceChains(key(9), new ScopeConfiguration(PublicKey.NONE, chain, noTwap)));
+    assertNull(bound.readPriceChains(key(9), new ScopeConfiguration(KaminoAccounts.NULL_KEY, chain, noTwap)));
+    assertNull(entries().readPriceChains(key(9), new ScopeConfiguration(PublicKey.NONE, chain, noTwap)));
+
+    // and entries parsed without a feed cannot make the check at all
+    assertNotNull(entries().readPriceChains(key(9), new ScopeConfiguration(otherFeed, chain, noTwap)));
   }
 
   @Test
@@ -98,7 +136,7 @@ final class ScopeEntriesRecordTests {
         new Unused(3),
         new PythPull(4, oracle, java.util.Set.of(), null, java.util.OptionalInt.empty())
     };
-    final var record = new ScopeEntriesRecord(key(1), 42L, scopeEntries);
+    final var record = entriesRecord(key(1), 42L, scopeEntries);
 
     final var matches = record.oracleEntries(oracle, OracleType.PythPull);
     assertEquals(
@@ -187,4 +225,25 @@ final class ScopeEntriesRecordTests {
     return new software.sava.idl.clients.kamino.lend.gen.types.Reserve(
         null, null, 0, null, null, null, null, liquidity, null, null, null, config, null, 0, null, null, null);
   }
+
+  /// The per-slot mapping views are not part of record identity and are not exercised
+  /// here, so they are built empty: no frozen flags, no reference prices, and a
+  /// reference-price index out of range on every slot, which is how a mapping with
+  /// none configured reads.
+  private static ScopeEntriesRecord entriesRecord(final PublicKey pubKey,
+                                                  final long slot,
+                                                  final ScopeEntry[] entries) {
+    return entriesRecord(pubKey, null, slot, entries);
+  }
+
+  private static ScopeEntriesRecord entriesRecord(final PublicKey pubKey,
+                                                  final PublicKey oraclePrices,
+                                                  final long slot,
+                                                  final ScopeEntry[] entries) {
+    final int n = entries.length;
+    final int[] none = new int[n];
+    java.util.Arrays.fill(none, 0xFFFF);
+    return new ScopeEntriesRecord(pubKey, oraclePrices, slot, entries, new byte[n], new ScopeEntry[n], none, none);
+  }
+
 }

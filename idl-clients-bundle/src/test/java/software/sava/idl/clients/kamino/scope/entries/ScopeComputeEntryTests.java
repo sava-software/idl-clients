@@ -72,6 +72,13 @@ final class ScopeComputeEntryTests {
       return this;
     }
 
+    /// The ref-price tolerance in bps — except on the TWAP types, where the same
+    /// field is the source slot index.
+    Mappings tolerance(final int i, final int toleranceOrSource) {
+      tolerance[i] = toleranceOrSource;
+      return this;
+    }
+
     ScopeEntries parse() {
       return ScopeReader.parseEntries(42L, new OracleMappings(
           key(0x77), null, priceInfoAccounts, priceTypes, tolerance, twapBitmasks, refPrice, generic
@@ -563,6 +570,110 @@ final class ScopeComputeEntryTests {
     assertInstanceOf(PythPull.class, entries.scopeEntry(0));
   }
 
+  /// Both configuration-bound entry points record the feed's prices account, which is
+  /// what lets the entries recognise a reserve that belongs to a different feed. The
+  /// overloads without one parse identically but leave it unbound.
+  @Test
+  void parseEntriesBindsTheFeedFromTheConfiguration() {
+    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var oracleMappings = new OracleMappings(
+        key(0x77), OracleMappings.DISCRIMINATOR,
+        mappings.priceInfoAccounts, mappings.priceTypes, mappings.tolerance,
+        mappings.twapBitmasks, mappings.refPrice, mappings.generic);
+    final var prices = key(0x50);
+    final var configuration = new Configuration(
+        key(0x41), null, key(0x42),
+        key(0x77),  // oracleMappings
+        prices,     // oraclePrices
+        key(0x43), key(0x44), key(0x45), key(0x46), key(0x47),
+        new long[Configuration.PADDING_LEN]);
+
+    final var fromMappings = ScopeReader.parseEntries(7L, oracleMappings, configuration);
+    assertEquals(prices, fromMappings.oraclePrices());
+    assertEquals(7L, fromMappings.slot());
+    assertInstanceOf(PythPull.class, fromMappings.scopeEntry(0));
+
+    final byte[] data = new byte[OracleMappings.BYTES];
+    oracleMappings.write(data, 0);
+    final var accountInfo = new software.sava.rpc.json.http.response.AccountInfo<>(
+        key(0x77),
+        new software.sava.rpc.json.http.response.Context(99L, null),
+        false, 0L, PublicKey.NONE, java.math.BigInteger.ZERO, 0, data);
+
+    final var fromAccount = ScopeReader.parseEntries(accountInfo, configuration);
+    assertEquals(prices, fromAccount.oraclePrices());
+    assertEquals(99L, fromAccount.slot());
+    assertInstanceOf(PythPull.class, fromAccount.scopeEntry(0));
+
+    // unbound without a configuration
+    assertNull(ScopeReader.parseEntries(7L, oracleMappings).oraclePrices());
+    assertNull(ScopeReader.parseEntries(accountInfo).oraclePrices());
+  }
+
+  /// The two accounts are paired in one on-chain Configuration, so taking the prices
+  /// key from a configuration that describes a different mappings account would attach
+  /// a confident but wrong feed identity — every reserve of that other feed would then
+  /// pass the identity check and be resolved against these indices, which is the exact
+  /// silent-wrong-price the binding exists to prevent.
+  @Test
+  void parseEntriesRejectsAConfigurationForADifferentMappingsAccount() {
+    final var mappings = new Mappings().slot(0, OracleType.PythPull);
+    final var oracleMappings = new OracleMappings(
+        key(0x77), OracleMappings.DISCRIMINATOR,
+        mappings.priceInfoAccounts, mappings.priceTypes, mappings.tolerance,
+        mappings.twapBitmasks, mappings.refPrice, mappings.generic);
+
+    final var otherFeed = new Configuration(
+        key(0x41), null, key(0x42),
+        key(0x78),  // a different oracleMappings account
+        key(0x50), key(0x43), key(0x44), key(0x45), key(0x46), key(0x47),
+        new long[Configuration.PADDING_LEN]);
+    final var ex = assertThrows(IllegalArgumentException.class,
+        () -> ScopeReader.parseEntries(7L, oracleMappings, otherFeed));
+    assertTrue(ex.getMessage().contains(key(0x78).toBase58()), ex.getMessage());
+
+    // the matching configuration binds
+    final var ownFeed = new Configuration(
+        key(0x41), null, key(0x42),
+        key(0x77), key(0x50), key(0x43), key(0x44), key(0x45), key(0x46), key(0x47),
+        new long[Configuration.PADDING_LEN]);
+    assertEquals(key(0x50), ScopeReader.parseEntries(7L, oracleMappings, ownFeed).oraclePrices());
+
+    // mappings read from raw bytes carry no address, so there is nothing to check
+    // against — that is how the fuzz harness parses them
+    final byte[] data = new byte[OracleMappings.BYTES];
+    oracleMappings.write(data, 0);
+    final var anonymous = OracleMappings.read(data, 0);
+    assertNull(anonymous._address());
+    assertEquals(key(0x50), ScopeReader.parseEntries(7L, anonymous, otherFeed).oraclePrices());
+  }
+
+  /// `MAX_ENTRIES_U16` is the exclusive bound: an index equal to the slot count means
+  /// no reference price, so the field beside it is not a tolerance either. The parser
+  /// reads that field for every slot, so an off-by-one here reports a stale number as
+  /// a live divergence bound.
+  @Test
+  void aReferencePriceIndexAtTheSlotCountIsAbsent() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .refPrice(0, SLOTS)   // == PRICE_INFO_ACCOUNTS_LEN: one past the last slot
+        .tolerance(0, 300)
+        .parse();
+
+    assertNull(entries.referencePrice(0));
+    assertEquals(OptionalInt.empty(), entries.referenceToleranceBps(0));
+
+    // one below the bound is a real slot, and then the tolerance counts
+    final var inRange = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .slot(SLOTS - 1, OracleType.PythPull)
+        .refPrice(0, SLOTS - 1)
+        .tolerance(0, 300)
+        .parse();
+    assertSame(inRange.scopeEntry(SLOTS - 1), inRange.referencePrice(0));
+    assertEquals(OptionalInt.of(300), inRange.referenceToleranceBps(0));
+  }
+
   /// A named enum value with no dedicated branch degrades to NotYetSupported
   /// carrying that type — only Deprecated* names map to Deprecated.
   @Test
@@ -656,6 +767,124 @@ final class ScopeComputeEntryTests {
     // and the rest of the account survives
     assertInstanceOf(PythPull.class, entries.scopeEntry(3));
     assertInstanceOf(Unused.class, entries.scopeEntry(SLOTS - 1));
+  }
+
+  /// A reference price and its tolerance are per-slot mapping configuration, settable
+  /// on any type, but only the four `ReferencesEntry` types have a field for them. The
+  /// mapping-level view carries them for every slot, which is the only way to see the
+  /// divergence bound the program enforces on the other ~30 types.
+  @Test
+  void everySlotExposesItsReferencePriceAndTolerance() {
+    final var entries = new Mappings()
+        .slot(4, OracleType.PythPull)
+        .slot(0, OracleType.PythPull)      // a ReferencesEntry: models it on the entry too
+        .slot(1, OracleType.TotalMintSupply) // no field of its own
+        .slot(2, OracleType.SplBalance)      // likewise
+        .refPrice(0, 4).tolerance(0, 150)
+        .refPrice(1, 4).tolerance(1, 250)
+        .refPrice(2, 4)                      // ref price, tolerance field left unset
+        .parse();
+
+    final var source = entries.scopeEntry(4);
+    for (int slot : new int[]{0, 1, 2}) {
+      assertSame(source, entries.referencePrice(slot), "slot " + slot);
+    }
+    assertEquals(OptionalInt.of(150), entries.referenceToleranceBps(0));
+    assertEquals(OptionalInt.of(250), entries.referenceToleranceBps(1));
+    // unset is the program's MAX_REF_RATIO_TOLERANCE_BPS default, not "no bound":
+    // the refresh gates the divergence check on the index and unwrap_or's the field
+    assertEquals(OptionalInt.of(500), entries.referenceToleranceBps(2));
+
+    // the entry that models it agrees with the mapping-level view, for the acyclic
+    // reference graphs that are the only ones the entry-level field can resolve
+    final var pythPull = assertInstanceOf(PythPull.class, entries.scopeEntry(0));
+    assertSame(entries.referencePrice(0), pythPull.refPrice());
+    assertEquals(entries.referenceToleranceBps(0), pythPull.refPriceToleranceBps());
+
+    // a slot with none configured reports none — the only case with no bound at all
+    assertNull(entries.referencePrice(4));
+    assertEquals(OptionalInt.empty(), entries.referenceToleranceBps(4));
+  }
+
+  /// An oracle type this IDL does not know breaks the program's own accessor before it
+  /// reaches the tolerance branch (`is_twap` fails first), so the caller unwraps the
+  /// default. Reading the field anyway would be a guess about a slot whose type has
+  /// already told us the deployed program is ahead of us.
+  @Test
+  void anUnknownOracleTypeFallsBackToTheDefaultBound() {
+    final var mappings = new Mappings()
+        .slot(4, OracleType.PythPull)
+        .refPrice(0, 4)
+        .tolerance(0, 7);
+    mappings.priceTypes[0] = (byte) OracleType.values().length; // one past the enum
+    final var entries = mappings.parse();
+
+    final var notYet = assertInstanceOf(NotYetSupported.class, entries.scopeEntry(0));
+    assertNull(notYet.oracleType(), "an unknown ordinal has no type to report");
+    assertSame(entries.scopeEntry(4), entries.referencePrice(0));
+    assertEquals(OptionalInt.of(500), entries.referenceToleranceBps(0),
+        "7 is not a tolerance here — the program never gets far enough to read it");
+  }
+
+  /// A reference-price cycle is the one place the entry-level field and the
+  /// mapping-level view disagree, and the mapping-level one is the faithful answer:
+  /// `get_ref_price` has no cycle guard, so the program reads the index whatever it
+  /// points at. The entry-level field is resolved mid-walk, where the reader's cycle
+  /// guard has to break the recursion, and only the second slot of the pair loses it.
+  @Test
+  void aCyclicReferencePriceIsResolvedAtTheMappingLevel() {
+    final var entries = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .refPrice(0, 0)      // its own reference price
+        .tolerance(0, 300)
+        .parse();
+
+    assertSame(entries.scopeEntry(0), entries.referencePrice(0));
+    assertEquals(OptionalInt.of(300), entries.referenceToleranceBps(0));
+
+    // the entry-level field cannot see itself while it is being built
+    final var pythPull = assertInstanceOf(PythPull.class, entries.scopeEntry(0));
+    assertNull(pythPull.refPrice(), "documented limitation: prefer the mapping-level view");
+  }
+
+  /// For the TWAP types the same field is the source slot index, never a tolerance —
+  /// `get_twap_source_or_ref_price_tolerance_bps` branches on `is_twap` first. Reading
+  /// it as bps would report a slot number as a divergence bound.
+  @Test
+  void twapTypesReportNoReferenceToleranceBecauseTheFieldIsASourceIndex() {
+    for (final var twapType : new OracleType[]{
+        OracleType.ScopeTwap1h, OracleType.ScopeTwap8h,
+        OracleType.ScopeTwap24h, OracleType.ScopeTwap7d
+    }) {
+      final var entries = new Mappings()
+          .slot(1, OracleType.PythPull)
+          .slot(0, twapType)
+          .tolerance(0, 1) // for these types: the source slot, not 1 bps
+          .refPrice(0, 1)
+          .parse();
+      final var twap = assertInstanceOf(ScopeTwap.class, entries.scopeEntry(0));
+      assertSame(entries.scopeEntry(1), twap.sourceEntry(), twapType.name());
+      // the field is unreadable as a tolerance here, but the reference price is still
+      // set, so the program falls back to its default bound rather than skipping it
+      assertSame(entries.scopeEntry(1), entries.referencePrice(0), twapType.name());
+      assertEquals(OptionalInt.of(500), entries.referenceToleranceBps(0), twapType.name());
+    }
+  }
+
+  /// Bit 7 of a price type is the program's frozen flag: the entry decodes identically,
+  /// so nothing in it says the price is pinned and every refresh handler skips it.
+  @Test
+  void frozenSlotsAreVisibleAndDecodeLikeLiveOnes() {
+    final var mappings = new Mappings()
+        .slot(0, OracleType.PythPull)
+        .slot(1, OracleType.PythPull);
+    mappings.priceTypes[1] |= (byte) 0x80;
+    final var entries = mappings.parse();
+
+    assertFalse(entries.frozen(0));
+    assertTrue(entries.frozen(1));
+    assertEquals(OracleType.PythPull, ((OracleEntry) entries.scopeEntry(1)).oracleType(),
+        "a frozen slot keeps its type");
   }
 
   /// Same shape for a reference price. `MappingRefPrice` sets the index and tolerance

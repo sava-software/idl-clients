@@ -1,7 +1,9 @@
 package software.sava.idl.clients.kamino.scope.entries;
 
+import software.sava.core.accounts.PublicKey;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.core.math.SafeMath;
+import software.sava.idl.clients.kamino.scope.gen.types.Configuration;
 import software.sava.idl.clients.kamino.scope.gen.types.DatedPrice;
 import software.sava.idl.clients.kamino.scope.gen.types.OracleMappings;
 import software.sava.idl.clients.kamino.scope.gen.types.OraclePrices;
@@ -35,7 +37,39 @@ public interface ScopeReader {
     return parseEntries(slot, mappings);
   }
 
+  /// Binds the feed's oracle prices account, which is what a Kamino reserve's
+  /// `ScopeConfiguration.priceFeed` names — so the entries can tell whether a reserve
+  /// handed to [ScopeEntries#readPriceChains(Reserve)] belongs to this feed. Prefer
+  /// this overload wherever the configuration is at hand; the ones without it parse
+  /// identically but cannot make that check.
+  static ScopeEntries parseEntries(final AccountInfo<byte[]> accountInfo, final Configuration configuration) {
+    return parseEntries(accountInfo.context().slot(), OracleMappings.read(accountInfo), configuration);
+  }
+
+  /// @throws IllegalArgumentException when the configuration describes a different
+  ///                                  mappings account than the one being parsed —
+  ///                                  the two are paired in one on-chain account, so
+  ///                                  taking the prices key from an unrelated
+  ///                                  configuration would attach a confident but wrong
+  ///                                  feed identity to these entries
+  static ScopeEntries parseEntries(final long slot,
+                                   final OracleMappings oracleMappings,
+                                   final Configuration configuration) {
+    final var address = oracleMappings._address();
+    if (address != null && !address.equals(configuration.oracleMappings())) {
+      throw new IllegalArgumentException("Configuration describes oracle mappings "
+          + configuration.oracleMappings() + ", not " + address);
+    }
+    return parseEntries(slot, oracleMappings, configuration.oraclePrices());
+  }
+
   static ScopeEntries parseEntries(final long slot, final OracleMappings oracleMappings) {
+    return parseEntries(slot, oracleMappings, (PublicKey) null);
+  }
+
+  static ScopeEntries parseEntries(final long slot,
+                                   final OracleMappings oracleMappings,
+                                   final PublicKey oraclePrices) {
     final var priceAccounts = oracleMappings.priceInfoAccounts();
     final var entries = new ScopeEntry[priceAccounts.length];
     final var reader = new ScopeReaderRecord(
@@ -49,7 +83,7 @@ public interface ScopeReader {
         OracleType.values(),
         new boolean[priceAccounts.length]
     );
-    return reader.readEntries(oracleMappings._address(), slot);
+    return reader.readEntries(oracleMappings._address(), oraclePrices, slot);
   }
 
   static BigDecimal scaleScopePrice(final DatedPrice datedPrice) {
