@@ -347,8 +347,7 @@
       "module": "bundle",
       "package": "oracles.pyth.pro.push",
       "program": "pyt2F414BA6dPttK6RddPZUdHfapoBN24GL5wbrPCou",
-      "syncIdl": true,
-      "idlFile": "idls/anchor/pyth/pyth_push_oracle.json"
+      "syncIdl": true
     },
     {
       "name": "Pyth Pro Receiver",
@@ -361,7 +360,6 @@
         "path": "target_chains/solana/sdk/js/pyth_solana_receiver/src/idl/pyth_solana_receiver.json"
       },
       "syncIdl": true,
-      "idlFile": "idls/anchor/pyth/pyth_solana_receiver.json",
       "typeRefs": [
         {
           "refProgram": "pyt2F414BA6dPttK6RddPZUdHfapoBN24GL5wbrPCou",
