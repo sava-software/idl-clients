@@ -69,8 +69,13 @@ public final class KaminoLendingRemainingAccounts {
 
   /// Append the trailing optional permission account that gates `PermissionedOp::*`
   /// when the market enforces it.
+  ///
+  /// It signs: the program checks the account against the market's
+  /// `permissioning_authority` and then requires `is_signer`, so a read-only meta is
+  /// rejected as `AccountNotSigner`. Only markets with a permissioning authority set
+  /// consult it at all.
   public static Instruction appendPermissionAccount(final Instruction instruction,
                                                     final PublicKey permission) {
-    return instruction.extraAccount(permission, AccountMeta.CREATE_READ);
+    return instruction.extraAccount(permission, AccountMeta.CREATE_READ_ONLY_SIGNER);
   }
 }

@@ -77,7 +77,9 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         referrerTokenAccountKey,
         reservePDAs.market(),
         reservePDAs.marketAuthority(),
-        solanaAccounts.tokenProgram()
+        // the liquidity mint's own program: klend constrains the mint with
+        // `mint::token_program = token_program`, and 93 of the live reserves are Token-2022
+        reservePDAs.tokenProgram()
     );
   }
 
@@ -238,7 +240,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.collateralSupplyVault(),
         sourceTokenAccount,
         kaminoAccounts.kLendProgram(),
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         liquidityAmount
@@ -266,7 +268,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.collateralSupplyVault(),
         sourceTokenAccount,
         kaminoAccounts.kLendProgram(),
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         farmsAccountsObligationFarmUserStateKey,
@@ -298,7 +300,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.liquiditySupplyVault(),
         destinationTokenAccount,
         kaminoAccounts.kLendProgram(),
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         farmsAccountsObligationFarmUserStateKey,
@@ -325,7 +327,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.collateralMint(),
         userSourceLiquidity,
         userDestinationCollateral,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         liquidityAmount
@@ -349,7 +351,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.liquiditySupplyVault(),
         userSourceCollateral,
         userDestinationLiquidity,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         collateralAmount
@@ -371,7 +373,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reserveKey,
         reserveDestinationCollateral,
         userSourceCollateral,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         solanaAccounts.instructionsSysVar(),
         collateralAmount
     );
@@ -394,7 +396,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reserveKey,
         reserveDestinationCollateral,
         userSourceCollateral,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         solanaAccounts.instructionsSysVar(),
         reservePDAs.marketAuthority(),
         farmsAccountsObligationFarmUserStateKey,
@@ -420,7 +422,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reserveKey,
         reserveSourceCollateral,
         userDestinationCollateral,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         solanaAccounts.instructionsSysVar(),
         collateralAmount
     );
@@ -444,7 +446,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reserveKey,
         reserveSourceCollateral,
         userDestinationCollateral,
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         solanaAccounts.instructionsSysVar(),
         farmsAccountsObligationFarmUserStateKey,
         farmsAccountsReserveFarmStateKey,
@@ -473,7 +475,7 @@ final class KaminoLendClientImpl implements KaminoLendClient {
         reservePDAs.liquiditySupplyVault(),
         userDestinationLiquidity,
         kaminoAccounts.kLendProgram(),
-        reservePDAs.tokenProgram(),
+        solanaAccounts.tokenProgram(), // collateral: cTokens are always legacy SPL Token
         reservePDAs.tokenProgram(),
         solanaAccounts.instructionsSysVar(),
         collateralAmount
@@ -749,10 +751,13 @@ final class KaminoLendClientImpl implements KaminoLendClient {
   public Instruction initializeFarmUser(final PublicKey farmStateKey,
                                         final PublicKey userStateKey,
                                         final PublicKey delegatee) {
+    // payer is the owner, not the fee payer: a non-delegated farm requires
+    // payer == delegatee == authority == owner, and the delegated branch constrains
+    // the authority rather than the payer, so this is right for both.
     return FarmsProgram.initializeUser(
         kaminoAccounts.invokedFarmsProgram(),
         owner,
-        feePayer,
+        owner,
         owner,
         KaminoAccounts.isNullKey(delegatee) ? owner : delegatee,
         userStateKey,

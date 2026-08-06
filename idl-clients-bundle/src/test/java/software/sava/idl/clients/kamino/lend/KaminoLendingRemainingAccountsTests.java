@@ -54,7 +54,7 @@ final class KaminoLendingRemainingAccountsTests {
   }
 
   @Test
-  void depositReservesAppendWritableAndPermissionAppendsReadOnly() {
+  void depositReservesAppendWritableAndThePermissionAccountSigns() {
     final var reserveA = key(0x31);
     final var reserveB = key(0x32);
     final var withReserves = KaminoLendingRemainingAccounts.appendDepositReserves(
@@ -64,11 +64,13 @@ final class KaminoLendingRemainingAccountsTests {
     assertTrue(accounts.get(1).write());
     assertTrue(accounts.get(2).write());
 
+    // klend checks the permission account against the market's permissioning_authority
+    // and then requires is_signer, so a read-only meta is rejected as AccountNotSigner.
     final var permission = key(0x33);
     final var withPermission = KaminoLendingRemainingAccounts.appendPermissionAccount(ix(), permission);
     final var tail = withPermission.accounts().getLast();
     assertEquals(permission, tail.publicKey());
     assertFalse(tail.write());
-    assertFalse(tail.signer());
+    assertTrue(tail.signer());
   }
 }
