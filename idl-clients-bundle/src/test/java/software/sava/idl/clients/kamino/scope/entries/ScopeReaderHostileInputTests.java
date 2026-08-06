@@ -12,6 +12,7 @@ import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 /// Hostile Scope account bytes must parse in bounded time, not just without crashing.
@@ -68,11 +69,44 @@ final class ScopeReaderHostileInputTests {
   /// next slot fans out 3 ways per level: without memoizing computed entries the walk
   /// is 3^511, with it each slot is computed once. Guards the entries[] write-through
   /// in ScopeReaderRecord.entry.
+  ///
+  /// The three-slot fixture runs first, and deliberately. What the memo actually
+  /// promises is that a slot is resolved *once* and every reference to it observes
+  /// that one entry — a property two references to a shared slot already settle, in
+  /// microseconds, by object identity. Asserting it up front means a parse that lost
+  /// the write-through fails on an assertion here rather than racing the 3^511 chain
+  /// against whichever watchdog gets there first; the deep chain stays behind it as
+  /// the complexity-class guard, which is a different claim and needs the depth.
+  /// Identity is the assertion that carries this: the entries are records, so a
+  /// re-resolved slot is `equals` to the one already published and only `!=` to it.
   @Test
   void forwardReferenceFanOutParsesInBoundedTime() {
-    final var priceTypes = new byte[SLOTS];
-    final var generic = new byte[SLOTS][20];
-    for (int i = 0; i < SLOTS - 1; ++i) {
+    final var shallow = ScopeReader.parseEntries(-1L, cappedFlooredChain(3));
+    final var shallowHead = assertInstanceOf(CappedFloored.class, shallow.scopeEntry(0));
+    final var shallowNext = shallow.scopeEntry(1);
+    assertSame(shallowNext, shallowHead.sourceEntry());
+    assertSame(shallowNext, shallowHead.capEntry());
+    assertSame(shallowNext, shallowHead.flooredEntry());
+
+    final var entries = assertTimeoutPreemptively(
+        Duration.ofSeconds(10),
+        () -> ScopeReader.parseEntries(-1L, cappedFlooredChain(SLOTS)));
+
+    assertEquals(SLOTS, entries.numEntries());
+    final var head = assertInstanceOf(CappedFloored.class, entries.scopeEntry(0));
+    // all three branches resolve to the same memoized instance of slot 1
+    final var next = entries.scopeEntry(1);
+    assertSame(next, head.sourceEntry());
+    assertSame(next, head.capEntry());
+    assertSame(next, head.flooredEntry());
+  }
+
+  /// `depth` slots of CappedFloored, each pointing source, cap and floor at the next;
+  /// the slot that terminates the chain and every slot after it is Unused.
+  private static OracleMappings cappedFlooredChain(final int depth) {
+    final byte[] priceTypes = new byte[SLOTS];
+    final byte[][] generic = new byte[SLOTS][20];
+    for (int i = 0; i < depth - 1; ++i) {
       priceTypes[i] = (byte) OracleType.CappedFloored.ordinal();
       final int next = i + 1;
       ByteUtil.putInt16LE(generic[i], 0, next);  // sourceEntry
@@ -81,18 +115,9 @@ final class ScopeReaderHostileInputTests {
       generic[i][5] = 1;                          // floorEntry present
       ByteUtil.putInt16LE(generic[i], 6, next);
     }
-    priceTypes[SLOTS - 1] = (byte) OracleType.Unused.ordinal();
-
-    final var entries = assertTimeoutPreemptively(
-        Duration.ofSeconds(10),
-        () -> ScopeReader.parseEntries(-1L, mappings(priceTypes, generic)));
-
-    assertEquals(SLOTS, entries.numEntries());
-    final var head = assertInstanceOf(CappedFloored.class, entries.scopeEntry(0));
-    // all three branches resolve to the same memoized instance of slot 1
-    final var next = entries.scopeEntry(1);
-    assertEquals(next, head.sourceEntry());
-    assertEquals(next, head.capEntry());
-    assertEquals(next, head.flooredEntry());
+    for (int i = depth - 1; i < SLOTS; ++i) {
+      priceTypes[i] = (byte) OracleType.Unused.ordinal();
+    }
+    return mappings(priceTypes, generic);
   }
 }

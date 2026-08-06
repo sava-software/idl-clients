@@ -13,6 +13,7 @@
 !/.gitignore
 !/.release-please-manifest.json
 !/AGENTS.md
+!/arcmutate-licence.txt
 !/CHANGELOG.md
 !/LICENSE
 !/README.md

@@ -58,6 +58,39 @@ final class StakeAccountTests {
     assertEquals(StakeAccount.State.ACTIVATING, justActivated.state(10L));
   }
 
+  /// Both epoch comparisons in `state` are strict, and the two properties that
+  /// makes them carry are the ones the Rust `Delegation` defines:
+  ///
+  /// - `deactivation_epoch` is an ordinary `u64` epoch whose only "not
+  ///   deactivating" value is `u64::MAX`. Epoch **0** is therefore a real
+  ///   deactivation epoch, not a second sentinel — a delegation deactivated in
+  ///   epoch 0 is `DE_ACTIVATING` during epoch 0 and `INACTIVE` after it, never
+  ///   activating.
+  /// - `stake_and_activating` returns *all* of the stake as activating when
+  ///   `target_epoch == activation_epoch`; effective stake only appears in the
+  ///   epoch after. So the activation epoch itself is still `ACTIVATING`.
+  ///
+  /// `derivedStateMachine` covers the interior of each branch; these are the
+  /// exact-equality points, where a boundary that shifted by one would still
+  /// agree with it everywhere else.
+  @Test
+  void epochComparisonsAreStrictAtTheirBoundaries() {
+    // deactivation epoch 0 is a real epoch, not a "never deactivating" sentinel
+    final var deactivatedAtGenesis = stakeAccount(100L, 0L);
+    assertEquals(StakeAccount.State.DE_ACTIVATING, deactivatedAtGenesis.state(0L));
+    assertEquals(StakeAccount.State.INACTIVE, deactivatedAtGenesis.state(1L));
+    assertEquals(StakeAccount.State.INACTIVE, deactivatedAtGenesis.state(500L));
+
+    // only u64::MAX means "never deactivating"
+    assertEquals(StakeAccount.State.ACTIVE, stakeAccount(100L, -1L).state(500L));
+
+    // the activation epoch itself is still warming up; ACTIVE begins the epoch after
+    final var activatingNow = stakeAccount(200L, -1L);
+    assertEquals(StakeAccount.State.ACTIVATING, activatingNow.state(199L));
+    assertEquals(StakeAccount.State.ACTIVATING, activatingNow.state(200L));
+    assertEquals(StakeAccount.State.ACTIVE, activatingNow.state(201L));
+  }
+
   @Test
   void stakeFlagsBit() {
     final byte[] data = buildMinimal(StakeState.Stake, (byte) StakeAccount.MUST_FULLY_ACTIVATE_BEFORE_DEACTIVATION_IS_PERMITTED);

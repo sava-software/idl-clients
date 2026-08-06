@@ -567,8 +567,13 @@ final class ScopeComputeEntryTests {
     }
   }
 
-  /// A composite's resolved sources agree with the top-level slots, and the
-  /// parse populates all 512 slots.
+  /// The parse publishes exactly one entry per slot: a composite resolved before
+  /// the top-level walk reaches its source holds the very entry that walk then
+  /// publishes, not a value-equal copy of it. Identity is the whole assertion —
+  /// every entry is a record, so re-resolving a slot yields something `equals` to
+  /// what is already published and distinguishable from it only by `==`, and a
+  /// parse that hands two different objects out for one slot has published a graph
+  /// that disagrees with itself.
   @Test
   void entriesAreMemoizedAndComplete() {
     final var entries = new Mappings()
@@ -581,6 +586,7 @@ final class ScopeComputeEntryTests {
     // default is NONE, so its source is absent
     assertEquals(SLOTS, entries.numEntries());
     final var mostRecent = assertInstanceOf(MostRecentOfEntry.class, entries.scopeEntry(0));
-    assertEquals(entries.scopeEntry(1), mostRecent.sources()[0]);
+    assertSame(entries.scopeEntry(1), mostRecent.sources()[0],
+        "slot 1 was resolved while slot 0 was parsed, and slot 1's own turn must publish that entry");
   }
 }

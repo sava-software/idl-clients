@@ -982,51 +982,81 @@ cannot see a weakened covering assertion — a timeout keeps "detecting"
 whatever the test asserts. Each suite's timeouts are therefore an audited
 membership in `<suite>-timeouts.csv` (line-less `class,method,mutator` keys;
 the verify warns on any timed-out mutant outside the set, and on members
-matching no mutant). Advisory only, never a failure. The structural cause per
-member:
+matching no mutant).
 
-### `clients`: `DlmmUtils.pow` binary-expansion loop exit (line 214)
+Since sava-build 21.5.24 each member also carries a reviewed cause category,
+and only one of them is an admissible reason to let the watchdog do the
+detecting: `cause:liveness`, meaning the mutated path has no path-owned finite
+completion guarantee. A mutant that merely gets slower terminates, so it owes a
+deterministic contract test or a fix — the scope member below was retired that
+way rather than reclassified. The structural cause per member:
+
+### `clients`: `DlmmUtils.pow` binary-expansion loop exit (line 214) — `cause:liveness`
 
 `RemoveConditionalMutator_ORDER_IF` on `for (int bit = 0; bit < 19; bit++)`
 removes the loop exit: the Q64.64 binary-expansion loop squares and masks
 forever instead of running its fixed 19 steps. Deterministically infinite —
 only the watchdog can stop it, in any load mode.
 
-### `orca`: `OrcaUtil.sqrtFloor` Newton convergence exit (line 463)
+The line-less key is broader than that one site. Since the ArcMutate licence
+landed (2026-08-03) the licensed population no longer generates `ORDER_IF` at
+line 214 at all, and the remaining `DlmmUtils.pow` `ORDER_IF` mutants (lines
+197 and 205) are finite and `KILLED`. The row is kept as insurance for the
+liveness site rather than retired on a single observation; if it stays quiet
+the plugin's own three-consecutive-quiet-run notice is what should retire it.
 
-Two mutators on the convergence check `while (next.compareTo(prev) < 0)`:
+### `orca`: `OrcaUtil.sqrtFloor` Newton convergence exit (line 463) — `cause:liveness`
 
-- `ConditionalsBoundaryMutator` (`<` → `<=`): at the fixed point
-  (`next == prev`) the iteration recomputes the same value forever instead of
-  exiting.
-- `RemoveConditionalMutator_ORDER_IF`: removes the exit outright.
+`ConditionalsBoundaryMutator` on the convergence check
+`while (next.compareTo(prev) < 0)` (`<` → `<=`): at the fixed point
+(`next == prev`) the iteration recomputes the same value forever instead of
+exiting. It is the weakened loop exit of an otherwise-correct Newton
+iteration, so no assertion can observe wrongness — the loop never returns.
 
-Both are the removed/weakened loop exit of an otherwise-correct Newton
-iteration; no assertion can observe wrongness because the loop never returns.
+`RemoveConditionalMutator_ORDER_IF` at the same line, and the matching
+`OrcaUtil.sqrtPriceFromPositiveTick` `ORDER_IF` member at line 564, were
+retired on 2026-08-06: under the ArcMutate-licensed population neither mutant
+is generated any more, and the verify reported both rows as matching no mutant.
+Their structural cause was the same removed loop exit — for
+`sqrtPriceFromPositiveTick`, `for (int i = 0; i < POS_FACTORS.length; i++)`,
+deterministically infinite at tick 0 (no factor bit is ever set, so the body
+never indexes `POS_FACTORS`) and AIOOBE-killed at a nonzero tick once the mask
+`2 << i` cycles mod 32 back onto a set bit. If either is ever generated and
+times out again it arrives as an unaudited newcomer, which is the reviewer-stop
+the audit exists for.
 
-### `orca`: `OrcaUtil.sqrtPriceFromPositiveTick` binary-expansion loop exit (line 564)
-
-`RemoveConditionalMutator_ORDER_IF` on `for (int i = 0; i < POS_FACTORS.length; i++)`
-removes the loop exit of the 18-step binary-expansion loop — the same idiom as
-the audited `DlmmUtils.pow` member in `clients`. The flavour is input-dependent:
-for tick 0 no factor bit is ever set, so the body never touches `POS_FACTORS[i]`
-and the loop is deterministically infinite; for a nonzero tick the mask
-(`2 << i`, shift distance mod 32) eventually cycles back onto a set bit and
-`POS_FACTORS[i]` throws AIOOBE, which is why this mutant can also register as
-`KILLED` — a legitimate `KILLED`↔`TIMED_OUT` flip depending on which covering
-test the watchdog interrupts first (surfaced 2026-07-29, sava-build 21.5.18).
-`sqrtPriceFromNegativeTick` (line 577) is the same shape and will belong here
-too if it ever times out; per the one-reviewed-row-at-a-time rule it is not
-added speculatively.
-
-### `scope`: `ScopeReaderRecord.entry` memo-cache hit (line 86)
+### `scope`: `ScopeReaderRecord.entry` memo-cache hit (line 86) — retired 2026-08-06
 
 `RemoveConditionalMutator_EQUAL_ELSE` on the cache check `if (entry != null)`
 makes the cached-entry return unreachable, so every visit recomputes via
-`computeEntry`. Fan-out types share forward references, and recomputing them
-per visit is exponential in the mapping (the code comment at that site records
-a ~50s parse of one hostile 29KB account). Results stay *correct* — the mutant
-is slow, not wrong — so timing is the only possible detection.
+`computeEntry`.
+
+This member was admitted in 2026-07 on the argument that "results stay correct
+— the mutant is slow, not wrong — so timing is the only possible detection".
+That argument was wrong, and 21.5.24's cause categories are what forced it to
+be re-examined: the mutant terminates (the `visiting[]` guard bounds recursion
+depth at 512), so it is finite, and a finite mutant owes a deterministic
+disposition rather than watchdog detection.
+
+It also is not only slow. The memo is what makes the parse publish *one* entry
+per slot. Without the write-through read, a slot reached again after it was
+already resolved is recomputed and `entries[k]` is overwritten, so a composite
+that captured the earlier instance and the published `scopeEntry(k)` become two
+different objects for one slot — a graph that disagrees with itself. Every
+entry is a record, so the duplicate is `equals` to the original and differs
+only by identity, which is exactly why the existing assertions missed it:
+`ScopeComputeEntryTests.entriesAreMemoizedAndComplete` was already wired
+forward (slot 0 → slot 1) and asserting with `assertEquals`. Changing that one
+assertion to `assertSame` kills the mutant outright, and
+`ScopeReaderHostileInputTests.forwardReferenceFanOutParsesInBoundedTime` now
+front-loads a three-slot `CappedFloored` fixture asserting the same identity
+before its 511-deep chain, so the failure is an assertion in microseconds
+rather than a race between the 3^511 walk and whichever watchdog fires first.
+The deep chain stays: it is the complexity-class guard, which is a separate
+claim from the identity property and still needs the depth.
+
+Note the line-less key covers three sites in this method — lines 35, 86 and 89
+— of which 35 and 89 were already killed. Retirement only needed line 86.
 
 ## Triaged equivalent mutants (accepted with reasons)
 

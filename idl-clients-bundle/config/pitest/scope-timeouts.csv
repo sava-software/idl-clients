@@ -1,4 +1,7 @@
 # Audited timeout-detected mutants for the 'scope' suite — line-less
-# class,method,mutator keys (HARDENING.md, the audited-set bullet). Structural
-# cause per member: README.md, 'Audited timeout-detected mutants'.
-software.sava.idl.clients.kamino.scope.entries.ScopeReaderRecord,entry,RemoveConditionalMutator_EQUAL_ELSE # line 86
+# class,method,mutator keys with a reviewed cause category. Currently empty:
+# the suite has no timeout-detected mutants. ScopeReaderRecord.entry's memo-cache
+# mutant was the one member and is now killed by an assertion instead of by the
+# watchdog (README.md, 'Audited timeout-detected mutants'). The file exists to
+# arm the verify's audit — a first timed-out mutant here should warn
+# (reviewer-stop), not pass as an unaudited count.

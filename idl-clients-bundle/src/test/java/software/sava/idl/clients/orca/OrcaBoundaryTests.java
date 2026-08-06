@@ -252,6 +252,35 @@ final class OrcaBoundaryTests {
     assertEquals(key(3), extended.accounts().getFirst().publicKey());
   }
 
+  /// `TransferFee` carries a second copy of the basis-point range check that
+  /// `OrcaUtil.applyTransferFee` enforces, so the two must agree: Token-2022
+  /// stores `transfer_fee_basis_points` as a `u16` and rejects anything above
+  /// `MAX_FEE_BASIS_POINTS` (10 000), which means a 100% fee is a legal
+  /// configuration and 10 001 is not. `applyTransferFeeBoundaries` pins that
+  /// bound on the util copy; this pins it on the record's own constructor,
+  /// through both public factories and the canonical constructor.
+  @Test
+  void transferFeeBpsRangeIsInclusiveOfOneHundredPercent() {
+    // the whole legal range constructs, including both endpoints
+    assertEquals(0, TransferFee.of(0).feeBps());
+    assertEquals(OrcaUtil.BPS_DENOMINATOR, TransferFee.of(OrcaUtil.BPS_DENOMINATOR).feeBps());
+    assertEquals(OrcaUtil.BPS_DENOMINATOR, TransferFee.of(OrcaUtil.BPS_DENOMINATOR, 500L).feeBps());
+    assertEquals(OrcaUtil.BPS_DENOMINATOR, new TransferFee(OrcaUtil.BPS_DENOMINATOR, -1L).feeBps());
+
+    // and the util copy of the guard agrees that 100% is legal
+    assertEquals(0L, OrcaUtil.applyTransferFee(10_000L, OrcaUtil.BPS_DENOMINATOR, Long.MAX_VALUE));
+
+    // one past the cap is rejected, on every entry point
+    assertThrows(IllegalArgumentException.class, () -> TransferFee.of(OrcaUtil.BPS_DENOMINATOR + 1));
+    assertThrows(IllegalArgumentException.class, () -> TransferFee.of(OrcaUtil.BPS_DENOMINATOR + 1, 500L));
+    assertThrows(IllegalArgumentException.class, () -> new TransferFee(OrcaUtil.BPS_DENOMINATOR + 1, -1L));
+
+    // a negative bps is not a "no fee" sentinel; it is rejected
+    assertThrows(IllegalArgumentException.class, () -> TransferFee.of(-1));
+    assertThrows(IllegalArgumentException.class, () -> TransferFee.of(-1, 500L));
+    assertThrows(IllegalArgumentException.class, () -> new TransferFee(Integer.MIN_VALUE, -1L));
+  }
+
   // ---------------------------------------------------------------------------
   // factories
   // ---------------------------------------------------------------------------
