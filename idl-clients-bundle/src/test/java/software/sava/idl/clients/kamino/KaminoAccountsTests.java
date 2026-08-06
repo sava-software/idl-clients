@@ -28,6 +28,7 @@ final class KaminoAccountsTests {
 
   private static final PublicKey MARKET = key(0x11);
   private static final PublicKey MINT = key(0x12);
+  private static final PublicKey RESERVE_KEY = key(0x77);
   private static final PublicKey USER = key(0x13);
   private static final PublicKey REFERRER = key(0x14);
   private static final PublicKey RESERVE = key(0x15);
@@ -132,34 +133,37 @@ final class KaminoAccountsTests {
         () -> KaminoAccounts.lendingMarketAuthPda(MARKET, other).publicKey());
 
     assertDerivation("reserveLiqSupplyPda",
-        () -> KaminoAccounts.reserveLiqSupplyPda(MARKET, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveLiqSupplyPda(other, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveLiqSupplyPda(MARKET, other, kLend).publicKey(),
-        () -> KaminoAccounts.reserveLiqSupplyPda(MARKET, MINT, other).publicKey());
+        () -> KaminoAccounts.reserveLiqSupplyPda(RESERVE, kLend).publicKey(),
+        () -> KaminoAccounts.reserveLiqSupplyPda(other, kLend).publicKey(),
+        () -> KaminoAccounts.reserveLiqSupplyPda(RESERVE, other).publicKey());
+
 
     assertDerivation("reserveFeeVaultPda",
-        () -> KaminoAccounts.reserveFeeVaultPda(MARKET, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveFeeVaultPda(other, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveFeeVaultPda(MARKET, other, kLend).publicKey());
+        () -> KaminoAccounts.reserveFeeVaultPda(RESERVE, kLend).publicKey(),
+        () -> KaminoAccounts.reserveFeeVaultPda(other, kLend).publicKey(),
+        () -> KaminoAccounts.reserveFeeVaultPda(RESERVE, other).publicKey());
+
 
     assertDerivation("reserveCollateralMintPda",
-        () -> KaminoAccounts.reserveCollateralMintPda(MARKET, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveCollateralMintPda(other, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveCollateralMintPda(MARKET, other, kLend).publicKey());
+        () -> KaminoAccounts.reserveCollateralMintPda(RESERVE, kLend).publicKey(),
+        () -> KaminoAccounts.reserveCollateralMintPda(other, kLend).publicKey(),
+        () -> KaminoAccounts.reserveCollateralMintPda(RESERVE, other).publicKey());
+
 
     assertDerivation("reserveCollateralSupplyPda",
-        () -> KaminoAccounts.reserveCollateralSupplyPda(MARKET, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveCollateralSupplyPda(other, MINT, kLend).publicKey(),
-        () -> KaminoAccounts.reserveCollateralSupplyPda(MARKET, other, kLend).publicKey());
+        () -> KaminoAccounts.reserveCollateralSupplyPda(RESERVE, kLend).publicKey(),
+        () -> KaminoAccounts.reserveCollateralSupplyPda(other, kLend).publicKey(),
+        () -> KaminoAccounts.reserveCollateralSupplyPda(RESERVE, other).publicKey());
 
-    // the five reserve-scoped PDAs share their (market, mint) inputs, so only a
-    // distinct seed prefix separates them
+
+    // the four reserve-scoped PDAs share the reserve address, so only a distinct seed
+    // prefix separates them (the market authority is market-scoped)
     assertEquals(5, java.util.Set.of(
         KaminoAccounts.lendingMarketAuthPda(MARKET, kLend).publicKey(),
-        KaminoAccounts.reserveLiqSupplyPda(MARKET, MINT, kLend).publicKey(),
-        KaminoAccounts.reserveFeeVaultPda(MARKET, MINT, kLend).publicKey(),
-        KaminoAccounts.reserveCollateralMintPda(MARKET, MINT, kLend).publicKey(),
-        KaminoAccounts.reserveCollateralSupplyPda(MARKET, MINT, kLend).publicKey()).size());
+        KaminoAccounts.reserveLiqSupplyPda(RESERVE_KEY, kLend).publicKey(),
+        KaminoAccounts.reserveFeeVaultPda(RESERVE_KEY, kLend).publicKey(),
+        KaminoAccounts.reserveCollateralMintPda(RESERVE_KEY, kLend).publicKey(),
+        KaminoAccounts.reserveCollateralSupplyPda(RESERVE_KEY, kLend).publicKey()).size());
   }
 
   @Test
@@ -241,10 +245,10 @@ final class KaminoAccountsTests {
 
     // kLend-bound
     assertEquals(KaminoAccounts.lendingMarketAuthPda(MARKET, kLend).publicKey(), ACCOUNTS.lendingMarketAuthPda(MARKET).publicKey());
-    assertEquals(KaminoAccounts.reserveLiqSupplyPda(MARKET, MINT, kLend).publicKey(), ACCOUNTS.reserveLiqSupplyPda(MARKET, MINT).publicKey());
-    assertEquals(KaminoAccounts.reserveFeeVaultPda(MARKET, MINT, kLend).publicKey(), ACCOUNTS.reserveFeeVaultPda(MARKET, MINT).publicKey());
-    assertEquals(KaminoAccounts.reserveCollateralMintPda(MARKET, MINT, kLend).publicKey(), ACCOUNTS.reserveCollateralMintPda(MARKET, MINT).publicKey());
-    assertEquals(KaminoAccounts.reserveCollateralSupplyPda(MARKET, MINT, kLend).publicKey(), ACCOUNTS.reserveCollateralSupplyPda(MARKET, MINT).publicKey());
+    assertEquals(KaminoAccounts.reserveLiqSupplyPda(RESERVE_KEY, kLend).publicKey(), ACCOUNTS.reserveLiqSupplyPda(RESERVE_KEY).publicKey());
+    assertEquals(KaminoAccounts.reserveFeeVaultPda(RESERVE_KEY, kLend).publicKey(), ACCOUNTS.reserveFeeVaultPda(RESERVE_KEY).publicKey());
+    assertEquals(KaminoAccounts.reserveCollateralMintPda(RESERVE_KEY, kLend).publicKey(), ACCOUNTS.reserveCollateralMintPda(RESERVE_KEY).publicKey());
+    assertEquals(KaminoAccounts.reserveCollateralSupplyPda(RESERVE_KEY, kLend).publicKey(), ACCOUNTS.reserveCollateralSupplyPda(RESERVE_KEY).publicKey());
     assertEquals(KaminoAccounts.userMetadataPda(USER, kLend).publicKey(), ACCOUNTS.userMetadataPda(USER).publicKey());
     assertEquals(KaminoAccounts.referrerStatePda(REFERRER, kLend).publicKey(), ACCOUNTS.referrerStatePda(REFERRER).publicKey());
     assertEquals(KaminoAccounts.referrerTokenStatePda(REFERRER, RESERVE, kLend).publicKey(), ACCOUNTS.referrerTokenStatePda(REFERRER, RESERVE).publicKey());

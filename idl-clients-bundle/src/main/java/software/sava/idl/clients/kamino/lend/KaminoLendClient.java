@@ -318,13 +318,32 @@ public interface KaminoLendClient {
 
   // ===== FarmsProgram (trader-facing) =====
 
-  /// Initialize a user state account on a farm. For non-delegated farms pass `delegatee`
-  /// as `null` / `KaminoAccounts.NULL_KEY` and the caller's `owner` will be substituted
-  /// (required by the program: payer == owner == delegatee for non-delegated farms, and
-  /// `delegatee` is also the user-state PDA seed — derive `userStateKey` accordingly).
+  /// Initialize a user state account on a **non-delegated** farm, where the program
+  /// requires `payer == authority == owner == delegatee` — one wallet throughout, which
+  /// is why this form takes no authority or payer. Pass `delegatee` as `null` /
+  /// `KaminoAccounts.NULL_KEY` and the caller's `owner` is substituted; `delegatee` is
+  /// also the user-state PDA seed, so derive `userStateKey` accordingly.
+  ///
+  /// The fee payer is deliberately not used here: the program rejects a payer that is
+  /// not the owner on these farms. Use
+  /// [#initializeFarmUser(PublicKey, PublicKey, PublicKey, PublicKey, PublicKey)] for a
+  /// delegated farm, which is where a separate payer is meaningful.
   Instruction initializeFarmUser(final PublicKey farmStateKey,
                                  final PublicKey userStateKey,
                                  final PublicKey delegatee);
+
+  /// Initialize a user state account on a **delegated** farm.
+  ///
+  /// Here the program constrains only the authority — it must be the farm's
+  /// `delegate_authority` or `second_delegated_authority` — and leaves the payer free,
+  /// so a delegate can create and fund a user state on someone else's behalf. `owner` is
+  /// the account the user state is initialized for, and `delegatee` is the user
+  /// reference that seeds its PDA.
+  Instruction initializeFarmUser(final PublicKey farmStateKey,
+                                 final PublicKey userStateKey,
+                                 final PublicKey delegatee,
+                                 final PublicKey authority,
+                                 final PublicKey payer);
 
   /// Refresh a farm's accumulated rewards. `scopePricesKey` may be null/NULL_KEY when the
   /// farm doesn't use a scope price feed; the farm program id is substituted as the

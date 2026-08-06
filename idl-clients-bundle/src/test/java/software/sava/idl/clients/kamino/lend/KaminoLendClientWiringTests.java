@@ -73,8 +73,11 @@ final class KaminoLendClientWiringTests {
   private static final PublicKey OWNER_METADATA =
       KaminoAccounts.userMetadataPda(OWNER, K_LEND).publicKey();
 
-  private static final KaminoReservePDAs RESERVE_PDAS = KAMINO_ACCOUNTS.createReservePDAs(
-      KaminoMarketPDAs.createPDAs(K_LEND, MARKET), MINT, SOLANA_ACCOUNTS.tokenProgram());
+  private static final KaminoReservePDAs RESERVE_PDAS = KaminoReservePDAs.createPDAs(
+      KaminoMarketPDAs.createPDAs(K_LEND, MARKET),
+      MINT,
+      SOLANA_ACCOUNTS.tokenProgram(),
+      key(0x51), key(0x52), key(0x53), key(0x54));
 
   private static void assertIx(final Instruction expected, final Instruction actual) {
     assertEquals(expected.programId().publicKey(), actual.programId().publicKey(), "invoked program");

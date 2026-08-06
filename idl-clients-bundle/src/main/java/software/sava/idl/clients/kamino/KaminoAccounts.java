@@ -6,6 +6,7 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.encoding.ByteUtil;
 import software.sava.idl.clients.kamino.lend.KaminoMarketPDAs;
 import software.sava.idl.clients.kamino.lend.KaminoReservePDAs;
+import software.sava.idl.clients.kamino.lend.gen.types.Reserve;
 import software.sava.idl.clients.kamino.scope.ScopeFeedAccounts;
 import software.sava.idl.clients.kamino.vaults.gen.types.VaultState;
 import software.sava.rpc.json.http.client.SolanaRpcClient;
@@ -103,78 +104,76 @@ public interface KaminoAccounts {
     return lendingMarketAuthPda(lendingMarket, kLendProgram());
   }
 
-  static ProgramDerivedAddress reserveLiqSupplyPda(final PublicKey lendingMarket,
-                                                   final PublicKey collateralMint,
-                                                   final PublicKey programId) {
-
+  /// Seeded on the reserve itself, which is how the deployed program derives it.
+  /// Only correct for a reserve being created: klend used to seed these on
+  /// `[market, mint]`, and reserves created then keep those addresses — read an
+  /// existing reserve's vaults off the account instead.
+  static ProgramDerivedAddress reserveLiqSupplyPda(final PublicKey reserve, final PublicKey programId) {
     return PublicKey.findProgramAddress(
         List.of(
             "reserve_liq_supply".getBytes(US_ASCII),
-            lendingMarket.toByteArray(),
-            collateralMint.toByteArray()
+            reserve.toByteArray()
         ),
         programId
     );
   }
 
-  default ProgramDerivedAddress reserveLiqSupplyPda(final PublicKey lendingMarket, final PublicKey collateralMint) {
-    return reserveLiqSupplyPda(lendingMarket, collateralMint, kLendProgram());
+  default ProgramDerivedAddress reserveLiqSupplyPda(final PublicKey reserve) {
+    return reserveLiqSupplyPda(reserve, kLendProgram());
   }
 
-  static ProgramDerivedAddress reserveFeeVaultPda(final PublicKey lendingMarket,
-                                                  final PublicKey collateralMint,
-                                                  final PublicKey programId) {
-
+  /// Seeded on the reserve itself, which is how the deployed program derives it.
+  /// Only correct for a reserve being created: klend used to seed these on
+  /// `[market, mint]`, and reserves created then keep those addresses — read an
+  /// existing reserve's vaults off the account instead.
+  static ProgramDerivedAddress reserveFeeVaultPda(final PublicKey reserve, final PublicKey programId) {
     return PublicKey.findProgramAddress(
         List.of(
             "fee_receiver".getBytes(US_ASCII),
-            lendingMarket.toByteArray(),
-            collateralMint.toByteArray()
+            reserve.toByteArray()
         ),
         programId
     );
   }
 
-  default ProgramDerivedAddress reserveFeeVaultPda(final PublicKey lendingMarket, final PublicKey collateralMint) {
-    return reserveFeeVaultPda(lendingMarket, collateralMint, kLendProgram());
+  default ProgramDerivedAddress reserveFeeVaultPda(final PublicKey reserve) {
+    return reserveFeeVaultPda(reserve, kLendProgram());
   }
 
-  static ProgramDerivedAddress reserveCollateralMintPda(final PublicKey lendingMarket,
-                                                        final PublicKey collateralMint,
-                                                        final PublicKey programId) {
-
+  /// Seeded on the reserve itself, which is how the deployed program derives it.
+  /// Only correct for a reserve being created: klend used to seed these on
+  /// `[market, mint]`, and reserves created then keep those addresses — read an
+  /// existing reserve's vaults off the account instead.
+  static ProgramDerivedAddress reserveCollateralMintPda(final PublicKey reserve, final PublicKey programId) {
     return PublicKey.findProgramAddress(
         List.of(
             "reserve_coll_mint".getBytes(US_ASCII),
-            lendingMarket.toByteArray(),
-            collateralMint.toByteArray()
+            reserve.toByteArray()
         ),
         programId
     );
   }
 
-  default ProgramDerivedAddress reserveCollateralMintPda(final PublicKey lendingMarket,
-                                                         final PublicKey collateralMint) {
-    return reserveCollateralMintPda(lendingMarket, collateralMint, kLendProgram());
+  default ProgramDerivedAddress reserveCollateralMintPda(final PublicKey reserve) {
+    return reserveCollateralMintPda(reserve, kLendProgram());
   }
 
-  static ProgramDerivedAddress reserveCollateralSupplyPda(final PublicKey lendingMarket,
-                                                          final PublicKey collateralMint,
-                                                          final PublicKey programId) {
-
+  /// Seeded on the reserve itself, which is how the deployed program derives it.
+  /// Only correct for a reserve being created: klend used to seed these on
+  /// `[market, mint]`, and reserves created then keep those addresses — read an
+  /// existing reserve's vaults off the account instead.
+  static ProgramDerivedAddress reserveCollateralSupplyPda(final PublicKey reserve, final PublicKey programId) {
     return PublicKey.findProgramAddress(
         List.of(
             "reserve_coll_supply".getBytes(US_ASCII),
-            lendingMarket.toByteArray(),
-            collateralMint.toByteArray()
+            reserve.toByteArray()
         ),
         programId
     );
   }
 
-  default ProgramDerivedAddress reserveCollateralSupplyPda(final PublicKey lendingMarket,
-                                                           final PublicKey collateralMint) {
-    return reserveCollateralSupplyPda(lendingMarket, collateralMint, kLendProgram());
+  default ProgramDerivedAddress reserveCollateralSupplyPda(final PublicKey reserve) {
+    return reserveCollateralSupplyPda(reserve, kLendProgram());
   }
 
   static ProgramDerivedAddress userMetadataPda(final PublicKey user,
@@ -243,12 +242,21 @@ public interface KaminoAccounts {
     return shortUrlPda(shortUrl, kLendProgram());
   }
 
-  default KaminoReservePDAs createReservePDAs(final KaminoMarketPDAs marketPDAs,
-                                              final PublicKey mint,
-                                              final PublicKey tokenProgram) {
-    return KaminoReservePDAs.createPDAs(
+  /// The vaults, mint, token program and market of an existing reserve, read off the
+  /// account rather than derived — see [KaminoReservePDAs#createPDAs(PublicKey, Reserve)].
+  default KaminoReservePDAs createReservePDAs(final Reserve reserve) {
+    return KaminoReservePDAs.createPDAs(kLendProgram(), reserve);
+  }
+
+  /// The addresses a reserve being created will have. Wrong for most existing reserves.
+  default KaminoReservePDAs createPDAsForNewReserve(final KaminoMarketPDAs marketPDAs,
+                                                    final PublicKey reserve,
+                                                    final PublicKey mint,
+                                                    final PublicKey tokenProgram) {
+    return KaminoReservePDAs.createPDAsForNewReserve(
         kLendProgram(),
         marketPDAs,
+        reserve,
         mint,
         tokenProgram
     );

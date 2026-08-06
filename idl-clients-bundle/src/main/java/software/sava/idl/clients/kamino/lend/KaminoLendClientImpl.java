@@ -751,13 +751,21 @@ final class KaminoLendClientImpl implements KaminoLendClient {
   public Instruction initializeFarmUser(final PublicKey farmStateKey,
                                         final PublicKey userStateKey,
                                         final PublicKey delegatee) {
-    // payer is the owner, not the fee payer: a non-delegated farm requires
-    // payer == delegatee == authority == owner, and the delegated branch constrains
-    // the authority rather than the payer, so this is right for both.
+    // One wallet throughout: a non-delegated farm requires
+    // payer == authority == owner == delegatee, so the fee payer cannot stand in here.
+    return initializeFarmUser(farmStateKey, userStateKey, delegatee, owner, owner);
+  }
+
+  @Override
+  public Instruction initializeFarmUser(final PublicKey farmStateKey,
+                                        final PublicKey userStateKey,
+                                        final PublicKey delegatee,
+                                        final PublicKey authority,
+                                        final PublicKey payer) {
     return FarmsProgram.initializeUser(
         kaminoAccounts.invokedFarmsProgram(),
-        owner,
-        owner,
+        authority,
+        payer,
         owner,
         KaminoAccounts.isNullKey(delegatee) ? owner : delegatee,
         userStateKey,

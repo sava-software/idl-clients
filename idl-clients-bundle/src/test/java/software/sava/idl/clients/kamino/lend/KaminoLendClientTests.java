@@ -60,11 +60,11 @@ final class KaminoLendClientTests {
   /// reached for `collateralMint()`, which is a different (derived) account.
   @Test
   void withdrawReferrerFeesUsesTheLiquidityMint() {
-    // createPDAs takes (programId, market) — in that order
-    final var reservePDAs = KAMINO_ACCOUNTS.createReservePDAs(
+    final var reservePDAs = software.sava.idl.clients.kamino.lend.KaminoReservePDAs.createPDAs(
         software.sava.idl.clients.kamino.lend.KaminoMarketPDAs.createPDAs(KAMINO_ACCOUNTS.kLendProgram(), MARKET),
         key(0x41),
-        SOLANA_ACCOUNTS.tokenProgram());
+        SOLANA_ACCOUNTS.tokenProgram(),
+        key(0x51), key(0x52), key(0x53), key(0x54));
 
     final var ix = CLIENT.withdrawReferrerFees(RESERVE, reservePDAs, key(0x42), key(0x43), key(0x44));
     final var accounts = keys(ix);
@@ -213,6 +213,37 @@ final class KaminoLendClientTests {
     // as is either null sentinel
     assertEquals(withoutDelegatee, CLIENT.initializeFarmUser(farmState, userState, PublicKey.NONE));
     assertEquals(withoutDelegatee, CLIENT.initializeFarmUser(farmState, userState, KaminoAccounts.NULL_KEY));
+  }
+
+  /// A non-delegated farm requires payer == authority == owner == delegatee, so the
+  /// three-argument form must not reach for the fee payer even though one is configured
+  /// and differs from the owner. A delegated farm is the opposite case — that is what
+  /// the separate payer account exists for — so the five-argument form passes both
+  /// through untouched.
+  @Test
+  void initializeFarmUserPaysWithTheOwnerUnlessTheFarmIsDelegated() {
+    final var farmState = key(0x22);
+    final var userState = key(0x23);
+    assertNotEquals(OWNER, FEE_PAYER, "the fixture must distinguish the two to be meaningful");
+
+    final var accounts = CLIENT.initializeFarmUser(farmState, userState, null).accounts();
+    // authority and payer are the first two accounts, and both sign
+    assertEquals(OWNER, accounts.get(0).publicKey());
+    assertTrue(accounts.get(0).signer());
+    assertEquals(OWNER, accounts.get(1).publicKey(), "the fee payer cannot stand in here");
+    assertTrue(accounts.get(1).signer());
+    assertFalse(keys(CLIENT.initializeFarmUser(farmState, userState, null)).contains(FEE_PAYER));
+
+    // delegated: the delegate signs as authority and may fund the account
+    final var delegate = key(0x25);
+    final var delegatee = key(0x24);
+    final var delegated = CLIENT
+        .initializeFarmUser(farmState, userState, delegatee, delegate, FEE_PAYER).accounts();
+    assertEquals(delegate, delegated.get(0).publicKey());
+    assertEquals(FEE_PAYER, delegated.get(1).publicKey());
+    assertTrue(delegated.get(1).signer(), "the payer signs for the rent it provides");
+    assertEquals(OWNER, delegated.get(2).publicKey(), "the user state is still initialized for the owner");
+    assertEquals(delegatee, delegated.get(3).publicKey());
   }
 
   // ---------------------------------------------------------------------------
