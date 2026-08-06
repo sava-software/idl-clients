@@ -1255,10 +1255,22 @@ public final class StakePoolProgram {
         stakePool,
         invokedStakePoolProgram.publicKey()
     );
+    // A pool either has a custom deposit authority, which must sign, or it keeps the
+    // default `[pool, "deposit"]` PDA, which cannot — the program signs for that one
+    // itself and picks the branch by comparing the account against the derived address.
+    // Deciding the flag the same way means one entry point serves both pools, and the
+    // common case (no custom authority) does not ask a PDA for a signature.
+    final var defaultDepositAuthority = findStakePoolDepositAuthority(
+        stakePool,
+        invokedStakePoolProgram.publicKey()
+    ).publicKey();
+    final var depositAuthorityMeta = stakePoolDepositAuthority.equals(defaultDepositAuthority)
+        ? createRead(stakePoolDepositAuthority)
+        : createReadOnlySigner(stakePoolDepositAuthority);
     return List.of(
         createWrite(stakePool),
         createWrite(validatorStakeListStorageAccount),
-        createReadOnlySigner(stakePoolDepositAuthority),
+        depositAuthorityMeta,
         createRead(stakePoolWithdrawAuthority.publicKey()),
         createWrite(depositStakeAccount),
         createWrite(validatorStakeAccount),

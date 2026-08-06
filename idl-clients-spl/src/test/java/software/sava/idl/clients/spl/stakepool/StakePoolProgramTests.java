@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 // Verified against the SPL stake-pool program Rust source:
 // https://github.com/solana-program/stake-pool/blob/main/program/src/instruction.rs
@@ -252,6 +253,43 @@ final class StakePoolProgramTests {
     assertAccount(accounts.get(9), STAKE_HISTORY_SYSVAR, false, false);
     assertAccount(accounts.get(10), STAKE_PROGRAM, false, false);
     assertAccount(accounts.get(11), tokenProgram, false, false);
+  }
+
+  /// A pool that keeps the default `[pool, "deposit"]` deposit authority cannot sign for
+  /// it — the program signs on its own behalf, and selects that branch by comparing the
+  /// account against the derived address. Marking it a signer asks a PDA for a signature
+  /// the transaction can never carry.
+  ///
+  /// This is the shape of every pool created without a custom authority, so it is the
+  /// common case rather than the exotic one.
+  @Test
+  void depositStakeDoesNotAskTheDefaultAuthorityToSign() {
+    final var derived = StakePoolProgram
+        .findStakePoolDepositAuthority(STAKE_POOL, INVOKED_PROGRAM.publicKey())
+        .publicKey();
+
+    final var ix = StakePoolProgram.depositStake(
+        SOLANA_ACCOUNTS,
+        INVOKED_PROGRAM,
+        STAKE_POOL,
+        key(2),
+        derived,
+        key(4), key(5), key(6), key(7), key(8), key(9), key(10), key(11)
+    );
+    assertAccount(ix.accounts().get(2), derived, false, false);
+
+    // a custom authority is a different account, and that one does sign
+    final var custom = key(3);
+    assertNotEquals(derived, custom);
+    final var withCustom = StakePoolProgram.depositStake(
+        SOLANA_ACCOUNTS,
+        INVOKED_PROGRAM,
+        STAKE_POOL,
+        key(2),
+        custom,
+        key(4), key(5), key(6), key(7), key(8), key(9), key(10), key(11)
+    );
+    assertAccount(withCustom.accounts().get(2), custom, false, true);
   }
 
   @Test
