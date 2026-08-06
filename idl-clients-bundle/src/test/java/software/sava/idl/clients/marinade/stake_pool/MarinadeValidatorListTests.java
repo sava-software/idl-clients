@@ -8,10 +8,12 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/// The Marinade validator list account is an 8-byte "validatr" magic followed by fixed
-/// 61-byte slots (an 8-byte frame + a 53-byte {@link ValidatorRecord}). The list is
-/// compacted with swap-removes and vacated tail slots are NOT zeroed, so the authoritative
-/// length is the State's `count` — a zero-terminator scan over-reads stale records.
+/// The Marinade validator list account is an 8-byte "validatr" magic followed by
+/// back-to-back {@link ValidatorRecord}s of 61 bytes each — the program's own
+/// `List::bytes_for` is `8 + count * item_size`, so the magic is counted once for the
+/// account and there is no per-slot frame. The list is compacted with swap-removes and
+/// vacated tail slots are NOT zeroed, so the authoritative length is the State's
+/// `count` — a zero-terminator scan over-reads stale records.
 final class MarinadeValidatorListTests {
 
   private static final int MAGIC_LEN = MarinadeValidatorList.MAGIC_LEN;
@@ -123,16 +125,57 @@ final class MarinadeValidatorListTests {
     }
   }
 
-  /// Boundary of the factory's scan: a buffer holding exactly one slot
-  /// (`ITEM_SIZE` bytes) starts its only iteration with `offset == to`, so the
-  /// inclusive bound is what admits the record.
+  /// Boundary of the factory's scan: an account holding exactly one record is
+  /// `MAGIC_LEN + ITEM_SIZE` bytes, so its only iteration starts with `offset == to`
+  /// and the inclusive bound is what admits the record.
   @Test
   void factoryReadsASingleExactSlot() {
-    final byte[] data = new byte[ITEM_SIZE];
+    final byte[] data = new byte[MAGIC_LEN + ITEM_SIZE];
     record(1, 100).write(data, MAGIC_LEN);
 
     final var list = MarinadeValidatorList.FACTORY.apply(PublicKey.NONE, data);
     assertEquals(1, list.validators().size());
     assertEquals(record(1, 100), list.validators().getFirst());
   }
+
+  /// A 313-byte head of the live mainnet validator list
+  /// (DwFYJNnhLmw19FBTrVaLWZ8SZJpxdPoSYVSJaio9tjbY), which is the only oracle that can
+  /// settle the record stride: this test, the reader and the deprecated FACTORY all used
+  /// to share one constant, so they agreed with each other and none of them with the
+  /// chain.
+  ///
+  /// Every expected key below is a real vote account — each is owned by
+  /// Vote111111111111111111111111111111111111111 on mainnet. Decoding at any other
+  /// stride yields addresses that do not exist on chain at all, which is what makes this
+  /// checkable rather than merely self-consistent: a misaligned 32-byte window still
+  /// base58-encodes to something that looks like a pubkey.
+  @Test
+  void realMainnetListDecodesAtTheOnChainStride() {
+    final byte[] data = java.util.Base64.getDecoder().decode(
+        "dmFsaWRhdHKZfVG8bcevdTyOpztfpNnQfTXx1AfvtwAzELSxLAgOVQAAAAAAAAAAAAAAAFQCAAAA" +
+        "AAAA/wAAAAAAAAAARHpnDJ7Gl942VsW6BfYX8IFfnCBWLoDEo5jk/68SopsAAAAAAAAAAAAAAAD/" +
+        "//////////8AAAAAAAAAAFLxsikSm+ETd4Won3Ja38tJ5BNHkR4d6fHjnx4PFEtOAAAAAAAAAAAA" +
+        "AAAAfQIAAAAAAAD/AAAAAAAAAADRMGcFYdRe/jja02rkuxaFrdQ8RwCnQIw+wB2yA/rUugAAAAAA" +
+        "AAAAAAAAAIgBAAAAAAAA/QAAAAAAAAAAZSR65YCDCaAGop6mi9bvD2RBeEiE6G1Nbkrs1p4eUwwA" +
+        "AAAAAAAAAAAAAAByAQAAAAAAAP8AAAAAAAAAAA==");
+
+    final var expected = new String[]{
+        "BLADE1qNA1uNjRgER6DtUFf7FU3c1TWLLdpPeEcKatZ2",
+        "5cJyfCLBfghRtoCuVJNreJgNCStqXLrhHmRhSRYtbgtr",
+        "6anBvYWGwkkZPAaPF6BmzF6LUPfP2HFVhQUAWckKH9LZ",
+        "F5b1wSUtpaYDnpjLQonCZC7iyFvizLcNqTactZbwSEXK",
+        "7opSZGmevWhRDyLt5Wu38FZFjUyredGmMki4DNmxDnjd"
+    };
+
+    final var list = MarinadeValidatorList.read(PublicKey.NONE, data, expected.length);
+    assertEquals(expected.length, list.validators().size());
+    for (int i = 0; i < expected.length; ++i) {
+      assertEquals(expected[i], list.validators().get(i).validatorAccount().toBase58(),
+          "record " + i + " — a wrong stride still decodes to a well-formed but nonexistent key");
+    }
+
+    // and the reverse lookup indexes those same keys
+    assertEquals(1, list.validatorIndex(PublicKey.fromBase58Encoded(expected[1])));
+  }
+
 }

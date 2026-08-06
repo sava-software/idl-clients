@@ -26,10 +26,12 @@ public record MarinadeValidatorList(PublicKey address,
     return index < 0 ? null : validators.get(index);
   }
 
-  /// The list account is an 8-byte "validatr" magic followed by fixed-size slots; each slot
-  /// carries an 8-byte frame ahead of a {@link ValidatorRecord}.
+  /// The list account is an 8-byte "validatr" magic followed by back-to-back
+  /// {@link ValidatorRecord}s. The magic belongs to the account, not to each slot: the
+  /// program sizes the account as `8 + count * item_size` and computes capacity as
+  /// `(account_len - 8) / item_size`, so record `k` starts at `MAGIC_LEN + k * ITEM_SIZE`.
   static final int MAGIC_LEN = 8;
-  static final int ITEM_SIZE = MAGIC_LEN + ValidatorRecord.BYTES;
+  static final int ITEM_SIZE = ValidatorRecord.BYTES;
 
   /// Parses exactly {@code count} validators. The list is compacted with swap-removes, so
   /// slots past {@code count} hold stale but non-zero records — the authoritative length
@@ -62,15 +64,12 @@ public record MarinadeValidatorList(PublicKey address,
   public static final BiFunction<PublicKey, byte[], MarinadeValidatorList> FACTORY = (publicKey, data) -> {
     final var validators = new ArrayList<ValidatorRecord>(4_096);
     final int to = data.length - ITEM_SIZE;
-    for (int offset = 0; offset <= to; ) {
-      offset += MAGIC_LEN;
+    for (int offset = MAGIC_LEN; offset <= to; offset += ITEM_SIZE) {
       final var validatorRecord = ValidatorRecord.read(data, offset);
       if (validatorRecord.validatorAccount().equals(PublicKey.NONE)) {
         break;
-      } else {
-        offset += ValidatorRecord.BYTES;
-        validators.add(validatorRecord);
       }
+      validators.add(validatorRecord);
     }
     return new MarinadeValidatorList(publicKey, validators, reverseLookup(validators));
   };
