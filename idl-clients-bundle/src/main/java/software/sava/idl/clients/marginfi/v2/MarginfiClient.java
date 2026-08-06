@@ -135,11 +135,18 @@ public interface MarginfiClient {
                       final long amount,
                       final Boolean depositUpToLimit);
 
+  /// `tokenProgram` must be the program that owns `mint` — the ATA seeds include it, so
+  /// passing SPL Token for a Token-2022 mint derives a token account that does not exist,
+  /// and the program's own `token_program` account would disagree with the mint. Five of
+  /// marginfi's 201 live bank mints are Token-2022.
+  ///
+  /// A Token-2022 bank also needs `mint` appended as the **first** remaining account; see
+  /// [MarginfiRemainingAccounts].
   default Instruction deposit(final PublicKey marginfiAccount,
                               final PublicKey bank,
                               final PublicKey mint,
+                              final PublicKey tokenProgram,
                               final long amount) {
-    final var tokenProgram = solanaAccounts().tokenProgram();
     final var signerTokenAccount = splClient().findATA(authority(), tokenProgram, mint).publicKey();
     final var liquidityVault = marginfiAccounts().bankLiquidityVaultPDA(bank).publicKey();
     return deposit(marginfiAccount, authority(), bank, signerTokenAccount, liquidityVault, tokenProgram, amount, null);
@@ -154,12 +161,19 @@ public interface MarginfiClient {
                     final long amount,
                     final Boolean repayAll);
 
+  /// `tokenProgram` must be the program that owns `mint` — the ATA seeds include it, so
+  /// passing SPL Token for a Token-2022 mint derives a token account that does not exist,
+  /// and the program's own `token_program` account would disagree with the mint. Five of
+  /// marginfi's 201 live bank mints are Token-2022.
+  ///
+  /// A Token-2022 bank also needs `mint` appended as the **first** remaining account; see
+  /// [MarginfiRemainingAccounts].
   default Instruction repay(final PublicKey marginfiAccount,
                             final PublicKey bank,
                             final PublicKey mint,
+                            final PublicKey tokenProgram,
                             final long amount,
                             final Boolean repayAll) {
-    final var tokenProgram = solanaAccounts().tokenProgram();
     final var signerTokenAccount = splClient().findATA(authority(), tokenProgram, mint).publicKey();
     final var liquidityVault = marginfiAccounts().bankLiquidityVaultPDA(bank).publicKey();
     return repay(marginfiAccount, authority(), bank, signerTokenAccount, liquidityVault, tokenProgram, amount, repayAll);
@@ -175,12 +189,19 @@ public interface MarginfiClient {
                        final long amount,
                        final Boolean withdrawAll);
 
+  /// `tokenProgram` must be the program that owns `mint` — the ATA seeds include it, so
+  /// passing SPL Token for a Token-2022 mint derives a token account that does not exist,
+  /// and the program's own `token_program` account would disagree with the mint. Five of
+  /// marginfi's 201 live bank mints are Token-2022.
+  ///
+  /// A Token-2022 bank also needs `mint` appended as the **first** remaining account; see
+  /// [MarginfiRemainingAccounts].
   default Instruction withdraw(final PublicKey marginfiAccount,
                                final PublicKey bank,
                                final PublicKey mint,
+                               final PublicKey tokenProgram,
                                final long amount,
                                final Boolean withdrawAll) {
-    final var tokenProgram = solanaAccounts().tokenProgram();
     final var destinationTokenAccount = splClient().findATA(authority(), tokenProgram, mint).publicKey();
     final var liquidityVault = marginfiAccounts().bankLiquidityVaultPDA(bank).publicKey();
     final var bankLiquidityVaultAuthority = marginfiAccounts().bankLiquidityVaultAuthorityPDA(bank).publicKey();
@@ -196,11 +217,18 @@ public interface MarginfiClient {
                      final PublicKey tokenProgram,
                      final long amount);
 
+  /// `tokenProgram` must be the program that owns `mint` — the ATA seeds include it, so
+  /// passing SPL Token for a Token-2022 mint derives a token account that does not exist,
+  /// and the program's own `token_program` account would disagree with the mint. Five of
+  /// marginfi's 201 live bank mints are Token-2022.
+  ///
+  /// A Token-2022 bank also needs `mint` appended as the **first** remaining account; see
+  /// [MarginfiRemainingAccounts].
   default Instruction borrow(final PublicKey marginfiAccount,
                              final PublicKey bank,
                              final PublicKey mint,
+                             final PublicKey tokenProgram,
                              final long amount) {
-    final var tokenProgram = solanaAccounts().tokenProgram();
     final var destinationTokenAccount = splClient().findATA(authority(), tokenProgram, mint).publicKey();
     final var liquidityVault = marginfiAccounts().bankLiquidityVaultPDA(bank).publicKey();
     final var bankLiquidityVaultAuthority = marginfiAccounts().bankLiquidityVaultAuthorityPDA(bank).publicKey();

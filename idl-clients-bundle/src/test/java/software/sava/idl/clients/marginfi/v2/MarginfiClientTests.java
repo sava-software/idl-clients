@@ -56,7 +56,11 @@ final class MarginfiClientTests {
   }
 
   private static PublicKey ata() {
-    return CLIENT.splClient().findATA(OWNER, SOLANA_ACCOUNTS.tokenProgram(), MINT).publicKey();
+    return ata(SOLANA_ACCOUNTS.tokenProgram());
+  }
+
+  private static PublicKey ata(final PublicKey tokenProgram) {
+    return CLIENT.splClient().findATA(OWNER, tokenProgram, MINT).publicKey();
   }
 
   private static PublicKey vault() {
@@ -231,7 +235,7 @@ final class MarginfiClientTests {
   /// mixed-up derivation shows up here as a wrong key.
   @Test
   void depositAndRepayDeriveTheAtaAndLiquidityVault() {
-    final var deposit = CLIENT.deposit(MARGINFI_ACCOUNT, BANK, MINT, 1_000L);
+    final var deposit = CLIENT.deposit(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L);
     final var accounts = keys(deposit);
 
     assertEquals(ACCOUNTS.marginfiGroup(), accounts.getFirst(), "[0] group");
@@ -250,11 +254,44 @@ final class MarginfiClientTests {
         accounts);
 
     // repay shares the layout but is a different instruction
-    final var repay = CLIENT.repay(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, Boolean.TRUE);
+    final var repay = CLIENT.repay(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, Boolean.TRUE);
     assertEquals(accounts, keys(repay));
     assertNotEquals(deposit.data()[0], repay.data()[0]);
     // repayAll is data
-    assertFalse(Arrays.equals(repay.data(), CLIENT.repay(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, null).data()));
+    assertFalse(Arrays.equals(repay.data(), CLIENT.repay(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, null).data()));
+  }
+
+  /// Regression: the four convenience overloads hardcoded SPL Token, so a Token-2022 bank
+  /// got both the wrong `token_program` account and — because the program is an ATA seed
+  /// — a source token account that does not exist. Five of marginfi's 201 live bank mints
+  /// are Token-2022 (`CASHx9…`, `pumpCmXq…`, `susdabGD…`, `2b1kV6Dk…`, `2u1tszSe…`), so
+  /// the caller has to be able to say which.
+  @Test
+  void theTokenProgramReachesBothTheAtaAndTheProgramSlot() {
+    final var t22 = SOLANA_ACCOUNTS.token2022Program();
+    final var legacy = SOLANA_ACCOUNTS.tokenProgram();
+    assertNotEquals(legacy, t22);
+
+    for (final var ix : List.of(
+        CLIENT.deposit(MARGINFI_ACCOUNT, BANK, MINT, t22, 1_000L),
+        CLIENT.repay(MARGINFI_ACCOUNT, BANK, MINT, t22, 1_000L, null))) {
+      final var accounts = keys(ix);
+      assertEquals(ata(t22), accounts.get(4), "[4] token account, derived under Token-2022");
+      assertEquals(t22, accounts.get(6), "[6] token program");
+      assertNotEquals(ata(legacy), accounts.get(4), "the ATA seeds include the token program");
+    }
+
+    for (final var ix : List.of(
+        CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, t22, 1_000L, null),
+        CLIENT.borrow(MARGINFI_ACCOUNT, BANK, MINT, t22, 1_000L))) {
+      final var accounts = keys(ix);
+      assertEquals(ata(t22), accounts.get(4), "[4] token account, derived under Token-2022");
+      assertEquals(t22, accounts.get(7), "[7] token program");
+      assertNotEquals(ata(legacy), accounts.get(4));
+    }
+
+    // the vault keys are the bank's either way — only the caller's side moves
+    assertEquals(vault(), keys(CLIENT.deposit(MARGINFI_ACCOUNT, BANK, MINT, t22, 1_000L)).get(5));
   }
 
   /// Regression guard: `withdraw` takes the vault authority *before* the vault.
@@ -262,7 +299,7 @@ final class MarginfiClientTests {
   /// bank, so only a positional check catches it.
   @Test
   void withdrawPlacesTheVaultAuthorityBeforeTheVault() {
-    final var withdraw = CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, Boolean.FALSE);
+    final var withdraw = CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, Boolean.FALSE);
     final var accounts = keys(withdraw);
 
     assertEquals(ACCOUNTS.marginfiGroup(), accounts.getFirst(), "[0] group");
@@ -282,16 +319,16 @@ final class MarginfiClientTests {
         accounts);
 
     // withdrawAll is data, not an account
-    assertEquals(accounts, keys(CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, Boolean.TRUE)));
+    assertEquals(accounts, keys(CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, Boolean.TRUE)));
     assertFalse(Arrays.equals(
         withdraw.data(),
-        CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, Boolean.TRUE).data()));
+        CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, Boolean.TRUE).data()));
   }
 
   /// `borrow` has withdraw's account layout and a different discriminator.
   @Test
   void borrowMatchesWithdrawsLayoutButIsADistinctInstruction() {
-    final var borrow = CLIENT.borrow(MARGINFI_ACCOUNT, BANK, MINT, 1_000L);
+    final var borrow = CLIENT.borrow(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L);
     final var accounts = keys(borrow);
 
     assertEquals(ata(), accounts.get(4), "[4] destination token account");
@@ -299,9 +336,9 @@ final class MarginfiClientTests {
     assertEquals(vault(), accounts.get(6), "[6] bank liquidity vault");
     assertEquals(SOLANA_ACCOUNTS.tokenProgram(), accounts.get(7), "[7] token program");
 
-    assertEquals(keys(CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, null)), accounts);
+    assertEquals(keys(CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, null)), accounts);
     assertNotEquals(
-        CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, 1_000L, null).data()[0],
+        CLIENT.withdraw(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 1_000L, null).data()[0],
         borrow.data()[0]);
 
     assertEquals(
@@ -310,7 +347,8 @@ final class MarginfiClientTests {
         accounts);
 
     // the amount is data
-    assertFalse(Arrays.equals(borrow.data(), CLIENT.borrow(MARGINFI_ACCOUNT, BANK, MINT, 2_000L).data()));
+    assertFalse(Arrays.equals(borrow.data(),
+        CLIENT.borrow(MARGINFI_ACCOUNT, BANK, MINT, SOLANA_ACCOUNTS.tokenProgram(), 2_000L).data()));
   }
 
   /// `pulseHealth` is permissionless — it must not smuggle the client's owner

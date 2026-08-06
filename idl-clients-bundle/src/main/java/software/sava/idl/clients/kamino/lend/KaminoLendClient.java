@@ -241,8 +241,14 @@ public interface KaminoLendClient {
 
   /// Repay liquidity owed by an obligation.
   ///
-  /// Caller may need to append the optional `PermissionedOp::REPAY` permission account as a
-  /// remaining account via `KaminoLendingRemainingAccounts.appendPermissionAccount(...)`.
+  /// **Takes remaining accounts when the obligation is in an elevation group**, and none
+  /// otherwise: the obligation's *active deposit* reserves, in the obligation's own order,
+  /// writable — the handler walks them alongside `active_deposits_mut()` to decrement each
+  /// reserve's per-group debt tracker, and requires the keys to match. Append them with
+  /// `KaminoLendingRemainingAccounts.appendDepositReserves(...)`.
+  ///
+  /// There is no permission account on this path; repay is not one of the permissioned
+  /// ops.
   Instruction repayObligationLiquidity(final PublicKey obligationKey,
                                        final PublicKey lendingMarket,
                                        final PublicKey repayReserveKey,
@@ -295,9 +301,16 @@ public interface KaminoLendClient {
                                                final PublicKey lendingMarket,
                                                final int mode);
 
-  /// Opt the obligation into a new elevation group. Caller must append the new group's
-  /// reserves as remaining accounts via
-  /// `KaminoLendingRemainingAccounts.appendDepositReserves(...)`.
+  /// Opt the obligation into a new elevation group.
+  ///
+  /// Takes the same remaining accounts as `refreshObligation`, and the handler checks the
+  /// **count exactly** before reading any of them — a short or long list fails with
+  /// `InvalidAccountInput`. Append them with
+  /// `KaminoLendingRemainingAccounts.appendObligationRefreshAccounts(...)`, not
+  /// `appendDepositReserves`: the borrow reserves and, for an obligation with a referrer,
+  /// one `ReferrerTokenState` per borrow are all required.
+  ///
+  /// No permission account.
   Instruction requestElevationGroup(final PublicKey obligationKey,
                                     final PublicKey lendingMarket,
                                     final int elevationGroup);

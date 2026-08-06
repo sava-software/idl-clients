@@ -809,6 +809,53 @@ that validates each group against the bank it describes, so a miscount throws at
 build time with the expected and actual counts rather than surfacing as an opaque
 on-chain error.
 
+#### klend: two remaining-accounts contracts documented wrong (2026-08-06)
+
+Re-reading the handlers against the helper's javadoc turned up two entries that
+would send a caller straight into an on-chain failure:
+
+- **`repayObligationLiquidity[V2]`** was listed as taking a trailing optional
+  permission account "only". It takes neither. `process_impl` maps the *whole*
+  remaining slice to `FatAccountLoader<Reserve>` and hands it to
+  `update_elevation_group_debt_trackers_on_repay`, which walks it in lockstep
+  with `obligation.active_deposits_mut()`, `require_keys_eq!`s each one, and
+  writes its per-elevation-group debt tracker. So: the obligation's active
+  deposit reserves, in the obligation's order, writable — and only when the
+  obligation is in an elevation group; outside one the branch consumes nothing.
+  Repay is not a `PermissionedOp` at all.
+- **`requestElevationGroup`** was grouped with `borrowObligationLiquidity` as
+  `[deposit_reserves, (optional) permission]`, and the client javadoc pointed at
+  `appendDepositReserves`. It actually takes the full `refreshObligation` triple —
+  deposit reserves, borrow reserves, and one `ReferrerTokenState` per borrow when
+  the obligation has a referrer — and checks
+  `remaining_accounts.len() != expected` *before* reading any of them, so a list
+  built from the deposits alone fails with `InvalidAccountInput`. It now points at
+  `appendObligationRefreshAccounts`. No permission account here either.
+
+`borrowObligationLiquidity[V2]` and the three deposit paths were right as
+documented. The permission account is always last: the deposit handlers read
+`remaining_accounts.last()`, and the paths that also iterate reserves strip it
+first (`check_permissions_and_strip`).
+
+#### marginfi: the convenience overloads hardcoded SPL Token (2026-08-06)
+
+`MarginfiClient.deposit`, `repay`, `withdraw` and `borrow` each had a `mint`-only
+overload that resolved `solanaAccounts().tokenProgram()` internally. For a
+Token-2022 bank that is wrong twice over: it lands the legacy program in the
+instruction's `token_program` slot, and — because the token program is an ATA
+seed — derives a source/destination token account that does not exist. Five of
+marginfi's 201 distinct live bank mints are Token-2022 (`CASHx9…`, `pumpCmXq…`,
+`susdabGD…`, `2b1kV6Dk…`, `2u1tszSe…`).
+
+The four overloads now take the token program; the fully-explicit forms already
+did. Callers on a Token-2022 bank must also append the mint as the first
+remaining account, which `MarginfiRemainingAccounts` already models.
+
+While checking this, the bank vault derivation was ground-truthed the way klend's
+was: `liquidity_vault` seeded on `[b"liquidity_vault", bank]` reproduces the
+stored vault for **all 434 live banks** at each bank's stored bump. Unlike klend's
+reserves there is no second live scheme, so these stay derived.
+
 #### Phoenix Ember: the IDL's PDA seeds derive accounts that do not exist (2026-08-06)
 
 `PhoenixAccounts` took Ember's state and vault from the generated

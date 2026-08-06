@@ -16,23 +16,32 @@ import java.util.List;
 /// Account ordering and writability are derived from the upstream Rust handlers under
 /// `klend/programs/klend/src/handlers/`.
 ///
-/// - `refreshObligation`:
+/// - `refreshObligation` and `requestElevationGroup`:
 ///   `[deposit_reserves(N_d) , borrow_reserves(N_b) , referrer_token_states(N_b if has_referrer)]`.
 ///   All reserve and referrer-token-state accounts are written to during refresh.
-/// - `borrowObligationLiquidity[V2]` / `requestElevationGroup`:
+///   `requestElevationGroup` checks the **count exactly** before reading any of them, so a
+///   short or long list fails with `InvalidAccountInput`; neither takes a permission
+///   account.
+/// - `borrowObligationLiquidity[V2]`:
 ///   `[deposit_reserves , (optional) permission_account]`.
-/// - `repayObligationLiquidity[V2]` / `depositReserveLiquidity[V2]` /
-///   `depositObligationCollateral[V2]` /
+/// - `repayObligationLiquidity[V2]`: `[deposit_reserves]`, and **only when the obligation
+///   is in an elevation group** — the handler walks them alongside `active_deposits_mut()`
+///   to decrement each reserve's per-group debt tracker and requires the keys to match. An
+///   obligation outside any elevation group consumes none. No permission account.
+/// - `depositReserveLiquidity[V2]` / `depositObligationCollateral[V2]` /
 ///   `depositReserveLiquidityAndObligationCollateral[V2]`:
 ///   trailing optional `[permission_account]` only.
 ///
-/// The permission account is read-only.
+/// The permission account is read-only, and always the **last** remaining account — the
+/// program takes `remaining_accounts.last()` and, on the paths that also read reserves,
+/// strips it before iterating.
 public final class KaminoLendingRemainingAccounts {
 
   private KaminoLendingRemainingAccounts() {
   }
 
-  /// Append the remaining accounts required by `refreshObligation`.
+  /// Append the remaining accounts required by `refreshObligation` and
+  /// `requestElevationGroup`.
   ///
   /// The order is strict: all deposit reserves, then all borrow reserves, then (only when
   /// the obligation has a referrer) one `ReferrerTokenState` per borrow reserve in the
@@ -59,9 +68,12 @@ public final class KaminoLendingRemainingAccounts {
     return instruction.extraAccounts(extras);
   }
 
-  /// Append the deposit-reserve keys used by `borrowObligationLiquidity[V2]` and
-  /// `requestElevationGroup`. Reserves are passed as writable since the handlers may
-  /// refresh them.
+  /// Append the deposit-reserve keys used by `borrowObligationLiquidity[V2]` and, for an
+  /// obligation in an elevation group, `repayObligationLiquidity[V2]`. Reserves are passed
+  /// as writable since the handlers write their per-group debt trackers.
+  ///
+  /// Not for `requestElevationGroup` — that takes the full `refreshObligation` triple; see
+  /// [#appendObligationRefreshAccounts(Instruction, List, List, List)].
   public static Instruction appendDepositReserves(final Instruction instruction,
                                                   final Collection<PublicKey> depositReserves) {
     return instruction.extraAccounts(depositReserves, AccountMeta.CREATE_WRITE);
