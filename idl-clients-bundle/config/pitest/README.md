@@ -809,6 +809,50 @@ that validates each group against the bank it describes, so a miscount throws at
 build time with the expected and actual counts rather than surfacing as an opaque
 on-chain error.
 
+#### kvault: the lending-market block was missing entirely (2026-08-06)
+
+`KaminoVaultsRemainingAccounts.appendVaultReserves` appended the vault's
+reserves and nothing else, and its javadoc asserted that the lending market
+"is **not** passed as a separate remaining account" and that
+`withdrawFromAvailable` takes no remaining accounts at all. Both are wrong.
+
+`vault_operations.rs` reads the first `get_reserves_count()` remaining accounts
+as the reserves and hands them to `klend_operations::cpi_refresh_reserves`,
+which builds `[reserve(writable), lending_market(readonly)]` pairs for klend's
+`RefreshReservesBatch` — loading each market key *out of the reserve account it
+just read*. A CPI can only reference accounts the caller already holds, so every
+one of those markets has to be in the outer instruction. Without them the
+transaction fails before it can do anything. `handler_withdraw.rs` reaches the
+same `refresh_allocation_reserve_accounts`, so `withdrawFromAvailable` is not
+the exception the javadoc claimed.
+
+The layout is two slot-ordered blocks — every reserve writable, then every market
+read-only — matching `kvault-interface`'s `refresh_remaining_accounts`, whose own
+`test_refresh` executes a two-market deposit on chain with no shim. Note the
+blocks are *not* the interleaved pair order the inner CPI uses; that ordering is
+internal to the metas it builds.
+
+Two further traps, both pinned against chain state:
+
+- The reserves must be `vault_allocation_strategy[]` in slot order **with the
+  empty slots dropped** — `check_allocation_reserve_accounts_match` skips
+  `Pubkey::default()` entries while walking what you sent, so a hole shifts every
+  later slot into a `ReserveAccountAndKeyMismatch`. 13 of the 172 live vaults have
+  a hole. `allocatedReserves(VaultState)` does the compaction; it tests the
+  all-zero key specifically, not `KaminoAccounts.isNullKey`, whose `nu111…`
+  sentinel would drop a slot the program still counts.
+- The markets are per reserve, not per vault. The fixture vault `67dqmR…` has a
+  hole at slot 5 and eight reserves in **eight distinct lending markets**, so a
+  block built from the vault's own market, or from the first reserve's, is wrong
+  in seven slots. Its `VaultState` and its eight reserve accounts are checked in
+  as gzipped fixtures (62 KiB and 67 KiB raw, 1.8 KiB and 4.6 KiB on disk).
+
+The `Reserve`-taking overload reads each market off its reserve, so the two
+blocks cannot disagree; the key-taking overload is positional and rejects a
+length mismatch rather than truncating. The two `MathMutator` survivors on the
+`size() * 2` capacity hints are the same allocation-size-only family as the
+klend and marginfi rows.
+
 ### Marginfi: a stale on-chain IDL hiding two live client bugs
 
 The diff reported 30 mismatches against `0dotxyz/marginfi-v2`; 27 were extractor

@@ -31,10 +31,11 @@ public interface KaminoVaultsClient {
 
   /// Deposit `maxAmount` of the vault's underlying token in exchange for shares.
   ///
-  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
-  /// (in allocation order) to refresh them via klend before computing the
-  /// share price; callers must append those reserves via
-  /// `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
+  /// The handler refreshes the vault's reserves through a klend CPI before computing the
+  /// share price, reading them out of `ctx.remaining_accounts`; append them with
+  /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
+  /// lending markets, as two blocks, in the order
+  /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
   Instruction deposit(final PublicKey vaultStateKey,
                       final PublicKey tokenVaultKey,
                       final PublicKey tokenMintKey,
@@ -93,9 +94,11 @@ public interface KaminoVaultsClient {
   /// available (uninvested) liquidity first and, if not enough, redeems
   /// collateral from the supplied reserve.
   ///
-  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
-  /// (in allocation order) to refresh them via klend; callers must append those
-  /// reserves via `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
+  /// The handler refreshes the vault's reserves through a klend CPI, reading them out of
+  /// `ctx.remaining_accounts`; append them with
+  /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
+  /// lending markets, as two blocks, in the order
+  /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
   ///
   /// `vaultStateKey` is passed to both the `WithdrawFromAvailable` and
   /// `WithdrawFromInvested` account groups; the program enforces they refer to
@@ -204,7 +207,11 @@ public interface KaminoVaultsClient {
   /// Withdraw `sharesAmount` worth of underlying token from the vault's
   /// *available* (uninvested) liquidity only. Cheaper than `withdraw` since it
   /// skips the reserve-redemption leg; will fail if the available liquidity is
-  /// insufficient. The handler does not read `remaining_accounts`.
+  /// insufficient.
+  ///
+  /// It still reaches the same reserve refresh as the other withdraw paths, so it takes
+  /// the same remaining accounts: the vault's reserves *and* their lending markets, as
+  /// two blocks, via `KaminoVaultsRemainingAccounts.appendVaultReserves`.
   Instruction withdrawFromAvailable(final PublicKey vaultStateKey,
                                     final PublicKey tokenVaultKey,
                                     final PublicKey baseVaultAuthorityKey,
@@ -257,9 +264,11 @@ public interface KaminoVaultsClient {
   /// to the user (bypassing the redeem-to-underlying step). Useful for callers
   /// that want to settle in cTokens.
   ///
-  /// The handler iterates `ctx.remaining_accounts` for the vault's reserves
-  /// (in allocation order) to refresh them via klend; callers must append those
-  /// reserves via `KaminoVaultsRemainingAccounts.appendVaultReserves(instruction, reserves)`.
+  /// The handler refreshes the vault's reserves through a klend CPI, reading them out of
+  /// `ctx.remaining_accounts`; append them with
+  /// `KaminoVaultsRemainingAccounts.appendVaultReserves` — the reserves *and* their
+  /// lending markets, as two blocks, in the order
+  /// `KaminoVaultsRemainingAccounts.allocatedReserves(vaultState)` returns.
   Instruction redeemInKind(final PublicKey vaultStateKey,
                            final PublicKey baseVaultAuthorityKey,
                            final PublicKey reserveKey,
