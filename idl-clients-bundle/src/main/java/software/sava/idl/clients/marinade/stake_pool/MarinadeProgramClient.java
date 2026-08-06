@@ -70,15 +70,33 @@ public interface MarinadeProgramClient {
     return totalVirtualStakedLamports(state) / (double) state.msolSupply();
   }
 
-  /// Returns the index of `key` within a raw list account, or `-1` when it is
-  /// absent. The scan skips the 8-byte discriminator and strides by `itemSize`,
-  /// stopping once fewer than a whole key remains — a truncated account, or an
-  /// `itemSize` that disagrees with the data, reports "not found" rather than
-  /// reading off the end.
+  /// Returns the index of `key` within a raw list account, or `-1` when it is absent,
+  /// searching the whole allocated capacity.
+  ///
+  /// Marinade compacts its lists with swap-removes and does not zero the vacated tail,
+  /// so capacity beyond the list's `count` still holds intact records of validators and
+  /// stake accounts that have been removed. A capacity-wide search therefore reports a
+  /// removed entry as present, at an index the program will reject or — worse — read as
+  /// a different entry. Prefer [#accountIndex(byte[], byte[], int, int)] with the
+  /// `count` from the State's own `List`; the `State`-taking helpers below all do.
   static int accountIndex(final byte[] key,
                           final byte[] listData,
                           final int itemSize) {
-    for (int i = 8, s = 0, to = listData.length - PublicKey.PUBLIC_KEY_LENGTH; i <= to; i += itemSize, ++s) {
+    return accountIndex(key, listData, itemSize, Integer.MAX_VALUE);
+  }
+
+  /// Returns the index of `key` among the first `count` entries of a raw list account,
+  /// or `-1` when it is absent.
+  ///
+  /// The scan skips the 8-byte discriminator and strides by `itemSize`, stopping at
+  /// `count` entries or once fewer than a whole key remains — so a truncated account, an
+  /// `itemSize` that disagrees with the data, or a stale swap-removed tail all report
+  /// "not found" rather than reading off the end or matching a dead record.
+  static int accountIndex(final byte[] key,
+                          final byte[] listData,
+                          final int itemSize,
+                          final int count) {
+    for (int i = 8, s = 0, to = listData.length - PublicKey.PUBLIC_KEY_LENGTH; i <= to && s < count; i += itemSize, ++s) {
       if (Arrays.equals(
           key, 0, PublicKey.PUBLIC_KEY_LENGTH,
           listData, i, i + PublicKey.PUBLIC_KEY_LENGTH
@@ -92,7 +110,13 @@ public interface MarinadeProgramClient {
   static int stakeAccountIndex(final byte[] stakeAccountKey,
                                final byte[] stakeListData,
                                final State state) {
-    return accountIndex(stakeAccountKey, stakeListData, Math.toIntExact(state.stakeSystem().stakeList().itemSize()));
+    final var stakeList = state.stakeSystem().stakeList();
+    return accountIndex(
+        stakeAccountKey,
+        stakeListData,
+        Math.toIntExact(stakeList.itemSize()),
+        Math.toIntExact(stakeList.count())
+    );
   }
 
   static int stakeAccountIndex(final StakeAccount stakeAccount,
@@ -104,7 +128,13 @@ public interface MarinadeProgramClient {
   static int validatorIndex(final byte[] validatorKey,
                             final byte[] validatorListData,
                             final State state) {
-    return accountIndex(validatorKey, validatorListData, Math.toIntExact(state.validatorSystem().validatorList().itemSize()));
+    final var validatorList = state.validatorSystem().validatorList();
+    return accountIndex(
+        validatorKey,
+        validatorListData,
+        Math.toIntExact(validatorList.itemSize()),
+        Math.toIntExact(validatorList.count())
+    );
   }
 
   static int validatorIndex(final StakeAccount stakeAccount,

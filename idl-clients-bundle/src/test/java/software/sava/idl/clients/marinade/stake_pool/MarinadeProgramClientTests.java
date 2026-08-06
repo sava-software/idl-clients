@@ -46,6 +46,10 @@ final class MarinadeProgramClientTests {
       State.STAKE_SYSTEM_OFFSET + StakeSystem.STAKE_LIST_OFFSET + List.ITEM_SIZE_OFFSET;
   private static final int VALIDATOR_LIST_ITEM_SIZE =
       State.VALIDATOR_SYSTEM_OFFSET + ValidatorSystem.VALIDATOR_LIST_OFFSET + List.ITEM_SIZE_OFFSET;
+  private static final int STAKE_LIST_COUNT =
+      State.STAKE_SYSTEM_OFFSET + StakeSystem.STAKE_LIST_OFFSET + List.COUNT_OFFSET;
+  private static final int VALIDATOR_LIST_COUNT =
+      State.VALIDATOR_SYSTEM_OFFSET + ValidatorSystem.VALIDATOR_LIST_OFFSET + List.COUNT_OFFSET;
 
   private static PublicKey key(final int fill) {
     final byte[] publicKey = new byte[PublicKey.PUBLIC_KEY_LENGTH];
@@ -62,7 +66,8 @@ final class MarinadeProgramClientTests {
                              final long circulatingTicketBalance,
                              final long msolSupply,
                              final int stakeItemSize,
-                             final int validatorItemSize) {
+                             final int validatorItemSize,
+                             final int listCount) {
     // State is no longer fixed-size: a variable-length DelinquentUpgraderState
     // enum sits at DELINQUENT_UPGRADER_OFFSET, followed by two FeeCents. Size
     // the buffer for the unit ("Done") variant plus that tail.
@@ -77,11 +82,19 @@ final class MarinadeProgramClientTests {
     ByteUtil.putInt64LE(data, State.MSOL_SUPPLY_OFFSET, msolSupply);
     ByteUtil.putInt32LE(data, STAKE_LIST_ITEM_SIZE, stakeItemSize);
     ByteUtil.putInt32LE(data, VALIDATOR_LIST_ITEM_SIZE, validatorItemSize);
+    // the lists' live length; the index helpers bound their scan by it, because the
+    // capacity past it still holds swap-removed records
+    ByteUtil.putInt32LE(data, STAKE_LIST_COUNT, listCount);
+    ByteUtil.putInt32LE(data, VALIDATOR_LIST_COUNT, listCount);
     return State.read(data, 0);
   }
 
   private static State state(final int stakeItemSize, final int validatorItemSize) {
-    return state(0L, 0L, 0L, 0L, 0L, 1L, stakeItemSize, validatorItemSize);
+    return state(stakeItemSize, validatorItemSize, Integer.MAX_VALUE);
+  }
+
+  private static State state(final int stakeItemSize, final int validatorItemSize, final int listCount) {
+    return state(0L, 0L, 0L, 0L, 0L, 1L, stakeItemSize, validatorItemSize, listCount);
   }
 
   /// A raw list account: 8-byte discriminator then `itemSize`-strided records,
@@ -115,6 +128,29 @@ final class MarinadeProgramClientTests {
     assertEquals(-1, MarinadeProgramClient.accountIndex(key(0x24).toByteArray(), list, itemSize));
     // an empty list is just "not found"
     assertEquals(-1, MarinadeProgramClient.accountIndex(first.toByteArray(), new byte[8], itemSize));
+  }
+
+  /// Marinade removes list entries by swapping the last one into the hole and
+  /// decrementing `count`; the vacated tail slot keeps its bytes. So capacity beyond
+  /// `count` holds intact records for validators and stake accounts that are no longer
+  /// in the list, and a capacity-wide search reports them as present at an index the
+  /// program does not recognise.
+  @Test
+  void accountIndexStopsAtTheCountNotTheCapacity() {
+    final int itemSize = 61;
+    final var live = key(0x41);
+    final var removed = key(0x42); // still sitting in the tail after a swap-remove
+    final byte[] list = listAccount(itemSize, live, removed);
+
+    assertEquals(0, MarinadeProgramClient.accountIndex(live.toByteArray(), list, itemSize, 1));
+    assertEquals(-1, MarinadeProgramClient.accountIndex(removed.toByteArray(), list, itemSize, 1),
+        "a swap-removed record is stale data, not a list member");
+
+    // raising the count to the full capacity finds it again — the bytes never moved
+    assertEquals(1, MarinadeProgramClient.accountIndex(removed.toByteArray(), list, itemSize, 2));
+
+    // and a count past the end is bounded by the data, not by trust
+    assertEquals(-1, MarinadeProgramClient.accountIndex(key(0x43).toByteArray(), list, itemSize, 99));
   }
 
   /// The 8-byte discriminator is skipped, not treated as the first record: a
@@ -227,27 +263,27 @@ final class MarinadeProgramClientTests {
   /// *subtracted* — tickets are already-claimed SOL that must not be counted.
   @Test
   void totalVirtualStakedLamportsSumsAndSubtractsTickets() {
-    final var state = state(1_000L, 200L, 30L, 4L, 5L, 1L, 61, 40);
+    final var state = state(1_000L, 200L, 30L, 4L, 5L, 1L, 61, 40, Integer.MAX_VALUE);
     // (1000 + 200 + 30 + 4) - 5
     assertEquals(1_229L, MarinadeProgramClient.totalVirtualStakedLamports(state));
 
     // each component moves the total by its own amount, in the right direction
-    assertEquals(1_329L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_100L, 200L, 30L, 4L, 5L, 1L, 61, 40)));
-    assertEquals(1_329L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 300L, 30L, 4L, 5L, 1L, 61, 40)));
-    assertEquals(1_239L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 40L, 4L, 5L, 1L, 61, 40)));
-    assertEquals(1_230L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 30L, 5L, 5L, 1L, 61, 40)));
-    assertEquals(1_224L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 30L, 4L, 10L, 1L, 61, 40)));
+    assertEquals(1_329L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_100L, 200L, 30L, 4L, 5L, 1L, 61, 40, Integer.MAX_VALUE)));
+    assertEquals(1_329L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 300L, 30L, 4L, 5L, 1L, 61, 40, Integer.MAX_VALUE)));
+    assertEquals(1_239L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 40L, 4L, 5L, 1L, 61, 40, Integer.MAX_VALUE)));
+    assertEquals(1_230L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 30L, 5L, 5L, 1L, 61, 40, Integer.MAX_VALUE)));
+    assertEquals(1_224L, MarinadeProgramClient.totalVirtualStakedLamports(state(1_000L, 200L, 30L, 4L, 10L, 1L, 61, 40, Integer.MAX_VALUE)));
   }
 
   @Test
   void solPriceIsVirtualStakeOverSupply() {
     // 1_229 virtual lamports over 1_000 mSOL
-    assertEquals(1.229d, MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 1_000L, 61, 40)), 1e-12);
+    assertEquals(1.229d, MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 1_000L, 61, 40, Integer.MAX_VALUE)), 1e-12);
     // a larger supply lowers the price
-    assertTrue(MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 2_000L, 61, 40))
-        < MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 1_000L, 61, 40)));
+    assertTrue(MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 2_000L, 61, 40, Integer.MAX_VALUE))
+        < MarinadeProgramClient.solPrice(state(1_000L, 200L, 30L, 4L, 5L, 1_000L, 61, 40, Integer.MAX_VALUE)));
     // the division is floating point, not integer truncation
-    assertEquals(0.5d, MarinadeProgramClient.solPrice(state(1L, 0L, 0L, 0L, 0L, 2L, 61, 40)), 1e-12);
+    assertEquals(0.5d, MarinadeProgramClient.solPrice(state(1L, 0L, 0L, 0L, 0L, 2L, 61, 40, Integer.MAX_VALUE)), 1e-12);
   }
 
   // ---------------------------------------------------------------------------
