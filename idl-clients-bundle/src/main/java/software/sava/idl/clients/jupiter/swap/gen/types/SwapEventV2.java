@@ -13,14 +13,16 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record SwapEventV2(PublicKey inputMint,
                           long inputAmount,
                           PublicKey outputMint,
-                          long outputAmount) implements SerDe {
+                          long outputAmount,
+                          PublicKey amm) implements SerDe {
 
-  public static final int BYTES = 80;
+  public static final int BYTES = 112;
 
   public static final int INPUT_MINT_OFFSET = 0;
   public static final int INPUT_AMOUNT_OFFSET = 32;
   public static final int OUTPUT_MINT_OFFSET = 40;
   public static final int OUTPUT_AMOUNT_OFFSET = 72;
+  public static final int AMM_OFFSET = 80;
 
   public static SwapEventV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -34,10 +36,13 @@ public record SwapEventV2(PublicKey inputMint,
     final var outputMint = readPubKey(_data, i);
     i += 32;
     final var outputAmount = getInt64LE(_data, i);
+    i += 8;
+    final var amm = readPubKey(_data, i);
     return new SwapEventV2(inputMint,
                            inputAmount,
                            outputMint,
-                           outputAmount);
+                           outputAmount,
+                           amm);
   }
 
   @Override
@@ -51,6 +56,8 @@ public record SwapEventV2(PublicKey inputMint,
     i += 32;
     putInt64LE(_data, i, outputAmount);
     i += 8;
+    amm.write(_data, i);
+    i += 32;
     return i - _offset;
   }
 

@@ -179,7 +179,14 @@ public sealed interface Swap extends RustEnum permits
   Swap.Deriverse,
   Swap.Hadron,
   Swap.BinaryFi,
-  Swap.Metric {
+  Swap.Metric,
+  Swap.JupiterLendDexSwap,
+  Swap.Gatorswap,
+  Swap.Flint,
+  Swap.Denali,
+  Swap.PerenaStarV2Deposit,
+  Swap.PerenaStarV2WithdrawFromExternal,
+  Swap.SanctumSols {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -350,6 +357,13 @@ public sealed interface Swap extends RustEnum permits
       case 162 -> Hadron.read(_data, i);
       case 163 -> BinaryFi.INSTANCE;
       case 164 -> Metric.read(_data, i);
+      case 165 -> JupiterLendDexSwap.read(_data, i);
+      case 166 -> Gatorswap.read(_data, i);
+      case 167 -> Flint.read(_data, i);
+      case 168 -> Denali.read(_data, i);
+      case 169 -> PerenaStarV2Deposit.INSTANCE;
+      case 170 -> PerenaStarV2WithdrawFromExternal.read(_data, i);
+      case 171 -> SanctumSols.read(_data, i);
       default -> null;
     };
   }
@@ -2832,6 +2846,124 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 164;
+    }
+  }
+
+  record JupiterLendDexSwap(boolean val) implements EnumBool, Swap {
+
+    public static final JupiterLendDexSwap TRUE = new JupiterLendDexSwap(true);
+    public static final JupiterLendDexSwap FALSE = new JupiterLendDexSwap(false);
+
+    public static JupiterLendDexSwap read(final byte[] _data, int i) {
+      return _data[i] == 1 ? JupiterLendDexSwap.TRUE : JupiterLendDexSwap.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 165;
+    }
+  }
+
+  record Gatorswap(boolean val) implements EnumBool, Swap {
+
+    public static final Gatorswap TRUE = new Gatorswap(true);
+    public static final Gatorswap FALSE = new Gatorswap(false);
+
+    public static Gatorswap read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Gatorswap.TRUE : Gatorswap.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 166;
+    }
+  }
+
+  record Flint(boolean isGlobal, boolean takerBuy) implements Swap {
+
+    public static final int BYTES = 2;
+
+    public static final int IS_GLOBAL_OFFSET = 0;
+    public static final int TAKER_BUY_OFFSET = 1;
+
+    public static Flint read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      int i = _offset;
+      final var isGlobal = _data[i] == 1;
+      ++i;
+      final var takerBuy = _data[i] == 1;
+      return new Flint(isGlobal, takerBuy);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + writeOrdinal(_data, _offset);
+      _data[i] = (byte) (isGlobal ? 1 : 0);
+      ++i;
+      _data[i] = (byte) (takerBuy ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return ordinalBytes() + BYTES;
+    }
+
+    @Override
+    public int ordinal() {
+      return 167;
+    }
+  }
+
+  record Denali(boolean val) implements EnumBool, Swap {
+
+    public static final Denali TRUE = new Denali(true);
+    public static final Denali FALSE = new Denali(false);
+
+    public static Denali read(final byte[] _data, int i) {
+      return _data[i] == 1 ? Denali.TRUE : Denali.FALSE;
+    }
+
+    @Override
+    public int ordinal() {
+      return 168;
+    }
+  }
+
+  record PerenaStarV2Deposit() implements EnumNone, Swap {
+
+    public static final PerenaStarV2Deposit INSTANCE = new PerenaStarV2Deposit();
+
+    @Override
+    public int ordinal() {
+      return 169;
+    }
+  }
+
+  record PerenaStarV2WithdrawFromExternal(int val) implements EnumInt8, Swap {
+
+    public static PerenaStarV2WithdrawFromExternal read(final byte[] _data, int i) {
+      return new PerenaStarV2WithdrawFromExternal(_data[i] & 0xFF);
+    }
+
+    @Override
+    public int ordinal() {
+      return 170;
+    }
+  }
+
+  record SanctumSols(SanctumSolsSwapType val) implements SerDeEnum, Swap {
+
+    public static SanctumSols read(final byte[] _data, final int _offset) {
+      return new SanctumSols(SanctumSolsSwapType.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 171;
     }
   }
 }
