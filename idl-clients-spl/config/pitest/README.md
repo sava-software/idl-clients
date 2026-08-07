@@ -3,8 +3,10 @@
 Each `pitest<Suite>` run is finalized by `pitest<Suite>Verify`, which diffs the
 run's unkilled mutants (`SURVIVED` and `NO_COVERAGE`) against the accepted
 baseline in `<suite>-accepted.csv` and **fails on anything new**. Baseline row
-format: `class,method,line,mutator,status`. The canonical policy is sava-build's
-`HARDENING.md`; this file records what is accepted *here* and why.
+format: `class,method,mutator,STATUS`, followed by a `# family` label and a
+diagnostic `# line` tag. The canonical policy is sava-build's `HARDENING.md`,
+and `hardeningHelp` is the installed-version task reference; this file records
+what is accepted *here* and why.
 
 A new unkilled mutant has exactly three legal outcomes:
 
@@ -12,17 +14,18 @@ A new unkilled mutant has exactly three legal outcomes:
    mutant breaks (a length prefix rejected, an offset record's exact bytes, the
    state a parsed account reports) over restating the implementation.
 2. **Refactor** — restructure so the mutant cannot exist.
-3. **Accept it knowingly** — re-run with `-PupdateMutationBaseline` and record
-   the reason under "Triaged equivalent mutants" below. Acceptance is for
-   mutants *equivalent with respect to observable behavior*, not for "hard to
-   test".
+3. **Accept it knowingly** — with the installed plugin's named writer task
+   (`pitestSplBaselineUpdate`/`Union`/`Prune`/`Rebase`; `hardeningHelp` lists
+   which does what) and record the reason under "Triaged equivalent mutants"
+   below. Acceptance is for mutants *equivalent with respect to observable
+   behavior*, not for "hard to test". Never hand-edit record structure or
+   provenance stamps, and run `-PnoMutationHistory` before any record decision.
 
-Line numbers are part of the baseline key, so unrelated edits to a mutated file
-shift entries: pure line drift — every new row a same-status shift of a stale
-one, populations unchanged — passes on its own with a notice (sava-build
-21.5.9); anything mixed in still fails and is triage first, refresh after.
-Duplicate rows are sibling mutants of one compound condition and the comparison
-is a **multiset** — never hand-dedupe the file.
+Baseline keys are **line-less**, so editing above a mutated method churns
+nothing and the `# line` tags are review metadata rather than anchors; source
+movement alone never warns or requires re-anchoring. Duplicate rows are sibling
+mutants of one compound condition and the comparison is a **multiset** — never
+hand-dedupe the file.
 
 ## Suite
 

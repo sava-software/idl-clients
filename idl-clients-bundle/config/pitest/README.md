@@ -3,8 +3,10 @@
 Each `pitest<Suite>` run is finalized by `pitest<Suite>Verify`, which diffs the
 run's unkilled mutants (`SURVIVED` and `NO_COVERAGE`) against the accepted
 baseline in `<suite>-accepted.csv` and **fails on anything new**. Baseline row
-format: `class,method,line,mutator,status`. The canonical policy is sava-build's
-`HARDENING.md`; this file records what is accepted *here* and why.
+format: `class,method,mutator,STATUS`, followed by a `# family` label and a
+diagnostic `# line` tag. The canonical policy is sava-build's `HARDENING.md`,
+and `hardeningHelp` is the installed-version task reference; this file records
+what is accepted *here* and why.
 
 A new unkilled mutant has exactly three legal outcomes:
 
@@ -12,16 +14,19 @@ A new unkilled mutant has exactly three legal outcomes:
    mutant breaks (an overflow guard rejecting, a quote's rounding direction, the
    entry a price chain resolves to) over restating the implementation.
 2. **Refactor** — restructure so the mutant cannot exist.
-3. **Accept it knowingly** — re-run with `-PupdateMutationBaseline` and record
-   the reason under "Triaged equivalent mutants" below. Acceptance is for
-   mutants *equivalent with respect to observable behavior*, not for "hard to
-   test".
+3. **Accept it knowingly** — with the installed plugin's named writer task
+   (`pitest<Suite>BaselineUpdate`/`Union`/`Prune`/`Rebase`; `hardeningHelp`
+   lists which does what) and record the reason under "Triaged equivalent
+   mutants" below. Acceptance is for mutants *equivalent with respect to
+   observable behavior*, not for "hard to test". Never hand-edit record
+   structure or provenance stamps, and run `-PnoMutationHistory` before any
+   record decision.
 
-Line numbers are part of the baseline key, so unrelated edits to a mutated file
-shift entries: the verify task then reports both stale and "new" rows. Confirm
-the new rows are the shifted old ones, then refresh with
-`-PupdateMutationBaseline`. Baseline rows are deduplicated by key, so a suite's
-row count is at or below the mutant count its report prints.
+Baseline keys are **line-less**, so editing above a mutated method churns
+nothing and the `# line` tags are review metadata rather than anchors; source
+movement alone never warns or requires re-anchoring. Rows are compared as a
+**multiset**, so sibling mutants of one compound condition each count — never
+hand-dedupe the file.
 
 ## Suites
 
@@ -321,9 +326,9 @@ each returned builder).
 
 The 2026-07-23 rows fold in two sava-build 21.5.9 effects at once: the
 `EXPERIMENTAL_NAKED_RECEIVER` intake (above), and the ratchet's comparison
-tightening from unique-row to **multiset** — sibling mutants sharing a
-`class,method,line,mutator` key are now counted, so 11 pre-existing survivors
-the unique comparison had collapsed became visible rows (7 `scope`
+tightening from unique-row to **multiset** — sibling mutants sharing a baseline
+key are now counted, so 11 pre-existing survivors that the unique comparison had
+collapsed became visible rows (7 `scope`
 equals/hashCode siblings, 2 `orca` line-663 siblings, 2 `clients`). They are
 annotated in the CSVs and folded into their families below — surfaced debt,
 not new mutants.
