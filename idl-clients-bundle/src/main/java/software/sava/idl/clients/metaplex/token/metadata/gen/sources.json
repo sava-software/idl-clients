@@ -1,5 +1,6 @@
 {
   "deployed": "vcs",
+  "lastDeploySlot": 380725176,
   "channels": {
     "vcs": {
       "origin": "github:metaplex-foundation/mpl-token-metadata@main/idls/token_metadata.json",

@@ -1,5 +1,6 @@
 {
   "deployed": "vcs",
+  "lastDeploySlot": 345635788,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-foundation/solana-attestation-service/refs/heads/master/idl/solana_attestation_service.json",

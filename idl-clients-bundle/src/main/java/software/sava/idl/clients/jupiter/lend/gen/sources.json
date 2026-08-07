@@ -1,5 +1,6 @@
 {
   "deployed": "vcs",
+  "lastDeploySlot": 430476341,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json",

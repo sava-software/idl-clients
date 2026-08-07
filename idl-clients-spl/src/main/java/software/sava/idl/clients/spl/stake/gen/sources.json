@@ -1,5 +1,6 @@
 {
   "deployed": null,
+  "lastDeploySlot": 427248000,
   "channels": {
     "vcs": {
       "origin": "github:solana-program/stake@main/idl.json",

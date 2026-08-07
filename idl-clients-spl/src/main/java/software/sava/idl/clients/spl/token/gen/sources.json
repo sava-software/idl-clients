@@ -1,5 +1,6 @@
 {
   "deployed": "vcs",
+  "lastDeploySlot": 419472000,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/idl.json",

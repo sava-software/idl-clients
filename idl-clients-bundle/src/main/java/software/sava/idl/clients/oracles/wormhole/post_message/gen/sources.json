@@ -1,5 +1,6 @@
 {
   "deployed": "vcs",
+  "lastDeploySlot": 332193784,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_post_message_shim.json",
