@@ -499,15 +499,15 @@ than being silently skipped. Reachability decides which to run, not file paths:
 editing an API also owes any suite — including one in a dependent module —
 whose mutated code calls it. Doc and build-script changes owe no suite.
 
-**Measured 2026-08-06 on sava-build 21.5.24** (re-measure rather than trust this
-line; PIT engine time, one suite at a time):
+**Measured 2026-08-07 by `hardeningCertify` on sava-build 21.5.25** (re-measure
+rather than trust this line; PIT engine time, one suite at a time):
 
 | suite | detected | survived | timed out | accepted rows | engine |
 |---|---|---|---|---|---|
-| `spl` | 824/828 (99%) | 4 | 0 | 4 | 20s |
+| `spl` | 826/830 (99%) | 4 | 0 | 4 | 27s |
 | `orca` | 596/634 (94%) | 38 | 1 (audited) | 38 | 19s |
-| `scope` | 298/335 (88%) | 37 | 0 | 37 | 20s |
-| `clients` | 1570/1603 (97%) | 33 | 0 | 33 | 51s |
+| `scope` | 300/337 (89%) | 37 | 0 | 37 | 19s |
+| `clients` | 1586/1621 (97%) | 35 | 0 | 35 | 43s |
 
 Every accepted row matches a mutant in the current population — the baselines
 carry no stale rows.
