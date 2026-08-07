@@ -516,6 +516,18 @@ carry no stale rows.
 `agentsTemplateInSync` but no mutation suite. `hardeningCertify` and a local
 `fuzzAll` are therefore release-checklist items here, not CI's.
 
+**What `agentsTemplateInSync` actually proves** — measured 2026-08-07 on
+sava-build 21.5.25; re-check on a plugin bump rather than trusting this line.
+It compares only the `<!-- hardening-template sha256:… -->` marker against the
+installed plugin's digest. It passed with one rule reworded to state its own
+opposite, and passed again with the entire template body deleted; it fails only
+when the digest itself is wrong, and the marker's position relative to the block
+does not matter. So adopting a template change means diffing the body against
+`hardeningAgentTemplate` output by hand: **bumping the marker is not the
+adoption, and CI cannot tell the two apart.** Capture the previous version's
+output before changing the pin — that is the only clean "before" side of the
+diff once the plugin is gone from the build.
+
 **ArcMutate is active.** A root `arcmutate-licence.txt` (**tracked** — a
 `!/arcmutate-licence.txt` re-include in `.gitignore` keeps it in the tree on
 purpose, so CI and anyone who clones can run the suites without a secret. It is
@@ -524,10 +536,12 @@ nothing, and is not a credential — leave it committed) puts
 `com.arcmutate:base` on the PIT toolchain for all four suites, so the licensed
 mutant population differs from the unlicensed one — three loop-exit
 `RemoveConditionalMutator_ORDER_IF` mutants that used to time out are no longer
-generated at all. The licence sha and expiry are bound into each suite's
-`config/pitest/<suite>-pitest-toolchain.tsv`. Result-reuse history is not in
-play today (no `.hist` file exists), but every record decision still runs
-`-PnoMutationHistory`.
+generated at all. The licence sha and expiry (**2027-08-15**) are bound into
+each suite's `config/pitest/<suite>-pitest-toolchain.tsv`, so renewing or
+replacing the certificate moves the provenance stamp in all four suites at
+once — it is a toolchain transition, not a file swap. Result-reuse history is
+not in play today (no `.hist` file exists), but every record decision still
+runs `-PnoMutationHistory`.
 
 **Baseline provenance.** All four baselines were rebased onto 21.5.24 on
 2026-08-06 (`pitest<Suite>BaselineRebase`), which is what bound the PIT version
