@@ -2,6 +2,15 @@
 
 Guidance for AI coding agents (and humans) working in this repository.
 
+## Commit messages
+
+Conventional commits, written for **users of this library** — what changed for a
+caller and why — not for the people developing it. Never append tool-specific
+trailers of any kind: no `Claude-Session:`, no `Co-Authored-By:` for an assistant,
+no generator footers. The log is a consumer-facing changelog, and with
+`always-bump-patch` versioning it is the only place a breaking change is
+announced, so keep it free of noise that is about how the work was done.
+
 ## What this repository is
 
 This repo makes it easy to interact with on-chain Solana programs from Java —
@@ -466,8 +475,11 @@ carry no stale rows.
 `agentsTemplateInSync` but no mutation suite. `hardeningCertify` and a local
 `fuzzAll` are therefore release-checklist items here, not CI's.
 
-**ArcMutate is active.** A root `arcmutate-licence.txt` (untracked, whitelisted
-in `.gitignore`; the packages it licences are `software.sava.*`) puts
+**ArcMutate is active.** A root `arcmutate-licence.txt` (**tracked** — a
+`!/arcmutate-licence.txt` re-include in `.gitignore` keeps it in the tree on
+purpose, so CI and anyone who clones can run the suites without a secret. It is
+an `OSSS` open-source licence scoped to `software.sava.*`, grants access to
+nothing, and is not a credential — leave it committed) puts
 `com.arcmutate:base` on the PIT toolchain for all four suites, so the licensed
 mutant population differs from the unlicensed one — three loop-exit
 `RemoveConditionalMutator_ORDER_IF` mutants that used to time out are no longer
