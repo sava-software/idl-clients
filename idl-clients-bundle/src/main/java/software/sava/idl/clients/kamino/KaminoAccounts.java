@@ -15,6 +15,8 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
@@ -54,9 +56,8 @@ public interface KaminoAccounts {
 
     final var hubbleScopeFeedAccounts = ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED;
     final var kaminoScopeFeedAccounts = ScopeFeedAccounts.SCOPE_MAINNET_KLEND_FEED;
-    final var scopeFeeds = Map.of(
-        hubbleScopeFeedAccounts.oraclePrices(), hubbleScopeFeedAccounts,
-        kaminoScopeFeedAccounts.oraclePrices(), kaminoScopeFeedAccounts
+    final var scopeFeeds = ScopeFeedAccounts.MAINNET_FEEDS.stream().collect(
+        Collectors.toUnmodifiableMap(ScopeFeedAccounts::oraclePrices, Function.identity())
     );
 
     return new KaminoAccountsRecord(
@@ -372,5 +373,18 @@ public interface KaminoAccounts {
     return scopeFeedConfiguration(feedName, scopePricesProgram());
   }
 
+  /// The scope feed whose oracle-prices account is `priceFeed` — the key a reserve stores
+  /// in `config.tokenInfo.scopeConfiguration.priceFeed`, and the account klend checks the
+  /// passed `scopePrices` against.
+  ///
+  /// Covers every feed on mainnet ([ScopeFeedAccounts#MAINNET_FEEDS]), not only the two the
+  /// scope SDK names. Returns null for anything else, including the null sentinel and the
+  /// default key a reserve carries when its scope feed is disabled — around a fifth of live
+  /// reserves — so callers must handle a null rather than treat it as a lookup failure.
+  ///
+  /// A handful of reserves store a scope *configuration* address here instead of an
+  /// oracle-prices one. That is upstream configuration, not a gap in this map: klend only
+  /// checks the key matches and then parses the account as `OraclePrices`, so those feeds
+  /// cannot refresh at all.
   ScopeFeedAccounts scopeFeed(final PublicKey priceFeed);
 }

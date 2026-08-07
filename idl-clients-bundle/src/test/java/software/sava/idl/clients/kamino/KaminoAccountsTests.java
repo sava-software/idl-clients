@@ -6,6 +6,7 @@ import software.sava.idl.clients.kamino.scope.ScopeFeedAccounts;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -116,6 +117,45 @@ final class KaminoAccountsTests {
     assertEquals(klend, ACCOUNTS.scopeFeed(klend.oraclePrices()));
     // keyed by oraclePrices, so an unrelated key resolves to nothing
     assertNull(ACCOUNTS.scopeFeed(MARKET));
+
+    // every mainnet feed resolves, not only the two the scope SDK names: five live klend
+    // reserves point at the third feed, which used to come back null
+    for (final var feed : ScopeFeedAccounts.MAINNET_FEEDS) {
+      assertEquals(feed, ACCOUNTS.scopeFeed(feed.oraclePrices()), feed.oraclePrices().toBase58());
+    }
+    assertEquals(
+        ScopeFeedAccounts.SCOPE_MAINNET_THIRD_FEED,
+        ACCOUNTS.scopeFeed(PublicKey.fromBase58Encoded("82tcZDwUSGnmekst8cU4TCgQ4KLFGdtgbVkekHeibN7V")));
+
+    // the map is keyed on the prices account; the mappings and configuration are distinct
+    // accounts and must not be usable as keys
+    for (final var feed : ScopeFeedAccounts.MAINNET_FEEDS) {
+      assertNull(ACCOUNTS.scopeFeed(feed.oracleMappings()));
+      assertNull(ACCOUNTS.scopeFeed(feed.configuration()));
+    }
+
+    // four feeds, twelve distinct accounts
+    assertEquals(4, ScopeFeedAccounts.MAINNET_FEEDS.size());
+    assertEquals(12, ScopeFeedAccounts.MAINNET_FEEDS.stream()
+        .flatMap(feed -> Stream.of(feed.oraclePrices(), feed.oracleMappings(), feed.configuration()))
+        .distinct().count());
+  }
+
+  /// The two feeds whose names the scope SDK publishes are reachable from the name alone,
+  /// which is what `["conf", name]` claims — and is the reason the other two, whose names
+  /// are not published, have to be enumerated instead of derived.
+  @Test
+  void namedScopeFeedConfigurationsDeriveFromTheirFeedName() {
+    assertEquals(
+        ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED.configuration(),
+        ACCOUNTS.scopeFeedConfiguration("hubble").publicKey());
+    assertEquals(
+        ScopeFeedAccounts.SCOPE_MAINNET_KLEND_FEED.configuration(),
+        ACCOUNTS.scopeFeedConfiguration("klend").publicKey());
+
+    assertNotEquals(
+        ScopeFeedAccounts.SCOPE_MAINNET_HUBBLE_FEED.configuration(),
+        ACCOUNTS.scopeFeedConfiguration("klend").publicKey());
   }
 
   // ---------------------------------------------------------------------------

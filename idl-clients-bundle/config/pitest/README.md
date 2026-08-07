@@ -809,6 +809,37 @@ that validates each group against the bank it describes, so a miscount throws at
 build time with the expected and actual counts rather than surfacing as an opaque
 on-chain error.
 
+#### klend: the scope feed map covered two of four live feeds (2026-08-06)
+
+`KaminoAccounts.scopeFeed(priceFeed)` was built from the two feeds the scope SDK
+publishes, `hubble` and `klend`, so it returned null for any reserve pointing
+elsewhere. Surveying all 558 live klend reserves' `scopeConfiguration.priceFeed`:
+
+| feed | reserves |
+|---|---|
+| `3NJYftD5…` (hubble) | 227 |
+| `3t4JZcue…` (klend) | 221 |
+| `nu111…` / all-zero (disabled) | 103 |
+| `82tcZDwU…` | 5 |
+| `575gnsnE…` | 2 |
+
+`82tcZDwU…` is a real third feed the SDK does not list. The scope program owns
+exactly four `Configuration` accounts, so all four are now enumerated in
+`ScopeFeedAccounts.MAINNET_FEEDS` and the map is built from that list — the
+lookup is total for mainnet rather than a subset.
+
+They have to be enumerated because they cannot be derived: the `Configuration`
+PDA seeds on the feed's *name* (`["conf", name]`), which the reserve does not
+carry. `hubble` and `klend` do reproduce their configurations from their names,
+which is now pinned as a test — and is exactly why the other two, whose names
+upstream does not publish, are constants read off chain instead.
+
+`575gnsnE…` is not a gap here: it is the *configuration* account of the third
+feed, sitting in a slot that wants an oracle-prices account. klend only checks
+the passed key equals `price_feed` and then parses it as `OraclePrices`, so those
+two reserves cannot refresh at all. Upstream configuration, recorded so the null
+is not mistaken for a missing entry.
+
 #### klend: two remaining-accounts contracts documented wrong (2026-08-06)
 
 Re-reading the handlers against the helper's javadoc turned up two entries that
