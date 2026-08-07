@@ -10,33 +10,41 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public record NettingCompleted(Discriminator discriminator, long timestamp, PublicKey bundleAccountKey) implements NtbundleEvent {
+public record ReferrerRegistered(Discriminator discriminator,
+                                 PublicKey referrer,
+                                 PublicKey bundleAccountKey,
+                                 long timestamp) implements NtbundleEvent {
 
-  public static final int BYTES = 48;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(176, 162, 4, 24, 91, 47, 115, 81);
+  public static final int BYTES = 80;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(106, 198, 28, 51, 115, 46, 57, 3);
 
-  public static final int TIMESTAMP_OFFSET = 8;
-  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 16;
+  public static final int REFERRER_OFFSET = 8;
+  public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 40;
+  public static final int TIMESTAMP_OFFSET = 72;
 
-  public static NettingCompleted read(final byte[] _data, final int _offset) {
+  public static ReferrerRegistered read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
     final var discriminator = createAnchorDiscriminator(_data, _offset);
     int i = _offset + discriminator.length();
-    final var timestamp = getInt64LE(_data, i);
-    i += 8;
+    final var referrer = readPubKey(_data, i);
+    i += 32;
     final var bundleAccountKey = readPubKey(_data, i);
-    return new NettingCompleted(discriminator, timestamp, bundleAccountKey);
+    i += 32;
+    final var timestamp = getInt64LE(_data, i);
+    return new ReferrerRegistered(discriminator, referrer, bundleAccountKey, timestamp);
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     int i = _offset + discriminator.write(_data, _offset);
-    putInt64LE(_data, i, timestamp);
-    i += 8;
+    referrer.write(_data, i);
+    i += 32;
     bundleAccountKey.write(_data, i);
     i += 32;
+    putInt64LE(_data, i, timestamp);
+    i += 8;
     return i - _offset;
   }
 

@@ -15,6 +15,7 @@ import java.util.List;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
+import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
 import static software.sava.core.encoding.ByteUtil.getFloat32LE;
@@ -272,6 +273,158 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.write(_data, _offset);
       newManager.write(_data, i);
       i += 32;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CLEAR_USER_FEE_OVERRIDE_DISCRIMINATOR = toDiscriminator(97, 227, 92, 191, 205, 0, 154, 77);
+
+  public static List<AccountMeta> clearUserFeeOverrideKeys(final PublicKey managerKey,
+                                                           final PublicKey userBundleAccountOwnerKey,
+                                                           final PublicKey userBundleAccountKey,
+                                                           final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userBundleAccountKey),
+      createRead(bundleAccountKey)
+    );
+  }
+
+  /// @param clearMask: u8
+  public static Instruction clearUserFeeOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                 final PublicKey managerKey,
+                                                 final PublicKey userBundleAccountOwnerKey,
+                                                 final PublicKey userBundleAccountKey,
+                                                 final PublicKey bundleAccountKey,
+                                                 final int clearMask) {
+    final var keys = clearUserFeeOverrideKeys(
+      managerKey,
+      userBundleAccountOwnerKey,
+      userBundleAccountKey,
+      bundleAccountKey
+    );
+    return clearUserFeeOverride(invokedNtbundleProgramMeta, keys, clearMask);
+  }
+
+  /// @param clearMask: u8
+  public static Instruction clearUserFeeOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                 final List<AccountMeta> keys,
+                                                 final int clearMask) {
+    final byte[] _data = new byte[9];
+    int i = CLEAR_USER_FEE_OVERRIDE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) clearMask;
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param clearMask: u8
+  public record ClearUserFeeOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {  
+
+    public static ClearUserFeeOverrideIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int CLEAR_MASK_OFFSET = 8;
+
+    public static ClearUserFeeOverrideIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var clearMask = _data[i] & 0xFF;
+      return new ClearUserFeeOverrideIxData(discriminator, clearMask);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) clearMask;
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator CLEAR_USER_WITHDRAWAL_TIMING_OVERRIDE_DISCRIMINATOR = toDiscriminator(203, 96, 230, 216, 217, 104, 244, 74);
+
+  public static List<AccountMeta> clearUserWithdrawalTimingOverrideKeys(final PublicKey managerKey,
+                                                                        final PublicKey userBundleAccountOwnerKey,
+                                                                        final PublicKey userBundleAccountKey,
+                                                                        final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userBundleAccountKey),
+      createRead(bundleAccountKey)
+    );
+  }
+
+  /// @param clearMask: u8
+  public static Instruction clearUserWithdrawalTimingOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                              final PublicKey managerKey,
+                                                              final PublicKey userBundleAccountOwnerKey,
+                                                              final PublicKey userBundleAccountKey,
+                                                              final PublicKey bundleAccountKey,
+                                                              final int clearMask) {
+    final var keys = clearUserWithdrawalTimingOverrideKeys(
+      managerKey,
+      userBundleAccountOwnerKey,
+      userBundleAccountKey,
+      bundleAccountKey
+    );
+    return clearUserWithdrawalTimingOverride(invokedNtbundleProgramMeta, keys, clearMask);
+  }
+
+  /// @param clearMask: u8
+  public static Instruction clearUserWithdrawalTimingOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                              final List<AccountMeta> keys,
+                                                              final int clearMask) {
+    final byte[] _data = new byte[9];
+    int i = CLEAR_USER_WITHDRAWAL_TIMING_OVERRIDE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) clearMask;
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param clearMask: u8
+  public record ClearUserWithdrawalTimingOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {  
+
+    public static ClearUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int CLEAR_MASK_OFFSET = 8;
+
+    public static ClearUserWithdrawalTimingOverrideIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var clearMask = _data[i] & 0xFF;
+      return new ClearUserWithdrawalTimingOverrideIxData(discriminator, clearMask);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) clearMask;
+      ++i;
       return i - _offset;
     }
 
@@ -931,6 +1084,114 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, MANAGER_WITHDRAW_DISCRIMINATOR);
   }
 
+  public static final Discriminator MANAGER_WITHDRAW_WITH_SPLIT_DISCRIMINATOR = toDiscriminator(225, 117, 84, 162, 37, 169, 153, 89);
+
+  public static List<AccountMeta> managerWithdrawWithSplitKeys(final PublicKey managerKey,
+                                                               final PublicKey managerTokenAccountKey,
+                                                               final PublicKey partnerTokenAccountKey,
+                                                               final PublicKey assetAddressKey,
+                                                               final PublicKey bundleAssetAccountKey,
+                                                               final PublicKey bundleAccountKey,
+                                                               final PublicKey oracleDataKey,
+                                                               final PublicKey bundleAssetAuthorityKey,
+                                                               final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(managerTokenAccountKey),
+      createWrite(partnerTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  /// @param partnerPfeeBps: u32
+  /// @param partnerMfeeBps: u32
+  public static Instruction managerWithdrawWithSplit(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final PublicKey managerKey,
+                                                     final PublicKey managerTokenAccountKey,
+                                                     final PublicKey partnerTokenAccountKey,
+                                                     final PublicKey assetAddressKey,
+                                                     final PublicKey bundleAssetAccountKey,
+                                                     final PublicKey bundleAccountKey,
+                                                     final PublicKey oracleDataKey,
+                                                     final PublicKey bundleAssetAuthorityKey,
+                                                     final PublicKey tokenProgramKey,
+                                                     final long partnerPfeeBps,
+                                                     final long partnerMfeeBps) {
+    final var keys = managerWithdrawWithSplitKeys(
+      managerKey,
+      managerTokenAccountKey,
+      partnerTokenAccountKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleAssetAuthorityKey,
+      tokenProgramKey
+    );
+    return managerWithdrawWithSplit(invokedNtbundleProgramMeta, keys, partnerPfeeBps, partnerMfeeBps);
+  }
+
+  /// @param partnerPfeeBps: u32
+  /// @param partnerMfeeBps: u32
+  public static Instruction managerWithdrawWithSplit(final AccountMeta invokedNtbundleProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final long partnerPfeeBps,
+                                                     final long partnerMfeeBps) {
+    final byte[] _data = new byte[16];
+    int i = MANAGER_WITHDRAW_WITH_SPLIT_DISCRIMINATOR.write(_data, 0);
+    putInt32LE(_data, i, (int) partnerPfeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) partnerMfeeBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param partnerPfeeBps: u32
+  /// @param partnerMfeeBps: u32
+  public record ManagerWithdrawWithSplitIxData(Discriminator discriminator, long partnerPfeeBps, long partnerMfeeBps) implements SerDe {  
+
+    public static ManagerWithdrawWithSplitIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 16;
+
+    public static final int PARTNER_PFEE_BPS_OFFSET = 8;
+    public static final int PARTNER_MFEE_BPS_OFFSET = 12;
+
+    public static ManagerWithdrawWithSplitIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var partnerPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var partnerMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new ManagerWithdrawWithSplitIxData(discriminator, partnerPfeeBps, partnerMfeeBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt32LE(_data, i, (int) partnerPfeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) partnerMfeeBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
   public static final Discriminator NET_PENDING_TRANSACTIONS_DISCRIMINATOR = toDiscriminator(44, 219, 50, 19, 246, 252, 37, 163);
 
   public static List<AccountMeta> netPendingTransactionsKeys(final PublicKey keeperKey,
@@ -1230,6 +1491,164 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_DEPOSIT_DISCRIMINATOR);
   }
 
+  public static final Discriminator PROCESS_REFERRER_WITHDRAWAL_DISCRIMINATOR = toDiscriminator(78, 133, 153, 202, 251, 151, 146, 227);
+
+  public static List<AccountMeta> processReferrerWithdrawalKeys(final PublicKey keeperKey,
+                                                                final PublicKey referrerKey,
+                                                                final PublicKey referrerTokenAccountKey,
+                                                                final PublicKey assetAddressKey,
+                                                                final PublicKey bundleAssetAccountKey,
+                                                                final PublicKey bundleAccountKey,
+                                                                final PublicKey oracleDataKey,
+                                                                final PublicKey bundleTempDataKey,
+                                                                final PublicKey bundleAssetAuthorityKey,
+                                                                final PublicKey referrerAccountKey,
+                                                                final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createRead(referrerKey),
+      createWrite(referrerTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(bundleAssetAccountKey),
+      createWrite(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleTempDataKey),
+      createWrite(bundleAssetAuthorityKey),
+      createWrite(referrerAccountKey),
+      createRead(tokenProgramKey)
+    );
+  }
+
+  public static Instruction processReferrerWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                                      final PublicKey keeperKey,
+                                                      final PublicKey referrerKey,
+                                                      final PublicKey referrerTokenAccountKey,
+                                                      final PublicKey assetAddressKey,
+                                                      final PublicKey bundleAssetAccountKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey oracleDataKey,
+                                                      final PublicKey bundleTempDataKey,
+                                                      final PublicKey bundleAssetAuthorityKey,
+                                                      final PublicKey referrerAccountKey,
+                                                      final PublicKey tokenProgramKey) {
+    final var keys = processReferrerWithdrawalKeys(
+      keeperKey,
+      referrerKey,
+      referrerTokenAccountKey,
+      assetAddressKey,
+      bundleAssetAccountKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleTempDataKey,
+      bundleAssetAuthorityKey,
+      referrerAccountKey,
+      tokenProgramKey
+    );
+    return processReferrerWithdrawal(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction processReferrerWithdrawal(final AccountMeta invokedNtbundleProgramMeta,
+                                                      final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_REFERRER_WITHDRAWAL_DISCRIMINATOR);
+  }
+
+  public static final Discriminator PROCESS_SWITCH_DISCRIMINATOR = toDiscriminator(186, 170, 0, 66, 104, 81, 57, 195);
+
+  public static List<AccountMeta> processSwitchKeys(final SolanaAccounts solanaAccounts,
+                                                    final PublicKey keeperKey,
+                                                    final PublicKey userBundleAccountOwnerKey,
+                                                    final PublicKey userTokenAccountKey,
+                                                    final PublicKey assetAddressKey,
+                                                    final PublicKey sourceBundleAssetAccountKey,
+                                                    final PublicKey sourceUserBundleAccountKey,
+                                                    final PublicKey sourceTreasuryAccountKey,
+                                                    final PublicKey sourceBundleAssetAuthorityKey,
+                                                    final PublicKey sourceBundleAccountKey,
+                                                    final PublicKey sourceBundleTempDataKey,
+                                                    final PublicKey sourceOracleDataKey,
+                                                    final PublicKey targetBundleAccountKey,
+                                                    final PublicKey targetUserBundleAccountKey,
+                                                    final PublicKey targetBundleTempDataKey,
+                                                    final PublicKey targetPendingDepositTokenAccountKey,
+                                                    final PublicKey targetPendingBundleAssetAuthorityKey,
+                                                    final PublicKey targetOracleDataKey,
+                                                    final PublicKey targetTreasuryAccountKey,
+                                                    final PublicKey tokenProgramKey) {
+    return List.of(
+      createWritableSigner(keeperKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userTokenAccountKey),
+      createWrite(assetAddressKey),
+      createWrite(sourceBundleAssetAccountKey),
+      createWrite(sourceUserBundleAccountKey),
+      createWrite(sourceTreasuryAccountKey),
+      createWrite(sourceBundleAssetAuthorityKey),
+      createWrite(sourceBundleAccountKey),
+      createWrite(sourceBundleTempDataKey),
+      createWrite(sourceOracleDataKey),
+      createRead(targetBundleAccountKey),
+      createWrite(targetUserBundleAccountKey),
+      createWrite(targetBundleTempDataKey),
+      createWrite(targetPendingDepositTokenAccountKey),
+      createRead(targetPendingBundleAssetAuthorityKey),
+      createRead(targetOracleDataKey),
+      createWrite(targetTreasuryAccountKey),
+      createRead(tokenProgramKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction processSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                          final SolanaAccounts solanaAccounts,
+                                          final PublicKey keeperKey,
+                                          final PublicKey userBundleAccountOwnerKey,
+                                          final PublicKey userTokenAccountKey,
+                                          final PublicKey assetAddressKey,
+                                          final PublicKey sourceBundleAssetAccountKey,
+                                          final PublicKey sourceUserBundleAccountKey,
+                                          final PublicKey sourceTreasuryAccountKey,
+                                          final PublicKey sourceBundleAssetAuthorityKey,
+                                          final PublicKey sourceBundleAccountKey,
+                                          final PublicKey sourceBundleTempDataKey,
+                                          final PublicKey sourceOracleDataKey,
+                                          final PublicKey targetBundleAccountKey,
+                                          final PublicKey targetUserBundleAccountKey,
+                                          final PublicKey targetBundleTempDataKey,
+                                          final PublicKey targetPendingDepositTokenAccountKey,
+                                          final PublicKey targetPendingBundleAssetAuthorityKey,
+                                          final PublicKey targetOracleDataKey,
+                                          final PublicKey targetTreasuryAccountKey,
+                                          final PublicKey tokenProgramKey) {
+    final var keys = processSwitchKeys(
+      solanaAccounts,
+      keeperKey,
+      userBundleAccountOwnerKey,
+      userTokenAccountKey,
+      assetAddressKey,
+      sourceBundleAssetAccountKey,
+      sourceUserBundleAccountKey,
+      sourceTreasuryAccountKey,
+      sourceBundleAssetAuthorityKey,
+      sourceBundleAccountKey,
+      sourceBundleTempDataKey,
+      sourceOracleDataKey,
+      targetBundleAccountKey,
+      targetUserBundleAccountKey,
+      targetBundleTempDataKey,
+      targetPendingDepositTokenAccountKey,
+      targetPendingBundleAssetAuthorityKey,
+      targetOracleDataKey,
+      targetTreasuryAccountKey,
+      tokenProgramKey
+    );
+    return processSwitch(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction processSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                          final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_SWITCH_DISCRIMINATOR);
+  }
+
   public static final Discriminator PROCESS_WITHDRAWAL_DISCRIMINATOR = toDiscriminator(51, 97, 236, 17, 37, 33, 196, 64);
 
   public static List<AccountMeta> processWithdrawalKeys(final SolanaAccounts solanaAccounts,
@@ -1303,6 +1722,43 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, PROCESS_WITHDRAWAL_DISCRIMINATOR);
   }
 
+  public static final Discriminator REFERRER_REQUEST_WITHDRAW_DISCRIMINATOR = toDiscriminator(14, 246, 94, 153, 127, 117, 147, 31);
+
+  public static List<AccountMeta> referrerRequestWithdrawKeys(final PublicKey referrerKey,
+                                                              final PublicKey bundleAccountKey,
+                                                              final PublicKey oracleDataKey,
+                                                              final PublicKey bundleTempDataKey,
+                                                              final PublicKey referrerAccountKey) {
+    return List.of(
+      createWritableSigner(referrerKey),
+      createRead(bundleAccountKey),
+      createWrite(oracleDataKey),
+      createWrite(bundleTempDataKey),
+      createWrite(referrerAccountKey)
+    );
+  }
+
+  public static Instruction referrerRequestWithdraw(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final PublicKey referrerKey,
+                                                    final PublicKey bundleAccountKey,
+                                                    final PublicKey oracleDataKey,
+                                                    final PublicKey bundleTempDataKey,
+                                                    final PublicKey referrerAccountKey) {
+    final var keys = referrerRequestWithdrawKeys(
+      referrerKey,
+      bundleAccountKey,
+      oracleDataKey,
+      bundleTempDataKey,
+      referrerAccountKey
+    );
+    return referrerRequestWithdraw(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction referrerRequestWithdraw(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REFERRER_REQUEST_WITHDRAW_DISCRIMINATOR);
+  }
+
   public static final Discriminator REFUND_DEPOSIT_DISCRIMINATOR = toDiscriminator(19, 19, 78, 50, 187, 10, 162, 229);
 
   /// @param userBundleAccountOwnerKey the owner of the pending request (for event purposes).
@@ -1366,6 +1822,43 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REFUND_DEPOSIT_DISCRIMINATOR);
   }
 
+  public static final Discriminator REGISTER_REFERRER_DISCRIMINATOR = toDiscriminator(122, 229, 215, 169, 100, 145, 198, 120);
+
+  public static List<AccountMeta> registerReferrerKeys(final SolanaAccounts solanaAccounts,
+                                                       final PublicKey referrerKey,
+                                                       final PublicKey referrerAccountKey,
+                                                       final PublicKey bundleAccountKey,
+                                                       final PublicKey referrerUserBundleAccountKey) {
+    return List.of(
+      createWritableSigner(referrerKey),
+      createWrite(referrerAccountKey),
+      createRead(bundleAccountKey),
+      createRead(referrerUserBundleAccountKey),
+      createRead(solanaAccounts.systemProgram())
+    );
+  }
+
+  public static Instruction registerReferrer(final AccountMeta invokedNtbundleProgramMeta,
+                                             final SolanaAccounts solanaAccounts,
+                                             final PublicKey referrerKey,
+                                             final PublicKey referrerAccountKey,
+                                             final PublicKey bundleAccountKey,
+                                             final PublicKey referrerUserBundleAccountKey) {
+    final var keys = registerReferrerKeys(
+      solanaAccounts,
+      referrerKey,
+      referrerAccountKey,
+      bundleAccountKey,
+      referrerUserBundleAccountKey
+    );
+    return registerReferrer(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction registerReferrer(final AccountMeta invokedNtbundleProgramMeta,
+                                             final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REGISTER_REFERRER_DISCRIMINATOR);
+  }
+
   public static final Discriminator REMOVE_STRATEGY_DISCRIMINATOR = toDiscriminator(185, 238, 33, 91, 134, 210, 97, 26);
 
   public static List<AccountMeta> removeStrategyKeys(final SolanaAccounts solanaAccounts,
@@ -1401,6 +1894,100 @@ public final class NtbundleProgram {
   public static Instruction removeStrategy(final AccountMeta invokedNtbundleProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, REMOVE_STRATEGY_DISCRIMINATOR);
+  }
+
+  public static final Discriminator REQUEST_BUNDLE_SWITCH_DISCRIMINATOR = toDiscriminator(66, 9, 104, 111, 227, 251, 51, 176);
+
+  public static List<AccountMeta> requestBundleSwitchKeys(final SolanaAccounts solanaAccounts,
+                                                          final PublicKey withdrawalRequestUserKey,
+                                                          final PublicKey withdrawalRequestUserBundleAccountKey,
+                                                          final PublicKey withdrawalRequestBundleAccountKey,
+                                                          final PublicKey withdrawalRequestOracleDataKey,
+                                                          final PublicKey withdrawalRequestBundleTempDataKey,
+                                                          final PublicKey withdrawalRequestTokenProgramKey,
+                                                          final PublicKey targetBundleAccountKey,
+                                                          final PublicKey targetUserBundleAccountKey) {
+    return List.of(
+      createWritableSigner(withdrawalRequestUserKey),
+      createWrite(withdrawalRequestUserBundleAccountKey),
+      createWrite(withdrawalRequestBundleAccountKey),
+      createWrite(withdrawalRequestOracleDataKey),
+      createWrite(withdrawalRequestBundleTempDataKey),
+      createRead(withdrawalRequestTokenProgramKey),
+      createRead(solanaAccounts.systemProgram()),
+      createRead(solanaAccounts.rentSysVar()),
+      createRead(targetBundleAccountKey),
+      createRead(targetUserBundleAccountKey)
+    );
+  }
+
+  public static Instruction requestBundleSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                                final SolanaAccounts solanaAccounts,
+                                                final PublicKey withdrawalRequestUserKey,
+                                                final PublicKey withdrawalRequestUserBundleAccountKey,
+                                                final PublicKey withdrawalRequestBundleAccountKey,
+                                                final PublicKey withdrawalRequestOracleDataKey,
+                                                final PublicKey withdrawalRequestBundleTempDataKey,
+                                                final PublicKey withdrawalRequestTokenProgramKey,
+                                                final PublicKey targetBundleAccountKey,
+                                                final PublicKey targetUserBundleAccountKey,
+                                                final BigInteger sharesAmount) {
+    final var keys = requestBundleSwitchKeys(
+      solanaAccounts,
+      withdrawalRequestUserKey,
+      withdrawalRequestUserBundleAccountKey,
+      withdrawalRequestBundleAccountKey,
+      withdrawalRequestOracleDataKey,
+      withdrawalRequestBundleTempDataKey,
+      withdrawalRequestTokenProgramKey,
+      targetBundleAccountKey,
+      targetUserBundleAccountKey
+    );
+    return requestBundleSwitch(invokedNtbundleProgramMeta, keys, sharesAmount);
+  }
+
+  public static Instruction requestBundleSwitch(final AccountMeta invokedNtbundleProgramMeta,
+                                                final List<AccountMeta> keys,
+                                                final BigInteger sharesAmount) {
+    final byte[] _data = new byte[24];
+    int i = REQUEST_BUNDLE_SWITCH_DISCRIMINATOR.write(_data, 0);
+    putInt128LE(_data, i, sharesAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record RequestBundleSwitchIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {  
+
+    public static RequestBundleSwitchIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 24;
+
+    public static final int SHARES_AMOUNT_OFFSET = 8;
+
+    public static RequestBundleSwitchIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var sharesAmount = getUInt128LE(_data, i);
+      return new RequestBundleSwitchIxData(discriminator, sharesAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      putInt128LE(_data, i, sharesAmount);
+      i += 16;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
   }
 
   public static final Discriminator REQUEST_DEPOSIT_DISCRIMINATOR = toDiscriminator(243, 202, 197, 215, 135, 97, 213, 109);
@@ -2309,6 +2896,608 @@ public final class NtbundleProgram {
       int i = _offset + discriminator.write(_data, _offset);
       putInt64LE(_data, i, oracleUpdateTimeLimit);
       i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_REFERRER_ACTIVE_DISCRIMINATOR = toDiscriminator(173, 21, 130, 158, 15, 1, 83, 24);
+
+  public static List<AccountMeta> setReferrerActiveKeys(final PublicKey managerKey,
+                                                        final PublicKey bundleAccountKey,
+                                                        final PublicKey referrerAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(bundleAccountKey),
+      createWrite(referrerAccountKey)
+    );
+  }
+
+  public static Instruction setReferrerActive(final AccountMeta invokedNtbundleProgramMeta,
+                                              final PublicKey managerKey,
+                                              final PublicKey bundleAccountKey,
+                                              final PublicKey referrerAccountKey,
+                                              final boolean active) {
+    final var keys = setReferrerActiveKeys(
+      managerKey,
+      bundleAccountKey,
+      referrerAccountKey
+    );
+    return setReferrerActive(invokedNtbundleProgramMeta, keys, active);
+  }
+
+  public static Instruction setReferrerActive(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final boolean active) {
+    final byte[] _data = new byte[9];
+    int i = SET_REFERRER_ACTIVE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) (active ? 1 : 0);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  public record SetReferrerActiveIxData(Discriminator discriminator, boolean active) implements SerDe {  
+
+    public static SetReferrerActiveIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int ACTIVE_OFFSET = 8;
+
+    public static SetReferrerActiveIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var active = _data[i] == 1;
+      return new SetReferrerActiveIxData(discriminator, active);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) (active ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_REFERRER_CONFIG_DISCRIMINATOR = toDiscriminator(85, 90, 76, 126, 69, 34, 205, 22);
+
+  public static List<AccountMeta> setReferrerConfigKeys(final PublicKey managerKey,
+                                                        final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createWrite(bundleAccountKey)
+    );
+  }
+
+  /// @param referralPfeeBps: u32
+  /// @param referralMfeeBps: u32
+  /// @param referrerMinDepositAmount: u64
+  public static Instruction setReferrerConfig(final AccountMeta invokedNtbundleProgramMeta,
+                                              final PublicKey managerKey,
+                                              final PublicKey bundleAccountKey,
+                                              final boolean referrerEnabled,
+                                              final long referralPfeeBps,
+                                              final long referralMfeeBps,
+                                              final long referrerMinDepositAmount) {
+    final var keys = setReferrerConfigKeys(
+      managerKey,
+      bundleAccountKey
+    );
+    return setReferrerConfig(
+      invokedNtbundleProgramMeta,
+      keys,
+      referrerEnabled,
+      referralPfeeBps,
+      referralMfeeBps,
+      referrerMinDepositAmount
+    );
+  }
+
+  /// @param referralPfeeBps: u32
+  /// @param referralMfeeBps: u32
+  /// @param referrerMinDepositAmount: u64
+  public static Instruction setReferrerConfig(final AccountMeta invokedNtbundleProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final boolean referrerEnabled,
+                                              final long referralPfeeBps,
+                                              final long referralMfeeBps,
+                                              final long referrerMinDepositAmount) {
+    final byte[] _data = new byte[25];
+    int i = SET_REFERRER_CONFIG_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) (referrerEnabled ? 1 : 0);
+    ++i;
+    putInt32LE(_data, i, (int) referralPfeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) referralMfeeBps);
+    i += 4;
+    putInt64LE(_data, i, referrerMinDepositAmount);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param referralPfeeBps: u32
+  /// @param referralMfeeBps: u32
+  /// @param referrerMinDepositAmount: u64
+  public record SetReferrerConfigIxData(Discriminator discriminator,
+                                        boolean referrerEnabled,
+                                        long referralPfeeBps,
+                                        long referralMfeeBps,
+                                        long referrerMinDepositAmount) implements SerDe {  
+
+    public static SetReferrerConfigIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 25;
+
+    public static final int REFERRER_ENABLED_OFFSET = 8;
+    public static final int REFERRAL_PFEE_BPS_OFFSET = 9;
+    public static final int REFERRAL_MFEE_BPS_OFFSET = 13;
+    public static final int REFERRER_MIN_DEPOSIT_AMOUNT_OFFSET = 17;
+
+    public static SetReferrerConfigIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var referrerEnabled = _data[i] == 1;
+      ++i;
+      final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var referrerMinDepositAmount = getInt64LE(_data, i);
+      return new SetReferrerConfigIxData(discriminator,
+                                         referrerEnabled,
+                                         referralPfeeBps,
+                                         referralMfeeBps,
+                                         referrerMinDepositAmount);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) (referrerEnabled ? 1 : 0);
+      ++i;
+      putInt32LE(_data, i, (int) referralPfeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) referralMfeeBps);
+      i += 4;
+      putInt64LE(_data, i, referrerMinDepositAmount);
+      i += 8;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_REFERRER_RATE_OVERRIDE_DISCRIMINATOR = toDiscriminator(117, 110, 164, 192, 156, 211, 27, 46);
+
+  public static List<AccountMeta> setReferrerRateOverrideKeys(final PublicKey managerKey,
+                                                              final PublicKey bundleAccountKey,
+                                                              final PublicKey referrerAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(bundleAccountKey),
+      createWrite(referrerAccountKey)
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customPfeeBps: u32
+  /// @param customMfeeBps: u32
+  public static Instruction setReferrerRateOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final PublicKey managerKey,
+                                                    final PublicKey bundleAccountKey,
+                                                    final PublicKey referrerAccountKey,
+                                                    final int overrideMask,
+                                                    final long customPfeeBps,
+                                                    final long customMfeeBps) {
+    final var keys = setReferrerRateOverrideKeys(
+      managerKey,
+      bundleAccountKey,
+      referrerAccountKey
+    );
+    return setReferrerRateOverride(
+      invokedNtbundleProgramMeta,
+      keys,
+      overrideMask,
+      customPfeeBps,
+      customMfeeBps
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customPfeeBps: u32
+  /// @param customMfeeBps: u32
+  public static Instruction setReferrerRateOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final int overrideMask,
+                                                    final long customPfeeBps,
+                                                    final long customMfeeBps) {
+    final byte[] _data = new byte[17];
+    int i = SET_REFERRER_RATE_OVERRIDE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) overrideMask;
+    ++i;
+    putInt32LE(_data, i, (int) customPfeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customMfeeBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param overrideMask: u8
+  /// @param customPfeeBps: u32
+  /// @param customMfeeBps: u32
+  public record SetReferrerRateOverrideIxData(Discriminator discriminator,
+                                              int overrideMask,
+                                              long customPfeeBps,
+                                              long customMfeeBps) implements SerDe {  
+
+    public static SetReferrerRateOverrideIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 17;
+
+    public static final int OVERRIDE_MASK_OFFSET = 8;
+    public static final int CUSTOM_PFEE_BPS_OFFSET = 9;
+    public static final int CUSTOM_MFEE_BPS_OFFSET = 13;
+
+    public static SetReferrerRateOverrideIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var overrideMask = _data[i] & 0xFF;
+      ++i;
+      final var customPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var customMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new SetReferrerRateOverrideIxData(discriminator, overrideMask, customPfeeBps, customMfeeBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) overrideMask;
+      ++i;
+      putInt32LE(_data, i, (int) customPfeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) customMfeeBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_USER_FEE_OVERRIDE_DISCRIMINATOR = toDiscriminator(207, 40, 210, 198, 66, 33, 153, 209);
+
+  public static List<AccountMeta> setUserFeeOverrideKeys(final PublicKey managerKey,
+                                                         final PublicKey userBundleAccountOwnerKey,
+                                                         final PublicKey userBundleAccountKey,
+                                                         final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userBundleAccountKey),
+      createRead(bundleAccountKey)
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customDepositFeeBps: u32
+  /// @param customWithdrawalFeeBps: u32
+  /// @param customPerformanceFeeBps: u32
+  /// @param customManagementFeeBps: u32
+  public static Instruction setUserFeeOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                               final PublicKey managerKey,
+                                               final PublicKey userBundleAccountOwnerKey,
+                                               final PublicKey userBundleAccountKey,
+                                               final PublicKey bundleAccountKey,
+                                               final int overrideMask,
+                                               final long customDepositFeeBps,
+                                               final long customWithdrawalFeeBps,
+                                               final long customPerformanceFeeBps,
+                                               final long customManagementFeeBps) {
+    final var keys = setUserFeeOverrideKeys(
+      managerKey,
+      userBundleAccountOwnerKey,
+      userBundleAccountKey,
+      bundleAccountKey
+    );
+    return setUserFeeOverride(
+      invokedNtbundleProgramMeta,
+      keys,
+      overrideMask,
+      customDepositFeeBps,
+      customWithdrawalFeeBps,
+      customPerformanceFeeBps,
+      customManagementFeeBps
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customDepositFeeBps: u32
+  /// @param customWithdrawalFeeBps: u32
+  /// @param customPerformanceFeeBps: u32
+  /// @param customManagementFeeBps: u32
+  public static Instruction setUserFeeOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                               final List<AccountMeta> keys,
+                                               final int overrideMask,
+                                               final long customDepositFeeBps,
+                                               final long customWithdrawalFeeBps,
+                                               final long customPerformanceFeeBps,
+                                               final long customManagementFeeBps) {
+    final byte[] _data = new byte[25];
+    int i = SET_USER_FEE_OVERRIDE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) overrideMask;
+    ++i;
+    putInt32LE(_data, i, (int) customDepositFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customWithdrawalFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customPerformanceFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customManagementFeeBps);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param overrideMask: u8
+  /// @param customDepositFeeBps: u32
+  /// @param customWithdrawalFeeBps: u32
+  /// @param customPerformanceFeeBps: u32
+  /// @param customManagementFeeBps: u32
+  public record SetUserFeeOverrideIxData(Discriminator discriminator,
+                                         int overrideMask,
+                                         long customDepositFeeBps,
+                                         long customWithdrawalFeeBps,
+                                         long customPerformanceFeeBps,
+                                         long customManagementFeeBps) implements SerDe {  
+
+    public static SetUserFeeOverrideIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 25;
+
+    public static final int OVERRIDE_MASK_OFFSET = 8;
+    public static final int CUSTOM_DEPOSIT_FEE_BPS_OFFSET = 9;
+    public static final int CUSTOM_WITHDRAWAL_FEE_BPS_OFFSET = 13;
+    public static final int CUSTOM_PERFORMANCE_FEE_BPS_OFFSET = 17;
+    public static final int CUSTOM_MANAGEMENT_FEE_BPS_OFFSET = 21;
+
+    public static SetUserFeeOverrideIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var overrideMask = _data[i] & 0xFF;
+      ++i;
+      final var customDepositFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var customWithdrawalFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var customPerformanceFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      i += 4;
+      final var customManagementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+      return new SetUserFeeOverrideIxData(discriminator,
+                                          overrideMask,
+                                          customDepositFeeBps,
+                                          customWithdrawalFeeBps,
+                                          customPerformanceFeeBps,
+                                          customManagementFeeBps);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) overrideMask;
+      ++i;
+      putInt32LE(_data, i, (int) customDepositFeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) customWithdrawalFeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) customPerformanceFeeBps);
+      i += 4;
+      putInt32LE(_data, i, (int) customManagementFeeBps);
+      i += 4;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
+  }
+
+  public static final Discriminator SET_USER_REFERRER_DISCRIMINATOR = toDiscriminator(71, 167, 153, 60, 26, 30, 50, 114);
+
+  public static List<AccountMeta> setUserReferrerKeys(final PublicKey userKey,
+                                                      final PublicKey bundleAccountKey,
+                                                      final PublicKey userBundleAccountKey,
+                                                      final PublicKey referrerAccountKey,
+                                                      final PublicKey referrerUserBundleAccountKey) {
+    return List.of(
+      createReadOnlySigner(userKey),
+      createRead(bundleAccountKey),
+      createWrite(userBundleAccountKey),
+      createRead(referrerAccountKey),
+      createRead(referrerUserBundleAccountKey)
+    );
+  }
+
+  public static Instruction setUserReferrer(final AccountMeta invokedNtbundleProgramMeta,
+                                            final PublicKey userKey,
+                                            final PublicKey bundleAccountKey,
+                                            final PublicKey userBundleAccountKey,
+                                            final PublicKey referrerAccountKey,
+                                            final PublicKey referrerUserBundleAccountKey) {
+    final var keys = setUserReferrerKeys(
+      userKey,
+      bundleAccountKey,
+      userBundleAccountKey,
+      referrerAccountKey,
+      referrerUserBundleAccountKey
+    );
+    return setUserReferrer(invokedNtbundleProgramMeta, keys);
+  }
+
+  public static Instruction setUserReferrer(final AccountMeta invokedNtbundleProgramMeta,
+                                            final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, SET_USER_REFERRER_DISCRIMINATOR);
+  }
+
+  public static final Discriminator SET_USER_WITHDRAWAL_TIMING_OVERRIDE_DISCRIMINATOR = toDiscriminator(21, 31, 116, 121, 140, 237, 174, 244);
+
+  public static List<AccountMeta> setUserWithdrawalTimingOverrideKeys(final PublicKey managerKey,
+                                                                      final PublicKey userBundleAccountOwnerKey,
+                                                                      final PublicKey userBundleAccountKey,
+                                                                      final PublicKey bundleAccountKey) {
+    return List.of(
+      createWritableSigner(managerKey),
+      createRead(userBundleAccountOwnerKey),
+      createWrite(userBundleAccountKey),
+      createRead(bundleAccountKey)
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customWithdrawalDelay: u64
+  public static Instruction setUserWithdrawalTimingOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                            final PublicKey managerKey,
+                                                            final PublicKey userBundleAccountOwnerKey,
+                                                            final PublicKey userBundleAccountKey,
+                                                            final PublicKey bundleAccountKey,
+                                                            final int overrideMask,
+                                                            final long customWithdrawalDelay,
+                                                            final long customWithdrawalTMin,
+                                                            final long customWithdrawalTMax,
+                                                            final float customWithdrawalCurve) {
+    final var keys = setUserWithdrawalTimingOverrideKeys(
+      managerKey,
+      userBundleAccountOwnerKey,
+      userBundleAccountKey,
+      bundleAccountKey
+    );
+    return setUserWithdrawalTimingOverride(
+      invokedNtbundleProgramMeta,
+      keys,
+      overrideMask,
+      customWithdrawalDelay,
+      customWithdrawalTMin,
+      customWithdrawalTMax,
+      customWithdrawalCurve
+    );
+  }
+
+  /// @param overrideMask: u8
+  /// @param customWithdrawalDelay: u64
+  public static Instruction setUserWithdrawalTimingOverride(final AccountMeta invokedNtbundleProgramMeta,
+                                                            final List<AccountMeta> keys,
+                                                            final int overrideMask,
+                                                            final long customWithdrawalDelay,
+                                                            final long customWithdrawalTMin,
+                                                            final long customWithdrawalTMax,
+                                                            final float customWithdrawalCurve) {
+    final byte[] _data = new byte[37];
+    int i = SET_USER_WITHDRAWAL_TIMING_OVERRIDE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) overrideMask;
+    ++i;
+    putInt64LE(_data, i, customWithdrawalDelay);
+    i += 8;
+    putInt64LE(_data, i, customWithdrawalTMin);
+    i += 8;
+    putInt64LE(_data, i, customWithdrawalTMax);
+    i += 8;
+    putFloat32LE(_data, i, customWithdrawalCurve);
+
+    return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
+  }
+
+  /// @param overrideMask: u8
+  /// @param customWithdrawalDelay: u64
+  public record SetUserWithdrawalTimingOverrideIxData(Discriminator discriminator,
+                                                      int overrideMask,
+                                                      long customWithdrawalDelay,
+                                                      long customWithdrawalTMin,
+                                                      long customWithdrawalTMax,
+                                                      float customWithdrawalCurve) implements SerDe {  
+
+    public static SetUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 37;
+
+    public static final int OVERRIDE_MASK_OFFSET = 8;
+    public static final int CUSTOM_WITHDRAWAL_DELAY_OFFSET = 9;
+    public static final int CUSTOM_WITHDRAWAL_T_MIN_OFFSET = 17;
+    public static final int CUSTOM_WITHDRAWAL_T_MAX_OFFSET = 25;
+    public static final int CUSTOM_WITHDRAWAL_CURVE_OFFSET = 33;
+
+    public static SetUserWithdrawalTimingOverrideIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var overrideMask = _data[i] & 0xFF;
+      ++i;
+      final var customWithdrawalDelay = getInt64LE(_data, i);
+      i += 8;
+      final var customWithdrawalTMin = getInt64LE(_data, i);
+      i += 8;
+      final var customWithdrawalTMax = getInt64LE(_data, i);
+      i += 8;
+      final var customWithdrawalCurve = getFloat32LE(_data, i);
+      return new SetUserWithdrawalTimingOverrideIxData(discriminator,
+                                                       overrideMask,
+                                                       customWithdrawalDelay,
+                                                       customWithdrawalTMin,
+                                                       customWithdrawalTMax,
+                                                       customWithdrawalCurve);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) overrideMask;
+      ++i;
+      putInt64LE(_data, i, customWithdrawalDelay);
+      i += 8;
+      putInt64LE(_data, i, customWithdrawalTMin);
+      i += 8;
+      putInt64LE(_data, i, customWithdrawalTMax);
+      i += 8;
+      putFloat32LE(_data, i, customWithdrawalCurve);
+      i += 4;
       return i - _offset;
     }
 

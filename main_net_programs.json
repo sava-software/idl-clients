@@ -102,7 +102,8 @@
       "vcs": {
         "repo": "jup-ag/rfq-webhook-toolkit",
         "path": "idls/order_engine.json"
-      }
+      },
+      "deployed": "vcs"
     },
     {
       "name": "Jupiter Perpetuals",
@@ -263,6 +264,7 @@
         "repo": "neutral-trade/sdk",
         "path": "src/idl/ntbundle.json"
       },
+      "deployed": "vcs",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
       "idlType": "anchor"
     },
@@ -387,7 +389,8 @@
       "vcs": {
         "repo": "Squads-Protocol/v4",
         "path": "sdk/multisig/idl/squads_multisig_program.json"
-      }
+      },
+      "deployed": "vcs"
     },
     {
       "name": "Stake",

@@ -13,10 +13,14 @@ import java.math.BigInteger;
 import java.util.function.BiFunction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
+import static software.sava.core.encoding.ByteUtil.getFloat32LE;
 import static software.sava.core.encoding.ByteUtil.getInt128LE;
+import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
+import static software.sava.core.encoding.ByteUtil.putFloat32LE;
 import static software.sava.core.encoding.ByteUtil.putInt128LE;
+import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
@@ -24,6 +28,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param pendingDeposit: u64
 /// @param estimatedPendingWithdrawalValue: u64
 /// @param totalFeeCharged: u64
+/// @param customDepositFeeBps: u32
+/// @param customWithdrawalFeeBps: u32
+/// @param customPerformanceFeeBps: u32
+/// @param customManagementFeeBps: u32
+/// @param feeOverrideFlags: u8
+/// @param customWithdrawalDelay: u64
+/// @param withdrawalTimingOverrideFlags: u8
+/// @param referralPfeeBps: u32
+/// @param referralMfeeBps: u32
+/// @param referralFlags: u8
 public record UserBundleAccount(PublicKey _address,
                                 Discriminator discriminator,
                                 PublicKey owner,
@@ -39,10 +53,27 @@ public record UserBundleAccount(PublicKey _address,
                                 long lastManagementFeeTimestamp,
                                 BigInteger netDeposits,
                                 long totalFeeCharged,
+                                long customDepositFeeBps,
+                                long customWithdrawalFeeBps,
+                                long customPerformanceFeeBps,
+                                long customManagementFeeBps,
+                                int feeOverrideFlags,
+                                long customWithdrawalDelay,
+                                long customWithdrawalTMin,
+                                long customWithdrawalTMax,
+                                float customWithdrawalCurve,
+                                int withdrawalTimingOverrideFlags,
+                                boolean switchActive,
+                                PublicKey switchTargetBundle,
+                                long switchCreatedAt,
+                                PublicKey referrer,
+                                long referralPfeeBps,
+                                long referralMfeeBps,
+                                int referralFlags,
                                 byte[] padding) implements SerDe {
 
   public static final int BYTES = 440;
-  public static final int PADDING_LEN = 264;
+  public static final int PADDING_LEN = 136;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(32, 181, 106, 26, 67, 130, 185, 241);
@@ -61,7 +92,24 @@ public record UserBundleAccount(PublicKey _address,
   public static final int LAST_MANAGEMENT_FEE_TIMESTAMP_OFFSET = 144;
   public static final int NET_DEPOSITS_OFFSET = 152;
   public static final int TOTAL_FEE_CHARGED_OFFSET = 168;
-  public static final int PADDING_OFFSET = 176;
+  public static final int CUSTOM_DEPOSIT_FEE_BPS_OFFSET = 176;
+  public static final int CUSTOM_WITHDRAWAL_FEE_BPS_OFFSET = 180;
+  public static final int CUSTOM_PERFORMANCE_FEE_BPS_OFFSET = 184;
+  public static final int CUSTOM_MANAGEMENT_FEE_BPS_OFFSET = 188;
+  public static final int FEE_OVERRIDE_FLAGS_OFFSET = 192;
+  public static final int CUSTOM_WITHDRAWAL_DELAY_OFFSET = 193;
+  public static final int CUSTOM_WITHDRAWAL_T_MIN_OFFSET = 201;
+  public static final int CUSTOM_WITHDRAWAL_T_MAX_OFFSET = 209;
+  public static final int CUSTOM_WITHDRAWAL_CURVE_OFFSET = 217;
+  public static final int WITHDRAWAL_TIMING_OVERRIDE_FLAGS_OFFSET = 221;
+  public static final int SWITCH_ACTIVE_OFFSET = 222;
+  public static final int SWITCH_TARGET_BUNDLE_OFFSET = 223;
+  public static final int SWITCH_CREATED_AT_OFFSET = 255;
+  public static final int REFERRER_OFFSET = 263;
+  public static final int REFERRAL_PFEE_BPS_OFFSET = 295;
+  public static final int REFERRAL_MFEE_BPS_OFFSET = 299;
+  public static final int REFERRAL_FLAGS_OFFSET = 303;
+  public static final int PADDING_OFFSET = 304;
 
   public static Filter createOwnerFilter(final PublicKey owner) {
     return Filter.createMemCompFilter(OWNER_OFFSET, owner);
@@ -139,6 +187,96 @@ public record UserBundleAccount(PublicKey _address,
     return Filter.createMemCompFilter(TOTAL_FEE_CHARGED_OFFSET, _data);
   }
 
+  public static Filter createCustomDepositFeeBpsFilter(final long customDepositFeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) customDepositFeeBps);
+    return Filter.createMemCompFilter(CUSTOM_DEPOSIT_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createCustomWithdrawalFeeBpsFilter(final long customWithdrawalFeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) customWithdrawalFeeBps);
+    return Filter.createMemCompFilter(CUSTOM_WITHDRAWAL_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createCustomPerformanceFeeBpsFilter(final long customPerformanceFeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) customPerformanceFeeBps);
+    return Filter.createMemCompFilter(CUSTOM_PERFORMANCE_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createCustomManagementFeeBpsFilter(final long customManagementFeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) customManagementFeeBps);
+    return Filter.createMemCompFilter(CUSTOM_MANAGEMENT_FEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createFeeOverrideFlagsFilter(final int feeOverrideFlags) {
+    return Filter.createMemCompFilter(FEE_OVERRIDE_FLAGS_OFFSET, new byte[]{(byte) feeOverrideFlags});
+  }
+
+  public static Filter createCustomWithdrawalDelayFilter(final long customWithdrawalDelay) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, customWithdrawalDelay);
+    return Filter.createMemCompFilter(CUSTOM_WITHDRAWAL_DELAY_OFFSET, _data);
+  }
+
+  public static Filter createCustomWithdrawalTMinFilter(final long customWithdrawalTMin) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, customWithdrawalTMin);
+    return Filter.createMemCompFilter(CUSTOM_WITHDRAWAL_T_MIN_OFFSET, _data);
+  }
+
+  public static Filter createCustomWithdrawalTMaxFilter(final long customWithdrawalTMax) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, customWithdrawalTMax);
+    return Filter.createMemCompFilter(CUSTOM_WITHDRAWAL_T_MAX_OFFSET, _data);
+  }
+
+  public static Filter createCustomWithdrawalCurveFilter(final float customWithdrawalCurve) {
+    final byte[] _data = new byte[4];
+    putFloat32LE(_data, 0, customWithdrawalCurve);
+    return Filter.createMemCompFilter(CUSTOM_WITHDRAWAL_CURVE_OFFSET, _data);
+  }
+
+  public static Filter createWithdrawalTimingOverrideFlagsFilter(final int withdrawalTimingOverrideFlags) {
+    return Filter.createMemCompFilter(WITHDRAWAL_TIMING_OVERRIDE_FLAGS_OFFSET, new byte[]{(byte) withdrawalTimingOverrideFlags});
+  }
+
+  public static Filter createSwitchActiveFilter(final boolean switchActive) {
+    return Filter.createMemCompFilter(SWITCH_ACTIVE_OFFSET, new byte[]{(byte) (switchActive ? 1 : 0)});
+  }
+
+  public static Filter createSwitchTargetBundleFilter(final PublicKey switchTargetBundle) {
+    return Filter.createMemCompFilter(SWITCH_TARGET_BUNDLE_OFFSET, switchTargetBundle);
+  }
+
+  public static Filter createSwitchCreatedAtFilter(final long switchCreatedAt) {
+    final byte[] _data = new byte[8];
+    putInt64LE(_data, 0, switchCreatedAt);
+    return Filter.createMemCompFilter(SWITCH_CREATED_AT_OFFSET, _data);
+  }
+
+  public static Filter createReferrerFilter(final PublicKey referrer) {
+    return Filter.createMemCompFilter(REFERRER_OFFSET, referrer);
+  }
+
+  public static Filter createReferralPfeeBpsFilter(final long referralPfeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) referralPfeeBps);
+    return Filter.createMemCompFilter(REFERRAL_PFEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createReferralMfeeBpsFilter(final long referralMfeeBps) {
+    final byte[] _data = new byte[4];
+    putInt32LE(_data, 0, (int) referralMfeeBps);
+    return Filter.createMemCompFilter(REFERRAL_MFEE_BPS_OFFSET, _data);
+  }
+
+  public static Filter createReferralFlagsFilter(final int referralFlags) {
+    return Filter.createMemCompFilter(REFERRAL_FLAGS_OFFSET, new byte[]{(byte) referralFlags});
+  }
+
   public static UserBundleAccount read(final byte[] _data, final int _offset) {
     return read(null, _data, _offset);
   }
@@ -185,7 +323,41 @@ public record UserBundleAccount(PublicKey _address,
     i += 16;
     final var totalFeeCharged = getInt64LE(_data, i);
     i += 8;
-    final var padding = new byte[264];
+    final var customDepositFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var customWithdrawalFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var customPerformanceFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var customManagementFeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var feeOverrideFlags = _data[i] & 0xFF;
+    ++i;
+    final var customWithdrawalDelay = getInt64LE(_data, i);
+    i += 8;
+    final var customWithdrawalTMin = getInt64LE(_data, i);
+    i += 8;
+    final var customWithdrawalTMax = getInt64LE(_data, i);
+    i += 8;
+    final var customWithdrawalCurve = getFloat32LE(_data, i);
+    i += 4;
+    final var withdrawalTimingOverrideFlags = _data[i] & 0xFF;
+    ++i;
+    final var switchActive = _data[i] == 1;
+    ++i;
+    final var switchTargetBundle = readPubKey(_data, i);
+    i += 32;
+    final var switchCreatedAt = getInt64LE(_data, i);
+    i += 8;
+    final var referrer = readPubKey(_data, i);
+    i += 32;
+    final var referralPfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var referralMfeeBps = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var referralFlags = _data[i] & 0xFF;
+    ++i;
+    final var padding = new byte[136];
     SerDeUtil.readArray(padding, _data, i);
     return new UserBundleAccount(_address,
                                  discriminator,
@@ -202,6 +374,23 @@ public record UserBundleAccount(PublicKey _address,
                                  lastManagementFeeTimestamp,
                                  netDeposits,
                                  totalFeeCharged,
+                                 customDepositFeeBps,
+                                 customWithdrawalFeeBps,
+                                 customPerformanceFeeBps,
+                                 customManagementFeeBps,
+                                 feeOverrideFlags,
+                                 customWithdrawalDelay,
+                                 customWithdrawalTMin,
+                                 customWithdrawalTMax,
+                                 customWithdrawalCurve,
+                                 withdrawalTimingOverrideFlags,
+                                 switchActive,
+                                 switchTargetBundle,
+                                 switchCreatedAt,
+                                 referrer,
+                                 referralPfeeBps,
+                                 referralMfeeBps,
+                                 referralFlags,
                                  padding);
   }
 
@@ -234,7 +423,41 @@ public record UserBundleAccount(PublicKey _address,
     i += 16;
     putInt64LE(_data, i, totalFeeCharged);
     i += 8;
-    i += SerDeUtil.writeArrayChecked(padding, 264, _data, i);
+    putInt32LE(_data, i, (int) customDepositFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customWithdrawalFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customPerformanceFeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) customManagementFeeBps);
+    i += 4;
+    _data[i] = (byte) feeOverrideFlags;
+    ++i;
+    putInt64LE(_data, i, customWithdrawalDelay);
+    i += 8;
+    putInt64LE(_data, i, customWithdrawalTMin);
+    i += 8;
+    putInt64LE(_data, i, customWithdrawalTMax);
+    i += 8;
+    putFloat32LE(_data, i, customWithdrawalCurve);
+    i += 4;
+    _data[i] = (byte) withdrawalTimingOverrideFlags;
+    ++i;
+    _data[i] = (byte) (switchActive ? 1 : 0);
+    ++i;
+    switchTargetBundle.write(_data, i);
+    i += 32;
+    putInt64LE(_data, i, switchCreatedAt);
+    i += 8;
+    referrer.write(_data, i);
+    i += 32;
+    putInt32LE(_data, i, (int) referralPfeeBps);
+    i += 4;
+    putInt32LE(_data, i, (int) referralMfeeBps);
+    i += 4;
+    _data[i] = (byte) referralFlags;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding, 136, _data, i);
     return i - _offset;
   }
 

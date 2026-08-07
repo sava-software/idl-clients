@@ -887,6 +887,63 @@ was: `liquidity_vault` seeded on `[b"liquidity_vault", bank]` reproduces the
 stored vault for **all 434 live banks** at each bank's stored bump. Unlike klend's
 reserves there is no second live scheme, so these stay derived.
 
+#### Which IDL channel actually describes the deployed program (2026-08-06)
+
+Phoenix Ember raised the general question, so every configured program was swept.
+The cheap signal: compare the **last write to the on-chain IDL account** against
+the **program's last deploy**. When the deploy is newer, the on-chain IDL is
+unverified — `matchesDeployed` only says we faithfully copied what upstream
+published, which it cannot distinguish from upstream having stopped publishing.
+
+Six of the twelve programs whose channels disagree are in that state:
+
+| package | IDL published | program deployed |
+|---|---|---|
+| `squads.v4` | 2024-01-27 | 2024-11-20 |
+| `jupiter.order_engine` | 2024-10-23 | 2025-08-04 |
+| `phoenix.ember` | 2025-10-30 | 2026-01-21 |
+| `meteora.dlmm` | 2026-05-13 | 2026-06-03 |
+| `nt.bundle` | 2026-04-27 | 2026-07-21 |
+| `phoenix.perpetuals` | 2026-06-05 | 2026-08-05 |
+
+Age alone is not a reason to switch, so each was confirmed against chain:
+
+- **`squads.v4` → `"deployed": "vcs"`.** The repository IDL declares five
+  transaction-buffer instructions and a `TransactionBuffer` account the on-chain
+  copy does not, and **15 live accounts carry that account's discriminator**. It
+  also shows `multisig_create` taking no args, matching the `MultisigCreateDeprecated`
+  error it adds — the deployed program rejects the call the on-chain IDL still
+  describes.
+- **`nt.bundle` → `"deployed": "vcs"`.** Sampling the program's recent
+  transactions turned up six distinct instruction discriminators, and one —
+  `process_switch`, `baaa0042685139c3` — exists **only** in the repository IDL. The
+  deployed program executes instructions the on-chain copy does not declare.
+- **`jupiter.order_engine` → `"deployed": "vcs"`.** Instruction, account, type and
+  error sets are identical, so nothing behavioural rides on it; the repository copy
+  carries the real program address (the on-chain document declares the placeholder
+  `RderEngine111…`) and the `constants` the on-chain copy omits entirely.
+- **`meteora.dlmm` — left on chain.** The only difference is one extra type,
+  `LimitOrderBinData`, reachable solely through `DummyZcAccount` — the dummy
+  zero-copy struct Anchor uses to force types into an IDL. No instruction or
+  account differs, so neither document is more correct about the interface.
+- **Both Phoenix programs — nothing to switch to.** `Ellipsis-Labs/rise-public`
+  ships a hand-rolled SDK (discriminator tables and TS builders), not an Anchor
+  IDL, so the stale metadata account is the only published description. This is why
+  the Ember fixes live in the hand-written layer.
+
+The four Kamino programs, `jupiter.swap` and `orca.whirlpools` publish their IDL
+in the same deploy, so the on-chain copy stays authoritative for them.
+
+**Switching `squads.v4` drops four generated types**, three of which were
+duplicates the on-chain IDL carried alongside the names the program actually uses:
+`TransactionMessage`, `CompiledInstruction` and `MessageAddressTableLookup` have
+field-for-field equivalents in `VaultTransactionMessage`,
+`MultisigCompiledInstruction` and `MultisigMessageAddressTableLookup`, all three
+already generated before the switch. Only `Permission` — the `Initiate`/`Vote`/
+`Execute` enum — goes without replacement; `Permissions` survives as the `u8` mask
+it has always been, so a caller composing one now needs the bit values rather than
+the names. Nothing in either IDL referenced any of the four structurally.
+
 #### Phoenix Ember: the IDL's PDA seeds derive accounts that do not exist (2026-08-06)
 
 `PhoenixAccounts` took Ember's state and vault from the generated

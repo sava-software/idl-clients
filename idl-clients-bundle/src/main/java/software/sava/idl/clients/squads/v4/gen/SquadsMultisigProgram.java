@@ -12,7 +12,6 @@ import software.sava.idl.clients.squads.v4.gen.types.ConfigTransactionCreateArgs
 import software.sava.idl.clients.squads.v4.gen.types.MultisigAddMemberArgs;
 import software.sava.idl.clients.squads.v4.gen.types.MultisigAddSpendingLimitArgs;
 import software.sava.idl.clients.squads.v4.gen.types.MultisigChangeThresholdArgs;
-import software.sava.idl.clients.squads.v4.gen.types.MultisigCreateArgs;
 import software.sava.idl.clients.squads.v4.gen.types.MultisigCreateArgsV2;
 import software.sava.idl.clients.squads.v4.gen.types.MultisigRemoveMemberArgs;
 import software.sava.idl.clients.squads.v4.gen.types.MultisigRemoveSpendingLimitArgs;
@@ -26,6 +25,8 @@ import software.sava.idl.clients.squads.v4.gen.types.ProgramConfigSetTreasuryArg
 import software.sava.idl.clients.squads.v4.gen.types.ProposalCreateArgs;
 import software.sava.idl.clients.squads.v4.gen.types.ProposalVoteArgs;
 import software.sava.idl.clients.squads.v4.gen.types.SpendingLimitUseArgs;
+import software.sava.idl.clients.squads.v4.gen.types.TransactionBufferCreateArgs;
+import software.sava.idl.clients.squads.v4.gen.types.TransactionBufferExtendArgs;
 import software.sava.idl.clients.squads.v4.gen.types.VaultTransactionCreateArgs;
 
 import java.util.List;
@@ -331,82 +332,27 @@ public final class SquadsMultisigProgram {
 
   /// Create a multisig.
   ///
-  /// @param createKey An ephemeral signer that is used as a seed for the Multisig PDA.
-  ///                  Must be a signer to prevent front-running attack by someone else but the original creator.
-  /// @param creatorKey The creator of the multisig.
-  public static List<AccountMeta> multisigCreateKeys(final PublicKey multisigKey,
-                                                     final PublicKey createKey,
-                                                     final PublicKey creatorKey,
-                                                     final PublicKey systemProgramKey) {
+  public static List<AccountMeta> multisigCreateKeys(final PublicKey nullKey) {
     return List.of(
-      createWrite(multisigKey),
-      createReadOnlySigner(createKey),
-      createWritableSigner(creatorKey),
-      createRead(systemProgramKey)
+      createRead(nullKey)
     );
   }
 
   /// Create a multisig.
   ///
-  /// @param createKey An ephemeral signer that is used as a seed for the Multisig PDA.
-  ///                  Must be a signer to prevent front-running attack by someone else but the original creator.
-  /// @param creatorKey The creator of the multisig.
   public static Instruction multisigCreate(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
-                                           final PublicKey multisigKey,
-                                           final PublicKey createKey,
-                                           final PublicKey creatorKey,
-                                           final PublicKey systemProgramKey,
-                                           final MultisigCreateArgs args) {
+                                           final PublicKey nullKey) {
     final var keys = multisigCreateKeys(
-      multisigKey,
-      createKey,
-      creatorKey,
-      systemProgramKey
+      nullKey
     );
-    return multisigCreate(invokedSquadsMultisigProgramProgramMeta, keys, args);
+    return multisigCreate(invokedSquadsMultisigProgramProgramMeta, keys);
   }
 
   /// Create a multisig.
   ///
   public static Instruction multisigCreate(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
-                                           final List<AccountMeta> keys,
-                                           final MultisigCreateArgs args) {
-    final byte[] _data = new byte[8 + args.l()];
-    int i = MULTISIG_CREATE_DISCRIMINATOR.write(_data, 0);
-    args.write(_data, i);
-
-    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, _data);
-  }
-
-  public record MultisigCreateIxData(Discriminator discriminator, MultisigCreateArgs args) implements SerDe {  
-
-    public static MultisigCreateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
-    }
-
-    public static final int ARGS_OFFSET = 8;
-
-    public static MultisigCreateIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
-      int i = _offset + discriminator.length();
-      final var args = MultisigCreateArgs.read(_data, i);
-      return new MultisigCreateIxData(discriminator, args);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset + discriminator.write(_data, _offset);
-      i += args.write(_data, i);
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return 8 + args.l();
-    }
+                                           final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, MULTISIG_CREATE_DISCRIMINATOR);
   }
 
   public static final Discriminator MULTISIG_CREATE_V_2_DISCRIMINATOR = toDiscriminator(50, 221, 199, 93, 40, 245, 139, 233);
@@ -1431,6 +1377,296 @@ public final class SquadsMultisigProgram {
     }
   }
 
+  public static final Discriminator TRANSACTION_BUFFER_CREATE_DISCRIMINATOR = toDiscriminator(245, 201, 113, 108, 37, 63, 29, 89);
+
+  /// Create a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that is creating the transaction.
+  /// @param rentPayerKey The payer for the transaction account rent.
+  public static List<AccountMeta> transactionBufferCreateKeys(final PublicKey multisigKey,
+                                                              final PublicKey transactionBufferKey,
+                                                              final PublicKey creatorKey,
+                                                              final PublicKey rentPayerKey,
+                                                              final PublicKey systemProgramKey) {
+    return List.of(
+      createRead(multisigKey),
+      createWrite(transactionBufferKey),
+      createReadOnlySigner(creatorKey),
+      createWritableSigner(rentPayerKey),
+      createRead(systemProgramKey)
+    );
+  }
+
+  /// Create a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that is creating the transaction.
+  /// @param rentPayerKey The payer for the transaction account rent.
+  public static Instruction transactionBufferCreate(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                    final PublicKey multisigKey,
+                                                    final PublicKey transactionBufferKey,
+                                                    final PublicKey creatorKey,
+                                                    final PublicKey rentPayerKey,
+                                                    final PublicKey systemProgramKey,
+                                                    final TransactionBufferCreateArgs args) {
+    final var keys = transactionBufferCreateKeys(
+      multisigKey,
+      transactionBufferKey,
+      creatorKey,
+      rentPayerKey,
+      systemProgramKey
+    );
+    return transactionBufferCreate(invokedSquadsMultisigProgramProgramMeta, keys, args);
+  }
+
+  /// Create a transaction buffer account.
+  ///
+  public static Instruction transactionBufferCreate(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final TransactionBufferCreateArgs args) {
+    final byte[] _data = new byte[8 + args.l()];
+    int i = TRANSACTION_BUFFER_CREATE_DISCRIMINATOR.write(_data, 0);
+    args.write(_data, i);
+
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, _data);
+  }
+
+  public record TransactionBufferCreateIxData(Discriminator discriminator, TransactionBufferCreateArgs args) implements SerDe {  
+
+    public static TransactionBufferCreateIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int ARGS_OFFSET = 8;
+
+    public static TransactionBufferCreateIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var args = TransactionBufferCreateArgs.read(_data, i);
+      return new TransactionBufferCreateIxData(discriminator, args);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += args.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + args.l();
+    }
+  }
+
+  public static final Discriminator TRANSACTION_BUFFER_CLOSE_DISCRIMINATOR = toDiscriminator(17, 182, 208, 228, 136, 24, 178, 102);
+
+  /// Close a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that created the TransactionBuffer.
+  public static List<AccountMeta> transactionBufferCloseKeys(final PublicKey multisigKey,
+                                                             final PublicKey transactionBufferKey,
+                                                             final PublicKey creatorKey) {
+    return List.of(
+      createRead(multisigKey),
+      createWrite(transactionBufferKey),
+      createReadOnlySigner(creatorKey)
+    );
+  }
+
+  /// Close a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that created the TransactionBuffer.
+  public static Instruction transactionBufferClose(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                   final PublicKey multisigKey,
+                                                   final PublicKey transactionBufferKey,
+                                                   final PublicKey creatorKey) {
+    final var keys = transactionBufferCloseKeys(
+      multisigKey,
+      transactionBufferKey,
+      creatorKey
+    );
+    return transactionBufferClose(invokedSquadsMultisigProgramProgramMeta, keys);
+  }
+
+  /// Close a transaction buffer account.
+  ///
+  public static Instruction transactionBufferClose(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                   final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, TRANSACTION_BUFFER_CLOSE_DISCRIMINATOR);
+  }
+
+  public static final Discriminator TRANSACTION_BUFFER_EXTEND_DISCRIMINATOR = toDiscriminator(230, 157, 67, 56, 5, 238, 245, 146);
+
+  /// Extend a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that created the TransactionBuffer.
+  public static List<AccountMeta> transactionBufferExtendKeys(final PublicKey multisigKey,
+                                                              final PublicKey transactionBufferKey,
+                                                              final PublicKey creatorKey) {
+    return List.of(
+      createRead(multisigKey),
+      createWrite(transactionBufferKey),
+      createReadOnlySigner(creatorKey)
+    );
+  }
+
+  /// Extend a transaction buffer account.
+  ///
+  /// @param creatorKey The member of the multisig that created the TransactionBuffer.
+  public static Instruction transactionBufferExtend(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                    final PublicKey multisigKey,
+                                                    final PublicKey transactionBufferKey,
+                                                    final PublicKey creatorKey,
+                                                    final TransactionBufferExtendArgs args) {
+    final var keys = transactionBufferExtendKeys(
+      multisigKey,
+      transactionBufferKey,
+      creatorKey
+    );
+    return transactionBufferExtend(invokedSquadsMultisigProgramProgramMeta, keys, args);
+  }
+
+  /// Extend a transaction buffer account.
+  ///
+  public static Instruction transactionBufferExtend(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                    final List<AccountMeta> keys,
+                                                    final TransactionBufferExtendArgs args) {
+    final byte[] _data = new byte[8 + args.l()];
+    int i = TRANSACTION_BUFFER_EXTEND_DISCRIMINATOR.write(_data, 0);
+    args.write(_data, i);
+
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, _data);
+  }
+
+  public record TransactionBufferExtendIxData(Discriminator discriminator, TransactionBufferExtendArgs args) implements SerDe {  
+
+    public static TransactionBufferExtendIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int ARGS_OFFSET = 8;
+
+    public static TransactionBufferExtendIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var args = TransactionBufferExtendArgs.read(_data, i);
+      return new TransactionBufferExtendIxData(discriminator, args);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += args.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + args.l();
+    }
+  }
+
+  public static final Discriminator VAULT_TRANSACTION_CREATE_FROM_BUFFER_DISCRIMINATOR = toDiscriminator(222, 54, 149, 68, 87, 246, 48, 231);
+
+  /// Create a new vault transaction from a completed transaction buffer.
+  /// Finalized buffer hash must match `final_buffer_hash`
+  ///
+  /// @param vaultTransactionCreateCreatorKey The member of the multisig that is creating the transaction.
+  /// @param vaultTransactionCreateRentPayerKey The payer for the transaction account rent.
+  public static List<AccountMeta> vaultTransactionCreateFromBufferKeys(final PublicKey vaultTransactionCreateMultisigKey,
+                                                                       final PublicKey vaultTransactionCreateTransactionKey,
+                                                                       final PublicKey vaultTransactionCreateCreatorKey,
+                                                                       final PublicKey vaultTransactionCreateRentPayerKey,
+                                                                       final PublicKey vaultTransactionCreateSystemProgramKey,
+                                                                       final PublicKey transactionBufferKey,
+                                                                       final PublicKey creatorKey) {
+    return List.of(
+      createWrite(vaultTransactionCreateMultisigKey),
+      createWrite(vaultTransactionCreateTransactionKey),
+      createReadOnlySigner(vaultTransactionCreateCreatorKey),
+      createWritableSigner(vaultTransactionCreateRentPayerKey),
+      createRead(vaultTransactionCreateSystemProgramKey),
+      createWrite(transactionBufferKey),
+      createWritableSigner(creatorKey)
+    );
+  }
+
+  /// Create a new vault transaction from a completed transaction buffer.
+  /// Finalized buffer hash must match `final_buffer_hash`
+  ///
+  /// @param vaultTransactionCreateCreatorKey The member of the multisig that is creating the transaction.
+  /// @param vaultTransactionCreateRentPayerKey The payer for the transaction account rent.
+  public static Instruction vaultTransactionCreateFromBuffer(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                             final PublicKey vaultTransactionCreateMultisigKey,
+                                                             final PublicKey vaultTransactionCreateTransactionKey,
+                                                             final PublicKey vaultTransactionCreateCreatorKey,
+                                                             final PublicKey vaultTransactionCreateRentPayerKey,
+                                                             final PublicKey vaultTransactionCreateSystemProgramKey,
+                                                             final PublicKey transactionBufferKey,
+                                                             final PublicKey creatorKey,
+                                                             final VaultTransactionCreateArgs args) {
+    final var keys = vaultTransactionCreateFromBufferKeys(
+      vaultTransactionCreateMultisigKey,
+      vaultTransactionCreateTransactionKey,
+      vaultTransactionCreateCreatorKey,
+      vaultTransactionCreateRentPayerKey,
+      vaultTransactionCreateSystemProgramKey,
+      transactionBufferKey,
+      creatorKey
+    );
+    return vaultTransactionCreateFromBuffer(invokedSquadsMultisigProgramProgramMeta, keys, args);
+  }
+
+  /// Create a new vault transaction from a completed transaction buffer.
+  /// Finalized buffer hash must match `final_buffer_hash`
+  ///
+  public static Instruction vaultTransactionCreateFromBuffer(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                                             final List<AccountMeta> keys,
+                                                             final VaultTransactionCreateArgs args) {
+    final byte[] _data = new byte[8 + args.l()];
+    int i = VAULT_TRANSACTION_CREATE_FROM_BUFFER_DISCRIMINATOR.write(_data, 0);
+    args.write(_data, i);
+
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, _data);
+  }
+
+  public record VaultTransactionCreateFromBufferIxData(Discriminator discriminator, VaultTransactionCreateArgs args) implements SerDe {  
+
+    public static VaultTransactionCreateFromBufferIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int ARGS_OFFSET = 8;
+
+    public static VaultTransactionCreateFromBufferIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var args = VaultTransactionCreateArgs.read(_data, i);
+      return new VaultTransactionCreateFromBufferIxData(discriminator, args);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += args.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + args.l();
+    }
+  }
+
   public static final Discriminator VAULT_TRANSACTION_EXECUTE_DISCRIMINATOR = toDiscriminator(194, 8, 161, 87, 153, 164, 25, 171);
 
   /// Execute a vault transaction.
@@ -2058,6 +2294,100 @@ public final class SquadsMultisigProgram {
     }
   }
 
+  public static final Discriminator PROPOSAL_CANCEL_V_2_DISCRIMINATOR = toDiscriminator(205, 41, 194, 61, 220, 139, 16, 247);
+
+  /// Cancel a multisig proposal on behalf of the `member`.
+  /// The proposal must be `Approved`.
+  /// This was introduced to incorporate proper state update, as old multisig members
+  /// may have lingering votes, and the proposal size may need to be reallocated to
+  /// accommodate the new amount of cancel votes.
+  /// The previous implemenation still works if the proposal size is in line with the
+  /// threshold size.
+  ///
+  public static List<AccountMeta> proposalCancelV2Keys(final PublicKey proposalVoteMultisigKey,
+                                                       final PublicKey proposalVoteMemberKey,
+                                                       final PublicKey proposalVoteProposalKey,
+                                                       final PublicKey systemProgramKey) {
+    return List.of(
+      createRead(proposalVoteMultisigKey),
+      createWritableSigner(proposalVoteMemberKey),
+      createWrite(proposalVoteProposalKey),
+      createRead(systemProgramKey)
+    );
+  }
+
+  /// Cancel a multisig proposal on behalf of the `member`.
+  /// The proposal must be `Approved`.
+  /// This was introduced to incorporate proper state update, as old multisig members
+  /// may have lingering votes, and the proposal size may need to be reallocated to
+  /// accommodate the new amount of cancel votes.
+  /// The previous implemenation still works if the proposal size is in line with the
+  /// threshold size.
+  ///
+  public static Instruction proposalCancelV2(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                             final PublicKey proposalVoteMultisigKey,
+                                             final PublicKey proposalVoteMemberKey,
+                                             final PublicKey proposalVoteProposalKey,
+                                             final PublicKey systemProgramKey,
+                                             final ProposalVoteArgs args) {
+    final var keys = proposalCancelV2Keys(
+      proposalVoteMultisigKey,
+      proposalVoteMemberKey,
+      proposalVoteProposalKey,
+      systemProgramKey
+    );
+    return proposalCancelV2(invokedSquadsMultisigProgramProgramMeta, keys, args);
+  }
+
+  /// Cancel a multisig proposal on behalf of the `member`.
+  /// The proposal must be `Approved`.
+  /// This was introduced to incorporate proper state update, as old multisig members
+  /// may have lingering votes, and the proposal size may need to be reallocated to
+  /// accommodate the new amount of cancel votes.
+  /// The previous implemenation still works if the proposal size is in line with the
+  /// threshold size.
+  ///
+  public static Instruction proposalCancelV2(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
+                                             final List<AccountMeta> keys,
+                                             final ProposalVoteArgs args) {
+    final byte[] _data = new byte[8 + args.l()];
+    int i = PROPOSAL_CANCEL_V_2_DISCRIMINATOR.write(_data, 0);
+    args.write(_data, i);
+
+    return Instruction.createInstruction(invokedSquadsMultisigProgramProgramMeta, keys, _data);
+  }
+
+  public record ProposalCancelV2IxData(Discriminator discriminator, ProposalVoteArgs args) implements SerDe {  
+
+    public static ProposalCancelV2IxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int ARGS_OFFSET = 8;
+
+    public static ProposalCancelV2IxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var args = ProposalVoteArgs.read(_data, i);
+      return new ProposalCancelV2IxData(discriminator, args);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      i += args.write(_data, i);
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + args.l();
+    }
+  }
+
   public static final Discriminator SPENDING_LIMIT_USE_DISCRIMINATOR = toDiscriminator(16, 57, 130, 127, 193, 20, 155, 134);
 
   /// Use a spending limit to transfer tokens from a multisig vault to a destination account.
@@ -2185,6 +2515,7 @@ public final class SquadsMultisigProgram {
   /// - the `proposal` is in a terminal state: `Executed`, `Rejected`, or `Cancelled`.
   /// - the `proposal` is stale.
   ///
+  /// @param proposalKey the logic within `config_transaction_accounts_close` does the rest of the checks.
   /// @param transactionKey ConfigTransaction corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static List<AccountMeta> configTransactionAccountsCloseKeys(final PublicKey multisigKey,
@@ -2206,6 +2537,7 @@ public final class SquadsMultisigProgram {
   /// - the `proposal` is in a terminal state: `Executed`, `Rejected`, or `Cancelled`.
   /// - the `proposal` is stale.
   ///
+  /// @param proposalKey the logic within `config_transaction_accounts_close` does the rest of the checks.
   /// @param transactionKey ConfigTransaction corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static Instruction configTransactionAccountsClose(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
@@ -2241,6 +2573,7 @@ public final class SquadsMultisigProgram {
   /// - the `proposal` is in a terminal state: `Executed`, `Rejected`, or `Cancelled`.
   /// - the `proposal` is stale and not `Approved`.
   ///
+  /// @param proposalKey the logic within `vault_transaction_accounts_close` does the rest of the checks.
   /// @param transactionKey VaultTransaction corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static List<AccountMeta> vaultTransactionAccountsCloseKeys(final PublicKey multisigKey,
@@ -2262,6 +2595,7 @@ public final class SquadsMultisigProgram {
   /// - the `proposal` is in a terminal state: `Executed`, `Rejected`, or `Cancelled`.
   /// - the `proposal` is stale and not `Approved`.
   ///
+  /// @param proposalKey the logic within `vault_transaction_accounts_close` does the rest of the checks.
   /// @param transactionKey VaultTransaction corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static Instruction vaultTransactionAccountsClose(final AccountMeta invokedSquadsMultisigProgramProgramMeta,
@@ -2365,6 +2699,7 @@ public final class SquadsMultisigProgram {
   /// This instruction is only allowed to be executed when all `VaultBatchTransaction` accounts
   /// in the `batch` are already closed: `batch.size == 0`.
   ///
+  /// @param proposalKey the logic within `batch_accounts_close` does the rest of the checks.
   /// @param batchKey `Batch` corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static List<AccountMeta> batchAccountsCloseKeys(final PublicKey multisigKey,
@@ -2387,6 +2722,7 @@ public final class SquadsMultisigProgram {
   /// This instruction is only allowed to be executed when all `VaultBatchTransaction` accounts
   /// in the `batch` are already closed: `batch.size == 0`.
   ///
+  /// @param proposalKey the logic within `batch_accounts_close` does the rest of the checks.
   /// @param batchKey `Batch` corresponding to the `proposal`.
   /// @param rentCollectorKey The rent collector.
   public static Instruction batchAccountsClose(final AccountMeta invokedSquadsMultisigProgramProgramMeta,

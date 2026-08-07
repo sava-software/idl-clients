@@ -43,7 +43,12 @@ public sealed interface SquadsMultisigProgramError extends ProgramError permits
     SquadsMultisigProgramError.TransactionNotMatchingProposal,
     SquadsMultisigProgramError.TransactionNotLastInBatch,
     SquadsMultisigProgramError.BatchNotEmpty,
-    SquadsMultisigProgramError.SpendingLimitInvalidAmount {
+    SquadsMultisigProgramError.SpendingLimitInvalidAmount,
+    SquadsMultisigProgramError.InvalidInstructionArgs,
+    SquadsMultisigProgramError.FinalBufferHashMismatch,
+    SquadsMultisigProgramError.FinalBufferSizeExceeded,
+    SquadsMultisigProgramError.FinalBufferSizeMismatch,
+    SquadsMultisigProgramError.MultisigCreateDeprecated {
 
   static SquadsMultisigProgramError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -87,6 +92,11 @@ public sealed interface SquadsMultisigProgramError extends ProgramError permits
       case 6037 -> TransactionNotLastInBatch.INSTANCE;
       case 6038 -> BatchNotEmpty.INSTANCE;
       case 6039 -> SpendingLimitInvalidAmount.INSTANCE;
+      case 6040 -> InvalidInstructionArgs.INSTANCE;
+      case 6041 -> FinalBufferHashMismatch.INSTANCE;
+      case 6042 -> FinalBufferSizeExceeded.INSTANCE;
+      case 6043 -> FinalBufferSizeMismatch.INSTANCE;
+      case 6044 -> MultisigCreateDeprecated.INSTANCE;
       default -> null;
     };
   }
@@ -368,6 +378,41 @@ public sealed interface SquadsMultisigProgramError extends ProgramError permits
 
     public static final SpendingLimitInvalidAmount INSTANCE = new SpendingLimitInvalidAmount(
         6039, "Invalid SpendingLimit amount"
+    );
+  }
+
+  record InvalidInstructionArgs(int code, String msg) implements SquadsMultisigProgramError {
+
+    public static final InvalidInstructionArgs INSTANCE = new InvalidInstructionArgs(
+        6040, "Invalid Instruction Arguments"
+    );
+  }
+
+  record FinalBufferHashMismatch(int code, String msg) implements SquadsMultisigProgramError {
+
+    public static final FinalBufferHashMismatch INSTANCE = new FinalBufferHashMismatch(
+        6041, "Final message buffer hash doesnt match the expected hash"
+    );
+  }
+
+  record FinalBufferSizeExceeded(int code, String msg) implements SquadsMultisigProgramError {
+
+    public static final FinalBufferSizeExceeded INSTANCE = new FinalBufferSizeExceeded(
+        6042, "Final buffer size cannot exceed 4000 bytes"
+    );
+  }
+
+  record FinalBufferSizeMismatch(int code, String msg) implements SquadsMultisigProgramError {
+
+    public static final FinalBufferSizeMismatch INSTANCE = new FinalBufferSizeMismatch(
+        6043, "Final buffer size mismatch"
+    );
+  }
+
+  record MultisigCreateDeprecated(int code, String msg) implements SquadsMultisigProgramError {
+
+    public static final MultisigCreateDeprecated INSTANCE = new MultisigCreateDeprecated(
+        6044, "multisig_create has been deprecated. Use multisig_create_v2 instead."
     );
   }
 }

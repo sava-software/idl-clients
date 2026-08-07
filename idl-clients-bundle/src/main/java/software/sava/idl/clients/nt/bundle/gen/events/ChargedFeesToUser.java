@@ -21,9 +21,13 @@ public record ChargedFeesToUser(Discriminator discriminator,
                                 BigInteger managementFeeShares,
                                 BigInteger performanceFeeShares,
                                 BigInteger sharePrice,
-                                PublicKey bundleAccountKey) implements NtbundleEvent {
+                                PublicKey bundleAccountKey,
+                                PublicKey user,
+                                BigInteger userSharesAfter,
+                                BigInteger managerPfeeSharesAfter,
+                                BigInteger managerMfeeSharesAfter) implements NtbundleEvent {
 
-  public static final int BYTES = 112;
+  public static final int BYTES = 192;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(201, 63, 172, 93, 230, 105, 127, 255);
 
   public static final int TOTAL_FEE_SHARES_OFFSET = 8;
@@ -32,6 +36,10 @@ public record ChargedFeesToUser(Discriminator discriminator,
   public static final int PERFORMANCE_FEE_SHARES_OFFSET = 48;
   public static final int SHARE_PRICE_OFFSET = 64;
   public static final int BUNDLE_ACCOUNT_KEY_OFFSET = 80;
+  public static final int USER_OFFSET = 112;
+  public static final int USER_SHARES_AFTER_OFFSET = 144;
+  public static final int MANAGER_PFEE_SHARES_AFTER_OFFSET = 160;
+  public static final int MANAGER_MFEE_SHARES_AFTER_OFFSET = 176;
 
   public static ChargedFeesToUser read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -50,13 +58,25 @@ public record ChargedFeesToUser(Discriminator discriminator,
     final var sharePrice = getUInt128LE(_data, i);
     i += 16;
     final var bundleAccountKey = readPubKey(_data, i);
+    i += 32;
+    final var user = readPubKey(_data, i);
+    i += 32;
+    final var userSharesAfter = getUInt128LE(_data, i);
+    i += 16;
+    final var managerPfeeSharesAfter = getUInt128LE(_data, i);
+    i += 16;
+    final var managerMfeeSharesAfter = getUInt128LE(_data, i);
     return new ChargedFeesToUser(discriminator,
                                  totalFeeShares,
                                  totalFeeValue,
                                  managementFeeShares,
                                  performanceFeeShares,
                                  sharePrice,
-                                 bundleAccountKey);
+                                 bundleAccountKey,
+                                 user,
+                                 userSharesAfter,
+                                 managerPfeeSharesAfter,
+                                 managerMfeeSharesAfter);
   }
 
   @Override
@@ -74,6 +94,14 @@ public record ChargedFeesToUser(Discriminator discriminator,
     i += 16;
     bundleAccountKey.write(_data, i);
     i += 32;
+    user.write(_data, i);
+    i += 32;
+    putInt128LE(_data, i, userSharesAfter);
+    i += 16;
+    putInt128LE(_data, i, managerPfeeSharesAfter);
+    i += 16;
+    putInt128LE(_data, i, managerMfeeSharesAfter);
+    i += 16;
     return i - _offset;
   }
 

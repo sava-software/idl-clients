@@ -2,7 +2,7 @@
   "address": "SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf",
   "metadata": {
     "name": "squads_multisig_program",
-    "version": "2.1.0",
+    "version": "2.0.0",
     "spec": "0.1.0"
   },
   "instructions": [
@@ -174,10 +174,39 @@
       ],
       "accounts": [
         {
-          "name": "null"
+          "name": "multisig",
+          "writable": true
+        },
+        {
+          "name": "create_key",
+          "docs": [
+            "An ephemeral signer that is used as a seed for the Multisig PDA.",
+            "Must be a signer to prevent front-running attack by someone else but the original creator."
+          ],
+          "signer": true
+        },
+        {
+          "name": "creator",
+          "docs": [
+            "The creator of the multisig."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "MultisigCreateArgs"
+            }
+          }
+        }
+      ]
     },
     {
       "name": "multisig_create_v2",
@@ -861,203 +890,6 @@
       ]
     },
     {
-      "name": "transaction_buffer_create",
-      "docs": [
-        "Create a transaction buffer account."
-      ],
-      "discriminator": [
-        245,
-        201,
-        113,
-        108,
-        37,
-        63,
-        29,
-        89
-      ],
-      "accounts": [
-        {
-          "name": "multisig"
-        },
-        {
-          "name": "transaction_buffer",
-          "writable": true
-        },
-        {
-          "name": "creator",
-          "docs": [
-            "The member of the multisig that is creating the transaction."
-          ],
-          "signer": true
-        },
-        {
-          "name": "rent_payer",
-          "docs": [
-            "The payer for the transaction account rent."
-          ],
-          "writable": true,
-          "signer": true
-        },
-        {
-          "name": "system_program"
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "TransactionBufferCreateArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "transaction_buffer_close",
-      "docs": [
-        "Close a transaction buffer account."
-      ],
-      "discriminator": [
-        17,
-        182,
-        208,
-        228,
-        136,
-        24,
-        178,
-        102
-      ],
-      "accounts": [
-        {
-          "name": "multisig"
-        },
-        {
-          "name": "transaction_buffer",
-          "writable": true
-        },
-        {
-          "name": "creator",
-          "docs": [
-            "The member of the multisig that created the TransactionBuffer."
-          ],
-          "signer": true
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "transaction_buffer_extend",
-      "docs": [
-        "Extend a transaction buffer account."
-      ],
-      "discriminator": [
-        230,
-        157,
-        67,
-        56,
-        5,
-        238,
-        245,
-        146
-      ],
-      "accounts": [
-        {
-          "name": "multisig"
-        },
-        {
-          "name": "transaction_buffer",
-          "writable": true
-        },
-        {
-          "name": "creator",
-          "docs": [
-            "The member of the multisig that created the TransactionBuffer."
-          ],
-          "signer": true
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "TransactionBufferExtendArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "vault_transaction_create_from_buffer",
-      "docs": [
-        "Create a new vault transaction from a completed transaction buffer.",
-        "Finalized buffer hash must match `final_buffer_hash`"
-      ],
-      "discriminator": [
-        222,
-        54,
-        149,
-        68,
-        87,
-        246,
-        48,
-        231
-      ],
-      "accounts": [
-        {
-          "name": "vault_transaction_create",
-          "accounts": [
-            {
-              "name": "multisig",
-              "writable": true
-            },
-            {
-              "name": "transaction",
-              "writable": true
-            },
-            {
-              "name": "creator",
-              "docs": [
-                "The member of the multisig that is creating the transaction."
-              ],
-              "signer": true
-            },
-            {
-              "name": "rent_payer",
-              "docs": [
-                "The payer for the transaction account rent."
-              ],
-              "writable": true,
-              "signer": true
-            },
-            {
-              "name": "system_program"
-            }
-          ]
-        },
-        {
-          "name": "transaction_buffer",
-          "writable": true
-        },
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "VaultTransactionCreateArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "vault_transaction_execute",
       "docs": [
         "Execute a vault transaction.",
@@ -1478,60 +1310,6 @@
       ]
     },
     {
-      "name": "proposal_cancel_v2",
-      "docs": [
-        "Cancel a multisig proposal on behalf of the `member`.",
-        "The proposal must be `Approved`.",
-        "This was introduced to incorporate proper state update, as old multisig members",
-        "may have lingering votes, and the proposal size may need to be reallocated to",
-        "accommodate the new amount of cancel votes.",
-        "The previous implemenation still works if the proposal size is in line with the",
-        "threshold size."
-      ],
-      "discriminator": [
-        205,
-        41,
-        194,
-        61,
-        220,
-        139,
-        16,
-        247
-      ],
-      "accounts": [
-        {
-          "name": "proposal_vote",
-          "accounts": [
-            {
-              "name": "multisig"
-            },
-            {
-              "name": "member",
-              "writable": true,
-              "signer": true
-            },
-            {
-              "name": "proposal",
-              "writable": true
-            }
-          ]
-        },
-        {
-          "name": "system_program"
-        }
-      ],
-      "args": [
-        {
-          "name": "args",
-          "type": {
-            "defined": {
-              "name": "ProposalVoteArgs"
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "spending_limit_use",
       "docs": [
         "Use a spending limit to transfer tokens from a multisig vault to a destination account."
@@ -1651,9 +1429,6 @@
         },
         {
           "name": "proposal",
-          "docs": [
-            "the logic within `config_transaction_accounts_close` does the rest of the checks."
-          ],
           "writable": true
         },
         {
@@ -1700,9 +1475,6 @@
         },
         {
           "name": "proposal",
-          "docs": [
-            "the logic within `vault_transaction_accounts_close` does the rest of the checks."
-          ],
           "writable": true
         },
         {
@@ -1804,9 +1576,6 @@
         },
         {
           "name": "proposal",
-          "docs": [
-            "the logic within `batch_accounts_close` does the rest of the checks."
-          ],
           "writable": true
         },
         {
@@ -1920,19 +1689,6 @@
         195,
         222,
         152
-      ]
-    },
-    {
-      "name": "TransactionBuffer",
-      "discriminator": [
-        90,
-        36,
-        35,
-        219,
-        93,
-        225,
-        110,
-        96
       ]
     },
     {
@@ -2149,31 +1905,6 @@
       "code": 6039,
       "name": "SpendingLimitInvalidAmount",
       "msg": "Invalid SpendingLimit amount"
-    },
-    {
-      "code": 6040,
-      "name": "InvalidInstructionArgs",
-      "msg": "Invalid Instruction Arguments"
-    },
-    {
-      "code": 6041,
-      "name": "FinalBufferHashMismatch",
-      "msg": "Final message buffer hash doesnt match the expected hash"
-    },
-    {
-      "code": 6042,
-      "name": "FinalBufferSizeExceeded",
-      "msg": "Final buffer size cannot exceed 4000 bytes"
-    },
-    {
-      "code": 6043,
-      "name": "FinalBufferSizeMismatch",
-      "msg": "Final buffer size mismatch"
-    },
-    {
-      "code": 6044,
-      "name": "MultisigCreateDeprecated",
-      "msg": "multisig_create has been deprecated. Use multisig_create_v2 instead."
     }
   ],
   "types": [
@@ -2291,8 +2022,9 @@
           {
             "name": "members",
             "docs": [
-              "Members of the Spending Limit that can use it.",
-              "Don't have to be members of the multisig."
+              "Members of the multisig that can use the spending limit.",
+              "In case a member is removed from the multisig, the spending limit will remain existent",
+              "(until explicitly deleted), but the removed member will not be able to use it anymore."
             ],
             "type": {
               "vec": "pubkey"
@@ -2439,6 +2171,60 @@
             "type": {
               "option": "pubkey"
             }
+          },
+          {
+            "name": "memo",
+            "docs": [
+              "Memo is used for indexing only."
+            ],
+            "type": {
+              "option": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MultisigCreateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "config_authority",
+            "docs": [
+              "The authority that can configure the multisig: add/remove members, change the threshold, etc.",
+              "Should be set to `None` for autonomous multisigs."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "threshold",
+            "docs": [
+              "The number of signatures required to execute a transaction."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "members",
+            "docs": [
+              "The members of the multisig."
+            ],
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "Member"
+                }
+              }
+            }
+          },
+          {
+            "name": "time_lock",
+            "docs": [
+              "How many seconds must pass between transaction voting, settlement, and execution."
+            ],
+            "type": "u32"
           },
           {
             "name": "memo",
@@ -2666,66 +2452,6 @@
       }
     },
     {
-      "name": "TransactionBufferCreateArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "buffer_index",
-            "docs": [
-              "Index of the buffer account to seed the account derivation"
-            ],
-            "type": "u8"
-          },
-          {
-            "name": "vault_index",
-            "docs": [
-              "Index of the vault this transaction belongs to."
-            ],
-            "type": "u8"
-          },
-          {
-            "name": "final_buffer_hash",
-            "docs": [
-              "Hash of the final assembled transaction message."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "final_buffer_size",
-            "docs": [
-              "Final size of the buffer."
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "buffer",
-            "docs": [
-              "Initial slice of the buffer."
-            ],
-            "type": "bytes"
-          }
-        ]
-      }
-    },
-    {
-      "name": "TransactionBufferExtendArgs",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "buffer",
-            "type": "bytes"
-          }
-        ]
-      }
-    },
-    {
       "name": "VaultTransactionCreateArgs",
       "type": {
         "kind": "struct",
@@ -2752,6 +2478,147 @@
             "name": "memo",
             "type": {
               "option": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransactionMessage",
+      "docs": [
+        "Unvalidated instruction data, must be treated as untrusted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "num_signers",
+            "docs": [
+              "The number of signer pubkeys in the account_keys vec."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "num_writable_signers",
+            "docs": [
+              "The number of writable signer pubkeys in the account_keys vec."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "num_writable_non_signers",
+            "docs": [
+              "The number of writable non-signer pubkeys in the account_keys vec."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "account_keys",
+            "docs": [
+              "The list of unique account public keys (including program IDs) that will be used in the provided instructions."
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,Pubkey>"
+              }
+            }
+          },
+          {
+            "name": "instructions",
+            "docs": [
+              "The list of instructions to execute."
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,CompiledInstruction>"
+              }
+            }
+          },
+          {
+            "name": "address_table_lookups",
+            "docs": [
+              "List of address table lookups used to load additional accounts",
+              "for this transaction."
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,MessageAddressTableLookup>"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "CompiledInstruction",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "program_id_index",
+            "type": "u8"
+          },
+          {
+            "name": "account_indexes",
+            "docs": [
+              "Indices into the tx's `account_keys` list indicating which accounts to pass to the instruction."
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,u8>"
+              }
+            }
+          },
+          {
+            "name": "data",
+            "docs": [
+              "Instruction data."
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u16,u8>"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MessageAddressTableLookup",
+      "docs": [
+        "Address table lookups describe an on-chain address lookup table to use",
+        "for loading more readonly and writable accounts in a single tx."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "account_key",
+            "docs": [
+              "Address lookup table account key"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "writable_indexes",
+            "docs": [
+              "List of indexes used to load writable account addresses"
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,u8>"
+              }
+            }
+          },
+          {
+            "name": "readonly_indexes",
+            "docs": [
+              "List of indexes used to load readonly account addresses"
+            ],
+            "type": {
+              "defined": {
+                "name": "SmallVec<u8,u8>"
+              }
             }
           }
         ]
@@ -3078,6 +2945,23 @@
                 }
               }
             ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Permission",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Initiate"
+          },
+          {
+            "name": "Vote"
+          },
+          {
+            "name": "Execute"
           }
         ]
       }
@@ -3645,68 +3529,6 @@
             "type": {
               "vec": "pubkey"
             }
-          }
-        ]
-      }
-    },
-    {
-      "name": "TransactionBuffer",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "multisig",
-            "docs": [
-              "The multisig this belongs to."
-            ],
-            "type": "pubkey"
-          },
-          {
-            "name": "creator",
-            "docs": [
-              "Member of the Multisig who created the TransactionBuffer."
-            ],
-            "type": "pubkey"
-          },
-          {
-            "name": "buffer_index",
-            "docs": [
-              "Index to seed address derivation"
-            ],
-            "type": "u8"
-          },
-          {
-            "name": "vault_index",
-            "docs": [
-              "Vault index of the transaction this buffer belongs to."
-            ],
-            "type": "u8"
-          },
-          {
-            "name": "final_buffer_hash",
-            "docs": [
-              "Hash of the final assembled transaction message."
-            ],
-            "type": {
-              "array": [
-                "u8",
-                32
-              ]
-            }
-          },
-          {
-            "name": "final_buffer_size",
-            "docs": [
-              "The size of the final assembled transaction message."
-            ],
-            "type": "u16"
-          },
-          {
-            "name": "buffer",
-            "docs": [
-              "The buffer of the transaction message."
-            ],
-            "type": "bytes"
           }
         ]
       }

@@ -1,17 +1,17 @@
 {
-  "deployed": "anchor",
+  "deployed": "vcs",
   "channels": {
     "anchor": {
       "origin": "6i4UjrDtkc7dqEmCyNDRfoxnAhDKSrY92u96Z74nRFdX",
       "hash": "c988ce7bb2b8234a804431d67f09d9d8b54400c5cd30dce1d14b316e2667e6b7",
-      "matchesDeployed": true,
+      "matchesDeployed": false,
+      "file": "anchor.json",
       "verbatim": "anchor.original.json"
     },
     "vcs": {
       "origin": "github:Squads-Protocol/v4@main/sdk/multisig/idl/squads_multisig_program.json",
       "hash": "1ca6d9c888cb185acf9dc02e00909c499cc21d76ce1a099c4b55560865e3cfad",
-      "matchesDeployed": false,
-      "file": "vcs.json",
+      "matchesDeployed": true,
       "verbatim": "vcs.original.json"
     }
   }

@@ -13,6 +13,9 @@ public sealed interface NtbundleEvent extends SerDe permits
     BundleDepositorInitialized,
     BundleMasterAccountInitialized,
     BundleMasterAdminChanged,
+    BundleSwitchCompleted,
+    BundleSwitchFallbackToWallet,
+    BundleSwitchRequested,
     ChangedCoreParams,
     ChargedFeesToUser,
     DelaysSet,
@@ -26,6 +29,7 @@ public sealed interface NtbundleEvent extends SerDe permits
     InitializedReceivers,
     InitializedVault,
     ManagerWithdrawal,
+    ManagerWithdrawalWithSplit,
     MaxDepositAmountSet,
     MinDepositAmountSet,
     NettingCompleted,
@@ -37,6 +41,13 @@ public sealed interface NtbundleEvent extends SerDe permits
     OracleUpdated,
     PausedDepositsWithdrawals,
     Redeemed,
+    ReferralFeesAccrued,
+    ReferrerActiveSet,
+    ReferrerConfigSet,
+    ReferrerRateOverrideSet,
+    ReferrerRegistered,
+    ReferrerWithdrawalProcessed,
+    ReferrerWithdrawalRequested,
     Refilled,
     RefundedDeposit,
     RequestedWithdrawalToDriftVault,
@@ -44,6 +55,11 @@ public sealed interface NtbundleEvent extends SerDe permits
     StrategyEnabled,
     StrategyRemoved,
     UserBundleAccountClosed,
+    UserFeeOverrideCleared,
+    UserFeeOverrideSet,
+    UserReferrerSet,
+    UserWithdrawalTimingOverrideCleared,
+    UserWithdrawalTimingOverrideSet,
     VaultNeutralFeeIncrementerSet,
     WithdrawalRedemptionScheduleSet,
     WithdrawalRequested,
@@ -68,6 +84,12 @@ public sealed interface NtbundleEvent extends SerDe permits
       return BundleMasterAccountInitialized.read(_data, _offset);
     } else if (BundleMasterAdminChanged.DISCRIMINATOR.equals(_data, _offset)) {
       return BundleMasterAdminChanged.read(_data, _offset);
+    } else if (BundleSwitchCompleted.DISCRIMINATOR.equals(_data, _offset)) {
+      return BundleSwitchCompleted.read(_data, _offset);
+    } else if (BundleSwitchFallbackToWallet.DISCRIMINATOR.equals(_data, _offset)) {
+      return BundleSwitchFallbackToWallet.read(_data, _offset);
+    } else if (BundleSwitchRequested.DISCRIMINATOR.equals(_data, _offset)) {
+      return BundleSwitchRequested.read(_data, _offset);
     } else if (ChangedCoreParams.DISCRIMINATOR.equals(_data, _offset)) {
       return ChangedCoreParams.read(_data, _offset);
     } else if (ChargedFeesToUser.DISCRIMINATOR.equals(_data, _offset)) {
@@ -94,6 +116,8 @@ public sealed interface NtbundleEvent extends SerDe permits
       return InitializedVault.read(_data, _offset);
     } else if (ManagerWithdrawal.DISCRIMINATOR.equals(_data, _offset)) {
       return ManagerWithdrawal.read(_data, _offset);
+    } else if (ManagerWithdrawalWithSplit.DISCRIMINATOR.equals(_data, _offset)) {
+      return ManagerWithdrawalWithSplit.read(_data, _offset);
     } else if (MaxDepositAmountSet.DISCRIMINATOR.equals(_data, _offset)) {
       return MaxDepositAmountSet.read(_data, _offset);
     } else if (MinDepositAmountSet.DISCRIMINATOR.equals(_data, _offset)) {
@@ -116,6 +140,20 @@ public sealed interface NtbundleEvent extends SerDe permits
       return PausedDepositsWithdrawals.read(_data, _offset);
     } else if (Redeemed.DISCRIMINATOR.equals(_data, _offset)) {
       return Redeemed.read(_data, _offset);
+    } else if (ReferralFeesAccrued.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferralFeesAccrued.read(_data, _offset);
+    } else if (ReferrerActiveSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerActiveSet.read(_data, _offset);
+    } else if (ReferrerConfigSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerConfigSet.read(_data, _offset);
+    } else if (ReferrerRateOverrideSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerRateOverrideSet.read(_data, _offset);
+    } else if (ReferrerRegistered.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerRegistered.read(_data, _offset);
+    } else if (ReferrerWithdrawalProcessed.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerWithdrawalProcessed.read(_data, _offset);
+    } else if (ReferrerWithdrawalRequested.DISCRIMINATOR.equals(_data, _offset)) {
+      return ReferrerWithdrawalRequested.read(_data, _offset);
     } else if (Refilled.DISCRIMINATOR.equals(_data, _offset)) {
       return Refilled.read(_data, _offset);
     } else if (RefundedDeposit.DISCRIMINATOR.equals(_data, _offset)) {
@@ -130,6 +168,16 @@ public sealed interface NtbundleEvent extends SerDe permits
       return StrategyRemoved.read(_data, _offset);
     } else if (UserBundleAccountClosed.DISCRIMINATOR.equals(_data, _offset)) {
       return UserBundleAccountClosed.read(_data, _offset);
+    } else if (UserFeeOverrideCleared.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserFeeOverrideCleared.read(_data, _offset);
+    } else if (UserFeeOverrideSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserFeeOverrideSet.read(_data, _offset);
+    } else if (UserReferrerSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserReferrerSet.read(_data, _offset);
+    } else if (UserWithdrawalTimingOverrideCleared.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserWithdrawalTimingOverrideCleared.read(_data, _offset);
+    } else if (UserWithdrawalTimingOverrideSet.DISCRIMINATOR.equals(_data, _offset)) {
+      return UserWithdrawalTimingOverrideSet.read(_data, _offset);
     } else if (VaultNeutralFeeIncrementerSet.DISCRIMINATOR.equals(_data, _offset)) {
       return VaultNeutralFeeIncrementerSet.read(_data, _offset);
     } else if (WithdrawalRedemptionScheduleSet.DISCRIMINATOR.equals(_data, _offset)) {

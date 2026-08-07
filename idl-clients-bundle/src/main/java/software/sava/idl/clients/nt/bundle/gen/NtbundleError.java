@@ -74,7 +74,29 @@ public sealed interface NtbundleError extends ProgramError permits
     NtbundleError.MinDepositAmountNotMet,
     NtbundleError.InvalidOracleMaxAge,
     NtbundleError.InvalidOracleUpdateTimeLimit,
-    NtbundleError.InvalidWithdrawalRedemptionSchedule {
+    NtbundleError.InvalidWithdrawalRedemptionSchedule,
+    NtbundleError.InvalidUserFeeConfig,
+    NtbundleError.EmptyUserFeeClearRequest,
+    NtbundleError.NoUserFeeOverrideToClear,
+    NtbundleError.InvalidUserWithdrawalTimingConfig,
+    NtbundleError.EmptyUserWithdrawalTimingClearRequest,
+    NtbundleError.NoUserWithdrawalTimingOverrideToClear,
+    NtbundleError.SwitchTargetSameAsSource,
+    NtbundleError.SwitchAssetMintMismatch,
+    NtbundleError.SwitchAlreadyActive,
+    NtbundleError.NoPendingSwitch,
+    NtbundleError.SwitchTargetAccountsMissing,
+    NtbundleError.SwitchTargetAccountMismatch,
+    NtbundleError.InvalidFeeSplit,
+    NtbundleError.InvalidReferralConfig,
+    NtbundleError.ReferralsDisabled,
+    NtbundleError.ReferralAlreadySet,
+    NtbundleError.UserBundleAccountHasActivity,
+    NtbundleError.ReferrerAccountMissing,
+    NtbundleError.ReferrerAccountMismatch,
+    NtbundleError.ReferrerSharesZero,
+    NtbundleError.UnauthorizedReferrerAction,
+    NtbundleError.ReferrerDepositTooLow {
 
   static NtbundleError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -149,6 +171,28 @@ public sealed interface NtbundleError extends ProgramError permits
       case 6068 -> InvalidOracleMaxAge.INSTANCE;
       case 6069 -> InvalidOracleUpdateTimeLimit.INSTANCE;
       case 6070 -> InvalidWithdrawalRedemptionSchedule.INSTANCE;
+      case 6071 -> InvalidUserFeeConfig.INSTANCE;
+      case 6072 -> EmptyUserFeeClearRequest.INSTANCE;
+      case 6073 -> NoUserFeeOverrideToClear.INSTANCE;
+      case 6074 -> InvalidUserWithdrawalTimingConfig.INSTANCE;
+      case 6075 -> EmptyUserWithdrawalTimingClearRequest.INSTANCE;
+      case 6076 -> NoUserWithdrawalTimingOverrideToClear.INSTANCE;
+      case 6077 -> SwitchTargetSameAsSource.INSTANCE;
+      case 6078 -> SwitchAssetMintMismatch.INSTANCE;
+      case 6079 -> SwitchAlreadyActive.INSTANCE;
+      case 6080 -> NoPendingSwitch.INSTANCE;
+      case 6081 -> SwitchTargetAccountsMissing.INSTANCE;
+      case 6082 -> SwitchTargetAccountMismatch.INSTANCE;
+      case 6083 -> InvalidFeeSplit.INSTANCE;
+      case 6084 -> InvalidReferralConfig.INSTANCE;
+      case 6085 -> ReferralsDisabled.INSTANCE;
+      case 6086 -> ReferralAlreadySet.INSTANCE;
+      case 6087 -> UserBundleAccountHasActivity.INSTANCE;
+      case 6088 -> ReferrerAccountMissing.INSTANCE;
+      case 6089 -> ReferrerAccountMismatch.INSTANCE;
+      case 6090 -> ReferrerSharesZero.INSTANCE;
+      case 6091 -> UnauthorizedReferrerAction.INSTANCE;
+      case 6092 -> ReferrerDepositTooLow.INSTANCE;
       default -> null;
     };
   }
@@ -647,6 +691,160 @@ public sealed interface NtbundleError extends ProgramError permits
 
     public static final InvalidWithdrawalRedemptionSchedule INSTANCE = new InvalidWithdrawalRedemptionSchedule(
         6070, "Invalid withdrawal redemption schedule"
+    );
+  }
+
+  record InvalidUserFeeConfig(int code, String msg) implements NtbundleError {
+
+    public static final InvalidUserFeeConfig INSTANCE = new InvalidUserFeeConfig(
+        6071, "Invalid user fee configuration"
+    );
+  }
+
+  record EmptyUserFeeClearRequest(int code, String msg) implements NtbundleError {
+
+    public static final EmptyUserFeeClearRequest INSTANCE = new EmptyUserFeeClearRequest(
+        6072, "Empty user fee clear request"
+    );
+  }
+
+  record NoUserFeeOverrideToClear(int code, String msg) implements NtbundleError {
+
+    public static final NoUserFeeOverrideToClear INSTANCE = new NoUserFeeOverrideToClear(
+        6073, "No user fee override to clear"
+    );
+  }
+
+  record InvalidUserWithdrawalTimingConfig(int code, String msg) implements NtbundleError {
+
+    public static final InvalidUserWithdrawalTimingConfig INSTANCE = new InvalidUserWithdrawalTimingConfig(
+        6074, "Invalid user withdrawal timing configuration"
+    );
+  }
+
+  record EmptyUserWithdrawalTimingClearRequest(int code, String msg) implements NtbundleError {
+
+    public static final EmptyUserWithdrawalTimingClearRequest INSTANCE = new EmptyUserWithdrawalTimingClearRequest(
+        6075, "Empty user withdrawal timing clear request"
+    );
+  }
+
+  record NoUserWithdrawalTimingOverrideToClear(int code, String msg) implements NtbundleError {
+
+    public static final NoUserWithdrawalTimingOverrideToClear INSTANCE = new NoUserWithdrawalTimingOverrideToClear(
+        6076, "No user withdrawal timing override to clear"
+    );
+  }
+
+  record SwitchTargetSameAsSource(int code, String msg) implements NtbundleError {
+
+    public static final SwitchTargetSameAsSource INSTANCE = new SwitchTargetSameAsSource(
+        6077, "Switch target cannot be source bundle"
+    );
+  }
+
+  record SwitchAssetMintMismatch(int code, String msg) implements NtbundleError {
+
+    public static final SwitchAssetMintMismatch INSTANCE = new SwitchAssetMintMismatch(
+        6078, "Switch asset mint mismatch"
+    );
+  }
+
+  record SwitchAlreadyActive(int code, String msg) implements NtbundleError {
+
+    public static final SwitchAlreadyActive INSTANCE = new SwitchAlreadyActive(
+        6079, "Switch already active"
+    );
+  }
+
+  record NoPendingSwitch(int code, String msg) implements NtbundleError {
+
+    public static final NoPendingSwitch INSTANCE = new NoPendingSwitch(
+        6080, "No pending switch"
+    );
+  }
+
+  record SwitchTargetAccountsMissing(int code, String msg) implements NtbundleError {
+
+    public static final SwitchTargetAccountsMissing INSTANCE = new SwitchTargetAccountsMissing(
+        6081, "Switch target accounts missing"
+    );
+  }
+
+  record SwitchTargetAccountMismatch(int code, String msg) implements NtbundleError {
+
+    public static final SwitchTargetAccountMismatch INSTANCE = new SwitchTargetAccountMismatch(
+        6082, "Switch target account mismatch"
+    );
+  }
+
+  record InvalidFeeSplit(int code, String msg) implements NtbundleError {
+
+    public static final InvalidFeeSplit INSTANCE = new InvalidFeeSplit(
+        6083, "Invalid fee split"
+    );
+  }
+
+  record InvalidReferralConfig(int code, String msg) implements NtbundleError {
+
+    public static final InvalidReferralConfig INSTANCE = new InvalidReferralConfig(
+        6084, "Invalid referral configuration"
+    );
+  }
+
+  record ReferralsDisabled(int code, String msg) implements NtbundleError {
+
+    public static final ReferralsDisabled INSTANCE = new ReferralsDisabled(
+        6085, "Referrals disabled for bundle"
+    );
+  }
+
+  record ReferralAlreadySet(int code, String msg) implements NtbundleError {
+
+    public static final ReferralAlreadySet INSTANCE = new ReferralAlreadySet(
+        6086, "Referral already set"
+    );
+  }
+
+  record UserBundleAccountHasActivity(int code, String msg) implements NtbundleError {
+
+    public static final UserBundleAccountHasActivity INSTANCE = new UserBundleAccountHasActivity(
+        6087, "User has existing bundle activity"
+    );
+  }
+
+  record ReferrerAccountMissing(int code, String msg) implements NtbundleError {
+
+    public static final ReferrerAccountMissing INSTANCE = new ReferrerAccountMissing(
+        6088, "Referrer account missing"
+    );
+  }
+
+  record ReferrerAccountMismatch(int code, String msg) implements NtbundleError {
+
+    public static final ReferrerAccountMismatch INSTANCE = new ReferrerAccountMismatch(
+        6089, "Referrer account mismatch"
+    );
+  }
+
+  record ReferrerSharesZero(int code, String msg) implements NtbundleError {
+
+    public static final ReferrerSharesZero INSTANCE = new ReferrerSharesZero(
+        6090, "Referrer shares are zero"
+    );
+  }
+
+  record UnauthorizedReferrerAction(int code, String msg) implements NtbundleError {
+
+    public static final UnauthorizedReferrerAction INSTANCE = new UnauthorizedReferrerAction(
+        6091, "Not referrer"
+    );
+  }
+
+  record ReferrerDepositTooLow(int code, String msg) implements NtbundleError {
+
+    public static final ReferrerDepositTooLow INSTANCE = new ReferrerDepositTooLow(
+        6092, "Referrer deposit too low"
     );
   }
 }

@@ -22,9 +22,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///               so 1 SOL would be `1_000_000_000` and 1 USDC would be `1_000_000`.
 /// @param period The reset period of the spending limit.
 ///               When it passes, the remaining amount is reset, unless it's `Period::OneTime`.
-/// @param members Members of the multisig that can use the spending limit.
-///                In case a member is removed from the multisig, the spending limit will remain existent
-///                (until explicitly deleted), but the removed member will not be able to use it anymore.
+/// @param members Members of the Spending Limit that can use it.
+///                Don't have to be members of the multisig.
 /// @param destinations The destination addresses the spending limit is allowed to sent funds to.
 ///                     If empty, funds can be sent to any address.
 /// @param memo: Option<string> Memo is used for indexing only.
