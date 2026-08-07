@@ -1,5 +1,38 @@
 # Changelog
 
+## [25.18.5](https://github.com/sava-software/idl-clients/compare/25.18.4...25.18.5) (2026-08-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **idl:** generate Squads, Neutral Trade and Jupiter Order Engine from the hosted IDL
+* **marginfi:** let callers pass the token program on the lending overloads
+* **kamino:** pass the lending markets with a vault's reserves
+
+### Features
+
+* **idl:** generate Squads, Neutral Trade and Jupiter Order Engine from the hosted IDL ([9d74174](https://github.com/sava-software/idl-clients/commit/9d741749a78a6de7cd7613839173f3cd97da41b7))
+* **metaplex:** generate from the upstream IDL, dropping the vendored copy ([333f400](https://github.com/sava-software/idl-clients/commit/333f400a94b72adc945c5b0306822cea901e0278))
+* **scope:** expose the per-slot mapping configuration the entries were dropping ([49860d6](https://github.com/sava-software/idl-clients/commit/49860d6045cbf193bb9408a45ea05374f1d4c343))
+* **src-gen:** track hosted IDL's and pre-converted anchor idls. ([253e7b0](https://github.com/sava-software/idl-clients/commit/253e7b00a26ded1ffbb43163889db08ac6f42e9a))
+
+
+### Bug Fixes
+
+* **kamino:** map every mainnet scope feed, not just the two the SDK names ([1fb4090](https://github.com/sava-software/idl-clients/commit/1fb4090b5fd32719d320c8bcd36dc40a359d301d))
+* **kamino:** pass the lending markets with a vault's reserves ([83c0a77](https://github.com/sava-software/idl-clients/commit/83c0a77484882db88754eed962fe7fe9da7a050f))
+* **kamino:** read an existing reserve's vaults instead of deriving them ([3f38037](https://github.com/sava-software/idl-clients/commit/3f38037a2974982561ed24f201a8b6bafe2aee74))
+* **kamino:** use the right token program per account and let the permission account sign ([c27f349](https://github.com/sava-software/idl-clients/commit/c27f349c8f9d36035cafdc8996f6e73a7b4c4fc7))
+* **marginfi:** let callers pass the token program on the lending overloads ([542a337](https://github.com/sava-software/idl-clients/commit/542a33714858620be4ff6f7398f310134facce3d))
+* **marinade:** bound the list index scans by the list's count ([a3f9acb](https://github.com/sava-software/idl-clients/commit/a3f9acb0339a830e9aa98f99103db88699ee93ce))
+* **marinade:** read the validator list at the on-chain record stride ([625adb3](https://github.com/sava-software/idl-clients/commit/625adb3a48aff940fa7c41b2fd41307adda90a3e))
+* **phoenix:** derive Ember's state and vault from the Phoenix program ([5c5b990](https://github.com/sava-software/idl-clients/commit/5c5b9909192f9c4f148a77ba0985aa45428c2437))
+* **scope:** decode mappings the program can actually write ([4ab75e4](https://github.com/sava-software/idl-clients/commit/4ab75e4cfa36eb1e08709b183e12c523ee6f4ac5))
+* **spl:** correct StakeAccount.state for bootstrap and genesis delegations ([8e54900](https://github.com/sava-software/idl-clients/commit/8e5490068b381e90432f29c8a9325d74d6c6c790))
+* **spl:** deposit a stake account against the pool's own deposit authority ([1557459](https://github.com/sava-software/idl-clients/commit/155745904b7f524fa5a10a579487f35d0ded55f2))
+* **src-gen:** reference source of truth pyth IDL's ([35f29e9](https://github.com/sava-software/idl-clients/commit/35f29e9519db65c8f81a6795e9a28a7d39656d83))
+* **src-gen:** Sync Jupiter Swap. ([6378fac](https://github.com/sava-software/idl-clients/commit/6378face5a497932062293d0a2325cf2198c6171))
+
 ## [25.18.4](https://github.com/sava-software/idl-clients/compare/25.18.3...25.18.4) (2026-07-31)
 
 
