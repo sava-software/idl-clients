@@ -4,6 +4,8 @@ plugins {
 
 testModuleInfo {
   requires("jdk.httpserver")
+  // a test whose point is a parse failure silences sava-rpc's SEVERE log for the duration
+  requires("java.logging")
   requires("org.junit.jupiter.api")
   runtimeOnly("org.junit.jupiter.engine")
 }

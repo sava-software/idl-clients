@@ -123,6 +123,21 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
     assertNull(labels.get("Meteora"));
   }
 
+  /// Runs `action` with sava-rpc's response-parse logger silenced, for a test whose *point* is a
+  /// parse failure. Restored afterwards, so a genuine parse failure elsewhere is still reported.
+  private static <T> T withoutParseFailureLogging(final java.util.function.Supplier<T> action) {
+    final var logger = java.util.logging.Logger.getLogger(
+        "software.sava.rpc.json.http.client.BaseJsonResponseController"
+    );
+    final var previous = logger.getLevel();
+    logger.setLevel(java.util.logging.Level.OFF);
+    try {
+      return action.get();
+    } finally {
+      logger.setLevel(previous);
+    }
+  }
+
   /// Two program ids whose labels differ only by case would silently overwrite
   /// each other in a case-insensitive map, leaving one DEX pointing at the
   /// other's program. The client refuses instead.
@@ -131,8 +146,12 @@ final class JupiterSwapApiClientTests extends JupiterRestTests {
     expectGet("/program-id-to-label", """
         {"%s":"Orca","%s":"orca"}""".formatted(WSOL, USDC));
 
-    final var failure = assertThrows(CompletionException.class,
-        () -> client.dexLabelToProgramIdMap().join());
+    // The rejection travels as a parse failure, and sava-rpc logs every one at SEVERE with the
+    // whole response body and a stack trace. Here that failure is the assertion, so the log is
+    // noise: a passing test that prints a stack trace teaches whoever reads the build output to
+    // scroll past stack traces.
+    final var failure = withoutParseFailureLogging(() -> assertThrows(CompletionException.class,
+        () -> client.dexLabelToProgramIdMap().join()));
     assertInstanceOf(IllegalStateException.class, failure.getCause());
     assertTrue(failure.getCause().getMessage().toLowerCase().contains("duplicate"),
         "the failure should name the duplication: " + failure.getCause().getMessage());
