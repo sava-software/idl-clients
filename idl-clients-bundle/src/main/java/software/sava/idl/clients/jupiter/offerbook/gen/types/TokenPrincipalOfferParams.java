@@ -20,9 +20,10 @@ public record TokenPrincipalOfferParams(long principalAmount,
                                         long duration,
                                         long expiry,
                                         boolean allowPartialFill,
-                                        long minFillAmount) implements SerDe {
+                                        long minFillAmount,
+                                        boolean allowExtend) implements SerDe {
 
-  public static final int BYTES = 37;
+  public static final int BYTES = 38;
 
   public static final int PRINCIPAL_AMOUNT_OFFSET = 0;
   public static final int COLLATERAL_AMOUNT_OFFSET = 8;
@@ -31,6 +32,7 @@ public record TokenPrincipalOfferParams(long principalAmount,
   public static final int EXPIRY_OFFSET = 24;
   public static final int ALLOW_PARTIAL_FILL_OFFSET = 28;
   public static final int MIN_FILL_AMOUNT_OFFSET = 29;
+  public static final int ALLOW_EXTEND_OFFSET = 37;
 
   public static TokenPrincipalOfferParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -50,13 +52,16 @@ public record TokenPrincipalOfferParams(long principalAmount,
     final var allowPartialFill = _data[i] == 1;
     ++i;
     final var minFillAmount = getInt64LE(_data, i);
+    i += 8;
+    final var allowExtend = _data[i] == 1;
     return new TokenPrincipalOfferParams(principalAmount,
                                          collateralAmount,
                                          apy,
                                          duration,
                                          expiry,
                                          allowPartialFill,
-                                         minFillAmount);
+                                         minFillAmount,
+                                         allowExtend);
   }
 
   @Override
@@ -76,6 +81,8 @@ public record TokenPrincipalOfferParams(long principalAmount,
     ++i;
     putInt64LE(_data, i, minFillAmount);
     i += 8;
+    _data[i] = (byte) (allowExtend ? 1 : 0);
+    ++i;
     return i - _offset;
   }
 

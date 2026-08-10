@@ -7,14 +7,22 @@ public sealed interface OfferbookEvent extends SerDe permits
     EscrowDeposit,
     EscrowWithdraw,
     LoanCreated,
+    LoanCreatedV1,
     LoanDefaulted,
+    LoanDefaultedV1,
+    LoanExtendabilityUpdated,
+    LoanExtended,
     LoanRepaid,
+    LoanRepaidV1,
     OfferCancelled,
     OfferCancelledV1,
+    OfferCancelledV2,
     OfferCreated,
     OfferCreatedV1,
+    OfferCreatedV2,
     OfferFilled,
     OfferFilledV1,
+    OfferFilledV2,
     ProtocolFee,
     RefereeReward,
     ReferralReward {
@@ -26,22 +34,38 @@ public sealed interface OfferbookEvent extends SerDe permits
       return EscrowWithdraw.read(_data, _offset);
     } else if (LoanCreated.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanCreated.read(_data, _offset);
+    } else if (LoanCreatedV1.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanCreatedV1.read(_data, _offset);
     } else if (LoanDefaulted.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanDefaulted.read(_data, _offset);
+    } else if (LoanDefaultedV1.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanDefaultedV1.read(_data, _offset);
+    } else if (LoanExtendabilityUpdated.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanExtendabilityUpdated.read(_data, _offset);
+    } else if (LoanExtended.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanExtended.read(_data, _offset);
     } else if (LoanRepaid.DISCRIMINATOR.equals(_data, _offset)) {
       return LoanRepaid.read(_data, _offset);
+    } else if (LoanRepaidV1.DISCRIMINATOR.equals(_data, _offset)) {
+      return LoanRepaidV1.read(_data, _offset);
     } else if (OfferCancelled.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCancelled.read(_data, _offset);
     } else if (OfferCancelledV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCancelledV1.read(_data, _offset);
+    } else if (OfferCancelledV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferCancelledV2.read(_data, _offset);
     } else if (OfferCreated.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCreated.read(_data, _offset);
     } else if (OfferCreatedV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferCreatedV1.read(_data, _offset);
+    } else if (OfferCreatedV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferCreatedV2.read(_data, _offset);
     } else if (OfferFilled.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferFilled.read(_data, _offset);
     } else if (OfferFilledV1.DISCRIMINATOR.equals(_data, _offset)) {
       return OfferFilledV1.read(_data, _offset);
+    } else if (OfferFilledV2.DISCRIMINATOR.equals(_data, _offset)) {
+      return OfferFilledV2.read(_data, _offset);
     } else if (ProtocolFee.DISCRIMINATOR.equals(_data, _offset)) {
       return ProtocolFee.read(_data, _offset);
     } else if (RefereeReward.DISCRIMINATOR.equals(_data, _offset)) {

@@ -339,7 +339,7 @@ public final class OfferbookProgram {
     }
 
     public static final int OFFER_PARAMS_OFFSET = 8;
-    public static final int COLLATERAL_OFFSET = 28;
+    public static final int COLLATERAL_OFFSET = 29;
 
     public static CreateNftCollateralOfferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -466,7 +466,7 @@ public final class OfferbookProgram {
     }
 
     public static final int OFFER_PARAMS_OFFSET = 8;
-    public static final int COLLATERAL_OFFSET = 28;
+    public static final int COLLATERAL_OFFSET = 29;
 
     public static CreateNftPrincipalOfferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -595,7 +595,7 @@ public final class OfferbookProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 45;
+    public static final int BYTES = 46;
 
     public static final int OFFER_PARAMS_OFFSET = 8;
 
@@ -723,7 +723,7 @@ public final class OfferbookProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 45;
+    public static final int BYTES = 46;
 
     public static final int OFFER_PARAMS_OFFSET = 8;
 
@@ -1039,7 +1039,7 @@ public final class OfferbookProgram {
       createWrite(signerTokenRecordKey),
       createWrite(userEscrowTokenAccountKey),
       createWrite(escrowTokenRecordKey),
-      createWrite(requireNonNullElse(authorizationRulesKey, invokedOfferbookProgramMeta.publicKey())),
+      createRead(requireNonNullElse(authorizationRulesKey, invokedOfferbookProgramMeta.publicKey())),
       createRead(metadataProgramKey),
       createRead(solanaAccounts.instructionsSysVar()),
       createRead(requireNonNullElse(authorizationProgramKey, invokedOfferbookProgramMeta.publicKey())),
@@ -1124,7 +1124,7 @@ public final class OfferbookProgram {
       createWrite(signerTokenRecordKey),
       createWrite(userEscrowTokenAccountKey),
       createWrite(escrowTokenRecordKey),
-      createWrite(requireNonNullElse(authorizationRulesKey, invokedOfferbookProgramMeta.publicKey())),
+      createRead(requireNonNullElse(authorizationRulesKey, invokedOfferbookProgramMeta.publicKey())),
       createRead(metadataProgramKey),
       createRead(solanaAccounts.instructionsSysVar()),
       createRead(requireNonNullElse(authorizationProgramKey, invokedOfferbookProgramMeta.publicKey())),
@@ -1367,6 +1367,75 @@ public final class OfferbookProgram {
     public int l() {
       return BYTES;
     }
+  }
+
+  public static final Discriminator EXTEND_LOAN_DISCRIMINATOR = toDiscriminator(2, 208, 222, 190, 109, 148, 247, 117);
+
+  public static List<AccountMeta> extendLoanKeys(final PublicKey signerKey,
+                                                 final PublicKey signerUserKey,
+                                                 final PublicKey lenderKey,
+                                                 final PublicKey lenderUserKey,
+                                                 final PublicKey loanKey,
+                                                 final PublicKey configKey,
+                                                 final PublicKey principalMintKey,
+                                                 final PublicKey signerPrincipalTokenAccountKey,
+                                                 final PublicKey lenderPrincipalEscrowKey,
+                                                 final PublicKey protocolFeeTokenAccountKey,
+                                                 final PublicKey principalTokenProgramKey,
+                                                 final PublicKey eventAuthorityKey,
+                                                 final PublicKey programKey) {
+    return List.of(
+      createWritableSigner(signerKey),
+      createRead(signerUserKey),
+      createRead(lenderKey),
+      createRead(lenderUserKey),
+      createWrite(loanKey),
+      createRead(configKey),
+      createRead(principalMintKey),
+      createWrite(signerPrincipalTokenAccountKey),
+      createWrite(lenderPrincipalEscrowKey),
+      createWrite(protocolFeeTokenAccountKey),
+      createRead(principalTokenProgramKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction extendLoan(final AccountMeta invokedOfferbookProgramMeta,
+                                       final PublicKey signerKey,
+                                       final PublicKey signerUserKey,
+                                       final PublicKey lenderKey,
+                                       final PublicKey lenderUserKey,
+                                       final PublicKey loanKey,
+                                       final PublicKey configKey,
+                                       final PublicKey principalMintKey,
+                                       final PublicKey signerPrincipalTokenAccountKey,
+                                       final PublicKey lenderPrincipalEscrowKey,
+                                       final PublicKey protocolFeeTokenAccountKey,
+                                       final PublicKey principalTokenProgramKey,
+                                       final PublicKey eventAuthorityKey,
+                                       final PublicKey programKey) {
+    final var keys = extendLoanKeys(
+      signerKey,
+      signerUserKey,
+      lenderKey,
+      lenderUserKey,
+      loanKey,
+      configKey,
+      principalMintKey,
+      signerPrincipalTokenAccountKey,
+      lenderPrincipalEscrowKey,
+      protocolFeeTokenAccountKey,
+      principalTokenProgramKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return extendLoan(invokedOfferbookProgramMeta, keys);
+  }
+
+  public static Instruction extendLoan(final AccountMeta invokedOfferbookProgramMeta,
+                                       final List<AccountMeta> keys) {
+    return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, EXTEND_LOAN_DISCRIMINATOR);
   }
 
   public static final Discriminator FILL_NON_FUNGIBLE_COLLATERAL_OFFER_DISCRIMINATOR = toDiscriminator(135, 55, 123, 43, 115, 61, 143, 145);
@@ -2100,6 +2169,79 @@ public final class OfferbookProgram {
   public static Instruction repayTokenLoan(final AccountMeta invokedOfferbookProgramMeta,
                                            final List<AccountMeta> keys) {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, REPAY_TOKEN_LOAN_DISCRIMINATOR);
+  }
+
+  public static final Discriminator SET_LOAN_EXTENDABLE_DISCRIMINATOR = toDiscriminator(130, 168, 137, 148, 29, 17, 239, 228);
+
+  public static List<AccountMeta> setLoanExtendableKeys(final PublicKey signerKey,
+                                                        final PublicKey loanKey,
+                                                        final PublicKey eventAuthorityKey,
+                                                        final PublicKey programKey) {
+    return List.of(
+      createReadOnlySigner(signerKey),
+      createWrite(loanKey),
+      createRead(eventAuthorityKey),
+      createRead(programKey)
+    );
+  }
+
+  public static Instruction setLoanExtendable(final AccountMeta invokedOfferbookProgramMeta,
+                                              final PublicKey signerKey,
+                                              final PublicKey loanKey,
+                                              final PublicKey eventAuthorityKey,
+                                              final PublicKey programKey,
+                                              final boolean allow) {
+    final var keys = setLoanExtendableKeys(
+      signerKey,
+      loanKey,
+      eventAuthorityKey,
+      programKey
+    );
+    return setLoanExtendable(invokedOfferbookProgramMeta, keys, allow);
+  }
+
+  public static Instruction setLoanExtendable(final AccountMeta invokedOfferbookProgramMeta,
+                                              final List<AccountMeta> keys,
+                                              final boolean allow) {
+    final byte[] _data = new byte[9];
+    int i = SET_LOAN_EXTENDABLE_DISCRIMINATOR.write(_data, 0);
+    _data[i] = (byte) (allow ? 1 : 0);
+
+    return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
+  }
+
+  public record SetLoanExtendableIxData(Discriminator discriminator, boolean allow) implements SerDe {  
+
+    public static SetLoanExtendableIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int BYTES = 9;
+
+    public static final int ALLOW_OFFSET = 8;
+
+    public static SetLoanExtendableIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      int i = _offset + discriminator.length();
+      final var allow = _data[i] == 1;
+      return new SetLoanExtendableIxData(discriminator, allow);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset + discriminator.write(_data, _offset);
+      _data[i] = (byte) (allow ? 1 : 0);
+      ++i;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return BYTES;
+    }
   }
 
   public static final Discriminator UPDATE_CONFIG_DISCRIMINATOR = toDiscriminator(29, 158, 252, 191, 10, 83, 219, 99);

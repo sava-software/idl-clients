@@ -10,9 +10,6 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Frozen pre-counter-offers offer event schema. Kept in the IDL so historical
-/// events remain parseable; not emitted by current code (see `OfferEventV2`).
-///
 /// @param principalAmount: u64
 /// @param remainingPrincipal: u64
 /// @param collateralAmount: u64
@@ -26,7 +23,8 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param fillCounter: u64
 /// @param allowPartialFill: u8
 /// @param bump: u8
-public record OfferEventV0(PublicKey creator,
+/// @param allowExtend: u8
+public record OfferEventV2(PublicKey creator,
                            OfferSide side,
                            OfferStatus status,
                            EventAsset principal,
@@ -44,14 +42,16 @@ public record OfferEventV0(PublicKey creator,
                            long minFillAmount,
                            long fillCounter,
                            int allowPartialFill,
-                           int bump) implements SerDe {
+                           int bump,
+                           PublicKey counteredOffer,
+                           int allowExtend) implements SerDe {
 
   public static final int CREATOR_OFFSET = 0;
   public static final int SIDE_OFFSET = 32;
   public static final int STATUS_OFFSET = 33;
   public static final int PRINCIPAL_OFFSET = 34;
 
-  public static OfferEventV0 read(final byte[] _data, final int _offset) {
+  public static OfferEventV2 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -93,7 +93,11 @@ public record OfferEventV0(PublicKey creator,
     final var allowPartialFill = _data[i] & 0xFF;
     ++i;
     final var bump = _data[i] & 0xFF;
-    return new OfferEventV0(creator,
+    ++i;
+    final var counteredOffer = readPubKey(_data, i);
+    i += 32;
+    final var allowExtend = _data[i] & 0xFF;
+    return new OfferEventV2(creator,
                             side,
                             status,
                             principal,
@@ -111,7 +115,9 @@ public record OfferEventV0(PublicKey creator,
                             minFillAmount,
                             fillCounter,
                             allowPartialFill,
-                            bump);
+                            bump,
+                            counteredOffer,
+                            allowExtend);
   }
 
   @Override
@@ -150,6 +156,10 @@ public record OfferEventV0(PublicKey creator,
     ++i;
     _data[i] = (byte) bump;
     ++i;
+    counteredOffer.write(_data, i);
+    i += 32;
+    _data[i] = (byte) allowExtend;
+    ++i;
     return i - _offset;
   }
 
@@ -173,6 +183,8 @@ public record OfferEventV0(PublicKey creator,
          + 8
          + 8
          + 1
+         + 1
+         + 32
          + 1;
   }
 }

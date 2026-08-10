@@ -29,6 +29,8 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param updatedAt: u64
 /// @param bump: u8
 /// @param collateralAccountBump: u8
+/// @param extendable: u8
+/// @param extensionCount: u8
 public record Loan(PublicKey _address,
                    Discriminator discriminator,
                    PublicKey lender,
@@ -53,13 +55,15 @@ public record Loan(PublicKey _address,
                    long updatedAt,
                    int bump,
                    int collateralAccountBump,
+                   int extendable,
+                   int extensionCount,
                    byte[] padding4,
                    byte[] reserved) implements SerDe {
 
   public static final int PADDING_LEN = 6;
   public static final int PADDING_1_LEN = 7;
   public static final int PADDING_2_LEN = 7;
-  public static final int PADDING_4_LEN = 6;
+  public static final int PADDING_4_LEN = 4;
   public static final int RESERVED_LEN = 48;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(20, 195, 70, 117, 165, 227, 182, 1);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -172,7 +176,11 @@ public record Loan(PublicKey _address,
     ++i;
     final var collateralAccountBump = _data[i] & 0xFF;
     ++i;
-    final var padding4 = new byte[6];
+    final var extendable = _data[i] & 0xFF;
+    ++i;
+    final var extensionCount = _data[i] & 0xFF;
+    ++i;
+    final var padding4 = new byte[4];
     i += SerDeUtil.readArray(padding4, _data, i);
     final var reserved = new byte[48];
     SerDeUtil.readArray(reserved, _data, i);
@@ -200,6 +208,8 @@ public record Loan(PublicKey _address,
                     updatedAt,
                     bump,
                     collateralAccountBump,
+                    extendable,
+                    extensionCount,
                     padding4,
                     reserved);
   }
@@ -244,7 +254,11 @@ public record Loan(PublicKey _address,
     ++i;
     _data[i] = (byte) collateralAccountBump;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding4, 6, _data, i);
+    _data[i] = (byte) extendable;
+    ++i;
+    _data[i] = (byte) extensionCount;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding4, 4, _data, i);
     i += SerDeUtil.writeArrayChecked(reserved, 48, _data, i);
     return i - _offset;
   }
@@ -271,6 +285,8 @@ public record Loan(PublicKey _address,
          + 8
          + 8
          + 8
+         + 1
+         + 1
          + 1
          + 1
          + SerDeUtil.lenArray(padding4)

@@ -10,9 +10,6 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
-/// Frozen pre-extension loan event schema. Kept in the IDL so historical events
-/// remain parseable; not emitted by current code (see `LoanEventV1`).
-///
 /// @param fillIndex: u64
 /// @param apy: u32
 /// @param duration: u32
@@ -24,7 +21,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param updatedAt: u64
 /// @param bump: u8
 /// @param collateralAccountBump: u8
-public record LoanEventV0(PublicKey lender,
+/// @param extendable: u8
+/// @param extensionCount: u8
+public record LoanEventV1(PublicKey lender,
                           PublicKey borrower,
                           PublicKey creator,
                           PublicKey offer,
@@ -42,7 +41,9 @@ public record LoanEventV0(PublicKey lender,
                           long updatedAt,
                           int bump,
                           int collateralAccountBump,
-                          LoanType loanType) implements SerDe {
+                          LoanType loanType,
+                          int extendable,
+                          int extensionCount) implements SerDe {
 
   public static final int LENDER_OFFSET = 0;
   public static final int BORROWER_OFFSET = 32;
@@ -52,7 +53,7 @@ public record LoanEventV0(PublicKey lender,
   public static final int FILL_INDEX_OFFSET = 129;
   public static final int PRINCIPAL_OFFSET = 137;
 
-  public static LoanEventV0 read(final byte[] _data, final int _offset) {
+  public static LoanEventV1 read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
@@ -94,7 +95,11 @@ public record LoanEventV0(PublicKey lender,
     final var collateralAccountBump = _data[i] & 0xFF;
     ++i;
     final var loanType = LoanType.read(_data, i);
-    return new LoanEventV0(lender,
+    i += loanType.l();
+    final var extendable = _data[i] & 0xFF;
+    ++i;
+    final var extensionCount = _data[i] & 0xFF;
+    return new LoanEventV1(lender,
                            borrower,
                            creator,
                            offer,
@@ -112,7 +117,9 @@ public record LoanEventV0(PublicKey lender,
                            updatedAt,
                            bump,
                            collateralAccountBump,
-                           loanType);
+                           loanType,
+                           extendable,
+                           extensionCount);
   }
 
   @Override
@@ -152,6 +159,10 @@ public record LoanEventV0(PublicKey lender,
     _data[i] = (byte) collateralAccountBump;
     ++i;
     i += loanType.write(_data, i);
+    _data[i] = (byte) extendable;
+    ++i;
+    _data[i] = (byte) extensionCount;
+    ++i;
     return i - _offset;
   }
 
@@ -175,6 +186,8 @@ public record LoanEventV0(PublicKey lender,
          + 8
          + 1
          + 1
-         + loanType.l();
+         + loanType.l()
+         + 1
+         + 1;
   }
 }

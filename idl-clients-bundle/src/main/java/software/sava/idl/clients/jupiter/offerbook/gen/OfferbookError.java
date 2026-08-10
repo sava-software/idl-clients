@@ -27,7 +27,9 @@ public sealed interface OfferbookError extends ProgramError permits
     OfferbookError.LoanNotDue,
     OfferbookError.InvalidOfferSide,
     OfferbookError.InvalidAsset,
-    OfferbookError.MissingLoanVault {
+    OfferbookError.MissingLoanVault,
+    OfferbookError.NotExtendable,
+    OfferbookError.LoanDue {
 
   static OfferbookError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -55,6 +57,8 @@ public sealed interface OfferbookError extends ProgramError permits
       case 6021 -> InvalidOfferSide.INSTANCE;
       case 6022 -> InvalidAsset.INSTANCE;
       case 6023 -> MissingLoanVault.INSTANCE;
+      case 6024 -> NotExtendable.INSTANCE;
+      case 6025 -> LoanDue.INSTANCE;
       default -> null;
     };
   }
@@ -62,14 +66,14 @@ public sealed interface OfferbookError extends ProgramError permits
   record DuplicateResources(int code, String msg) implements OfferbookError {
 
     public static final DuplicateResources INSTANCE = new DuplicateResources(
-        6000, "Duplicate Resources"
+        6000, "deprecated"
     );
   }
 
   record AdminArrayFull(int code, String msg) implements OfferbookError {
 
     public static final AdminArrayFull INSTANCE = new AdminArrayFull(
-        6001, "Admin Array Full"
+        6001, "deprecated"
     );
   }
 
@@ -167,7 +171,7 @@ public sealed interface OfferbookError extends ProgramError permits
   record InvalidOfferOrigin(int code, String msg) implements OfferbookError {
 
     public static final InvalidOfferOrigin INSTANCE = new InvalidOfferOrigin(
-        6015, "Invalid Offer Origin"
+        6015, "deprecated"
     );
   }
 
@@ -224,6 +228,20 @@ public sealed interface OfferbookError extends ProgramError permits
 
     public static final MissingLoanVault INSTANCE = new MissingLoanVault(
         6023, "Missing Loan Vault"
+    );
+  }
+
+  record NotExtendable(int code, String msg) implements OfferbookError {
+
+    public static final NotExtendable INSTANCE = new NotExtendable(
+        6024, "Loan Not Extendable"
+    );
+  }
+
+  record LoanDue(int code, String msg) implements OfferbookError {
+
+    public static final LoanDue INSTANCE = new LoanDue(
+        6025, "Loan is due"
     );
   }
 }

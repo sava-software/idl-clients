@@ -31,6 +31,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param fillCounter: u64
 /// @param allowPartialFill: u8
 /// @param bump: u8
+/// @param allowExtend: u8
 public record Offer(PublicKey _address,
                     Discriminator discriminator,
                     PublicKey creator,
@@ -57,6 +58,7 @@ public record Offer(PublicKey _address,
                     long fillCounter,
                     int allowPartialFill,
                     int bump,
+                    int allowExtend,
                     byte[] padding6,
                     PublicKey counteredOffer,
                     byte[] reserved) implements SerDe {
@@ -66,7 +68,7 @@ public record Offer(PublicKey _address,
   public static final int PADDING_3_LEN = 7;
   public static final int PADDING_4_LEN = 7;
   public static final int PADDING_5_LEN = 8;
-  public static final int PADDING_6_LEN = 6;
+  public static final int PADDING_6_LEN = 5;
   public static final int RESERVED_LEN = 232;
   public static final Discriminator DISCRIMINATOR = toDiscriminator(215, 88, 60, 71, 170, 162, 73, 229);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
@@ -161,7 +163,9 @@ public record Offer(PublicKey _address,
     ++i;
     final var bump = _data[i] & 0xFF;
     ++i;
-    final var padding6 = new byte[6];
+    final var allowExtend = _data[i] & 0xFF;
+    ++i;
+    final var padding6 = new byte[5];
     i += SerDeUtil.readArray(padding6, _data, i);
     final var counteredOffer = readPubKey(_data, i);
     i += 32;
@@ -193,6 +197,7 @@ public record Offer(PublicKey _address,
                      fillCounter,
                      allowPartialFill,
                      bump,
+                     allowExtend,
                      padding6,
                      counteredOffer,
                      reserved);
@@ -239,7 +244,9 @@ public record Offer(PublicKey _address,
     ++i;
     _data[i] = (byte) bump;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding6, 6, _data, i);
+    _data[i] = (byte) allowExtend;
+    ++i;
+    i += SerDeUtil.writeArrayChecked(padding6, 5, _data, i);
     counteredOffer.write(_data, i);
     i += 32;
     i += SerDeUtil.writeArrayChecked(reserved, 232, _data, i);
@@ -270,6 +277,7 @@ public record Offer(PublicKey _address,
          + 8
          + 8
          + 8
+         + 1
          + 1
          + 1
          + SerDeUtil.lenArray(padding6)

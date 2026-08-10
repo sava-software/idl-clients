@@ -15,14 +15,16 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record NftPrincipalOfferParams(long principalAmount,
                                       long apy,
                                       long duration,
-                                      long expiry) implements SerDe {
+                                      long expiry,
+                                      boolean allowExtend) implements SerDe {
 
-  public static final int BYTES = 20;
+  public static final int BYTES = 21;
 
   public static final int PRINCIPAL_AMOUNT_OFFSET = 0;
   public static final int APY_OFFSET = 8;
   public static final int DURATION_OFFSET = 12;
   public static final int EXPIRY_OFFSET = 16;
+  public static final int ALLOW_EXTEND_OFFSET = 20;
 
   public static NftPrincipalOfferParams read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
@@ -36,10 +38,13 @@ public record NftPrincipalOfferParams(long principalAmount,
     final var duration = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var expiry = Integer.toUnsignedLong(getInt32LE(_data, i));
+    i += 4;
+    final var allowExtend = _data[i] == 1;
     return new NftPrincipalOfferParams(principalAmount,
                                        apy,
                                        duration,
-                                       expiry);
+                                       expiry,
+                                       allowExtend);
   }
 
   @Override
@@ -53,6 +58,8 @@ public record NftPrincipalOfferParams(long principalAmount,
     i += 4;
     putInt32LE(_data, i, (int) expiry);
     i += 4;
+    _data[i] = (byte) (allowExtend ? 1 : 0);
+    ++i;
     return i - _offset;
   }
 

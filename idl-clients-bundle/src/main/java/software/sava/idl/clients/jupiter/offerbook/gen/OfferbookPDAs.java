@@ -51,22 +51,22 @@ public final class OfferbookPDAs {
   }
 
   public static ProgramDerivedAddress lenderPrincipalEscrowPDA(final PublicKey program,
-                                                               final PublicKey signerUserAccount,
+                                                               final PublicKey lenderUserAccount,
                                                                final PublicKey principalTokenProgramAccount,
                                                                final PublicKey principalMintAccount) {
     return PublicKey.findProgramAddress(List.of(
-      signerUserAccount.toByteArray(),
+      lenderUserAccount.toByteArray(),
       principalTokenProgramAccount.toByteArray(),
       principalMintAccount.toByteArray()
     ), program);
   }
 
   public static ProgramDerivedAddress lenderPrincipalEscrow1PDA(final PublicKey program,
-                                                                final PublicKey lenderUserAccount,
+                                                                final PublicKey signerUserAccount,
                                                                 final PublicKey principalTokenProgramAccount,
                                                                 final PublicKey principalMintAccount) {
     return PublicKey.findProgramAddress(List.of(
-      lenderUserAccount.toByteArray(),
+      signerUserAccount.toByteArray(),
       principalTokenProgramAccount.toByteArray(),
       principalMintAccount.toByteArray()
     ), program);
