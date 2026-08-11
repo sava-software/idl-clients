@@ -21,9 +21,10 @@ both calling instructions and reading/deserializing on-chain data. It contains:
   program's IDL by the companion **idl-src-gen** project (a separate repository).
   Generation is driven by `main_net_programs.json`, which maps each program to
   its module, package, program id, IDL type (Anchor/Codama/Shank), and IDL
-  source. Locally stored IDLs live under `idls/`; each generated package also
-  keeps the `idl.json` it was generated from next to the source in its `gen/`
-  directory.
+  source. Locally stored IDLs live under `idls/`; each generated package keeps,
+  beside its source in `gen/`, the `idl.json` it was generated from and a
+  `sources.json` recording every published IDL that described the program at
+  generation time — see [The channel record](#the-channel-record-sourcesjson).
 - **Hand-written convenience layers** — clients, accounts registries, PDA
   helpers, and utilities layered on top of the generated static functions to
   ease integration (e.g. `MeteoraDlmmClient`/`Impl`, `OrcaWhirlpoolsClient`/`Impl`,
@@ -104,6 +105,75 @@ Run it after any upstream deploy. Full method — the dispatch probe, the weaker
 signals and why they disappoint, and the bar for an `idlURL` override — is in
 **[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md)**. Current
 overrides and their evidence: `idl-clients-bundle/config/pitest/README.md`.
+
+### The channel record (`sources.json`)
+
+A program can be described by several published IDLs at once, and they routinely
+disagree — a team fixes the IDL in their repository long before the deploy that
+would refresh the on-chain copy, and some never upload one at all. idl-src-gen
+fetches all of them and commits what it found beside the generated source:
+
+| File | What it holds |
+| --- | --- |
+| `idl.json` | the document the client was generated from |
+| `sources.json` | which channel that was, and what every channel answered with |
+| `anchor.json` / `metadata.json` / `vcs.json` | a channel whose document **disagrees** with `idl.json` |
+| `*.original.json` | the verbatim published bytes, when a legacy IDL had to be converted |
+
+The channels are `anchor` (the account the Anchor CLI writes), `metadata` (the
+program-metadata PDA) and `vcs` (the copy the team keeps with their source).
+Exactly one is the **deployed** channel: its document *is* `idl.json` and
+generates the client, defaulting to the on-chain account for the reason above. A
+channel matching `idl.json` writes no file of its own — **absence is agreement**,
+which is also why the deployed channel never has one.
+
+Reading the record:
+
+- **`matchesDeployed: true` only says we faithfully copied what upstream
+  published.** It cannot distinguish that from upstream having stopped
+  publishing.
+- **`lastDeploySlot` is the field to check against chain.** It is the slot the
+  program's executable was last written at; an unchanged slot is real evidence a
+  generated client is still current, where an IDL-to-IDL diff is not.
+- **`hash` is one opaque value, over the normalized form.** It moves on a
+  re-publication but not a re-formatting, and it says only *that* a channel
+  moved — never in which direction. A `vcs` copy that was behind chain and has
+  caught up looks exactly like one that has raced a release ahead carrying
+  layout changes.
+
+**A `vcs.json` means the repository copy *differs*, not that it is ahead.**
+Roughly a third of the configured programs carry a standing divergence and
+several are *behind* chain, so direction has to be established by reading the two
+documents — it is never implied by the file's existence.
+
+### The staged (`"next"`) client
+
+`"generateNext": true` on a program in `main_net_programs.json` generates a
+**second client** from that program's `vcs.json`, so a repository that is
+genuinely ahead is reachable from Java instead of only as JSON. It lands in a
+sibling package — `…kamino.lend.next.gen`, never under the deployed `gen/`,
+which the generator clears before every run.
+
+It is a preview of a deploy that has not happened, so it is generated and
+readable but **never exported** from `module-info`: a dependent compiling
+against it would be committing to an interface the chain does not serve yet. It
+shares no `typeRefs` or `externalTypes` with the deployed client — a shared type
+reference would resolve into another program's *deployed* package and silently
+decode the wrong bytes — and emits its own `types` subpackage. When the team
+finally deploys, `vcs.json` disappears and the whole `next/` package is removed
+with it.
+
+Because divergence alone does not mean ahead, this is opted into per program and
+off by default; `main_net_programs.json` is the authority on which. Today that is
+Kamino Lend: SDK package 10.1.0 carries IDL 1.24.0 against the deployed IDL
+1.23.0. Pin a staged client's VCS URL to the exact package version or commit that
+was reviewed; a mutable `@latest` response can change—or remain CDN-cached after
+its registry tag changes—without any repository diff. Advancing the candidate
+is an explicit config and generated-source change.
+
+Always generate with `--report=idl-change-report.txt` and commit the report. A
+change to a generated `sources.json` hash without a matching report change means
+the generation was run without retaining its channel-movement evidence.
 
 ### Diffing account order against the Rust
 

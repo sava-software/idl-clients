@@ -159,8 +159,9 @@
       "module": "bundle",
       "package": "kamino.lend",
       "program": "KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD",
+      "generateNext": true,
       "vcs": {
-        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@latest/src/idl/klend.json"
+        "url": "https://cdn.jsdelivr.net/npm/@kamino-finance/klend-sdk@10.1.0/src/idl/klend.json"
       }
     },
     {

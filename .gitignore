@@ -37,6 +37,9 @@
 !/tools/*.py
 !/tools/*.md
 
+# Deterministic channel movement report emitted by idl-src-gen.
+!/idl-change-report.txt
+
 # Modules: sources (hand-written and generated), build scripts, docs, the idl.json
 # each generated package was produced from, test fixtures and fuzz seed corpora,
 # and the mutation baselines the quality gate ratchets against
