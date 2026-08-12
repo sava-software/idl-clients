@@ -103,7 +103,10 @@
       "package": "jupiter.offerbook",
       "program": "offerbkFMvVfpQhL8ZQ5iromnjct5rz3r52B9ewu3ie",
       "idlAccountProgramOwner": "ProgM6JCCvbYkfKqJYHePx4xxSUSqJp7rh8Lyv7nk7S",
-      "idlType": "anchor"
+      "idlType": "anchor",
+      "inlineDiscriminatorAccounts": [
+        "BaseAssetV1"
+      ]
     },
     {
       "name": "Jupiter Order Engine",
