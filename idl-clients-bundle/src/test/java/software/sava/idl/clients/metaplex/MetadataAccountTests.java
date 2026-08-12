@@ -24,8 +24,10 @@ import static org.junit.jupiter.api.Assertions.*;
 ///
 /// The fixture is upstream's own test data, `faulty_13gxS4r6…buf` from mpl-token-metadata's js
 /// tests (sha256 582f1d4862efcc7e4beb1864220991bf523ec0bacd88915cbee891579b38a7eb). Upstream names
-/// it "faulty" because its trailing optionals are absent, not because the account is malformed; its
-/// own deserializer test asserts the same nulls this one does.
+/// it "faulty" advisedly: past the edition nonce its bytes are noise — a `tokenStandard` presence
+/// byte of 250 where Borsh permits 0 or 1, then 315 bytes that decode as nothing. Upstream's own
+/// deserializer is lenient there and yields nulls; a strict reader refuses it, correctly. So this
+/// fixture proves only the leading-field offsets, and a well-formed account carries the rest.
 final class MetadataAccountTests {
 
   /// The embedded keys are the update authority and the mint. The `13gxS4r6…` in the filename is

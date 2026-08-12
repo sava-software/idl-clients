@@ -2,6 +2,7 @@ package software.sava.idl.clients.exponent;
 
 import org.junit.jupiter.api.Test;
 import software.sava.core.accounts.PublicKey;
+import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.idl.clients.exponent.gen.ExponentCoreProgram;
 import software.sava.idl.clients.exponent.gen.types.LpPosition;
 import software.sava.idl.clients.exponent.gen.types.MarketTwo;
@@ -13,6 +14,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HexFormat;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,6 +75,23 @@ final class ExponentOnChainTests {
     assertEquals(7, ExponentCoreProgram.DEPOSIT_YT_DISCRIMINATOR.data()[0]);
   }
 
+  /// The builder a caller actually uses, against the bytes the chain actually carried. This is the
+  /// number the width fix moved — the array is sized from the discriminator's declared width, so
+  /// before it this produced sixteen bytes for a nine-byte instruction and Anchor accepted it,
+  /// handing the seven surplus zeros to Borsh as the leading bytes of `amount`.
+  @Test
+  void theBuilderProducesTheBytesTheChainCarried() {
+    final var invoked = AccountMeta.createInvoked(
+        PublicKey.fromBase58Encoded("ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7")
+    );
+
+    final var withdraw = ExponentCoreProgram.withdrawYt(invoked, List.of(), AMOUNT);
+    assertArrayEquals(WITHDRAW_YT, withdraw.data(), "the built instruction must equal the captured one");
+
+    final var deposit = ExponentCoreProgram.depositYt(invoked, List.of(), AMOUNT);
+    assertArrayEquals(DEPOSIT_YT, deposit.data());
+  }
+
   @Test
   void aRealInstructionReserializesToTheCapturedBytes() {
     final var withdraw = ExponentCoreProgram.WithdrawYtIxData.read(WITHDRAW_YT, 0);
@@ -81,18 +100,25 @@ final class ExponentOnChainTests {
     assertArrayEquals(WITHDRAW_YT, out, "a rebuilt instruction must be byte-identical to the chain's");
   }
 
+  /// Each decoder consumes a prefix of the account and never runs past it. Not equality: a Solana
+  /// account is allocated at a fixed size and may carry slack past its serialized content —
+  /// MarketTwo holds 685 bytes and decodes 662 — so demanding an exact match would assert
+  /// something the layout does not promise. Overrunning is the failure that matters, and it is what
+  /// a wrong discriminator width would have caused.
   @Test
-  void realAccountsDecodeAndAccountForEveryByte() {
+  void realAccountsDecodeWithoutOverrunningTheirData() {
     final var vaultAddress = "14fXk2YSt9KbJgTttGRYwJ3uXB7ZRfjUbHfPYEdWJyKb";
     final byte[] vaultData = account("vault-" + vaultAddress);
     final var vault = Vault.read(PublicKey.fromBase58Encoded(vaultAddress), vaultData, 0);
     assertNotNull(vault);
     assertEquals(8, Vault.DISCRIMINATOR.length(), "accounts keep the customary eight bytes");
+    assertTrue(vault.l() <= vaultData.length, () -> "Vault read past its account: " + vault.l() + " > " + vaultData.length);
 
     final var marketAddress = "12Hva9LLLmGXn6PvtareyEmDMP83ZuLaHpXHrcux2LUF";
     final byte[] marketData = account("marketTwo-" + marketAddress);
     final var market = MarketTwo.read(PublicKey.fromBase58Encoded(marketAddress), marketData, 0);
     assertNotNull(market);
+    assertTrue(market.l() <= marketData.length, () -> "MarketTwo read past its account: " + market.l());
     // the account stores its own address, so this is a self-check needing no second lookup
     assertEquals(marketAddress, market.selfAddress().toBase58());
 
@@ -101,11 +127,13 @@ final class ExponentOnChainTests {
         PublicKey.fromBase58Encoded(ytAddress), account("yieldTokenPosition-" + ytAddress), 0
     );
     assertNotNull(yt);
+    assertTrue(yt.l() <= account("yieldTokenPosition-" + ytAddress).length);
 
     final var lpAddress = "1xZjGk8LTt3ZGXXWWvYagfkUcLQsNj4czwctCQZQxG";
     final var lp = LpPosition.read(
         PublicKey.fromBase58Encoded(lpAddress), account("lpPosition-" + lpAddress), 0
     );
     assertNotNull(lp);
+    assertTrue(lp.l() <= account("lpPosition-" + lpAddress).length);
   }
 }

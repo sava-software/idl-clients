@@ -12,7 +12,7 @@
       "origin": "github:circlefin/solana-cctp-contracts@master/examples/target/idl/message_transmitter_v2.json",
       "hash": "b6f4466a3e965a360b257841989b45eac82e663f0ee4e292859ed8b31c38342c",
       "matchesDeployed": true,
-      "verbatim": "idl.json"
+      "verbatim": "vcs.original.json"
     }
   }
 }
