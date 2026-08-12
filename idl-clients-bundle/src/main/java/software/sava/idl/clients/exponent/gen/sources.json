@@ -3,7 +3,7 @@
   "lastDeploySlot": 419311653,
   "channels": {
     "vcs": {
-      "origin": "github:exponent-finance/exponent-core@main/target/idl/exponent_core.json",
+      "origin": "github:exponent-finance/exponent-core@main#2897c660eeef647002b62ba971e19457182e0b37/target/idl/exponent_core.json",
       "hash": "74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85",
       "matchesDeployed": true,
       "verbatim": "idl.json"

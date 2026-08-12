@@ -48,7 +48,8 @@
       "program": "ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7",
       "vcs": {
         "repo": "exponent-finance/exponent-core",
-        "path": "target/idl/exponent_core.json"
+        "path": "target/idl/exponent_core.json",
+        "commit": "2897c660eeef647002b62ba971e19457182e0b37"
       },
       "deployed": "vcs"
     },
