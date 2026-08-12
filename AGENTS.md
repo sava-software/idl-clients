@@ -127,6 +127,18 @@ generates the client, defaulting to the on-chain account for the reason above. A
 channel matching `idl.json` writes no file of its own — **absence is agreement**,
 which is also why the deployed channel never has one.
 
+A fourth, `vcsHead`, appears only for a `vcs` source pinned to a `commit`. Pinning
+makes the generated client reproducible and, in the same move, freezes that
+channel: an immutable URL cannot serve a different document, so nothing about it
+can ever be reported as moving. Where the repository copy is a program's *only*
+published description — Exponent publishes at neither on-chain address — that
+would be the last place an upstream edit could show up. So the branch behind the
+pin is read as its own channel. The pin generates; the branch reports. A
+`vcsHead.json` means the branch has moved past the pin and the pin is due a
+review; the file disappearing again is the pin having caught up. It is never the
+deployed channel — a pin exists precisely so that what generates the client
+cannot move on its own — and declaring it as one is rejected in config.
+
 Reading the record:
 
 - **`matchesDeployed: true` only says we faithfully copied what upstream

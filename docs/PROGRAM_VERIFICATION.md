@@ -75,6 +75,14 @@ its IDL, and the replacement to match what is deployed.
 (`marginfi_0.1.9.json`) silently freezes at that release and fails closed into
 the staleness the override was meant to fix.
 
+A `vcs` source pinned with `commit` freezes deliberately, and does not fail closed:
+the generator also reads the branch behind the pin as the `vcsHead` channel, so the
+frozen input still generates while upstream movement is still reported. That is the
+combination to reach for when a repository copy is the *deployed* description — a
+program with no on-chain IDL — where an unpinned source would let an upstream edit
+become the deployed client on the next regeneration with nothing to compare it
+against. A pinned *filename* has no such counterpart and is still the trap above.
+
 Current overrides and the evidence for each: `idl-clients-bundle/config/pitest/README.md`.
 
 ### If this ever becomes a service

@@ -7,6 +7,12 @@
       "hash": "74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85",
       "matchesDeployed": true,
       "verbatim": "idl.json"
+    },
+    "vcsHead": {
+      "origin": "github:exponent-finance/exponent-core@main/target/idl/exponent_core.json",
+      "hash": "74d944dcba74ef73e7d933757dd6bf7f271d2e9005f1a15cfdb6f2f13e950c85",
+      "matchesDeployed": true,
+      "verbatim": "idl.json"
     }
   }
 }
