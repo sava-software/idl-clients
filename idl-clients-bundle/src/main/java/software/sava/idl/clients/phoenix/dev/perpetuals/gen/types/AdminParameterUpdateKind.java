@@ -128,7 +128,7 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
     }
   }
 
-  record LeverageTiers(LeverageTiers previous, LeverageTiers _new) implements AdminParameterUpdateKind {
+  record LeverageTiers(software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.LeverageTiers previous, software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.LeverageTiers _new) implements AdminParameterUpdateKind {
 
     public static final int BYTES = 192;
 
@@ -140,9 +140,9 @@ public sealed interface AdminParameterUpdateKind extends RustEnum permits
         return null;
       }
       int i = _offset;
-      final var previous = LeverageTiers.read(_data, i);
+      final var previous = software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.LeverageTiers.read(_data, i);
       i += previous.l();
-      final var _new = LeverageTiers.read(_data, i);
+      final var _new = software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.LeverageTiers.read(_data, i);
       return new LeverageTiers(previous, _new);
     }
 

@@ -41,16 +41,6 @@ final class PhoenixEventFixtureTests {
   private record Event(int tag, int declaredLength, byte[] payload) {
   }
 
-  /// `AdminParameterUpdatedEvent`. Excluded from the bulk assertions below because decoding it
-  /// overflows the stack — a *separate*, pre-existing generator defect this capture uncovered, not
-  /// anything the discriminator-width work changed. `aLeverageTiersUpdateStillOverflowsTheStack`
-  /// pins it, and will fail the moment it is fixed, which is the signal to delete this constant.
-  private static final int ADMIN_PARAMETER_UPDATED = 48;
-
-  private static boolean decodable(final Event event) {
-    return event.tag() != ADMIN_PARAMETER_UPDATED;
-  }
-
   private record Transaction(String signature, long slot, long blockTime, List<Event> events) {
   }
 
@@ -104,9 +94,6 @@ final class PhoenixEventFixtureTests {
   void everyCapturedEventDispatches() {
     for (final var tx : fixture()) {
       for (final var event : tx.events()) {
-        if (!decodable(event)) {
-          continue;
-        }
         final var decoded = EternalEvent.read(event.payload(), 0);
         assertNotNull(decoded, () -> "tag " + event.tag() + " in " + tx.signature() + " did not dispatch");
         // dispatch is by discriminator, so re-serializing must lead with the same tag byte
@@ -123,9 +110,6 @@ final class PhoenixEventFixtureTests {
     final var byTag = new TreeMap<Integer, Integer>();
     for (final var tx : fixture()) {
       for (final var event : tx.events()) {
-        if (!decodable(event)) {
-          continue;
-        }
         final var decoded = EternalEvent.read(event.payload(), 0);
         assertNotNull(decoded);
         assertEquals(
@@ -137,7 +121,7 @@ final class PhoenixEventFixtureTests {
         byTag.merge(event.tag(), 1, Integer::sum);
       }
     }
-    assertEquals(23, byTag.size(), () -> "distinct decodable variants covered: " + byTag);
+    assertEquals(24, byTag.size(), () -> "distinct variants covered: " + byTag);
   }
 
   /// A round-trip through `write` must reproduce the bytes the chain carried. This catches an
@@ -146,9 +130,6 @@ final class PhoenixEventFixtureTests {
   void everyEventReserializesToTheCapturedBytes() {
     for (final var tx : fixture()) {
       for (final var event : tx.events()) {
-        if (!decodable(event)) {
-          continue;
-        }
         final var decoded = EternalEvent.read(event.payload(), 0);
         assertNotNull(decoded);
         final byte[] out = new byte[event.payload().length];
@@ -188,7 +169,7 @@ final class PhoenixEventFixtureTests {
     final var singleByte = new ArrayList<Map.Entry<String, Integer>>();
     for (final var tx : fixture()) {
       for (final var event : tx.events()) {
-        if (event.declaredLength() != 1 || !decodable(event)) {
+        if (event.declaredLength() != 1) {
           continue;
         }
         assertDoesNotThrow(() -> {
@@ -200,47 +181,5 @@ final class PhoenixEventFixtureTests {
       }
     }
     assertFalse(singleByte.isEmpty(), "the capture is expected to contain a one-byte event");
-  }
-
-  /// Pins a **separate, pre-existing** generator defect that this capture uncovered — nothing to do
-  /// with discriminator width, and present in the committed clients before any of that work.
-  ///
-  /// `AdminParameterUpdateKind` has a struct variant named `LeverageTiers` whose two fields are of
-  /// the defined type *also* named `LeverageTiers`. The generator emits the variant as a nested
-  /// record of that name, which shadows the top-level type inside its own scope, so the generated
-  /// `LeverageTiers.read(...)` calls itself forever. The sizing is right (`BYTES = 192` = 2 × 96);
-  /// only the name resolution is wrong.
-  ///
-  /// The generator already solves exactly this for *tuple* variants —
-  /// `BaseDefinedTypeDefinition.generateEnumRecord` qualifies the field type when it collides with
-  /// the variant name, which is why `UpdateLendingMarketConfigValue.ElevationGroup` and
-  /// `AssetFilter.NoFilter` emit fully-qualified names and work. The struct-variant path has no
-  /// equivalent. Corpus-wide there are five colliding variants and this is the only struct one.
-  ///
-  /// When the generator is fixed this test fails — which is the signal to delete it along with
-  /// [#ADMIN_PARAMETER_UPDATED] and re-enable tag 48 in the assertions above.
-  @Test
-  void aLeverageTiersUpdateStillOverflowsTheStack() {
-    // Only the payloads carrying the LeverageTiers variant recurse; the other tag-48 shapes decode
-    // fine, which is why the exclusion above is by tag and this search is by behaviour.
-    final var admin = fixture().stream()
-        .flatMap(tx -> tx.events().stream())
-        .filter(event -> event.tag() == ADMIN_PARAMETER_UPDATED)
-        .toList();
-    assertFalse(admin.isEmpty(), "the capture is expected to contain tag 48");
-
-    final boolean anyOverflows = admin.stream().anyMatch(event -> {
-      try {
-        EternalEvent.read(event.payload(), 0);
-        return false;
-      } catch (final StackOverflowError e) {
-        return true;
-      }
-    });
-    assertTrue(
-        anyOverflows,
-        "AdminParameterUpdateKind.LeverageTiers no longer self-recurses — remove this test, the "
-            + "ADMIN_PARAMETER_UPDATED constant, and the decodable() filter"
-    );
   }
 }
