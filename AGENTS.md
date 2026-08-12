@@ -133,11 +133,23 @@ channel: an immutable URL cannot serve a different document, so nothing about it
 can ever be reported as moving. Where the repository copy is a program's *only*
 published description — Exponent publishes at neither on-chain address — that
 would be the last place an upstream edit could show up. So the branch behind the
-pin is read as its own channel. The pin generates; the branch reports. A
-`vcsHead.json` means the branch has moved past the pin and the pin is due a
-review; the file disappearing again is the pin having caught up. It is never the
-deployed channel — a pin exists precisely so that what generates the client
-cannot move on its own — and declaring it as one is rejected in config.
+pin is read as its own channel. The pin generates; the branch reports.
+
+Read it the same way as every other channel: `vcsHead.json` says the branch head
+differs from `idl.json`, not from `vcs`. Where the pin is what generated the client
+— `"deployed": "vcs"`, which is the case this exists for — those are the same
+statement, and the file appearing means the branch has moved past the pin and the
+pin is due a review, while the file disappearing again is the pin having caught up.
+Where a pinned program is instead deployed from chain, `vcs.json` and `vcsHead.json`
+are two revisions of the same repository copy both disagreeing with the deployed
+document, and it is the difference *between those two files* that says the branch
+moved.
+
+It is never the deployed channel — a pin exists precisely so that what generates
+the client cannot move on its own. Declaring it as one is rejected in config, and
+it is skipped when the deployed channel is inferred: it agrees with the pin until
+the branch moves, so it would otherwise be named as the source the client was built
+from exactly when the real one failed to answer.
 
 Reading the record:
 
