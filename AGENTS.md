@@ -140,10 +140,11 @@ differs from `idl.json`, not from `vcs`. Where the pin is what generated the cli
 — `"deployed": "vcs"`, which is the case this exists for — those are the same
 statement, and the file appearing means the branch has moved past the pin and the
 pin is due a review, while the file disappearing again is the pin having caught up.
-Where a pinned program is instead deployed from chain, `vcs.json` and `vcsHead.json`
-are two revisions of the same repository copy both disagreeing with the deployed
-document, and it is the difference *between those two files* that says the branch
-moved.
+Where a pinned program is instead deployed from chain, the two are revisions of the
+same repository copy compared against a document neither generated, so what says
+the branch moved is the difference *between* them — and either file may be absent,
+since a channel agreeing with `idl.json` writes none. Read the hashes in
+`sources.json` there rather than the presence of a file.
 
 It is never the deployed channel — a pin exists precisely so that what generates
 the client cannot move on its own. Declaring it as one is rejected in config, and
