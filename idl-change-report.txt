@@ -97,10 +97,32 @@ Stake: the vcs IDL at github:solana-program/stake@main/idl.json differs from the
   instructions changed (18): every one arguments changed
   types removed (6): authorizeCheckedWithSeedArgs, authorizeWithSeedArgs, epoch, lockupArgs, lockupCheckedArgs, unixTimestamp
 
-== Movement (0) ==
+== Movement (6) ==
 
 Every channel that is not what the previous sources.json recorded for it. An event: it fires
 on the run that first sees a change and is silent afterwards, so nothing here means nothing
 moved and not that nothing was compared.
 
-Nothing moved since the last generation.
+Address Lookup Table: the vcs IDL at https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/idl.json moved since the last generation: instructions ~5, accounts ~1
+  instructions changed (5): every one accounts changed, arguments changed, display added
+  accounts changed (1): addressLookupTable
+
+Compute Budget: the vcs IDL at https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json moved since the last generation: instructions ~5
+  instructions changed (5): every one arguments changed, display added
+
+Kamino Lend: the anchor IDL at 8qLKwp1fk8WyqmzarkuMeZEX3AzL4VDSmA2UZTKT2aCJ moved since the last generation: instructions +3 ~15, types +1 ~6, errors +1 ~1; version 1.23.0 -> 1.24.0
+  instructions added (3): calculate_ctoken_exchange_rate, fill_borrow_order_v2, set_borrow_order_v2
+  instructions changed (15): approve_obligation_ownership_transfer, clone_reserve_config, fill_borrow_order, idl_missing_types, init_farms_for_reserve, init_global_config, init_lending_market, init_reserve, mark_obligation_for_deleveraging, update_global_config, update_global_config_admin, update_lending_market, update_lending_market_owner, update_reserve_config, withdraw_protocol_fee
+  types added (1): ExchangeRateWithDecimals
+  types changed (6): BorrowOrder, FixedTermBorrowRolloverConfig, LendingMarket, Obligation, UpdateLendingMarketMode, UpdateObligationConfigMode
+  errors added (1): TransactionIncludesNonceInstruction
+  errors changed (1): OrderIndexOutOfBounds
+
+Kamino Lend: the program was redeployed at slot 438843135, up from 422723185
+
+System: the vcs IDL at https://raw.githubusercontent.com/solana-program/system/refs/heads/main/idl.json moved since the last generation: instructions ~14, accounts ~1
+  instructions changed (14): advanceNonceAccount, allocate, allocateWithSeed, assign, assignWithSeed, authorizeNonceAccount, createAccount, createAccountAllowPrefund, createAccountWithSeed, initializeNonceAccount, transferSol, transferSolWithSeed, upgradeNonceAccount, withdrawNonceAccount
+  accounts changed (1): nonce
+
+Token: the vcs IDL at https://raw.githubusercontent.com/solana-program/token/refs/heads/main/idl.json moved since the last generation: instructions ~28
+  instructions changed (28): amountToUiAmount, approve, approveChecked, batch, burn, burnChecked, closeAccount, freezeAccount, getAccountDataSize, initializeAccount, initializeAccount2, initializeAccount3, initializeImmutableOwner, initializeMint, initializeMint2, initializeMultisig, initializeMultisig2, mintTo, mintToChecked, revoke, setAuthority, syncNative, thawAccount, transfer, transferChecked, uiAmountToAmount, unwrapLamports, withdrawExcessLamports
