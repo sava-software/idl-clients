@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Additional fee information on a reserve
-/// 
+///
 /// These exist separately from interest accrual fees, and are specifically for the program owner
 /// and referral fee. The fees are paid out as a percentage of liquidity token amounts during
 /// repayments and liquidations.

@@ -104,7 +104,7 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
-  public record NewDistributorIxData(Discriminator discriminator, NewDistributorParams params) implements SerDe {  
+  public record NewDistributorIxData(Discriminator discriminator, NewDistributorParams params) implements SerDe {
 
     public static NewDistributorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -265,7 +265,7 @@ public final class MerkleDistributorProgram {
   }
 
   /// @param activationPoint: u64
-  public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {  
+  public record SetActivationPointIxData(Discriminator discriminator, long activationPoint) implements SerDe {
 
     public static SetActivationPointIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -445,7 +445,7 @@ public final class MerkleDistributorProgram {
     return Instruction.createInstruction(invokedMerkleDistributorProgramMeta, keys, _data);
   }
 
-  public record SetOperatorIxData(Discriminator discriminator, PublicKey newOperator) implements SerDe {  
+  public record SetOperatorIxData(Discriminator discriminator, PublicKey newOperator) implements SerDe {
 
     public static SetOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -581,7 +581,7 @@ public final class MerkleDistributorProgram {
   public record NewClaimIxData(Discriminator discriminator,
                                long amountUnlocked,
                                long amountLocked,
-                               byte[][] proof) implements SerDe {  
+                               byte[][] proof) implements SerDe {
 
     public static NewClaimIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -791,7 +791,7 @@ public final class MerkleDistributorProgram {
   public record NewClaimAndStakeIxData(Discriminator discriminator,
                                        long amountUnlocked,
                                        long amountLocked,
-                                       byte[][] proof) implements SerDe {  
+                                       byte[][] proof) implements SerDe {
 
     public static NewClaimAndStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

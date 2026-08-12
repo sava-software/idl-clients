@@ -36,7 +36,7 @@ public final class ComputeBudgetProgram {
   /// @param additionalFee: u32 Prioritization fee lamports.
   public record RequestUnitsIxData(int discriminator,
                                    long units,
-                                   long additionalFee) implements SerDe {  
+                                   long additionalFee) implements SerDe {
 
     public static RequestUnitsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -95,7 +95,7 @@ public final class ComputeBudgetProgram {
 
   /// @param bytes: u32 Requested transaction-wide program heap size in bytes.
   ///              Must be multiple of 1024. Applies to each program, including CPIs.
-  public record RequestHeapFrameIxData(int discriminator, long bytes) implements SerDe {  
+  public record RequestHeapFrameIxData(int discriminator, long bytes) implements SerDe {
 
     public static RequestHeapFrameIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -147,7 +147,7 @@ public final class ComputeBudgetProgram {
   }
 
   /// @param units: u32 Transaction-wide compute unit limit.
-  public record SetComputeUnitLimitIxData(int discriminator, long units) implements SerDe {  
+  public record SetComputeUnitLimitIxData(int discriminator, long units) implements SerDe {
 
     public static SetComputeUnitLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -199,7 +199,7 @@ public final class ComputeBudgetProgram {
   }
 
   /// @param microLamports: u64 Transaction compute unit price used for prioritization fees.
-  public record SetComputeUnitPriceIxData(int discriminator, long microLamports) implements SerDe {  
+  public record SetComputeUnitPriceIxData(int discriminator, long microLamports) implements SerDe {
 
     public static SetComputeUnitPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -251,7 +251,7 @@ public final class ComputeBudgetProgram {
   }
 
   /// @param accountDataSizeLimit: u32
-  public record SetLoadedAccountsDataSizeLimitIxData(int discriminator, long accountDataSizeLimit) implements SerDe {  
+  public record SetLoadedAccountsDataSizeLimitIxData(int discriminator, long accountDataSizeLimit) implements SerDe {
 
     public static SetLoadedAccountsDataSizeLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

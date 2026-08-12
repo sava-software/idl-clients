@@ -5,7 +5,7 @@ import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// The state of a proposal.
-/// 
+///
 /// The `expired` state from Compound is missing here, because the
 /// Smart Wallet handles execution.
 public enum ProposalState implements RustEnum {

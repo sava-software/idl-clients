@@ -83,7 +83,7 @@ public final class AssociatedTokenProgram {
   /// Creates an associated token account for the given wallet address and
   /// token mint Returns an error if the account exists.
   ///
-  public record CreateAssociatedTokenIxData(int discriminator) implements SerDe {  
+  public record CreateAssociatedTokenIxData(int discriminator) implements SerDe {
 
     public static CreateAssociatedTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -185,7 +185,7 @@ public final class AssociatedTokenProgram {
   /// token mint, if it doesn't already exist. Returns an error if the
   /// account exists, but with a different owner.
   ///
-  public record CreateAssociatedTokenIdempotentIxData(int discriminator) implements SerDe {  
+  public record CreateAssociatedTokenIdempotentIxData(int discriminator) implements SerDe {
 
     public static CreateAssociatedTokenIdempotentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -221,11 +221,11 @@ public final class AssociatedTokenProgram {
 
   /// Transfers from and closes a nested associated token account: an
   /// associated token account owned by an associated token account.
-  /// 
+  ///
   /// The tokens are moved from the nested associated token account to the
   /// wallet's associated token account, and the nested account lamports are
   /// moved to the wallet.
-  /// 
+  ///
   /// Note: Nested token accounts are an anti-pattern, and almost always
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
@@ -257,11 +257,11 @@ public final class AssociatedTokenProgram {
 
   /// Transfers from and closes a nested associated token account: an
   /// associated token account owned by an associated token account.
-  /// 
+  ///
   /// The tokens are moved from the nested associated token account to the
   /// wallet's associated token account, and the nested account lamports are
   /// moved to the wallet.
-  /// 
+  ///
   /// Note: Nested token accounts are an anti-pattern, and almost always
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
@@ -295,11 +295,11 @@ public final class AssociatedTokenProgram {
 
   /// Transfers from and closes a nested associated token account: an
   /// associated token account owned by an associated token account.
-  /// 
+  ///
   /// The tokens are moved from the nested associated token account to the
   /// wallet's associated token account, and the nested account lamports are
   /// moved to the wallet.
-  /// 
+  ///
   /// Note: Nested token accounts are an anti-pattern, and almost always
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
@@ -314,16 +314,16 @@ public final class AssociatedTokenProgram {
 
   /// Transfers from and closes a nested associated token account: an
   /// associated token account owned by an associated token account.
-  /// 
+  ///
   /// The tokens are moved from the nested associated token account to the
   /// wallet's associated token account, and the nested account lamports are
   /// moved to the wallet.
-  /// 
+  ///
   /// Note: Nested token accounts are an anti-pattern, and almost always
   /// created unintentionally, so this instruction should only be used to
   /// recover from errors.
   ///
-  public record RecoverNestedAssociatedTokenIxData(int discriminator) implements SerDe {  
+  public record RecoverNestedAssociatedTokenIxData(int discriminator) implements SerDe {
 
     public static RecoverNestedAssociatedTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -64,7 +64,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, PublicKey topAuthority, PublicKey treasury) implements SerDe {  
+  public record InitializeIxData(Discriminator discriminator, PublicKey topAuthority, PublicKey treasury) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -138,7 +138,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record UpdateIxData(Discriminator discriminator, PublicKey trustedSigner, long expiresAt) implements SerDe {  
+  public record UpdateIxData(Discriminator discriminator, PublicKey trustedSigner, long expiresAt) implements SerDe {
 
     public static UpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -211,7 +211,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record UpdateEcdsaSignerIxData(Discriminator discriminator, byte[] trustedSigner, long expiresAt) implements SerDe {  
+  public record UpdateEcdsaSignerIxData(Discriminator discriminator, byte[] trustedSigner, long expiresAt) implements SerDe {
 
     public static UpdateEcdsaSignerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -289,7 +289,7 @@ public final class PythLazerSolanaContractProgram {
     return Instruction.createInstruction(invokedPythLazerSolanaContractProgramMeta, keys, _data);
   }
 
-  public record VerifyEcdsaMessageIxData(Discriminator discriminator, byte[] messageData) implements SerDe {  
+  public record VerifyEcdsaMessageIxData(Discriminator discriminator, byte[] messageData) implements SerDe {
 
     public static VerifyEcdsaMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -324,7 +324,7 @@ public final class PythLazerSolanaContractProgram {
 
   /// Verifies a ed25519 signature on Solana by checking that the transaction contains
   /// a correct call to the built-in `ed25519_program`.
-  /// 
+  ///
   /// - `message_data` is the signed message that is being verified.
   /// - `ed25519_instruction_index` is the index of the `ed25519_program` instruction
   /// within the transaction. This instruction must precede the current instruction.
@@ -350,7 +350,7 @@ public final class PythLazerSolanaContractProgram {
 
   /// Verifies a ed25519 signature on Solana by checking that the transaction contains
   /// a correct call to the built-in `ed25519_program`.
-  /// 
+  ///
   /// - `message_data` is the signed message that is being verified.
   /// - `ed25519_instruction_index` is the index of the `ed25519_program` instruction
   /// within the transaction. This instruction must precede the current instruction.
@@ -389,7 +389,7 @@ public final class PythLazerSolanaContractProgram {
 
   /// Verifies a ed25519 signature on Solana by checking that the transaction contains
   /// a correct call to the built-in `ed25519_program`.
-  /// 
+  ///
   /// - `message_data` is the signed message that is being verified.
   /// - `ed25519_instruction_index` is the index of the `ed25519_program` instruction
   /// within the transaction. This instruction must precede the current instruction.
@@ -419,7 +419,7 @@ public final class PythLazerSolanaContractProgram {
   public record VerifyMessageIxData(Discriminator discriminator,
                                     byte[] messageData,
                                     int ed25519InstructionIndex,
-                                    int signatureIndex) implements SerDe {  
+                                    int signatureIndex) implements SerDe {
 
     public static VerifyMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

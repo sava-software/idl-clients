@@ -90,7 +90,7 @@ public final class JupStableProgram {
 
   /// @param mintFeeRate: u16
   /// @param redeemFeeRate: u16
-  public record CreateBenefactorIxData(Discriminator discriminator, int mintFeeRate, int redeemFeeRate) implements SerDe {  
+  public record CreateBenefactorIxData(Discriminator discriminator, int mintFeeRate, int redeemFeeRate) implements SerDe {
 
     public static CreateBenefactorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -176,7 +176,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
-  public record CreateOperatorIxData(Discriminator discriminator, OperatorRole role) implements SerDe {  
+  public record CreateOperatorIxData(Discriminator discriminator, OperatorRole role) implements SerDe {
 
     public static CreateOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -432,7 +432,7 @@ public final class JupStableProgram {
                            int decimals,
                            String name, byte[] _name,
                            String symbol, byte[] _symbol,
-                           String uri, byte[] _uri) implements SerDe {  
+                           String uri, byte[] _uri) implements SerDe {
 
     public static InitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -534,7 +534,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
-  public record ManageBenefactorIxData(Discriminator discriminator, BenefactorManagementAction action) implements SerDe {  
+  public record ManageBenefactorIxData(Discriminator discriminator, BenefactorManagementAction action) implements SerDe {
 
     public static ManageBenefactorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -600,7 +600,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
-  public record ManageConfigIxData(Discriminator discriminator, ConfigManagementAction action) implements SerDe {  
+  public record ManageConfigIxData(Discriminator discriminator, ConfigManagementAction action) implements SerDe {
 
     public static ManageConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -670,7 +670,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
-  public record ManageOperatorIxData(Discriminator discriminator, OperatorManagementAction action) implements SerDe {  
+  public record ManageOperatorIxData(Discriminator discriminator, OperatorManagementAction action) implements SerDe {
 
     public static ManageOperatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -736,7 +736,7 @@ public final class JupStableProgram {
     return Instruction.createInstruction(invokedJupStableProgramMeta, keys, _data);
   }
 
-  public record ManageVaultIxData(Discriminator discriminator, VaultManagementAction action) implements SerDe {  
+  public record ManageVaultIxData(Discriminator discriminator, VaultManagementAction action) implements SerDe {
 
     public static ManageVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -864,7 +864,7 @@ public final class JupStableProgram {
 
   /// @param amount: u64
   /// @param minAmountOut: u64
-  public record MintIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {  
+  public record MintIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {
 
     public static MintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -996,7 +996,7 @@ public final class JupStableProgram {
 
   /// @param amount: u64
   /// @param minAmountOut: u64
-  public record RedeemIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {  
+  public record RedeemIxData(Discriminator discriminator, long amount, long minAmountOut) implements SerDe {
 
     public static RedeemIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1101,7 +1101,7 @@ public final class JupStableProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

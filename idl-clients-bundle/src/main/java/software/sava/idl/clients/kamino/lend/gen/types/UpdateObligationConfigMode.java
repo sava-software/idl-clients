@@ -5,7 +5,7 @@ import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// A discriminator of a user-configurable piece of Obligation.
-/// 
+///
 /// Implementation note: due to TS-side codegen quirks (and a "convention" currently seen e.g.
 /// within reserve and market update operations), this is not a true Rust enum. The new value of
 /// a config item is provided in a separate handler argument (borsh-serialized), and its expected

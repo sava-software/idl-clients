@@ -31,11 +31,11 @@ public final class WormholePostMessageShimProgram {
   /// message unreliable instruction and emitting data via self-CPI (Anchor
   /// event) for the guardian to observe. This instruction data contains
   /// information previously found only in the resulting message account.
-  /// 
+  ///
   /// Because this instruction passes through the emitter and calls the post
   /// message unreliable instruction on the Wormhole Core Bridge, it can be
   /// used without disruption.
-  /// 
+  ///
   /// NOTE: In the initial message publication for a new emitter, this will
   /// require one additional CPI call depth when compared to using the
   /// Wormhole Core Bridge directly. If this initial call depth is an issue,
@@ -43,13 +43,13 @@ public final class WormholePostMessageShimProgram {
   /// instantiate the message account. Posting a message will result in a VAA
   /// from your emitter, so be careful to avoid any issues that may result
   /// from this first message.
-  /// 
+  ///
   /// Call depth of direct case:
   /// 1. post message (Wormhole Post Message Shim)
   /// 2. multiple CPI
   /// - post message unreliable (Wormhole Core Bridge)
   /// - Anchor event of `MesssageEvent` (Wormhole Post Message Shim)
-  /// 
+  ///
   /// Call depth of integrator case:
   /// 1. integrator instruction
   /// 2. CPI post message (Wormhole Post Message Shim)
@@ -61,7 +61,7 @@ public final class WormholePostMessageShimProgram {
   ///                  message instruction requires this account to be mutable.
   /// @param messageKey Wormhole Message. The Wormhole Core Bridge program's post message
   ///                   instruction requires this account to be a mutable signer.
-  ///                   
+  ///
   ///                   This program uses a PDA per emitter. Messages are already bottle-necked
   ///                   by emitter sequence and the Wormhole Core Bridge program enforces that
   ///                   emitter must be identical for reused accounts. While this could be
@@ -108,11 +108,11 @@ public final class WormholePostMessageShimProgram {
   /// message unreliable instruction and emitting data via self-CPI (Anchor
   /// event) for the guardian to observe. This instruction data contains
   /// information previously found only in the resulting message account.
-  /// 
+  ///
   /// Because this instruction passes through the emitter and calls the post
   /// message unreliable instruction on the Wormhole Core Bridge, it can be
   /// used without disruption.
-  /// 
+  ///
   /// NOTE: In the initial message publication for a new emitter, this will
   /// require one additional CPI call depth when compared to using the
   /// Wormhole Core Bridge directly. If this initial call depth is an issue,
@@ -120,13 +120,13 @@ public final class WormholePostMessageShimProgram {
   /// instantiate the message account. Posting a message will result in a VAA
   /// from your emitter, so be careful to avoid any issues that may result
   /// from this first message.
-  /// 
+  ///
   /// Call depth of direct case:
   /// 1. post message (Wormhole Post Message Shim)
   /// 2. multiple CPI
   /// - post message unreliable (Wormhole Core Bridge)
   /// - Anchor event of `MesssageEvent` (Wormhole Post Message Shim)
-  /// 
+  ///
   /// Call depth of integrator case:
   /// 1. integrator instruction
   /// 2. CPI post message (Wormhole Post Message Shim)
@@ -138,7 +138,7 @@ public final class WormholePostMessageShimProgram {
   ///                  message instruction requires this account to be mutable.
   /// @param messageKey Wormhole Message. The Wormhole Core Bridge program's post message
   ///                   instruction requires this account to be a mutable signer.
-  ///                   
+  ///
   ///                   This program uses a PDA per emitter. Messages are already bottle-necked
   ///                   by emitter sequence and the Wormhole Core Bridge program enforces that
   ///                   emitter must be identical for reused accounts. While this could be
@@ -196,11 +196,11 @@ public final class WormholePostMessageShimProgram {
   /// message unreliable instruction and emitting data via self-CPI (Anchor
   /// event) for the guardian to observe. This instruction data contains
   /// information previously found only in the resulting message account.
-  /// 
+  ///
   /// Because this instruction passes through the emitter and calls the post
   /// message unreliable instruction on the Wormhole Core Bridge, it can be
   /// used without disruption.
-  /// 
+  ///
   /// NOTE: In the initial message publication for a new emitter, this will
   /// require one additional CPI call depth when compared to using the
   /// Wormhole Core Bridge directly. If this initial call depth is an issue,
@@ -208,13 +208,13 @@ public final class WormholePostMessageShimProgram {
   /// instantiate the message account. Posting a message will result in a VAA
   /// from your emitter, so be careful to avoid any issues that may result
   /// from this first message.
-  /// 
+  ///
   /// Call depth of direct case:
   /// 1. post message (Wormhole Post Message Shim)
   /// 2. multiple CPI
   /// - post message unreliable (Wormhole Core Bridge)
   /// - Anchor event of `MesssageEvent` (Wormhole Post Message Shim)
-  /// 
+  ///
   /// Call depth of integrator case:
   /// 1. integrator instruction
   /// 2. CPI post message (Wormhole Post Message Shim)
@@ -242,7 +242,7 @@ public final class WormholePostMessageShimProgram {
   public record PostMessageIxData(Discriminator discriminator,
                                   long nonce,
                                   Finality consistencyLevel,
-                                  byte[] payload) implements SerDe {  
+                                  byte[] payload) implements SerDe {
 
     public static PostMessageIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

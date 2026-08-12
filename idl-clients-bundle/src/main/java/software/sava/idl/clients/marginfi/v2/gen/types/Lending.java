@@ -11,7 +11,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Minimal representation of the on-chain JupLend `Lending` account.
-/// 
+///
 /// Notes:
 /// - We intentionally use a **zero-copy** layout here to match how other integrations load large
 /// external accounts (and to avoid paying Borsh (de)serialization cost on every access).

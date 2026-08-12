@@ -66,7 +66,7 @@ public final class JupiterProgram {
   }
 
   /// @param id: u8
-  public record ClaimIxData(Discriminator discriminator, int id) implements SerDe {  
+  public record ClaimIxData(Discriminator discriminator, int id) implements SerDe {
 
     public static ClaimIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -159,7 +159,7 @@ public final class JupiterProgram {
   }
 
   /// @param id: u8
-  public record ClaimTokenIxData(Discriminator discriminator, int id) implements SerDe {  
+  public record ClaimTokenIxData(Discriminator discriminator, int id) implements SerDe {
 
     public static ClaimTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -247,7 +247,7 @@ public final class JupiterProgram {
   }
 
   /// @param id: u8
-  public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements SerDe {  
+  public record CloseTokenIxData(Discriminator discriminator, int id, boolean burnAll) implements SerDe {
 
     public static CloseTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -361,7 +361,7 @@ public final class JupiterProgram {
   }
 
   /// @param bump: u8
-  public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements SerDe {  
+  public record CreateTokenAccountIxData(Discriminator discriminator, int bump) implements SerDe {
 
     public static CreateTokenAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -537,7 +537,7 @@ public final class JupiterProgram {
                                     long outAmount,
                                     long quotedInAmount,
                                     int slippageBps,
-                                    int platformFeeBps) implements SerDe {  
+                                    int platformFeeBps) implements SerDe {
 
     public static ExactOutRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -694,7 +694,7 @@ public final class JupiterProgram {
                             long inAmount,
                             long quotedOutAmount,
                             int slippageBps,
-                            int platformFeeBps) implements SerDe {  
+                            int platformFeeBps) implements SerDe {
 
     public static RouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -846,7 +846,7 @@ public final class JupiterProgram {
                                            RoutePlanStep[] routePlan,
                                            long quotedOutAmount,
                                            int slippageBps,
-                                           int platformFeeBps) implements SerDe {  
+                                           int platformFeeBps) implements SerDe {
 
     public static RouteWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1044,7 +1044,7 @@ public final class JupiterProgram {
                                                   long outAmount,
                                                   long quotedInAmount,
                                                   int slippageBps,
-                                                  int platformFeeBps) implements SerDe {  
+                                                  int platformFeeBps) implements SerDe {
 
     public static SharedAccountsExactOutRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1233,7 +1233,7 @@ public final class JupiterProgram {
                                           long inAmount,
                                           long quotedOutAmount,
                                           int slippageBps,
-                                          int platformFeeBps) implements SerDe {  
+                                          int platformFeeBps) implements SerDe {
 
     public static SharedAccountsRouteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1417,7 +1417,7 @@ public final class JupiterProgram {
                                                          RoutePlanStep[] routePlan,
                                                          long quotedOutAmount,
                                                          int slippageBps,
-                                                         int platformFeeBps) implements SerDe {  
+                                                         int platformFeeBps) implements SerDe {
 
     public static SharedAccountsRouteWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1589,7 +1589,7 @@ public final class JupiterProgram {
                                       int slippageBps,
                                       int platformFeeBps,
                                       int positiveSlippageBps,
-                                      RoutePlanStepV2[] routePlan) implements SerDe {  
+                                      RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static ExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1771,7 +1771,7 @@ public final class JupiterProgram {
                               int slippageBps,
                               int platformFeeBps,
                               int positiveSlippageBps,
-                              RoutePlanStepV2[] routePlan) implements SerDe {  
+                              RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static RouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1968,7 +1968,7 @@ public final class JupiterProgram {
                                                     int slippageBps,
                                                     int platformFeeBps,
                                                     int positiveSlippageBps,
-                                                    RoutePlanStepV2[] routePlan) implements SerDe {  
+                                                    RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static SharedAccountsExactOutRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2172,7 +2172,7 @@ public final class JupiterProgram {
                                             int slippageBps,
                                             int platformFeeBps,
                                             int positiveSlippageBps,
-                                            RoutePlanStepV2[] routePlan) implements SerDe {  
+                                            RoutePlanStepV2[] routePlan) implements SerDe {
 
     public static SharedAccountsRouteV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -812,7 +812,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record MintNewEditionFromMasterEditionViaTokenIxData(Discriminator discriminator, MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) implements SerDe {  
+  public record MintNewEditionFromMasterEditionViaTokenIxData(Discriminator discriminator, MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) implements SerDe {
 
     public static MintNewEditionFromMasterEditionViaTokenIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1007,7 +1007,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record MintNewEditionFromMasterEditionViaVaultProxyIxData(Discriminator discriminator, MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) implements SerDe {  
+  public record MintNewEditionFromMasterEditionViaVaultProxyIxData(Discriminator discriminator, MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) implements SerDe {
 
     public static MintNewEditionFromMasterEditionViaVaultProxyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1098,7 +1098,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UpdateMetadataAccountV2IxData(Discriminator discriminator, UpdateMetadataAccountArgsV2 updateMetadataAccountArgsV2) implements SerDe {  
+  public record UpdateMetadataAccountV2IxData(Discriminator discriminator, UpdateMetadataAccountArgsV2 updateMetadataAccountArgsV2) implements SerDe {
 
     public static UpdateMetadataAccountV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1269,7 +1269,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record CreateMasterEditionV3IxData(Discriminator discriminator, CreateMasterEditionArgs createMasterEditionArgs) implements SerDe {  
+  public record CreateMasterEditionV3IxData(Discriminator discriminator, CreateMasterEditionArgs createMasterEditionArgs) implements SerDe {
 
     public static CreateMasterEditionV3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1452,7 +1452,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UtilizeIxData(Discriminator discriminator, UtilizeArgs utilizeArgs) implements SerDe {  
+  public record UtilizeIxData(Discriminator discriminator, UtilizeArgs utilizeArgs) implements SerDe {
 
     public static UtilizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1576,7 +1576,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record ApproveUseAuthorityIxData(Discriminator discriminator, ApproveUseAuthorityArgs approveUseAuthorityArgs) implements SerDe {  
+  public record ApproveUseAuthorityIxData(Discriminator discriminator, ApproveUseAuthorityArgs approveUseAuthorityArgs) implements SerDe {
 
     public static ApproveUseAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2358,7 +2358,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record CreateMetadataAccountV3IxData(Discriminator discriminator, CreateMetadataAccountArgsV3 createMetadataAccountArgsV3) implements SerDe {  
+  public record CreateMetadataAccountV3IxData(Discriminator discriminator, CreateMetadataAccountArgsV3 createMetadataAccountArgsV3) implements SerDe {
 
     public static CreateMetadataAccountV3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2438,7 +2438,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record SetCollectionSizeIxData(Discriminator discriminator, SetCollectionSizeArgs setCollectionSizeArgs) implements SerDe {  
+  public record SetCollectionSizeIxData(Discriminator discriminator, SetCollectionSizeArgs setCollectionSizeArgs) implements SerDe {
 
     public static SetCollectionSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2569,7 +2569,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record BubblegumSetCollectionSizeIxData(Discriminator discriminator, SetCollectionSizeArgs setCollectionSizeArgs) implements SerDe {  
+  public record BubblegumSetCollectionSizeIxData(Discriminator discriminator, SetCollectionSizeArgs setCollectionSizeArgs) implements SerDe {
 
     public static BubblegumSetCollectionSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2920,7 +2920,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record TransferOutOfEscrowIxData(Discriminator discriminator, TransferOutOfEscrowArgs transferOutOfEscrowArgs) implements SerDe {  
+  public record TransferOutOfEscrowIxData(Discriminator discriminator, TransferOutOfEscrowArgs transferOutOfEscrowArgs) implements SerDe {
 
     public static TransferOutOfEscrowIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3062,7 +3062,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record BurnIxData(Discriminator discriminator, BurnArgs burnArgs) implements SerDe {  
+  public record BurnIxData(Discriminator discriminator, BurnArgs burnArgs) implements SerDe {
 
     public static BurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3172,7 +3172,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record CreateIxData(Discriminator discriminator, CreateArgs createArgs) implements SerDe {  
+  public record CreateIxData(Discriminator discriminator, CreateArgs createArgs) implements SerDe {
 
     public static CreateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3318,7 +3318,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record MintIxData(Discriminator discriminator, MintArgs mintArgs) implements SerDe {  
+  public record MintIxData(Discriminator discriminator, MintArgs mintArgs) implements SerDe {
 
     public static MintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3458,7 +3458,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record DelegateIxData(Discriminator discriminator, DelegateArgs delegateArgs) implements SerDe {  
+  public record DelegateIxData(Discriminator discriminator, DelegateArgs delegateArgs) implements SerDe {
 
     public static DelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3598,7 +3598,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record RevokeIxData(Discriminator discriminator, RevokeArgs revokeArgs) implements SerDe {  
+  public record RevokeIxData(Discriminator discriminator, RevokeArgs revokeArgs) implements SerDe {
 
     public static RevokeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3734,7 +3734,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record LockIxData(Discriminator discriminator, LockArgs lockArgs) implements SerDe {  
+  public record LockIxData(Discriminator discriminator, LockArgs lockArgs) implements SerDe {
 
     public static LockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3868,7 +3868,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UnlockIxData(Discriminator discriminator, UnlockArgs unlockArgs) implements SerDe {  
+  public record UnlockIxData(Discriminator discriminator, UnlockArgs unlockArgs) implements SerDe {
 
     public static UnlockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4135,7 +4135,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record TransferIxData(Discriminator discriminator, TransferArgs transferArgs) implements SerDe {  
+  public record TransferIxData(Discriminator discriminator, TransferArgs transferArgs) implements SerDe {
 
     public static TransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4257,7 +4257,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UpdateIxData(Discriminator discriminator, UpdateArgs updateArgs) implements SerDe {  
+  public record UpdateIxData(Discriminator discriminator, UpdateArgs updateArgs) implements SerDe {
 
     public static UpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4385,7 +4385,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UseIxData(Discriminator discriminator, UseArgs useArgs) implements SerDe {  
+  public record UseIxData(Discriminator discriminator, UseArgs useArgs) implements SerDe {
 
     public static UseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4489,7 +4489,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record VerifyIxData(Discriminator discriminator, VerificationArgs verificationArgs) implements SerDe {  
+  public record VerifyIxData(Discriminator discriminator, VerificationArgs verificationArgs) implements SerDe {
 
     public static VerifyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4589,7 +4589,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record UnverifyIxData(Discriminator discriminator, VerificationArgs verificationArgs) implements SerDe {  
+  public record UnverifyIxData(Discriminator discriminator, VerificationArgs verificationArgs) implements SerDe {
 
     public static UnverifyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4784,7 +4784,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, _data);
   }
 
-  public record PrintIxData(Discriminator discriminator, PrintArgs printArgs) implements SerDe {  
+  public record PrintIxData(Discriminator discriminator, PrintArgs printArgs) implements SerDe {
 
     public static PrintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

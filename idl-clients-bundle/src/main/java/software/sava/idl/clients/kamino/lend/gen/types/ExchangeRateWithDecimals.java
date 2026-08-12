@@ -11,9 +11,9 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 /// The cToken-to-underlying exchange rate, split into two fields so this handler can skip an
 /// on-chain `pow + divide` per call and let the caller fold both pieces into its own
 /// fixed-point representation (e.g. for Scope, into `Price::exp`).
-/// 
+///
 /// The whole-cToken-to-whole-token rate is:
-/// 
+///
 /// ```text
 /// rate = exchange_rate_sf / 10^mint_decimals     (where exchange_rate_sf is `Fraction` bits)
 /// ```

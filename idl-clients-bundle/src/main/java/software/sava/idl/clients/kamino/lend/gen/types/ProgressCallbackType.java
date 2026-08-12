@@ -5,9 +5,9 @@ import software.sava.idl.clients.core.gen.RustEnum;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
 /// A callback to be notified when the ticket is being processed.
-/// 
+///
 /// ## Why an enum?
-/// 
+///
 /// Only reliable programs may be used for callbacks (since any error or panic returned from a CPI
 /// aborts an entire transaction, which would stall the queue progress). Hence, we need a whitelist,
 /// and the simplest initial implementation is a hardcoded enum. If we want to be able to add new

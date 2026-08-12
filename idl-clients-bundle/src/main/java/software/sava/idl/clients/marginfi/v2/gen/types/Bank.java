@@ -50,7 +50,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param lastUpdate Unix timestamp (i64) of the last interest accrual
 /// @param config The bank's configuration parameters (weights, limits, oracle setup, interest rate config)
 /// @param flags: u64 Bank flags bitfield (u64).
-///              
+///
 ///              - Bit 0 (1): `EMISSIONS_FLAG_BORROW_ACTIVE` — borrow-side emissions are active
 ///              - Bit 1 (2): `EMISSIONS_FLAG_LENDING_ACTIVE` — lending-side emissions are active
 ///              - Bit 2 (4): `PERMISSIONLESS_BAD_DEBT_SETTLEMENT_FLAG` — anyone can settle bad debt

@@ -73,7 +73,7 @@ public final class SolanaStakeInterfaceProgram {
 
   public record InitializeIxData(long discriminator,
                                  Authorized arg0,
-                                 Lockup arg1) implements SerDe {  
+                                 Lockup arg1) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -173,7 +173,7 @@ public final class SolanaStakeInterfaceProgram {
 
   public record AuthorizeIxData(long discriminator,
                                 PublicKey arg0,
-                                StakeAuthorize arg1) implements SerDe {  
+                                StakeAuthorize arg1) implements SerDe {
 
     public static AuthorizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -265,7 +265,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DelegateStakeIxData(long discriminator) implements SerDe {  
+  public record DelegateStakeIxData(long discriminator) implements SerDe {
 
     public static DelegateStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -341,7 +341,7 @@ public final class SolanaStakeInterfaceProgram {
   }
 
   /// @param args: u64
-  public record SplitIxData(long discriminator, long args) implements SerDe {  
+  public record SplitIxData(long discriminator, long args) implements SerDe {
 
     public static SplitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -437,7 +437,7 @@ public final class SolanaStakeInterfaceProgram {
   }
 
   /// @param args: u64
-  public record WithdrawIxData(long discriminator, long args) implements SerDe {  
+  public record WithdrawIxData(long discriminator, long args) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -512,7 +512,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DeactivateIxData(long discriminator) implements SerDe {  
+  public record DeactivateIxData(long discriminator) implements SerDe {
 
     public static DeactivateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -579,7 +579,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record SetLockupIxData(long discriminator, LockupArgs arg0) implements SerDe {  
+  public record SetLockupIxData(long discriminator, LockupArgs arg0) implements SerDe {
 
     public static SetLockupIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -658,7 +658,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record MergeIxData(long discriminator) implements SerDe {  
+  public record MergeIxData(long discriminator) implements SerDe {
 
     public static MergeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -737,7 +737,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeWithSeedIxData(long discriminator, AuthorizeWithSeedArgs arg0) implements SerDe {  
+  public record AuthorizeWithSeedIxData(long discriminator, AuthorizeWithSeedArgs arg0) implements SerDe {
 
     public static AuthorizeWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -815,7 +815,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record InitializeCheckedIxData(long discriminator) implements SerDe {  
+  public record InitializeCheckedIxData(long discriminator) implements SerDe {
 
     public static InitializeCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -900,7 +900,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeCheckedIxData(long discriminator, StakeAuthorize stakeAuthorize) implements SerDe {  
+  public record AuthorizeCheckedIxData(long discriminator, StakeAuthorize stakeAuthorize) implements SerDe {
 
     public static AuthorizeCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -991,7 +991,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record AuthorizeCheckedWithSeedIxData(long discriminator, AuthorizeCheckedWithSeedArgs arg0) implements SerDe {  
+  public record AuthorizeCheckedWithSeedIxData(long discriminator, AuthorizeCheckedWithSeedArgs arg0) implements SerDe {
 
     public static AuthorizeCheckedWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1070,7 +1070,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record SetLockupCheckedIxData(long discriminator, LockupCheckedArgs arg0) implements SerDe {  
+  public record SetLockupCheckedIxData(long discriminator, LockupCheckedArgs arg0) implements SerDe {
 
     public static SetLockupCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1115,7 +1115,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
   }
 
-  public record GetMinimumDelegationIxData(long discriminator) implements SerDe {  
+  public record GetMinimumDelegationIxData(long discriminator) implements SerDe {
 
     public static GetMinimumDelegationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1185,7 +1185,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
   }
 
-  public record DeactivateDelinquentIxData(long discriminator) implements SerDe {  
+  public record DeactivateDelinquentIxData(long discriminator) implements SerDe {
 
     public static DeactivateDelinquentIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1226,7 +1226,7 @@ public final class SolanaStakeInterfaceProgram {
     return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
   }
 
-  public record RedelegateIxData(long discriminator) implements SerDe {  
+  public record RedelegateIxData(long discriminator) implements SerDe {
 
     public static RedelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1302,7 +1302,7 @@ public final class SolanaStakeInterfaceProgram {
   }
 
   /// @param args: u64
-  public record MoveStakeIxData(long discriminator, long args) implements SerDe {  
+  public record MoveStakeIxData(long discriminator, long args) implements SerDe {
 
     public static MoveStakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1385,7 +1385,7 @@ public final class SolanaStakeInterfaceProgram {
   }
 
   /// @param args: u64
-  public record MoveLamportsIxData(long discriminator, long args) implements SerDe {  
+  public record MoveLamportsIxData(long discriminator, long args) implements SerDe {
 
     public static MoveLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

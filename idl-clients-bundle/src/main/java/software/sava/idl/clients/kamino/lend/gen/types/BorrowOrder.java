@@ -12,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A borrow order.
-/// 
+///
 /// When a borrow order entry on an Obligation (see Obligation::get_borrow_order()) is populated
 /// (i.e. non-zeroed), then the permissionless "fill" operations may borrow liquidity to the owner
 /// according to this specification.
@@ -24,7 +24,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                              where the filled funds should be transferred to.
 /// @param minDebtTermSeconds: u64 The minimum allowed debt term that the obligation owner agrees to.
 ///                           The reserves used to fill this order *cannot* define their debt term *lower* than this.
-///                           
+///
 ///                           If zeroed, then only open-term reserves may be used.
 /// @param fillableUntilTimestamp: u64 The time until which the borrow order can still be filled.
 /// @param placedAtTimestamp: u64 The time at which this order was placed.
@@ -39,25 +39,25 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                         The reserves used for Obligation::borrows *cannot* define their maximum borrow rate
 ///                         *higher* than this.
 /// @param active: u8 Whether the Self::remaining_debt_amount is non-zero.
-///               
+///
 ///               This field is *not* used by smart contract logic (which prefers to treat the above
 ///               Self::remaining_debt_amount-based definition as the single source of truth). However, it
 ///               is useful for off-chain bots (order-searchers) to efficiently list (i.e. `memcmp` filter)
 ///               just the obligations that have active borrow orders.
 /// @param enableAutoRolloverOnFilledBorrows: u8 When `1`, all Obligation::borrows that get filled by this order will have their
 ///                                          FixedTermBorrowRolloverConfig::auto_rollover_enabled flag set.
-///                                          
+///
 ///                                          Additionally, their rollover customizations:
 ///                                          - will exactly match this order's constraints regarding Self::min_debt_term_seconds and
 ///                                          Self::max_borrow_rate_bps;
 ///                                          - will use the FixedTermBorrowRolloverConfig::open_term_allowed fallback.
-///                                          
+///
 ///                                          See BorrowOrder::get_rollover_config_for_filled_borrow().
-///                                          
+///
 ///                                          Clarification note: when `0`, this setting has no effect on any borrow (i.e. if an existing
 ///                                          borrow was independently marked for auto-rollover, it will *not* be unmarked when filled by
 ///                                          this order).
-///                                          
+///
 ///                                          Feature flag note: when LendingMarket::obligation_borrow_rollover_configuration_enabled is
 ///                                          disabled, this setting has no effect on any borrow (i.e. the fill will be successful, but
 ///                                          the borrow will not be marked for auto-rollover.

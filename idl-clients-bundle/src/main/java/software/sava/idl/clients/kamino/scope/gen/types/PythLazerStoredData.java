@@ -7,7 +7,7 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Layout of `DatedPrice.generic_data` (24 bytes) for `PythLazer` entries.
-/// 
+///
 /// `update_price` writes the spot feed timestamp on every refresh, and the EMA
 /// fields whenever the payload carries an `EmaPrice`. `ema_feed_update_timestamp_us == 0`
 /// is the "EMA never received" sentinel consumed by `get_ema_price`.

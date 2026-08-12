@@ -332,7 +332,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record CreateNftCollateralOfferIxData(Discriminator discriminator, NftCollateralOfferParams offerParams, NftCollateralAsset collateral) implements SerDe {  
+  public record CreateNftCollateralOfferIxData(Discriminator discriminator, NftCollateralOfferParams offerParams, NftCollateralAsset collateral) implements SerDe {
 
     public static CreateNftCollateralOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -459,7 +459,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record CreateNftPrincipalOfferIxData(Discriminator discriminator, NftPrincipalOfferParams offerParams, NftCollateral collateral) implements SerDe {  
+  public record CreateNftPrincipalOfferIxData(Discriminator discriminator, NftPrincipalOfferParams offerParams, NftCollateral collateral) implements SerDe {
 
     public static CreateNftPrincipalOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -589,7 +589,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record CreateTokenCollateralOfferIxData(Discriminator discriminator, TokenCollateralOfferParams offerParams) implements SerDe {  
+  public record CreateTokenCollateralOfferIxData(Discriminator discriminator, TokenCollateralOfferParams offerParams) implements SerDe {
 
     public static CreateTokenCollateralOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -717,7 +717,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record CreateTokenPrincipalOfferIxData(Discriminator discriminator, TokenPrincipalOfferParams offerParams) implements SerDe {  
+  public record CreateTokenPrincipalOfferIxData(Discriminator discriminator, TokenPrincipalOfferParams offerParams) implements SerDe {
 
     public static CreateTokenPrincipalOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1243,7 +1243,7 @@ public final class OfferbookProgram {
   }
 
   /// @param amount: u64
-  public record EscrowTokenDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record EscrowTokenDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static EscrowTokenDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1335,7 +1335,7 @@ public final class OfferbookProgram {
   }
 
   /// @param amount: u64
-  public record EscrowTokenWithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record EscrowTokenWithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static EscrowTokenWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1535,7 +1535,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record FillNonFungibleCollateralOfferIxData(Discriminator discriminator, FillNftCollateralOfferParams fillParams) implements SerDe {  
+  public record FillNonFungibleCollateralOfferIxData(Discriminator discriminator, FillNftCollateralOfferParams fillParams) implements SerDe {
 
     public static FillNonFungibleCollateralOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1665,7 +1665,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record FillNonFungiblePrincipalOfferIxData(Discriminator discriminator, FillNftPrincipalOfferParams fillParams) implements SerDe {  
+  public record FillNonFungiblePrincipalOfferIxData(Discriminator discriminator, FillNftPrincipalOfferParams fillParams) implements SerDe {
 
     public static FillNonFungiblePrincipalOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1797,7 +1797,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record FillTokenCollateralOfferIxData(Discriminator discriminator, FillTokenCollateralOfferParams fillParams) implements SerDe {  
+  public record FillTokenCollateralOfferIxData(Discriminator discriminator, FillTokenCollateralOfferParams fillParams) implements SerDe {
 
     public static FillTokenCollateralOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1929,7 +1929,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record FillTokenPrincipalOfferIxData(Discriminator discriminator, FillTokenPrincipalOfferParams fillParams) implements SerDe {  
+  public record FillTokenPrincipalOfferIxData(Discriminator discriminator, FillTokenPrincipalOfferParams fillParams) implements SerDe {
 
     public static FillTokenPrincipalOfferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2210,7 +2210,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record SetLoanExtendableIxData(Discriminator discriminator, boolean allow) implements SerDe {  
+  public record SetLoanExtendableIxData(Discriminator discriminator, boolean allow) implements SerDe {
 
     public static SetLoanExtendableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2275,7 +2275,7 @@ public final class OfferbookProgram {
     return Instruction.createInstruction(invokedOfferbookProgramMeta, keys, _data);
   }
 
-  public record UpdateConfigIxData(Discriminator discriminator, UpdateConfigAction action) implements SerDe {  
+  public record UpdateConfigIxData(Discriminator discriminator, UpdateConfigAction action) implements SerDe {
 
     public static UpdateConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

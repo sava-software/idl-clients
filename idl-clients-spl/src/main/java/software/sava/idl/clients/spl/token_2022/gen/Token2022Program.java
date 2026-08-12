@@ -43,7 +43,7 @@ public final class Token2022Program {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -60,7 +60,7 @@ public final class Token2022Program {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -91,7 +91,7 @@ public final class Token2022Program {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -121,7 +121,7 @@ public final class Token2022Program {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -133,7 +133,7 @@ public final class Token2022Program {
   public record InitializeMintIxData(int discriminator,
                                      int decimals,
                                      PublicKey mintAuthority,
-                                     PublicKey freezeAuthority) implements SerDe {  
+                                     PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -195,7 +195,7 @@ public final class Token2022Program {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -221,7 +221,7 @@ public final class Token2022Program {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -249,7 +249,7 @@ public final class Token2022Program {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -268,13 +268,13 @@ public final class Token2022Program {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  public record InitializeAccountIxData(int discriminator) implements SerDe {  
+  public record InitializeAccountIxData(int discriminator) implements SerDe {
 
     public static InitializeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -309,12 +309,12 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_MULTISIG_DISCRIMINATOR = toDiscriminator(2);
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -330,12 +330,12 @@ public final class Token2022Program {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -355,12 +355,12 @@ public final class Token2022Program {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -378,19 +378,19 @@ public final class Token2022Program {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param m: u8 The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {  
+  public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -489,7 +489,7 @@ public final class Token2022Program {
   /// of SOL and Tokens will be transferred to the destination account.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  public record TransferIxData(int discriminator, long amount) implements SerDe {  
+  public record TransferIxData(int discriminator, long amount) implements SerDe {
 
     public static TransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -584,7 +584,7 @@ public final class Token2022Program {
   /// behalf of the source account's owner.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  public record ApproveIxData(int discriminator, long amount) implements SerDe {  
+  public record ApproveIxData(int discriminator, long amount) implements SerDe {
 
     public static ApproveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -663,7 +663,7 @@ public final class Token2022Program {
 
   /// Revokes the delegate's authority.
   ///
-  public record RevokeIxData(int discriminator) implements SerDe {  
+  public record RevokeIxData(int discriminator) implements SerDe {
 
     public static RevokeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -757,7 +757,7 @@ public final class Token2022Program {
   /// @param newAuthority The new authority
   public record SetAuthorityIxData(int discriminator,
                                    AuthorityType authorityType,
-                                   PublicKey newAuthority) implements SerDe {  
+                                   PublicKey newAuthority) implements SerDe {
 
     public static SetAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -855,7 +855,7 @@ public final class Token2022Program {
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  public record MintToIxData(int discriminator, long amount) implements SerDe {  
+  public record MintToIxData(int discriminator, long amount) implements SerDe {
 
     public static MintToIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -950,7 +950,7 @@ public final class Token2022Program {
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
   /// @param amount: u64
-  public record BurnIxData(int discriminator, long amount) implements SerDe {  
+  public record BurnIxData(int discriminator, long amount) implements SerDe {
 
     public static BurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1039,7 +1039,7 @@ public final class Token2022Program {
   /// Close an account by transferring all its SOL to the destination account.
   /// Non-native accounts may only be closed if its token amount is zero.
   ///
-  public record CloseAccountIxData(int discriminator) implements SerDe {  
+  public record CloseAccountIxData(int discriminator) implements SerDe {
 
     public static CloseAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1117,7 +1117,7 @@ public final class Token2022Program {
 
   /// Freeze an Initialized account using the Mint's freeze_authority (if set).
   ///
-  public record FreezeAccountIxData(int discriminator) implements SerDe {  
+  public record FreezeAccountIxData(int discriminator) implements SerDe {
 
     public static FreezeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1195,7 +1195,7 @@ public final class Token2022Program {
 
   /// Thaw a Frozen account using the Mint's freeze_authority (if set).
   ///
-  public record ThawAccountIxData(int discriminator) implements SerDe {  
+  public record ThawAccountIxData(int discriminator) implements SerDe {
 
     public static ThawAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1232,7 +1232,7 @@ public final class Token2022Program {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1256,7 +1256,7 @@ public final class Token2022Program {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1291,7 +1291,7 @@ public final class Token2022Program {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1314,7 +1314,7 @@ public final class Token2022Program {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1323,7 +1323,7 @@ public final class Token2022Program {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
-                                      int decimals) implements SerDe {  
+                                      int decimals) implements SerDe {
 
     public static TransferCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1371,7 +1371,7 @@ public final class Token2022Program {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1394,7 +1394,7 @@ public final class Token2022Program {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1428,7 +1428,7 @@ public final class Token2022Program {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1450,7 +1450,7 @@ public final class Token2022Program {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1459,7 +1459,7 @@ public final class Token2022Program {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
-                                     int decimals) implements SerDe {  
+                                     int decimals) implements SerDe {
 
     public static ApproveCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1506,7 +1506,7 @@ public final class Token2022Program {
   public static final Discriminator MINT_TO_CHECKED_DISCRIMINATOR = toDiscriminator(14);
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1525,7 +1525,7 @@ public final class Token2022Program {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1555,7 +1555,7 @@ public final class Token2022Program {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1576,7 +1576,7 @@ public final class Token2022Program {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1585,7 +1585,7 @@ public final class Token2022Program {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
-                                    int decimals) implements SerDe {  
+                                    int decimals) implements SerDe {
 
     public static MintToCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1633,7 +1633,7 @@ public final class Token2022Program {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1653,7 +1653,7 @@ public final class Token2022Program {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1684,7 +1684,7 @@ public final class Token2022Program {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1706,7 +1706,7 @@ public final class Token2022Program {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1715,7 +1715,7 @@ public final class Token2022Program {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
-                                  int decimals) implements SerDe {  
+                                  int decimals) implements SerDe {
 
     public static BurnCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1821,7 +1821,7 @@ public final class Token2022Program {
   /// not need the owner's `AccountInfo` otherwise.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements SerDe {  
+  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1916,7 +1916,7 @@ public final class Token2022Program {
   /// `system_instruction::transfer` to move lamports to a wrapped token
   /// account, and needs to have its token `amount` field updated.
   ///
-  public record SyncNativeIxData(int discriminator) implements SerDe {  
+  public record SyncNativeIxData(int discriminator) implements SerDe {
 
     public static SyncNativeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1994,7 +1994,7 @@ public final class Token2022Program {
   /// Like InitializeAccount2, but does not require the Rent sysvar to be provided.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements SerDe {  
+  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2073,7 +2073,7 @@ public final class Token2022Program {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param m: u8 The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {  
+  public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2178,7 +2178,7 @@ public final class Token2022Program {
   public record InitializeMint2IxData(int discriminator,
                                       int decimals,
                                       PublicKey mintAuthority,
-                                      PublicKey freezeAuthority) implements SerDe {  
+                                      PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMint2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2237,7 +2237,7 @@ public final class Token2022Program {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2250,7 +2250,7 @@ public final class Token2022Program {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2265,7 +2265,7 @@ public final class Token2022Program {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2279,11 +2279,11 @@ public final class Token2022Program {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
-  public record GetAccountDataSizeIxData(int discriminator) implements SerDe {  
+  public record GetAccountDataSizeIxData(int discriminator) implements SerDe {
 
     public static GetAccountDataSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2318,10 +2318,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR = toDiscriminator(22);
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2333,10 +2333,10 @@ public final class Token2022Program {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2350,10 +2350,10 @@ public final class Token2022Program {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2366,14 +2366,14 @@ public final class Token2022Program {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
-  public record InitializeImmutableOwnerIxData(int discriminator) implements SerDe {  
+  public record InitializeImmutableOwnerIxData(int discriminator) implements SerDe {
 
     public static InitializeImmutableOwnerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2410,9 +2410,9 @@ public final class Token2022Program {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2426,9 +2426,9 @@ public final class Token2022Program {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2446,9 +2446,9 @@ public final class Token2022Program {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2466,14 +2466,14 @@ public final class Token2022Program {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
   /// @param amount: u64 The amount of tokens to reformat.
-  public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {  
+  public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2517,7 +2517,7 @@ public final class Token2022Program {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2531,7 +2531,7 @@ public final class Token2022Program {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2549,7 +2549,7 @@ public final class Token2022Program {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2568,12 +2568,12 @@ public final class Token2022Program {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
   /// @param uiAmount The ui_amount of tokens to reformat.
-  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements SerDe {  
+  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements SerDe {
 
     public static UiAmountToAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2619,9 +2619,9 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_MINT_CLOSE_AUTHORITY_DISCRIMINATOR = toDiscriminator(25);
 
   /// Initialize the close account authority on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2634,9 +2634,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the close account authority on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2653,9 +2653,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the close account authority on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2675,15 +2675,15 @@ public final class Token2022Program {
   }
 
   /// Initialize the close account authority on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
   ///
   /// @param closeAuthority Authority that must sign the `CloseAccount` instruction on a mint.
-  public record InitializeMintCloseAuthorityIxData(int discriminator, PublicKey closeAuthority) implements SerDe {  
+  public record InitializeMintCloseAuthorityIxData(int discriminator, PublicKey closeAuthority) implements SerDe {
 
     public static InitializeMintCloseAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2728,9 +2728,9 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_TRANSFER_FEE_CONFIG_DISCRIMINATOR = toDiscriminator(26);
 
   /// Initialize the transfer fee on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2743,9 +2743,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the transfer fee on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2775,9 +2775,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the transfer fee on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2810,9 +2810,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the transfer fee on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -2826,7 +2826,7 @@ public final class Token2022Program {
                                                   PublicKey transferFeeConfigAuthority,
                                                   PublicKey withdrawWithheldAuthority,
                                                   int transferFeeBasisPoints,
-                                                  long maximumFee) implements SerDe {  
+                                                  long maximumFee) implements SerDe {
 
     public static InitializeTransferFeeConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2907,7 +2907,7 @@ public final class Token2022Program {
   public static final Discriminator TRANSFER_CHECKED_WITH_FEE_DISCRIMINATOR = toDiscriminator(26);
 
   /// Transfer, providing expected mint information and fees.
-  /// 
+  ///
   /// This instruction succeeds if the mint has no configured transfer fee
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
@@ -2929,7 +2929,7 @@ public final class Token2022Program {
   }
 
   /// Transfer, providing expected mint information and fees.
-  /// 
+  ///
   /// This instruction succeeds if the mint has no configured transfer fee
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
@@ -2967,7 +2967,7 @@ public final class Token2022Program {
   }
 
   /// Transfer, providing expected mint information and fees.
-  /// 
+  ///
   /// This instruction succeeds if the mint has no configured transfer fee
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
@@ -2996,7 +2996,7 @@ public final class Token2022Program {
   }
 
   /// Transfer, providing expected mint information and fees.
-  /// 
+  ///
   /// This instruction succeeds if the mint has no configured transfer fee
   /// and the provided fee is 0. This allows applications to use
   /// `TransferCheckedWithFee` with any mint.
@@ -3010,7 +3010,7 @@ public final class Token2022Program {
                                              int transferFeeDiscriminator,
                                              long amount,
                                              int decimals,
-                                             long fee) implements SerDe {  
+                                             long fee) implements SerDe {
 
     public static TransferCheckedWithFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3121,7 +3121,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens in the mint to an account. Signed by the
   /// mint's withdraw withheld tokens authority.
   ///
-  public record WithdrawWithheldTokensFromMintIxData(int discriminator, int transferFeeDiscriminator) implements SerDe {  
+  public record WithdrawWithheldTokensFromMintIxData(int discriminator, int transferFeeDiscriminator) implements SerDe {
 
     public static WithdrawWithheldTokensFromMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3226,7 +3226,7 @@ public final class Token2022Program {
   /// @param numTokenAccounts: u8 Number of token accounts harvested.
   public record WithdrawWithheldTokensFromAccountsIxData(int discriminator,
                                                          int transferFeeDiscriminator,
-                                                         int numTokenAccounts) implements SerDe {  
+                                                         int numTokenAccounts) implements SerDe {
 
     public static WithdrawWithheldTokensFromAccountsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3273,9 +3273,9 @@ public final class Token2022Program {
   public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_DISCRIMINATOR = toDiscriminator(26);
 
   /// Permissionless instruction to transfer all withheld tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include the `TransferFeeAmount` extension.
   /// If not, the account is skipped.
   ///
@@ -3287,9 +3287,9 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include the `TransferFeeAmount` extension.
   /// If not, the account is skipped.
   ///
@@ -3303,9 +3303,9 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include the `TransferFeeAmount` extension.
   /// If not, the account is skipped.
   ///
@@ -3319,13 +3319,13 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include the `TransferFeeAmount` extension.
   /// If not, the account is skipped.
   ///
-  public record HarvestWithheldTokensToMintIxData(int discriminator, int transferFeeDiscriminator) implements SerDe {  
+  public record HarvestWithheldTokensToMintIxData(int discriminator, int transferFeeDiscriminator) implements SerDe {
 
     public static HarvestWithheldTokensToMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3431,7 +3431,7 @@ public final class Token2022Program {
   public record SetTransferFeeIxData(int discriminator,
                                      int transferFeeDiscriminator,
                                      int transferFeeBasisPoints,
-                                     long maximumFee) implements SerDe {  
+                                     long maximumFee) implements SerDe {
 
     public static SetTransferFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3486,12 +3486,12 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27);
 
   /// Initializes confidential transfers for a mint.
-  /// 
+  ///
   /// The `ConfidentialTransferInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction
   /// as `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -3503,12 +3503,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfers for a mint.
-  /// 
+  ///
   /// The `ConfidentialTransferInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction
   /// as `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -3536,12 +3536,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfers for a mint.
-  /// 
+  ///
   /// The `ConfidentialTransferInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction
   /// as `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -3574,12 +3574,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfers for a mint.
-  /// 
+  ///
   /// The `ConfidentialTransferInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction
   /// as `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -3592,7 +3592,7 @@ public final class Token2022Program {
                                                          int confidentialTransferDiscriminator,
                                                          PublicKey authority,
                                                          boolean autoApproveNewAccounts,
-                                                         PublicKey auditorElgamalPubkey) implements SerDe {  
+                                                         PublicKey auditorElgamalPubkey) implements SerDe {
 
     public static InitializeConfidentialTransferMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3657,7 +3657,7 @@ public final class Token2022Program {
   public static final Discriminator UPDATE_CONFIDENTIAL_TRANSFER_MINT_DISCRIMINATOR = toDiscriminator(27);
 
   /// Updates the confidential transfer mint configuration for a mint.
-  /// 
+  ///
   /// Use `TokenInstruction::SetAuthority` to update the confidential transfer
   /// mint authority.
   ///
@@ -3672,7 +3672,7 @@ public final class Token2022Program {
   }
 
   /// Updates the confidential transfer mint configuration for a mint.
-  /// 
+  ///
   /// Use `TokenInstruction::SetAuthority` to update the confidential transfer
   /// mint authority.
   ///
@@ -3699,7 +3699,7 @@ public final class Token2022Program {
   }
 
   /// Updates the confidential transfer mint configuration for a mint.
-  /// 
+  ///
   /// Use `TokenInstruction::SetAuthority` to update the confidential transfer
   /// mint authority.
   ///
@@ -3725,7 +3725,7 @@ public final class Token2022Program {
   }
 
   /// Updates the confidential transfer mint configuration for a mint.
-  /// 
+  ///
   /// Use `TokenInstruction::SetAuthority` to update the confidential transfer
   /// mint authority.
   ///
@@ -3735,7 +3735,7 @@ public final class Token2022Program {
   public record UpdateConfidentialTransferMintIxData(int discriminator,
                                                      int confidentialTransferDiscriminator,
                                                      boolean autoApproveNewAccounts,
-                                                     PublicKey auditorElgamalPubkey) implements SerDe {  
+                                                     PublicKey auditorElgamalPubkey) implements SerDe {
 
     public static UpdateConfidentialTransferMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3792,18 +3792,18 @@ public final class Token2022Program {
   public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// The instruction fails if the confidential transfers are already
   /// configured, or if the mint was not initialized with confidential
   /// transfer support.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeAccount`
   /// instruction has not yet successfully executed for the token account.
-  /// 
+  ///
   /// Upon success, confidential and non-confidential deposits and transfers
   /// are enabled. Use the `DisableConfidentialCredits` and
   /// `DisableNonConfidentialCredits` instructions to disable.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyPubkeyValidity` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -3825,18 +3825,18 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// The instruction fails if the confidential transfers are already
   /// configured, or if the mint was not initialized with confidential
   /// transfer support.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeAccount`
   /// instruction has not yet successfully executed for the token account.
-  /// 
+  ///
   /// Upon success, confidential and non-confidential deposits and transfers
   /// are enabled. Use the `DisableConfidentialCredits` and
   /// `DisableNonConfidentialCredits` instructions to disable.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyPubkeyValidity` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -3876,18 +3876,18 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// The instruction fails if the confidential transfers are already
   /// configured, or if the mint was not initialized with confidential
   /// transfer support.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeAccount`
   /// instruction has not yet successfully executed for the token account.
-  /// 
+  ///
   /// Upon success, confidential and non-confidential deposits and transfers
   /// are enabled. Use the `DisableConfidentialCredits` and
   /// `DisableNonConfidentialCredits` instructions to disable.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyPubkeyValidity` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -3918,18 +3918,18 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// The instruction fails if the confidential transfers are already
   /// configured, or if the mint was not initialized with confidential
   /// transfer support.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeAccount`
   /// instruction has not yet successfully executed for the token account.
-  /// 
+  ///
   /// Upon success, confidential and non-confidential deposits and transfers
   /// are enabled. Use the `DisableConfidentialCredits` and
   /// `DisableNonConfidentialCredits` instructions to disable.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyPubkeyValidity` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -3946,7 +3946,7 @@ public final class Token2022Program {
                                                            int confidentialTransferDiscriminator,
                                                            DecryptableBalance decryptableZeroBalance,
                                                            long maximumPendingBalanceCreditCounter,
-                                                           int proofInstructionOffset) implements SerDe {  
+                                                           int proofInstructionOffset) implements SerDe {
 
     public static ConfigureConfidentialTransferAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4006,7 +4006,7 @@ public final class Token2022Program {
   public static final Discriminator APPROVE_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
 
   /// Approves a token account for confidential transfers.
-  /// 
+  ///
   /// Approval is only required when the
   /// `ConfidentialTransferMint::approve_new_accounts` field is set in the
   /// SPL Token mint.  This instruction must be executed after the account
@@ -4027,7 +4027,7 @@ public final class Token2022Program {
   }
 
   /// Approves a token account for confidential transfers.
-  /// 
+  ///
   /// Approval is only required when the
   /// `ConfidentialTransferMint::approve_new_accounts` field is set in the
   /// SPL Token mint.  This instruction must be executed after the account
@@ -4050,7 +4050,7 @@ public final class Token2022Program {
   }
 
   /// Approves a token account for confidential transfers.
-  /// 
+  ///
   /// Approval is only required when the
   /// `ConfidentialTransferMint::approve_new_accounts` field is set in the
   /// SPL Token mint.  This instruction must be executed after the account
@@ -4067,14 +4067,14 @@ public final class Token2022Program {
   }
 
   /// Approves a token account for confidential transfers.
-  /// 
+  ///
   /// Approval is only required when the
   /// `ConfidentialTransferMint::approve_new_accounts` field is set in the
   /// SPL Token mint.  This instruction must be executed after the account
   /// owner configures their account for confidential transfers with
   /// `ConfidentialTransferInstruction::ConfigureAccount`.
   ///
-  public record ApproveConfidentialTransferAccountIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record ApproveConfidentialTransferAccountIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static ApproveConfidentialTransferAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4116,20 +4116,20 @@ public final class Token2022Program {
   public static final Discriminator EMPTY_CONFIDENTIAL_TRANSFER_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
 
   /// Empty the available balance in a confidential token account.
-  /// 
+  ///
   /// A token account that is extended for confidential transfers can only be
   /// closed if the pending and available balance ciphertexts are emptied.
   /// The pending balance can be emptied
   /// via the `ConfidentialTransferInstruction::ApplyPendingBalance`
   /// instruction. Use the `ConfidentialTransferInstruction::EmptyAccount`
   /// instruction to empty the available balance ciphertext.
-  /// 
+  ///
   /// Note that a newly configured account is always empty, so this
   /// instruction is not required prior to account closing if no
   /// instructions beyond
   /// `ConfidentialTransferInstruction::ConfigureAccount` have affected the
   /// token account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyZeroCiphertext` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -4148,20 +4148,20 @@ public final class Token2022Program {
   }
 
   /// Empty the available balance in a confidential token account.
-  /// 
+  ///
   /// A token account that is extended for confidential transfers can only be
   /// closed if the pending and available balance ciphertexts are emptied.
   /// The pending balance can be emptied
   /// via the `ConfidentialTransferInstruction::ApplyPendingBalance`
   /// instruction. Use the `ConfidentialTransferInstruction::EmptyAccount`
   /// instruction to empty the available balance ciphertext.
-  /// 
+  ///
   /// Note that a newly configured account is always empty, so this
   /// instruction is not required prior to account closing if no
   /// instructions beyond
   /// `ConfidentialTransferInstruction::ConfigureAccount` have affected the
   /// token account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyZeroCiphertext` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -4190,20 +4190,20 @@ public final class Token2022Program {
   }
 
   /// Empty the available balance in a confidential token account.
-  /// 
+  ///
   /// A token account that is extended for confidential transfers can only be
   /// closed if the pending and available balance ciphertexts are emptied.
   /// The pending balance can be emptied
   /// via the `ConfidentialTransferInstruction::ApplyPendingBalance`
   /// instruction. Use the `ConfidentialTransferInstruction::EmptyAccount`
   /// instruction to empty the available balance ciphertext.
-  /// 
+  ///
   /// Note that a newly configured account is always empty, so this
   /// instruction is not required prior to account closing if no
   /// instructions beyond
   /// `ConfidentialTransferInstruction::ConfigureAccount` have affected the
   /// token account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyZeroCiphertext` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -4225,20 +4225,20 @@ public final class Token2022Program {
   }
 
   /// Empty the available balance in a confidential token account.
-  /// 
+  ///
   /// A token account that is extended for confidential transfers can only be
   /// closed if the pending and available balance ciphertexts are emptied.
   /// The pending balance can be emptied
   /// via the `ConfidentialTransferInstruction::ApplyPendingBalance`
   /// instruction. Use the `ConfidentialTransferInstruction::EmptyAccount`
   /// instruction to empty the available balance ciphertext.
-  /// 
+  ///
   /// Note that a newly configured account is always empty, so this
   /// instruction is not required prior to account closing if no
   /// instructions beyond
   /// `ConfidentialTransferInstruction::ConfigureAccount` have affected the
   /// token account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the `VerifyZeroCiphertext` instruction of the
   /// `zk_elgamal_proof` program in the same transaction or the address of a
@@ -4249,7 +4249,7 @@ public final class Token2022Program {
   ///                               the offset is `0`, then use a context state account for the proof.
   public record EmptyConfidentialTransferAccountIxData(int discriminator,
                                                        int confidentialTransferDiscriminator,
-                                                       int proofInstructionOffset) implements SerDe {  
+                                                       int proofInstructionOffset) implements SerDe {
 
     public static EmptyConfidentialTransferAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4297,11 +4297,11 @@ public final class Token2022Program {
 
   /// Deposit SPL Tokens into the pending balance of a confidential token
   /// account.
-  /// 
+  ///
   /// The account owner can then invoke the `ApplyPendingBalance` instruction
   /// to roll the deposit into their available balance at a time of their
   /// choosing.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4320,11 +4320,11 @@ public final class Token2022Program {
 
   /// Deposit SPL Tokens into the pending balance of a confidential token
   /// account.
-  /// 
+  ///
   /// The account owner can then invoke the `ApplyPendingBalance` instruction
   /// to roll the deposit into their available balance at a time of their
   /// choosing.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4354,11 +4354,11 @@ public final class Token2022Program {
 
   /// Deposit SPL Tokens into the pending balance of a confidential token
   /// account.
-  /// 
+  ///
   /// The account owner can then invoke the `ApplyPendingBalance` instruction
   /// to roll the deposit into their available balance at a time of their
   /// choosing.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4381,11 +4381,11 @@ public final class Token2022Program {
 
   /// Deposit SPL Tokens into the pending balance of a confidential token
   /// account.
-  /// 
+  ///
   /// The account owner can then invoke the `ApplyPendingBalance` instruction
   /// to roll the deposit into their available balance at a time of their
   /// choosing.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4394,7 +4394,7 @@ public final class Token2022Program {
   public record ConfidentialDepositIxData(int discriminator,
                                           int confidentialTransferDiscriminator,
                                           long amount,
-                                          int decimals) implements SerDe {  
+                                          int decimals) implements SerDe {
 
     public static ConfidentialDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4450,7 +4450,7 @@ public final class Token2022Program {
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
   /// account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4459,7 +4459,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account address need to be provided.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4495,7 +4495,7 @@ public final class Token2022Program {
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
   /// account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4504,7 +4504,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account address need to be provided.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4559,7 +4559,7 @@ public final class Token2022Program {
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
   /// account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4568,7 +4568,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account address need to be provided.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4607,7 +4607,7 @@ public final class Token2022Program {
 
   /// Withdraw SPL Tokens from the available balance of a confidential token
   /// account.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4616,7 +4616,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account address need to be provided.
-  /// 
+  ///
   /// Fails if the source or destination accounts are frozen.
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
@@ -4636,7 +4636,7 @@ public final class Token2022Program {
                                            int decimals,
                                            DecryptableBalance newDecryptableAvailableBalance,
                                            int equalityProofInstructionOffset,
-                                           int rangeProofInstructionOffset) implements SerDe {  
+                                           int rangeProofInstructionOffset) implements SerDe {
 
     public static ConfidentialWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4708,7 +4708,7 @@ public final class Token2022Program {
   public static final Discriminator CONFIDENTIAL_TRANSFER_DISCRIMINATOR = toDiscriminator(27);
 
   /// Transfer tokens confidentially.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4718,7 +4718,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param sourceTokenKey The source SPL Token account.
@@ -4760,7 +4760,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4770,7 +4770,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param sourceTokenKey The source SPL Token account.
@@ -4835,7 +4835,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4845,7 +4845,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
@@ -4887,7 +4887,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -4897,7 +4897,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// Fails if the associated mint is extended as `NonTransferable`.
   ///
   /// @param newSourceDecryptableAvailableBalance The new source decryptable balance if the transfer succeeds.
@@ -4921,7 +4921,7 @@ public final class Token2022Program {
                                            EncryptedBalance transferAmountAuditorCiphertextHi,
                                            int equalityProofInstructionOffset,
                                            int ciphertextValidityProofInstructionOffset,
-                                           int rangeProofInstructionOffset) implements SerDe {  
+                                           int rangeProofInstructionOffset) implements SerDe {
 
     public static ConfidentialTransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4998,7 +4998,7 @@ public final class Token2022Program {
 
   /// Applies the pending balance to the available balance, based on the
   /// history of `Deposit` and/or `Transfer` instructions.
-  /// 
+  ///
   /// After submitting `ApplyPendingBalance`, the client should compare
   /// `ConfidentialTransferAccount::expected_pending_balance_credit_counter`
   /// with
@@ -5020,7 +5020,7 @@ public final class Token2022Program {
 
   /// Applies the pending balance to the available balance, based on the
   /// history of `Deposit` and/or `Transfer` instructions.
-  /// 
+  ///
   /// After submitting `ApplyPendingBalance`, the client should compare
   /// `ConfidentialTransferAccount::expected_pending_balance_credit_counter`
   /// with
@@ -5055,7 +5055,7 @@ public final class Token2022Program {
 
   /// Applies the pending balance to the available balance, based on the
   /// history of `Deposit` and/or `Transfer` instructions.
-  /// 
+  ///
   /// After submitting `ApplyPendingBalance`, the client should compare
   /// `ConfidentialTransferAccount::expected_pending_balance_credit_counter`
   /// with
@@ -5086,7 +5086,7 @@ public final class Token2022Program {
 
   /// Applies the pending balance to the available balance, based on the
   /// history of `Deposit` and/or `Transfer` instructions.
-  /// 
+  ///
   /// After submitting `ApplyPendingBalance`, the client should compare
   /// `ConfidentialTransferAccount::expected_pending_balance_credit_counter`
   /// with
@@ -5103,7 +5103,7 @@ public final class Token2022Program {
   public record ApplyConfidentialPendingBalanceIxData(int discriminator,
                                                       int confidentialTransferDiscriminator,
                                                       long expectedPendingBalanceCreditCounter,
-                                                      DecryptableBalance newDecryptableAvailableBalance) implements SerDe {  
+                                                      DecryptableBalance newDecryptableAvailableBalance) implements SerDe {
 
     public static ApplyConfidentialPendingBalanceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5199,7 +5199,7 @@ public final class Token2022Program {
   /// Configure a confidential extension account to accept incoming
   /// confidential transfers.
   ///
-  public record EnableConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record EnableConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static EnableConfidentialCreditsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5242,10 +5242,10 @@ public final class Token2022Program {
 
   /// Configure a confidential extension account to reject any incoming
   /// confidential transfers.
-  /// 
+  ///
   /// If the `allow_non_confidential_credits` field is `true`, then the base
   /// account can still receive non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to disable confidential payments after a
   /// token account has already been extended for confidential transfers.
   ///
@@ -5261,10 +5261,10 @@ public final class Token2022Program {
 
   /// Configure a confidential extension account to reject any incoming
   /// confidential transfers.
-  /// 
+  ///
   /// If the `allow_non_confidential_credits` field is `true`, then the base
   /// account can still receive non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to disable confidential payments after a
   /// token account has already been extended for confidential transfers.
   ///
@@ -5282,10 +5282,10 @@ public final class Token2022Program {
 
   /// Configure a confidential extension account to reject any incoming
   /// confidential transfers.
-  /// 
+  ///
   /// If the `allow_non_confidential_credits` field is `true`, then the base
   /// account can still receive non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to disable confidential payments after a
   /// token account has already been extended for confidential transfers.
   ///
@@ -5300,14 +5300,14 @@ public final class Token2022Program {
 
   /// Configure a confidential extension account to reject any incoming
   /// confidential transfers.
-  /// 
+  ///
   /// If the `allow_non_confidential_credits` field is `true`, then the base
   /// account can still receive non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to disable confidential payments after a
   /// token account has already been extended for confidential transfers.
   ///
-  public record DisableConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record DisableConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static DisableConfidentialCreditsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5391,7 +5391,7 @@ public final class Token2022Program {
   /// Configure an account with the confidential extension to accept incoming
   /// non-confidential transfers.
   ///
-  public record EnableNonConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record EnableNonConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static EnableNonConfidentialCreditsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5434,7 +5434,7 @@ public final class Token2022Program {
 
   /// Configure an account with the confidential extension to reject any
   /// incoming non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to configure a confidential extension
   /// account to exclusively receive confidential payments.
   ///
@@ -5450,7 +5450,7 @@ public final class Token2022Program {
 
   /// Configure an account with the confidential extension to reject any
   /// incoming non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to configure a confidential extension
   /// account to exclusively receive confidential payments.
   ///
@@ -5468,7 +5468,7 @@ public final class Token2022Program {
 
   /// Configure an account with the confidential extension to reject any
   /// incoming non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to configure a confidential extension
   /// account to exclusively receive confidential payments.
   ///
@@ -5483,11 +5483,11 @@ public final class Token2022Program {
 
   /// Configure an account with the confidential extension to reject any
   /// incoming non-confidential transfers.
-  /// 
+  ///
   /// This instruction can be used to configure a confidential extension
   /// account to exclusively receive confidential payments.
   ///
-  public record DisableNonConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record DisableNonConfidentialCreditsIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static DisableNonConfidentialCreditsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5529,7 +5529,7 @@ public final class Token2022Program {
   public static final Discriminator CONFIDENTIAL_TRANSFER_WITH_FEE_DISCRIMINATOR = toDiscriminator(27);
 
   /// Transfer tokens confidentially with fee.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -5542,7 +5542,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// The same restrictions for the `Transfer` applies to
   /// `TransferWithFee`. Namely, the instruction fails if the
   /// associated mint is extended as `NonTransferable`.
@@ -5597,7 +5597,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially with fee.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -5610,7 +5610,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// The same restrictions for the `Transfer` applies to
   /// `TransferWithFee`. Namely, the instruction fails if the
   /// associated mint is extended as `NonTransferable`.
@@ -5699,7 +5699,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially with fee.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -5712,7 +5712,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// The same restrictions for the `Transfer` applies to
   /// `TransferWithFee`. Namely, the instruction fails if the
   /// associated mint is extended as `NonTransferable`.
@@ -5773,7 +5773,7 @@ public final class Token2022Program {
   }
 
   /// Transfer tokens confidentially with fee.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -5786,7 +5786,7 @@ public final class Token2022Program {
   /// These instructions can be accompanied in the same transaction or can be
   /// pre-verified into a context state account, in which case, only their
   /// context state account addresses need to be provided.
-  /// 
+  ///
   /// The same restrictions for the `Transfer` applies to
   /// `TransferWithFee`. Namely, the instruction fails if the
   /// associated mint is extended as `NonTransferable`.
@@ -5825,7 +5825,7 @@ public final class Token2022Program {
                                                   int transferAmountCiphertextValidityProofInstructionOffset,
                                                   int feeSigmaProofInstructionOffset,
                                                   int feeCiphertextValidityProofInstructionOffset,
-                                                  int rangeProofInstructionOffset) implements SerDe {  
+                                                  int rangeProofInstructionOffset) implements SerDe {
 
     public static ConfidentialTransferWithFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5913,16 +5913,16 @@ public final class Token2022Program {
   public static final Discriminator CONFIGURE_CONFIDENTIAL_TRANSFER_ACCOUNT_WITH_REGISTRY_DISCRIMINATOR = toDiscriminator(27);
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// This instruction is identical to the `ConfigureAccount` instruction
   /// except that an `ElGamalRegistry` account is expected in place of the
   /// `VerifyPubkeyValidity` proof.
-  /// 
+  ///
   /// An `ElGamalRegistry` account is valid if it shares the same owner with
   /// the token account. If a valid `ElGamalRegistry` account is provided,
   /// then the program skips the verification of the ElGamal pubkey validity
   /// proof as well as the token owner signature.
-  /// 
+  ///
   /// If the token account is not large enough to include the new
   /// confidential transfer extension, then optionally reallocate the account
   /// to increase the data size. To reallocate, a payer account to fund the
@@ -5953,16 +5953,16 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// This instruction is identical to the `ConfigureAccount` instruction
   /// except that an `ElGamalRegistry` account is expected in place of the
   /// `VerifyPubkeyValidity` proof.
-  /// 
+  ///
   /// An `ElGamalRegistry` account is valid if it shares the same owner with
   /// the token account. If a valid `ElGamalRegistry` account is provided,
   /// then the program skips the verification of the ElGamal pubkey validity
   /// proof as well as the token owner signature.
-  /// 
+  ///
   /// If the token account is not large enough to include the new
   /// confidential transfer extension, then optionally reallocate the account
   /// to increase the data size. To reallocate, a payer account to fund the
@@ -5991,16 +5991,16 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// This instruction is identical to the `ConfigureAccount` instruction
   /// except that an `ElGamalRegistry` account is expected in place of the
   /// `VerifyPubkeyValidity` proof.
-  /// 
+  ///
   /// An `ElGamalRegistry` account is valid if it shares the same owner with
   /// the token account. If a valid `ElGamalRegistry` account is provided,
   /// then the program skips the verification of the ElGamal pubkey validity
   /// proof as well as the token owner signature.
-  /// 
+  ///
   /// If the token account is not large enough to include the new
   /// confidential transfer extension, then optionally reallocate the account
   /// to increase the data size. To reallocate, a payer account to fund the
@@ -6017,23 +6017,23 @@ public final class Token2022Program {
   }
 
   /// Configures confidential transfers for a token account.
-  /// 
+  ///
   /// This instruction is identical to the `ConfigureAccount` instruction
   /// except that an `ElGamalRegistry` account is expected in place of the
   /// `VerifyPubkeyValidity` proof.
-  /// 
+  ///
   /// An `ElGamalRegistry` account is valid if it shares the same owner with
   /// the token account. If a valid `ElGamalRegistry` account is provided,
   /// then the program skips the verification of the ElGamal pubkey validity
   /// proof as well as the token owner signature.
-  /// 
+  ///
   /// If the token account is not large enough to include the new
   /// confidential transfer extension, then optionally reallocate the account
   /// to increase the data size. To reallocate, a payer account to fund the
   /// reallocation and the system account should be included in the
   /// instruction.
   ///
-  public record ConfigureConfidentialTransferAccountWithRegistryIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {  
+  public record ConfigureConfidentialTransferAccountWithRegistryIxData(int discriminator, int confidentialTransferDiscriminator) implements SerDe {
 
     public static ConfigureConfidentialTransferAccountWithRegistryIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6075,10 +6075,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_DEFAULT_ACCOUNT_STATE_DISCRIMINATOR = toDiscriminator(28);
 
   /// Initialize a new mint with the default state for new Accounts.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6091,10 +6091,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the default state for new Accounts.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6115,10 +6115,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the default state for new Accounts.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6137,10 +6137,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the default state for new Accounts.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6148,7 +6148,7 @@ public final class Token2022Program {
   /// @param state The state each new token account should start with.
   public record InitializeDefaultAccountStateIxData(int discriminator,
                                                     int defaultAccountStateDiscriminator,
-                                                    AccountState state) implements SerDe {  
+                                                    AccountState state) implements SerDe {
 
     public static InitializeDefaultAccountStateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6249,7 +6249,7 @@ public final class Token2022Program {
   /// @param state The state each new token account should start with.
   public record UpdateDefaultAccountStateIxData(int discriminator,
                                                 int defaultAccountStateDiscriminator,
-                                                AccountState state) implements SerDe {  
+                                                AccountState state) implements SerDe {
 
     public static UpdateDefaultAccountStateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6356,7 +6356,7 @@ public final class Token2022Program {
   /// size.
   ///
   /// @param newExtensionTypes New extension types to include in the reallocated account.
-  public record ReallocateIxData(int discriminator, ExtensionType[] newExtensionTypes) implements SerDe {  
+  public record ReallocateIxData(int discriminator, ExtensionType[] newExtensionTypes) implements SerDe {
 
     public static ReallocateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6443,7 +6443,7 @@ public final class Token2022Program {
   /// Require memos for transfers into this Account. Adds the MemoTransfer
   /// extension to the Account, if it doesn't already exist.
   ///
-  public record EnableMemoTransfersIxData(int discriminator, int memoTransfersDiscriminator) implements SerDe {  
+  public record EnableMemoTransfersIxData(int discriminator, int memoTransfersDiscriminator) implements SerDe {
 
     public static EnableMemoTransfersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6485,7 +6485,7 @@ public final class Token2022Program {
   public static final Discriminator DISABLE_MEMO_TRANSFERS_DISCRIMINATOR = toDiscriminator(30);
 
   /// Stop requiring memos for transfers into this Account.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not
   /// present.
   ///
@@ -6500,7 +6500,7 @@ public final class Token2022Program {
   }
 
   /// Stop requiring memos for transfers into this Account.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not
   /// present.
   ///
@@ -6517,7 +6517,7 @@ public final class Token2022Program {
   }
 
   /// Stop requiring memos for transfers into this Account.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not
   /// present.
   ///
@@ -6531,11 +6531,11 @@ public final class Token2022Program {
   }
 
   /// Stop requiring memos for transfers into this Account.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not
   /// present.
   ///
-  public record DisableMemoTransfersIxData(int discriminator, int memoTransfersDiscriminator) implements SerDe {  
+  public record DisableMemoTransfersIxData(int discriminator, int memoTransfersDiscriminator) implements SerDe {
 
     public static DisableMemoTransfersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6577,7 +6577,7 @@ public final class Token2022Program {
   public static final Discriminator CREATE_NATIVE_MINT_DISCRIMINATOR = toDiscriminator(31);
 
   /// Creates the native mint.
-  /// 
+  ///
   /// This instruction only needs to be invoked once after deployment and is
   /// permissionless. Wrapped SOL (`native_mint::id()`) will not be
   /// available until this instruction is successfully executed.
@@ -6595,7 +6595,7 @@ public final class Token2022Program {
   }
 
   /// Creates the native mint.
-  /// 
+  ///
   /// This instruction only needs to be invoked once after deployment and is
   /// permissionless. Wrapped SOL (`native_mint::id()`) will not be
   /// available until this instruction is successfully executed.
@@ -6615,7 +6615,7 @@ public final class Token2022Program {
   }
 
   /// Creates the native mint.
-  /// 
+  ///
   /// This instruction only needs to be invoked once after deployment and is
   /// permissionless. Wrapped SOL (`native_mint::id()`) will not be
   /// available until this instruction is successfully executed.
@@ -6629,12 +6629,12 @@ public final class Token2022Program {
   }
 
   /// Creates the native mint.
-  /// 
+  ///
   /// This instruction only needs to be invoked once after deployment and is
   /// permissionless. Wrapped SOL (`native_mint::id()`) will not be
   /// available until this instruction is successfully executed.
   ///
-  public record CreateNativeMintIxData(int discriminator) implements SerDe {  
+  public record CreateNativeMintIxData(int discriminator) implements SerDe {
 
     public static CreateNativeMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6669,7 +6669,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_NON_TRANSFERABLE_MINT_DISCRIMINATOR = toDiscriminator(32);
 
   /// Initialize the non transferable extension for the given mint account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint account to initialize.
@@ -6680,7 +6680,7 @@ public final class Token2022Program {
   }
 
   /// Initialize the non transferable extension for the given mint account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint account to initialize.
@@ -6693,7 +6693,7 @@ public final class Token2022Program {
   }
 
   /// Initialize the non transferable extension for the given mint account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called before `InitializeMint`.
   ///
   public static Instruction initializeNonTransferableMint(final AccountMeta invokedToken2022ProgramMeta,
@@ -6705,10 +6705,10 @@ public final class Token2022Program {
   }
 
   /// Initialize the non transferable extension for the given mint account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called before `InitializeMint`.
   ///
-  public record InitializeNonTransferableMintIxData(int discriminator) implements SerDe {  
+  public record InitializeNonTransferableMintIxData(int discriminator) implements SerDe {
 
     public static InitializeNonTransferableMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6743,10 +6743,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_INTEREST_BEARING_MINT_DISCRIMINATOR = toDiscriminator(33);
 
   /// Initialize a new mint with the `InterestBearing` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6759,10 +6759,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `InterestBearing` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6786,10 +6786,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `InterestBearing` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6814,10 +6814,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `InterestBearing` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -6827,7 +6827,7 @@ public final class Token2022Program {
   public record InitializeInterestBearingMintIxData(int discriminator,
                                                     int interestBearingMintDiscriminator,
                                                     PublicKey rateAuthority,
-                                                    int rate) implements SerDe {  
+                                                    int rate) implements SerDe {
 
     public static InitializeInterestBearingMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6939,7 +6939,7 @@ public final class Token2022Program {
   /// @param rate The interest rate to update.
   public record UpdateRateInterestBearingMintIxData(int discriminator,
                                                     int interestBearingMintDiscriminator,
-                                                    int rate) implements SerDe {  
+                                                    int rate) implements SerDe {
 
     public static UpdateRateInterestBearingMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6990,7 +6990,7 @@ public final class Token2022Program {
   /// * CloseAccount can only return lamports to owner.
   /// * SetAuthority can only be used to remove an existing close authority.
   /// * Approve is disallowed entirely.
-  /// 
+  ///
   /// In addition, CPI Guard cannot be enabled or disabled via CPI.
   ///
   /// @param tokenKey The token account to update.
@@ -7008,7 +7008,7 @@ public final class Token2022Program {
   /// * CloseAccount can only return lamports to owner.
   /// * SetAuthority can only be used to remove an existing close authority.
   /// * Approve is disallowed entirely.
-  /// 
+  ///
   /// In addition, CPI Guard cannot be enabled or disabled via CPI.
   ///
   /// @param tokenKey The token account to update.
@@ -7028,7 +7028,7 @@ public final class Token2022Program {
   /// * CloseAccount can only return lamports to owner.
   /// * SetAuthority can only be used to remove an existing close authority.
   /// * Approve is disallowed entirely.
-  /// 
+  ///
   /// In addition, CPI Guard cannot be enabled or disabled via CPI.
   ///
   public static Instruction enableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
@@ -7045,10 +7045,10 @@ public final class Token2022Program {
   /// * CloseAccount can only return lamports to owner.
   /// * SetAuthority can only be used to remove an existing close authority.
   /// * Approve is disallowed entirely.
-  /// 
+  ///
   /// In addition, CPI Guard cannot be enabled or disabled via CPI.
   ///
-  public record EnableCpiGuardIxData(int discriminator, int cpiGuardDiscriminator) implements SerDe {  
+  public record EnableCpiGuardIxData(int discriminator, int cpiGuardDiscriminator) implements SerDe {
 
     public static EnableCpiGuardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7090,7 +7090,7 @@ public final class Token2022Program {
   public static final Discriminator DISABLE_CPI_GUARD_DISCRIMINATOR = toDiscriminator(34);
 
   /// Allow all token operations to happen via CPI as normal.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not present.
   ///
   /// @param tokenKey The token account to update.
@@ -7104,7 +7104,7 @@ public final class Token2022Program {
   }
 
   /// Allow all token operations to happen via CPI as normal.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not present.
   ///
   /// @param tokenKey The token account to update.
@@ -7120,7 +7120,7 @@ public final class Token2022Program {
   }
 
   /// Allow all token operations to happen via CPI as normal.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not present.
   ///
   public static Instruction disableCpiGuard(final AccountMeta invokedToken2022ProgramMeta,
@@ -7133,10 +7133,10 @@ public final class Token2022Program {
   }
 
   /// Allow all token operations to happen via CPI as normal.
-  /// 
+  ///
   /// Implicitly initializes the extension in the case where it is not present.
   ///
-  public record DisableCpiGuardIxData(int discriminator, int cpiGuardDiscriminator) implements SerDe {  
+  public record DisableCpiGuardIxData(int discriminator, int cpiGuardDiscriminator) implements SerDe {
 
     public static DisableCpiGuardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7178,9 +7178,9 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_PERMANENT_DELEGATE_DISCRIMINATOR = toDiscriminator(35);
 
   /// Initialize the permanent delegate on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7193,9 +7193,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the permanent delegate on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7212,9 +7212,9 @@ public final class Token2022Program {
   }
 
   /// Initialize the permanent delegate on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7231,15 +7231,15 @@ public final class Token2022Program {
   }
 
   /// Initialize the permanent delegate on a new mint.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
   ///
   /// @param delegate Authority that may sign for `Transfer`s and `Burn`s on any account
-  public record InitializePermanentDelegateIxData(int discriminator, PublicKey delegate) implements SerDe {  
+  public record InitializePermanentDelegateIxData(int discriminator, PublicKey delegate) implements SerDe {
 
     public static InitializePermanentDelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7281,9 +7281,9 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_TRANSFER_HOOK_DISCRIMINATOR = toDiscriminator(36);
 
   /// Initialize a new mint with a transfer hook program.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7296,9 +7296,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a transfer hook program.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7322,9 +7322,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a transfer hook program.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7352,9 +7352,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a transfer hook program.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -7364,7 +7364,7 @@ public final class Token2022Program {
   public record InitializeTransferHookIxData(int discriminator,
                                              int transferHookDiscriminator,
                                              PublicKey authority,
-                                             PublicKey programId) implements SerDe {  
+                                             PublicKey programId) implements SerDe {
 
     public static InitializeTransferHookIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7424,9 +7424,9 @@ public final class Token2022Program {
 
   /// Update the transfer hook program id. Only supported for mints that
   /// include the `TransferHook` extension.
-  /// 
+  ///
   /// Accounts expected by this instruction:
-  /// 
+  ///
   /// 0. `writable` The mint.
   /// 1. `signer` The transfer hook authority.
   ///
@@ -7442,9 +7442,9 @@ public final class Token2022Program {
 
   /// Update the transfer hook program id. Only supported for mints that
   /// include the `TransferHook` extension.
-  /// 
+  ///
   /// Accounts expected by this instruction:
-  /// 
+  ///
   /// 0. `writable` The mint.
   /// 1. `signer` The transfer hook authority.
   ///
@@ -7468,9 +7468,9 @@ public final class Token2022Program {
 
   /// Update the transfer hook program id. Only supported for mints that
   /// include the `TransferHook` extension.
-  /// 
+  ///
   /// Accounts expected by this instruction:
-  /// 
+  ///
   /// 0. `writable` The mint.
   /// 1. `signer` The transfer hook authority.
   ///
@@ -7492,16 +7492,16 @@ public final class Token2022Program {
 
   /// Update the transfer hook program id. Only supported for mints that
   /// include the `TransferHook` extension.
-  /// 
+  ///
   /// Accounts expected by this instruction:
-  /// 
+  ///
   /// 0. `writable` The mint.
   /// 1. `signer` The transfer hook authority.
   ///
   /// @param programId The program id that performs logic during transfers
   public record UpdateTransferHookIxData(int discriminator,
                                          int transferHookDiscriminator,
-                                         PublicKey programId) implements SerDe {  
+                                         PublicKey programId) implements SerDe {
 
     public static UpdateTransferHookIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7550,10 +7550,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
 
   /// Initializes confidential transfer fees for a mint.
-  /// 
+  ///
   /// The instruction must be included within the same Transaction as TokenInstruction::InitializeMint.
   /// Otherwise another party can initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if TokenInstruction::InitializeMint has already executed for the mint.
   ///
   /// @param mintKey The SPL Token mint.
@@ -7564,10 +7564,10 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfer fees for a mint.
-  /// 
+  ///
   /// The instruction must be included within the same Transaction as TokenInstruction::InitializeMint.
   /// Otherwise another party can initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if TokenInstruction::InitializeMint has already executed for the mint.
   ///
   /// @param mintKey The SPL Token mint.
@@ -7589,10 +7589,10 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfer fees for a mint.
-  /// 
+  ///
   /// The instruction must be included within the same Transaction as TokenInstruction::InitializeMint.
   /// Otherwise another party can initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if TokenInstruction::InitializeMint has already executed for the mint.
   ///
   /// @param authority Optional authority to set the withdraw withheld authority ElGamal key
@@ -7615,10 +7615,10 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential transfer fees for a mint.
-  /// 
+  ///
   /// The instruction must be included within the same Transaction as TokenInstruction::InitializeMint.
   /// Otherwise another party can initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if TokenInstruction::InitializeMint has already executed for the mint.
   ///
   /// @param authority Optional authority to set the withdraw withheld authority ElGamal key
@@ -7626,7 +7626,7 @@ public final class Token2022Program {
   public record InitializeConfidentialTransferFeeIxData(int discriminator,
                                                         int confidentialTransferFeeDiscriminator,
                                                         PublicKey authority,
-                                                        PublicKey withdrawWithheldAuthorityElGamalPubkey) implements SerDe {  
+                                                        PublicKey withdrawWithheldAuthorityElGamalPubkey) implements SerDe {
 
     public static InitializeConfidentialTransferFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7684,9 +7684,9 @@ public final class Token2022Program {
 
   /// Transfer all withheld confidential tokens in the mint to an account.
   /// Signed by the mint's withdraw withheld tokens authority.
-  /// 
+  ///
   /// The withheld confidential tokens are aggregated directly into the destination available balance.
-  /// 
+  ///
   /// Must be accompanied by the VerifyCiphertextCiphertextEquality instruction
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
@@ -7712,9 +7712,9 @@ public final class Token2022Program {
 
   /// Transfer all withheld confidential tokens in the mint to an account.
   /// Signed by the mint's withdraw withheld tokens authority.
-  /// 
+  ///
   /// The withheld confidential tokens are aggregated directly into the destination available balance.
-  /// 
+  ///
   /// Must be accompanied by the VerifyCiphertextCiphertextEquality instruction
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
@@ -7751,9 +7751,9 @@ public final class Token2022Program {
 
   /// Transfer all withheld confidential tokens in the mint to an account.
   /// Signed by the mint's withdraw withheld tokens authority.
-  /// 
+  ///
   /// The withheld confidential tokens are aggregated directly into the destination available balance.
-  /// 
+  ///
   /// Must be accompanied by the VerifyCiphertextCiphertextEquality instruction
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
@@ -7777,9 +7777,9 @@ public final class Token2022Program {
 
   /// Transfer all withheld confidential tokens in the mint to an account.
   /// Signed by the mint's withdraw withheld tokens authority.
-  /// 
+  ///
   /// The withheld confidential tokens are aggregated directly into the destination available balance.
-  /// 
+  ///
   /// Must be accompanied by the VerifyCiphertextCiphertextEquality instruction
   /// of the zk_elgamal_proof program in the same transaction or the address of
   /// a context state account for the proof must be provided.
@@ -7789,7 +7789,7 @@ public final class Token2022Program {
   public record WithdrawWithheldTokensFromMintForConfidentialTransferFeeIxData(int discriminator,
                                                                                int confidentialTransferFeeDiscriminator,
                                                                                int proofInstructionOffset,
-                                                                               DecryptableBalance newDecryptableAvailableBalance) implements SerDe {  
+                                                                               DecryptableBalance newDecryptableAvailableBalance) implements SerDe {
 
     public static WithdrawWithheldTokensFromMintForConfidentialTransferFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -7845,7 +7845,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's withdraw withheld
   /// tokens authority. This instruction is susceptible to front-running.
   /// Use `HarvestWithheldTokensToMint` and `WithdrawWithheldTokensFromMint` as alternative.
-  /// 
+  ///
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
   /// @param mintKey The token mint.
@@ -7870,7 +7870,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's withdraw withheld
   /// tokens authority. This instruction is susceptible to front-running.
   /// Use `HarvestWithheldTokensToMint` and `WithdrawWithheldTokensFromMint` as alternative.
-  /// 
+  ///
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
   /// @param mintKey The token mint.
@@ -7909,7 +7909,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's withdraw withheld
   /// tokens authority. This instruction is susceptible to front-running.
   /// Use `HarvestWithheldTokensToMint` and `WithdrawWithheldTokensFromMint` as alternative.
-  /// 
+  ///
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
   /// @param numTokenAccounts: u8 Number of token accounts harvested
@@ -7936,7 +7936,7 @@ public final class Token2022Program {
   /// Transfer all withheld tokens to an account. Signed by the mint's withdraw withheld
   /// tokens authority. This instruction is susceptible to front-running.
   /// Use `HarvestWithheldTokensToMint` and `WithdrawWithheldTokensFromMint` as alternative.
-  /// 
+  ///
   /// Must be accompanied by the VerifyWithdrawWithheldTokens instruction.
   ///
   /// @param numTokenAccounts: u8 Number of token accounts harvested
@@ -7946,7 +7946,7 @@ public final class Token2022Program {
                                                                                    int confidentialTransferFeeDiscriminator,
                                                                                    int numTokenAccounts,
                                                                                    int proofInstructionOffset,
-                                                                                   DecryptableBalance newDecryptableAvailableBalance) implements SerDe {  
+                                                                                   DecryptableBalance newDecryptableAvailableBalance) implements SerDe {
 
     public static WithdrawWithheldTokensFromAccountsForConfidentialTransferFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8006,9 +8006,9 @@ public final class Token2022Program {
   public static final Discriminator HARVEST_WITHHELD_TOKENS_TO_MINT_FOR_CONFIDENTIAL_TRANSFER_FEE_DISCRIMINATOR = toDiscriminator(37);
 
   /// Permissionless instruction to transfer all withheld confidential tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include both the `TransferFeeAmount` and
   /// `ConfidentialTransferAccount` extension. If not, the account is skipped.
   ///
@@ -8020,9 +8020,9 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld confidential tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include both the `TransferFeeAmount` and
   /// `ConfidentialTransferAccount` extension. If not, the account is skipped.
   ///
@@ -8036,9 +8036,9 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld confidential tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include both the `TransferFeeAmount` and
   /// `ConfidentialTransferAccount` extension. If not, the account is skipped.
   ///
@@ -8052,13 +8052,13 @@ public final class Token2022Program {
   }
 
   /// Permissionless instruction to transfer all withheld confidential tokens to the mint.
-  /// 
+  ///
   /// Succeeds for frozen accounts.
-  /// 
+  ///
   /// Accounts provided should include both the `TransferFeeAmount` and
   /// `ConfidentialTransferAccount` extension. If not, the account is skipped.
   ///
-  public record HarvestWithheldTokensToMintForConfidentialTransferFeeIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {  
+  public record HarvestWithheldTokensToMintForConfidentialTransferFeeIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {
 
     public static HarvestWithheldTokensToMintForConfidentialTransferFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8138,7 +8138,7 @@ public final class Token2022Program {
 
   /// Configure a confidential transfer fee mint to accept harvested confidential fees.
   ///
-  public record EnableHarvestToMintIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {  
+  public record EnableHarvestToMintIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {
 
     public static EnableHarvestToMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8218,7 +8218,7 @@ public final class Token2022Program {
 
   /// Configure a confidential transfer fee mint to reject any harvested confidential fees.
   ///
-  public record DisableHarvestToMintIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {  
+  public record DisableHarvestToMintIxData(int discriminator, int confidentialTransferFeeDiscriminator) implements SerDe {
 
     public static DisableHarvestToMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8311,7 +8311,7 @@ public final class Token2022Program {
   /// owned account by sending them to any other account, leaving behind only
   /// lamports for rent exemption.
   ///
-  public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {  
+  public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {
 
     public static WithdrawExcessLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8346,10 +8346,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_METADATA_POINTER_DISCRIMINATOR = toDiscriminator(39);
 
   /// Initialize a new mint with a metadata pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8362,10 +8362,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a metadata pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8389,10 +8389,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a metadata pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8420,10 +8420,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a metadata pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8433,7 +8433,7 @@ public final class Token2022Program {
   public record InitializeMetadataPointerIxData(int discriminator,
                                                 int metadataPointerDiscriminator,
                                                 PublicKey authority,
-                                                PublicKey metadataAddress) implements SerDe {  
+                                                PublicKey metadataAddress) implements SerDe {
 
     public static InitializeMetadataPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8550,7 +8550,7 @@ public final class Token2022Program {
   /// @param metadataAddress The new account address that holds the metadata.
   public record UpdateMetadataPointerIxData(int discriminator,
                                             int metadataPointerDiscriminator,
-                                            PublicKey metadataAddress) implements SerDe {  
+                                            PublicKey metadataAddress) implements SerDe {
 
     public static UpdateMetadataPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8599,10 +8599,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_GROUP_POINTER_DISCRIMINATOR = toDiscriminator(40);
 
   /// Initialize a new mint with a group pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8615,10 +8615,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8642,10 +8642,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8673,10 +8673,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8686,7 +8686,7 @@ public final class Token2022Program {
   public record InitializeGroupPointerIxData(int discriminator,
                                              int groupPointerDiscriminator,
                                              PublicKey authority,
-                                             PublicKey groupAddress) implements SerDe {  
+                                             PublicKey groupAddress) implements SerDe {
 
     public static InitializeGroupPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8803,7 +8803,7 @@ public final class Token2022Program {
   /// @param groupAddress The new account address that holds the group configurations.
   public record UpdateGroupPointerIxData(int discriminator,
                                          int groupPointerDiscriminator,
-                                         PublicKey groupAddress) implements SerDe {  
+                                         PublicKey groupAddress) implements SerDe {
 
     public static UpdateGroupPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -8852,10 +8852,10 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_GROUP_MEMBER_POINTER_DISCRIMINATOR = toDiscriminator(41);
 
   /// Initialize a new mint with a group member pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8868,10 +8868,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group member pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8895,10 +8895,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group member pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8926,10 +8926,10 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with a group member pointer
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before
   /// `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82
   /// bytes), plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -8939,7 +8939,7 @@ public final class Token2022Program {
   public record InitializeGroupMemberPointerIxData(int discriminator,
                                                    int groupMemberPointerDiscriminator,
                                                    PublicKey authority,
-                                                   PublicKey memberAddress) implements SerDe {  
+                                                   PublicKey memberAddress) implements SerDe {
 
     public static InitializeGroupMemberPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9056,7 +9056,7 @@ public final class Token2022Program {
   /// @param memberAddress The new account address that holds the member.
   public record UpdateGroupMemberPointerIxData(int discriminator,
                                                int groupMemberPointerDiscriminator,
-                                               PublicKey memberAddress) implements SerDe {  
+                                               PublicKey memberAddress) implements SerDe {
 
     public static UpdateGroupMemberPointerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9105,12 +9105,12 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_CONFIDENTIAL_MINT_BURN_DISCRIMINATOR = toDiscriminator(42);
 
   /// Initializes confidential mints and burns for a mint.
-  /// 
+  ///
   /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction as
   /// `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -9122,12 +9122,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential mints and burns for a mint.
-  /// 
+  ///
   /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction as
   /// `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -9150,12 +9150,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential mints and burns for a mint.
-  /// 
+  ///
   /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction as
   /// `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -9177,12 +9177,12 @@ public final class Token2022Program {
   }
 
   /// Initializes confidential mints and burns for a mint.
-  /// 
+  ///
   /// The `ConfidentialMintBurnInstruction::InitializeMint` instruction
   /// requires no signers and MUST be included within the same Transaction as
   /// `TokenInstruction::InitializeMint`. Otherwise another party can
   /// initialize the configuration.
-  /// 
+  ///
   /// The instruction fails if the `TokenInstruction::InitializeMint`
   /// instruction has already executed for the mint.
   ///
@@ -9191,7 +9191,7 @@ public final class Token2022Program {
   public record InitializeConfidentialMintBurnIxData(int discriminator,
                                                      int confidentialMintBurnDiscriminator,
                                                      PublicKey supplyElgamalPubkey,
-                                                     DecryptableBalance decryptableSupply) implements SerDe {  
+                                                     DecryptableBalance decryptableSupply) implements SerDe {
 
     public static InitializeConfidentialMintBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9245,7 +9245,7 @@ public final class Token2022Program {
   public static final Discriminator ROTATE_SUPPLY_ELGAMAL_PUBKEY_DISCRIMINATOR = toDiscriminator(42);
 
   /// Rotates the ElGamal pubkey used to encrypt confidential supply.
-  /// 
+  ///
   /// The pending burn amount must be zero in order for this instruction to be
   /// processed successfully.
   ///
@@ -9262,7 +9262,7 @@ public final class Token2022Program {
   }
 
   /// Rotates the ElGamal pubkey used to encrypt confidential supply.
-  /// 
+  ///
   /// The pending burn amount must be zero in order for this instruction to be
   /// processed successfully.
   ///
@@ -9294,7 +9294,7 @@ public final class Token2022Program {
   }
 
   /// Rotates the ElGamal pubkey used to encrypt confidential supply.
-  /// 
+  ///
   /// The pending burn amount must be zero in order for this instruction to be
   /// processed successfully.
   ///
@@ -9320,7 +9320,7 @@ public final class Token2022Program {
   }
 
   /// Rotates the ElGamal pubkey used to encrypt confidential supply.
-  /// 
+  ///
   /// The pending burn amount must be zero in order for this instruction to be
   /// processed successfully.
   ///
@@ -9333,7 +9333,7 @@ public final class Token2022Program {
   public record RotateSupplyElgamalPubkeyIxData(int discriminator,
                                                 int confidentialMintBurnDiscriminator,
                                                 PublicKey newSupplyElgamalPubkey,
-                                                int proofInstructionOffset) implements SerDe {  
+                                                int proofInstructionOffset) implements SerDe {
 
     public static RotateSupplyElgamalPubkeyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9439,7 +9439,7 @@ public final class Token2022Program {
   /// @param newDecryptableSupply The new decryptable supply.
   public record UpdateConfidentialMintBurnDecryptableSupplyIxData(int discriminator,
                                                                   int confidentialMintBurnDiscriminator,
-                                                                  DecryptableBalance newDecryptableSupply) implements SerDe {  
+                                                                  DecryptableBalance newDecryptableSupply) implements SerDe {
 
     public static UpdateConfidentialMintBurnDecryptableSupplyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9485,9 +9485,9 @@ public final class Token2022Program {
   public static final Discriminator CONFIDENTIAL_MINT_DISCRIMINATOR = toDiscriminator(42);
 
   /// Mints tokens to a confidential balance.
-  /// 
+  ///
   /// Fails if the destination account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9537,9 +9537,9 @@ public final class Token2022Program {
   }
 
   /// Mints tokens to a confidential balance.
-  /// 
+  ///
   /// Fails if the destination account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9613,9 +9613,9 @@ public final class Token2022Program {
   }
 
   /// Mints tokens to a confidential balance.
-  /// 
+  ///
   /// Fails if the destination account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9666,9 +9666,9 @@ public final class Token2022Program {
   }
 
   /// Mints tokens to a confidential balance.
-  /// 
+  ///
   /// Fails if the destination account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9701,7 +9701,7 @@ public final class Token2022Program {
                                        EncryptedBalance mintAmountAuditorCiphertextHi,
                                        int equalityProofInstructionOffset,
                                        int ciphertextValidityProofInstructionOffset,
-                                       int rangeProofInstructionOffset) implements SerDe {  
+                                       int rangeProofInstructionOffset) implements SerDe {
 
     public static ConfidentialMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -9777,9 +9777,9 @@ public final class Token2022Program {
   public static final Discriminator CONFIDENTIAL_BURN_DISCRIMINATOR = toDiscriminator(42);
 
   /// Burns tokens from a confidential balance.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9829,9 +9829,9 @@ public final class Token2022Program {
   }
 
   /// Burns tokens from a confidential balance.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9905,9 +9905,9 @@ public final class Token2022Program {
   }
 
   /// Burns tokens from a confidential balance.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9958,9 +9958,9 @@ public final class Token2022Program {
   }
 
   /// Burns tokens from a confidential balance.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -9993,7 +9993,7 @@ public final class Token2022Program {
                                        EncryptedBalance burnAmountAuditorCiphertextHi,
                                        int equalityProofInstructionOffset,
                                        int ciphertextValidityProofInstructionOffset,
-                                       int rangeProofInstructionOffset) implements SerDe {  
+                                       int rangeProofInstructionOffset) implements SerDe {
 
     public static ConfidentialBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10107,7 +10107,7 @@ public final class Token2022Program {
 
   /// Applies the pending burn amount to the confidential supply.
   ///
-  public record ApplyConfidentialPendingBurnIxData(int discriminator, int confidentialMintBurnDiscriminator) implements SerDe {  
+  public record ApplyConfidentialPendingBurnIxData(int discriminator, int confidentialMintBurnDiscriminator) implements SerDe {
 
     public static ApplyConfidentialPendingBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10149,9 +10149,9 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_SCALED_UI_AMOUNT_MINT_DISCRIMINATOR = toDiscriminator(43);
 
   /// Initialize a new mint with the `ScaledUiAmount` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -10164,9 +10164,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `ScaledUiAmount` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -10190,9 +10190,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `ScaledUiAmount` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -10217,9 +10217,9 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `ScaledUiAmount` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
-  /// 
+  ///
   /// The mint must have exactly enough space allocated for the base mint (82 bytes),
   /// plus 83 bytes of padding, 1 byte reserved for the account type,
   /// then space required for this extension, plus any others.
@@ -10229,7 +10229,7 @@ public final class Token2022Program {
   public record InitializeScaledUiAmountMintIxData(int discriminator,
                                                    int scaledUiAmountMintDiscriminator,
                                                    PublicKey authority,
-                                                   double multiplier) implements SerDe {  
+                                                   double multiplier) implements SerDe {
 
     public static InitializeScaledUiAmountMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10354,7 +10354,7 @@ public final class Token2022Program {
   public record UpdateMultiplierScaledUiMintIxData(int discriminator,
                                                    int scaledUiAmountMintDiscriminator,
                                                    double multiplier,
-                                                   long effectiveTimestamp) implements SerDe {  
+                                                   long effectiveTimestamp) implements SerDe {
 
     public static UpdateMultiplierScaledUiMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10409,7 +10409,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_PAUSABLE_CONFIG_DISCRIMINATOR = toDiscriminator(44);
 
   /// Initialize a new mint with the `Pausable` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint.
@@ -10420,7 +10420,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `Pausable` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint.
@@ -10439,7 +10439,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `Pausable` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param authority The authority that can pause and resume the mint.
@@ -10459,13 +10459,13 @@ public final class Token2022Program {
   }
 
   /// Initialize a new mint with the `Pausable` extension.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param authority The authority that can pause and resume the mint.
   public record InitializePausableConfigIxData(int discriminator,
                                                int pausableDiscriminator,
-                                               PublicKey authority) implements SerDe {  
+                                               PublicKey authority) implements SerDe {
 
     public static InitializePausableConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10514,7 +10514,7 @@ public final class Token2022Program {
   public static final Discriminator PAUSE_DISCRIMINATOR = toDiscriminator(44);
 
   /// Pause the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   /// @param mintKey The mint.
@@ -10528,7 +10528,7 @@ public final class Token2022Program {
   }
 
   /// Pause the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   /// @param mintKey The mint.
@@ -10544,7 +10544,7 @@ public final class Token2022Program {
   }
 
   /// Pause the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   public static Instruction pause(final AccountMeta invokedToken2022ProgramMeta,
@@ -10557,10 +10557,10 @@ public final class Token2022Program {
   }
 
   /// Pause the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
-  public record PauseIxData(int discriminator, int pausableDiscriminator) implements SerDe {  
+  public record PauseIxData(int discriminator, int pausableDiscriminator) implements SerDe {
 
     public static PauseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10602,7 +10602,7 @@ public final class Token2022Program {
   public static final Discriminator RESUME_DISCRIMINATOR = toDiscriminator(44);
 
   /// Resume the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   /// @param mintKey The mint.
@@ -10616,7 +10616,7 @@ public final class Token2022Program {
   }
 
   /// Resume the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   /// @param mintKey The mint.
@@ -10632,7 +10632,7 @@ public final class Token2022Program {
   }
 
   /// Resume the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
   public static Instruction resume(final AccountMeta invokedToken2022ProgramMeta,
@@ -10645,10 +10645,10 @@ public final class Token2022Program {
   }
 
   /// Resume the mint.
-  /// 
+  ///
   /// Fails if the mint is not pausable.
   ///
-  public record ResumeIxData(int discriminator, int pausableDiscriminator) implements SerDe {  
+  public record ResumeIxData(int discriminator, int pausableDiscriminator) implements SerDe {
 
     public static ResumeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10690,7 +10690,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_TOKEN_METADATA_DISCRIMINATOR = toDiscriminator(210, 225, 30, 162, 88, 184, 77, 141);
 
   /// Initializes a TLV entry with the basic token-metadata fields.
-  /// 
+  ///
   /// Assumes that the provided mint is an SPL token mint, that the metadata
   /// account is allocated and assigned to the program, and that the metadata
   /// account has enough lamports to cover the rent-exempt reserve.
@@ -10708,7 +10708,7 @@ public final class Token2022Program {
   }
 
   /// Initializes a TLV entry with the basic token-metadata fields.
-  /// 
+  ///
   /// Assumes that the provided mint is an SPL token mint, that the metadata
   /// account is allocated and assigned to the program, and that the metadata
   /// account has enough lamports to cover the rent-exempt reserve.
@@ -10740,7 +10740,7 @@ public final class Token2022Program {
   }
 
   /// Initializes a TLV entry with the basic token-metadata fields.
-  /// 
+  ///
   /// Assumes that the provided mint is an SPL token mint, that the metadata
   /// account is allocated and assigned to the program, and that the metadata
   /// account has enough lamports to cover the rent-exempt reserve.
@@ -10774,7 +10774,7 @@ public final class Token2022Program {
   }
 
   /// Initializes a TLV entry with the basic token-metadata fields.
-  /// 
+  ///
   /// Assumes that the provided mint is an SPL token mint, that the metadata
   /// account is allocated and assigned to the program, and that the metadata
   /// account has enough lamports to cover the rent-exempt reserve.
@@ -10785,7 +10785,7 @@ public final class Token2022Program {
   public record InitializeTokenMetadataIxData(byte[] discriminator,
                                               String name, byte[] _name,
                                               String symbol, byte[] _symbol,
-                                              String uri, byte[] _uri) implements SerDe {  
+                                              String uri, byte[] _uri) implements SerDe {
 
     public static InitializeTokenMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -10871,10 +10871,10 @@ public final class Token2022Program {
   public static final Discriminator REMOVE_TOKEN_METADATA_KEY_DISCRIMINATOR = toDiscriminator(234, 18, 32, 56, 89, 141, 37, 181);
 
   /// Removes a key-value pair in a token-metadata account.
-  /// 
+  ///
   /// This only applies to additional fields, and not the base name / symbol /
   /// URI fields.
-  /// 
+  ///
   /// By the end of the instruction, the metadata account must be properly
   /// resized at the end based on the new size of the TLV entry.
   ///
@@ -10887,10 +10887,10 @@ public final class Token2022Program {
   }
 
   /// Removes a key-value pair in a token-metadata account.
-  /// 
+  ///
   /// This only applies to additional fields, and not the base name / symbol /
   /// URI fields.
-  /// 
+  ///
   /// By the end of the instruction, the metadata account must be properly
   /// resized at the end based on the new size of the TLV entry.
   ///
@@ -10915,10 +10915,10 @@ public final class Token2022Program {
   }
 
   /// Removes a key-value pair in a token-metadata account.
-  /// 
+  ///
   /// This only applies to additional fields, and not the base name / symbol /
   /// URI fields.
-  /// 
+  ///
   /// By the end of the instruction, the metadata account must be properly
   /// resized at the end based on the new size of the TLV entry.
   ///
@@ -10942,10 +10942,10 @@ public final class Token2022Program {
   }
 
   /// Removes a key-value pair in a token-metadata account.
-  /// 
+  ///
   /// This only applies to additional fields, and not the base name / symbol /
   /// URI fields.
-  /// 
+  ///
   /// By the end of the instruction, the metadata account must be properly
   /// resized at the end based on the new size of the TLV entry.
   ///
@@ -10954,7 +10954,7 @@ public final class Token2022Program {
   /// @param key Key to remove in the additional metadata portion.
   public record RemoveTokenMetadataKeyIxData(byte[] discriminator,
                                              boolean idempotent,
-                                             String key, byte[] _key) implements SerDe {  
+                                             String key, byte[] _key) implements SerDe {
 
     public static RemoveTokenMetadataKeyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11062,7 +11062,7 @@ public final class Token2022Program {
   /// Updates the token-metadata authority.
   ///
   /// @param newUpdateAuthority New authority for the token metadata, or unset if `None`
-  public record UpdateTokenMetadataUpdateAuthorityIxData(byte[] discriminator, PublicKey newUpdateAuthority) implements SerDe {  
+  public record UpdateTokenMetadataUpdateAuthorityIxData(byte[] discriminator, PublicKey newUpdateAuthority) implements SerDe {
 
     public static UpdateTokenMetadataUpdateAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11116,11 +11116,11 @@ public final class Token2022Program {
   public static final Discriminator EMIT_TOKEN_METADATA_DISCRIMINATOR = toDiscriminator(250, 166, 180, 250, 13, 12, 184, 70);
 
   /// Emits the token-metadata as return data
-  /// 
+  ///
   /// The format of the data emitted follows exactly the `TokenMetadata`
   /// struct, but it's possible that the account data is stored in another
   /// format by the program.
-  /// 
+  ///
   /// With this instruction, a program that implements the token-metadata
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
@@ -11132,11 +11132,11 @@ public final class Token2022Program {
   }
 
   /// Emits the token-metadata as return data
-  /// 
+  ///
   /// The format of the data emitted follows exactly the `TokenMetadata`
   /// struct, but it's possible that the account data is stored in another
   /// format by the program.
-  /// 
+  ///
   /// With this instruction, a program that implements the token-metadata
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
@@ -11159,11 +11159,11 @@ public final class Token2022Program {
   }
 
   /// Emits the token-metadata as return data
-  /// 
+  ///
   /// The format of the data emitted follows exactly the `TokenMetadata`
   /// struct, but it's possible that the account data is stored in another
   /// format by the program.
-  /// 
+  ///
   /// With this instruction, a program that implements the token-metadata
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
@@ -11187,11 +11187,11 @@ public final class Token2022Program {
   }
 
   /// Emits the token-metadata as return data
-  /// 
+  ///
   /// The format of the data emitted follows exactly the `TokenMetadata`
   /// struct, but it's possible that the account data is stored in another
   /// format by the program.
-  /// 
+  ///
   /// With this instruction, a program that implements the token-metadata
   /// interface can return `TokenMetadata` without adhering to the specific
   /// byte layout of the `TokenMetadata` struct in any accounts.
@@ -11200,7 +11200,7 @@ public final class Token2022Program {
   /// @param end: Option<u64> End of range of data to emit
   public record EmitTokenMetadataIxData(byte[] discriminator,
                                         OptionalLong start,
-                                        OptionalLong end) implements SerDe {  
+                                        OptionalLong end) implements SerDe {
 
     public static EmitTokenMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11266,7 +11266,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_TOKEN_GROUP_DISCRIMINATOR = toDiscriminator(121, 113, 108, 39, 54, 51, 0, 4);
 
   /// Initialize a new `Group`
-  /// 
+  ///
   /// Assumes one has already initialized a mint for the group.
   ///
   public static List<AccountMeta> initializeTokenGroupKeys(final PublicKey groupKey,
@@ -11280,7 +11280,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Group`
-  /// 
+  ///
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
@@ -11305,7 +11305,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Group`
-  /// 
+  ///
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
@@ -11326,14 +11326,14 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Group`
-  /// 
+  ///
   /// Assumes one has already initialized a mint for the group.
   ///
   /// @param updateAuthority Update authority for the group
   /// @param maxSize: u64 The maximum number of group members
   public record InitializeTokenGroupIxData(byte[] discriminator,
                                            PublicKey updateAuthority,
-                                           long maxSize) implements SerDe {  
+                                           long maxSize) implements SerDe {
 
     public static InitializeTokenGroupIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11431,7 +11431,7 @@ public final class Token2022Program {
   /// Update the max size of a `Group`.
   ///
   /// @param maxSize: u64 New max size for the group
-  public record UpdateTokenGroupMaxSizeIxData(byte[] discriminator, long maxSize) implements SerDe {  
+  public record UpdateTokenGroupMaxSizeIxData(byte[] discriminator, long maxSize) implements SerDe {
 
     public static UpdateTokenGroupMaxSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11527,7 +11527,7 @@ public final class Token2022Program {
   /// Update the authority of a `Group`.
   ///
   /// @param newUpdateAuthority New authority for the group, or unset if `None`
-  public record UpdateTokenGroupUpdateAuthorityIxData(byte[] discriminator, PublicKey newUpdateAuthority) implements SerDe {  
+  public record UpdateTokenGroupUpdateAuthorityIxData(byte[] discriminator, PublicKey newUpdateAuthority) implements SerDe {
 
     public static UpdateTokenGroupUpdateAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11581,7 +11581,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_TOKEN_GROUP_MEMBER_DISCRIMINATOR = toDiscriminator(152, 32, 222, 176, 223, 237, 116, 134);
 
   /// Initialize a new `Member` of a `Group`
-  /// 
+  ///
   /// Assumes the `Group` has already been initialized,
   /// as well as the mint for the member.
   ///
@@ -11600,7 +11600,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Member` of a `Group`
-  /// 
+  ///
   /// Assumes the `Group` has already been initialized,
   /// as well as the mint for the member.
   ///
@@ -11621,7 +11621,7 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Member` of a `Group`
-  /// 
+  ///
   /// Assumes the `Group` has already been initialized,
   /// as well as the mint for the member.
   ///
@@ -11634,11 +11634,11 @@ public final class Token2022Program {
   }
 
   /// Initialize a new `Member` of a `Group`
-  /// 
+  ///
   /// Assumes the `Group` has already been initialized,
   /// as well as the mint for the member.
   ///
-  public record InitializeTokenGroupMemberIxData(byte[] discriminator) implements SerDe {  
+  public record InitializeTokenGroupMemberIxData(byte[] discriminator) implements SerDe {
 
     public static InitializeTokenGroupMemberIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11735,7 +11735,7 @@ public final class Token2022Program {
   /// Transfer lamports from a native SOL account to a destination account.
   ///
   /// @param amount: Option<u64> The amount of lamports to transfer.
-  public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {  
+  public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {
 
     public static UnwrapLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11780,7 +11780,7 @@ public final class Token2022Program {
   public static final Discriminator INITIALIZE_PERMISSIONED_BURN_DISCRIMINATOR = toDiscriminator(46);
 
   /// Require permissioned burn for the given mint account.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint account to initialize.
@@ -11791,7 +11791,7 @@ public final class Token2022Program {
   }
 
   /// Require permissioned burn for the given mint account.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param mintKey The mint account to initialize.
@@ -11810,7 +11810,7 @@ public final class Token2022Program {
   }
 
   /// Require permissioned burn for the given mint account.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param authority The public key for the account that is required for token burning.
@@ -11827,13 +11827,13 @@ public final class Token2022Program {
   }
 
   /// Require permissioned burn for the given mint account.
-  /// 
+  ///
   /// Fails if the mint has already been initialized, so must be called before `InitializeMint`.
   ///
   /// @param authority The public key for the account that is required for token burning.
   public record InitializePermissionedBurnIxData(int discriminator,
                                                  int permissionedBurnDiscriminator,
-                                                 PublicKey authority) implements SerDe {  
+                                                 PublicKey authority) implements SerDe {
 
     public static InitializePermissionedBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -11943,7 +11943,7 @@ public final class Token2022Program {
   /// @param amount: u64 The amount of tokens to burn.
   public record PermissionedBurnIxData(int discriminator,
                                        int permissionedBurnDiscriminator,
-                                       long amount) implements SerDe {  
+                                       long amount) implements SerDe {
 
     public static PermissionedBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12062,7 +12062,7 @@ public final class Token2022Program {
   public record PermissionedBurnCheckedIxData(int discriminator,
                                               int permissionedBurnDiscriminator,
                                               long amount,
-                                              int decimals) implements SerDe {  
+                                              int decimals) implements SerDe {
 
     public static PermissionedBurnCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -12118,9 +12118,9 @@ public final class Token2022Program {
 
   /// Burn tokens from a confidential balance when the mint has the
   /// permissioned burn extension enabled.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -12174,9 +12174,9 @@ public final class Token2022Program {
 
   /// Burn tokens from a confidential balance when the mint has the
   /// permissioned burn extension enabled.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -12254,9 +12254,9 @@ public final class Token2022Program {
 
   /// Burn tokens from a confidential balance when the mint has the
   /// permissioned burn extension enabled.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -12308,9 +12308,9 @@ public final class Token2022Program {
 
   /// Burn tokens from a confidential balance when the mint has the
   /// permissioned burn extension enabled.
-  /// 
+  ///
   /// Fails if the source account is frozen.
-  /// 
+  ///
   /// In order for this instruction to be successfully processed, it must be
   /// accompanied by the following list of `zk_elgamal_proof` program
   /// instructions:
@@ -12343,7 +12343,7 @@ public final class Token2022Program {
                                                    EncryptedBalance burnAmountAuditorCiphertextHi,
                                                    int equalityProofInstructionOffset,
                                                    int ciphertextValidityProofInstructionOffset,
-                                                   int rangeProofInstructionOffset) implements SerDe {  
+                                                   int rangeProofInstructionOffset) implements SerDe {
 
     public static PermissionedConfidentialBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

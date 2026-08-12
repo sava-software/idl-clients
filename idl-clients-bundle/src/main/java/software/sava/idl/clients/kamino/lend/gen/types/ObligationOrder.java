@@ -16,7 +16,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///
 /// @param conditionThresholdSf A threshold value used by the condition (scaled Fraction).
 ///                             The exact meaning depends on the specific Self::condition_type.
-///                             
+///
 ///                             Examples:
 ///                             - when `condition_type == 2 (UserLtvBelow)`:
 ///                             then a value of `0.455` here means that the order is active only when the obligation's
@@ -27,7 +27,7 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///                             > 491.3 SOL per BTC).
 /// @param opportunityParameterSf A configuration parameter used by the opportunity (scaled Fraction).
 ///                               The exact meaning depends on the specific Self::opportunity_type.
-///                               
+///
 ///                               Examples:
 ///                               - when `opportunity_type == 0 (DeleverageSingleDebtAmount)`:
 ///                               Assuming the obligation uses BTC collateral for SOL debt, then a value of `1_234_000_000`
@@ -38,32 +38,32 @@ import static software.sava.core.encoding.ByteUtil.putInt16LE;
 ///                               The only allowed value in this case is Fraction::MAX (to emphasize that *all* debt
 ///                               should be repaid).
 /// @param minExecutionBonusBps: u16 A *minimum* additional fraction of collateral transferred to the liquidator, in bps.
-///                             
+///
 ///                             The minimum bonus is applied exactly when the Self::condition_threshold_sf is met, and
 ///                             grows linearly towards the Self::max_execution_bonus_bps.
-///                             
+///
 ///                             Example: a value of `50` here means 50bps == 0.5% bonus for an "LTV > 65%" order, when
 ///                             executed precisely at the moment LTV exceeds 65%.
 /// @param maxExecutionBonusBps: u16 A *maximum* additional fraction of collateral transferred to the liquidator, in bps.
-///                             
+///
 ///                             The maximum bonus is applied at the relevant "extreme" state of the obligation, i.e.:
 ///                             - for a stop-loss condition, it is a point at which the obligation becomes liquidatable;
 ///                             - for a take-profit condition, it is a point at which obligation has 0% LTV.
-///                             
+///
 ///                             In non-extreme states, the actual bonus value is interpolated linearly, starting from
 ///                             Self::min_execution_bonus_bps (at the point specified by the order's condition).
-///                             
+///
 ///                             Example: a value of `300` here means 300bps == 3.0% bonus for a "debt/coll price > 140"
 ///                             order, when executed at a higher price = 200, at which the obligation's LTV happens to
 ///                             be equal to its liquidation LTV.
 /// @param conditionType: u8 Serialized ConditionType.
 ///                      The entire order is void when this is zeroed (i.e. representing ConditionType::Never).
-///                      
+///
 ///                      Example: a value of `2` here denotes `UserLtvBelow` condition type. Of course, to
 ///                      interpret this condition, we also need to take the Self::condition_threshold_sf into
 ///                      account.
 /// @param opportunityType: u8 Serialized OpportunityType.
-///                        
+///
 ///                        Example: a value of `0` here denotes `DeleverageSingleDebtAmount` opportunity. Of course, to
 ///                        interpret this opportunity, we also need to take the Self::opportunity_parameter_sf into
 ///                        account.

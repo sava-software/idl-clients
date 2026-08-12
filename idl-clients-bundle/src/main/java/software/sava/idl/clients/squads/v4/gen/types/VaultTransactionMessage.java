@@ -12,7 +12,7 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 ///                    The signer pubkeys appear at the beginning of the vec, with writable pubkeys first, and read-only pubkeys following.
 ///                    The non-signer pubkeys follow with writable pubkeys first and read-only ones following.
 ///                    Program IDs are also stored at the end of the vec along with other non-signer non-writable pubkeys:
-///                    
+///
 ///                    ```plaintext
 ///                    pubkey1, pubkey2, pubkey3, pubkey4, pubkey5, pubkey6, pubkey7, pubkey8
 ///                    |---writable---|  |---readonly---|  |---writable---|  |---readonly---|

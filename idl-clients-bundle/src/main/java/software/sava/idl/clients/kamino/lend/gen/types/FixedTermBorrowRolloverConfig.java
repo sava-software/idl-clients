@@ -9,12 +9,12 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Settings driving the auto-rollover (or migration) of an ObligationLiquidity's borrow.
-/// 
+///
 /// This covers three flavors:
 /// - *fixed-to-fixed*: a fixed-term borrow rolling into another fixed-term reserve,
 /// - *fixed-to-open*: a fixed-term borrow rolling into an open-term reserve,
 /// - *open-to-fixed*: an open-term borrow migrating into a fixed-term reserve.
-/// 
+///
 /// By its nature (not a special case), the zeroed struct means "no auto-rollover/migration".
 ///
 /// @param autoRolloverEnabled: u8 Whether this *fixed-term* borrow can be permissionlessly prolonged. The funds used to roll
@@ -27,11 +27,11 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                            - or from an *open-term* reserve:
 ///                            - This can only happen within LendingMarket::open_term_rollover_window_duration_seconds.
 ///                            - The user must explicitly set Self::open_term_allowed here.
-///                            
+///
 ///                            This setting is not effective when the borrow is currently using an *open-term* reserve.
 /// @param openTermAllowed: u8 When `1`, then Self::auto_rollover_enabled is allowed to roll this borrow over into any
 ///                        open-term reserve.
-///                        
+///
 ///                        Please note that if such rollover actually happens, then Self::max_borrow_rate_bps
 ///                        condition does not apply - technically, it could be evaluated, but open-term reserves
 ///                        typically use float-rate (utilization-driven borrow rate curve) which has very high maximum
@@ -40,29 +40,29 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                - This can happen at any moment (as soon as liquidity becomes available).
 ///                                - The target fixed-term reserve must meet all the criteria defined in this config (see
 ///                                Self::max_borrow_rate_bps and Self::min_debt_term_seconds).
-///                                
+///
 ///                                This setting is not effective when the borrow is currently using a *fixed-term* reserve.
-///                                
+///
 ///                                Cannot be enabled when Self::min_debt_term_seconds is `0` (open-term only), because
 ///                                migrating into a fixed-term reserve contradicts the open-term-only intent.
 /// @param fixedTermRolloverWindowDurationDays: u8 An optional override of the LendingMarket::fixed_term_rollover_window_duration_seconds,
 ///                                            expressed in *days*.
-///                                            
+///
 ///                                            When zeroed, the market's configured value is used. Also, this setting is effective only
 ///                                            when the fixed-term rollover mode is enabled on the market level.
 ///                                            In other words: this field cannot be used to enable or disable the fixed-term rollover, only
 ///                                            to customize its window duration.
 /// @param maxBorrowRateBps: u32 A maximum allowed borrow rate of a reserve that can be used for a rollover/migration.
-///                         
+///
 ///                         Note: this must be set (i.e. non-zero) when enabling any rollover/migration flavor, but is
 ///                         of course not effective when rollover/migration is not enabled.
 /// @param minDebtTermSeconds: u64 A minimum debt term (in seconds) of a fixed-term reserve that can be used for a
 ///                           rollover/migration.
-///                           
+///
 ///                           When `0`, the owner only accepts open-term reserves as rollover targets — i.e. rolling over
 ///                           (or migrating) into a fixed-term reserve is not allowed. This is consistent with the
 ///                           semantics of BorrowOrder::min_debt_term_seconds.
-///                           
+///
 ///                           This means that `0` is incompatible with Self::migration_to_fixed_enabled (which requires
 ///                           a fixed-term target) — this combination is rejected at configuration time.
 public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,

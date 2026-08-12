@@ -10,12 +10,12 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Remaining accounts:
-/// 
+///
 /// num ledgers = L
-/// 
+///
 /// 1. LTV Write:
 /// 0 -> (L-1): Ledger Market Information
-/// 
+///
 /// Asset index guidance:
 /// 1. LTV Write:
 /// 0 -> (L-1): Collateral index for deposited collateral on the ledger market information

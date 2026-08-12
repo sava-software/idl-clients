@@ -122,7 +122,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param branchId: u32
-  public record InitBranchIxData(Discriminator discriminator, int vaultId, long branchId) implements SerDe {  
+  public record InitBranchIxData(Discriminator discriminator, int vaultId, long branchId) implements SerDe {
 
     public static InitBranchIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -239,7 +239,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param nextPositionId: u32
-  public record InitPositionIxData(Discriminator discriminator, int vaultId, long nextPositionId) implements SerDe {  
+  public record InitPositionIxData(Discriminator discriminator, int vaultId, long nextPositionId) implements SerDe {
 
     public static InitPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -326,7 +326,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record InitTickIxData(Discriminator discriminator, int vaultId, int tick) implements SerDe {  
+  public record InitTickIxData(Discriminator discriminator, int vaultId, int tick) implements SerDe {
 
     public static InitTickIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -416,7 +416,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param index: u8
-  public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {  
+  public record InitTickHasDebtArrayIxData(Discriminator discriminator, int vaultId, int index) implements SerDe {
 
     public static InitTickHasDebtArrayIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -519,7 +519,7 @@ public final class VaultsProgram {
   public record InitTickIdLiquidationIxData(Discriminator discriminator,
                                             int vaultId,
                                             int tick,
-                                            long totalIds) implements SerDe {  
+                                            long totalIds) implements SerDe {
 
     public static InitTickIdLiquidationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -602,7 +602,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
-  public record InitVaultAdminIxData(Discriminator discriminator, PublicKey liquidity, PublicKey authority) implements SerDe {  
+  public record InitVaultAdminIxData(Discriminator discriminator, PublicKey liquidity, PublicKey authority) implements SerDe {
 
     public static InitVaultAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -713,7 +713,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record InitVaultConfigIxData(Discriminator discriminator, int vaultId, InitVaultConfigParams params) implements SerDe {  
+  public record InitVaultConfigIxData(Discriminator discriminator, int vaultId, InitVaultConfigParams params) implements SerDe {
 
     public static InitVaultConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -811,7 +811,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record InitVaultStateIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+  public record InitVaultStateIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static InitVaultStateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1009,7 +1009,7 @@ public final class VaultsProgram {
                                 BigInteger colPerUnitDebt,
                                 boolean absorb,
                                 TransferType transferType,
-                                byte[] remainingAccountsIndices) implements SerDe {  
+                                byte[] remainingAccountsIndices) implements SerDe {
 
     public static LiquidateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1269,7 +1269,7 @@ public final class VaultsProgram {
                               BigInteger newCol,
                               BigInteger newDebt,
                               TransferType transferType,
-                              byte[] remainingAccountsIndices) implements SerDe {  
+                              byte[] remainingAccountsIndices) implements SerDe {
 
     public static OperateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1787,7 +1787,7 @@ public final class VaultsProgram {
                                    BigInteger colToken0MinMax,
                                    BigInteger colToken1MinMax,
                                    BigInteger debtToken0MinMax,
-                                   BigInteger debtToken1MinMax) implements SerDe {  
+                                   BigInteger debtToken1MinMax) implements SerDe {
 
     public static RebalanceDexIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2235,7 +2235,7 @@ public final class VaultsProgram {
                                               BigInteger colToken0MinMax,
                                               BigInteger colToken1MinMax,
                                               BigInteger debtToken0MinMax,
-                                              BigInteger debtToken1MinMax) implements SerDe {  
+                                              BigInteger debtToken1MinMax) implements SerDe {
 
     public static RebalanceDexWithAmountsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2450,7 +2450,7 @@ public final class VaultsProgram {
 
   /// @param supplyAmount: Option<u128>
   /// @param borrowAmount: Option<u128>
-  public record RebalanceWithAmountsIxData(Discriminator discriminator, BigInteger supplyAmount, BigInteger borrowAmount) implements SerDe {  
+  public record RebalanceWithAmountsIxData(Discriminator discriminator, BigInteger supplyAmount, BigInteger borrowAmount) implements SerDe {
 
     public static RebalanceWithAmountsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2528,7 +2528,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {  
+  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {
 
     public static UpdateAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2593,7 +2593,7 @@ public final class VaultsProgram {
     return Instruction.createInstruction(invokedVaultsProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {  
+  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {
 
     public static UpdateAuthsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2689,7 +2689,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param borrowFee: u8
-  public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {  
+  public record UpdateBorrowFeeIxData(Discriminator discriminator, int vaultId, int borrowFee) implements SerDe {
 
     public static UpdateBorrowFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2790,7 +2790,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateBorrowRateMagnifierIxData(Discriminator discriminator, int vaultId, int borrowRateMagnifier) implements SerDe {  
+  public record UpdateBorrowRateMagnifierIxData(Discriminator discriminator, int vaultId, int borrowRateMagnifier) implements SerDe {
 
     public static UpdateBorrowRateMagnifierIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2894,7 +2894,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param collateralFactor: u16
-  public record UpdateCollateralFactorIxData(Discriminator discriminator, int vaultId, int collateralFactor) implements SerDe {  
+  public record UpdateCollateralFactorIxData(Discriminator discriminator, int vaultId, int collateralFactor) implements SerDe {
 
     public static UpdateCollateralFactorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2995,7 +2995,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateCoreSettingsIxData(Discriminator discriminator, int vaultId, UpdateCoreSettingsParams params) implements SerDe {  
+  public record UpdateCoreSettingsIxData(Discriminator discriminator, int vaultId, UpdateCoreSettingsParams params) implements SerDe {
 
     public static UpdateCoreSettingsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3083,7 +3083,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateExchangePricesIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+  public record UpdateExchangePricesIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static UpdateExchangePricesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3182,7 +3182,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param liquidationMaxLimit: u16
-  public record UpdateLiquidationMaxLimitIxData(Discriminator discriminator, int vaultId, int liquidationMaxLimit) implements SerDe {  
+  public record UpdateLiquidationMaxLimitIxData(Discriminator discriminator, int vaultId, int liquidationMaxLimit) implements SerDe {
 
     public static UpdateLiquidationMaxLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3286,7 +3286,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param liquidationPenalty: u16
-  public record UpdateLiquidationPenaltyIxData(Discriminator discriminator, int vaultId, int liquidationPenalty) implements SerDe {  
+  public record UpdateLiquidationPenaltyIxData(Discriminator discriminator, int vaultId, int liquidationPenalty) implements SerDe {
 
     public static UpdateLiquidationPenaltyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3390,7 +3390,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param liquidationThreshold: u16
-  public record UpdateLiquidationThresholdIxData(Discriminator discriminator, int vaultId, int liquidationThreshold) implements SerDe {  
+  public record UpdateLiquidationThresholdIxData(Discriminator discriminator, int vaultId, int liquidationThreshold) implements SerDe {
 
     public static UpdateLiquidationThresholdIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3473,7 +3473,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateLookupTableIxData(Discriminator discriminator, int vaultId, PublicKey lookupTable) implements SerDe {  
+  public record UpdateLookupTableIxData(Discriminator discriminator, int vaultId, PublicKey lookupTable) implements SerDe {
 
     public static UpdateLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3574,7 +3574,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateOracleIxData(Discriminator discriminator, int vaultId) implements SerDe {  
+  public record UpdateOracleIxData(Discriminator discriminator, int vaultId) implements SerDe {
 
     public static UpdateOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3670,7 +3670,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateRebalancerIxData(Discriminator discriminator, int vaultId, PublicKey newRebalancer) implements SerDe {  
+  public record UpdateRebalancerIxData(Discriminator discriminator, int vaultId, PublicKey newRebalancer) implements SerDe {
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3771,7 +3771,7 @@ public final class VaultsProgram {
   }
 
   /// @param vaultId: u16
-  public record UpdateSupplyRateMagnifierIxData(Discriminator discriminator, int vaultId, int supplyRateMagnifier) implements SerDe {  
+  public record UpdateSupplyRateMagnifierIxData(Discriminator discriminator, int vaultId, int supplyRateMagnifier) implements SerDe {
 
     public static UpdateSupplyRateMagnifierIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3875,7 +3875,7 @@ public final class VaultsProgram {
 
   /// @param vaultId: u16
   /// @param withdrawGap: u16
-  public record UpdateWithdrawGapIxData(Discriminator discriminator, int vaultId, int withdrawGap) implements SerDe {  
+  public record UpdateWithdrawGapIxData(Discriminator discriminator, int vaultId, int withdrawGap) implements SerDe {
 
     public static UpdateWithdrawGapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

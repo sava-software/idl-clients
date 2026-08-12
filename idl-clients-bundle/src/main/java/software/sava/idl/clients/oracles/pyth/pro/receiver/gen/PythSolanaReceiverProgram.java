@@ -62,7 +62,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, Config initialConfig) implements SerDe {  
+  public record InitializeIxData(Discriminator discriminator, Config initialConfig) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -124,7 +124,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record RequestGovernanceAuthorityTransferIxData(Discriminator discriminator, PublicKey targetGovernanceAuthority) implements SerDe {  
+  public record RequestGovernanceAuthorityTransferIxData(Discriminator discriminator, PublicKey targetGovernanceAuthority) implements SerDe {
 
     public static RequestGovernanceAuthorityTransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -239,7 +239,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetDataSourcesIxData(Discriminator discriminator, DataSource[] validDataSources) implements SerDe {  
+  public record SetDataSourcesIxData(Discriminator discriminator, DataSource[] validDataSources) implements SerDe {
 
     public static SetDataSourcesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -304,7 +304,7 @@ public final class PythSolanaReceiverProgram {
   }
 
   /// @param singleUpdateFeeInLamports: u64
-  public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements SerDe {  
+  public record SetFeeIxData(Discriminator discriminator, long singleUpdateFeeInLamports) implements SerDe {
 
     public static SetFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -369,7 +369,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record SetWormholeAddressIxData(Discriminator discriminator, PublicKey wormhole) implements SerDe {  
+  public record SetWormholeAddressIxData(Discriminator discriminator, PublicKey wormhole) implements SerDe {
 
     public static SetWormholeAddressIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -437,7 +437,7 @@ public final class PythSolanaReceiverProgram {
   }
 
   /// @param minimumSignatures: u8
-  public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements SerDe {  
+  public record SetMinimumSignaturesIxData(Discriminator discriminator, int minimumSignatures) implements SerDe {
 
     public static SetMinimumSignaturesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -477,11 +477,11 @@ public final class PythSolanaReceiverProgram {
   /// This function allows you to post a price update in a single transaction.
   /// Compared to `post_update`, it only checks whatever signatures are present in the provided VAA and doesn't fail if the number of signatures is lower than the Wormhole quorum of two thirds of the guardians.
   /// The number of signatures that were in the VAA is stored in the `VerificationLevel` of the `PriceUpdateV2` account.
-  /// 
+  ///
   /// We recommend using `post_update_atomic` with 5 signatures. This is close to the maximum signatures you can verify in one transaction without exceeding the transaction size limit.
-  /// 
+  ///
   /// # Warning
-  /// 
+  ///
   /// Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update.
   ///
   /// @param guardianSetKey Instead we do the same steps in deserialize_guardian_set_checked.
@@ -509,11 +509,11 @@ public final class PythSolanaReceiverProgram {
   /// This function allows you to post a price update in a single transaction.
   /// Compared to `post_update`, it only checks whatever signatures are present in the provided VAA and doesn't fail if the number of signatures is lower than the Wormhole quorum of two thirds of the guardians.
   /// The number of signatures that were in the VAA is stored in the `VerificationLevel` of the `PriceUpdateV2` account.
-  /// 
+  ///
   /// We recommend using `post_update_atomic` with 5 signatures. This is close to the maximum signatures you can verify in one transaction without exceeding the transaction size limit.
-  /// 
+  ///
   /// # Warning
-  /// 
+  ///
   /// Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update.
   ///
   /// @param guardianSetKey Instead we do the same steps in deserialize_guardian_set_checked.
@@ -544,11 +544,11 @@ public final class PythSolanaReceiverProgram {
   /// This function allows you to post a price update in a single transaction.
   /// Compared to `post_update`, it only checks whatever signatures are present in the provided VAA and doesn't fail if the number of signatures is lower than the Wormhole quorum of two thirds of the guardians.
   /// The number of signatures that were in the VAA is stored in the `VerificationLevel` of the `PriceUpdateV2` account.
-  /// 
+  ///
   /// We recommend using `post_update_atomic` with 5 signatures. This is close to the maximum signatures you can verify in one transaction without exceeding the transaction size limit.
-  /// 
+  ///
   /// # Warning
-  /// 
+  ///
   /// Using partially verified price updates is dangerous, as it lowers the threshold of guardians that need to collude to produce a malicious price update.
   ///
   public static Instruction postUpdateAtomic(final AccountMeta invokedPythSolanaReceiverProgramMeta,
@@ -561,7 +561,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostUpdateAtomicIxData(Discriminator discriminator, PostUpdateAtomicParams params) implements SerDe {  
+  public record PostUpdateAtomicIxData(Discriminator discriminator, PostUpdateAtomicParams params) implements SerDe {
 
     public static PostUpdateAtomicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -659,7 +659,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostUpdateIxData(Discriminator discriminator, PostUpdateParams params) implements SerDe {  
+  public record PostUpdateIxData(Discriminator discriminator, PostUpdateParams params) implements SerDe {
 
     public static PostUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -761,7 +761,7 @@ public final class PythSolanaReceiverProgram {
     return Instruction.createInstruction(invokedPythSolanaReceiverProgramMeta, keys, _data);
   }
 
-  public record PostTwapUpdateIxData(Discriminator discriminator, PostTwapUpdateParams params) implements SerDe {  
+  public record PostTwapUpdateIxData(Discriminator discriminator, PostTwapUpdateParams params) implements SerDe {
 
     public static PostTwapUpdateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

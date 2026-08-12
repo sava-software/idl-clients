@@ -21,7 +21,7 @@ import static software.sava.core.encoding.ByteUtil.putInt128LE;
 /// @param extension reward_infos0: Authority account that has permission to initialize the reward and set emissions.
 ///                  reward_infos1: used for a struct that contains fields for extending the functionality of Whirlpool.
 ///                  reward_infos2: reserved for future use.
-///                  
+///
 ///                  Historical notes:
 ///                  Originally, this was a field named "authority", but it was found that there was no opportunity
 ///                  to set different authorities for the three rewards. Therefore, the use of this field was changed for Whirlpool's future extensibility.

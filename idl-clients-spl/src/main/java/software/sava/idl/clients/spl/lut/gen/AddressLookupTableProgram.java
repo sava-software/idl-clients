@@ -79,7 +79,7 @@ public final class AddressLookupTableProgram {
   /// @param bump: u8
   public record CreateLookupTableIxData(long discriminator,
                                         long recentSlot,
-                                        int bump) implements SerDe {  
+                                        int bump) implements SerDe {
 
     public static CreateLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -151,7 +151,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record FreezeLookupTableIxData(long discriminator) implements SerDe {  
+  public record FreezeLookupTableIxData(long discriminator) implements SerDe {
 
     public static FreezeLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -222,7 +222,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record ExtendLookupTableIxData(long discriminator, PublicKey[] addresses) implements SerDe {  
+  public record ExtendLookupTableIxData(long discriminator, PublicKey[] addresses) implements SerDe {
 
     public static ExtendLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -286,7 +286,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record DeactivateLookupTableIxData(long discriminator) implements SerDe {  
+  public record DeactivateLookupTableIxData(long discriminator) implements SerDe {
 
     public static DeactivateLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -350,7 +350,7 @@ public final class AddressLookupTableProgram {
     return Instruction.createInstruction(invokedAddressLookupTableProgramMeta, keys, _data);
   }
 
-  public record CloseLookupTableIxData(long discriminator) implements SerDe {  
+  public record CloseLookupTableIxData(long discriminator) implements SerDe {
 
     public static CloseLookupTableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

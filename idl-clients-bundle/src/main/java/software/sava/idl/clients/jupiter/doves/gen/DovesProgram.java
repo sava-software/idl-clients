@@ -63,7 +63,7 @@ public final class DovesProgram {
     return Instruction.createInstruction(invokedDovesProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, byte[] pair, byte[] feedSigner) implements SerDe {  
+  public record InitializeIxData(Discriminator discriminator, byte[] pair, byte[] feedSigner) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -160,7 +160,7 @@ public final class DovesProgram {
   public record InitializePythLazerPriceFeedIxData(Discriminator discriminator,
                                                    byte[] pair,
                                                    long feedId,
-                                                   int channelId) implements SerDe {  
+                                                   int channelId) implements SerDe {
 
     public static InitializePythLazerPriceFeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -383,7 +383,7 @@ public final class DovesProgram {
                                               byte[] messageData,
                                               int ed25519InstructionIndex,
                                               int signatureIndex,
-                                              boolean raise) implements SerDe {  
+                                              boolean raise) implements SerDe {
 
     public static UpdateManyWithPythLazerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -468,7 +468,7 @@ public final class DovesProgram {
     return Instruction.createInstruction(invokedDovesProgramMeta, keys, _data);
   }
 
-  public record UpdateWithSignerIxData(Discriminator discriminator, UpdateMessage update, boolean raise) implements SerDe {  
+  public record UpdateWithSignerIxData(Discriminator discriminator, UpdateMessage update, boolean raise) implements SerDe {
 
     public static UpdateWithSignerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

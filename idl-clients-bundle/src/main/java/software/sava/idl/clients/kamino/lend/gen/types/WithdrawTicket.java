@@ -18,7 +18,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// A finite-lifecycle account representing a specific depositor's place in the withdraw queue of
 /// a specific reserve.
-/// 
+///
 /// The lifecycle:
 /// 1. The depositor holding ctokens wants to withdraw funds from the reserve, and finds out that
 /// the required amount is not available (due to high utilization).
@@ -41,12 +41,12 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                   `withdraw_queued_liquidity` handler).
 /// @param queuedCollateralAmount: u64 The amount of collateral still waiting to be withdrawn using this ticket.
 /// @param createdAtTimestamp: u64 The timestamp at which the queue was entered.
-///                           
+///
 ///                           This is currently only a piece of metadata, not used by the logic.
 /// @param invalid: u8 Whether the ticket has been found to be invalid (e.g. the Self::user_destination_liquidity
 ///                has been repurposed) by the `withdraw_queued_liquidity` handler.
 ///                To be specific: valid = `0`, invalid = `1`.
-///                
+///
 ///                An invalid ticket cannot be made valid again, and can only be passed to the
 ///                `recover_invalid_ticket_collateral` handler.
 /// @param progressCallbackType: u8 One of the valid ProgressCallbackType representations.

@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///              * 0 = false, 1 = true
 /// @param priceStatus: u8 Each bit represents a passed check in price status.
 ///                    * 63 = all checks passed
-///                    
+///
 ///                    Otherwise:
 ///                    * PRICE_LOADED =        0b_0000_0001; // 1
 ///                    * PRICE_AGE_CHECKED =   0b_0000_0010; // 2

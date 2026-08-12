@@ -19,7 +19,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param supplyVault Reserve liquidity supply address
 /// @param feeVault Reserve liquidity fee collection address
 /// @param totalAvailableAmount: u64 Total reserve liquidity available.
-///                             
+///
 ///                             Note: not all of this liquidity can be freely used for any purpose. Production code should
 ///                             use the specialized getters - see e.g. Reserve::total_available_liquidity_amount(),
 ///                             Reserve::freely_available_liquidity_amount().
@@ -38,7 +38,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param absoluteReferralRateSf Reserve referrer fee absolute rate calculated at each refresh_reserve operation (scaled fraction)
 /// @param tokenProgram Token program of the liquidity mint
 /// @param rewardsAmountAvailable: u64 Reserve rewards budget remaining for distribution.
-///                               
+///
 ///                               Tokens are deposited via `topup_reserve_rewards` and increase this counter (without
 ///                               touching Self::total_available_amount). On every `refresh_reserve`, up to
 ///                               `rewards_amount_per_slot * slots_elapsed` tokens are moved from this counter into

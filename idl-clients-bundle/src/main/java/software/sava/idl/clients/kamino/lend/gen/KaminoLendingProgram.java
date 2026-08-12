@@ -88,7 +88,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record InitLendingMarketIxData(Discriminator discriminator, byte[] quoteCurrency) implements SerDe {  
+  public record InitLendingMarketIxData(Discriminator discriminator, byte[] quoteCurrency) implements SerDe {
 
     public static InitLendingMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -165,7 +165,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param mode: u64
-  public record UpdateLendingMarketIxData(Discriminator discriminator, long mode, byte[] value) implements SerDe {  
+  public record UpdateLendingMarketIxData(Discriminator discriminator, long mode, byte[] value) implements SerDe {
 
     public static UpdateLendingMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -314,7 +314,7 @@ public final class KaminoLendingProgram {
   public static final Discriminator CLONE_RESERVE_CONFIG_DISCRIMINATOR = toDiscriminator(244, 5, 198, 113, 17, 10, 71, 33);
 
   /// @param targetLendingMarketKey The lending market of the Self::target_reserve.
-  ///                               
+  ///
   ///                               The Self::source_reserve can come from a different market.
   /// @param sourceReserveKey The reserve to be used as source for the configuration clone.
   /// @param targetReserveKey The reserve to have its configuration replaced by a clone.
@@ -333,7 +333,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param targetLendingMarketKey The lending market of the Self::target_reserve.
-  ///                               
+  ///
   ///                               The Self::source_reserve can come from a different market.
   /// @param sourceReserveKey The reserve to be used as source for the configuration clone.
   /// @param targetReserveKey The reserve to have its configuration replaced by a clone.
@@ -364,7 +364,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record CloneReserveConfigIxData(Discriminator discriminator, ReserveConfigCustomizationArgs customizations) implements SerDe {  
+  public record CloneReserveConfigIxData(Discriminator discriminator, ReserveConfigCustomizationArgs customizations) implements SerDe {
 
     public static CloneReserveConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -467,7 +467,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param mode: u8
-  public record InitFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
+  public record InitFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {
 
     public static InitFarmsForReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -559,7 +559,7 @@ public final class KaminoLendingProgram {
   public record UpdateReserveConfigIxData(Discriminator discriminator,
                                           UpdateConfigMode mode,
                                           byte[] value,
-                                          boolean skipConfigIntegrityValidation) implements SerDe {  
+                                          boolean skipConfigIntegrityValidation) implements SerDe {
 
     public static UpdateReserveConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -705,7 +705,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawProtocolFeeIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawProtocolFeeIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawProtocolFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -844,7 +844,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param amount: u64
-  public record TopupReserveRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record TopupReserveRewardsIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static TopupReserveRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -924,7 +924,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record SocializeLossIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record SocializeLossIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static SocializeLossIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1022,7 +1022,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record SocializeLossV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record SocializeLossV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static SocializeLossV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1098,7 +1098,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param autodeleverageTargetLtvPct: u8
-  public record MarkObligationForDeleveragingIxData(Discriminator discriminator, int autodeleverageTargetLtvPct) implements SerDe {  
+  public record MarkObligationForDeleveragingIxData(Discriminator discriminator, int autodeleverageTargetLtvPct) implements SerDe {
 
     public static MarkObligationForDeleveragingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1186,7 +1186,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, List.of(), _data);
   }
 
-  public record RefreshReservesBatchIxData(Discriminator discriminator, boolean skipPriceUpdates) implements SerDe {  
+  public record RefreshReservesBatchIxData(Discriminator discriminator, boolean skipPriceUpdates) implements SerDe {
 
     public static RefreshReservesBatchIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1315,7 +1315,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record DepositReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record DepositReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static DepositReserveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1423,7 +1423,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record RedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record RedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static RedeemReserveCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1516,7 +1516,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record InitObligationIxData(Discriminator discriminator, InitObligationArgs args) implements SerDe {  
+  public record InitObligationIxData(Discriminator discriminator, InitObligationArgs args) implements SerDe {
 
     public static InitObligationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1619,7 +1619,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param mode: u8
-  public record InitObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
+  public record InitObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {
 
     public static InitObligationFarmsForReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1725,7 +1725,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param mode: u8
-  public record RefreshObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {  
+  public record RefreshObligationFarmsForReserveIxData(Discriminator discriminator, int mode) implements SerDe {
 
     public static RefreshObligationFarmsForReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1842,7 +1842,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record DepositObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record DepositObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static DepositObligationCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1952,7 +1952,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record DepositObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record DepositObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static DepositObligationCollateralV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2048,7 +2048,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record WithdrawObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record WithdrawObligationCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static WithdrawObligationCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2158,7 +2158,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record WithdrawObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record WithdrawObligationCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static WithdrawObligationCollateralV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2268,7 +2268,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record BorrowObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record BorrowObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static BorrowObligationLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2390,7 +2390,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record BorrowObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record BorrowObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static BorrowObligationLiquidityV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2486,7 +2486,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record RepayObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record RepayObligationLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static RepayObligationLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2600,7 +2600,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record RepayObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record RepayObligationLiquidityV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static RepayObligationLiquidityV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2781,7 +2781,7 @@ public final class KaminoLendingProgram {
 
   /// @param repayAmount: u64
   /// @param withdrawCollateralAmount: u64
-  public record RepayAndWithdrawAndRedeemIxData(Discriminator discriminator, long repayAmount, long withdrawCollateralAmount) implements SerDe {  
+  public record RepayAndWithdrawAndRedeemIxData(Discriminator discriminator, long repayAmount, long withdrawCollateralAmount) implements SerDe {
 
     public static RepayAndWithdrawAndRedeemIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2987,7 +2987,7 @@ public final class KaminoLendingProgram {
 
   /// @param liquidityAmount: u64
   /// @param withdrawCollateralAmount: u64
-  public record DepositAndWithdrawIxData(Discriminator discriminator, long liquidityAmount, long withdrawCollateralAmount) implements SerDe {  
+  public record DepositAndWithdrawIxData(Discriminator discriminator, long liquidityAmount, long withdrawCollateralAmount) implements SerDe {
 
     public static DepositAndWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3110,7 +3110,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record DepositReserveLiquidityAndObligationCollateralIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record DepositReserveLiquidityAndObligationCollateralIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static DepositReserveLiquidityAndObligationCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3240,7 +3240,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record DepositReserveLiquidityAndObligationCollateralV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record DepositReserveLiquidityAndObligationCollateralV2IxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static DepositReserveLiquidityAndObligationCollateralV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3358,7 +3358,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record WithdrawObligationCollateralAndRedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record WithdrawObligationCollateralAndRedeemReserveCollateralIxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static WithdrawObligationCollateralAndRedeemReserveCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3488,7 +3488,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record WithdrawObligationCollateralAndRedeemReserveCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {  
+  public record WithdrawObligationCollateralAndRedeemReserveCollateralV2IxData(Discriminator discriminator, long collateralAmount) implements SerDe {
 
     public static WithdrawObligationCollateralAndRedeemReserveCollateralV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3651,7 +3651,7 @@ public final class KaminoLendingProgram {
   public record LiquidateObligationAndRedeemReserveCollateralIxData(Discriminator discriminator,
                                                                     long liquidityAmount,
                                                                     long minAcceptableReceivedLiquidityAmount,
-                                                                    long maxAllowedLtvOverridePercent) implements SerDe {  
+                                                                    long maxAllowedLtvOverridePercent) implements SerDe {
 
     public static LiquidateObligationAndRedeemReserveCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3846,7 +3846,7 @@ public final class KaminoLendingProgram {
   public record LiquidateObligationAndRedeemReserveCollateralV2IxData(Discriminator discriminator,
                                                                       long liquidityAmount,
                                                                       long minAcceptableReceivedLiquidityAmount,
-                                                                      long maxAllowedLtvOverridePercent) implements SerDe {  
+                                                                      long maxAllowedLtvOverridePercent) implements SerDe {
 
     public static LiquidateObligationAndRedeemReserveCollateralV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3973,7 +3973,7 @@ public final class KaminoLendingProgram {
 
   /// @param liquidityAmount: u64
   /// @param borrowInstructionIndex: u8
-  public record FlashRepayReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount, int borrowInstructionIndex) implements SerDe {  
+  public record FlashRepayReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount, int borrowInstructionIndex) implements SerDe {
 
     public static FlashRepayReserveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4088,7 +4088,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param liquidityAmount: u64
-  public record FlashBorrowReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {  
+  public record FlashBorrowReserveLiquidityIxData(Discriminator discriminator, long liquidityAmount) implements SerDe {
 
     public static FlashBorrowReserveLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4160,7 +4160,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param elevationGroup: u8
-  public record RequestElevationGroupIxData(Discriminator discriminator, int elevationGroup) implements SerDe {  
+  public record RequestElevationGroupIxData(Discriminator discriminator, int elevationGroup) implements SerDe {
 
     public static RequestElevationGroupIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4288,7 +4288,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record InitUserMetadataIxData(Discriminator discriminator, PublicKey userLookupTable) implements SerDe {  
+  public record InitUserMetadataIxData(Discriminator discriminator, PublicKey userLookupTable) implements SerDe {
 
     public static InitUserMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4423,7 +4423,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record InitReferrerStateAndShortUrlIxData(Discriminator discriminator, String shortUrl, byte[] _shortUrl) implements SerDe {  
+  public record InitReferrerStateAndShortUrlIxData(Discriminator discriminator, String shortUrl, byte[] _shortUrl) implements SerDe {
 
     public static InitReferrerStateAndShortUrlIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4540,7 +4540,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param index: u8
-  public record SetObligationOrderIxData(Discriminator discriminator, int index, ObligationOrder order) implements SerDe {  
+  public record SetObligationOrderIxData(Discriminator discriminator, int index, ObligationOrder order) implements SerDe {
 
     public static SetObligationOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4665,7 +4665,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param minExpectedCurrentRemainingDebtAmount: u64
-  public record SetBorrowOrderIxData(Discriminator discriminator, BorrowOrderConfigArgs orderConfig, long minExpectedCurrentRemainingDebtAmount) implements SerDe {  
+  public record SetBorrowOrderIxData(Discriminator discriminator, BorrowOrderConfigArgs orderConfig, long minExpectedCurrentRemainingDebtAmount) implements SerDe {
 
     public static SetBorrowOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4806,7 +4806,7 @@ public final class KaminoLendingProgram {
   public record SetBorrowOrderV2IxData(Discriminator discriminator,
                                        int orderIdx,
                                        BorrowOrderConfigArgs orderConfig,
-                                       long minExpectedCurrentRemainingDebtAmount) implements SerDe {  
+                                       long minExpectedCurrentRemainingDebtAmount) implements SerDe {
 
     public static SetBorrowOrderV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4854,10 +4854,10 @@ public final class KaminoLendingProgram {
   /// @param ownerKey Obligation's owner (signer - only the owner can modify the obligation's configuration).
   /// @param obligationKey The obligation to update.
   /// @param borrowReserveKey The reserve of a selected one among the Obligation::borrows.
-  ///                         
+  ///
   ///                         Required only if the config update affects a single borrow (for validating its new config).
   /// @param depositReserveKey The reserve of a selected one among the Obligation::deposits.
-  ///                          
+  ///
   ///                          Required only if the config update affects a single deposit (for validating its new config).
   /// @param lendingMarketKey The lending market (for validating the obligation's new config).
   public static List<AccountMeta> updateObligationConfigKeys(final AccountMeta invokedKaminoLendingProgramMeta,
@@ -4878,10 +4878,10 @@ public final class KaminoLendingProgram {
   /// @param ownerKey Obligation's owner (signer - only the owner can modify the obligation's configuration).
   /// @param obligationKey The obligation to update.
   /// @param borrowReserveKey The reserve of a selected one among the Obligation::borrows.
-  ///                         
+  ///
   ///                         Required only if the config update affects a single borrow (for validating its new config).
   /// @param depositReserveKey The reserve of a selected one among the Obligation::deposits.
-  ///                          
+  ///
   ///                          Required only if the config update affects a single deposit (for validating its new config).
   /// @param lendingMarketKey The lending market (for validating the obligation's new config).
   public static Instruction updateObligationConfig(final AccountMeta invokedKaminoLendingProgramMeta,
@@ -4915,7 +4915,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateObligationConfigIxData(Discriminator discriminator, UpdateObligationConfigMode mode, byte[] value) implements SerDe {  
+  public record UpdateObligationConfigIxData(Discriminator discriminator, UpdateObligationConfigMode mode, byte[] value) implements SerDe {
 
     public static UpdateObligationConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5062,7 +5062,7 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
   ///                                                the Self::reserve_source_liquidity.
   /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
-  ///                                       
+  ///
   ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint of the
   ///                                       borrow order at the index given by the instruction argument - see
   ///                                       `check_accounts_match_order()`.
@@ -5070,10 +5070,10 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
   /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
   /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
-  ///                                                  
+  ///
   ///                                                  It must match BorrowOrder::filled_debt_destination of the borrow order at the index given
   ///                                                  by the instruction argument, owner and mint - see `check_accounts_match_order()`.
-  ///                                                  
+  ///
   ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
   /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
   /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
@@ -5121,7 +5121,7 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
   ///                                                the Self::reserve_source_liquidity.
   /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
-  ///                                       
+  ///
   ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint of the
   ///                                       borrow order at the index given by the instruction argument - see
   ///                                       `check_accounts_match_order()`.
@@ -5129,10 +5129,10 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
   /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
   /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
-  ///                                                  
+  ///
   ///                                                  It must match BorrowOrder::filled_debt_destination of the borrow order at the index given
   ///                                                  by the instruction argument, owner and mint - see `check_accounts_match_order()`.
-  ///                                                  
+  ///
   ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
   /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
   /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
@@ -5189,7 +5189,7 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
   ///                                                the Self::reserve_source_liquidity.
   /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
-  ///                                       
+  ///
   ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint of the
   ///                                       borrow order at the index given by the instruction argument - see
   ///                                       `check_accounts_match_order()`.
@@ -5197,10 +5197,10 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
   /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
   /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
-  ///                                                  
+  ///
   ///                                                  It must match BorrowOrder::filled_debt_destination of the borrow order at the index given
   ///                                                  by the instruction argument, owner and mint - see `check_accounts_match_order()`.
-  ///                                                  
+  ///
   ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
   /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
   /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
@@ -5248,7 +5248,7 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsLendingMarketAuthorityKey The Self::lending_market's authority, needed to transfer the newly-borrowed funds out of
   ///                                                the Self::reserve_source_liquidity.
   /// @param borrowAccountsBorrowReserveKey The reserve to borrow from.
-  ///                                       
+  ///
   ///                                       Its mint must match the asset requested by the BorrowOrder::debt_liquidity_mint of the
   ///                                       borrow order at the index given by the instruction argument - see
   ///                                       `check_accounts_match_order()`.
@@ -5256,10 +5256,10 @@ public final class KaminoLendingProgram {
   /// @param borrowAccountsReserveSourceLiquidityKey The vault of Self::borrow_reserve, from which the funds are transferred.
   /// @param borrowAccountsBorrowReserveLiquidityFeeReceiverKey The fee vault of Self::borrow_reserve, to which the fees are transferred.
   /// @param borrowAccountsUserDestinationLiquidityKey The destination token account that should receive the newly borrowed funds.
-  ///                                                  
+  ///
   ///                                                  It must match BorrowOrder::filled_debt_destination of the borrow order at the index given
   ///                                                  by the instruction argument, owner and mint - see `check_accounts_match_order()`.
-  ///                                                  
+  ///
   ///                                                  **Warning:** An altered destination account will prevent an order from being filled.
   /// @param borrowAccountsReferrerTokenStateKey The referrer's account, for accumulating fees - needed if the Obligation::has_referrer.
   /// @param borrowAccountsTokenProgramKey The token program of Self::borrow_reserve - needed to execute the transfer.
@@ -5318,7 +5318,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param orderIdx: u8
-  public record FillBorrowOrderV2IxData(Discriminator discriminator, int orderIdx) implements SerDe {  
+  public record FillBorrowOrderV2IxData(Discriminator discriminator, int orderIdx) implements SerDe {
 
     public static FillBorrowOrderV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5389,7 +5389,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record InitiateObligationOwnershipTransferIxData(Discriminator discriminator, PublicKey newOwner) implements SerDe {  
+  public record InitiateObligationOwnershipTransferIxData(Discriminator discriminator, PublicKey newOwner) implements SerDe {
 
     public static InitiateObligationOwnershipTransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5543,7 +5543,7 @@ public final class KaminoLendingProgram {
   /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
   /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the optional "ticket
   ///                                          progress callback" is configured for this ticket.
-  ///                                          
+  ///
   ///                                          The expected custom accounts are validated based on the `progress_callback_type` instruction
   ///                                          argument. The currently supported ones are:
   ///                                          - for ProgressCallbackType::None no custom accounts are expected (this is the default
@@ -5605,7 +5605,7 @@ public final class KaminoLendingProgram {
   /// @param systemProgramKey The System program - needed only for `init` / `init_if_needed` of the accounts above.
   /// @param progressCallbackCustomAccount0Key The first one out of maximum 2 custom accounts that may be required if the optional "ticket
   ///                                          progress callback" is configured for this ticket.
-  ///                                          
+  ///
   ///                                          The expected custom accounts are validated based on the `progress_callback_type` instruction
   ///                                          argument. The currently supported ones are:
   ///                                          - for ProgressCallbackType::None no custom accounts are expected (this is the default
@@ -5674,7 +5674,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param collateralAmount: u64
-  public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount, ProgressCallbackType progressCallbackType) implements SerDe {  
+  public record EnqueueToWithdrawIxData(Discriminator discriminator, long collateralAmount, ProgressCallbackType progressCallbackType) implements SerDe {
 
     public static EnqueueToWithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5730,7 +5730,7 @@ public final class KaminoLendingProgram {
   /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
   /// @param liquidityTokenProgramKey The program of Self::reserve_liquidity_mint, needed for transfer.
   /// @param withdrawTicketKey The ticket's data itself.
-  ///                          
+  ///
   ///                          Note: in case of complete withdrawal, this account will be closed. In case of partial
   ///                          withdrawal, its WithdrawTicket::queued_collateral_amount will simply be reduced, and the
   ///                          ticket will maintain its position in the queue.
@@ -5803,7 +5803,7 @@ public final class KaminoLendingProgram {
   /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
   /// @param liquidityTokenProgramKey The program of Self::reserve_liquidity_mint, needed for transfer.
   /// @param withdrawTicketKey The ticket's data itself.
-  ///                          
+  ///
   ///                          Note: in case of complete withdrawal, this account will be closed. In case of partial
   ///                          withdrawal, its WithdrawTicket::queued_collateral_amount will simply be reduced, and the
   ///                          ticket will maintain its position in the queue.
@@ -5870,7 +5870,7 @@ public final class KaminoLendingProgram {
   public static final Discriminator RECOVER_INVALID_TICKET_COLLATERAL_DISCRIMINATOR = toDiscriminator(28, 48, 176, 102, 159, 206, 210, 246);
 
   /// @param payerKey The transaction executor.
-  ///                 
+  ///
   ///                 This instruction is, in principle, permissionless. However, only the ticket owner can use
   ///                 arbitrary token account as destination for recovered collateral. Other signers can only
   ///                 transfer the collateral to the ticket owner's ATA (see Self::user_source_collateral).
@@ -5882,7 +5882,7 @@ public final class KaminoLendingProgram {
   /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
   ///                                      recovered).
   /// @param userSourceCollateralKey The ticket's owner token account to which the ticket-locked collateral should be returned.
-  ///                                
+  ///
   ///                                Only the ticket's owner can indicate an arbitrary token account here. Permissionless
   ///                                executors must indicate the ticket's owner ATA.
   /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
@@ -5917,7 +5917,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param payerKey The transaction executor.
-  ///                 
+  ///
   ///                 This instruction is, in principle, permissionless. However, only the ticket owner can use
   ///                 arbitrary token account as destination for recovered collateral. Other signers can only
   ///                 transfer the collateral to the ticket owner's ATA (see Self::user_source_collateral).
@@ -5929,7 +5929,7 @@ public final class KaminoLendingProgram {
   /// @param ownerQueuedCollateralVaultKey The per-owner "this reserve's queued collateral" vault (from which the collateral will be
   ///                                      recovered).
   /// @param userSourceCollateralKey The ticket's owner token account to which the ticket-locked collateral should be returned.
-  ///                                
+  ///
   ///                                Only the ticket's owner can indicate an arbitrary token account here. Permissionless
   ///                                executors must indicate the ticket's owner ATA.
   /// @param collateralTokenProgramKey The program of Self::reserve_collateral_mint, needed for transfer.
@@ -5979,7 +5979,7 @@ public final class KaminoLendingProgram {
   }
 
   /// @param ticketSequenceNumber: u64
-  public record RecoverInvalidTicketCollateralIxData(Discriminator discriminator, long ticketSequenceNumber) implements SerDe {  
+  public record RecoverInvalidTicketCollateralIxData(Discriminator discriminator, long ticketSequenceNumber) implements SerDe {
 
     public static RecoverInvalidTicketCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6104,7 +6104,7 @@ public final class KaminoLendingProgram {
 
   /// @param ticketSequenceNumber: u64
   /// @param collateralAmountToCancel: u64
-  public record CancelWithdrawTicketIxData(Discriminator discriminator, long ticketSequenceNumber, long collateralAmountToCancel) implements SerDe {  
+  public record CancelWithdrawTicketIxData(Discriminator discriminator, long ticketSequenceNumber, long collateralAmountToCancel) implements SerDe {
 
     public static CancelWithdrawTicketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6222,7 +6222,7 @@ public final class KaminoLendingProgram {
     return Instruction.createInstruction(invokedKaminoLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode mode, byte[] value) implements SerDe {  
+  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode mode, byte[] value) implements SerDe {
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -6359,7 +6359,7 @@ public final class KaminoLendingProgram {
                                       ReserveStatus reserveStatus,
                                       UpdateConfigMode updateConfigMode,
                                       UpdateLendingMarketConfigValue updateLendingMarketConfigValue,
-                                      UpdateLendingMarketMode updateLendingMarketConfigMode) implements SerDe {  
+                                      UpdateLendingMarketMode updateLendingMarketConfigMode) implements SerDe {
 
     public static IdlMissingTypesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -149,7 +149,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record BorrowPrincipalIxData(Discriminator discriminator, BorrowPrincipalParams params) implements SerDe {  
+  public record BorrowPrincipalIxData(Discriminator discriminator, BorrowPrincipalParams params) implements SerDe {
 
     public static BorrowPrincipalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -328,7 +328,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ClaimVaultFeeIxData(Discriminator discriminator, ClaimVaultFeeParams params) implements SerDe {  
+  public record ClaimVaultFeeIxData(Discriminator discriminator, ClaimVaultFeeParams params) implements SerDe {
 
     public static ClaimVaultFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -438,7 +438,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ClaimVaultRewardsIxData(Discriminator discriminator, PublicKey[] mints) implements SerDe {  
+  public record ClaimVaultRewardsIxData(Discriminator discriminator, PublicKey[] mints) implements SerDe {
 
     public static ClaimVaultRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -594,7 +594,7 @@ public final class LoopscaleProgram {
   public static final Discriminator CREATE_LOAN_DISCRIMINATOR = toDiscriminator(166, 131, 118, 219, 138, 218, 206, 140);
 
   /// creditbook instructionss
-  /// 
+  ///
   /// 1. loan instructions
   /// 1.1 create loan
   ///
@@ -619,7 +619,7 @@ public final class LoopscaleProgram {
   }
 
   /// creditbook instructionss
-  /// 
+  ///
   /// 1. loan instructions
   /// 1.1 create loan
   ///
@@ -647,7 +647,7 @@ public final class LoopscaleProgram {
   }
 
   /// creditbook instructionss
-  /// 
+  ///
   /// 1. loan instructions
   /// 1.1 create loan
   ///
@@ -661,7 +661,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record CreateLoanIxData(Discriminator discriminator, CreateLoanParams params) implements SerDe {  
+  public record CreateLoanIxData(Discriminator discriminator, CreateLoanParams params) implements SerDe {
 
     public static CreateLoanIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -746,7 +746,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record CreateMarketInformationIxData(Discriminator discriminator, CreateMarketInformationParams params) implements SerDe {  
+  public record CreateMarketInformationIxData(Discriminator discriminator, CreateMarketInformationParams params) implements SerDe {
 
     public static CreateMarketInformationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -877,7 +877,7 @@ public final class LoopscaleProgram {
   }
 
   /// @param amountToTransfer: u64
-  public record CreateRewardsScheduleIxData(Discriminator discriminator, CreateRewardsScheduleParams params, long amountToTransfer) implements SerDe {  
+  public record CreateRewardsScheduleIxData(Discriminator discriminator, CreateRewardsScheduleParams params, long amountToTransfer) implements SerDe {
 
     public static CreateRewardsScheduleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -987,7 +987,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record CreateStrategyIxData(Discriminator discriminator, CreateStrategyParams params) implements SerDe {  
+  public record CreateStrategyIxData(Discriminator discriminator, CreateStrategyParams params) implements SerDe {
 
     public static CreateStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1094,7 +1094,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record CreateTimelockIxData(Discriminator discriminator, TimelockUpdateParams params) implements SerDe {  
+  public record CreateTimelockIxData(Discriminator discriminator, TimelockUpdateParams params) implements SerDe {
 
     public static CreateTimelockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1206,7 +1206,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record CreateVaultIxData(Discriminator discriminator, CreateVaultParams params) implements SerDe {  
+  public record CreateVaultIxData(Discriminator discriminator, CreateVaultParams params) implements SerDe {
 
     public static CreateVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1330,7 +1330,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record DepositCollateralIxData(Discriminator discriminator, DepositCollateralParams params) implements SerDe {  
+  public record DepositCollateralIxData(Discriminator discriminator, DepositCollateralParams params) implements SerDe {
 
     public static DepositCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1449,7 +1449,7 @@ public final class LoopscaleProgram {
   }
 
   /// @param amount: u64
-  public record DepositStrategyIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record DepositStrategyIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DepositStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1593,7 +1593,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record DepositUserVaultIxData(Discriminator discriminator, LpParams params) implements SerDe {  
+  public record DepositUserVaultIxData(Discriminator discriminator, LpParams params) implements SerDe {
 
     public static DepositUserVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1796,7 +1796,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record LiquidateLedgerIxData(Discriminator discriminator, LiquidateLedgerParams params) implements SerDe {  
+  public record LiquidateLedgerIxData(Discriminator discriminator, LiquidateLedgerParams params) implements SerDe {
 
     public static LiquidateLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1884,7 +1884,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record LockLoanIxData(Discriminator discriminator, LockLoanParams params) implements SerDe {  
+  public record LockLoanIxData(Discriminator discriminator, LockLoanParams params) implements SerDe {
 
     public static LockLoanIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2059,7 +2059,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralClaimOrcaFeeIxData(Discriminator discriminator, boolean closeTa) implements SerDe {  
+  public record ManageCollateralClaimOrcaFeeIxData(Discriminator discriminator, boolean closeTa) implements SerDe {
 
     public static ManageCollateralClaimOrcaFeeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2230,7 +2230,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralDecreaseRaydiumLiquidityIxData(Discriminator discriminator, ManageRaydiumLiquidityParams params) implements SerDe {  
+  public record ManageCollateralDecreaseRaydiumLiquidityIxData(Discriminator discriminator, ManageRaydiumLiquidityParams params) implements SerDe {
 
     public static ManageCollateralDecreaseRaydiumLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2394,7 +2394,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralIncreaseOrcaLiquidityIxData(Discriminator discriminator, ManageLiquidityParams params) implements SerDe {  
+  public record ManageCollateralIncreaseOrcaLiquidityIxData(Discriminator discriminator, ManageLiquidityParams params) implements SerDe {
 
     public static ManageCollateralIncreaseOrcaLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2562,7 +2562,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralIncreaseRaydiumLiquidityIxData(Discriminator discriminator, ManageRaydiumLiquidityParams params) implements SerDe {  
+  public record ManageCollateralIncreaseRaydiumLiquidityIxData(Discriminator discriminator, ManageRaydiumLiquidityParams params) implements SerDe {
 
     public static ManageCollateralIncreaseRaydiumLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2754,7 +2754,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralTransferOrcaPositionIxData(Discriminator discriminator, TransferPositionParams params) implements SerDe {  
+  public record ManageCollateralTransferOrcaPositionIxData(Discriminator discriminator, TransferPositionParams params) implements SerDe {
 
     public static ManageCollateralTransferOrcaPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2946,7 +2946,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralTransferRaydiumPositionIxData(Discriminator discriminator, TransferPositionParams params) implements SerDe {  
+  public record ManageCollateralTransferRaydiumPositionIxData(Discriminator discriminator, TransferPositionParams params) implements SerDe {
 
     public static ManageCollateralTransferRaydiumPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3110,7 +3110,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record ManageCollateralWithdrawOrcaLiquidityIxData(Discriminator discriminator, ManageLiquidityParams params) implements SerDe {  
+  public record ManageCollateralWithdrawOrcaLiquidityIxData(Discriminator discriminator, ManageLiquidityParams params) implements SerDe {
 
     public static ManageCollateralWithdrawOrcaLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3234,7 +3234,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record RefinanceLedgerIxData(Discriminator discriminator, RefinanceLedgerParams params) implements SerDe {  
+  public record RefinanceLedgerIxData(Discriminator discriminator, RefinanceLedgerParams params) implements SerDe {
 
     public static RefinanceLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3354,7 +3354,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record RepayPrincipalIxData(Discriminator discriminator, RepayPrincipalParams params) implements SerDe {  
+  public record RepayPrincipalIxData(Discriminator discriminator, RepayPrincipalParams params) implements SerDe {
 
     public static RepayPrincipalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3494,7 +3494,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record SellLedgerIxData(Discriminator discriminator, SellLedgerParams params) implements SerDe {  
+  public record SellLedgerIxData(Discriminator discriminator, SellLedgerParams params) implements SerDe {
 
     public static SellLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3564,7 +3564,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record SetProtocolAdminStateIxData(Discriminator discriminator, SetProtocolAdminStateParams params) implements SerDe {  
+  public record SetProtocolAdminStateIxData(Discriminator discriminator, SetProtocolAdminStateParams params) implements SerDe {
 
     public static SetProtocolAdminStateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3692,7 +3692,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record StakeUserVaultLpIxData(Discriminator discriminator, VaultStakeParams params) implements SerDe {  
+  public record StakeUserVaultLpIxData(Discriminator discriminator, VaultStakeParams params) implements SerDe {
 
     public static StakeUserVaultLpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3776,7 +3776,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UnlockLoanIxData(Discriminator discriminator, LoanUnlockParams params) implements SerDe {  
+  public record UnlockLoanIxData(Discriminator discriminator, LoanUnlockParams params) implements SerDe {
 
     public static UnlockLoanIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3900,7 +3900,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UnstakeUserVaultLpIxData(Discriminator discriminator, VaultUnstakeParams params) implements SerDe {  
+  public record UnstakeUserVaultLpIxData(Discriminator discriminator, VaultUnstakeParams params) implements SerDe {
 
     public static UnstakeUserVaultLpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4006,7 +4006,7 @@ public final class LoopscaleProgram {
   public record UpdateMarketInformationIxData(Discriminator discriminator,
                                               UpdateAssetDataParams[] assetUpdateParams,
                                               UpdateCapsParams updateCapParams,
-                                              PublicKey newAuthority) implements SerDe {  
+                                              PublicKey newAuthority) implements SerDe {
 
     public static UpdateMarketInformationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4151,7 +4151,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UpdateRewardsScheduleIxData(Discriminator discriminator, UpdateRewardsScheduleParams params) implements SerDe {  
+  public record UpdateRewardsScheduleIxData(Discriminator discriminator, UpdateRewardsScheduleParams params) implements SerDe {
 
     public static UpdateRewardsScheduleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4265,7 +4265,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UpdateStrategyIxData(Discriminator discriminator, MultiCollateralTermsUpdateParams[] collateralTerms, UpdateStrategyParams params) implements SerDe {  
+  public record UpdateStrategyIxData(Discriminator discriminator, MultiCollateralTermsUpdateParams[] collateralTerms, UpdateStrategyParams params) implements SerDe {
 
     public static UpdateStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4366,7 +4366,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UpdateVaultIxData(Discriminator discriminator, UpdateVaultParams params) implements SerDe {  
+  public record UpdateVaultIxData(Discriminator discriminator, UpdateVaultParams params) implements SerDe {
 
     public static UpdateVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4444,7 +4444,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record UpdateWeightMatrixIxData(Discriminator discriminator, UpdateWeightMatrixParams params) implements SerDe {  
+  public record UpdateWeightMatrixIxData(Discriminator discriminator, UpdateWeightMatrixParams params) implements SerDe {
 
     public static UpdateWeightMatrixIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4556,7 +4556,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record WithdrawCollateralIxData(Discriminator discriminator, WithdrawCollateralParams params) implements SerDe {  
+  public record WithdrawCollateralIxData(Discriminator discriminator, WithdrawCollateralParams params) implements SerDe {
 
     public static WithdrawCollateralIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4679,7 +4679,7 @@ public final class LoopscaleProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawStrategyIxData(Discriminator discriminator, long amount, boolean withdrawAll) implements SerDe {  
+  public record WithdrawStrategyIxData(Discriminator discriminator, long amount, boolean withdrawAll) implements SerDe {
 
     public static WithdrawStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4819,7 +4819,7 @@ public final class LoopscaleProgram {
     return Instruction.createInstruction(invokedLoopscaleProgramMeta, keys, _data);
   }
 
-  public record WithdrawUserVaultIxData(Discriminator discriminator, LpParams params) implements SerDe {  
+  public record WithdrawUserVaultIxData(Discriminator discriminator, LpParams params) implements SerDe {
 
     public static WithdrawUserVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

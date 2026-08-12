@@ -91,7 +91,7 @@ public final class PythPushOracleProgram {
   public record UpdatePriceFeedIxData(Discriminator discriminator,
                                       PostUpdateParams params,
                                       int shardId,
-                                      byte[] feedId) implements SerDe {  
+                                      byte[] feedId) implements SerDe {
 
     public static UpdatePriceFeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

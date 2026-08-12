@@ -105,7 +105,7 @@ public final class FarmsProgram {
   }
 
   /// @param mode: u8
-  public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements SerDe {  
+  public record UpdateGlobalConfigIxData(Discriminator discriminator, int mode, byte[] value) implements SerDe {
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -371,7 +371,7 @@ public final class FarmsProgram {
 
   /// @param amount: u64
   /// @param rewardIndex: u64
-  public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
+  public record AddRewardsIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {
 
     public static AddRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -454,7 +454,7 @@ public final class FarmsProgram {
   }
 
   /// @param mode: u16
-  public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements SerDe {  
+  public record UpdateFarmConfigIxData(Discriminator discriminator, int mode, byte[] data) implements SerDe {
 
     public static UpdateFarmConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -655,7 +655,7 @@ public final class FarmsProgram {
   public record RewardUserOnceIxData(Discriminator discriminator,
                                      long rewardIndex,
                                      long amount,
-                                     long expectedRewardIssuedUnclaimed) implements SerDe {  
+                                     long expectedRewardIssuedUnclaimed) implements SerDe {
 
     public static RewardUserOnceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -786,7 +786,7 @@ public final class FarmsProgram {
   }
 
   /// @param amount: u64
-  public record StakeIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record StakeIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static StakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -858,7 +858,7 @@ public final class FarmsProgram {
   }
 
   /// @param newAmount: u64
-  public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements SerDe {  
+  public record SetStakeDelegatedIxData(Discriminator discriminator, long newAmount) implements SerDe {
 
     public static SetStakeDelegatedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -964,7 +964,7 @@ public final class FarmsProgram {
   }
 
   /// @param rewardIndex: u64
-  public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {  
+  public record HarvestRewardIxData(Discriminator discriminator, long rewardIndex) implements SerDe {
 
     public static HarvestRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1039,7 +1039,7 @@ public final class FarmsProgram {
     return Instruction.createInstruction(invokedFarmsProgramMeta, keys, _data);
   }
 
-  public record UnstakeIxData(Discriminator discriminator, BigInteger stakeSharesScaled) implements SerDe {  
+  public record UnstakeIxData(Discriminator discriminator, BigInteger stakeSharesScaled) implements SerDe {
 
     public static UnstakeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1203,7 +1203,7 @@ public final class FarmsProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawTreasuryIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawTreasuryIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1283,7 +1283,7 @@ public final class FarmsProgram {
   }
 
   /// @param amount: u64
-  public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record DepositToFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DepositToFarmVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1367,7 +1367,7 @@ public final class FarmsProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawFromFarmVaultIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawFromFarmVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1559,7 +1559,7 @@ public final class FarmsProgram {
 
   /// @param amount: u64
   /// @param rewardIndex: u64
-  public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {  
+  public record WithdrawRewardIxData(Discriminator discriminator, long amount, long rewardIndex) implements SerDe {
 
     public static WithdrawRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1687,7 +1687,7 @@ public final class FarmsProgram {
                                       FarmConfigOption farmConfigOptionKind,
                                       TimeUnit timeUnit,
                                       LockingMode lockingMode,
-                                      RewardType rewardType) implements SerDe {  
+                                      RewardType rewardType) implements SerDe {
 
     public static IdlMissingTypesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

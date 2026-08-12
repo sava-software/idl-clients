@@ -44,7 +44,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param timestamp Unix timestamp from the system clock when this cache was last updated
 /// @param flags: u32 The flags that indicate the state of the health cache. This is a u32 bitfield, where each
 ///              bit represents a flag.
-///              
+///
 ///              * HEALTHY = 1 - If set, the account cannot be liquidated. If 0, the account is unhealthy and
 ///              can be liquidated.
 ///              * ENGINE STATUS = 2 - If set, the engine did not error during the last health pulse. If 0,

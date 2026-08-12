@@ -20,7 +20,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param accountFlags: u64 The flags that indicate the state of the account. This is u64 bitfield, where each bit
 ///                     represents a flag.
-///                     
+///
 ///                     Flags:MarginfiAccount
 ///                     - 1: `ACCOUNT_DISABLED` - Indicates that the account is disabled and no further actions can
 ///                     be taken on it.
@@ -45,7 +45,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                        can be used by anyone with no restrictions. Values >= PDA_FREE_THRESHOLD can only be used by
 ///                        a particular program via CPI. These values require being added to a list, contact us for
 ///                        more details. For legacy non-pda accounts, does nothing.
-///                        
+///
 ///                        Note: use a unique seed to tag accounts related to some particular program or campaign so
 ///                        you can easily fetch them all later.
 /// @param bump: u8 This account's bump, if a PDA-based account (0.1.5 or later). Otherwise, does nothing.

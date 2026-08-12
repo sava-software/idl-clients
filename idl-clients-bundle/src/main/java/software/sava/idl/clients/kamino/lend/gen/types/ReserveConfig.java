@@ -55,7 +55,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                              Besides this flag, the lending market's flag also needs to be enabled (logical `AND`).
 ///                              **NOTE:** the manual "target LTV" deleveraging is NOT affected by this flag.
 /// @param proposerAuthorityLocked: u8 Boolean flag indicating whether the reserve is locked for the proposer authority.
-///                                
+///
 ///                                Once the proposer have finished preparing the reserve, it must be locked to prevent
 ///                                further changes to the reserve configuration allowing review and voting on the proposal
 ///                                without alteration during the voting period.
@@ -71,19 +71,19 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param debtMaturityTimestamp: u64 The timestamp at which all Obligation::borrows using this reserve become liquidatable
 ///                              (on the same terms as reserve-wide deleveraging).
 ///                              Inactive when zeroed (i.e. debt never matures).
-///                              
+///
 ///                              Note: this feature is independent of Self::debt_term_seconds - the liquidation mechanism
 ///                              is based directly on the timestamp defined here, on Reserve's level.
 /// @param debtTermSeconds: u64 The duration after which any debt coming from this Reserve must be repaid.
 ///                        Inactive when zeroed (i.e. funds can be borrowed indefinitely).
-///                        
+///
 ///                        Note: this feature is independent of Self::debt_maturity_timestamp - the liquidation
 ///                        mechanism is based on the ObligationLiquidity::last_borrowed_at_timestamp.
 /// @param rewardsAmountPerSlot: u64 Rewards distributed per slot to depositors. Drained from
 ///                             ReserveLiquidity::rewards_amount_available into
 ///                             ReserveLiquidity::total_available_amount at each refresh, capped by the
 ///                             market-level LendingMarket::reserve_rewards_max_apr_bps. `0` disables.
-///                             
+///
 ///                             **Note:** because rewards inflate `total_available_amount`, a non-zero RPS on a
 ///                             reserve with Self::autodeleverage_enabled and a finite Self::deposit_limit
 ///                             will eventually cross the cap and arm the autodeleverage countdown. Size

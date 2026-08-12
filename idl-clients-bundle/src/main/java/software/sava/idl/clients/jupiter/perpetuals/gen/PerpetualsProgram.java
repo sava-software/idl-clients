@@ -125,7 +125,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InitIxData(Discriminator discriminator, InitParams params) implements SerDe {  
+  public record InitIxData(Discriminator discriminator, InitParams params) implements SerDe {
 
     public static InitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -213,7 +213,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record AddPoolIxData(Discriminator discriminator, AddPoolParams params) implements SerDe {  
+  public record AddPoolIxData(Discriminator discriminator, AddPoolParams params) implements SerDe {
 
     public static AddPoolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -307,7 +307,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record AddCustodyIxData(Discriminator discriminator, AddCustodyParams params) implements SerDe {  
+  public record AddCustodyIxData(Discriminator discriminator, AddCustodyParams params) implements SerDe {
 
     public static AddCustodyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -375,7 +375,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SetCustodyConfigIxData(Discriminator discriminator, SetCustodyConfigParams params) implements SerDe {  
+  public record SetCustodyConfigIxData(Discriminator discriminator, SetCustodyConfigParams params) implements SerDe {
 
     public static SetCustodyConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -443,7 +443,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SetPoolConfigIxData(Discriminator discriminator, SetPoolConfigParams params) implements SerDe {  
+  public record SetPoolConfigIxData(Discriminator discriminator, SetPoolConfigParams params) implements SerDe {
 
     public static SetPoolConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -507,7 +507,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SetPerpetualsConfigIxData(Discriminator discriminator, SetPerpetualsConfigParams params) implements SerDe {  
+  public record SetPerpetualsConfigIxData(Discriminator discriminator, SetPerpetualsConfigParams params) implements SerDe {
 
     public static SetPerpetualsConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -575,7 +575,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record TransferAdminIxData(Discriminator discriminator, TransferAdminParams params) implements SerDe {  
+  public record TransferAdminIxData(Discriminator discriminator, TransferAdminParams params) implements SerDe {
 
     public static TransferAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -671,7 +671,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record WithdrawFees2IxData(Discriminator discriminator, WithdrawFees2Params params) implements SerDe {  
+  public record WithdrawFees2IxData(Discriminator discriminator, WithdrawFees2Params params) implements SerDe {
 
     public static WithdrawFees2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -763,7 +763,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CreateTokenMetadataIxData(Discriminator discriminator, CreateTokenMetadataParams params) implements SerDe {  
+  public record CreateTokenMetadataIxData(Discriminator discriminator, CreateTokenMetadataParams params) implements SerDe {
 
     public static CreateTokenMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -984,7 +984,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CreateAndDelegateStakeAccountIxData(Discriminator discriminator, CreateAndDelegateStakeAccountParams params) implements SerDe {  
+  public record CreateAndDelegateStakeAccountIxData(Discriminator discriminator, CreateAndDelegateStakeAccountParams params) implements SerDe {
 
     public static CreateAndDelegateStakeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1211,7 +1211,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record OperatorSetCustodyConfigIxData(Discriminator discriminator, OperatorSetCustodyConfigParams params) implements SerDe {  
+  public record OperatorSetCustodyConfigIxData(Discriminator discriminator, OperatorSetCustodyConfigParams params) implements SerDe {
 
     public static OperatorSetCustodyConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1275,7 +1275,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record OperatorSetPoolConfigIxData(Discriminator discriminator, OperatorSetPoolConfigParams params) implements SerDe {  
+  public record OperatorSetPoolConfigIxData(Discriminator discriminator, OperatorSetPoolConfigParams params) implements SerDe {
 
     public static OperatorSetPoolConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1355,7 +1355,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record TestInitIxData(Discriminator discriminator, TestInitParams params) implements SerDe {  
+  public record TestInitIxData(Discriminator discriminator, TestInitParams params) implements SerDe {
 
     public static TestInitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1419,7 +1419,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SetTestTimeIxData(Discriminator discriminator, SetTestTimeParams params) implements SerDe {  
+  public record SetTestTimeIxData(Discriminator discriminator, SetTestTimeParams params) implements SerDe {
 
     public static SetTestTimeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1572,7 +1572,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record Swap2IxData(Discriminator discriminator, Swap2Params params) implements SerDe {  
+  public record Swap2IxData(Discriminator discriminator, Swap2Params params) implements SerDe {
 
     public static Swap2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1696,7 +1696,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SwapWithTokenLedgerIxData(Discriminator discriminator, SwapWithTokenLedgerParams params) implements SerDe {  
+  public record SwapWithTokenLedgerIxData(Discriminator discriminator, SwapWithTokenLedgerParams params) implements SerDe {
 
     public static SwapWithTokenLedgerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1816,7 +1816,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantIncreasePositionPreSwapIxData(Discriminator discriminator, InstantIncreasePositionPreSwapParams params) implements SerDe {  
+  public record InstantIncreasePositionPreSwapIxData(Discriminator discriminator, InstantIncreasePositionPreSwapParams params) implements SerDe {
 
     public static InstantIncreasePositionPreSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1928,7 +1928,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record AddLiquidity2IxData(Discriminator discriminator, AddLiquidity2Params params) implements SerDe {  
+  public record AddLiquidity2IxData(Discriminator discriminator, AddLiquidity2Params params) implements SerDe {
 
     public static AddLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2038,7 +2038,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record RemoveLiquidity2IxData(Discriminator discriminator, RemoveLiquidity2Params params) implements SerDe {  
+  public record RemoveLiquidity2IxData(Discriminator discriminator, RemoveLiquidity2Params params) implements SerDe {
 
     public static RemoveLiquidity2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2160,7 +2160,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CreateIncreasePositionMarketRequestIxData(Discriminator discriminator, CreateIncreasePositionMarketRequestParams params) implements SerDe {  
+  public record CreateIncreasePositionMarketRequestIxData(Discriminator discriminator, CreateIncreasePositionMarketRequestParams params) implements SerDe {
 
     public static CreateIncreasePositionMarketRequestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2288,7 +2288,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CreateDecreasePositionRequest2IxData(Discriminator discriminator, CreateDecreasePositionRequest2Params params) implements SerDe {  
+  public record CreateDecreasePositionRequest2IxData(Discriminator discriminator, CreateDecreasePositionRequest2Params params) implements SerDe {
 
     public static CreateDecreasePositionRequest2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2408,7 +2408,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CreateDecreasePositionMarketRequestIxData(Discriminator discriminator, CreateDecreasePositionMarketRequestParams params) implements SerDe {  
+  public record CreateDecreasePositionMarketRequestIxData(Discriminator discriminator, CreateDecreasePositionMarketRequestParams params) implements SerDe {
 
     public static CreateDecreasePositionMarketRequestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2494,7 +2494,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record UpdateDecreasePositionRequest2IxData(Discriminator discriminator, UpdateDecreasePositionRequest2Params params) implements SerDe {  
+  public record UpdateDecreasePositionRequest2IxData(Discriminator discriminator, UpdateDecreasePositionRequest2Params params) implements SerDe {
 
     public static UpdateDecreasePositionRequest2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2760,7 +2760,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record IncreasePosition4IxData(Discriminator discriminator, IncreasePosition4Params params) implements SerDe {  
+  public record IncreasePosition4IxData(Discriminator discriminator, IncreasePosition4Params params) implements SerDe {
 
     public static IncreasePosition4IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2860,7 +2860,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record IncreasePositionPreSwapIxData(Discriminator discriminator, IncreasePositionPreSwapParams params) implements SerDe {  
+  public record IncreasePositionPreSwapIxData(Discriminator discriminator, IncreasePositionPreSwapParams params) implements SerDe {
 
     public static IncreasePositionPreSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2996,7 +2996,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record IncreasePositionWithInternalSwapIxData(Discriminator discriminator, IncreasePositionWithInternalSwapParams params) implements SerDe {  
+  public record IncreasePositionWithInternalSwapIxData(Discriminator discriminator, IncreasePositionWithInternalSwapParams params) implements SerDe {
 
     public static IncreasePositionWithInternalSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3124,7 +3124,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record DecreasePosition4IxData(Discriminator discriminator, DecreasePosition4Params params) implements SerDe {  
+  public record DecreasePosition4IxData(Discriminator discriminator, DecreasePosition4Params params) implements SerDe {
 
     public static DecreasePosition4IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3268,7 +3268,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record DecreasePositionWithInternalSwapIxData(Discriminator discriminator, DecreasePositionWithInternalSwapParams params) implements SerDe {  
+  public record DecreasePositionWithInternalSwapIxData(Discriminator discriminator, DecreasePositionWithInternalSwapParams params) implements SerDe {
 
     public static DecreasePositionWithInternalSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3388,7 +3388,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record DecreasePositionWithTpslIxData(Discriminator discriminator, DecreasePositionWithTpslParams params) implements SerDe {  
+  public record DecreasePositionWithTpslIxData(Discriminator discriminator, DecreasePositionWithTpslParams params) implements SerDe {
 
     public static DecreasePositionWithTpslIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3520,7 +3520,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record DecreasePositionWithTpslAndInternalSwapIxData(Discriminator discriminator, DecreasePositionWithTpslAndInternalSwapParams params) implements SerDe {  
+  public record DecreasePositionWithTpslAndInternalSwapIxData(Discriminator discriminator, DecreasePositionWithTpslAndInternalSwapParams params) implements SerDe {
 
     public static DecreasePositionWithTpslAndInternalSwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3628,7 +3628,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record LiquidateFullPosition4IxData(Discriminator discriminator, LiquidateFullPosition4Params params) implements SerDe {  
+  public record LiquidateFullPosition4IxData(Discriminator discriminator, LiquidateFullPosition4Params params) implements SerDe {
 
     public static LiquidateFullPosition4IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3700,7 +3700,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record RefreshAssetsUnderManagementIxData(Discriminator discriminator, RefreshAssetsUnderManagementParams params) implements SerDe {  
+  public record RefreshAssetsUnderManagementIxData(Discriminator discriminator, RefreshAssetsUnderManagementParams params) implements SerDe {
 
     public static RefreshAssetsUnderManagementIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3768,7 +3768,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record SetMaxGlobalSizesIxData(Discriminator discriminator, SetMaxGlobalSizesParams params) implements SerDe {  
+  public record SetMaxGlobalSizesIxData(Discriminator discriminator, SetMaxGlobalSizesParams params) implements SerDe {
 
     public static SetMaxGlobalSizesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3906,7 +3906,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantCreateTpslIxData(Discriminator discriminator, InstantCreateTpslParams params) implements SerDe {  
+  public record InstantCreateTpslIxData(Discriminator discriminator, InstantCreateTpslParams params) implements SerDe {
 
     public static InstantCreateTpslIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4044,7 +4044,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantCreateLimitOrderIxData(Discriminator discriminator, InstantCreateLimitOrderParams params) implements SerDe {  
+  public record InstantCreateLimitOrderIxData(Discriminator discriminator, InstantCreateLimitOrderParams params) implements SerDe {
 
     public static InstantCreateLimitOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4182,7 +4182,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantIncreasePositionIxData(Discriminator discriminator, InstantIncreasePositionParams params) implements SerDe {  
+  public record InstantIncreasePositionIxData(Discriminator discriminator, InstantIncreasePositionParams params) implements SerDe {
 
     public static InstantIncreasePositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4326,7 +4326,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantDecreasePositionIxData(Discriminator discriminator, InstantDecreasePositionParams params) implements SerDe {  
+  public record InstantDecreasePositionIxData(Discriminator discriminator, InstantDecreasePositionParams params) implements SerDe {
 
     public static InstantDecreasePositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4470,7 +4470,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantDecreasePosition2IxData(Discriminator discriminator, InstantDecreasePosition2Params params) implements SerDe {  
+  public record InstantDecreasePosition2IxData(Discriminator discriminator, InstantDecreasePosition2Params params) implements SerDe {
 
     public static InstantDecreasePosition2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4564,7 +4564,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantUpdateLimitOrderIxData(Discriminator discriminator, InstantUpdateLimitOrderParams params) implements SerDe {  
+  public record InstantUpdateLimitOrderIxData(Discriminator discriminator, InstantUpdateLimitOrderParams params) implements SerDe {
 
     public static InstantUpdateLimitOrderIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4668,7 +4668,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record InstantUpdateTpslIxData(Discriminator discriminator, InstantUpdateTpslParams params) implements SerDe {  
+  public record InstantUpdateTpslIxData(Discriminator discriminator, InstantUpdateTpslParams params) implements SerDe {
 
     public static InstantUpdateTpslIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4748,7 +4748,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record GetAddLiquidityAmountAndFee2IxData(Discriminator discriminator, GetAddLiquidityAmountAndFee2Params params) implements SerDe {  
+  public record GetAddLiquidityAmountAndFee2IxData(Discriminator discriminator, GetAddLiquidityAmountAndFee2Params params) implements SerDe {
 
     public static GetAddLiquidityAmountAndFee2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4828,7 +4828,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record GetRemoveLiquidityAmountAndFee2IxData(Discriminator discriminator, GetRemoveLiquidityAmountAndFee2Params params) implements SerDe {  
+  public record GetRemoveLiquidityAmountAndFee2IxData(Discriminator discriminator, GetRemoveLiquidityAmountAndFee2Params params) implements SerDe {
 
     public static GetRemoveLiquidityAmountAndFee2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4892,7 +4892,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record GetAssetsUnderManagement2IxData(Discriminator discriminator, GetAssetsUnderManagement2Params params) implements SerDe {  
+  public record GetAssetsUnderManagement2IxData(Discriminator discriminator, GetAssetsUnderManagement2Params params) implements SerDe {
 
     public static GetAssetsUnderManagement2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4994,7 +4994,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record BorrowFromCustodyIxData(Discriminator discriminator, BorrowFromCustodyParams params) implements SerDe {  
+  public record BorrowFromCustodyIxData(Discriminator discriminator, BorrowFromCustodyParams params) implements SerDe {
 
     public static BorrowFromCustodyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5090,7 +5090,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record RepayToCustodyIxData(Discriminator discriminator, RepayToCustodyParams params) implements SerDe {  
+  public record RepayToCustodyIxData(Discriminator discriminator, RepayToCustodyParams params) implements SerDe {
 
     public static RepayToCustodyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5198,7 +5198,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record DepositCollateralForBorrowsIxData(Discriminator discriminator, DepositParams params) implements SerDe {  
+  public record DepositCollateralForBorrowsIxData(Discriminator discriminator, DepositParams params) implements SerDe {
 
     public static DepositCollateralForBorrowsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5302,7 +5302,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record WithdrawCollateralForBorrowsIxData(Discriminator discriminator, WithdrawParams params) implements SerDe {  
+  public record WithdrawCollateralForBorrowsIxData(Discriminator discriminator, WithdrawParams params) implements SerDe {
 
     public static WithdrawCollateralForBorrowsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5402,7 +5402,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record LiquidateBorrowPositionIxData(Discriminator discriminator, LiquidateBorrowPositionParams params) implements SerDe {  
+  public record LiquidateBorrowPositionIxData(Discriminator discriminator, LiquidateBorrowPositionParams params) implements SerDe {
 
     public static LiquidateBorrowPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5502,7 +5502,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record PartialLiquidateBorrowPositionIxData(Discriminator discriminator, PartialLiquidateBorrowPositionParams params) implements SerDe {  
+  public record PartialLiquidateBorrowPositionIxData(Discriminator discriminator, PartialLiquidateBorrowPositionParams params) implements SerDe {
 
     public static PartialLiquidateBorrowPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5578,7 +5578,7 @@ public final class PerpetualsProgram {
     return Instruction.createInstruction(invokedPerpetualsProgramMeta, keys, _data);
   }
 
-  public record CloseBorrowPositionIxData(Discriminator discriminator, CloseBorrowPositionParams params) implements SerDe {  
+  public record CloseBorrowPositionIxData(Discriminator discriminator, CloseBorrowPositionParams params) implements SerDe {
 
     public static CloseBorrowPositionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

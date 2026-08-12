@@ -94,7 +94,7 @@ public final class KaminoVaultProgram {
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_DISCRIMINATOR = toDiscriminator(5, 54, 213, 112, 75, 232, 117, 37);
 
   /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  /// 
+  ///
   /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
   /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
   ///
@@ -124,7 +124,7 @@ public final class KaminoVaultProgram {
   }
 
   /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  /// 
+  ///
   /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
   /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
   ///
@@ -160,7 +160,7 @@ public final class KaminoVaultProgram {
   }
 
   /// Updates a reserve allocation without changing an existing `ctoken_allocation_cap`.
-  /// 
+  ///
   /// New allocations created through this v1 instruction use `0`, which is treated as uncapped.
   /// Callers that need to set or clear a cToken cap must use `update_reserve_allocation_v2`.
   ///
@@ -181,7 +181,7 @@ public final class KaminoVaultProgram {
 
   /// @param weight: u64
   /// @param cap: u64
-  public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements SerDe {  
+  public record UpdateReserveAllocationIxData(Discriminator discriminator, long weight, long cap) implements SerDe {
 
     public static UpdateReserveAllocationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -223,7 +223,7 @@ public final class KaminoVaultProgram {
   public static final Discriminator UPDATE_RESERVE_ALLOCATION_V_2_DISCRIMINATOR = toDiscriminator(195, 136, 1, 79, 10, 123, 121, 100);
 
   /// Updates a reserve allocation with an optional cToken-denominated cap.
-  /// 
+  ///
   /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
   /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
   ///
@@ -253,7 +253,7 @@ public final class KaminoVaultProgram {
   }
 
   /// Updates a reserve allocation with an optional cToken-denominated cap.
-  /// 
+  ///
   /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
   /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
   ///
@@ -297,7 +297,7 @@ public final class KaminoVaultProgram {
   }
 
   /// Updates a reserve allocation with an optional cToken-denominated cap.
-  /// 
+  ///
   /// `ctoken_allocation_cap` limits the allocation after conversion to token liquidity at
   /// the current reserve exchange rate. `0` and `u64::MAX` mean uncapped.
   ///
@@ -326,7 +326,7 @@ public final class KaminoVaultProgram {
   public record UpdateReserveAllocationV2IxData(Discriminator discriminator,
                                                 long weight,
                                                 long cap,
-                                                long ctokenAllocationCap) implements SerDe {  
+                                                long ctokenAllocationCap) implements SerDe {
 
     public static UpdateReserveAllocationV2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -448,7 +448,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param maxAmount: u64
-  public record DepositIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
+  public record DepositIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -567,7 +567,7 @@ public final class KaminoVaultProgram {
 
   /// @param maxAmount: u64
   /// @param minSharesOut: u64
-  public record DepositWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {  
+  public record DepositWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {
 
     public static DepositWithMinSharesOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -684,7 +684,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param maxAmount: u64
-  public record BuyIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
+  public record BuyIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static BuyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -803,7 +803,7 @@ public final class KaminoVaultProgram {
 
   /// @param maxAmount: u64
   /// @param minSharesOut: u64
-  public record BuyWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {  
+  public record BuyWithMinSharesOutIxData(Discriminator discriminator, long maxAmount, long minSharesOut) implements SerDe {
 
     public static BuyWithMinSharesOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -968,7 +968,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param sharesAmount: u64
-  public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
+  public record WithdrawIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1128,7 +1128,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param sharesAmount: u64
-  public record SellIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
+  public record SellIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static SellIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1361,7 +1361,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param maxAmount: u64
-  public record InvestWithMaxAmountIxData(Discriminator discriminator, long maxAmount) implements SerDe {  
+  public record InvestWithMaxAmountIxData(Discriminator discriminator, long maxAmount) implements SerDe {
 
     public static InvestWithMaxAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1437,7 +1437,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record UpdateVaultConfigIxData(Discriminator discriminator, VaultConfigField entry, byte[] data) implements SerDe {  
+  public record UpdateVaultConfigIxData(Discriminator discriminator, VaultConfigField entry, byte[] data) implements SerDe {
 
     public static UpdateVaultConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1618,7 +1618,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param maxAmountToGiveUp: u64
-  public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements SerDe {  
+  public record GiveUpPendingFeesIxData(Discriminator discriminator, long maxAmountToGiveUp) implements SerDe {
 
     public static GiveUpPendingFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1725,7 +1725,7 @@ public final class KaminoVaultProgram {
   public record InitializeSharesMetadataIxData(Discriminator discriminator,
                                                String name, byte[] _name,
                                                String symbol, byte[] _symbol,
-                                               String uri, byte[] _uri) implements SerDe {  
+                                               String uri, byte[] _uri) implements SerDe {
 
     public static InitializeSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1839,7 +1839,7 @@ public final class KaminoVaultProgram {
   public record UpdateSharesMetadataIxData(Discriminator discriminator,
                                            String name, byte[] _name,
                                            String symbol, byte[] _symbol,
-                                           String uri, byte[] _uri) implements SerDe {  
+                                           String uri, byte[] _uri) implements SerDe {
 
     public static UpdateSharesMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1974,7 +1974,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param sharesAmount: u64
-  public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
+  public record WithdrawFromAvailableIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static WithdrawFromAvailableIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2105,7 +2105,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode update) implements SerDe {  
+  public record UpdateGlobalConfigIxData(Discriminator discriminator, UpdateGlobalConfigMode update) implements SerDe {
 
     public static UpdateGlobalConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2204,7 +2204,7 @@ public final class KaminoVaultProgram {
     return Instruction.createInstruction(invokedKaminoVaultProgramMeta, keys, _data);
   }
 
-  public record AddUpdateWhitelistedReserveIxData(Discriminator discriminator, UpdateReserveWhitelistMode update) implements SerDe {  
+  public record AddUpdateWhitelistedReserveIxData(Discriminator discriminator, UpdateReserveWhitelistMode update) implements SerDe {
 
     public static AddUpdateWhitelistedReserveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2285,7 +2285,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param amount: u64
-  public record TopupRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record TopupRewardsIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static TopupRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2373,7 +2373,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawRewardsIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawRewardsIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawRewardsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2493,7 +2493,7 @@ public final class KaminoVaultProgram {
   }
 
   /// @param sharesAmount: u64
-  public record RedeemInKindIxData(Discriminator discriminator, long sharesAmount) implements SerDe {  
+  public record RedeemInKindIxData(Discriminator discriminator, long sharesAmount) implements SerDe {
 
     public static RedeemInKindIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

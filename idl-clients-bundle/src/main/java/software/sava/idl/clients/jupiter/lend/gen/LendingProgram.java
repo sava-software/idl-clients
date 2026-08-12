@@ -124,7 +124,7 @@ public final class LendingProgram {
   }
 
   /// @param assets: u64
-  public record DepositIxData(Discriminator discriminator, long assets) implements SerDe {  
+  public record DepositIxData(Discriminator discriminator, long assets) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -258,7 +258,7 @@ public final class LendingProgram {
 
   /// @param assets: u64
   /// @param minAmountOut: u64
-  public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements SerDe {  
+  public record DepositWithMinAmountOutIxData(Discriminator discriminator, long assets, long minAmountOut) implements SerDe {
 
     public static DepositWithMinAmountOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -366,7 +366,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record InitLendingIxData(Discriminator discriminator, String symbol, byte[] _symbol, PublicKey liquidityProgram) implements SerDe {  
+  public record InitLendingIxData(Discriminator discriminator, String symbol, byte[] _symbol, PublicKey liquidityProgram) implements SerDe {
 
     public static InitLendingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -460,7 +460,7 @@ public final class LendingProgram {
   public record InitLendingAdminIxData(Discriminator discriminator,
                                        PublicKey liquidityProgram,
                                        PublicKey rebalancer,
-                                       PublicKey authority) implements SerDe {  
+                                       PublicKey authority) implements SerDe {
 
     public static InitLendingAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -597,7 +597,7 @@ public final class LendingProgram {
   }
 
   /// @param shares: u64
-  public record MintIxData(Discriminator discriminator, long shares) implements SerDe {  
+  public record MintIxData(Discriminator discriminator, long shares) implements SerDe {
 
     public static MintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -731,7 +731,7 @@ public final class LendingProgram {
 
   /// @param shares: u64
   /// @param maxAssets: u64
-  public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements SerDe {  
+  public record MintWithMaxAssetsIxData(Discriminator discriminator, long shares, long maxAssets) implements SerDe {
 
     public static MintWithMaxAssetsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -938,7 +938,7 @@ public final class LendingProgram {
   }
 
   /// @param amount: Option<u64>
-  public record RebalanceWithAmountsIxData(Discriminator discriminator, OptionalLong amount) implements SerDe {  
+  public record RebalanceWithAmountsIxData(Discriminator discriminator, OptionalLong amount) implements SerDe {
 
     public static RebalanceWithAmountsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1072,7 +1072,7 @@ public final class LendingProgram {
   }
 
   /// @param shares: u64
-  public record RedeemIxData(Discriminator discriminator, long shares) implements SerDe {  
+  public record RedeemIxData(Discriminator discriminator, long shares) implements SerDe {
 
     public static RedeemIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1210,7 +1210,7 @@ public final class LendingProgram {
 
   /// @param shares: u64
   /// @param minAmountOut: u64
-  public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements SerDe {  
+  public record RedeemWithMinAmountOutIxData(Discriminator discriminator, long shares, long minAmountOut) implements SerDe {
 
     public static RedeemWithMinAmountOutIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1296,7 +1296,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record SetRewardsRateModelIxData(Discriminator discriminator, PublicKey mint) implements SerDe {  
+  public record SetRewardsRateModelIxData(Discriminator discriminator, PublicKey mint) implements SerDe {
 
     public static SetRewardsRateModelIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1361,7 +1361,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {  
+  public record UpdateAuthorityIxData(Discriminator discriminator, PublicKey newAuthority) implements SerDe {
 
     public static UpdateAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1426,7 +1426,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {  
+  public record UpdateAuthsIxData(Discriminator discriminator, AddressBool[] authStatus) implements SerDe {
 
     public static UpdateAuthsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1525,7 +1525,7 @@ public final class LendingProgram {
     return Instruction.createInstruction(invokedLendingProgramMeta, keys, _data);
   }
 
-  public record UpdateRebalancerIxData(Discriminator discriminator, PublicKey newRebalancer) implements SerDe {  
+  public record UpdateRebalancerIxData(Discriminator discriminator, PublicKey newRebalancer) implements SerDe {
 
     public static UpdateRebalancerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1656,7 +1656,7 @@ public final class LendingProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1794,7 +1794,7 @@ public final class LendingProgram {
 
   /// @param amount: u64
   /// @param maxSharesBurn: u64
-  public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements SerDe {  
+  public record WithdrawWithMaxSharesBurnIxData(Discriminator discriminator, long amount, long maxSharesBurn) implements SerDe {
 
     public static WithdrawWithMaxSharesBurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

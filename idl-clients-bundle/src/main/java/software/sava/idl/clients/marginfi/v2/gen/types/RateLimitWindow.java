@@ -8,7 +8,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A sliding window rate limiter that tracks net outflow over a time window.
 /// Uses weighted blend of previous and current windows for smooth transitions.
-/// 
+///
 /// Net outflow = (withdraws + borrows) - (deposits + repays).
 /// A negative net outflow increases remaining capacity for subsequent outflows.
 ///

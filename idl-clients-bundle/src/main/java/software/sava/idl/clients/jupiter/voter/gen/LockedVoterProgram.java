@@ -92,7 +92,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record NewLockerIxData(Discriminator discriminator, LockerParams params) implements SerDe {  
+  public record NewLockerIxData(Discriminator discriminator, LockerParams params) implements SerDe {
 
     public static NewLockerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -128,7 +128,7 @@ public final class LockedVoterProgram {
   public static final Discriminator NEW_ESCROW_DISCRIMINATOR = toDiscriminator(216, 182, 143, 11, 220, 38, 86, 185);
 
   /// Creates a new Escrow for an account.
-  /// 
+  ///
   /// A Vote Escrow, or Escrow for short, is an agreement between an account (known as the `authority`) and the DAO to
   /// lock up tokens for a specific period of time, in exchange for voting rights
   /// linearly proportional to the amount of votes given.
@@ -152,7 +152,7 @@ public final class LockedVoterProgram {
   }
 
   /// Creates a new Escrow for an account.
-  /// 
+  ///
   /// A Vote Escrow, or Escrow for short, is an agreement between an account (known as the `authority`) and the DAO to
   /// lock up tokens for a specific period of time, in exchange for voting rights
   /// linearly proportional to the amount of votes given.
@@ -178,7 +178,7 @@ public final class LockedVoterProgram {
   }
 
   /// Creates a new Escrow for an account.
-  /// 
+  ///
   /// A Vote Escrow, or Escrow for short, is an agreement between an account (known as the `authority`) and the DAO to
   /// lock up tokens for a specific period of time, in exchange for voting rights
   /// linearly proportional to the amount of votes given.
@@ -256,7 +256,7 @@ public final class LockedVoterProgram {
   }
 
   /// @param amount: u64
-  public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record IncreaseLockedAmountIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static IncreaseLockedAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -337,7 +337,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record ExtendLockDurationIxData(Discriminator discriminator, long duration) implements SerDe {  
+  public record ExtendLockDurationIxData(Discriminator discriminator, long duration) implements SerDe {
 
     public static ExtendLockDurationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -418,7 +418,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record ToggleMaxLockIxData(Discriminator discriminator, boolean isMaxLock) implements SerDe {  
+  public record ToggleMaxLockIxData(Discriminator discriminator, boolean isMaxLock) implements SerDe {
 
     public static ToggleMaxLockIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -644,7 +644,7 @@ public final class LockedVoterProgram {
   }
 
   /// @param side: u8
-  public record CastVoteIxData(Discriminator discriminator, int side) implements SerDe {  
+  public record CastVoteIxData(Discriminator discriminator, int side) implements SerDe {
 
     public static CastVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -719,7 +719,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record SetVoteDelegateIxData(Discriminator discriminator, PublicKey newDelegate) implements SerDe {  
+  public record SetVoteDelegateIxData(Discriminator discriminator, PublicKey newDelegate) implements SerDe {
 
     public static SetVoteDelegateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -800,7 +800,7 @@ public final class LockedVoterProgram {
     return Instruction.createInstruction(invokedLockedVoterProgramMeta, keys, _data);
   }
 
-  public record SetLockerParamsIxData(Discriminator discriminator, LockerParams params) implements SerDe {  
+  public record SetLockerParamsIxData(Discriminator discriminator, LockerParams params) implements SerDe {
 
     public static SetLockerParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -898,7 +898,7 @@ public final class LockedVoterProgram {
   }
 
   /// @param amount: u64
-  public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements SerDe {  
+  public record OpenPartialUnstakingIxData(Discriminator discriminator, long amount, String memo, byte[] _memo) implements SerDe {
 
     public static OpenPartialUnstakingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -159,17 +159,26 @@ readable but **never exported** from `module-info`: a dependent compiling
 against it would be committing to an interface the chain does not serve yet. It
 shares no `typeRefs` or `externalTypes` with the deployed client — a shared type
 reference would resolve into another program's *deployed* package and silently
-decode the wrong bytes — and emits its own `types` subpackage. When the team
-finally deploys, `vcs.json` disappears and the whole `next/` package is removed
-with it.
+decode the wrong bytes — and emits its own `types` subpackage. It is removed when
+the repository copy stops diverging — `vcs.json` disappears and the whole `next/`
+package goes with it — which is usually but not always the deploy that ships it;
+see the Kamino note below for a deploy that left both in place.
 
 Because divergence alone does not mean ahead, this is opted into per program and
 off by default; `main_net_programs.json` is the authority on which. Today that is
-Kamino Lend: SDK package 10.1.0 carries IDL 1.24.0 against the deployed IDL
-1.23.0. Pin a staged client's VCS URL to the exact package version or commit that
-was reviewed; a mutable `@latest` response can change—or remain CDN-cached after
-its registry tag changes—without any repository diff. Advancing the candidate
-is an explicit config and generated-source change.
+Kamino Lend, and it is worth reading how its justification changed. The staged
+client was added when SDK package 10.1.0 carried IDL 1.24.0 against a deployed
+1.23.0. Kamino has since deployed: the program was rewritten at slot 438843135 and
+the on-chain IDL is now 1.24.0 too. Pin a staged client's VCS URL to the exact
+package version or commit that was reviewed; a mutable `@latest` response can
+change—or remain CDN-cached after its registry tag changes—without any repository
+diff. Advancing the candidate is an explicit config and generated-source change.
+
+**A deploy does not necessarily retire a staged client, and the version string is
+not what decides it.** Kamino's `vcs.json` and its `next/` package both survived
+that deploy, because the SDK copy still differs from the deployed document at the
+*same* version string — 1.24.0 on both sides, different content. Read the record,
+not the version.
 
 Always generate with `--report=idl-change-report.txt` and commit the report. A
 change to a generated `sources.json` hash without a matching report change means

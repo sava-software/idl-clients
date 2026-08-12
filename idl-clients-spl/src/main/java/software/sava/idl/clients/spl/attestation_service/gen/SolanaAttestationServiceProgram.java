@@ -71,7 +71,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record CreateCredentialIxData(Discriminator discriminator, String name, byte[] _name, PublicKey[] signers) implements SerDe {  
+  public record CreateCredentialIxData(Discriminator discriminator, String name, byte[] _name, PublicKey[] signers) implements SerDe {
 
     public static CreateCredentialIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -179,7 +179,7 @@ public final class SolanaAttestationServiceProgram {
                                    String name, byte[] _name,
                                    String description, byte[] _description,
                                    byte[] layout,
-                                   String[] fieldNames) implements SerDe {  
+                                   String[] fieldNames) implements SerDe {
 
     public static CreateSchemaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -280,7 +280,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaStatusIxData(Discriminator discriminator, boolean isPaused) implements SerDe {  
+  public record ChangeSchemaStatusIxData(Discriminator discriminator, boolean isPaused) implements SerDe {
 
     public static ChangeSchemaStatusIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -355,7 +355,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeAuthorizedSignersIxData(Discriminator discriminator, PublicKey[] signers) implements SerDe {  
+  public record ChangeAuthorizedSignersIxData(Discriminator discriminator, PublicKey[] signers) implements SerDe {
 
     public static ChangeAuthorizedSignersIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -434,7 +434,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaDescriptionIxData(Discriminator discriminator, String description, byte[] _description) implements SerDe {  
+  public record ChangeSchemaDescriptionIxData(Discriminator discriminator, String description, byte[] _description) implements SerDe {
 
     public static ChangeSchemaDescriptionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -524,7 +524,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, _data);
   }
 
-  public record ChangeSchemaVersionIxData(Discriminator discriminator, byte[] layout, String[] fieldNames) implements SerDe {  
+  public record ChangeSchemaVersionIxData(Discriminator discriminator, byte[] layout, String[] fieldNames) implements SerDe {
 
     public static ChangeSchemaVersionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -627,7 +627,7 @@ public final class SolanaAttestationServiceProgram {
   public record CreateAttestationIxData(Discriminator discriminator,
                                         PublicKey nonce,
                                         byte[] data,
-                                        long expiry) implements SerDe {  
+                                        long expiry) implements SerDe {
 
     public static CreateAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -778,7 +778,7 @@ public final class SolanaAttestationServiceProgram {
   }
 
   /// @param maxSize: u64
-  public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements SerDe {  
+  public record TokenizeSchemaIxData(Discriminator discriminator, long maxSize) implements SerDe {
 
     public static TokenizeSchemaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -946,7 +946,7 @@ public final class SolanaAttestationServiceProgram {
                                                  String name, byte[] _name,
                                                  String uri, byte[] _uri,
                                                  String symbol, byte[] _symbol,
-                                                 int mintAccountSpace) implements SerDe {  
+                                                 int mintAccountSpace) implements SerDe {
 
     public static CreateTokenizedAttestationIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

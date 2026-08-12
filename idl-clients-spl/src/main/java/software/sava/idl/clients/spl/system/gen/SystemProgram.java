@@ -81,7 +81,7 @@ public final class SystemProgram {
   public record CreateAccountIxData(long discriminator,
                                     long lamports,
                                     long space,
-                                    PublicKey programAddress) implements SerDe {  
+                                    PublicKey programAddress) implements SerDe {
 
     public static CreateAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -160,7 +160,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AssignIxData(long discriminator, PublicKey programAddress) implements SerDe {  
+  public record AssignIxData(long discriminator, PublicKey programAddress) implements SerDe {
 
     public static AssignIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -233,7 +233,7 @@ public final class SystemProgram {
   }
 
   /// @param amount: u64
-  public record TransferSolIxData(long discriminator, long amount) implements SerDe {  
+  public record TransferSolIxData(long discriminator, long amount) implements SerDe {
 
     public static TransferSolIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -347,7 +347,7 @@ public final class SystemProgram {
                                             String seed, byte[] _seed,
                                             long amount,
                                             long space,
-                                            PublicKey programAddress) implements SerDe {  
+                                            PublicKey programAddress) implements SerDe {
 
     public static CreateAccountWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -462,7 +462,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AdvanceNonceAccountIxData(long discriminator) implements SerDe {  
+  public record AdvanceNonceAccountIxData(long discriminator) implements SerDe {
 
     public static AdvanceNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -537,7 +537,7 @@ public final class SystemProgram {
   }
 
   /// @param withdrawAmount: u64
-  public record WithdrawNonceAccountIxData(long discriminator, long withdrawAmount) implements SerDe {  
+  public record WithdrawNonceAccountIxData(long discriminator, long withdrawAmount) implements SerDe {
 
     public static WithdrawNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -608,7 +608,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record InitializeNonceAccountIxData(long discriminator, PublicKey nonceAuthority) implements SerDe {  
+  public record InitializeNonceAccountIxData(long discriminator, PublicKey nonceAuthority) implements SerDe {
 
     public static InitializeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -678,7 +678,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record AuthorizeNonceAccountIxData(long discriminator, PublicKey newNonceAuthority) implements SerDe {  
+  public record AuthorizeNonceAccountIxData(long discriminator, PublicKey newNonceAuthority) implements SerDe {
 
     public static AuthorizeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -747,7 +747,7 @@ public final class SystemProgram {
   }
 
   /// @param space: u64
-  public record AllocateIxData(long discriminator, long space) implements SerDe {  
+  public record AllocateIxData(long discriminator, long space) implements SerDe {
 
     public static AllocateIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -846,7 +846,7 @@ public final class SystemProgram {
                                        PublicKey base,
                                        String seed, byte[] _seed,
                                        long space,
-                                       PublicKey programAddress) implements SerDe {  
+                                       PublicKey programAddress) implements SerDe {
 
     public static AllocateWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -972,7 +972,7 @@ public final class SystemProgram {
   public record AssignWithSeedIxData(long discriminator,
                                      PublicKey base,
                                      String seed, byte[] _seed,
-                                     PublicKey programAddress) implements SerDe {  
+                                     PublicKey programAddress) implements SerDe {
 
     public static AssignWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1094,7 +1094,7 @@ public final class SystemProgram {
   public record TransferSolWithSeedIxData(long discriminator,
                                           long amount,
                                           String fromSeed, byte[] _fromSeed,
-                                          PublicKey fromOwner) implements SerDe {  
+                                          PublicKey fromOwner) implements SerDe {
 
     public static TransferSolWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1182,7 +1182,7 @@ public final class SystemProgram {
     return Instruction.createInstruction(invokedSystemProgramMeta, keys, _data);
   }
 
-  public record UpgradeNonceAccountIxData(long discriminator) implements SerDe {  
+  public record UpgradeNonceAccountIxData(long discriminator) implements SerDe {
 
     public static UpgradeNonceAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1270,7 +1270,7 @@ public final class SystemProgram {
   public record CreateAccountAllowPrefundIxData(long discriminator,
                                                 long lamports,
                                                 long space,
-                                                PublicKey programAddress) implements SerDe {  
+                                                PublicKey programAddress) implements SerDe {
 
     public static CreateAccountAllowPrefundIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

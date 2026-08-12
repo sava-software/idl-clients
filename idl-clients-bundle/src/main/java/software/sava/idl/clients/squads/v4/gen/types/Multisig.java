@@ -23,11 +23,11 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param createKey Key that is used to seed the multisig PDA.
 /// @param configAuthority The authority that can change the multisig config.
 ///                        This is a very important parameter as this authority can change the members and threshold.
-///                        
+///
 ///                        The convention is to set this to `Pubkey::default()`.
 ///                        In this case, the multisig becomes autonomous, so every config change goes through
 ///                        the normal process of voting by the members.
-///                        
+///
 ///                        However, if this parameter is set to any other key, all the config changes for this multisig
 ///                        will need to be signed by the `config_authority`. We call such a multisig a "controlled multisig".
 /// @param threshold: u16 Threshold for signatures.

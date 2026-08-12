@@ -110,7 +110,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param treasuryFeeBps: u16
-  public record AddEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts, int treasuryFeeBps) implements SerDe {  
+  public record AddEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts, int treasuryFeeBps) implements SerDe {
 
     public static AddEmissionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -214,7 +214,7 @@ public final class ExponentCoreProgram {
 
   /// @param tokenRate: u64
   /// @param untilTimestamp: u32
-  public record AddFarmIxData(Discriminator discriminator, long tokenRate, long untilTimestamp) implements SerDe {  
+  public record AddFarmIxData(Discriminator discriminator, long tokenRate, long untilTimestamp) implements SerDe {
 
     public static AddFarmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -322,7 +322,7 @@ public final class ExponentCoreProgram {
   public record AddLpTokensMetadataIxData(Discriminator discriminator,
                                           String name, byte[] _name,
                                           String symbol, byte[] _symbol,
-                                          String uri, byte[] _uri) implements SerDe {  
+                                          String uri, byte[] _uri) implements SerDe {
 
     public static AddLpTokensMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -430,7 +430,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record AddMarketEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts) implements SerDe {  
+  public record AddMarketEmissionIxData(Discriminator discriminator, CpiAccounts cpiAccounts) implements SerDe {
 
     public static AddMarketEmissionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -588,7 +588,7 @@ public final class ExponentCoreProgram {
 
   /// @param syIn: u64
   /// @param ytOut: u64
-  public record BuyYtIxData(Discriminator discriminator, long syIn, long ytOut) implements SerDe {  
+  public record BuyYtIxData(Discriminator discriminator, long syIn, long ytOut) implements SerDe {
 
     public static BuyYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -686,7 +686,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record ClaimFarmEmissionsIxData(Discriminator discriminator, Amount amount) implements SerDe {  
+  public record ClaimFarmEmissionsIxData(Discriminator discriminator, Amount amount) implements SerDe {
 
     public static ClaimFarmEmissionsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -795,7 +795,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param index: u16
-  public record CollectEmissionIxData(Discriminator discriminator, int index, Amount amount) implements SerDe {  
+  public record CollectEmissionIxData(Discriminator discriminator, int index, Amount amount) implements SerDe {
 
     public static CollectEmissionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -910,7 +910,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record CollectInterestIxData(Discriminator discriminator, Amount amount) implements SerDe {  
+  public record CollectInterestIxData(Discriminator discriminator, Amount amount) implements SerDe {
 
     public static CollectInterestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1027,7 +1027,7 @@ public final class ExponentCoreProgram {
   public record CollectTreasuryEmissionIxData(Discriminator discriminator,
                                               int emissionIndex,
                                               Amount amount,
-                                              CollectTreasuryEmissionKind kind) implements SerDe {  
+                                              CollectTreasuryEmissionKind kind) implements SerDe {
 
     public static CollectTreasuryEmissionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1136,7 +1136,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record CollectTreasuryInterestIxData(Discriminator discriminator, Amount amount, CollectTreasuryInterestKind kind) implements SerDe {  
+  public record CollectTreasuryInterestIxData(Discriminator discriminator, Amount amount, CollectTreasuryInterestKind kind) implements SerDe {
 
     public static CollectTreasuryInterestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1264,7 +1264,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record DepositYtIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record DepositYtIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static DepositYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1535,7 +1535,7 @@ public final class ExponentCoreProgram {
                                     long syInit,
                                     int feeTreasurySyBps,
                                     CpiAccounts cpiAccounts,
-                                    int seedId) implements SerDe {  
+                                    int seedId) implements SerDe {
 
     public static InitMarketTwoIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1792,7 +1792,7 @@ public final class ExponentCoreProgram {
                                       long minOpSizeMerge,
                                       String ptMetadataName, byte[] _ptMetadataName,
                                       String ptMetadataSymbol, byte[] _ptMetadataSymbol,
-                                      String ptMetadataUri, byte[] _ptMetadataUri) implements SerDe {  
+                                      String ptMetadataUri, byte[] _ptMetadataUri) implements SerDe {
 
     public static InitializeVaultIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2020,7 +2020,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param emissionIndex: u16
-  public record MarketCollectEmissionIxData(Discriminator discriminator, int emissionIndex) implements SerDe {  
+  public record MarketCollectEmissionIxData(Discriminator discriminator, int emissionIndex) implements SerDe {
 
     public static MarketCollectEmissionIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2134,7 +2134,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record MarketDepositLpIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record MarketDepositLpIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MarketDepositLpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2271,7 +2271,7 @@ public final class ExponentCoreProgram {
   public record MarketTwoDepositLiquidityIxData(Discriminator discriminator,
                                                 long ptIntent,
                                                 long syIntent,
-                                                long minLpOut) implements SerDe {  
+                                                long minLpOut) implements SerDe {
 
     public static MarketTwoDepositLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2422,7 +2422,7 @@ public final class ExponentCoreProgram {
   public record MarketTwoWithdrawLiquidityIxData(Discriminator discriminator,
                                                  long lpIn,
                                                  long minPtOut,
-                                                 long minSyOut) implements SerDe {  
+                                                 long minSyOut) implements SerDe {
 
     public static MarketTwoWithdrawLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2546,7 +2546,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record MarketWithdrawLpIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record MarketWithdrawLpIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MarketWithdrawLpIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2693,7 +2693,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record MergeIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record MergeIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static MergeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2788,7 +2788,7 @@ public final class ExponentCoreProgram {
 
   /// @param untilTimestamp: u32
   /// @param newRate: u64
-  public record ModifyFarmIxData(Discriminator discriminator, long untilTimestamp, long newRate) implements SerDe {  
+  public record ModifyFarmIxData(Discriminator discriminator, long untilTimestamp, long newRate) implements SerDe {
 
     public static ModifyFarmIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2866,7 +2866,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record ModifyMarketSettingIxData(Discriminator discriminator, MarketAdminAction action) implements SerDe {  
+  public record ModifyMarketSettingIxData(Discriminator discriminator, MarketAdminAction action) implements SerDe {
 
     public static ModifyMarketSettingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2936,7 +2936,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record ModifyVaultSettingIxData(Discriminator discriminator, AdminAction action) implements SerDe {  
+  public record ModifyVaultSettingIxData(Discriminator discriminator, AdminAction action) implements SerDe {
 
     public static ModifyVaultSettingIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3013,7 +3013,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param additionalBytes: u64
-  public record ReallocMarketIxData(Discriminator discriminator, long additionalBytes) implements SerDe {  
+  public record ReallocMarketIxData(Discriminator discriminator, long additionalBytes) implements SerDe {
 
     public static ReallocMarketIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3180,7 +3180,7 @@ public final class ExponentCoreProgram {
 
   /// @param ytIn: u64
   /// @param minSyOut: u64
-  public record SellYtIxData(Discriminator discriminator, long ytIn, long minSyOut) implements SerDe {  
+  public record SellYtIxData(Discriminator discriminator, long ytIn, long minSyOut) implements SerDe {
 
     public static SellYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3386,7 +3386,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record StripIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record StripIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static StripIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3509,7 +3509,7 @@ public final class ExponentCoreProgram {
     return Instruction.createInstruction(invokedExponentCoreProgramMeta, keys, _data);
   }
 
-  public record TradePtIxData(Discriminator discriminator, long netTraderPt, long syConstraint) implements SerDe {  
+  public record TradePtIxData(Discriminator discriminator, long netTraderPt, long syConstraint) implements SerDe {
 
     public static TradePtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3636,7 +3636,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param amount: u64
-  public record WithdrawYtIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record WithdrawYtIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static WithdrawYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3767,7 +3767,7 @@ public final class ExponentCoreProgram {
   public record WrapperBuyPtIxData(Discriminator discriminator,
                                    long ptAmount,
                                    long maxBaseAmount,
-                                   int mintSyRemAccountsUntil) implements SerDe {  
+                                   int mintSyRemAccountsUntil) implements SerDe {
 
     public static WrapperBuyPtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3952,7 +3952,7 @@ public final class ExponentCoreProgram {
   public record WrapperBuyYtIxData(Discriminator discriminator,
                                    long ytOut,
                                    long maxBaseAmount,
-                                   int mintSyAccountsLength) implements SerDe {  
+                                   int mintSyAccountsLength) implements SerDe {
 
     public static WrapperBuyYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4072,7 +4072,7 @@ public final class ExponentCoreProgram {
   }
 
   /// @param redeemSyAccountsLength: u8
-  public record WrapperCollectInterestIxData(Discriminator discriminator, int redeemSyAccountsLength) implements SerDe {  
+  public record WrapperCollectInterestIxData(Discriminator discriminator, int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperCollectInterestIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4205,7 +4205,7 @@ public final class ExponentCoreProgram {
 
   /// @param amountPy: u64
   /// @param redeemSyAccountsUntil: u8
-  public record WrapperMergeIxData(Discriminator discriminator, long amountPy, int redeemSyAccountsUntil) implements SerDe {  
+  public record WrapperMergeIxData(Discriminator discriminator, long amountPy, int redeemSyAccountsUntil) implements SerDe {
 
     public static WrapperMergeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4252,7 +4252,7 @@ public final class ExponentCoreProgram {
   /// - strips a portion of the SY into PT & YT
   /// - provides the remaining SY with the PT into the market
   /// - keeps the YT
-  /// 
+  ///
   /// # Arguments
   /// - `amount_base` - The amount of base asset to deposit
   /// - `min_lp_out` - The minimum amount of LP tokens to receive
@@ -4326,7 +4326,7 @@ public final class ExponentCoreProgram {
   /// - strips a portion of the SY into PT & YT
   /// - provides the remaining SY with the PT into the market
   /// - keeps the YT
-  /// 
+  ///
   /// # Arguments
   /// - `amount_base` - The amount of base asset to deposit
   /// - `min_lp_out` - The minimum amount of LP tokens to receive
@@ -4414,7 +4414,7 @@ public final class ExponentCoreProgram {
   /// - strips a portion of the SY into PT & YT
   /// - provides the remaining SY with the PT into the market
   /// - keeps the YT
-  /// 
+  ///
   /// # Arguments
   /// - `amount_base` - The amount of base asset to deposit
   /// - `min_lp_out` - The minimum amount of LP tokens to receive
@@ -4445,7 +4445,7 @@ public final class ExponentCoreProgram {
   public record WrapperProvideLiquidityIxData(Discriminator discriminator,
                                               long amountBase,
                                               long minLpOut,
-                                              int mintBaseAccountsUntil) implements SerDe {  
+                                              int mintBaseAccountsUntil) implements SerDe {
 
     public static WrapperProvideLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4632,7 +4632,7 @@ public final class ExponentCoreProgram {
                                                   long minLpOut,
                                                   int mintSyAccountsUntil,
                                                   long externalPtToBuy,
-                                                  long externalSyConstraint) implements SerDe {  
+                                                  long externalSyConstraint) implements SerDe {
 
     public static WrapperProvideLiquidityBaseIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4821,7 +4821,7 @@ public final class ExponentCoreProgram {
                                                      long amountBase,
                                                      long amountPt,
                                                      long minLpOut,
-                                                     int mintSyAccountsUntil) implements SerDe {  
+                                                     int mintSyAccountsUntil) implements SerDe {
 
     public static WrapperProvideLiquidityClassicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -4971,7 +4971,7 @@ public final class ExponentCoreProgram {
   public record WrapperSellPtIxData(Discriminator discriminator,
                                     long amountPt,
                                     long minBaseAmount,
-                                    int redeemSyRemAccountsUntil) implements SerDe {  
+                                    int redeemSyRemAccountsUntil) implements SerDe {
 
     public static WrapperSellPtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5144,7 +5144,7 @@ public final class ExponentCoreProgram {
   public record WrapperSellYtIxData(Discriminator discriminator,
                                     long ytAmount,
                                     long minBaseAmount,
-                                    int redeemSyAccountsUntil) implements SerDe {  
+                                    int redeemSyAccountsUntil) implements SerDe {
 
     public static WrapperSellYtIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5295,7 +5295,7 @@ public final class ExponentCoreProgram {
 
   /// @param amountBase: u64
   /// @param mintSyAccountsUntil: u8
-  public record WrapperStripIxData(Discriminator discriminator, long amountBase, int mintSyAccountsUntil) implements SerDe {  
+  public record WrapperStripIxData(Discriminator discriminator, long amountBase, int mintSyAccountsUntil) implements SerDe {
 
     public static WrapperStripIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5459,7 +5459,7 @@ public final class ExponentCoreProgram {
   public record WrapperWithdrawLiquidityIxData(Discriminator discriminator,
                                                long amountLp,
                                                long syConstraint,
-                                               int redeemSyAccountsLength) implements SerDe {  
+                                               int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperWithdrawLiquidityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -5608,7 +5608,7 @@ public final class ExponentCoreProgram {
 
   /// @param amountLp: u64
   /// @param redeemSyAccountsLength: u8
-  public record WrapperWithdrawLiquidityClassicIxData(Discriminator discriminator, long amountLp, int redeemSyAccountsLength) implements SerDe {  
+  public record WrapperWithdrawLiquidityClassicIxData(Discriminator discriminator, long amountLp, int redeemSyAccountsLength) implements SerDe {
 
     public static WrapperWithdrawLiquidityClassicIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

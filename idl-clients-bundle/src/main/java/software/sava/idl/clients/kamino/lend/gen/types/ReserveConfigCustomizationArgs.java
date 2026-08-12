@@ -18,7 +18,7 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                        ReserveConfig::debt_term_seconds.
 /// @param clearElevationGroups: u8 Whether the target reserve should have zeroed ReserveConfig::elevation_groups (i.e. not
 ///                             cloned from source).
-///                             
+///
 ///                             This customization is mandatory when cloning a reserve (with some elevation groups) into a
 ///                             different market (where those elevation group indices would have different meaning).
 public record ReserveConfigCustomizationArgs(int overrideFixedRateBps,

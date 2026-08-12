@@ -91,7 +91,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record CreateGovernorIxData(Discriminator discriminator, PublicKey locker, GovernanceParameters params) implements SerDe {  
+  public record CreateGovernorIxData(Discriminator discriminator, PublicKey locker, GovernanceParameters params) implements SerDe {
 
     public static CreateGovernorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -233,7 +233,7 @@ public final class GovernProgram {
   public record CreateProposalIxData(Discriminator discriminator,
                                      int proposalType,
                                      int maxOption,
-                                     ProposalInstruction[] instructions) implements SerDe {  
+                                     ProposalInstruction[] instructions) implements SerDe {
 
     public static CreateProposalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -501,7 +501,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record NewVoteIxData(Discriminator discriminator, PublicKey voter) implements SerDe {  
+  public record NewVoteIxData(Discriminator discriminator, PublicKey voter) implements SerDe {
 
     public static NewVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -601,7 +601,7 @@ public final class GovernProgram {
 
   /// @param side: u8
   /// @param weight: u64
-  public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {  
+  public record SetVoteIxData(Discriminator discriminator, int side, long weight) implements SerDe {
 
     public static SetVoteIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -684,7 +684,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetGovernanceParamsIxData(Discriminator discriminator, GovernanceParameters params) implements SerDe {  
+  public record SetGovernanceParamsIxData(Discriminator discriminator, GovernanceParameters params) implements SerDe {
 
     public static SetGovernanceParamsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -770,7 +770,7 @@ public final class GovernProgram {
   }
 
   /// @param rewardPerProposal: u64
-  public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements SerDe {  
+  public record SetVotingRewardIxData(Discriminator discriminator, long rewardPerProposal) implements SerDe {
 
     public static SetVotingRewardIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -920,7 +920,7 @@ public final class GovernProgram {
     return Instruction.createInstruction(invokedGovernProgramMeta, keys, _data);
   }
 
-  public record SetLockerIxData(Discriminator discriminator, PublicKey newLocker) implements SerDe {  
+  public record SetLockerIxData(Discriminator discriminator, PublicKey newLocker) implements SerDe {
 
     public static SetLockerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1042,7 +1042,7 @@ public final class GovernProgram {
   public record CreateProposalMetaIxData(Discriminator discriminator,
                                          int bump,
                                          String title, byte[] _title,
-                                         String descriptionLink, byte[] _descriptionLink) implements SerDe {  
+                                         String descriptionLink, byte[] _descriptionLink) implements SerDe {
 
     public static CreateProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1168,7 +1168,7 @@ public final class GovernProgram {
   }
 
   /// @param bump: u8
-  public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions) implements SerDe {  
+  public record CreateOptionProposalMetaIxData(Discriminator discriminator, int bump, String[] optionDescriptions) implements SerDe {
 
     public static CreateOptionProposalMetaIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

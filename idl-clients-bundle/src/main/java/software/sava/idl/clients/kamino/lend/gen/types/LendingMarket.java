@@ -64,7 +64,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param priceTriggeredLiquidationDisabled: u8 Whether the liquidation operations that are triggered by price changes should be disabled.
 ///                                          This includes regular liquidation (i.e. LTV exceeding the unhealthy threshold) and some
 ///                                          obligation orders' execution.
-///                                          
+///
 ///                                          *Caution:* this flag is *disabling* the liquidations when `1` - contrary to all the other
 ///                                          liquidation-driving flags (see e.g. Self::autodeleverage_enabled).
 /// @param matureReserveDebtLiquidationEnabled: u8 Whether the debts that reached their reserve's ReserveConfig::debt_maturity_timestamp can
@@ -82,16 +82,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param withdrawTicketRedemptionEnabled: u8 Whether the existing withdraw tickets can be redeemed (i.e. whether the tickets can be used
 ///                                        to transfer accumulated pending liquidity to destination accounts).
 /// @param obligationBorrowRolloverConfigurationEnabled: u8 Whether the owners can enable the borrow rollover/migration on their obligations.
-///                                                     
+///
 ///                                                     *Note 1:* the actual execution of (different kinds of) rollovers are enabled/disabled by:
 ///                                                     - Self::fixed_term_rollover_window_duration_seconds,
 ///                                                     - Self::open_term_rollover_window_duration_seconds,
 ///                                                     - Self::obligation_borrow_migration_to_fixed_execution_enabled.
-///                                                     
+///
 ///                                                     *Note 2:* when this configuration is disabled, the obligation owners can still disable their
 ///                                                     rollover (i.e. set the obligation's flags to zeroes).
 /// @param obligationBorrowMigrationToFixedExecutionEnabled: u8 Whether the actual execution of a "migration to fixed" rollover flavor is allowed.
-///                                                         
+///
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
 /// @param withdrawTicketCancellationEnabled: u8 Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
 ///                                          queued collateral vault back to their wallet).
@@ -99,7 +99,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                          a durable (nonce-based) transaction. Defaults to 0 — any `advance_nonce_account` ix found
 ///                          in the transaction causes admin ix to fail with `TransactionIncludesNonceInstruction`.
 ///                          Intended for markets administrated via MPC wallets that require durable nonces.
-///                          
+///
 ///                          Note: this flag only covers ongoing admin ix on an existing market. Bootstrap-only ix
 ///                          (`init_lending_market`) and global-config ix
 ///                          (`init_global_config`, `update_global_config`, `update_global_config_admin`) remain
@@ -112,26 +112,26 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                        units of the quote currency (e.g. `2` means "$2", not "2 lamports of USDC").
 /// @param fixedTermRolloverWindowDurationSeconds: u64 A configurable time window (right before the end of a fixed debt term) during which an
 ///                                               auto-rollover into another *fixed* rate/term can happen.
-///                                               
+///
 ///                                               When zeroed, this rollover mode is effectively disabled.
 ///                                               Can only be enabled when Self::min_partial_rollover_value is configured.
-///                                               
+///
 ///                                               See FixedTermBorrowRolloverConfig.
 /// @param openTermRolloverWindowDurationSeconds: u64 A configurable time window (right before the end of a fixed debt term) during which an
 ///                                              auto-rollover into a *variable* (indefinite) rate/term can happen.
-///                                              
+///
 ///                                              When zeroed, this rollover mode is effectively disabled.
 ///                                              Can only be enabled when Self::min_partial_rollover_value is configured.
-///                                              
+///
 ///                                              This will typically be shorter than Self::fixed_term_rollover_window_duration_seconds,
 ///                                              acting as a fallback if a fixed reserve liquidity remains unavailable for considerable time.
 /// @param minPartialRolloverValue: u64 Minimum dollar value for a partial rollover into a different reserve.
 ///                                When the achievable rollover amount is below this threshold (and it's not a full rollover),
 ///                                the rollover is rejected.
-///                                
+///
 ///                                In full units of the quote currency (e.g. `2` means "$2").
 /// @param termBasedFullLiquidationDurationSecs: u64 The time that must pass before an entire expired debt becomes liquidatable.
-///                                             
+///
 ///                                             For example:
 ///                                             Let's assume this duration is configured as 100 seconds; then:
 ///                                             - right after fixed-term debt expiration, effectively no debt can be liquidated.
@@ -140,13 +140,13 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                             ObligationLiquidity::borrowed_amount_at_expiration (regardless of how much interest
 ///                                             was accrued or how much debt was repaid while expired).
 ///                                             - 100 seconds after expiration we allow the entire debt to be liquidated.
-///                                             
+///
 ///                                             Only effective when Self::obligation_borrow_debt_term_liquidation_enabled.
-///                                             
+///
 ///                                             Motivation note: this throttling feature gives an opportunity to execute a configured
 ///                                             auto-rollover (after a partial liquidation brings the debt size down so that there is enough
 ///                                             available liquidity in some compatible reserve).
-///                                             
+///
 ///                                             When zeroed, an entire expired debt can be liquidated right after expiration (i.e. no
 ///                                             throttling).
 /// @param permissioningAuthority If not NULL, operations encoded in permissioned_ops require a signature from this authority

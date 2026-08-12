@@ -114,7 +114,7 @@ public final class OrderEngineProgram {
   public record FillIxData(Discriminator discriminator,
                            long inputAmount,
                            long outputAmount,
-                           long expireAt) implements SerDe {  
+                           long expireAt) implements SerDe {
 
     public static FillIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

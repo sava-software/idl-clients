@@ -79,13 +79,13 @@ public enum ExtensionType implements SerDe {
   public static ExtensionType read(final byte[] _data, final int _offset) {
     return ExtensionType.values()[Short.toUnsignedInt(ByteUtil.getInt16LE(_data, _offset))];
   }
-  
+
   @Override
   public int write(final byte[] _data, final int _offset) {
     ByteUtil.putInt16LE(_data, _offset, ordinal());
     return 2;
   }
-  
+
   @Override
   public int l() {
     return 2;

@@ -8,19 +8,19 @@ import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// Remaining accounts:
-/// 
+///
 /// num ledgers = L
-/// 
+///
 /// 1. 0 -> 2L-1: Strategy + MarketInformation for ledger L_i
-/// 
+///
 /// 2. Healthcheck:
 /// For each ledger:
 /// Ledger market information
 /// Principal oracle accounts + conversion oracle accounts
 /// Then again for each ledger and collateral:
 /// Collateral oracle accounts + conversion oracle accounts
-/// 
-/// 
+///
+///
 /// Asset index guidance:
 /// 1. Healthcheck:
 /// For each ledger:

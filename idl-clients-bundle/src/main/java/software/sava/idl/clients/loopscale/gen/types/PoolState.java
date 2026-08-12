@@ -25,9 +25,9 @@ import static software.sava.core.programs.Discriminator.createAnchorDiscriminato
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// The pool state
-/// 
+///
 /// PDA of `POOL_SEED, config, token_mint_0, token_mint_1`
-/// 
+///
 ///
 /// @param bump Bump to identify PDA
 /// @param tokenMint0 Token pair of the pool, where token_mint_0 address < token_mint_1 address

@@ -77,7 +77,7 @@ public final class NtbundleProgram {
   }
 
   /// @param allocationBps: u32
-  public record AddStrategyIxData(Discriminator discriminator, long allocationBps) implements SerDe {  
+  public record AddStrategyIxData(Discriminator discriminator, long allocationBps) implements SerDe {
 
     public static AddStrategyIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -183,7 +183,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record ChangeBundleMasterAdminIxData(Discriminator discriminator, PublicKey newAdmin) implements SerDe {  
+  public record ChangeBundleMasterAdminIxData(Discriminator discriminator, PublicKey newAdmin) implements SerDe {
 
     public static ChangeBundleMasterAdminIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -248,7 +248,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record ChangeManagerIxData(Discriminator discriminator, PublicKey newManager) implements SerDe {  
+  public record ChangeManagerIxData(Discriminator discriminator, PublicKey newManager) implements SerDe {
 
     public static ChangeManagerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -324,7 +324,7 @@ public final class NtbundleProgram {
   }
 
   /// @param clearMask: u8
-  public record ClearUserFeeOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {  
+  public record ClearUserFeeOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {
 
     public static ClearUserFeeOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -400,7 +400,7 @@ public final class NtbundleProgram {
   }
 
   /// @param clearMask: u8
-  public record ClearUserWithdrawalTimingOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {  
+  public record ClearUserWithdrawalTimingOverrideIxData(Discriminator discriminator, int clearMask) implements SerDe {
 
     public static ClearUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -785,7 +785,7 @@ public final class NtbundleProgram {
                                        long withdrawalRedemptionRequestCutoffTs,
                                        long withdrawalRedemptionUnlockCurrentCycleTs,
                                        long withdrawalRedemptionUnlockNextCycleTs,
-                                       boolean permissionned) implements SerDe {  
+                                       boolean permissionned) implements SerDe {
 
     public static InitializeBundleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1153,7 +1153,7 @@ public final class NtbundleProgram {
 
   /// @param partnerPfeeBps: u32
   /// @param partnerMfeeBps: u32
-  public record ManagerWithdrawWithSplitIxData(Discriminator discriminator, long partnerPfeeBps, long partnerMfeeBps) implements SerDe {  
+  public record ManagerWithdrawWithSplitIxData(Discriminator discriminator, long partnerPfeeBps, long partnerMfeeBps) implements SerDe {
 
     public static ManagerWithdrawWithSplitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1288,7 +1288,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record PauseDepositsWithdrawalsIxData(Discriminator discriminator, boolean pause) implements SerDe {  
+  public record PauseDepositsWithdrawalsIxData(Discriminator discriminator, boolean pause) implements SerDe {
 
     public static PauseDepositsWithdrawalsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1384,7 +1384,7 @@ public final class NtbundleProgram {
   }
 
   /// @param refillAmount: u64
-  public record PerformRefillIxData(Discriminator discriminator, long refillAmount) implements SerDe {  
+  public record PerformRefillIxData(Discriminator discriminator, long refillAmount) implements SerDe {
 
     public static PerformRefillIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1956,7 +1956,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record RequestBundleSwitchIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {  
+  public record RequestBundleSwitchIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {
 
     public static RequestBundleSwitchIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2066,7 +2066,7 @@ public final class NtbundleProgram {
   }
 
   /// @param amount: u64
-  public record RequestDepositIxData(Discriminator discriminator, long amount) implements SerDe {  
+  public record RequestDepositIxData(Discriminator discriminator, long amount) implements SerDe {
 
     public static RequestDepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2152,7 +2152,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record RequestWithdrawalIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {  
+  public record RequestWithdrawalIxData(Discriminator discriminator, BigInteger sharesAmount) implements SerDe {
 
     public static RequestWithdrawalIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2231,7 +2231,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record SetBundleCreatorIxData(Discriminator discriminator, boolean allowed) implements SerDe {  
+  public record SetBundleCreatorIxData(Discriminator discriminator, boolean allowed) implements SerDe {
 
     public static SetBundleCreatorIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2322,7 +2322,7 @@ public final class NtbundleProgram {
                                 long withdrawalDelay,
                                 long withdrawalTMin,
                                 long withdrawalTMax,
-                                float withdrawalCurve) implements SerDe {  
+                                float withdrawalCurve) implements SerDe {
 
     public static SetDelaysIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2447,7 +2447,7 @@ public final class NtbundleProgram {
                               long depositFee,
                               long withdrawalFee,
                               long performanceFee,
-                              long managementFeeBps) implements SerDe {  
+                              long managementFeeBps) implements SerDe {
 
     public static SetFeesIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2537,7 +2537,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record SetKeeperIxData(Discriminator discriminator, PublicKey newkeeper) implements SerDe {  
+  public record SetKeeperIxData(Discriminator discriminator, PublicKey newkeeper) implements SerDe {
 
     public static SetKeeperIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2605,7 +2605,7 @@ public final class NtbundleProgram {
   }
 
   /// @param maxDepositAmount: u64
-  public record SetMaxDepositAmountIxData(Discriminator discriminator, long maxDepositAmount) implements SerDe {  
+  public record SetMaxDepositAmountIxData(Discriminator discriminator, long maxDepositAmount) implements SerDe {
 
     public static SetMaxDepositAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2673,7 +2673,7 @@ public final class NtbundleProgram {
   }
 
   /// @param minDepositAmount: u64
-  public record SetMinDepositAmountIxData(Discriminator discriminator, long minDepositAmount) implements SerDe {  
+  public record SetMinDepositAmountIxData(Discriminator discriminator, long minDepositAmount) implements SerDe {
 
     public static SetMinDepositAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2741,7 +2741,7 @@ public final class NtbundleProgram {
   }
 
   /// @param oracleBuffer: u64
-  public record SetOracleBufferIxData(Discriminator discriminator, long oracleBuffer) implements SerDe {  
+  public record SetOracleBufferIxData(Discriminator discriminator, long oracleBuffer) implements SerDe {
 
     public static SetOracleBufferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2806,7 +2806,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record SetOracleMaxAgeIxData(Discriminator discriminator, long oracleMaxAge) implements SerDe {  
+  public record SetOracleMaxAgeIxData(Discriminator discriminator, long oracleMaxAge) implements SerDe {
 
     public static SetOracleMaxAgeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2871,7 +2871,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record SetOracleUpdateTimeLimitIxData(Discriminator discriminator, long oracleUpdateTimeLimit) implements SerDe {  
+  public record SetOracleUpdateTimeLimitIxData(Discriminator discriminator, long oracleUpdateTimeLimit) implements SerDe {
 
     public static SetOracleUpdateTimeLimitIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2940,7 +2940,7 @@ public final class NtbundleProgram {
     return Instruction.createInstruction(invokedNtbundleProgramMeta, keys, _data);
   }
 
-  public record SetReferrerActiveIxData(Discriminator discriminator, boolean active) implements SerDe {  
+  public record SetReferrerActiveIxData(Discriminator discriminator, boolean active) implements SerDe {
 
     public static SetReferrerActiveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3037,7 +3037,7 @@ public final class NtbundleProgram {
                                         boolean referrerEnabled,
                                         long referralPfeeBps,
                                         long referralMfeeBps,
-                                        long referrerMinDepositAmount) implements SerDe {  
+                                        long referrerMinDepositAmount) implements SerDe {
 
     public static SetReferrerConfigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3151,7 +3151,7 @@ public final class NtbundleProgram {
   public record SetReferrerRateOverrideIxData(Discriminator discriminator,
                                               int overrideMask,
                                               long customPfeeBps,
-                                              long customMfeeBps) implements SerDe {  
+                                              long customMfeeBps) implements SerDe {
 
     public static SetReferrerRateOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3278,7 +3278,7 @@ public final class NtbundleProgram {
                                          long customDepositFeeBps,
                                          long customWithdrawalFeeBps,
                                          long customPerformanceFeeBps,
-                                         long customManagementFeeBps) implements SerDe {  
+                                         long customManagementFeeBps) implements SerDe {
 
     public static SetUserFeeOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3448,7 +3448,7 @@ public final class NtbundleProgram {
                                                       long customWithdrawalDelay,
                                                       long customWithdrawalTMin,
                                                       long customWithdrawalTMax,
-                                                      float customWithdrawalCurve) implements SerDe {  
+                                                      float customWithdrawalCurve) implements SerDe {
 
     public static SetUserWithdrawalTimingOverrideIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3555,7 +3555,7 @@ public final class NtbundleProgram {
   public record SetWithdrawalRedemptionScheduleIxData(Discriminator discriminator,
                                                       long withdrawalRedemptionRequestCutoffTs,
                                                       long withdrawalRedemptionUnlockCurrentCycleTs,
-                                                      long withdrawalRedemptionUnlockNextCycleTs) implements SerDe {  
+                                                      long withdrawalRedemptionUnlockNextCycleTs) implements SerDe {
 
     public static SetWithdrawalRedemptionScheduleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3674,7 +3674,7 @@ public final class NtbundleProgram {
   }
 
   /// @param newAllocationBps: u32
-  public record UpdateAllocationsIxData(Discriminator discriminator, long newAllocationBps) implements SerDe {  
+  public record UpdateAllocationsIxData(Discriminator discriminator, long newAllocationBps) implements SerDe {
 
     public static UpdateAllocationsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -3750,7 +3750,7 @@ public final class NtbundleProgram {
   }
 
   /// @param newEquity: u64
-  public record UpdateOracleIxData(Discriminator discriminator, long newEquity) implements SerDe {  
+  public record UpdateOracleIxData(Discriminator discriminator, long newEquity) implements SerDe {
 
     public static UpdateOracleIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -52,9 +52,9 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
 /// @param headBorrowOrder The first of the owner-defined, permissionlessly-executed borrow order applicable to this
 ///                        obligation.
-///                        
+///
 ///                        ## Why "head"?
-///                        
+///
 ///                        We started with a single BO, and later needed to add support for having multiple BOs (while
 ///                        the next field was already added and released). Hence, the entire array of BOs is split
 ///                        between this singular field and Self::tail_borrow_orders. We explicitly renamed this one

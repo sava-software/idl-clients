@@ -18,12 +18,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param borrowReserve Reserve liquidity is borrowed from
 /// @param cumulativeBorrowRateBsf Borrow rate used for calculating interest (big scaled fraction)
 /// @param lastBorrowedAtTimestamp: u64 The timestamp at which this debt was taken.
-///                                
+///
 ///                                Conceptually, every borrow can be interpreted as "closing the previous loan and starting a
 ///                                new one" (which would make a plain ` borrowed_at ` an even better name). But in terms of
 ///                                implementation, this fields records when the *last* borrow operation from this reserve
 ///                                happened (i.e. adding debt of the same reserve *does* move this timestamp).
-///                                
+///
 ///                                Note: this field is *not* only metadata: it is used in the logic, e.g. for enforcing the
 ///                                fixed-term borrows (i.e. those induced by ReserveConfig::debt_term_seconds).
 /// @param borrowedAmountSf Amount of liquidity borrowed plus interest (scaled fraction)
@@ -34,12 +34,12 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                      borrows, while others only for open-term borrows - see individual field docs.
 /// @param borrowedAmountAtExpiration: u64 An amount of liquidity that was borrowed when this fixed-term borrow expired (i.e. zeroed if
 ///                                   this borrow is not fixed-term, or if it did not yet expire).
-///                                   
+///
 ///                                   Needed to honor the LendingMarket::term_based_full_liquidation_duration_secs.
-///                                   
+///
 ///                                   This value is captured by Self::capture_borrowed_amount_at_expiration during obligation's
 ///                                   refresh - please see the method's docs for gotchas.
-///                                   
+///
 ///                                   Note on precision: we use a `u64` field, since the remaining space within this struct is
 ///                                   rather scarce, and we do not need sub-lamport precision for the liquidation throttling rate.
 /// @param padding2: u64[]

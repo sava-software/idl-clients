@@ -31,7 +31,7 @@ public final class TokenProgram {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -48,7 +48,7 @@ public final class TokenProgram {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -79,7 +79,7 @@ public final class TokenProgram {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -109,7 +109,7 @@ public final class TokenProgram {
 
   /// Initializes a new mint and optionally deposits all the newly minted
   /// tokens in an account.
-  /// 
+  ///
   /// The `InitializeMint` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -121,7 +121,7 @@ public final class TokenProgram {
   public record InitializeMintIxData(int discriminator,
                                      int decimals,
                                      PublicKey mintAuthority,
-                                     PublicKey freezeAuthority) implements SerDe {  
+                                     PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMintIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -183,7 +183,7 @@ public final class TokenProgram {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -209,7 +209,7 @@ public final class TokenProgram {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -237,7 +237,7 @@ public final class TokenProgram {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -256,13 +256,13 @@ public final class TokenProgram {
   /// will be equal to the amount of SOL in the account. If this account is
   /// associated with another mint, that mint must be initialized before this
   /// command can succeed.
-  /// 
+  ///
   /// The `InitializeAccount` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
-  public record InitializeAccountIxData(int discriminator) implements SerDe {  
+  public record InitializeAccountIxData(int discriminator) implements SerDe {
 
     public static InitializeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -297,12 +297,12 @@ public final class TokenProgram {
   public static final Discriminator INITIALIZE_MULTISIG_DISCRIMINATOR = toDiscriminator(2);
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -318,12 +318,12 @@ public final class TokenProgram {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -343,12 +343,12 @@ public final class TokenProgram {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
@@ -366,19 +366,19 @@ public final class TokenProgram {
   }
 
   /// Initializes a multisignature account with N provided signers.
-  /// 
+  ///
   /// Multisignature accounts can used in place of any single owner/delegate
   /// accounts in any token instruction that require an owner/delegate to be
   /// present. The variant field represents the number of signers (M)
   /// required to validate this multisignature account.
-  /// 
+  ///
   /// The `InitializeMultisig` instruction requires no signers and MUST be
   /// included within the same Transaction as the system program's
   /// `CreateAccount` instruction that creates the account being initialized.
   /// Otherwise another party can acquire ownership of the uninitialized account.
   ///
   /// @param m: u8 The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {  
+  public record InitializeMultisigIxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisigIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -477,7 +477,7 @@ public final class TokenProgram {
   /// of SOL and Tokens will be transferred to the destination account.
   ///
   /// @param amount: u64 The amount of tokens to transfer.
-  public record TransferIxData(int discriminator, long amount) implements SerDe {  
+  public record TransferIxData(int discriminator, long amount) implements SerDe {
 
     public static TransferIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -572,7 +572,7 @@ public final class TokenProgram {
   /// behalf of the source account's owner.
   ///
   /// @param amount: u64 The amount of tokens the delegate is approved for.
-  public record ApproveIxData(int discriminator, long amount) implements SerDe {  
+  public record ApproveIxData(int discriminator, long amount) implements SerDe {
 
     public static ApproveIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -651,7 +651,7 @@ public final class TokenProgram {
 
   /// Revokes the delegate's authority.
   ///
-  public record RevokeIxData(int discriminator) implements SerDe {  
+  public record RevokeIxData(int discriminator) implements SerDe {
 
     public static RevokeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -745,7 +745,7 @@ public final class TokenProgram {
   /// @param newAuthority The new authority
   public record SetAuthorityIxData(int discriminator,
                                    AuthorityType authorityType,
-                                   PublicKey newAuthority) implements SerDe {  
+                                   PublicKey newAuthority) implements SerDe {
 
     public static SetAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -843,7 +843,7 @@ public final class TokenProgram {
   /// Mints new tokens to an account. The native mint does not support minting.
   ///
   /// @param amount: u64 The amount of new tokens to mint.
-  public record MintToIxData(int discriminator, long amount) implements SerDe {  
+  public record MintToIxData(int discriminator, long amount) implements SerDe {
 
     public static MintToIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -938,7 +938,7 @@ public final class TokenProgram {
   /// accounts associated with the native mint, use `CloseAccount` instead.
   ///
   /// @param amount: u64
-  public record BurnIxData(int discriminator, long amount) implements SerDe {  
+  public record BurnIxData(int discriminator, long amount) implements SerDe {
 
     public static BurnIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1027,7 +1027,7 @@ public final class TokenProgram {
   /// Close an account by transferring all its SOL to the destination account.
   /// Non-native accounts may only be closed if its token amount is zero.
   ///
-  public record CloseAccountIxData(int discriminator) implements SerDe {  
+  public record CloseAccountIxData(int discriminator) implements SerDe {
 
     public static CloseAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1105,7 +1105,7 @@ public final class TokenProgram {
 
   /// Freeze an Initialized account using the Mint's freeze_authority (if set).
   ///
-  public record FreezeAccountIxData(int discriminator) implements SerDe {  
+  public record FreezeAccountIxData(int discriminator) implements SerDe {
 
     public static FreezeAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1183,7 +1183,7 @@ public final class TokenProgram {
 
   /// Thaw a Frozen account using the Mint's freeze_authority (if set).
   ///
-  public record ThawAccountIxData(int discriminator) implements SerDe {  
+  public record ThawAccountIxData(int discriminator) implements SerDe {
 
     public static ThawAccountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1220,7 +1220,7 @@ public final class TokenProgram {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1244,7 +1244,7 @@ public final class TokenProgram {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1279,7 +1279,7 @@ public final class TokenProgram {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1302,7 +1302,7 @@ public final class TokenProgram {
   /// Transfers tokens from one account to another either directly or via a
   /// delegate. If this account is associated with the native mint then equal
   /// amounts of SOL and Tokens will be transferred to the destination account.
-  /// 
+  ///
   /// This instruction differs from Transfer in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1311,7 +1311,7 @@ public final class TokenProgram {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record TransferCheckedIxData(int discriminator,
                                       long amount,
-                                      int decimals) implements SerDe {  
+                                      int decimals) implements SerDe {
 
     public static TransferCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1359,7 +1359,7 @@ public final class TokenProgram {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1382,7 +1382,7 @@ public final class TokenProgram {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1416,7 +1416,7 @@ public final class TokenProgram {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1438,7 +1438,7 @@ public final class TokenProgram {
 
   /// Approves a delegate. A delegate is given the authority over tokens on
   /// behalf of the source account's owner.
-  /// 
+  ///
   /// This instruction differs from Approve in that the token mint and
   /// decimals value is checked by the caller. This may be useful when
   /// creating transactions offline or within a hardware wallet.
@@ -1447,7 +1447,7 @@ public final class TokenProgram {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record ApproveCheckedIxData(int discriminator,
                                      long amount,
-                                     int decimals) implements SerDe {  
+                                     int decimals) implements SerDe {
 
     public static ApproveCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1494,7 +1494,7 @@ public final class TokenProgram {
   public static final Discriminator MINT_TO_CHECKED_DISCRIMINATOR = toDiscriminator(14);
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1513,7 +1513,7 @@ public final class TokenProgram {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1543,7 +1543,7 @@ public final class TokenProgram {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1564,7 +1564,7 @@ public final class TokenProgram {
   }
 
   /// Mints new tokens to an account. The native mint does not support minting.
-  /// 
+  ///
   /// This instruction differs from MintTo in that the decimals value is
   /// checked by the caller. This may be useful when creating transactions
   /// offline or within a hardware wallet.
@@ -1573,7 +1573,7 @@ public final class TokenProgram {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record MintToCheckedIxData(int discriminator,
                                     long amount,
-                                    int decimals) implements SerDe {  
+                                    int decimals) implements SerDe {
 
     public static MintToCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1621,7 +1621,7 @@ public final class TokenProgram {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1641,7 +1641,7 @@ public final class TokenProgram {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1672,7 +1672,7 @@ public final class TokenProgram {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1694,7 +1694,7 @@ public final class TokenProgram {
 
   /// Burns tokens by removing them from an account. `BurnChecked` does not
   /// support accounts associated with the native mint, use `CloseAccount` instead.
-  /// 
+  ///
   /// This instruction differs from Burn in that the decimals value is checked
   /// by the caller. This may be useful when creating transactions offline or
   /// within a hardware wallet.
@@ -1703,7 +1703,7 @@ public final class TokenProgram {
   /// @param decimals: u8 Expected number of base 10 digits to the right of the decimal place.
   public record BurnCheckedIxData(int discriminator,
                                   long amount,
-                                  int decimals) implements SerDe {  
+                                  int decimals) implements SerDe {
 
     public static BurnCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1809,7 +1809,7 @@ public final class TokenProgram {
   /// not need the owner's `AccountInfo` otherwise.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements SerDe {  
+  public record InitializeAccount2IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1904,7 +1904,7 @@ public final class TokenProgram {
   /// `system_instruction::transfer` to move lamports to a wrapped token
   /// account, and needs to have its token `amount` field updated.
   ///
-  public record SyncNativeIxData(int discriminator) implements SerDe {  
+  public record SyncNativeIxData(int discriminator) implements SerDe {
 
     public static SyncNativeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1982,7 +1982,7 @@ public final class TokenProgram {
   /// Like InitializeAccount2, but does not require the Rent sysvar to be provided.
   ///
   /// @param owner The new account's owner/multisignature.
-  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements SerDe {  
+  public record InitializeAccount3IxData(int discriminator, PublicKey owner) implements SerDe {
 
     public static InitializeAccount3IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2061,7 +2061,7 @@ public final class TokenProgram {
   /// Like InitializeMultisig, but does not require the Rent sysvar to be provided.
   ///
   /// @param m: u8 The number of signers (M) required to validate this multisignature account.
-  public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {  
+  public record InitializeMultisig2IxData(int discriminator, int m) implements SerDe {
 
     public static InitializeMultisig2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2166,7 +2166,7 @@ public final class TokenProgram {
   public record InitializeMint2IxData(int discriminator,
                                       int decimals,
                                       PublicKey mintAuthority,
-                                      PublicKey freezeAuthority) implements SerDe {  
+                                      PublicKey freezeAuthority) implements SerDe {
 
     public static InitializeMint2IxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2225,7 +2225,7 @@ public final class TokenProgram {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2238,7 +2238,7 @@ public final class TokenProgram {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2253,7 +2253,7 @@ public final class TokenProgram {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2267,11 +2267,11 @@ public final class TokenProgram {
 
   /// Gets the required size of an account for the given mint as a
   /// little-endian `u64`.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
-  public record GetAccountDataSizeIxData(int discriminator) implements SerDe {  
+  public record GetAccountDataSizeIxData(int discriminator) implements SerDe {
 
     public static GetAccountDataSizeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2306,10 +2306,10 @@ public final class TokenProgram {
   public static final Discriminator INITIALIZE_IMMUTABLE_OWNER_DISCRIMINATOR = toDiscriminator(22);
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2321,10 +2321,10 @@ public final class TokenProgram {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2338,10 +2338,10 @@ public final class TokenProgram {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
@@ -2354,14 +2354,14 @@ public final class TokenProgram {
   }
 
   /// Initialize the Immutable Owner extension for the given token account
-  /// 
+  ///
   /// Fails if the account has already been initialized, so must be called
   /// before `InitializeAccount`.
-  /// 
+  ///
   /// No-ops in this version of the program, but is included for compatibility
   /// with the Associated Token Account program.
   ///
-  public record InitializeImmutableOwnerIxData(int discriminator) implements SerDe {  
+  public record InitializeImmutableOwnerIxData(int discriminator) implements SerDe {
 
     public static InitializeImmutableOwnerIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2398,9 +2398,9 @@ public final class TokenProgram {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2414,9 +2414,9 @@ public final class TokenProgram {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2434,9 +2434,9 @@ public final class TokenProgram {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
@@ -2454,14 +2454,14 @@ public final class TokenProgram {
   /// Convert an Amount of tokens to a UiAmount `string`, using the given
   /// mint. In this version of the program, the mint can only specify the
   /// number of decimals.
-  /// 
+  ///
   /// Fails on an invalid mint.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserialized
   /// with `String::from_utf8`.
   ///
   /// @param amount: u64 The amount of tokens to reformat.
-  public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {  
+  public record AmountToUiAmountIxData(int discriminator, long amount) implements SerDe {
 
     public static AmountToUiAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2505,7 +2505,7 @@ public final class TokenProgram {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2519,7 +2519,7 @@ public final class TokenProgram {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2537,7 +2537,7 @@ public final class TokenProgram {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
@@ -2556,12 +2556,12 @@ public final class TokenProgram {
   /// Convert a UiAmount of tokens to a little-endian `u64` raw Amount, using
   /// the given mint. In this version of the program, the mint can only
   /// specify the number of decimals.
-  /// 
+  ///
   /// Return data can be fetched using `sol_get_return_data` and deserializing
   /// the return data as a little-endian `u64`.
   ///
   /// @param uiAmount The ui_amount of tokens to reformat.
-  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements SerDe {  
+  public record UiAmountToAmountIxData(int discriminator, String uiAmount, byte[] _uiAmount) implements SerDe {
 
     public static UiAmountToAmountIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2658,7 +2658,7 @@ public final class TokenProgram {
   /// by sending them to any other account, leaving behind only
   /// lamports for rent exemption.
   ///
-  public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {  
+  public record WithdrawExcessLamportsIxData(int discriminator) implements SerDe {
 
     public static WithdrawExcessLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -2748,7 +2748,7 @@ public final class TokenProgram {
   ///
   /// @param amount: Option<u64> Optional amount of lamports to transfer.
   ///               If not provided, the instruction will unwrap all lamports in excess of rent exemption.
-  public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {  
+  public record UnwrapLamportsIxData(int discriminator, OptionalLong amount) implements SerDe {
 
     public static UnwrapLamportsIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

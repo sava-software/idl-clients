@@ -21,7 +21,7 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// An Queue represents a round-robin queue of oracle oracles who attest on-chain
 /// whether a Switchboard Function was executed within an enclave against an expected set of
 /// enclave measurements.
-/// 
+///
 /// For an oracle to join the queue, the oracle must first submit their enclave quote on-chain and
 /// wait for an existing oracle to attest their quote. If the oracle's quote matches an expected
 /// measurement within the queues mr_enclaves config, it is granted permissions and will start

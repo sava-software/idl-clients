@@ -81,7 +81,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record InitializeIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {  
+  public record InitializeIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {
 
     public static InitializeIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -161,7 +161,7 @@ public final class ScopeProgram {
   }
 
   /// @param tokens: Vec<u16>
-  public record RefreshPriceListIxData(Discriminator discriminator, int[] tokens) implements SerDe {  
+  public record RefreshPriceListIxData(Discriminator discriminator, int[] tokens) implements SerDe {
 
     public static RefreshPriceListIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -266,7 +266,7 @@ public final class ScopeProgram {
   }
 
   /// @param token: u16
-  public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements SerDe {  
+  public record RefreshChainlinkPriceIxData(Discriminator discriminator, int token, byte[] serializedChainlinkReport) implements SerDe {
 
     public static RefreshChainlinkPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -393,7 +393,7 @@ public final class ScopeProgram {
   public record RefreshPythLazerPriceIxData(Discriminator discriminator,
                                             int[] tokens,
                                             byte[] serializedPythMessage,
-                                            int ed25519InstructionIndex) implements SerDe {  
+                                            int ed25519InstructionIndex) implements SerDe {
 
     public static RefreshPythLazerPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -486,7 +486,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record UpdateMappingAndMetadataIxData(Discriminator discriminator, String feedName, byte[] _feedName, UpdateOracleMappingAndMetadataEntriesWithId[] updates) implements SerDe {  
+  public record UpdateMappingAndMetadataIxData(Discriminator discriminator, String feedName, byte[] _feedName, UpdateOracleMappingAndMetadataEntriesWithId[] updates) implements SerDe {
 
     public static UpdateMappingAndMetadataIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -574,7 +574,7 @@ public final class ScopeProgram {
   }
 
   /// @param token: u64
-  public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements SerDe {  
+  public record ResetTwapIxData(Discriminator discriminator, long token, String feedName, byte[] _feedName) implements SerDe {
 
     public static ResetTwapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -653,7 +653,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record SetAdminCachedIxData(Discriminator discriminator, PublicKey newAdmin, String feedName, byte[] _feedName) implements SerDe {  
+  public record SetAdminCachedIxData(Discriminator discriminator, PublicKey newAdmin, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetAdminCachedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -728,7 +728,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record ApproveAdminCachedIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {  
+  public record ApproveAdminCachedIxData(Discriminator discriminator, String feedName, byte[] _feedName) implements SerDe {
 
     public static ApproveAdminCachedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -837,7 +837,7 @@ public final class ScopeProgram {
                                     PublicKey seedPk,
                                     long seedId,
                                     int bump,
-                                    int[][] scopeChains) implements SerDe {  
+                                    int[][] scopeChains) implements SerDe {
 
     public static CreateMintMapIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -971,7 +971,7 @@ public final class ScopeProgram {
   }
 
   /// @param token: u16
-  public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements SerDe {  
+  public record ResumeChainlinkxPriceIxData(Discriminator discriminator, int token, String feedName, byte[] _feedName) implements SerDe {
 
     public static ResumeChainlinkxPriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1069,7 +1069,7 @@ public final class ScopeProgram {
   public record FreezePriceIxData(Discriminator discriminator,
                                   int token,
                                   String feedName, byte[] _feedName,
-                                  boolean freeze) implements SerDe {  
+                                  boolean freeze) implements SerDe {
 
     public static FreezePriceIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1155,7 +1155,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record SetEmergencyCouncilIxData(Discriminator discriminator, PublicKey newEmergencyCouncil, String feedName, byte[] _feedName) implements SerDe {  
+  public record SetEmergencyCouncilIxData(Discriminator discriminator, PublicKey newEmergencyCouncil, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetEmergencyCouncilIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -1234,7 +1234,7 @@ public final class ScopeProgram {
     return Instruction.createInstruction(invokedScopeProgramMeta, keys, _data);
   }
 
-  public record SetResumeAuthorityIxData(Discriminator discriminator, PublicKey newResumeAuthority, String feedName, byte[] _feedName) implements SerDe {  
+  public record SetResumeAuthorityIxData(Discriminator discriminator, PublicKey newResumeAuthority, String feedName, byte[] _feedName) implements SerDe {
 
     public static SetResumeAuthorityIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

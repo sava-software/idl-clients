@@ -155,7 +155,7 @@ public final class EmberProgram {
     return Instruction.createInstruction(invokedEmberProgramMeta, keys, _data);
   }
 
-  public record DepositIxData(Discriminator discriminator, DepositParams depositParams) implements SerDe {  
+  public record DepositIxData(Discriminator discriminator, DepositParams depositParams) implements SerDe {
 
     public static DepositIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
@@ -259,7 +259,7 @@ public final class EmberProgram {
     return Instruction.createInstruction(invokedEmberProgramMeta, keys, _data);
   }
 
-  public record WithdrawIxData(Discriminator discriminator, WithdrawParams withdrawParams) implements SerDe {  
+  public record WithdrawIxData(Discriminator discriminator, WithdrawParams withdrawParams) implements SerDe {
 
     public static WithdrawIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());

@@ -30,10 +30,10 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 /// @param totalAssetValueInitLimit: u64 USD denominated limit for calculating asset value for initialization margin requirements.
 ///                                 Example, if total SOL deposits are equal to $1M and the limit it set to $500K, then SOL
 ///                                 assets will be discounted by 50%.
-///                                 
+///
 ///                                 In other words the max value of liabilities that can be backed by the asset is $500K. This
 ///                                 is useful for limiting the damage of oracle attacks.
-///                                 
+///
 ///                                 Value is UI USD value, for example value 100 -> $100
 /// @param oracleMaxAge: u16 Time window in seconds for the oracle price feed to be considered live.
 /// @param oracleMaxConfidence: u32 From 0-100%, if the confidence exceeds this value, the oracle is considered invalid. Note:

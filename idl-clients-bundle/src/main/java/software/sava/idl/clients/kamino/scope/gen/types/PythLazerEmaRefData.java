@@ -7,7 +7,7 @@ import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
 /// Reference-oracle config for `OracleType::PythLazerEMA`.
-/// 
+///
 /// Stored in `oracle_mappings.genericindex` for an EMA entry. The EMA value
 /// itself lives in the source `PythLazer` entry's `dated_price.generic_data`,
 /// populated by `update_price` whenever the spot refresh payload includes an
