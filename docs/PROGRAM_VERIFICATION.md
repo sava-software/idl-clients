@@ -97,6 +97,28 @@ is the counterexample: re-fetching returned the same 0.1.8 IDL, so an
 added/removed diff was empty and would have reported clean while
 `clearEmissions` was dead on mainnet.
 
+### A worked example: Kamino Lend, 2026-08-12
+
+The one redeploy this repo has caught in the act, recorded here because the report
+that first carried it is one commit in a branch and a squash would take it with it.
+
+`ProgramData.last_deploy_slot` for `KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD` moved
+**422723185 → 438843135**, and the on-chain IDL moved with it — hash
+`7d8f55dc… → c229f91d…`, version **1.23.0 → 1.24.0**. What changed: three
+instructions added (`calculate_ctoken_exchange_rate`, `fill_borrow_order_v2`,
+`set_borrow_order_v2`), fifteen changed, the `ExchangeRateWithDecimals` type added,
+six types changed, one error added and one changed.
+
+Two things are worth keeping from it. The deployed client moved under us during
+unrelated work, which is the case the deploy-slot signal exists for and the IDL-to-IDL
+diff would not have raised on its own. And the staged (`next`) client *survived* the
+deploy — the SDK copy still differs from the deployed document at the same version
+string — so a deploy does not retire a `next/` package and the version string is not
+what decides it.
+
+The generating run's own report is in commit `c2563a4`; `sources.json` carries the
+slot and hashes at all times.
+
 The trigger to key on is the **deploy**, not the IDL edit:
 
 | Signal | Probe scope |
