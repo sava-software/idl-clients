@@ -4,14 +4,13 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.EscrowAction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::EscrowRequestCreated Borsh variant 53.
@@ -37,24 +36,24 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
                                         EscrowAction[] actions) implements EternalEvent {
 
   public static final int ACTIONS_LEN = 4;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(53, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(53);
 
-  public static final int RECEIVER_AUTHORITY_OFFSET = 8;
-  public static final int SENDER_AUTHORITY_OFFSET = 40;
-  public static final int SEQUENCE_NUMBER_OFFSET = 72;
-  public static final int SENDER_PDA_INDEX_OFFSET = 80;
-  public static final int SENDER_SUBACCOUNT_INDEX_OFFSET = 81;
-  public static final int RECEIVER_PDA_INDEX_OFFSET = 82;
-  public static final int RECEIVER_SUBACCOUNT_INDEX_OFFSET = 83;
-  public static final int EXPIRATION_OFFSET_OFFSET = 84;
-  public static final int INITIAL_SLOT_OFFSET = 88;
-  public static final int ACTIONS_OFFSET = 96;
+  public static final int RECEIVER_AUTHORITY_OFFSET = 1;
+  public static final int SENDER_AUTHORITY_OFFSET = 33;
+  public static final int SEQUENCE_NUMBER_OFFSET = 65;
+  public static final int SENDER_PDA_INDEX_OFFSET = 73;
+  public static final int SENDER_SUBACCOUNT_INDEX_OFFSET = 74;
+  public static final int RECEIVER_PDA_INDEX_OFFSET = 75;
+  public static final int RECEIVER_SUBACCOUNT_INDEX_OFFSET = 76;
+  public static final int EXPIRATION_OFFSET_OFFSET = 77;
+  public static final int INITIAL_SLOT_OFFSET = 81;
+  public static final int ACTIONS_OFFSET = 89;
 
   public static EscrowRequestCreatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var receiverAuthority = readPubKey(_data, i);
     i += 32;
@@ -116,7 +115,7 @@ public record EscrowRequestCreatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + 32
+    return 1 + 32
          + 32
          + 8
          + 1

@@ -4,8 +4,6 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.PositionSizeLimit;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
 
 import java.util.OptionalLong;
 
@@ -14,7 +12,7 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SplinePositionLimitsConfigUpdated Borsh variant 63.
@@ -36,21 +34,21 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
                                                      OptionalLong leverageDecreaseInBps,
                                                      long prevLeverageDecreaseInBps) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(63, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(63);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int AUTHORITY_OFFSET = 56;
-  public static final int MARKET_OFFSET = 88;
-  public static final int SYMBOL_OFFSET = 120;
-  public static final int MAX_POSITION_SIZE_OFFSET = 137;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int AUTHORITY_OFFSET = 49;
+  public static final int MARKET_OFFSET = 81;
+  public static final int SYMBOL_OFFSET = 113;
+  public static final int MAX_POSITION_SIZE_OFFSET = 130;
 
   public static SplinePositionLimitsConfigUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;
@@ -122,7 +120,7 @@ public record SplinePositionLimitsConfigUpdatedEvent(Discriminator discriminator
 
   @Override
   public int l() {
-    return 8 + 32
+    return 1 + 32
          + 8
          + 8
          + 32

@@ -3,29 +3,29 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::MarketAdded Borsh variant 24.
 /// Payload type: MarketAddedEvent.
 public record MarketAddedEvent(Discriminator discriminator) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(24, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(24);
 
   public static MarketAddedEvent read(final byte[] _data, final int _offset) {
     return _data == null || _data.length == 0
         ? null
-        : new MarketAddedEvent(createAnchorDiscriminator(_data, _offset));
+        : new MarketAddedEvent(createDiscriminator(_data, _offset, 1));
   }
 
   @Override
   public int write(final byte[] _data, final int _offset) {
     discriminator.write(_data, _offset);
-    return 8;
+    return 1;
   }
 
   @Override
   public int l() {
-    return 8;
+    return 1;
   }
 }

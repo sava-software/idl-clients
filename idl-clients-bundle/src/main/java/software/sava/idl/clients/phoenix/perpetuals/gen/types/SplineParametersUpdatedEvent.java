@@ -4,13 +4,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.TickRegion;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SplineParametersUpdated Borsh variant 23.
@@ -30,26 +28,26 @@ public record SplineParametersUpdatedEvent(Discriminator discriminator,
                                            TickRegion[] bidRegions,
                                            TickRegion[] askRegions) implements EternalEvent {
 
-  public static final int BYTES = 1104;
+  public static final int BYTES = 1097;
   public static final int BID_REGIONS_LEN = 10;
   public static final int ASK_REGIONS_LEN = 10;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(23, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(23);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int AUTHORITY_OFFSET = 56;
-  public static final int MARKET_OFFSET = 88;
-  public static final int SYMBOL_OFFSET = 120;
-  public static final int MID_PRICE_OFFSET = 136;
-  public static final int BID_REGIONS_OFFSET = 144;
-  public static final int ASK_REGIONS_OFFSET = 624;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int AUTHORITY_OFFSET = 49;
+  public static final int MARKET_OFFSET = 81;
+  public static final int SYMBOL_OFFSET = 113;
+  public static final int MID_PRICE_OFFSET = 129;
+  public static final int BID_REGIONS_OFFSET = 137;
+  public static final int ASK_REGIONS_OFFSET = 617;
 
   public static SplineParametersUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

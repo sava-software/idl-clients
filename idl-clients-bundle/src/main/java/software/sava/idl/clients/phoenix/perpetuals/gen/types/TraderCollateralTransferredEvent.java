@@ -3,13 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderCollateralTransferred Borsh variant 10.
@@ -31,25 +29,25 @@ public record TraderCollateralTransferredEvent(Discriminator discriminator,
                                                long dstTraderPrevSequenceNumberSlot,
                                                SignedQuoteLots dstTraderNewCollateralBalance) implements EternalEvent {
 
-  public static final int BYTES = 160;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(10, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 153;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(10);
 
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int AMOUNT_OFFSET = 40;
-  public static final int SRC_TRADER_OFFSET = 48;
-  public static final int SRC_TRADER_SEQUENCE_NUMBER_OFFSET = 80;
-  public static final int SRC_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 88;
-  public static final int SRC_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 96;
-  public static final int DST_TRADER_OFFSET = 104;
-  public static final int DST_TRADER_SEQUENCE_NUMBER_OFFSET = 136;
-  public static final int DST_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 144;
-  public static final int DST_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 152;
+  public static final int AUTHORITY_OFFSET = 1;
+  public static final int AMOUNT_OFFSET = 33;
+  public static final int SRC_TRADER_OFFSET = 41;
+  public static final int SRC_TRADER_SEQUENCE_NUMBER_OFFSET = 73;
+  public static final int SRC_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 81;
+  public static final int SRC_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 89;
+  public static final int DST_TRADER_OFFSET = 97;
+  public static final int DST_TRADER_SEQUENCE_NUMBER_OFFSET = 129;
+  public static final int DST_TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 137;
+  public static final int DST_TRADER_NEW_COLLATERAL_BALANCE_OFFSET = 145;
 
   public static TraderCollateralTransferredEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;

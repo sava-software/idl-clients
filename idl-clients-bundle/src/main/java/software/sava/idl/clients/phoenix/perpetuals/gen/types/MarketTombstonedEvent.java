@@ -2,11 +2,10 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.MarketStatus;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::MarketTombstoned Borsh variant 64.
@@ -21,19 +20,19 @@ public record MarketTombstonedEvent(Discriminator discriminator,
                                     long finalTradeSequenceNumber,
                                     long finalOrderSequenceNumber) implements EternalEvent {
 
-  public static final int BYTES = 33;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(64, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 26;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(64);
 
-  public static final int PREVIOUS_MARKET_STATUS_OFFSET = 8;
-  public static final int FINAL_SEQUENCE_NUMBER_OFFSET = 9;
-  public static final int FINAL_TRADE_SEQUENCE_NUMBER_OFFSET = 17;
-  public static final int FINAL_ORDER_SEQUENCE_NUMBER_OFFSET = 25;
+  public static final int PREVIOUS_MARKET_STATUS_OFFSET = 1;
+  public static final int FINAL_SEQUENCE_NUMBER_OFFSET = 2;
+  public static final int FINAL_TRADE_SEQUENCE_NUMBER_OFFSET = 10;
+  public static final int FINAL_ORDER_SEQUENCE_NUMBER_OFFSET = 18;
 
   public static MarketTombstonedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousMarketStatus = MarketStatus.read(_data, i);
     i += previousMarketStatus.l();

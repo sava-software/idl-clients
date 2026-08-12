@@ -5,7 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderFeesUpdated Borsh variant 49.
@@ -24,22 +24,22 @@ public record TraderFeesUpdatedEvent(Discriminator discriminator,
                                      int newTakerFeeOverrideMultiplier,
                                      boolean isHotTrader) implements EternalEvent {
 
-  public static final int BYTES = 77;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(49, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 70;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(49);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 40;
-  public static final int PREVIOUS_MAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 72;
-  public static final int NEW_MAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 73;
-  public static final int PREVIOUS_TAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 74;
-  public static final int NEW_TAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 75;
-  public static final int IS_HOT_TRADER_OFFSET = 76;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 33;
+  public static final int PREVIOUS_MAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 65;
+  public static final int NEW_MAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 66;
+  public static final int PREVIOUS_TAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 67;
+  public static final int NEW_TAKER_FEE_OVERRIDE_MULTIPLIER_OFFSET = 68;
+  public static final int IS_HOT_TRADER_OFFSET = 69;
 
   public static TraderFeesUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

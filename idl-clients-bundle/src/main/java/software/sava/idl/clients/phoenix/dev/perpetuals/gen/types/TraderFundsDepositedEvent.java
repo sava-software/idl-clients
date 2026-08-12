@@ -3,14 +3,11 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.TraderCapabilityFlags;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderFundsDeposited Borsh variant 13.
@@ -27,22 +24,22 @@ public record TraderFundsDepositedEvent(Discriminator discriminator,
                                         long traderSequenceNumber,
                                         long prevSequenceNumberSlot) implements EternalEvent {
 
-  public static final int BYTES = 108;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(13, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 101;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(13);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 40;
-  public static final int AMOUNT_OFFSET = 72;
-  public static final int TRADER_FLAGS_OFFSET = 80;
-  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 84;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 92;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 100;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 33;
+  public static final int AMOUNT_OFFSET = 65;
+  public static final int TRADER_FLAGS_OFFSET = 73;
+  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 77;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 85;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 93;
 
   public static TraderFundsDepositedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

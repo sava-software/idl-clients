@@ -188,7 +188,8 @@ public sealed interface KaminoLendingError extends ProgramError permits
     KaminoLendingError.ObligationHasActiveBorrowOrders,
     KaminoLendingError.OnlyComputeBudgetCompanionIxsAllowed,
     KaminoLendingError.MissingPermissioner,
-    KaminoLendingError.ReserveRewardsDisabled {
+    KaminoLendingError.ReserveRewardsDisabled,
+    KaminoLendingError.TransactionIncludesNonceInstruction {
 
   static KaminoLendingError getInstance(final int errorCode) {
     return switch (errorCode) {
@@ -377,6 +378,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
       case 6182 -> OnlyComputeBudgetCompanionIxsAllowed.INSTANCE;
       case 6183 -> MissingPermissioner.INSTANCE;
       case 6184 -> ReserveRewardsDisabled.INSTANCE;
+      case 6185 -> TransactionIncludesNonceInstruction.INSTANCE;
       default -> null;
     };
   }
@@ -1245,7 +1247,7 @@ public sealed interface KaminoLendingError extends ProgramError permits
   record OrderIndexOutOfBounds(int code, String msg) implements KaminoLendingError {
 
     public static final OrderIndexOutOfBounds INSTANCE = new OrderIndexOutOfBounds(
-        6123, "Obligation order of the given index cannot exist"
+        6123, "Order of the given index cannot exist"
     );
   }
 
@@ -1673,6 +1675,13 @@ public sealed interface KaminoLendingError extends ProgramError permits
 
     public static final ReserveRewardsDisabled INSTANCE = new ReserveRewardsDisabled(
         6184, "Reserve rewards are disabled on this market (reserve_rewards_max_apr_bps is 0)"
+    );
+  }
+
+  record TransactionIncludesNonceInstruction(int code, String msg) implements KaminoLendingError {
+
+    public static final TransactionIncludesNonceInstruction INSTANCE = new TransactionIncludesNonceInstruction(
+        6185, "Transaction includes a nonce instruction, which is not allowed for admin operations"
     );
   }
 }

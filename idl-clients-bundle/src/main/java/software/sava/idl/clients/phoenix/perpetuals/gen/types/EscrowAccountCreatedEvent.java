@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::EscrowAccountCreated Borsh variant 52.
@@ -16,17 +16,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param capacity: u64
 public record EscrowAccountCreatedEvent(Discriminator discriminator, PublicKey authority, long capacity) implements EternalEvent {
 
-  public static final int BYTES = 48;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(52, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 41;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(52);
 
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int CAPACITY_OFFSET = 40;
+  public static final int AUTHORITY_OFFSET = 1;
+  public static final int CAPACITY_OFFSET = 33;
 
   public static EscrowAccountCreatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;

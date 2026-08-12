@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderWithdrawCancelled Borsh variant 17.
@@ -27,22 +27,22 @@ public record TraderWithdrawCancelledEvent(Discriminator discriminator,
                                            long withdrawQueueSequenceNumber,
                                            long withdrawQueuePrevSequenceNumberSlot) implements EternalEvent {
 
-  public static final int BYTES = 112;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(17, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 105;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(17);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 40;
-  public static final int AMOUNT_OFFSET = 72;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 80;
-  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 88;
-  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 96;
-  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 104;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 33;
+  public static final int AMOUNT_OFFSET = 65;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 73;
+  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 81;
+  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 89;
+  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 97;
 
   public static TraderWithdrawCancelledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

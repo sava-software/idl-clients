@@ -2,9 +2,8 @@
 package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.MarketStatus;
 
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::MarketStatusChanged Borsh variant 25.
@@ -12,17 +11,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///
 public record MarketStatusChangedEvent(Discriminator discriminator, MarketStatus previousMarketStatus, MarketStatus newMarketStatus) implements EternalEvent {
 
-  public static final int BYTES = 10;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(25, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 3;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(25);
 
-  public static final int PREVIOUS_MARKET_STATUS_OFFSET = 8;
-  public static final int NEW_MARKET_STATUS_OFFSET = 9;
+  public static final int PREVIOUS_MARKET_STATUS_OFFSET = 1;
+  public static final int NEW_MARKET_STATUS_OFFSET = 2;
 
   public static MarketStatusChangedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousMarketStatus = MarketStatus.read(_data, i);
     i += previousMarketStatus.l();

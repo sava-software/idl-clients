@@ -3,15 +3,13 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::LiquidationTransfer Borsh variant 31.
@@ -29,23 +27,23 @@ public record LiquidationTransferEvent(Discriminator discriminator,
                                        SignedQuoteLots liquidateeCollateralChange,
                                        SignedQuoteLots liquidatorCollateralChange) implements EternalEvent {
 
-  public static final int BYTES = 114;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(31, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 107;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(31);
 
-  public static final int LIQUIDATEE_OFFSET = 8;
-  public static final int LIQUIDATOR_OFFSET = 40;
-  public static final int ASSET_ID_OFFSET = 72;
-  public static final int BASE_LOTS_TRANSFERRED_OFFSET = 80;
-  public static final int VIRTUAL_QUOTE_LOTS_TRANSFERRED_OFFSET = 88;
-  public static final int HAIRCUT_RATE_OFFSET = 96;
-  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 98;
-  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 106;
+  public static final int LIQUIDATEE_OFFSET = 1;
+  public static final int LIQUIDATOR_OFFSET = 33;
+  public static final int ASSET_ID_OFFSET = 65;
+  public static final int BASE_LOTS_TRANSFERRED_OFFSET = 73;
+  public static final int VIRTUAL_QUOTE_LOTS_TRANSFERRED_OFFSET = 81;
+  public static final int HAIRCUT_RATE_OFFSET = 89;
+  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 91;
+  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 99;
 
   public static LiquidationTransferEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var liquidatee = readPubKey(_data, i);
     i += 32;

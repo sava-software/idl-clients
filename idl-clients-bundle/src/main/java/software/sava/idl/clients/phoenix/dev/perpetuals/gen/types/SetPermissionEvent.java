@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SetPermission Borsh variant 45.
@@ -26,24 +26,24 @@ public record SetPermissionEvent(Discriminator discriminator,
                                  long newNumSignerActionsRemaining,
                                  boolean created) implements EternalEvent {
 
-  public static final int BYTES = 121;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(45, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 114;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(45);
 
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int USER_OFFSET = 40;
-  public static final int PREVIOUS_PERMISSION_OFFSET = 72;
-  public static final int NEW_PERMISSION_OFFSET = 80;
-  public static final int PREVIOUS_EXPIRES_AT_TIMESTAMP_OFFSET = 88;
-  public static final int NEW_EXPIRES_AT_TIMESTAMP_OFFSET = 96;
-  public static final int PREVIOUS_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 104;
-  public static final int NEW_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 112;
-  public static final int CREATED_OFFSET = 120;
+  public static final int AUTHORITY_OFFSET = 1;
+  public static final int USER_OFFSET = 33;
+  public static final int PREVIOUS_PERMISSION_OFFSET = 65;
+  public static final int NEW_PERMISSION_OFFSET = 73;
+  public static final int PREVIOUS_EXPIRES_AT_TIMESTAMP_OFFSET = 81;
+  public static final int NEW_EXPIRES_AT_TIMESTAMP_OFFSET = 89;
+  public static final int PREVIOUS_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 97;
+  public static final int NEW_NUM_SIGNER_ACTIONS_REMAINING_OFFSET = 105;
+  public static final int CREATED_OFFSET = 113;
 
   public static SetPermissionEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;

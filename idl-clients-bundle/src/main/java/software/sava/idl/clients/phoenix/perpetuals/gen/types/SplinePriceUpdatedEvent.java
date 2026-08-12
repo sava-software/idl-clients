@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SplinePriceUpdated Borsh variant 22.
@@ -29,24 +28,24 @@ public record SplinePriceUpdatedEvent(Discriminator discriminator,
                                       long userUpdateSlot,
                                       boolean refreshRegions) implements EternalEvent {
 
-  public static final int BYTES = 153;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(22, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 146;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(22);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int AUTHORITY_OFFSET = 56;
-  public static final int MARKET_OFFSET = 88;
-  public static final int SYMBOL_OFFSET = 120;
-  public static final int PRICE_IN_TICKS_OFFSET = 136;
-  public static final int USER_UPDATE_SLOT_OFFSET = 144;
-  public static final int REFRESH_REGIONS_OFFSET = 152;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int AUTHORITY_OFFSET = 49;
+  public static final int MARKET_OFFSET = 81;
+  public static final int SYMBOL_OFFSET = 113;
+  public static final int PRICE_IN_TICKS_OFFSET = 129;
+  public static final int USER_UPDATE_SLOT_OFFSET = 137;
+  public static final int REFRESH_REGIONS_OFFSET = 145;
 
   public static SplinePriceUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

@@ -3,11 +3,8 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.FundingRateUnitInSeconds;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
 
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::FundingParametersUpdated Borsh variant 27.
@@ -19,16 +16,16 @@ public record FundingParametersUpdatedEvent(Discriminator discriminator,
                                             FundingRateUnitInSeconds newFundingPeriodSeconds,
                                             SignedQuoteLotsPerBaseLot newMaxFundingRate) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(27, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(27);
 
-  public static final int SYMBOL_OFFSET = 8;
-  public static final int NEW_FUNDING_INTERVAL_SECONDS_OFFSET = 25;
+  public static final int SYMBOL_OFFSET = 1;
+  public static final int NEW_FUNDING_INTERVAL_SECONDS_OFFSET = 18;
 
   public static FundingParametersUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var symbol = Symbol.read(_data, i);
     i += symbol.l();
@@ -76,6 +73,6 @@ public record FundingParametersUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + symbol.l() + (newFundingIntervalSeconds == null ? 1 : (1 + newFundingIntervalSeconds.l())) + (newFundingPeriodSeconds == null ? 1 : (1 + newFundingPeriodSeconds.l())) + (newMaxFundingRate == null ? 1 : (1 + newMaxFundingRate.l()));
+    return 1 + symbol.l() + (newFundingIntervalSeconds == null ? 1 : (1 + newFundingIntervalSeconds.l())) + (newFundingPeriodSeconds == null ? 1 : (1 + newFundingPeriodSeconds.l())) + (newMaxFundingRate == null ? 1 : (1 + newMaxFundingRate.l()));
   }
 }

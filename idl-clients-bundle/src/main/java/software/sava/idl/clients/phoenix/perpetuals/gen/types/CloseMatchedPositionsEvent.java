@@ -3,13 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::CloseMatchedPositions Borsh variant 33.
@@ -28,25 +26,25 @@ public record CloseMatchedPositionsEvent(Discriminator discriminator,
                                          SignedQuoteLots atLossCollateralChange,
                                          SignedQuoteLots inProfitCollateralChange) implements EternalEvent {
 
-  public static final int BYTES = 184;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(33, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 177;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(33);
 
-  public static final int CALLER_OFFSET = 8;
-  public static final int CLOSED_SHORT_OFFSET = 40;
-  public static final int CLOSED_LONG_OFFSET = 72;
-  public static final int IN_PROFIT_ACCOUNT_OFFSET = 104;
-  public static final int ASSET_ID_OFFSET = 136;
-  public static final int BASE_LOTS_CLOSED_OFFSET = 144;
-  public static final int AT_LOSS_CLOSE_VALUE_OFFSET = 152;
-  public static final int IN_PROFIT_CLOSE_VALUE_OFFSET = 160;
-  public static final int AT_LOSS_COLLATERAL_CHANGE_OFFSET = 168;
-  public static final int IN_PROFIT_COLLATERAL_CHANGE_OFFSET = 176;
+  public static final int CALLER_OFFSET = 1;
+  public static final int CLOSED_SHORT_OFFSET = 33;
+  public static final int CLOSED_LONG_OFFSET = 65;
+  public static final int IN_PROFIT_ACCOUNT_OFFSET = 97;
+  public static final int ASSET_ID_OFFSET = 129;
+  public static final int BASE_LOTS_CLOSED_OFFSET = 137;
+  public static final int AT_LOSS_CLOSE_VALUE_OFFSET = 145;
+  public static final int IN_PROFIT_CLOSE_VALUE_OFFSET = 153;
+  public static final int AT_LOSS_COLLATERAL_CHANGE_OFFSET = 161;
+  public static final int IN_PROFIT_COLLATERAL_CHANGE_OFFSET = 169;
 
   public static CloseMatchedPositionsEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var caller = readPubKey(_data, i);
     i += 32;

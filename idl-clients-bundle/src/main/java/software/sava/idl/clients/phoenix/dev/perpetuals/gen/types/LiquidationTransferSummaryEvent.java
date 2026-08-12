@@ -3,13 +3,11 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLots;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::LiquidationTransferSummary Borsh variant 30.
@@ -24,21 +22,21 @@ public record LiquidationTransferSummaryEvent(Discriminator discriminator,
                                               SignedQuoteLots liquidatorCollateralChange,
                                               QuoteLots haircutCollected) implements EternalEvent {
 
-  public static final int BYTES = 100;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(30, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 93;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(30);
 
-  public static final int LIQUIDATEE_OFFSET = 8;
-  public static final int LIQUIDATOR_OFFSET = 40;
-  public static final int TOTAL_TRANSFERS_OFFSET = 72;
-  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 76;
-  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 84;
-  public static final int HAIRCUT_COLLECTED_OFFSET = 92;
+  public static final int LIQUIDATEE_OFFSET = 1;
+  public static final int LIQUIDATOR_OFFSET = 33;
+  public static final int TOTAL_TRANSFERS_OFFSET = 65;
+  public static final int LIQUIDATEE_COLLATERAL_CHANGE_OFFSET = 69;
+  public static final int LIQUIDATOR_COLLATERAL_CHANGE_OFFSET = 77;
+  public static final int HAIRCUT_COLLECTED_OFFSET = 85;
 
   public static LiquidationTransferSummaryEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var liquidatee = readPubKey(_data, i);
     i += 32;

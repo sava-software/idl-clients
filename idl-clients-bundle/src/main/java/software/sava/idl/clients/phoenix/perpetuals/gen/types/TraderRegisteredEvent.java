@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderRegistered Borsh variant 9.
@@ -25,21 +25,21 @@ public record TraderRegisteredEvent(Discriminator discriminator,
                                     int traderPdaIndex,
                                     int traderSubaccountIndex) implements EternalEvent {
 
-  public static final int BYTES = 90;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(9, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 83;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(9);
 
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 8;
-  public static final int TRADER_OFFSET = 16;
-  public static final int AUTHORITY_OFFSET = 48;
-  public static final int MAX_POSITIONS_OFFSET = 80;
-  public static final int TRADER_PDA_INDEX_OFFSET = 88;
-  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 89;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 1;
+  public static final int TRADER_OFFSET = 9;
+  public static final int AUTHORITY_OFFSET = 41;
+  public static final int MAX_POSITIONS_OFFSET = 73;
+  public static final int TRADER_PDA_INDEX_OFFSET = 81;
+  public static final int TRADER_SUBACCOUNT_INDEX_OFFSET = 82;
 
   public static TraderRegisteredEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var traderSequenceNumber = getInt64LE(_data, i);
     i += 8;

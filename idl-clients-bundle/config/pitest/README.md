@@ -1188,6 +1188,35 @@ repo. For Marinade that was:
 Without both, prefer the on-chain IDL and leave the discrepancy documented
 instead. Re-verify step 2 if the SDK IDL later moves ahead of a deploy.
 
+#### Exponent: `"deployed": "vcs"` because there is no on-chain IDL at all
+
+Exponent (`ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7`) is **not** the same
+kind of override as the entries above. It is not a case of preferring a repo
+copy over a stale chain copy — there is nothing on chain to prefer over.
+
+1. **Neither on-chain IDL location exists.** The Anchor IDL account
+   (`JAE1nrFzC37Q6Gh7xxAxiE7J7WJ84rdiEMXHqdP7nbU5`, derived as
+   `createWithSeed(findProgramAddress([], program), "anchor:idl", program)`) and
+   the program-metadata PDA both return null. The derivation was validated
+   against three programs that *do* publish — Kamino Lend, Jupiter Perpetuals and
+   Orca Whirlpools all resolve to present accounts under the same code — so the
+   absence is a fact about Exponent, not a broken derivation. Same for
+   `exponent_admin` (`3D6ojc8vBfDteLBDTTRznZbZRh7bkEGQaYqNkudoTCBQ`), which is
+   why no client is generated for it.
+2. **The repository copy is what the deployed program answers to.** All 42
+   declared discriminators dispatch on mainnet, against a garbage-discriminator
+   control returning `InstructionFallbackNotFound` (`tools/idl_probe.py`).
+
+**The dispatch probe does not validate discriminator width, and that matters
+here.** Exponent declares one-byte instruction discriminators
+(`#[instruction(discriminator = [N])]`, N = 0..41). Anchor dispatch is
+`data.starts_with(&DISCRIMINATOR)` and slices only `DISCRIMINATOR.len()`, so a
+client emitting the eight-byte zero-padded form still *matches* — and hands the
+seven surplus bytes to Borsh as the leading bytes of the arguments. The probe
+goes green either way. Generating a correct client required teaching idl-src-gen
+to honour the declared width; `ExponentOnChainTests` pins it against a real
+mainnet instruction whose data is nine bytes, not sixteen.
+
 The same diff also confirmed the Kamino oracle sentinels are correct: klend's
 `RefreshReserve` and kfarms' `RefreshFarm` both declare their optional accounts
 as `Option<...>`, and Anchor signals an absent optional account by passing the

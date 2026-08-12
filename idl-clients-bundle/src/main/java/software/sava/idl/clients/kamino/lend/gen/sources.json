@@ -1,10 +1,10 @@
 {
   "deployed": "anchor",
-  "lastDeploySlot": 422723185,
+  "lastDeploySlot": 438843135,
   "channels": {
     "anchor": {
       "origin": "8qLKwp1fk8WyqmzarkuMeZEX3AzL4VDSmA2UZTKT2aCJ",
-      "hash": "7d8f55dca835e9c1890aec99e9d939241ca3df9bc3ef6006e138cbdda9bd6eb2",
+      "hash": "c229f91d6a79a4a100ce6adc51597eaf0688ed29fa2ff4a38a4238da7ad24875",
       "matchesDeployed": true,
       "verbatim": "anchor.original.json"
     },

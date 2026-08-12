@@ -3,17 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TradeSummary Borsh variant 6.
@@ -34,26 +28,26 @@ public record TradeSummaryEvent(Discriminator discriminator,
                                 SignedQuoteLots quoteLotCollateral,
                                 SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot) implements EternalEvent {
 
-  public static final int BYTES = 113;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(6, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 106;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(6);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_TRADE_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int SIDE_OFFSET = 56;
-  public static final int BASE_LOTS_FILLED_OFFSET = 57;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 65;
-  public static final int FEE_IN_QUOTE_LOTS_OFFSET = 73;
-  public static final int BASE_LOT_POSITION_OFFSET = 81;
-  public static final int VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 89;
-  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 97;
-  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 105;
+  public static final int TRADER_OFFSET = 1;
+  public static final int TRADE_SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_TRADE_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int SIDE_OFFSET = 49;
+  public static final int BASE_LOTS_FILLED_OFFSET = 50;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 58;
+  public static final int FEE_IN_QUOTE_LOTS_OFFSET = 66;
+  public static final int BASE_LOT_POSITION_OFFSET = 74;
+  public static final int VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 82;
+  public static final int QUOTE_LOT_COLLATERAL_OFFSET = 90;
+  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 98;
 
   public static TradeSummaryEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

@@ -2,15 +2,10 @@
 package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderModificationReason;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::OrderModified Borsh variant 7.
@@ -25,21 +20,21 @@ public record OrderModifiedEvent(Discriminator discriminator,
                                  BaseLots baseLotsRemaining,
                                  OrderModificationReason reason) implements EternalEvent {
 
-  public static final int BYTES = 49;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(7, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 42;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(7);
 
-  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 8;
-  public static final int PRICE_OFFSET = 16;
-  public static final int BASE_LOTS_RELEASED_OFFSET = 24;
-  public static final int QUOTE_LOTS_RELEASED_OFFSET = 32;
-  public static final int BASE_LOTS_REMAINING_OFFSET = 40;
-  public static final int REASON_OFFSET = 48;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 1;
+  public static final int PRICE_OFFSET = 9;
+  public static final int BASE_LOTS_RELEASED_OFFSET = 17;
+  public static final int QUOTE_LOTS_RELEASED_OFFSET = 25;
+  public static final int BASE_LOTS_REMAINING_OFFSET = 33;
+  public static final int REASON_OFFSET = 41;
 
   public static OrderModifiedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var orderSequenceNumber = getInt64LE(_data, i);
     i += 8;

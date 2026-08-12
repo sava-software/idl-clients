@@ -4,14 +4,12 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.AdminParameterUpdateKind;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
 
 import java.util.OptionalLong;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::AdminParameterUpdated Borsh variant 48.
@@ -24,16 +22,16 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
                                          OptionalLong assetId,
                                          AdminParameterUpdateKind updateKind) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(48, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(48);
 
-  public static final int AUTHORITY_OFFSET = 8;
-  public static final int ASSET_SYMBOL_OFFSET = 41;
+  public static final int AUTHORITY_OFFSET = 1;
+  public static final int ASSET_SYMBOL_OFFSET = 34;
 
   public static AdminParameterUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var authority = readPubKey(_data, i);
     i += 32;
@@ -76,6 +74,6 @@ public record AdminParameterUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + 32 + (assetSymbol == null ? 1 : (1 + assetSymbol.l())) + (assetId == null || assetId.isEmpty() ? 1 : (1 + 4)) + updateKind.l();
+    return 1 + 32 + (assetSymbol == null ? 1 : (1 + assetSymbol.l())) + (assetId == null || assetId.isEmpty() ? 1 : (1 + 4)) + updateKind.l();
   }
 }

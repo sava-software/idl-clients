@@ -3,14 +3,13 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::Header Borsh variant 1.
@@ -33,24 +32,24 @@ public record MarketEventHeader(Discriminator discriminator,
                                 PublicKey signer,
                                 PublicKey traderAccount) implements EternalEvent {
 
-  public static final int BYTES = 114;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(1, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 107;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(1);
 
-  public static final int SEQUENCE_NUMBER_OFFSET = 8;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 16;
-  public static final int ASSET_SYMBOL_OFFSET = 24;
-  public static final int ASSET_ID_OFFSET = 40;
-  public static final int TICK_SIZE_OFFSET = 44;
-  public static final int BASE_LOT_DECIMALS_OFFSET = 48;
-  public static final int QUOTE_LOT_DECIMALS_OFFSET = 49;
-  public static final int SIGNER_OFFSET = 50;
-  public static final int TRADER_ACCOUNT_OFFSET = 82;
+  public static final int SEQUENCE_NUMBER_OFFSET = 1;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 9;
+  public static final int ASSET_SYMBOL_OFFSET = 17;
+  public static final int ASSET_ID_OFFSET = 33;
+  public static final int TICK_SIZE_OFFSET = 37;
+  public static final int BASE_LOT_DECIMALS_OFFSET = 41;
+  public static final int QUOTE_LOT_DECIMALS_OFFSET = 42;
+  public static final int SIGNER_OFFSET = 43;
+  public static final int TRADER_ACCOUNT_OFFSET = 75;
 
   public static MarketEventHeader read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var sequenceNumber = getInt64LE(_data, i);
     i += 8;

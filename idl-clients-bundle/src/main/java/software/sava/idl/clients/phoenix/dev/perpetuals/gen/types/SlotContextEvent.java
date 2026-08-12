@@ -5,7 +5,7 @@ import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SlotContext Borsh variant 0.
@@ -15,17 +15,17 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param slot: u64
 public record SlotContextEvent(Discriminator discriminator, long timestamp, long slot) implements EternalEvent {
 
-  public static final int BYTES = 24;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(0, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 17;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(0);
 
-  public static final int TIMESTAMP_OFFSET = 8;
-  public static final int SLOT_OFFSET = 16;
+  public static final int TIMESTAMP_OFFSET = 1;
+  public static final int SLOT_OFFSET = 9;
 
   public static SlotContextEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var timestamp = getInt64LE(_data, i);
     i += 8;

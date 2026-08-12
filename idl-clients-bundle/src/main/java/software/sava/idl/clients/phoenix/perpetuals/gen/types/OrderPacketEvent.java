@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderPacket;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::OrderPacket Borsh variant 44.
@@ -20,15 +19,15 @@ public record OrderPacketEvent(Discriminator discriminator,
                                PublicKey trader,
                                long nextOrderSequenceNumber) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(44, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(44);
 
-  public static final int ORDER_PACKET_OFFSET = 8;
+  public static final int ORDER_PACKET_OFFSET = 1;
 
   public static OrderPacketEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var orderPacket = OrderPacket.read(_data, i);
     i += orderPacket.l();
@@ -51,6 +50,6 @@ public record OrderPacketEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + orderPacket.l() + 32 + 8;
+    return 1 + orderPacket.l() + 32 + 8;
   }
 }

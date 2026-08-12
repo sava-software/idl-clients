@@ -47,11 +47,13 @@ hardening {
           "instead by the generator's own tests; by tools/idl_probe.py, which asks each " +
           "deployed program whether it still declares the instructions our IDL does, and " +
           "tools/ground_truth.py, which diffs generated account order against the program's " +
-          "Rust (docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — 41 " +
-          "test sources in this module build and decode through generated types, and two fuzz " +
-          "harnesses round-trip them (RouteV2DataFuzz through jupiter.swap.gen, ScopeReaderFuzz " +
-          "through kamino.scope.gen.types.OracleMappings). The hand-written layer that " +
-          "interprets them stays in the mutant population."
+          "Rust (docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — the " +
+          "test sources in this module build and decode through generated types, several of them " +
+          "against account, instruction and event bytes captured from mainnet (Phoenix " +
+          "MarketEvent payloads, Metaplex Core BaseAssetV1, Exponent), and two fuzz harnesses " +
+          "round-trip them (RouteV2DataFuzz through jupiter.swap.gen, ScopeReaderFuzz through " +
+          "kamino.scope.gen.types.OracleMappings). The hand-written layer that interprets them " +
+          "stays in the mutant population."
   val integDecline =
       "Git-ignored local scratch mains ('Integ.*' in .gitignore; AGENTS.md, Build & test): " +
           "hand-run integration probes against live RPC, present on a dev machine and absent " +

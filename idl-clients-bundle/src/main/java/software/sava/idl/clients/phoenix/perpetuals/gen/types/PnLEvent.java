@@ -3,14 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::PnL Borsh variant 37.
@@ -28,24 +25,24 @@ public record PnLEvent(Discriminator discriminator,
                        SignedQuoteLots virtualQuoteLotsBefore,
                        SignedQuoteLots virtualQuoteLotsAfter) implements EternalEvent {
 
-  public static final int BYTES = 108;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(37, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 101;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(37);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int ASSET_ID_OFFSET = 40;
-  public static final int ASSET_SYMBOL_OFFSET = 44;
-  public static final int REALIZED_PNL_OFFSET = 60;
-  public static final int FUNDING_PAYMENT_OFFSET = 68;
-  public static final int BASE_LOTS_BEFORE_OFFSET = 76;
-  public static final int BASE_LOTS_AFTER_OFFSET = 84;
-  public static final int VIRTUAL_QUOTE_LOTS_BEFORE_OFFSET = 92;
-  public static final int VIRTUAL_QUOTE_LOTS_AFTER_OFFSET = 100;
+  public static final int TRADER_OFFSET = 1;
+  public static final int ASSET_ID_OFFSET = 33;
+  public static final int ASSET_SYMBOL_OFFSET = 37;
+  public static final int REALIZED_PNL_OFFSET = 53;
+  public static final int FUNDING_PAYMENT_OFFSET = 61;
+  public static final int BASE_LOTS_BEFORE_OFFSET = 69;
+  public static final int BASE_LOTS_AFTER_OFFSET = 77;
+  public static final int VIRTUAL_QUOTE_LOTS_BEFORE_OFFSET = 85;
+  public static final int VIRTUAL_QUOTE_LOTS_AFTER_OFFSET = 93;
 
   public static PnLEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

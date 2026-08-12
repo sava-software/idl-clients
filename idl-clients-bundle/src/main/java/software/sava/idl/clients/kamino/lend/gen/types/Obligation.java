@@ -50,10 +50,20 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                 Zero if not currently subject to deleveraging.
 /// @param obligationOrders Owner-defined, permissionlessly-executed repay orders.
 ///                         Typical use-cases would be a stop-loss and a take-profit (possibly co-existing).
-/// @param borrowOrder Owner-defined, permissionlessly-executed borrow order applicable to this obligation.
-///                    Non-zeroed only on a newly-initialized fixed-rate, fixed-term obligation.
+/// @param headBorrowOrder The first of the owner-defined, permissionlessly-executed borrow order applicable to this
+///                        obligation.
+///                        
+///                        ## Why "head"?
+///                        
+///                        We started with a single BO, and later needed to add support for having multiple BOs (while
+///                        the next field was already added and released). Hence, the entire array of BOs is split
+///                        between this singular field and Self::tail_borrow_orders. We explicitly renamed this one
+///                        to "head_..." so that all usages are aware of the split - in fact, the callers should use
+///                        the public Self::get_borrow_order() / Self::get_borrow_order_mut() for uniform access
+///                        to the abstract "array of BOs".
 /// @param pendingOwner Pending owner during ownership transfer process.
 ///                     Pubkey::default() means no pending owner (similar to Option::None)
+/// @param tailBorrowOrders The tail of the BOs array (see Self::head_borrow_order).
 /// @param padding3: u64[]
 public record Obligation(PublicKey _address,
                          Discriminator discriminator,
@@ -83,8 +93,9 @@ public record Obligation(PublicKey _address,
                          long highestBorrowFactorPct,
                          long autodeleverageMarginCallStartedTimestamp,
                          ObligationOrder[] obligationOrders,
-                         BorrowOrder borrowOrder,
+                         BorrowOrder headBorrowOrder,
                          PublicKey pendingOwner,
+                         BorrowOrder[] tailBorrowOrders,
                          long[] padding3) implements SerDe {
 
   public static final int BYTES = 3344;
@@ -93,7 +104,8 @@ public record Obligation(PublicKey _address,
   public static final int PADDING_DEPRECATED_ASSET_TIERS_LEN = 13;
   public static final int RESERVED_LEN = 3;
   public static final int OBLIGATION_ORDERS_LEN = 2;
-  public static final int PADDING_3_LEN = 69;
+  public static final int TAIL_BORROW_ORDERS_LEN = 2;
+  public static final int PADDING_3_LEN = 29;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
   public static final Discriminator DISCRIMINATOR = toDiscriminator(168, 206, 141, 106, 88, 76, 172, 167);
@@ -125,9 +137,10 @@ public record Obligation(PublicKey _address,
   public static final int HIGHEST_BORROW_FACTOR_PCT_OFFSET = 2328;
   public static final int AUTODELEVERAGE_MARGIN_CALL_STARTED_TIMESTAMP_OFFSET = 2336;
   public static final int OBLIGATION_ORDERS_OFFSET = 2344;
-  public static final int BORROW_ORDER_OFFSET = 2600;
+  public static final int HEAD_BORROW_ORDER_OFFSET = 2600;
   public static final int PENDING_OWNER_OFFSET = 2760;
-  public static final int PADDING_3_OFFSET = 2792;
+  public static final int TAIL_BORROW_ORDERS_OFFSET = 2792;
+  public static final int PADDING_3_OFFSET = 3112;
 
   public static Filter createTagFilter(final long tag) {
     final byte[] _data = new byte[8];
@@ -307,11 +320,13 @@ public record Obligation(PublicKey _address,
     i += 8;
     final var obligationOrders = new ObligationOrder[2];
     i += SerDeUtil.readArray(obligationOrders, ObligationOrder::read, _data, i);
-    final var borrowOrder = BorrowOrder.read(_data, i);
-    i += borrowOrder.l();
+    final var headBorrowOrder = BorrowOrder.read(_data, i);
+    i += headBorrowOrder.l();
     final var pendingOwner = readPubKey(_data, i);
     i += 32;
-    final var padding3 = new long[69];
+    final var tailBorrowOrders = new BorrowOrder[2];
+    i += SerDeUtil.readArray(tailBorrowOrders, BorrowOrder::read, _data, i);
+    final var padding3 = new long[29];
     SerDeUtil.readArray(padding3, _data, i);
     return new Obligation(_address,
                           discriminator,
@@ -341,8 +356,9 @@ public record Obligation(PublicKey _address,
                           highestBorrowFactorPct,
                           autodeleverageMarginCallStartedTimestamp,
                           obligationOrders,
-                          borrowOrder,
+                          headBorrowOrder,
                           pendingOwner,
+                          tailBorrowOrders,
                           padding3);
   }
 
@@ -395,10 +411,11 @@ public record Obligation(PublicKey _address,
     putInt64LE(_data, i, autodeleverageMarginCallStartedTimestamp);
     i += 8;
     i += SerDeUtil.writeArrayChecked(obligationOrders, 2, _data, i);
-    i += borrowOrder.write(_data, i);
+    i += headBorrowOrder.write(_data, i);
     pendingOwner.write(_data, i);
     i += 32;
-    i += SerDeUtil.writeArrayChecked(padding3, 69, _data, i);
+    i += SerDeUtil.writeArrayChecked(tailBorrowOrders, 2, _data, i);
+    i += SerDeUtil.writeArrayChecked(padding3, 29, _data, i);
     return i - _offset;
   }
 

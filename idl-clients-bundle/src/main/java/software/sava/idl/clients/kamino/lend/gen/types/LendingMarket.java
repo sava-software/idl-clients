@@ -95,6 +95,15 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 ///                                                         See FixedTermBorrowRolloverConfig::migration_to_fixed_enabled.
 /// @param withdrawTicketCancellationEnabled: u8 Whether the ticket owners can cancel their withdraw tickets (i.e. recover ctokens from the
 ///                                          queued collateral vault back to their wallet).
+/// @param disableNonceBlock: u8 When non-zero, ongoing-admin instructions targeting this market are allowed to be part of
+///                          a durable (nonce-based) transaction. Defaults to 0 — any `advance_nonce_account` ix found
+///                          in the transaction causes admin ix to fail with `TransactionIncludesNonceInstruction`.
+///                          Intended for markets administrated via MPC wallets that require durable nonces.
+///                          
+///                          Note: this flag only covers ongoing admin ix on an existing market. Bootstrap-only ix
+///                          (`init_lending_market`) and global-config ix
+///                          (`init_global_config`, `update_global_config`, `update_global_config_admin`) remain
+///                          unconditionally blocked.
 /// @param reserveRewardsMaxAprBps: u16 Maximum APR (in basis points; `FULL_BPS = 10_000` = 100%) at which reserves on this market
 ///                                may distribute their `rewards_amount_per_slot`. `0` disables rewards on this market
 ///                                entirely (`topup_reserve_rewards` is rejected). Bounded by `FULL_BPS` (100% APR) when set.
@@ -186,7 +195,7 @@ public record LendingMarket(PublicKey _address,
                             int obligationBorrowRolloverConfigurationEnabled,
                             int obligationBorrowMigrationToFixedExecutionEnabled,
                             int withdrawTicketCancellationEnabled,
-                            byte[] padding2,
+                            int disableNonceBlock,
                             int reserveRewardsMaxAprBps,
                             long minWithdrawQueuedLiquidityValue,
                             long fixedTermRolloverWindowDurationSeconds,
@@ -204,7 +213,6 @@ public record LendingMarket(PublicKey _address,
   public static final int ELEVATION_GROUPS_LEN = 32;
   public static final int ELEVATION_GROUP_PADDING_LEN = 90;
   public static final int NAME_LEN = 32;
-  public static final int PADDING_2_LEN = 1;
   public static final int PADDING_1_LEN = 153;
   public static final Filter SIZE_FILTER = Filter.createDataSizeFilter(BYTES);
 
@@ -252,7 +260,7 @@ public record LendingMarket(PublicKey _address,
   public static final int OBLIGATION_BORROW_ROLLOVER_CONFIGURATION_ENABLED_OFFSET = 3354;
   public static final int OBLIGATION_BORROW_MIGRATION_TO_FIXED_EXECUTION_ENABLED_OFFSET = 3355;
   public static final int WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET = 3356;
-  public static final int PADDING_2_OFFSET = 3357;
+  public static final int DISABLE_NONCE_BLOCK_OFFSET = 3357;
   public static final int RESERVE_REWARDS_MAX_APR_BPS_OFFSET = 3358;
   public static final int MIN_WITHDRAW_QUEUED_LIQUIDITY_VALUE_OFFSET = 3360;
   public static final int FIXED_TERM_ROLLOVER_WINDOW_DURATION_SECONDS_OFFSET = 3368;
@@ -427,6 +435,10 @@ public record LendingMarket(PublicKey _address,
     return Filter.createMemCompFilter(WITHDRAW_TICKET_CANCELLATION_ENABLED_OFFSET, new byte[]{(byte) withdrawTicketCancellationEnabled});
   }
 
+  public static Filter createDisableNonceBlockFilter(final int disableNonceBlock) {
+    return Filter.createMemCompFilter(DISABLE_NONCE_BLOCK_OFFSET, new byte[]{(byte) disableNonceBlock});
+  }
+
   public static Filter createReserveRewardsMaxAprBpsFilter(final int reserveRewardsMaxAprBps) {
     final byte[] _data = new byte[2];
     putInt16LE(_data, 0, reserveRewardsMaxAprBps);
@@ -575,8 +587,8 @@ public record LendingMarket(PublicKey _address,
     ++i;
     final var withdrawTicketCancellationEnabled = _data[i] & 0xFF;
     ++i;
-    final var padding2 = new byte[1];
-    i += SerDeUtil.readArray(padding2, _data, i);
+    final var disableNonceBlock = _data[i] & 0xFF;
+    ++i;
     final var reserveRewardsMaxAprBps = Short.toUnsignedInt(getInt16LE(_data, i));
     i += 2;
     final var minWithdrawQueuedLiquidityValue = getInt64LE(_data, i);
@@ -638,7 +650,7 @@ public record LendingMarket(PublicKey _address,
                              obligationBorrowRolloverConfigurationEnabled,
                              obligationBorrowMigrationToFixedExecutionEnabled,
                              withdrawTicketCancellationEnabled,
-                             padding2,
+                             disableNonceBlock,
                              reserveRewardsMaxAprBps,
                              minWithdrawQueuedLiquidityValue,
                              fixedTermRolloverWindowDurationSeconds,
@@ -729,7 +741,8 @@ public record LendingMarket(PublicKey _address,
     ++i;
     _data[i] = (byte) withdrawTicketCancellationEnabled;
     ++i;
-    i += SerDeUtil.writeArrayChecked(padding2, 1, _data, i);
+    _data[i] = (byte) disableNonceBlock;
+    ++i;
     putInt16LE(_data, i, reserveRewardsMaxAprBps);
     i += 2;
     putInt64LE(_data, i, minWithdrawQueuedLiquidityValue);

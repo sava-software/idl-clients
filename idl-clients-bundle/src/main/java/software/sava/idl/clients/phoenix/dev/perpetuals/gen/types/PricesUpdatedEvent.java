@@ -4,18 +4,13 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLotsPerBaseLotUpcasted;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedTicks;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::PricesUpdated Borsh variant 29.
@@ -42,15 +37,15 @@ public record PricesUpdatedEvent(Discriminator discriminator,
                                  long assetSequenceNumber,
                                  long prevAssetSequenceNumberSlot) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(29, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(29);
 
-  public static final int ORACLE_SIGNER_OFFSET = 9;
+  public static final int ORACLE_SIGNER_OFFSET = 2;
 
   public static PricesUpdatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final PublicKey oracleSigner;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -195,7 +190,7 @@ public record PricesUpdatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + (oracleSigner == null ? 1 : (1 + 32))
+    return 1 + (oracleSigner == null ? 1 : (1 + 32))
          + assetSymbol.l()
          + 4
          + (newBestBid == null ? 1 : (1 + newBestBid.l()))

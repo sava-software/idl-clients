@@ -3,13 +3,10 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Side;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::OrderRejected Borsh variant 4.
@@ -24,23 +21,23 @@ public record OrderRejectedEvent(Discriminator discriminator,
                                  BaseLots numBaseLots,
                                  byte[] reason) implements EternalEvent {
 
-  public static final int BYTES = 77;
+  public static final int BYTES = 70;
   public static final int CLIENT_ORDER_ID_LEN = 16;
   public static final int REASON_LEN = 32;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(4, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(4);
 
-  public static final int ORDER_INDEX_OFFSET = 8;
-  public static final int CLIENT_ORDER_ID_OFFSET = 12;
-  public static final int PRICE_OFFSET = 28;
-  public static final int SIDE_OFFSET = 36;
-  public static final int NUM_BASE_LOTS_OFFSET = 37;
-  public static final int REASON_OFFSET = 45;
+  public static final int ORDER_INDEX_OFFSET = 1;
+  public static final int CLIENT_ORDER_ID_OFFSET = 5;
+  public static final int PRICE_OFFSET = 21;
+  public static final int SIDE_OFFSET = 29;
+  public static final int NUM_BASE_LOTS_OFFSET = 30;
+  public static final int REASON_OFFSET = 38;
 
   public static OrderRejectedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var orderIndex = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;

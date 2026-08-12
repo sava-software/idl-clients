@@ -2,7 +2,6 @@
 package software.sava.idl.clients.kamino.lend.gen.types;
 
 import software.sava.idl.clients.core.gen.SerDe;
-import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -46,7 +45,13 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 ///                                
 ///                                Cannot be enabled when Self::min_debt_term_seconds is `0` (open-term only), because
 ///                                migrating into a fixed-term reserve contradicts the open-term-only intent.
-/// @param alignmentPadding Internal alignment padding (free to reuse).
+/// @param fixedTermRolloverWindowDurationDays: u8 An optional override of the LendingMarket::fixed_term_rollover_window_duration_seconds,
+///                                            expressed in *days*.
+///                                            
+///                                            When zeroed, the market's configured value is used. Also, this setting is effective only
+///                                            when the fixed-term rollover mode is enabled on the market level.
+///                                            In other words: this field cannot be used to enable or disable the fixed-term rollover, only
+///                                            to customize its window duration.
 /// @param maxBorrowRateBps: u32 A maximum allowed borrow rate of a reserve that can be used for a rollover/migration.
 ///                         
 ///                         Note: this must be set (i.e. non-zero) when enabling any rollover/migration flavor, but is
@@ -63,17 +68,16 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
                                             int openTermAllowed,
                                             int migrationToFixedEnabled,
-                                            byte[] alignmentPadding,
+                                            int fixedTermRolloverWindowDurationDays,
                                             long maxBorrowRateBps,
                                             long minDebtTermSeconds) implements SerDe {
 
   public static final int BYTES = 16;
-  public static final int ALIGNMENT_PADDING_LEN = 1;
 
   public static final int AUTO_ROLLOVER_ENABLED_OFFSET = 0;
   public static final int OPEN_TERM_ALLOWED_OFFSET = 1;
   public static final int MIGRATION_TO_FIXED_ENABLED_OFFSET = 2;
-  public static final int ALIGNMENT_PADDING_OFFSET = 3;
+  public static final int FIXED_TERM_ROLLOVER_WINDOW_DURATION_DAYS_OFFSET = 3;
   public static final int MAX_BORROW_RATE_BPS_OFFSET = 4;
   public static final int MIN_DEBT_TERM_SECONDS_OFFSET = 8;
 
@@ -88,15 +92,15 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     ++i;
     final var migrationToFixedEnabled = _data[i] & 0xFF;
     ++i;
-    final var alignmentPadding = new byte[1];
-    i += SerDeUtil.readArray(alignmentPadding, _data, i);
+    final var fixedTermRolloverWindowDurationDays = _data[i] & 0xFF;
+    ++i;
     final var maxBorrowRateBps = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;
     final var minDebtTermSeconds = getInt64LE(_data, i);
     return new FixedTermBorrowRolloverConfig(autoRolloverEnabled,
                                              openTermAllowed,
                                              migrationToFixedEnabled,
-                                             alignmentPadding,
+                                             fixedTermRolloverWindowDurationDays,
                                              maxBorrowRateBps,
                                              minDebtTermSeconds);
   }
@@ -110,7 +114,8 @@ public record FixedTermBorrowRolloverConfig(int autoRolloverEnabled,
     ++i;
     _data[i] = (byte) migrationToFixedEnabled;
     ++i;
-    i += SerDeUtil.writeArrayChecked(alignmentPadding, 1, _data, i);
+    _data[i] = (byte) fixedTermRolloverWindowDurationDays;
+    ++i;
     putInt32LE(_data, i, (int) maxBorrowRateBps);
     i += 4;
     putInt64LE(_data, i, minDebtTermSeconds);

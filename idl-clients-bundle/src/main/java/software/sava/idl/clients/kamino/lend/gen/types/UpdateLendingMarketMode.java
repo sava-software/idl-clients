@@ -51,7 +51,8 @@ public enum UpdateLendingMarketMode implements RustEnum {
   UpdatePermissioningAuthority,
   UpdatePermissionedOps,
   DeprecatedUpdateReserveRewardsMaxAprPct,
-  UpdateReserveRewardsMaxAprBps;
+  UpdateReserveRewardsMaxAprBps,
+  UpdateDisableNonceBlock;
 
   public static UpdateLendingMarketMode read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, UpdateLendingMarketMode.values(), _data, _offset);

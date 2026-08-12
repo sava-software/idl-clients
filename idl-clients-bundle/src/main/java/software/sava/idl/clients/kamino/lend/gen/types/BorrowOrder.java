@@ -13,9 +13,9 @@ import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
 /// A borrow order.
 /// 
-/// When the Obligation::borrow_order is populated (i.e. non-zeroed) on an Obligation, then the
-/// permissionless "fill" operations may borrow liquidity to the owner according to this
-/// specification.
+/// When a borrow order entry on an Obligation (see Obligation::get_borrow_order()) is populated
+/// (i.e. non-zeroed), then the permissionless "fill" operations may borrow liquidity to the owner
+/// according to this specification.
 ///
 /// @param debtLiquidityMint The asset to be borrowed.
 ///                          The reserves used for Obligation::borrows *must* all provide exactly this asset.

@@ -3,14 +3,11 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.Symbol;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderFundingSettled Borsh variant 18.
@@ -25,21 +22,21 @@ public record TraderFundingSettledEvent(Discriminator discriminator,
                                         SignedQuoteLotsPerBaseLot cumulativeFundingSnapshot,
                                         SignedQuoteLots newCollateralBalance) implements EternalEvent {
 
-  public static final int BYTES = 84;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(18, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 77;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(18);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int ASSET_SYMBOL_OFFSET = 40;
-  public static final int ASSET_ID_OFFSET = 56;
-  public static final int FUNDING_PAYMENT_OFFSET = 60;
-  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 68;
-  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 76;
+  public static final int TRADER_OFFSET = 1;
+  public static final int ASSET_SYMBOL_OFFSET = 33;
+  public static final int ASSET_ID_OFFSET = 49;
+  public static final int FUNDING_PAYMENT_OFFSET = 53;
+  public static final int CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 61;
+  public static final int NEW_COLLATERAL_BALANCE_OFFSET = 69;
 
   public static TraderFundingSettledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

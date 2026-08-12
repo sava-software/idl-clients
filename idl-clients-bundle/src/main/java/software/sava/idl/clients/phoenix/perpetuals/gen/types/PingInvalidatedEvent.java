@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.ConditionalOrderPingSnapshot;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::PingInvalidated Borsh variant 61.
@@ -29,20 +28,20 @@ public record PingInvalidatedEvent(Discriminator discriminator,
                                    ConditionalOrderPingSnapshot post,
                                    int currentPositionSequenceNumber) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(61, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(61);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int ASSET_ID_OFFSET = 56;
-  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 64;
-  public static final int PRE_OFFSET = 65;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int ASSET_ID_OFFSET = 49;
+  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 57;
+  public static final int PRE_OFFSET = 58;
 
   public static PingInvalidatedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;
@@ -92,7 +91,7 @@ public record PingInvalidatedEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + 32
+    return 1 + 32
          + 8
          + 8
          + 8

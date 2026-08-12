@@ -5,7 +5,7 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::ExchangeStatusChanged Borsh variant 41.
@@ -18,18 +18,18 @@ public record ExchangeStatusChangedEvent(Discriminator discriminator,
                                          int newBits,
                                          PublicKey authority) implements EternalEvent {
 
-  public static final int BYTES = 42;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(41, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 35;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(41);
 
-  public static final int PREVIOUS_BITS_OFFSET = 8;
-  public static final int NEW_BITS_OFFSET = 9;
-  public static final int AUTHORITY_OFFSET = 10;
+  public static final int PREVIOUS_BITS_OFFSET = 1;
+  public static final int NEW_BITS_OFFSET = 2;
+  public static final int AUTHORITY_OFFSET = 3;
 
   public static ExchangeStatusChangedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var previousBits = _data[i] & 0xFF;
     ++i;

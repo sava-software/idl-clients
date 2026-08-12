@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.EscrowRequestCancelReason;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::EscrowRequestCancelled Borsh variant 55.
@@ -20,18 +19,18 @@ public record EscrowRequestCancelledEvent(Discriminator discriminator,
                                           long sequenceNumber,
                                           EscrowRequestCancelReason reason) implements EternalEvent {
 
-  public static final int BYTES = 49;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(55, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 42;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(55);
 
-  public static final int RECEIVER_AUTHORITY_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int REASON_OFFSET = 48;
+  public static final int RECEIVER_AUTHORITY_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int REASON_OFFSET = 41;
 
   public static EscrowRequestCancelledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var receiverAuthority = readPubKey(_data, i);
     i += 32;

@@ -3,16 +3,12 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.OptionalNonZeroU64;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderFlags;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::OrderPlaced Borsh variant 2.
@@ -33,25 +29,25 @@ public record OrderPlacedEvent(Discriminator discriminator,
                                OptionalNonZeroU64 lastValidSlot,
                                long initialSlot) implements EternalEvent {
 
-  public static final int BYTES = 77;
+  public static final int BYTES = 70;
   public static final int CLIENT_ORDER_ID_LEN = 16;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(2, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(2);
 
-  public static final int ORDER_ID_OFFSET = 8;
-  public static final int ORDER_FLAGS_OFFSET = 12;
-  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 13;
-  public static final int PREV_ORDER_SEQUENCE_NUMBER_SLOT_OFFSET = 21;
-  public static final int CLIENT_ORDER_ID_OFFSET = 29;
-  public static final int PRICE_OFFSET = 45;
-  public static final int QUANTITY_OFFSET = 53;
-  public static final int LAST_VALID_SLOT_OFFSET = 61;
-  public static final int INITIAL_SLOT_OFFSET = 69;
+  public static final int ORDER_ID_OFFSET = 1;
+  public static final int ORDER_FLAGS_OFFSET = 5;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 6;
+  public static final int PREV_ORDER_SEQUENCE_NUMBER_SLOT_OFFSET = 14;
+  public static final int CLIENT_ORDER_ID_OFFSET = 22;
+  public static final int PRICE_OFFSET = 38;
+  public static final int QUANTITY_OFFSET = 46;
+  public static final int LAST_VALID_SLOT_OFFSET = 54;
+  public static final int INITIAL_SLOT_OFFSET = 62;
 
   public static OrderPlacedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var orderId = Integer.toUnsignedLong(getInt32LE(_data, i));
     i += 4;

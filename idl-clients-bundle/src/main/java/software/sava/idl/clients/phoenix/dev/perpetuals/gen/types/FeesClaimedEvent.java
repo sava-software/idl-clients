@@ -5,7 +5,7 @@ import software.sava.core.programs.Discriminator;
 
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::FeesClaimed Borsh variant 28.
@@ -14,16 +14,16 @@ import static software.sava.core.programs.Discriminator.toDiscriminator;
 /// @param amount: u64
 public record FeesClaimedEvent(Discriminator discriminator, long amount) implements EternalEvent {
 
-  public static final int BYTES = 16;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(28, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 9;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(28);
 
-  public static final int AMOUNT_OFFSET = 8;
+  public static final int AMOUNT_OFFSET = 1;
 
   public static FeesClaimedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var amount = getInt64LE(_data, i);
     return new FeesClaimedEvent(discriminator, amount);

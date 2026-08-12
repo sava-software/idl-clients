@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Direction;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TriggerOrderExecuted Borsh variant 60.
@@ -28,22 +27,22 @@ public record TriggerOrderExecutedEvent(Discriminator discriminator,
                                         Direction triggerDirection,
                                         long orderSequenceNumber) implements EternalEvent {
 
-  public static final int BYTES = 74;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(60, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 67;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(60);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int ASSET_ID_OFFSET = 56;
-  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 64;
-  public static final int TRIGGER_DIRECTION_OFFSET = 65;
-  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 66;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int ASSET_ID_OFFSET = 49;
+  public static final int CONDITIONAL_ORDER_INDEX_OFFSET = 57;
+  public static final int TRIGGER_DIRECTION_OFFSET = 58;
+  public static final int ORDER_SEQUENCE_NUMBER_OFFSET = 59;
 
   public static TriggerOrderExecutedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

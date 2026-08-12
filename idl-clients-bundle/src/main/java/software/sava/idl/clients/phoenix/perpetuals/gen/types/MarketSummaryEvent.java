@@ -3,15 +3,10 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Symbol;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::MarketSummary Borsh variant 8.
@@ -27,18 +22,18 @@ public record MarketSummaryEvent(Discriminator discriminator,
                                  Ticks markPrice,
                                  Ticks spotPrice) implements EternalEvent {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(8, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(8);
 
-  public static final int ASSET_SYMBOL_OFFSET = 8;
-  public static final int ASSET_ID_OFFSET = 24;
-  public static final int OPEN_INTEREST_OFFSET = 28;
-  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 37;
+  public static final int ASSET_SYMBOL_OFFSET = 1;
+  public static final int ASSET_ID_OFFSET = 17;
+  public static final int OPEN_INTEREST_OFFSET = 21;
+  public static final int TOTAL_MAKER_QUOTE_LOT_FEES_OFFSET = 30;
 
   public static MarketSummaryEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var assetSymbol = Symbol.read(_data, i);
     i += assetSymbol.l();
@@ -93,7 +88,7 @@ public record MarketSummaryEvent(Discriminator discriminator,
 
   @Override
   public int l() {
-    return 8 + assetSymbol.l()
+    return 1 + assetSymbol.l()
          + 4
          + openInterest.l()
          + (totalMakerQuoteLotFees == null ? 1 : (1 + totalMakerQuoteLotFees.l()))

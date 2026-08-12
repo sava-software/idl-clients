@@ -3,13 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.NodePointer;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::WithdrawStateTransition Borsh variant 36.
@@ -28,22 +26,22 @@ public record WithdrawStateTransitionEvent(Discriminator discriminator,
                                            int transitionCount,
                                            NodePointer nodeIndex) implements EternalEvent {
 
-  public static final int BYTES = 57;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(36, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 50;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(36);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AMOUNT_OFFSET = 40;
-  public static final int FROM_STATE_OFFSET = 48;
-  public static final int TO_STATE_OFFSET = 49;
-  public static final int REASON_OFFSET = 50;
-  public static final int TRANSITION_COUNT_OFFSET = 51;
-  public static final int NODE_INDEX_OFFSET = 53;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AMOUNT_OFFSET = 33;
+  public static final int FROM_STATE_OFFSET = 41;
+  public static final int TO_STATE_OFFSET = 42;
+  public static final int REASON_OFFSET = 43;
+  public static final int TRANSITION_COUNT_OFFSET = 44;
+  public static final int NODE_INDEX_OFFSET = 46;
 
   public static WithdrawStateTransitionEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

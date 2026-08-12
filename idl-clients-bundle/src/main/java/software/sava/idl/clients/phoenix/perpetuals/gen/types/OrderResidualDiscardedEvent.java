@@ -3,12 +3,8 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.programs.Discriminator;
 import software.sava.idl.clients.core.gen.SerDeUtil;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.OrderResidualDiscardReason;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::OrderResidualDiscarded Borsh variant 66.
@@ -21,21 +17,21 @@ public record OrderResidualDiscardedEvent(Discriminator discriminator,
                                           BaseLots baseLotsDiscarded,
                                           OrderResidualDiscardReason reason) implements EternalEvent {
 
-  public static final int BYTES = 42;
+  public static final int BYTES = 35;
   public static final int CLIENT_ORDER_ID_LEN = 16;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(66, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(66);
 
-  public static final int CLIENT_ORDER_ID_OFFSET = 8;
-  public static final int PRICE_OFFSET = 24;
-  public static final int SIDE_OFFSET = 32;
-  public static final int BASE_LOTS_DISCARDED_OFFSET = 33;
-  public static final int REASON_OFFSET = 41;
+  public static final int CLIENT_ORDER_ID_OFFSET = 1;
+  public static final int PRICE_OFFSET = 17;
+  public static final int SIDE_OFFSET = 25;
+  public static final int BASE_LOTS_DISCARDED_OFFSET = 26;
+  public static final int REASON_OFFSET = 34;
 
   public static OrderResidualDiscardedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var clientOrderId = new byte[16];
     i += SerDeUtil.readArray(clientOrderId, _data, i);

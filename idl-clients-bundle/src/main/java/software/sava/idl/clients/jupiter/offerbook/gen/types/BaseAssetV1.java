@@ -17,12 +17,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// @param seq: Option<u64>
 public record BaseAssetV1(PublicKey _address,
-                          Discriminator discriminator,
                           Key key,
                           PublicKey owner,
                           UpdateAuthority updateAuthority,
@@ -30,12 +28,12 @@ public record BaseAssetV1(PublicKey _address,
                           String uri, byte[] _uri,
                           OptionalLong seq) implements SerDe {
 
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(1, 0, 0, 0, 0, 0, 0, 0);
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(1);
   public static final Filter DISCRIMINATOR_FILTER = Filter.createMemCompFilter(0, DISCRIMINATOR.data());
 
-  public static final int KEY_OFFSET = 8;
-  public static final int OWNER_OFFSET = 9;
-  public static final int UPDATE_AUTHORITY_OFFSET = 41;
+  public static final int KEY_OFFSET = 0;
+  public static final int OWNER_OFFSET = 1;
+  public static final int UPDATE_AUTHORITY_OFFSET = 33;
 
   public static Filter createKeyFilter(final Key key) {
     return Filter.createMemCompFilter(KEY_OFFSET, key.write());
@@ -50,7 +48,6 @@ public record BaseAssetV1(PublicKey _address,
   }
 
   public static BaseAssetV1 createRecord(final PublicKey _address,
-                                         final Discriminator discriminator,
                                          final Key key,
                                          final PublicKey owner,
                                          final UpdateAuthority updateAuthority,
@@ -58,7 +55,6 @@ public record BaseAssetV1(PublicKey _address,
                                          final String uri,
                                          final OptionalLong seq) {
     return new BaseAssetV1(_address,
-                           discriminator,
                            key,
                            owner,
                            updateAuthority,
@@ -85,8 +81,8 @@ public record BaseAssetV1(PublicKey _address,
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
-    int i = _offset + discriminator.length();
+
+    int i = _offset;
     final var key = Key.read(_data, i);
     i += key.l();
     final var owner = readPubKey(_data, i);
@@ -111,7 +107,6 @@ public record BaseAssetV1(PublicKey _address,
       seq = OptionalLong.of(getInt64LE(_data, i));
     }
     return new BaseAssetV1(_address,
-                           discriminator,
                            key,
                            owner,
                            updateAuthority,
@@ -122,7 +117,7 @@ public record BaseAssetV1(PublicKey _address,
 
   @Override
   public int write(final byte[] _data, final int _offset) {
-    int i = _offset + discriminator.write(_data, _offset);
+    int i = _offset;
     i += key.write(_data, i);
     owner.write(_data, i);
     i += 32;
@@ -135,7 +130,7 @@ public record BaseAssetV1(PublicKey _address,
 
   @Override
   public int l() {
-    return 8 + key.l()
+    return key.l()
          + 32
          + updateAuthority.l()
          + 4 + _name.length

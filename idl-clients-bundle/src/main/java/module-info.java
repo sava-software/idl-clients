@@ -2,6 +2,9 @@ module software.sava.idl.clients.bundle {
   exports software.sava.idl.clients.cctp.message_transmitter.v2.gen.events;
   exports software.sava.idl.clients.cctp.message_transmitter.v2.gen.types;
   exports software.sava.idl.clients.cctp.message_transmitter.v2.gen;
+  exports software.sava.idl.clients.exponent.gen.events;
+  exports software.sava.idl.clients.exponent.gen.types;
+  exports software.sava.idl.clients.exponent.gen;
   exports software.sava.idl.clients.jupiter.borrow.gen.events;
   exports software.sava.idl.clients.jupiter.borrow.gen.types;
   exports software.sava.idl.clients.jupiter.borrow.gen;

@@ -3,12 +3,11 @@ package software.sava.idl.clients.phoenix.dev.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.dev.perpetuals.gen.types.TraderCapabilityFlags;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderCapabilitiesEnabled Borsh variant 42.
@@ -22,20 +21,20 @@ public record TraderCapabilitiesEnabledEvent(Discriminator discriminator,
                                              TraderCapabilityFlags newFlags,
                                              long globalTraderIndex) implements EternalEvent {
 
-  public static final int BYTES = 84;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(42, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 77;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(42);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 40;
-  public static final int PREVIOUS_FLAGS_OFFSET = 72;
-  public static final int NEW_FLAGS_OFFSET = 76;
-  public static final int GLOBAL_TRADER_INDEX_OFFSET = 80;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 33;
+  public static final int PREVIOUS_FLAGS_OFFSET = 65;
+  public static final int NEW_FLAGS_OFFSET = 69;
+  public static final int GLOBAL_TRADER_INDEX_OFFSET = 73;
 
   public static TraderCapabilitiesEnabledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

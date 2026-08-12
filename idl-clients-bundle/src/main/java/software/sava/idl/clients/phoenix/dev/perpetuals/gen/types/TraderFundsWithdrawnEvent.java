@@ -7,7 +7,7 @@ import software.sava.core.programs.Discriminator;
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::TraderFundsWithdrawn Borsh variant 14.
@@ -33,25 +33,25 @@ public record TraderFundsWithdrawnEvent(Discriminator discriminator,
                                         long withdrawQueueSequenceNumber,
                                         long withdrawQueuePrevSequenceNumberSlot) implements EternalEvent {
 
-  public static final int BYTES = 136;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(14, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 129;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(14);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int AUTHORITY_OFFSET = 40;
-  public static final int AMOUNT_OFFSET = 72;
-  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 80;
-  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 88;
-  public static final int POST_WITHDRAWAL_BUDGET_OFFSET = 96;
-  public static final int POST_QUEUE_SIZE_OFFSET = 104;
-  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 112;
-  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 120;
-  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 128;
+  public static final int TRADER_OFFSET = 1;
+  public static final int AUTHORITY_OFFSET = 33;
+  public static final int AMOUNT_OFFSET = 65;
+  public static final int TRADER_SEQUENCE_NUMBER_OFFSET = 73;
+  public static final int TRADER_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 81;
+  public static final int POST_WITHDRAWAL_BUDGET_OFFSET = 89;
+  public static final int POST_QUEUE_SIZE_OFFSET = 97;
+  public static final int TOTAL_QUEUED_AMOUNT_OFFSET = 105;
+  public static final int WITHDRAW_QUEUE_SEQUENCE_NUMBER_OFFSET = 113;
+  public static final int WITHDRAW_QUEUE_PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 121;
 
   public static TraderFundsWithdrawnEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

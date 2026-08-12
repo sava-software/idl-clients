@@ -18,7 +18,8 @@ public enum UpdateObligationConfigMode implements RustEnum {
   FixedTermRolloverMaxBorrowRateBps,
   FixedTermRolloverMinDebtTermSeconds,
   FixedTermRolloverOpenTermAllowed,
-  MigrationToFixedEnabled;
+  MigrationToFixedEnabled,
+  FixedTermRolloverWindowDurationDays;
 
   public static UpdateObligationConfigMode read(final byte[] _data, final int _offset) {
     return SerDeUtil.read(1, UpdateObligationConfigMode.values(), _data, _offset);

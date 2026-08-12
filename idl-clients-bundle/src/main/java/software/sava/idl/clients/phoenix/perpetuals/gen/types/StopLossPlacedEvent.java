@@ -3,16 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Direction;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.StopLossOrderKind;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::StopLossPlaced Borsh variant 38.
@@ -38,28 +33,28 @@ public record StopLossPlacedEvent(Discriminator discriminator,
                                   PublicKey fundingKey,
                                   StopLossOrderKind orderKind) implements EternalEvent {
 
-  public static final int BYTES = 132;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(38, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 125;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(38);
 
-  public static final int TRADER_OFFSET = 8;
-  public static final int SEQUENCE_NUMBER_OFFSET = 40;
-  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 48;
-  public static final int ASSET_ID_OFFSET = 56;
-  public static final int TRIGGER_PRICE_OFFSET = 64;
-  public static final int EXECUTION_PRICE_OFFSET = 72;
-  public static final int TRADE_SIZE_OFFSET = 80;
-  public static final int TRADE_SIDE_OFFSET = 88;
-  public static final int EXECUTION_DIRECTION_OFFSET = 89;
-  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 90;
-  public static final int PLACE_SLOT_OFFSET = 91;
-  public static final int FUNDING_KEY_OFFSET = 99;
-  public static final int ORDER_KIND_OFFSET = 131;
+  public static final int TRADER_OFFSET = 1;
+  public static final int SEQUENCE_NUMBER_OFFSET = 33;
+  public static final int PREV_SEQUENCE_NUMBER_SLOT_OFFSET = 41;
+  public static final int ASSET_ID_OFFSET = 49;
+  public static final int TRIGGER_PRICE_OFFSET = 57;
+  public static final int EXECUTION_PRICE_OFFSET = 65;
+  public static final int TRADE_SIZE_OFFSET = 73;
+  public static final int TRADE_SIDE_OFFSET = 81;
+  public static final int EXECUTION_DIRECTION_OFFSET = 82;
+  public static final int POSITION_SEQUENCE_NUMBER_OFFSET = 83;
+  public static final int PLACE_SLOT_OFFSET = 84;
+  public static final int FUNDING_KEY_OFFSET = 92;
+  public static final int ORDER_KIND_OFFSET = 124;
 
   public static StopLossPlacedEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var trader = readPubKey(_data, i);
     i += 32;

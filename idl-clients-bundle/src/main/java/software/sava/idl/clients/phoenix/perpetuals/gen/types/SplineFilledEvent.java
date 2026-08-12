@@ -3,19 +3,11 @@ package software.sava.idl.clients.phoenix.perpetuals.gen.types;
 
 import software.sava.core.accounts.PublicKey;
 import software.sava.core.programs.Discriminator;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.BaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.QuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Side;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedBaseLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedFeeRateMicro;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLots;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.SignedQuoteLotsPerBaseLot;
-import software.sava.idl.clients.phoenix.perpetuals.gen.types.Ticks;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 /// MarketEvent::SplineFilled Borsh variant 5.
@@ -35,26 +27,26 @@ public record SplineFilledEvent(Discriminator discriminator,
                                 SignedQuoteLots makerQuoteLotCollateral,
                                 SignedQuoteLotsPerBaseLot makerCumulativeFundingSnapshot) implements EternalEvent {
 
-  public static final int BYTES = 109;
-  public static final Discriminator DISCRIMINATOR = toDiscriminator(5, 0, 0, 0, 0, 0, 0, 0);
+  public static final int BYTES = 102;
+  public static final Discriminator DISCRIMINATOR = toDiscriminator(5);
 
-  public static final int SPLINE_SEQUENCE_NUMBER_OFFSET = 8;
-  public static final int SIDE_OFFSET = 16;
-  public static final int PRICE_OFFSET = 17;
-  public static final int BASE_LOTS_FILLED_OFFSET = 25;
-  public static final int QUOTE_LOTS_FILLED_OFFSET = 33;
-  public static final int MAKER_OFFSET = 41;
-  public static final int MAKER_FEE_RATE_OFFSET = 73;
-  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 77;
-  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 85;
-  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 93;
-  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 101;
+  public static final int SPLINE_SEQUENCE_NUMBER_OFFSET = 1;
+  public static final int SIDE_OFFSET = 9;
+  public static final int PRICE_OFFSET = 10;
+  public static final int BASE_LOTS_FILLED_OFFSET = 18;
+  public static final int QUOTE_LOTS_FILLED_OFFSET = 26;
+  public static final int MAKER_OFFSET = 34;
+  public static final int MAKER_FEE_RATE_OFFSET = 66;
+  public static final int MAKER_BASE_LOT_POSITION_OFFSET = 70;
+  public static final int MAKER_VIRTUAL_QUOTE_LOT_POSITION_OFFSET = 78;
+  public static final int MAKER_QUOTE_LOT_COLLATERAL_OFFSET = 86;
+  public static final int MAKER_CUMULATIVE_FUNDING_SNAPSHOT_OFFSET = 94;
 
   public static SplineFilledEvent read(final byte[] _data, final int _offset) {
     if (_data == null || _data.length == 0) {
       return null;
     }
-    final var discriminator = createAnchorDiscriminator(_data, _offset);
+    final var discriminator = createDiscriminator(_data, _offset, 1);
     int i = _offset + discriminator.length();
     final var splineSequenceNumber = getInt64LE(_data, i);
     i += 8;
