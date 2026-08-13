@@ -1116,8 +1116,14 @@ positive control: the same sweep would have flagged `clearEmissions` before the
 fix.
 
 **Eight programs are INCONCLUSIVE** — their garbage-discriminator control did not
-return 101, meaning they do not use Anchor's dispatch (native, Shank, or a real
-fallback handler): Jupiter Swap, Metaplex Token Metadata, Phoenix Ember, Phoenix
+return 101. That is the whole of what it means, and an earlier revision of this
+line drew more from it than it carries: **it does not establish that a program is
+not Anchor-dispatch.** A native, Shank or pinocchio program emits no fallback
+error, and neither does an Anchor program whose own `#[fallback]` handles the
+unknown discriminator — the two read identically from outside. Jupiter Swap is on
+this list and is an ordinary Anchor program.
+
+The eight: Jupiter Swap, Metaplex Token Metadata, Phoenix Ember, Phoenix
 Perpetuals (+ Dev), Solana Attestation Service, and the two Wormhole shims. The
 probe cannot speak to these; they need the Rust-diff treatment instead — which is
 exactly how Phoenix's global-vault bug was found, so the gap is real rather than

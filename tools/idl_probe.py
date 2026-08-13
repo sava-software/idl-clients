@@ -18,9 +18,10 @@ Each program is calibrated with a garbage discriminator first. If that does not
 return 101 the probe reports INCONCLUSIVE rather than guessing.
 
 INCONCLUSIVE means only that the control did not produce error 101. It does not
-establish how the program dispatches: a native, Shank or pinocchio program has no
-fallback handler, and so does an Anchor program that declares its own #[fallback]
-— they are indistinguishable from out here. Settling it needs the deployed source.
+establish how the program dispatches: a native, Shank or pinocchio program
+emits no fallback error, and neither does an Anchor program whose own #[fallback]
+handles the unknown discriminator itself — they are indistinguishable from out
+here. Settling it needs the deployed source.
 """
 import json, os, base64, subprocess, sys, time
 
@@ -165,7 +166,7 @@ def main():
         print(f"\ninconclusive (no fallback error 101): {', '.join(r[0] for r in inc)}")
         print("  The control did not return 101, so this signal does not apply. That is")
         print("  all it establishes: a native, Shank or pinocchio program has no fallback")
-        print("  handler, and neither does an Anchor program declaring its own #[fallback].")
+        print("  error, and neither does an Anchor program whose own #[fallback] handles it.")
         print("  Verify these against their Rust instead — see docs/PROGRAM_VERIFICATION.md.")
     sys.exit(1 if unexpected else 0)
 

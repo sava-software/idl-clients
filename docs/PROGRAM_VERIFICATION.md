@@ -36,9 +36,10 @@ exits non-zero only on something new. Re-run it after any upstream deploy.
 
 **This only works where the control returns 101.** When it does not, the tool
 reports `INCONCLUSIVE`, and that is the whole of what the result means: no
-fallback error was produced. Native, Shank and pinocchio programs have no
-fallback handler — but neither does an Anchor program that declares its own
-`#[fallback]`, and the two are indistinguishable from outside. Jupiter Swap reads
+fallback error was produced. Native, Shank and pinocchio programs emit no
+fallback error — and neither does an Anchor program whose own `#[fallback]`
+handles the unknown discriminator itself. The two are indistinguishable from
+outside. Jupiter Swap reads
 `INCONCLUSIVE` and is an ordinary Anchor program.
 
 So `INCONCLUSIVE` does not identify the dispatch implementation and no re-run
@@ -214,8 +215,16 @@ one commit in a branch: `idl-change-report.txt` reports movement as an *event*, 
 after it says "Nothing moved" and a squash leaves the receipt nowhere.
 
 `ProgramData.last_deploy_slot` for `JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4` moved
-**437349164 → 438982144**, and **no IDL channel moved with it** — the `anchor` channel's hash is
-unchanged either side.
+**437349164 → 438982144**, and **no IDL channel moved with it**. Both channel hashes, in full, so
+this survives the squash that will flatten the commit they were read from:
+
+| | sha256 |
+|---|---|
+| `anchor`, before and after | `27a84dee64afa4527b4bf1c567babced3c0e59e538c1c10938042b30936ffbe1` |
+| `vcs`, before and after | `c7353b35a80cd93cd4f73cf1f720524599ec126236627e7309f3008ea6d817ad` |
+
+Unchanged is the whole point: the slot moved and the documents did not, so there is no diff to
+read and nothing but the slot to notice it by.
 
 That is the marginfi shape, and the reason the deploy-slot signal exists. An IDL-to-IDL diff reads
 clean here, because the document genuinely did not change; only the program did. Per the table

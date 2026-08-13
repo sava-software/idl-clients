@@ -30,8 +30,9 @@ it, failing 100% of the time on mainnet.
 
 Reports `INCONCLUSIVE` rather than guessing when the control does not return 101.
 That is all the result means: no fallback error. A native, Shank or pinocchio
-program has no fallback handler, and neither does an Anchor program declaring its
-own `#[fallback]`, so the outcome does not identify the dispatch implementation —
+program emits no fallback error, and neither does an Anchor program whose own
+`#[fallback]` handles the unknown discriminator, so the outcome does not identify
+the dispatch implementation —
 Jupiter Swap reads this way and is an ordinary Anchor program. Use
 `ground_truth.py` there, remembering it compares account order only.
 
