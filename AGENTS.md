@@ -85,6 +85,10 @@ these two IDLs, so any project generating from a Shank IDL with a pre-fix genera
 The check is whether a `gen/idl.json` declares `"origin": "shank"` with per-instruction
 `"discriminant"`.
 
+Mutation coverage for this parser lives in idl-src-gen's `anchorDispatch` suite, promoted out of
+the `jsonParse` package exclusions on 2026-08-13; changes to dispatch-key parsing are gated there
+rather than by `jsonParse`.
+
 The generator now rejects, rather than guesses, in three places that previously passed silently: an
 unmodelled instruction field, a `discriminant` that is not a complete `u8` in range, and a Shank
 instruction declaring no dispatch key at all.

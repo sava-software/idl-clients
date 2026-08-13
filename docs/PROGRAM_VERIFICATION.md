@@ -216,8 +216,19 @@ clean here, because the document genuinely did not change; only the program did.
 above, a deploy-slot move with no IDL movement warrants probing that program's **full instruction
 set**, not the added-and-removed subset — there is no subset to derive.
 
-Not yet probed. The generating run's own report is in commit `40e1533`; `sources.json` carries the
-slot at all times.
+**Attempted, and structurally inconclusive.** `tools/idl_probe.py` calibrates each program with a
+garbage discriminator and expects `InstructionFallbackNotFound`; Jupiter Swap returns `LIVE`, so
+the probe reports `INCONCLUSIVE` rather than guessing. That proves only that the program is **not
+Anchor-fallback-shaped** — an Anchor program carrying its own fallback handler looks identical from
+outside — so it is not evidence about the dispatch style, and no re-run of that tool will settle it.
+
+Nor would §2 alone close it: comparing generated account order against the Rust checks one axis,
+and a redeploy can change instructions, discriminators, argument layouts or semantics while leaving
+account order untouched. Closure needs the exact deployed source identified first, then the broader
+source-to-IDL comparison, of which the account-order diff is one component.
+
+The generating run's own report is in commit `40e1533`; `sources.json` carries the slot at all
+times.
 
 ---
 
