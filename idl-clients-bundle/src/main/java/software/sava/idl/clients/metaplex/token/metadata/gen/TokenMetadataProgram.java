@@ -27,6 +27,7 @@ import software.sava.idl.clients.metaplex.token.metadata.gen.types.UseArgs;
 import software.sava.idl.clients.metaplex.token.metadata.gen.types.UtilizeArgs;
 import software.sava.idl.clients.metaplex.token.metadata.gen.types.VerificationArgs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.requireNonNullElse;
@@ -241,8 +242,7 @@ public final class TokenMetadataProgram {
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
   /// @param reservationListKey Reservation List - If present, and you are on this list, you can get an edition number given by your position on the list.
-  public static List<AccountMeta> deprecatedMintNewEditionFromMasterEditionViaPrintingTokenKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                                                final PublicKey metadataKey,
+  public static List<AccountMeta> deprecatedMintNewEditionFromMasterEditionViaPrintingTokenKeys(final PublicKey metadataKey,
                                                                                                 final PublicKey editionKey,
                                                                                                 final PublicKey masterEditionKey,
                                                                                                 final PublicKey mintKey,
@@ -258,24 +258,26 @@ public final class TokenMetadataProgram {
                                                                                                 final PublicKey systemProgramKey,
                                                                                                 final PublicKey rentKey,
                                                                                                 final PublicKey reservationListKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWrite(editionKey),
-      createWrite(masterEditionKey),
-      createWrite(mintKey),
-      createReadOnlySigner(mintAuthorityKey),
-      createWrite(printingMintKey),
-      createWrite(masterTokenAccountKey),
-      createWrite(editionMarkerKey),
-      createReadOnlySigner(burnAuthorityKey),
-      createReadOnlySigner(payerKey),
-      createRead(masterUpdateAuthorityKey),
-      createRead(masterMetadataKey),
-      createRead(tokenProgramKey),
-      createRead(systemProgramKey),
-      createRead(rentKey),
-      createWrite(requireNonNullElse(reservationListKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(16);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWrite(editionKey));
+    keys.add(createWrite(masterEditionKey));
+    keys.add(createWrite(mintKey));
+    keys.add(createReadOnlySigner(mintAuthorityKey));
+    keys.add(createWrite(printingMintKey));
+    keys.add(createWrite(masterTokenAccountKey));
+    keys.add(createWrite(editionMarkerKey));
+    keys.add(createReadOnlySigner(burnAuthorityKey));
+    keys.add(createReadOnlySigner(payerKey));
+    keys.add(createRead(masterUpdateAuthorityKey));
+    keys.add(createRead(masterMetadataKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(systemProgramKey));
+    keys.add(createRead(rentKey));
+    if (reservationListKey != null) {
+      keys.add(createWrite(reservationListKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey New Metadata key (pda of 'metadata', program id, mint id)
@@ -312,7 +314,6 @@ public final class TokenMetadataProgram {
                                                                                       final PublicKey rentKey,
                                                                                       final PublicKey reservationListKey) {
     final var keys = deprecatedMintNewEditionFromMasterEditionViaPrintingTokenKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       editionKey,
       masterEditionKey,
@@ -719,8 +720,7 @@ public final class TokenMetadataProgram {
   /// @param tokenProgramKey Token program
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> mintNewEditionFromMasterEditionViaTokenKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                              final PublicKey newMetadataKey,
+  public static List<AccountMeta> mintNewEditionFromMasterEditionViaTokenKeys(final PublicKey newMetadataKey,
                                                                               final PublicKey newEditionKey,
                                                                               final PublicKey masterEditionKey,
                                                                               final PublicKey newMintKey,
@@ -734,22 +734,24 @@ public final class TokenMetadataProgram {
                                                                               final PublicKey tokenProgramKey,
                                                                               final PublicKey systemProgramKey,
                                                                               final PublicKey rentKey) {
-    return List.of(
-      createWrite(newMetadataKey),
-      createWrite(newEditionKey),
-      createWrite(masterEditionKey),
-      createWrite(newMintKey),
-      createWrite(editionMarkPdaKey),
-      createReadOnlySigner(newMintAuthorityKey),
-      createWritableSigner(payerKey),
-      createReadOnlySigner(tokenAccountOwnerKey),
-      createRead(tokenAccountKey),
-      createRead(newMetadataUpdateAuthorityKey),
-      createRead(metadataKey),
-      createRead(tokenProgramKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(14);
+    keys.add(createWrite(newMetadataKey));
+    keys.add(createWrite(newEditionKey));
+    keys.add(createWrite(masterEditionKey));
+    keys.add(createWrite(newMintKey));
+    keys.add(createWrite(editionMarkPdaKey));
+    keys.add(createReadOnlySigner(newMintAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createReadOnlySigner(tokenAccountOwnerKey));
+    keys.add(createRead(tokenAccountKey));
+    keys.add(createRead(newMetadataUpdateAuthorityKey));
+    keys.add(createRead(metadataKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param newMetadataKey New Metadata key (pda of 'metadata', program id, mint id)
@@ -783,7 +785,6 @@ public final class TokenMetadataProgram {
                                                                     final PublicKey rentKey,
                                                                     final MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) {
     final var keys = mintNewEditionFromMasterEditionViaTokenKeys(
-      invokedTokenMetadataProgramMeta,
       newMetadataKey,
       newEditionKey,
       masterEditionKey,
@@ -899,8 +900,7 @@ public final class TokenMetadataProgram {
   /// @param tokenVaultProgramKey Token vault program
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> mintNewEditionFromMasterEditionViaVaultProxyKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                                   final PublicKey newMetadataKey,
+  public static List<AccountMeta> mintNewEditionFromMasterEditionViaVaultProxyKeys(final PublicKey newMetadataKey,
                                                                                    final PublicKey newEditionKey,
                                                                                    final PublicKey masterEditionKey,
                                                                                    final PublicKey newMintKey,
@@ -917,25 +917,27 @@ public final class TokenMetadataProgram {
                                                                                    final PublicKey tokenVaultProgramKey,
                                                                                    final PublicKey systemProgramKey,
                                                                                    final PublicKey rentKey) {
-    return List.of(
-      createWrite(newMetadataKey),
-      createWrite(newEditionKey),
-      createWrite(masterEditionKey),
-      createWrite(newMintKey),
-      createWrite(editionMarkPdaKey),
-      createReadOnlySigner(newMintAuthorityKey),
-      createWritableSigner(payerKey),
-      createReadOnlySigner(vaultAuthorityKey),
-      createRead(safetyDepositStoreKey),
-      createRead(safetyDepositBoxKey),
-      createRead(vaultKey),
-      createRead(newMetadataUpdateAuthorityKey),
-      createRead(metadataKey),
-      createRead(tokenProgramKey),
-      createRead(tokenVaultProgramKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(17);
+    keys.add(createWrite(newMetadataKey));
+    keys.add(createWrite(newEditionKey));
+    keys.add(createWrite(masterEditionKey));
+    keys.add(createWrite(newMintKey));
+    keys.add(createWrite(editionMarkPdaKey));
+    keys.add(createReadOnlySigner(newMintAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createReadOnlySigner(vaultAuthorityKey));
+    keys.add(createRead(safetyDepositStoreKey));
+    keys.add(createRead(safetyDepositBoxKey));
+    keys.add(createRead(vaultKey));
+    keys.add(createRead(newMetadataUpdateAuthorityKey));
+    keys.add(createRead(metadataKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(tokenVaultProgramKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param newMetadataKey New Metadata key (pda of 'metadata', program id, mint id)
@@ -975,7 +977,6 @@ public final class TokenMetadataProgram {
                                                                          final PublicKey rentKey,
                                                                          final MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) {
     final var keys = mintNewEditionFromMasterEditionViaVaultProxyKeys(
-      invokedTokenMetadataProgramMeta,
       newMetadataKey,
       newEditionKey,
       masterEditionKey,
@@ -1138,23 +1139,24 @@ public final class TokenMetadataProgram {
   /// @param updateAuthorityKey update authority info
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> createMetadataAccountV2Keys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                              final PublicKey metadataKey,
+  public static List<AccountMeta> createMetadataAccountV2Keys(final PublicKey metadataKey,
                                                               final PublicKey mintKey,
                                                               final PublicKey mintAuthorityKey,
                                                               final PublicKey payerKey,
                                                               final PublicKey updateAuthorityKey,
                                                               final PublicKey systemProgramKey,
                                                               final PublicKey rentKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createRead(mintKey),
-      createReadOnlySigner(mintAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(updateAuthorityKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createRead(mintKey));
+    keys.add(createReadOnlySigner(mintAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(updateAuthorityKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
@@ -1173,7 +1175,6 @@ public final class TokenMetadataProgram {
                                                     final PublicKey systemProgramKey,
                                                     final PublicKey rentKey) {
     final var keys = createMetadataAccountV2Keys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       mintKey,
       mintAuthorityKey,
@@ -1201,8 +1202,7 @@ public final class TokenMetadataProgram {
   /// @param tokenProgramKey Token program
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> createMasterEditionV3Keys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                            final PublicKey editionKey,
+  public static List<AccountMeta> createMasterEditionV3Keys(final PublicKey editionKey,
                                                             final PublicKey mintKey,
                                                             final PublicKey updateAuthorityKey,
                                                             final PublicKey mintAuthorityKey,
@@ -1211,17 +1211,19 @@ public final class TokenMetadataProgram {
                                                             final PublicKey tokenProgramKey,
                                                             final PublicKey systemProgramKey,
                                                             final PublicKey rentKey) {
-    return List.of(
-      createWrite(editionKey),
-      createWrite(mintKey),
-      createReadOnlySigner(updateAuthorityKey),
-      createReadOnlySigner(mintAuthorityKey),
-      createWritableSigner(payerKey),
-      createWrite(metadataKey),
-      createRead(tokenProgramKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(9);
+    keys.add(createWrite(editionKey));
+    keys.add(createWrite(mintKey));
+    keys.add(createReadOnlySigner(updateAuthorityKey));
+    keys.add(createReadOnlySigner(mintAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createWrite(metadataKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param editionKey Unallocated edition V2 account with address as pda of 'metadata', program id, mint, 'edition'
@@ -1245,7 +1247,6 @@ public final class TokenMetadataProgram {
                                                   final PublicKey rentKey,
                                                   final CreateMasterEditionArgs createMasterEditionArgs) {
     final var keys = createMasterEditionV3Keys(
-      invokedTokenMetadataProgramMeta,
       editionKey,
       mintKey,
       updateAuthorityKey,
@@ -1309,23 +1310,24 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> verifyCollectionKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                       final PublicKey metadataKey,
+  public static List<AccountMeta> verifyCollectionKeys(final PublicKey metadataKey,
                                                        final PublicKey collectionAuthorityKey,
                                                        final PublicKey payerKey,
                                                        final PublicKey collectionMintKey,
                                                        final PublicKey collectionKey,
                                                        final PublicKey collectionMasterEditionAccountKey,
                                                        final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWritableSigner(collectionAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(collectionMintKey),
-      createRead(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWritableSigner(collectionAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createRead(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -1344,7 +1346,6 @@ public final class TokenMetadataProgram {
                                              final PublicKey collectionMasterEditionAccountKey,
                                              final PublicKey collectionAuthorityRecordKey) {
     final var keys = verifyCollectionKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       payerKey,
@@ -1374,8 +1375,7 @@ public final class TokenMetadataProgram {
   /// @param rentKey Rent info
   /// @param useAuthorityRecordKey Use Authority Record PDA If present the program Assumes a delegated use authority
   /// @param burnerKey Program As Signer (Burner)
-  public static List<AccountMeta> utilizeKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                              final PublicKey metadataKey,
+  public static List<AccountMeta> utilizeKeys(final PublicKey metadataKey,
                                               final PublicKey tokenAccountKey,
                                               final PublicKey mintKey,
                                               final PublicKey useAuthorityKey,
@@ -1386,19 +1386,23 @@ public final class TokenMetadataProgram {
                                               final PublicKey rentKey,
                                               final PublicKey useAuthorityRecordKey,
                                               final PublicKey burnerKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWrite(tokenAccountKey),
-      createWrite(mintKey),
-      createWritableSigner(useAuthorityKey),
-      createRead(ownerKey),
-      createRead(tokenProgramKey),
-      createRead(ataProgramKey),
-      createRead(systemProgramKey),
-      createRead(rentKey),
-      createWrite(requireNonNullElse(useAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey())),
-      createRead(requireNonNullElse(burnerKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(11);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWrite(tokenAccountKey));
+    keys.add(createWrite(mintKey));
+    keys.add(createWritableSigner(useAuthorityKey));
+    keys.add(createRead(ownerKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(ataProgramKey));
+    keys.add(createRead(systemProgramKey));
+    keys.add(createRead(rentKey));
+    if (useAuthorityRecordKey != null) {
+      keys.add(createWrite(useAuthorityRecordKey));
+    }
+    if (burnerKey != null) {
+      keys.add(createRead(burnerKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -1426,7 +1430,6 @@ public final class TokenMetadataProgram {
                                     final PublicKey burnerKey,
                                     final UtilizeArgs utilizeArgs) {
     final var keys = utilizeKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       tokenAccountKey,
       mintKey,
@@ -1498,8 +1501,7 @@ public final class TokenMetadataProgram {
   /// @param tokenProgramKey Token program
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> approveUseAuthorityKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                          final PublicKey useAuthorityRecordKey,
+  public static List<AccountMeta> approveUseAuthorityKeys(final PublicKey useAuthorityRecordKey,
                                                           final PublicKey ownerKey,
                                                           final PublicKey payerKey,
                                                           final PublicKey userKey,
@@ -1510,19 +1512,21 @@ public final class TokenMetadataProgram {
                                                           final PublicKey tokenProgramKey,
                                                           final PublicKey systemProgramKey,
                                                           final PublicKey rentKey) {
-    return List.of(
-      createWrite(useAuthorityRecordKey),
-      createWritableSigner(ownerKey),
-      createWritableSigner(payerKey),
-      createRead(userKey),
-      createWrite(ownerTokenAccountKey),
-      createRead(metadataKey),
-      createRead(mintKey),
-      createRead(burnerKey),
-      createRead(tokenProgramKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(11);
+    keys.add(createWrite(useAuthorityRecordKey));
+    keys.add(createWritableSigner(ownerKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(userKey));
+    keys.add(createWrite(ownerTokenAccountKey));
+    keys.add(createRead(metadataKey));
+    keys.add(createRead(mintKey));
+    keys.add(createRead(burnerKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param useAuthorityRecordKey Use Authority Record PDA
@@ -1550,7 +1554,6 @@ public final class TokenMetadataProgram {
                                                 final PublicKey rentKey,
                                                 final ApproveUseAuthorityArgs approveUseAuthorityArgs) {
     final var keys = approveUseAuthorityKeys(
-      invokedTokenMetadataProgramMeta,
       useAuthorityRecordKey,
       ownerKey,
       payerKey,
@@ -1620,8 +1623,7 @@ public final class TokenMetadataProgram {
   /// @param tokenProgramKey Token program
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> revokeUseAuthorityKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                         final PublicKey useAuthorityRecordKey,
+  public static List<AccountMeta> revokeUseAuthorityKeys(final PublicKey useAuthorityRecordKey,
                                                          final PublicKey ownerKey,
                                                          final PublicKey userKey,
                                                          final PublicKey ownerTokenAccountKey,
@@ -1630,17 +1632,19 @@ public final class TokenMetadataProgram {
                                                          final PublicKey tokenProgramKey,
                                                          final PublicKey systemProgramKey,
                                                          final PublicKey rentKey) {
-    return List.of(
-      createWrite(useAuthorityRecordKey),
-      createWritableSigner(ownerKey),
-      createRead(userKey),
-      createWrite(ownerTokenAccountKey),
-      createRead(mintKey),
-      createRead(metadataKey),
-      createRead(tokenProgramKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(9);
+    keys.add(createWrite(useAuthorityRecordKey));
+    keys.add(createWritableSigner(ownerKey));
+    keys.add(createRead(userKey));
+    keys.add(createWrite(ownerTokenAccountKey));
+    keys.add(createRead(mintKey));
+    keys.add(createRead(metadataKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param useAuthorityRecordKey Use Authority Record PDA
@@ -1663,7 +1667,6 @@ public final class TokenMetadataProgram {
                                                final PublicKey systemProgramKey,
                                                final PublicKey rentKey) {
     final var keys = revokeUseAuthorityKeys(
-      invokedTokenMetadataProgramMeta,
       useAuthorityRecordKey,
       ownerKey,
       userKey,
@@ -1690,21 +1693,22 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> unverifyCollectionKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                         final PublicKey metadataKey,
+  public static List<AccountMeta> unverifyCollectionKeys(final PublicKey metadataKey,
                                                          final PublicKey collectionAuthorityKey,
                                                          final PublicKey collectionMintKey,
                                                          final PublicKey collectionKey,
                                                          final PublicKey collectionMasterEditionAccountKey,
                                                          final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWritableSigner(collectionAuthorityKey),
-      createRead(collectionMintKey),
-      createRead(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(6);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWritableSigner(collectionAuthorityKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createRead(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -1721,7 +1725,6 @@ public final class TokenMetadataProgram {
                                                final PublicKey collectionMasterEditionAccountKey,
                                                final PublicKey collectionAuthorityRecordKey) {
     final var keys = unverifyCollectionKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       collectionMintKey,
@@ -1747,8 +1750,7 @@ public final class TokenMetadataProgram {
   /// @param mintKey Mint of Collection Metadata
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> approveCollectionAuthorityKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                 final PublicKey collectionAuthorityRecordKey,
+  public static List<AccountMeta> approveCollectionAuthorityKeys(final PublicKey collectionAuthorityRecordKey,
                                                                  final PublicKey newCollectionAuthorityKey,
                                                                  final PublicKey updateAuthorityKey,
                                                                  final PublicKey payerKey,
@@ -1756,16 +1758,18 @@ public final class TokenMetadataProgram {
                                                                  final PublicKey mintKey,
                                                                  final PublicKey systemProgramKey,
                                                                  final PublicKey rentKey) {
-    return List.of(
-      createWrite(collectionAuthorityRecordKey),
-      createRead(newCollectionAuthorityKey),
-      createWritableSigner(updateAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(metadataKey),
-      createRead(mintKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(8);
+    keys.add(createWrite(collectionAuthorityRecordKey));
+    keys.add(createRead(newCollectionAuthorityKey));
+    keys.add(createWritableSigner(updateAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(metadataKey));
+    keys.add(createRead(mintKey));
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
@@ -1786,7 +1790,6 @@ public final class TokenMetadataProgram {
                                                        final PublicKey systemProgramKey,
                                                        final PublicKey rentKey) {
     final var keys = approveCollectionAuthorityKeys(
-      invokedTokenMetadataProgramMeta,
       collectionAuthorityRecordKey,
       newCollectionAuthorityKey,
       updateAuthorityKey,
@@ -1861,8 +1864,7 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> setAndVerifyCollectionKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                             final PublicKey metadataKey,
+  public static List<AccountMeta> setAndVerifyCollectionKeys(final PublicKey metadataKey,
                                                              final PublicKey collectionAuthorityKey,
                                                              final PublicKey payerKey,
                                                              final PublicKey updateAuthorityKey,
@@ -1870,16 +1872,18 @@ public final class TokenMetadataProgram {
                                                              final PublicKey collectionKey,
                                                              final PublicKey collectionMasterEditionAccountKey,
                                                              final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWritableSigner(collectionAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(updateAuthorityKey),
-      createRead(collectionMintKey),
-      createRead(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(8);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWritableSigner(collectionAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(updateAuthorityKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createRead(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -1900,7 +1904,6 @@ public final class TokenMetadataProgram {
                                                    final PublicKey collectionMasterEditionAccountKey,
                                                    final PublicKey collectionAuthorityRecordKey) {
     final var keys = setAndVerifyCollectionKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       payerKey,
@@ -2050,23 +2053,24 @@ public final class TokenMetadataProgram {
   /// @param masterEditionAccountKey MasterEdition2 of the NFT
   /// @param splTokenProgramKey SPL Token Program
   /// @param collectionMetadataKey Metadata of the Collection
-  public static List<AccountMeta> burnNftKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                              final PublicKey metadataKey,
+  public static List<AccountMeta> burnNftKeys(final PublicKey metadataKey,
                                               final PublicKey ownerKey,
                                               final PublicKey mintKey,
                                               final PublicKey tokenAccountKey,
                                               final PublicKey masterEditionAccountKey,
                                               final PublicKey splTokenProgramKey,
                                               final PublicKey collectionMetadataKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createWritableSigner(ownerKey),
-      createWrite(mintKey),
-      createWrite(tokenAccountKey),
-      createWrite(masterEditionAccountKey),
-      createRead(splTokenProgramKey),
-      createWrite(requireNonNullElse(collectionMetadataKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createWritableSigner(ownerKey));
+    keys.add(createWrite(mintKey));
+    keys.add(createWrite(tokenAccountKey));
+    keys.add(createWrite(masterEditionAccountKey));
+    keys.add(createRead(splTokenProgramKey));
+    if (collectionMetadataKey != null) {
+      keys.add(createWrite(collectionMetadataKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
@@ -2085,7 +2089,6 @@ public final class TokenMetadataProgram {
                                     final PublicKey splTokenProgramKey,
                                     final PublicKey collectionMetadataKey) {
     final var keys = burnNftKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       ownerKey,
       mintKey,
@@ -2111,23 +2114,24 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> verifySizedCollectionItemKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                final PublicKey metadataKey,
+  public static List<AccountMeta> verifySizedCollectionItemKeys(final PublicKey metadataKey,
                                                                 final PublicKey collectionAuthorityKey,
                                                                 final PublicKey payerKey,
                                                                 final PublicKey collectionMintKey,
                                                                 final PublicKey collectionKey,
                                                                 final PublicKey collectionMasterEditionAccountKey,
                                                                 final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createReadOnlySigner(collectionAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(collectionMintKey),
-      createWrite(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createReadOnlySigner(collectionAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createWrite(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -2146,7 +2150,6 @@ public final class TokenMetadataProgram {
                                                       final PublicKey collectionMasterEditionAccountKey,
                                                       final PublicKey collectionAuthorityRecordKey) {
     final var keys = verifySizedCollectionItemKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       payerKey,
@@ -2172,23 +2175,24 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> unverifySizedCollectionItemKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                  final PublicKey metadataKey,
+  public static List<AccountMeta> unverifySizedCollectionItemKeys(final PublicKey metadataKey,
                                                                   final PublicKey collectionAuthorityKey,
                                                                   final PublicKey payerKey,
                                                                   final PublicKey collectionMintKey,
                                                                   final PublicKey collectionKey,
                                                                   final PublicKey collectionMasterEditionAccountKey,
                                                                   final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createReadOnlySigner(collectionAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(collectionMintKey),
-      createWrite(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createReadOnlySigner(collectionAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createWrite(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -2207,7 +2211,6 @@ public final class TokenMetadataProgram {
                                                         final PublicKey collectionMasterEditionAccountKey,
                                                         final PublicKey collectionAuthorityRecordKey) {
     final var keys = unverifySizedCollectionItemKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       payerKey,
@@ -2234,8 +2237,7 @@ public final class TokenMetadataProgram {
   /// @param collectionKey Metadata Account of the Collection
   /// @param collectionMasterEditionAccountKey MasterEdition2 Account of the Collection Token
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> setAndVerifySizedCollectionItemKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                      final PublicKey metadataKey,
+  public static List<AccountMeta> setAndVerifySizedCollectionItemKeys(final PublicKey metadataKey,
                                                                       final PublicKey collectionAuthorityKey,
                                                                       final PublicKey payerKey,
                                                                       final PublicKey updateAuthorityKey,
@@ -2243,16 +2245,18 @@ public final class TokenMetadataProgram {
                                                                       final PublicKey collectionKey,
                                                                       final PublicKey collectionMasterEditionAccountKey,
                                                                       final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createReadOnlySigner(collectionAuthorityKey),
-      createWritableSigner(payerKey),
-      createRead(updateAuthorityKey),
-      createRead(collectionMintKey),
-      createWrite(collectionKey),
-      createRead(collectionMasterEditionAccountKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(8);
+    keys.add(createWrite(metadataKey));
+    keys.add(createReadOnlySigner(collectionAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(updateAuthorityKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createWrite(collectionKey));
+    keys.add(createRead(collectionMasterEditionAccountKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -2273,7 +2277,6 @@ public final class TokenMetadataProgram {
                                                             final PublicKey collectionMasterEditionAccountKey,
                                                             final PublicKey collectionAuthorityRecordKey) {
     final var keys = setAndVerifySizedCollectionItemKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       collectionAuthorityKey,
       payerKey,
@@ -2300,23 +2303,26 @@ public final class TokenMetadataProgram {
   /// @param updateAuthorityKey update authority info
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
-  public static List<AccountMeta> createMetadataAccountV3Keys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                              final PublicKey metadataKey,
+  public static List<AccountMeta> createMetadataAccountV3Keys(final PublicKey metadataKey,
                                                               final PublicKey mintKey,
                                                               final PublicKey mintAuthorityKey,
                                                               final PublicKey payerKey,
                                                               final PublicKey updateAuthorityKey,
                                                               final PublicKey systemProgramKey,
                                                               final PublicKey rentKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createRead(mintKey),
-      createReadOnlySigner(mintAuthorityKey),
-      createWritableSigner(payerKey),
-      updateAuthorityKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(updateAuthorityKey),
-      createRead(systemProgramKey),
-      createRead(requireNonNullElse(rentKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(7);
+    keys.add(createWrite(metadataKey));
+    keys.add(createRead(mintKey));
+    keys.add(createReadOnlySigner(mintAuthorityKey));
+    keys.add(createWritableSigner(payerKey));
+    if (updateAuthorityKey != null) {
+      keys.add(createReadOnlySigner(updateAuthorityKey));
+    }
+    keys.add(createRead(systemProgramKey));
+    if (rentKey != null) {
+      keys.add(createRead(rentKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
@@ -2336,7 +2342,6 @@ public final class TokenMetadataProgram {
                                                     final PublicKey rentKey,
                                                     final CreateMetadataAccountArgsV3 createMetadataAccountArgsV3) {
     final var keys = createMetadataAccountV3Keys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       mintKey,
       mintAuthorityKey,
@@ -2395,17 +2400,18 @@ public final class TokenMetadataProgram {
   /// @param collectionAuthorityKey Collection Update authority
   /// @param collectionMintKey Mint of the Collection
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> setCollectionSizeKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                        final PublicKey collectionMetadataKey,
+  public static List<AccountMeta> setCollectionSizeKeys(final PublicKey collectionMetadataKey,
                                                         final PublicKey collectionAuthorityKey,
                                                         final PublicKey collectionMintKey,
                                                         final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(collectionMetadataKey),
-      createWritableSigner(collectionAuthorityKey),
-      createRead(collectionMintKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(4);
+    keys.add(createWrite(collectionMetadataKey));
+    keys.add(createWritableSigner(collectionAuthorityKey));
+    keys.add(createRead(collectionMintKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param collectionMetadataKey Collection Metadata account
@@ -2419,7 +2425,6 @@ public final class TokenMetadataProgram {
                                               final PublicKey collectionAuthorityRecordKey,
                                               final SetCollectionSizeArgs setCollectionSizeArgs) {
     final var keys = setCollectionSizeKeys(
-      invokedTokenMetadataProgramMeta,
       collectionMetadataKey,
       collectionAuthorityKey,
       collectionMintKey,
@@ -2477,17 +2482,18 @@ public final class TokenMetadataProgram {
   /// @param updateAuthorityKey Metadata update authority
   /// @param mintKey Mint account
   /// @param editionKey Edition account
-  public static List<AccountMeta> setTokenStandardKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                       final PublicKey metadataKey,
+  public static List<AccountMeta> setTokenStandardKeys(final PublicKey metadataKey,
                                                        final PublicKey updateAuthorityKey,
                                                        final PublicKey mintKey,
                                                        final PublicKey editionKey) {
-    return List.of(
-      createWrite(metadataKey),
-      createReadOnlySigner(updateAuthorityKey),
-      createRead(mintKey),
-      createRead(requireNonNullElse(editionKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(4);
+    keys.add(createWrite(metadataKey));
+    keys.add(createReadOnlySigner(updateAuthorityKey));
+    keys.add(createRead(mintKey));
+    if (editionKey != null) {
+      keys.add(createRead(editionKey));
+    }
+    return keys;
   }
 
   /// @param metadataKey Metadata account
@@ -2500,7 +2506,6 @@ public final class TokenMetadataProgram {
                                              final PublicKey mintKey,
                                              final PublicKey editionKey) {
     final var keys = setTokenStandardKeys(
-      invokedTokenMetadataProgramMeta,
       metadataKey,
       updateAuthorityKey,
       mintKey,
@@ -2521,19 +2526,20 @@ public final class TokenMetadataProgram {
   /// @param collectionMintKey Mint of the Collection
   /// @param bubblegumSignerKey Signing PDA of Bubblegum program
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
-  public static List<AccountMeta> bubblegumSetCollectionSizeKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                                 final PublicKey collectionMetadataKey,
+  public static List<AccountMeta> bubblegumSetCollectionSizeKeys(final PublicKey collectionMetadataKey,
                                                                  final PublicKey collectionAuthorityKey,
                                                                  final PublicKey collectionMintKey,
                                                                  final PublicKey bubblegumSignerKey,
                                                                  final PublicKey collectionAuthorityRecordKey) {
-    return List.of(
-      createWrite(collectionMetadataKey),
-      createReadOnlySigner(collectionAuthorityKey),
-      createRead(collectionMintKey),
-      createReadOnlySigner(bubblegumSignerKey),
-      createRead(requireNonNullElse(collectionAuthorityRecordKey, invokedTokenMetadataProgramMeta.publicKey()))
-    );
+    final var keys = new ArrayList<AccountMeta>(5);
+    keys.add(createWrite(collectionMetadataKey));
+    keys.add(createReadOnlySigner(collectionAuthorityKey));
+    keys.add(createRead(collectionMintKey));
+    keys.add(createReadOnlySigner(bubblegumSignerKey));
+    if (collectionAuthorityRecordKey != null) {
+      keys.add(createRead(collectionAuthorityRecordKey));
+    }
+    return keys;
   }
 
   /// @param collectionMetadataKey Collection Metadata account
@@ -2549,7 +2555,6 @@ public final class TokenMetadataProgram {
                                                        final PublicKey collectionAuthorityRecordKey,
                                                        final SetCollectionSizeArgs setCollectionSizeArgs) {
     final var keys = bubblegumSetCollectionSizeKeys(
-      invokedTokenMetadataProgramMeta,
       collectionMetadataKey,
       collectionAuthorityKey,
       collectionMintKey,
@@ -2690,8 +2695,7 @@ public final class TokenMetadataProgram {
   /// @param systemProgramKey System program
   /// @param sysvarInstructionsKey Instructions sysvar account
   /// @param authorityKey Authority/creator of the escrow account
-  public static List<AccountMeta> createEscrowAccountKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                          final PublicKey escrowKey,
+  public static List<AccountMeta> createEscrowAccountKeys(final PublicKey escrowKey,
                                                           final PublicKey metadataKey,
                                                           final PublicKey mintKey,
                                                           final PublicKey tokenAccountKey,
@@ -2700,17 +2704,19 @@ public final class TokenMetadataProgram {
                                                           final PublicKey systemProgramKey,
                                                           final PublicKey sysvarInstructionsKey,
                                                           final PublicKey authorityKey) {
-    return List.of(
-      createWrite(escrowKey),
-      createWrite(metadataKey),
-      createRead(mintKey),
-      createRead(tokenAccountKey),
-      createRead(editionKey),
-      createWritableSigner(payerKey),
-      createRead(systemProgramKey),
-      createRead(sysvarInstructionsKey),
-      authorityKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(authorityKey)
-    );
+    final var keys = new ArrayList<AccountMeta>(9);
+    keys.add(createWrite(escrowKey));
+    keys.add(createWrite(metadataKey));
+    keys.add(createRead(mintKey));
+    keys.add(createRead(tokenAccountKey));
+    keys.add(createRead(editionKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(systemProgramKey));
+    keys.add(createRead(sysvarInstructionsKey));
+    if (authorityKey != null) {
+      keys.add(createReadOnlySigner(authorityKey));
+    }
+    return keys;
   }
 
   /// @param escrowKey Escrow account
@@ -2733,7 +2739,6 @@ public final class TokenMetadataProgram {
                                                 final PublicKey sysvarInstructionsKey,
                                                 final PublicKey authorityKey) {
     final var keys = createEscrowAccountKeys(
-      invokedTokenMetadataProgramMeta,
       escrowKey,
       metadataKey,
       mintKey,
@@ -2832,8 +2837,7 @@ public final class TokenMetadataProgram {
   /// @param tokenProgramKey Token program
   /// @param sysvarInstructionsKey Instructions sysvar account
   /// @param authorityKey Authority/creator of the escrow account
-  public static List<AccountMeta> transferOutOfEscrowKeys(final AccountMeta invokedTokenMetadataProgramMeta,
-                                                          final PublicKey escrowKey,
+  public static List<AccountMeta> transferOutOfEscrowKeys(final PublicKey escrowKey,
                                                           final PublicKey metadataKey,
                                                           final PublicKey payerKey,
                                                           final PublicKey attributeMintKey,
@@ -2846,21 +2850,23 @@ public final class TokenMetadataProgram {
                                                           final PublicKey tokenProgramKey,
                                                           final PublicKey sysvarInstructionsKey,
                                                           final PublicKey authorityKey) {
-    return List.of(
-      createRead(escrowKey),
-      createWrite(metadataKey),
-      createWritableSigner(payerKey),
-      createRead(attributeMintKey),
-      createWrite(attributeSrcKey),
-      createWrite(attributeDstKey),
-      createRead(escrowMintKey),
-      createRead(escrowAccountKey),
-      createRead(systemProgramKey),
-      createRead(ataProgramKey),
-      createRead(tokenProgramKey),
-      createRead(sysvarInstructionsKey),
-      authorityKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(authorityKey)
-    );
+    final var keys = new ArrayList<AccountMeta>(13);
+    keys.add(createRead(escrowKey));
+    keys.add(createWrite(metadataKey));
+    keys.add(createWritableSigner(payerKey));
+    keys.add(createRead(attributeMintKey));
+    keys.add(createWrite(attributeSrcKey));
+    keys.add(createWrite(attributeDstKey));
+    keys.add(createRead(escrowMintKey));
+    keys.add(createRead(escrowAccountKey));
+    keys.add(createRead(systemProgramKey));
+    keys.add(createRead(ataProgramKey));
+    keys.add(createRead(tokenProgramKey));
+    keys.add(createRead(sysvarInstructionsKey));
+    if (authorityKey != null) {
+      keys.add(createReadOnlySigner(authorityKey));
+    }
+    return keys;
   }
 
   /// @param escrowKey Escrow account
@@ -2892,7 +2898,6 @@ public final class TokenMetadataProgram {
                                                 final PublicKey authorityKey,
                                                 final TransferOutOfEscrowArgs transferOutOfEscrowArgs) {
     final var keys = transferOutOfEscrowKeys(
-      invokedTokenMetadataProgramMeta,
       escrowKey,
       metadataKey,
       payerKey,
