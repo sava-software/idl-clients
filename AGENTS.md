@@ -75,7 +75,8 @@ Anchor instruction with a missing discriminator and got the eight-byte `sha256("
 fallback. The result was builders that no such program can dispatch at all.
 
 Both affected programs here are fixed — **Metaplex Token Metadata (58)** and **Solana Attestation
-Service (12)**, every instruction each declares.
+Service (12)**, every instruction each declares: **70 in this repository**, which is the maintained
+share of the defect and the whole of the work that was outstanding.
 
 Nothing else in this repo is affected, and no work is outstanding. A third program exists —
 Jito Tip Router, 35 instructions, in the **unmaintained** `anchor-programs` — and it is recorded

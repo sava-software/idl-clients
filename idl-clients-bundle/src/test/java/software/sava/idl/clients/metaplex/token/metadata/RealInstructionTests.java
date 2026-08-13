@@ -103,7 +103,8 @@ final class RealInstructionTests {
   }
 
   /// The third fixture decodes too, and to its exact length. It was previously read only for its
-  /// first byte, which left the longest of the three untested as a payload.
+  /// first byte, which left it untested as a payload — at 37 bytes it is the middle of the three,
+  /// between Transfer's 11 and CreateMetadataAccountV3's 102.
   @Test
   void aRealUpdateMetadataAccountDecodes() {
     assertEquals(37, UPDATE_METADATA_ACCOUNT_V2.length);

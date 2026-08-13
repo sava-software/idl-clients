@@ -117,9 +117,11 @@ final class AttestationInstructionTests {
   /// `match`, with `228 => process_emit_event(program_id, accounts)` — carrying a comment reading
   /// `matches EVENT_IX_TAG[0]`, and not passing the remaining data to the handler at all.
   ///
-  /// So there is no `starts_with`, no eight-byte key, and nothing under-described: the trailing
-  /// `e4 45 a5 2e 51 cb 9a 1d` is the event payload's own framing tag, which the handler ignores.
-  /// The generated one-byte `[228]` is simply correct.
+  /// So there is no `starts_with`, no eight-byte key, and nothing under-described. `e4` is the
+  /// dispatch byte; the seven that follow — `45 a5 2e 51 cb 9a 1d` — are the tail of the event
+  /// payload's own framing tag, which the handler never reads. The two happen to abut because the
+  /// tag's first byte is what the entrypoint matches on. The generated one-byte `[228]` is simply
+  /// correct.
   @Test
   void emitEventDispatchesOnByte228Exactly() {
     final byte[] emitEvent = instruction("emitEvent-228");
@@ -128,8 +130,8 @@ final class AttestationInstructionTests {
     assertEquals(1, SolanaAttestationServiceProgram.EMIT_EVENT_DISCRIMINATOR.length());
     assertEquals(228, SolanaAttestationServiceProgram.EMIT_EVENT_DISCRIMINATOR.data()[0] & 0xFF);
 
-    // The bytes after the dispatch byte are the event's framing tag, which the handler never
-    // reads. Asserted so the next reader can see why they look like a discriminator and are not.
+    // The seven bytes after it are the framing tag's tail, which the handler never reads.
+    // Asserted so the next reader can see why they look like a discriminator and are not.
     final int[] eventTagTail = {69, 165, 46, 81, 203, 154, 29};
     for (int i = 0; i < eventTagTail.length; i++) {
       assertEquals(eventTagTail[i], emitEvent[i + 1] & 0xFF, "framing byte " + (i + 1));
