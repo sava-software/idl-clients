@@ -103,21 +103,65 @@ The one redeploy this repo has caught in the act, recorded here because the repo
 that first carried it is one commit in a branch and a squash would take it with it.
 
 `ProgramData.last_deploy_slot` for `KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD` moved
-**422723185 → 438843135**, and the on-chain IDL moved with it — hash
-`7d8f55dc… → c229f91d…`, version **1.23.0 → 1.24.0**. What changed: three
-instructions added (`calculate_ctoken_exchange_rate`, `fill_borrow_order_v2`,
-`set_borrow_order_v2`), fifteen changed, the `ExchangeRateWithDecimals` type added,
-six types changed, one error added and one changed.
+**422723185 → 438843135**, and the on-chain IDL moved with it, version **1.23.0 → 1.24.0**:
 
-Two things are worth keeping from it. The deployed client moved under us during
-unrelated work, which is the case the deploy-slot signal exists for and the IDL-to-IDL
-diff would not have raised on its own. And the staged (`next`) client *survived* the
-deploy — the SDK copy still differs from the deployed document at the same version
-string — so a deploy does not retire a `next/` package and the version string is not
-what decides it.
+| | sha256 |
+|---|---|
+| before | `7d8f55dca835e9c1890aec99e9d939241ca3df9bc3ef6006e138cbdda9bd6eb2` |
+| after | `c229f91d6a79a4a100ce6adc51597eaf0688ed29fa2ff4a38a4238da7ad24875` |
+
+Full hashes on purpose: a truncated prefix is enough to read a story and not enough to
+re-verify one, and `sources.json` is the only other place this pair exists.
+
+What changed: three instructions added (`calculate_ctoken_exchange_rate`,
+`fill_borrow_order_v2`, `set_borrow_order_v2`), fifteen changed, the
+`ExchangeRateWithDecimals` type added, six types changed, one error added and one changed.
+
+Two things are worth keeping from it. The deployed client moved under us during unrelated
+work — the case the deploy-slot signal exists for. The IDL-to-IDL diff *did* report the
+movement here, since the document itself changed; what it could not do is establish that a
+**redeploy** was the cause. That distinction matters because the failure mode this repo
+keeps meeting is the other one: marginfi's IDL stopped changing while its program moved
+on, so an IDL-to-IDL diff read clean. Movement in the document is evidence the document
+moved, and only the deploy slot is evidence the program did.
+
+And the staged (`next`) client *survived* the deploy — the SDK copy still differs from the
+deployed document at the same version string — so a deploy does not retire a `next/`
+package and the version string is not what decides it.
 
 The generating run's own report is in commit `c2563a4`; `sources.json` carries the
 slot and hashes at all times.
+
+### A second worked example: the SPL programs, 2026-08-13
+
+Recorded here for the opposite reason to Kamino's: this movement **did not** appear in
+`idl-change-report.txt`, and the rule above — a changed `sources.json` hash with no
+matching report entry means a run threw its evidence away — is what catches that.
+
+Four programs moved: `token` (+620 IDL lines), `token_2022` (+2357), `system`, and
+`compute_budget`. Token-2022's `vcs` hash went `e3e5e9ff… → f5f3375f…`.
+
+**Why the report is silent, and why that is not a second bug.** Movement is an *event*:
+it fires on the run that first sees a channel differ from the previous `sources.json`.
+These four are precisely the programs the silent-failure defect was dropping — a codama
+`display` node threw out of the parser, the exception escaped its worker without setting
+`fatal`, and the run exited 0 with them missing. A dropped program never reaches
+`recordChannels`, so its old `sources.json` stayed on disk and no comparison was ever
+made. The first run after the parser fix compared against a record written before
+upstream added those nodes, and the event had already been consumed by a run that could
+not report it.
+
+**What actually changed is presentational.** The added nodes are `structFieldDisplayNode`
+(237), `instructionAccountDisplayNode` (148), `instructionDisplayNode` (103),
+`amountNumberDisplayNode` (21) and similar — codama's rendering hints. Verified rather
+than assumed: every generated `.java` file under all four packages is byte-identical to
+its previous version once whitespace is stripped. The visible Java diff is the trailing
+-whitespace normalisation in the same branch, not this movement. No wire layout,
+discriminator, account order or field offset moved.
+
+The lesson is the one the deploy-slot signal already teaches, in a new place: **a channel
+that stops being read stops being compared, and silence then looks like agreement.** A
+program absent from a run is not a program that agreed with its record.
 
 The trigger to key on is the **deploy**, not the IDL edit:
 

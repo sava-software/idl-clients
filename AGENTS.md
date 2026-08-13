@@ -65,6 +65,55 @@ often real investigative work. The handwritten clients encode the results of
 that work — which is exactly why they must be kept in sync with the programs
 themselves, not just the IDL.
 
+### Known generator gap: instruction `returns` is not modelled
+
+Everything above is the IDL failing to say something. This one is the opposite: the
+IDL *does* say it and the generator does not read it.
+
+An Anchor instruction may declare `"returns"`, the type the program hands back through
+`set_return_data`. A caller reads those bytes from `simulateTransaction`'s
+`value.returnData` or `getTransaction`'s `meta.returnData`, both of which sava already
+surfaces along with the producing program id. `idl-src-gen` ignores the field, so no
+decoder is generated for it and consumers Borsh-decode the payload by hand.
+
+**Scope, as of 2026-08-13** — 45 instructions across 8 programs:
+
+| instructions | program |
+|---:|---|
+| 18 | `exponent` |
+| 12 | `jupiter.swap` |
+| 6 | `jupiter.lend` |
+| 3 | `jupiter.perpetuals` |
+| 2 + 2 | `kamino.lend`, `kamino.lend.next` |
+| 1 | `cctp.message_transmitter.v2` |
+| 1 | `oracles.pyth.lazer` |
+
+Re-measure rather than trusting this table:
+
+```shell
+python3 - <<'PY'
+import json, glob, collections
+tot = collections.Counter()
+for p in glob.glob('idl-clients-*/src/main/java/**/gen/idl.json', recursive=True):
+    d = json.load(open(p))
+    n = sum(1 for i in d.get('instructions', []) if i.get('returns'))
+    if n:
+        tot[p.split('/clients/')[1].rsplit('/gen/', 1)[0].replace('/', '.')] += n
+for k, v in sorted(tot.items(), key=lambda x: -x[1]):
+    print(f'{v:3d}  {k}')
+PY
+```
+
+Two things this is **not**. It is not a transaction-safety problem: `returns` describes
+what comes back, so nothing about instruction encoding, account order or wire layout
+depends on it, and every client here builds correct instructions today. And events are
+not a substitute — an event reader expects an event discriminator, which return data
+does not carry.
+
+Closing it is a generator feature (a decoder record per declared return type), not a
+per-client fix. Until then, "the client covers the IDL" is true of everything except
+this field, and that qualification belongs in any coverage claim.
+
 ## Keeping in sync with the Rust source
 
 The IDL is a lossy artifact; the program's **Rust source is the ground truth**.
