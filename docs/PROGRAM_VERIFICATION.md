@@ -201,6 +201,26 @@ rather than erroring on it.
 
 ---
 
+### A third worked example: Jupiter Swap, 2026-08-13
+
+Caught in passing by a regeneration run, and recorded here because the report that carried it is
+one commit in a branch: `idl-change-report.txt` reports movement as an *event*, so the next run
+after it says "Nothing moved" and a squash leaves the receipt nowhere.
+
+`ProgramData.last_deploy_slot` for `JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4` moved
+**437349164 → 438982144**, and **no IDL channel moved with it** — the `anchor` channel's hash is
+unchanged either side.
+
+That is the marginfi shape, and the reason the deploy-slot signal exists. An IDL-to-IDL diff reads
+clean here, because the document genuinely did not change; only the program did. Per the table
+above, a deploy-slot move with no IDL movement warrants probing that program's **full instruction
+set**, not the added-and-removed subset — there is no subset to derive.
+
+Not yet probed. The generating run's own report is in commit `40e1533`; `sources.json` carries the
+slot at all times.
+
+---
+
 ## 2. Does the account order match the program's Rust?
 
 ```shell

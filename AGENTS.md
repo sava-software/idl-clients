@@ -65,6 +65,31 @@ often real investigative work. The handwritten clients encode the results of
 that work — which is exactly why they must be kept in sync with the programs
 themselves, not just the IDL.
 
+### Shank dispatch ordinals, and what the silent skip cost
+
+Programs whose IDL declares `"metadata": {"origin": "shank"}` dispatch on a **one-byte ordinal**,
+declared per instruction as `"discriminant": {"type": "u8", "value": N}`, with no `"discriminator"`
+anywhere. `idl-src-gen` skipped that field until 2026-08-13 — its instruction parser's default arm
+was `ji.skip()`, unlike the type parser's, which throws — so every such instruction looked like an
+Anchor instruction with a missing discriminator and got the eight-byte `sha256("global:<name>")`
+fallback. The result was builders that no such program can dispatch at all.
+
+Fixed for the two programs in this repo, and **the inventory is wider than this repo**:
+
+| program | instructions | where |
+|---|---:|---|
+| Metaplex Token Metadata | 58 | this repo, fixed |
+| Solana Attestation Service | 12 | this repo, fixed |
+| Jito Tip Router | 35 | `anchor-programs`, **still emitting eight-byte hashes** |
+
+**105 known affected instructions across three programs.** Any other project generating from a
+Shank IDL with a version of the generator older than that fix has the same defect; the check is
+whether its `gen/idl.json` carries `"origin": "shank"` and per-instruction `"discriminant"`.
+
+The generator now rejects, rather than guesses, in three places that previously passed silently: an
+unmodelled instruction field, a `discriminant` that is not a complete `u8` in range, and a Shank
+instruction declaring no dispatch key at all.
+
 ### Known generator gap: instruction `returns` is not modelled
 
 Everything above is the IDL failing to say something. This one is the opposite: the

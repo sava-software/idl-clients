@@ -68,41 +68,91 @@ final class InstructionOrdinalTests {
     assertEquals(1, TokenMetadataProgram.UPDATE_METADATA_ACCOUNT_DISCRIMINATOR.data()[0] & 0xFF);
   }
 
-  /// Not one instruction, all of them. The defect was uniform — the program declares no
-  /// `discriminator` anywhere — so a fix that corrected only the instruction someone happened to
-  /// test would leave the other 57 sending a name hash.
+  /// The whole dispatch table, by exact name and exact value, transcribed from the committed
+  /// `gen/idl.json` and cross-checked against `MetadataInstruction` in `mpl-token-metadata`.
+  ///
+  /// The weaker forms this replaces were checking almost nothing. "At least fifty one-byte
+  /// constants" passes if eight are dropped; "all widths are one" passes if two ordinals are
+  /// swapped, or if 2 becomes 58. The defect was uniform across the program, so a check that
+  /// cannot see a single wrong value is not evidence about the other 57.
   @Test
-  void everyInstructionDispatchesOnASingleByte() {
-    final var fields = discriminatorFields();
-    assertTrue(fields.size() >= 50, "expected the program's full instruction set, found " + fields.size());
+  void theDispatchTableMatchesTheIdlExactly() {
+    final var expected = new java.util.LinkedHashMap<String, Integer>();
+    expected.put("CREATE_METADATA_ACCOUNT_DISCRIMINATOR", 0);
+    expected.put("UPDATE_METADATA_ACCOUNT_DISCRIMINATOR", 1);
+    expected.put("DEPRECATED_CREATE_MASTER_EDITION_DISCRIMINATOR", 2);
+    expected.put("DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN_DISCRIMINATOR", 3);
+    expected.put("UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN_DISCRIMINATOR", 4);
+    expected.put("DEPRECATED_SET_RESERVATION_LIST_DISCRIMINATOR", 5);
+    expected.put("DEPRECATED_CREATE_RESERVATION_LIST_DISCRIMINATOR", 6);
+    expected.put("SIGN_METADATA_DISCRIMINATOR", 7);
+    expected.put("DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN_DISCRIMINATOR", 8);
+    expected.put("DEPRECATED_MINT_PRINTING_TOKENS_DISCRIMINATOR", 9);
+    expected.put("CREATE_MASTER_EDITION_DISCRIMINATOR", 10);
+    expected.put("MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_DISCRIMINATOR", 11);
+    expected.put("CONVERT_MASTER_EDITION_V_1_TO_V_2_DISCRIMINATOR", 12);
+    expected.put("MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY_DISCRIMINATOR", 13);
+    expected.put("PUFF_METADATA_DISCRIMINATOR", 14);
+    expected.put("UPDATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR", 15);
+    expected.put("CREATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR", 16);
+    expected.put("CREATE_MASTER_EDITION_V_3_DISCRIMINATOR", 17);
+    expected.put("VERIFY_COLLECTION_DISCRIMINATOR", 18);
+    expected.put("UTILIZE_DISCRIMINATOR", 19);
+    expected.put("APPROVE_USE_AUTHORITY_DISCRIMINATOR", 20);
+    expected.put("REVOKE_USE_AUTHORITY_DISCRIMINATOR", 21);
+    expected.put("UNVERIFY_COLLECTION_DISCRIMINATOR", 22);
+    expected.put("APPROVE_COLLECTION_AUTHORITY_DISCRIMINATOR", 23);
+    expected.put("REVOKE_COLLECTION_AUTHORITY_DISCRIMINATOR", 24);
+    expected.put("SET_AND_VERIFY_COLLECTION_DISCRIMINATOR", 25);
+    expected.put("FREEZE_DELEGATED_ACCOUNT_DISCRIMINATOR", 26);
+    expected.put("THAW_DELEGATED_ACCOUNT_DISCRIMINATOR", 27);
+    expected.put("REMOVE_CREATOR_VERIFICATION_DISCRIMINATOR", 28);
+    expected.put("BURN_NFT_DISCRIMINATOR", 29);
+    expected.put("VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR", 30);
+    expected.put("UNVERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR", 31);
+    expected.put("SET_AND_VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR", 32);
+    expected.put("CREATE_METADATA_ACCOUNT_V_3_DISCRIMINATOR", 33);
+    expected.put("SET_COLLECTION_SIZE_DISCRIMINATOR", 34);
+    expected.put("SET_TOKEN_STANDARD_DISCRIMINATOR", 35);
+    expected.put("BUBBLEGUM_SET_COLLECTION_SIZE_DISCRIMINATOR", 36);
+    expected.put("BURN_EDITION_NFT_DISCRIMINATOR", 37);
+    expected.put("CREATE_ESCROW_ACCOUNT_DISCRIMINATOR", 38);
+    expected.put("CLOSE_ESCROW_ACCOUNT_DISCRIMINATOR", 39);
+    expected.put("TRANSFER_OUT_OF_ESCROW_DISCRIMINATOR", 40);
+    expected.put("BURN_DISCRIMINATOR", 41);
+    expected.put("CREATE_DISCRIMINATOR", 42);
+    expected.put("MINT_DISCRIMINATOR", 43);
+    expected.put("DELEGATE_DISCRIMINATOR", 44);
+    expected.put("REVOKE_DISCRIMINATOR", 45);
+    expected.put("LOCK_DISCRIMINATOR", 46);
+    expected.put("UNLOCK_DISCRIMINATOR", 47);
+    expected.put("MIGRATE_DISCRIMINATOR", 48);
+    expected.put("TRANSFER_DISCRIMINATOR", 49);
+    expected.put("UPDATE_DISCRIMINATOR", 50);
+    expected.put("USE_DISCRIMINATOR", 51);
+    expected.put("VERIFY_DISCRIMINATOR", 52);
+    expected.put("UNVERIFY_DISCRIMINATOR", 53);
+    expected.put("COLLECT_DISCRIMINATOR", 54);
+    expected.put("PRINT_DISCRIMINATOR", 55);
+    expected.put("RESIZE_DISCRIMINATOR", 56);
+    expected.put("CLOSE_ACCOUNTS_DISCRIMINATOR", 57);
 
-    final var wrongWidth = new ArrayList<String>();
-    for (final var field : fields) {
-      final var discriminator = value(field);
-      if (discriminator.length() != 1) {
-        wrongWidth.add(field.getName() + " is " + discriminator.length() + " bytes");
-      }
-    }
-    assertEquals(List.of(), wrongWidth,
-        "every Token Metadata instruction is a one-byte Borsh enum tag");
-  }
-
-  /// The ordinals are distinct. A dispatch key that collides would route two instructions to one
-  /// handler, and the eight-byte hashes this replaced could never collide by construction — so
-  /// nothing previously checked it.
-  @Test
-  void theOrdinalsAreDistinct() {
-    final var seen = new java.util.HashMap<Integer, String>();
-    final var collisions = new ArrayList<String>();
+    final var actual = new java.util.LinkedHashMap<String, Integer>();
     for (final var field : discriminatorFields()) {
-      final int ordinal = value(field).data()[0] & 0xFF;
-      final var previous = seen.putIfAbsent(ordinal, field.getName());
-      if (previous != null) {
-        collisions.add(ordinal + ": " + previous + " and " + field.getName());
-      }
+      final var discriminator = value(field);
+      assertEquals(1, discriminator.length(), field.getName() + " must be one byte");
+      actual.put(field.getName(), discriminator.data()[0] & 0xFF);
     }
-    assertEquals(List.of(), collisions, "two instructions cannot share a dispatch byte");
+
+    assertEquals(expected, actual, "the client's dispatch table must be the program's");
+    assertEquals(58, actual.size(), "every declared instruction, none dropped");
+    assertEquals(
+        java.util.stream.IntStream.range(0, 58).boxed().toList(),
+        actual.values().stream().sorted().toList(),
+        "the ordinals are exactly 0..57, contiguous and distinct"
+    );
   }
+
 
   /// The regression itself, stated as the thing that must never come back: no instruction in this
   /// program may carry the eight-byte width an Anchor discriminator would have.

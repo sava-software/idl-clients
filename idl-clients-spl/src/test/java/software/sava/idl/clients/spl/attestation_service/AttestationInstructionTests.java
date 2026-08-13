@@ -10,6 +10,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -88,9 +89,9 @@ final class AttestationInstructionTests {
     assertNotNull(createAttestation.nonce(), "a pubkey read from the wrong offset would be garbage");
     assertNotNull(createAttestation.data());
 
-    // Everything the instruction carried is accounted for, and nothing beyond it was read.
-    assertTrue(createAttestation.l() <= CREATE_ATTESTATION.length,
-        () -> "read past the instruction: " + createAttestation.l() + " > " + CREATE_ATTESTATION.length);
+    // Exactly, not at-most: `<=` would pass on a decoder that silently dropped a trailing field.
+    assertEquals(CREATE_ATTESTATION.length, createAttestation.l(),
+        "the decoder must account for every byte the instruction carried");
   }
 
   /// Re-serializing the decoded instruction reproduces the captured bytes.
@@ -99,40 +100,65 @@ final class AttestationInstructionTests {
     final var createAttestation =
         SolanaAttestationServiceProgram.CreateAttestationIxData.read(CREATE_ATTESTATION, 0);
     final byte[] out = new byte[createAttestation.l()];
-    createAttestation.write(out, 0);
+    final int written = createAttestation.write(out, 0);
 
-    assertArrayEquals(
-        java.util.Arrays.copyOf(CREATE_ATTESTATION, out.length), out,
-        "a rebuilt instruction must be byte-identical to the chain's"
-    );
+    assertEquals(CREATE_ATTESTATION.length, written, "a short write would truncate the instruction");
+    // The whole fixture, not a prefix of it: comparing against copyOf(fixture, out.length) would
+    // accept any decoder that dropped a suffix.
+    assertArrayEquals(CREATE_ATTESTATION, out, "a rebuilt instruction must be byte-identical to the chain's");
   }
 
-  /// `EmitEvent` is the documented exception, and it is the IDL that is imprecise rather than the
-  /// generator.
+  /// `EmitEvent` dispatches on byte 228 exactly, like every other instruction here.
   ///
-  /// The IDL declares it `{"type": "u8", "value": 228}`, but the captured instruction begins
-  /// `e4 45 a5 2e 51 cb 9a 1d` — Anchor's eight-byte event-CPI marker, whose first byte is 228.
-  /// So the declaration describes one byte of an eight-byte key. It costs nothing here: this is
-  /// the instruction the program issues to *itself* to log an event, a client never builds it, and
-  /// under Anchor's `starts_with` dispatch a one-byte `[228]` still selects it. Asserted so the
-  /// discrepancy is recorded where someone meets it rather than rediscovered.
+  /// An earlier revision of this test claimed the IDL "under-described an eight-byte Anchor
+  /// event-CPI key" and that `starts_with` dispatch rescued it. Every part of that was wrong. The
+  /// program is **pinocchio**, not Anchor; its entrypoint is
+  /// `let (discriminator, instruction_data) = instruction_data.split_first()` followed by an exact
+  /// `match`, with `228 => process_emit_event(program_id, accounts)` — carrying a comment reading
+  /// `matches EVENT_IX_TAG[0]`, and not passing the remaining data to the handler at all.
+  ///
+  /// So there is no `starts_with`, no eight-byte key, and nothing under-described: the trailing
+  /// `e4 45 a5 2e 51 cb 9a 1d` is the event payload's own framing tag, which the handler ignores.
+  /// The generated one-byte `[228]` is simply correct.
   @Test
-  void emitEventIsAnchorsEventCpiMarkerWhichTheIdlUnderDescribes() {
+  void emitEventDispatchesOnByte228Exactly() {
     final byte[] emitEvent = instruction("emitEvent-228");
-    final int[] anchorEventCpi = {228, 69, 165, 46, 81, 203, 154, 29};
 
-    for (int i = 0; i < anchorEventCpi.length; i++) {
-      assertEquals(anchorEventCpi[i], emitEvent[i] & 0xFF, "byte " + i + " of the event-CPI marker");
+    assertEquals(228, emitEvent[0] & 0xFF, "the dispatch byte the entrypoint matches on");
+    assertEquals(1, SolanaAttestationServiceProgram.EMIT_EVENT_DISCRIMINATOR.length());
+    assertEquals(228, SolanaAttestationServiceProgram.EMIT_EVENT_DISCRIMINATOR.data()[0] & 0xFF);
+
+    // The bytes after the dispatch byte are the event's framing tag, which the handler never
+    // reads. Asserted so the next reader can see why they look like a discriminator and are not.
+    final int[] eventTagTail = {69, 165, 46, 81, 203, 154, 29};
+    for (int i = 0; i < eventTagTail.length; i++) {
+      assertEquals(eventTagTail[i], emitEvent[i + 1] & 0xFF, "framing byte " + (i + 1));
     }
-    assertEquals(228, SolanaAttestationServiceProgram.EMIT_EVENT_DISCRIMINATOR.data()[0] & 0xFF,
-        "the generator emits exactly what the IDL declares");
   }
 
-  /// Every declared ordinal is one byte, so the fix is not limited to the three instructions a
-  /// transaction happened to contain.
+  /// The whole dispatch table, by exact value, against the deployed entrypoint's `match` arms.
+  ///
+  /// Width alone is too weak a check: it passes if a constant is dropped, and it passes if two
+  /// ordinals are swapped. These are the twelve arms in
+  /// `attestation-service/program/src/entrypoint.rs` — note the gap at 8, which is why a
+  /// count-and-range check would not do either.
   @Test
-  void everyInstructionDispatchesOnASingleByte() {
-    final var wrongWidth = new java.util.ArrayList<String>();
+  void theDispatchTableMatchesTheDeployedEntrypoint() {
+    final var expected = new java.util.LinkedHashMap<String, Integer>();
+    expected.put("CREATE_CREDENTIAL_DISCRIMINATOR", 0);
+    expected.put("CREATE_SCHEMA_DISCRIMINATOR", 1);
+    expected.put("CHANGE_SCHEMA_STATUS_DISCRIMINATOR", 2);
+    expected.put("CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR", 3);
+    expected.put("CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR", 4);
+    expected.put("CHANGE_SCHEMA_VERSION_DISCRIMINATOR", 5);
+    expected.put("CREATE_ATTESTATION_DISCRIMINATOR", 6);
+    expected.put("CLOSE_ATTESTATION_DISCRIMINATOR", 7);
+    expected.put("TOKENIZE_SCHEMA_DISCRIMINATOR", 9);
+    expected.put("CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR", 10);
+    expected.put("CLOSE_TOKENIZED_ATTESTATION_DISCRIMINATOR", 11);
+    expected.put("EMIT_EVENT_DISCRIMINATOR", 228);
+
+    final var actual = new java.util.LinkedHashMap<String, Integer>();
     for (final var field : SolanaAttestationServiceProgram.class.getDeclaredFields()) {
       if (!field.getName().endsWith("_DISCRIMINATOR")
           || field.getType() != software.sava.core.programs.Discriminator.class) {
@@ -140,13 +166,14 @@ final class AttestationInstructionTests {
       }
       try {
         final var discriminator = (software.sava.core.programs.Discriminator) field.get(null);
-        if (discriminator.length() != 1) {
-          wrongWidth.add(field.getName() + " is " + discriminator.length() + " bytes");
-        }
+        assertEquals(1, discriminator.length(), field.getName() + " must be one byte");
+        actual.put(field.getName(), discriminator.data()[0] & 0xFF);
       } catch (final IllegalAccessException e) {
         throw new AssertionError(e);
       }
     }
-    assertEquals(List.of(), wrongWidth, "this program dispatches on one byte, everywhere");
+
+    assertEquals(expected, actual, "the client's dispatch table must be the program's");
+    assertEquals(expected.size(), Set.copyOf(actual.values()).size(), "ordinals must be distinct");
   }
 }

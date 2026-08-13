@@ -72,8 +72,9 @@ final class RealInstructionTests {
     assertEquals(1, transfer.discriminator().length());
     assertEquals(49, transfer.discriminator().data()[0] & 0xFF);
     assertNotNull(transfer.transferArgs(), "the argument would be garbage read from offset eight");
-    assertTrue(transfer.l() <= TRANSFER.length,
-        () -> "read past the instruction: " + transfer.l() + " > " + TRANSFER.length);
+    // Exactly, not at-most: `<=` passes on a decoder that silently drops a trailing field.
+    assertEquals(TRANSFER.length, transfer.l(),
+        "the decoder must account for every byte the instruction carried");
   }
 
   /// A longer instruction, so the fix is not an artifact of one payload happening to fit.
@@ -84,8 +85,8 @@ final class RealInstructionTests {
     final var create = TokenMetadataProgram.CreateMetadataAccountV3IxData.read(CREATE_METADATA_ACCOUNT_V3, 0);
     assertNotNull(create);
     assertEquals(33, create.discriminator().data()[0] & 0xFF);
-    assertTrue(create.l() <= CREATE_METADATA_ACCOUNT_V3.length,
-        () -> "read past the instruction: " + create.l());
+    assertEquals(CREATE_METADATA_ACCOUNT_V3.length, create.l(),
+        "the decoder must account for every byte the instruction carried");
   }
 
   /// Re-serializing reproduces the captured bytes, which is the round trip a builder has to make.
@@ -93,10 +94,28 @@ final class RealInstructionTests {
   void aRealInstructionReserializesToTheCapturedBytes() {
     final var transfer = TokenMetadataProgram.TransferIxData.read(TRANSFER, 0);
     final byte[] out = new byte[transfer.l()];
-    transfer.write(out, 0);
+    final int written = transfer.write(out, 0);
 
-    assertArrayEquals(java.util.Arrays.copyOf(TRANSFER, out.length), out,
-        "a rebuilt instruction must be byte-identical to the chain's");
+    assertEquals(TRANSFER.length, written, "a short write would truncate the instruction");
+    // The whole fixture, not a prefix of it: copyOf(fixture, out.length) would accept any decoder
+    // that dropped a suffix, which is the failure a round trip exists to catch.
+    assertArrayEquals(TRANSFER, out, "a rebuilt instruction must be byte-identical to the chain's");
+  }
+
+  /// The third fixture decodes too, and to its exact length. It was previously read only for its
+  /// first byte, which left the longest of the three untested as a payload.
+  @Test
+  void aRealUpdateMetadataAccountDecodes() {
+    assertEquals(37, UPDATE_METADATA_ACCOUNT_V2.length);
+
+    final var update = TokenMetadataProgram.UpdateMetadataAccountV2IxData.read(UPDATE_METADATA_ACCOUNT_V2, 0);
+    assertNotNull(update);
+    assertEquals(15, update.discriminator().data()[0] & 0xFF);
+    assertEquals(UPDATE_METADATA_ACCOUNT_V2.length, update.l());
+
+    final byte[] out = new byte[update.l()];
+    assertEquals(UPDATE_METADATA_ACCOUNT_V2.length, update.write(out, 0));
+    assertArrayEquals(UPDATE_METADATA_ACCOUNT_V2, out);
   }
 
   /// The regression, stated against real data: the discriminator the client emits must be a
