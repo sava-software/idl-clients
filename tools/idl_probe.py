@@ -15,8 +15,12 @@ declared instruction that returns 101 is *dead*: the IDL we generated from is
 stale, and any client method wrapping it can never succeed.
 
 Each program is calibrated with a garbage discriminator first. If that does not
-return 101, the program is not Anchor-dispatch-shaped and is reported as
-INCONCLUSIVE rather than guessed at.
+return 101 the probe reports INCONCLUSIVE rather than guessing.
+
+INCONCLUSIVE means only that the control did not produce error 101. It does not
+establish how the program dispatches: a native, Shank or pinocchio program has no
+fallback handler, and so does an Anchor program that declares its own #[fallback]
+— they are indistinguishable from out here. Settling it needs the deployed source.
 """
 import json, os, base64, subprocess, sys, time
 
@@ -115,7 +119,7 @@ def main():
             idl = json.load(open(path))
             ixs = idl['instructions']
         except Exception:
-            continue  # native / non-Anchor IDL shape
+            continue  # no instruction list to probe
         pid_b58 = p.get('program') or idl.get('address')
         if not pid_b58:
             continue
@@ -124,7 +128,7 @@ def main():
         calib = probe_many(pid, [GARBAGE])[0]
         if calib != 'DEAD':
             report.append((p['name'], pid_b58, 'INCONCLUSIVE', len(ixs), [],
-                           f'garbage discriminator -> {calib}, not Anchor-dispatch'))
+                           f'garbage discriminator -> {calib}, no fallback error 101'))
             print(f"  {p['name']:34} INCONCLUSIVE ({calib})", file=sys.stderr)
             continue
 
@@ -158,10 +162,11 @@ def main():
         print("    this is benign and belongs in ACCEPTED_UNDEPLOYED with a reason.")
     inc = [r for r in report if r[2] == 'INCONCLUSIVE']
     if inc:
-        print(f"\ninconclusive (not Anchor-dispatch): {', '.join(r[0] for r in inc)}")
-        print("  These use native/Shank/pinocchio dispatch, so the fallback signal")
-        print("  does not apply. Verify them against their Rust instead — see")
-        print("  docs/PROGRAM_VERIFICATION.md.")
+        print(f"\ninconclusive (no fallback error 101): {', '.join(r[0] for r in inc)}")
+        print("  The control did not return 101, so this signal does not apply. That is")
+        print("  all it establishes: a native, Shank or pinocchio program has no fallback")
+        print("  handler, and neither does an Anchor program declaring its own #[fallback].")
+        print("  Verify these against their Rust instead — see docs/PROGRAM_VERIFICATION.md.")
     sys.exit(1 if unexpected else 0)
 
 

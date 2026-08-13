@@ -2308,6 +2308,7 @@ public final class TokenMetadataProgram {
                                                               final PublicKey mintAuthorityKey,
                                                               final PublicKey payerKey,
                                                               final PublicKey updateAuthorityKey,
+                                                              final boolean updateAuthorityIsSigner,
                                                               final PublicKey systemProgramKey,
                                                               final PublicKey rentKey) {
     final var keys = new ArrayList<AccountMeta>(7);
@@ -2315,7 +2316,7 @@ public final class TokenMetadataProgram {
     keys.add(createRead(mintKey));
     keys.add(createReadOnlySigner(mintAuthorityKey));
     keys.add(createWritableSigner(payerKey));
-    keys.add(createReadOnlySigner(updateAuthorityKey));
+    keys.add(updateAuthorityIsSigner ? createReadOnlySigner(updateAuthorityKey) : createRead(updateAuthorityKey));
     keys.add(createRead(systemProgramKey));
     if (rentKey != null) {
       keys.add(createRead(rentKey));
@@ -2336,6 +2337,7 @@ public final class TokenMetadataProgram {
                                                     final PublicKey mintAuthorityKey,
                                                     final PublicKey payerKey,
                                                     final PublicKey updateAuthorityKey,
+                                                    final boolean updateAuthorityIsSigner,
                                                     final PublicKey systemProgramKey,
                                                     final PublicKey rentKey,
                                                     final CreateMetadataAccountArgsV3 createMetadataAccountArgsV3) {
@@ -2345,6 +2347,7 @@ public final class TokenMetadataProgram {
       mintAuthorityKey,
       payerKey,
       updateAuthorityKey,
+      updateAuthorityIsSigner,
       systemProgramKey,
       rentKey
     );
@@ -4686,6 +4689,7 @@ public final class TokenMetadataProgram {
                                             final PublicKey editionMarkerPdaKey,
                                             final PublicKey payerKey,
                                             final PublicKey masterTokenAccountOwnerKey,
+                                            final boolean masterTokenAccountOwnerIsSigner,
                                             final PublicKey masterTokenAccountKey,
                                             final PublicKey masterMetadataKey,
                                             final PublicKey updateAuthorityKey,
@@ -4704,7 +4708,7 @@ public final class TokenMetadataProgram {
       createWrite(masterEditionKey),
       createWrite(editionMarkerPdaKey),
       createWritableSigner(payerKey),
-      createReadOnlySigner(masterTokenAccountOwnerKey),
+      masterTokenAccountOwnerIsSigner ? createReadOnlySigner(masterTokenAccountOwnerKey) : createRead(masterTokenAccountOwnerKey),
       createRead(masterTokenAccountKey),
       createRead(masterMetadataKey),
       createRead(updateAuthorityKey),
@@ -4745,6 +4749,7 @@ public final class TokenMetadataProgram {
                                   final PublicKey editionMarkerPdaKey,
                                   final PublicKey payerKey,
                                   final PublicKey masterTokenAccountOwnerKey,
+                                  final boolean masterTokenAccountOwnerIsSigner,
                                   final PublicKey masterTokenAccountKey,
                                   final PublicKey masterMetadataKey,
                                   final PublicKey updateAuthorityKey,
@@ -4766,6 +4771,7 @@ public final class TokenMetadataProgram {
       editionMarkerPdaKey,
       payerKey,
       masterTokenAccountOwnerKey,
+      masterTokenAccountOwnerIsSigner,
       masterTokenAccountKey,
       masterMetadataKey,
       updateAuthorityKey,
@@ -4832,6 +4838,7 @@ public final class TokenMetadataProgram {
                                              final PublicKey editionKey,
                                              final PublicKey mintKey,
                                              final PublicKey payerKey,
+                                             final boolean payerIsSigner,
                                              final PublicKey authorityKey,
                                              final PublicKey tokenKey,
                                              final PublicKey systemProgramKey) {
@@ -4839,7 +4846,7 @@ public final class TokenMetadataProgram {
       createWrite(metadataKey),
       createWrite(editionKey),
       createRead(mintKey),
-      createWritableSigner(payerKey),
+      payerIsSigner ? createWritableSigner(payerKey) : createWrite(payerKey),
       authorityKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(authorityKey),
       createRead(requireNonNullElse(tokenKey, invokedTokenMetadataProgramMeta.publicKey())),
       createRead(systemProgramKey)
@@ -4858,6 +4865,7 @@ public final class TokenMetadataProgram {
                                    final PublicKey editionKey,
                                    final PublicKey mintKey,
                                    final PublicKey payerKey,
+                                   final boolean payerIsSigner,
                                    final PublicKey authorityKey,
                                    final PublicKey tokenKey,
                                    final PublicKey systemProgramKey) {
@@ -4867,6 +4875,7 @@ public final class TokenMetadataProgram {
       editionKey,
       mintKey,
       payerKey,
+      payerIsSigner,
       authorityKey,
       tokenKey,
       systemProgramKey

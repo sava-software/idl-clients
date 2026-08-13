@@ -28,8 +28,12 @@ Worth running after any upstream program deploy. It found a shipped bug once:
 marginfi removed `lending_account_clear_emissions`, and our client kept calling
 it, failing 100% of the time on mainnet.
 
-Reports non-Anchor programs as `INCONCLUSIVE` rather than guessing — they have
-no fallback handler, so the signal does not apply. Use `ground_truth.py` there.
+Reports `INCONCLUSIVE` rather than guessing when the control does not return 101.
+That is all the result means: no fallback error. A native, Shank or pinocchio
+program has no fallback handler, and neither does an Anchor program declaring its
+own `#[fallback]`, so the outcome does not identify the dispatch implementation —
+Jupiter Swap reads this way and is an ordinary Anchor program. Use
+`ground_truth.py` there, remembering it compares account order only.
 
 Running this at generation time inside idl-src-gen was considered and rejected:
 doing it properly means tracking program deploys over time, which is a

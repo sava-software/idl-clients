@@ -177,15 +177,25 @@ final class InstructionOrdinalTests {
 
     // rent absent: the only account that may be omitted is the trailing one.
     final var keys = TokenMetadataProgram.createMetadataAccountV3Keys(
-        key, key, key, key, key, key, null);
+        key, key, key, key, key, true, key, null);
 
     assertEquals(6, keys.size(), "six required accounts, the trailing optional omitted");
-    assertTrue(keys.get(4).signer(), "index 4 is the update authority, and it signs");
+    assertTrue(keys.get(4).signer(), "index 4 is the update authority, signing here");
     assertFalse(keys.get(5).signer(), "index 5 is the system program");
+
+    // The privilege is the caller's to choose, and choosing not to sign must not move anything:
+    // mpl-token-metadata models this account as (Pubkey, bool), and a non-signing update authority
+    // is valid.
+    final var notSigning = TokenMetadataProgram.createMetadataAccountV3Keys(
+        key, key, key, key, key, false, key, null);
+
+    assertEquals(6, notSigning.size(), "declining to sign is not the same as omitting the account");
+    assertFalse(notSigning.get(4).signer(), "the caller's choice is honoured");
+    assertFalse(notSigning.get(5).signer(), "and index 5 is still the system program");
 
     // ...and with rent supplied it is appended, never inserted.
     final var withRent = TokenMetadataProgram.createMetadataAccountV3Keys(
-        key, key, key, key, key, key, key);
+        key, key, key, key, key, true, key, key);
     assertEquals(7, withRent.size());
     assertTrue(withRent.get(4).signer(), "the update authority does not move when rent is present");
   }

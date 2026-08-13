@@ -34,9 +34,15 @@ python3 tools/idl_probe.py          # sweeps every program in main_net_programs.
 The tool carries an `ACCEPTED_UNDEPLOYED` set for known-benign cases, so it
 exits non-zero only on something new. Re-run it after any upstream deploy.
 
-**This only works for Anchor-dispatch programs.** Native, Shank and pinocchio
-programs have no fallback handler, so the control probe does not return 101 and
-the tool reports them `INCONCLUSIVE`. Those need §2 instead.
+**This only works where the control returns 101.** When it does not, the tool
+reports `INCONCLUSIVE`, and that is the whole of what the result means: no
+fallback error was produced. Native, Shank and pinocchio programs have no
+fallback handler — but neither does an Anchor program that declares its own
+`#[fallback]`, and the two are indistinguishable from outside. Jupiter Swap reads
+`INCONCLUSIVE` and is an ordinary Anchor program.
+
+So `INCONCLUSIVE` does not identify the dispatch implementation and no re-run
+settles it; those programs need §2, and §2 compares account order only.
 
 ### Two traps
 
