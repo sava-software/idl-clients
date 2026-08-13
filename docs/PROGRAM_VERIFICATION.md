@@ -231,16 +231,42 @@ clean here, because the document genuinely did not change; only the program did.
 above, a deploy-slot move with no IDL movement warrants probing that program's **full instruction
 set**, not the added-and-removed subset — there is no subset to derive.
 
-**Attempted, and structurally inconclusive.** `tools/idl_probe.py` calibrates each program with a
+**Resolved 2026-08-13: the interface did not change.** All 17 declared instructions dispatch on
+the redeployed program. The upgrade landed at **2026-08-13T08:17:56Z**, the previous at
+**2026-08-05T08:57:58Z** — an eight-day cadence, under an upgrade authority
+(`CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ`) that has not changed. Consistent with routine
+release process rather than an interface move, which is what the unchanged channel hashes already
+suggested and this confirms rather than assumes.
+
+Two things had to be worked around, and both are defects in `idl_probe.py` rather than facts about
+Jupiter — see the tool's own notes:
+
+- **The calibration is too narrow.** The probe looks for `InstructionFallbackNotFound` (101) and
+  reports `INCONCLUSIVE` otherwise. Jupiter answers a garbage discriminator with
+  `InvalidAccountData` at 71 compute units, which is just as decisive: a *declared* discriminator
+  instead returns `InstructionDidNotDeserialize` (102) or `NotEnoughAccountKeys`, because dispatch
+  succeeded and the empty args or account list failed afterwards. Error 101 is one shape of "no
+  such instruction", not the only one.
+- **The instruction-name log is not a dispatch signal.** `route` and `route_v2` — the two most used
+  instructions in a sample of recent traffic — emit no `Program log: Instruction: …` line at all,
+  almost certainly because that `msg!` is stripped on the hot path to save compute. A probe keying
+  on the log reports exactly those two as dead. They are not: they answer 102, and real
+  transactions carrying their discriminators succeed.
+
+The second is the sharper trap. A log-based check does not fail loudly; it names a program's
+busiest instructions as broken, which reads as a serious finding and is an artifact of the probe.
+
+**Historic note.** Before this was resolved the entry read "attempted, structurally inconclusive". `tools/idl_probe.py` calibrates each program with a
 garbage discriminator and expects `InstructionFallbackNotFound`; Jupiter Swap returns `LIVE`, so
 the probe reports `INCONCLUSIVE` rather than guessing. That proves only that the program is **not
 Anchor-fallback-shaped** — an Anchor program carrying its own fallback handler looks identical from
 outside — so it is not evidence about the dispatch style, and no re-run of that tool will settle it.
 
-Nor would §2 alone close it: comparing generated account order against the Rust checks one axis,
-and a redeploy can change instructions, discriminators, argument layouts or semantics while leaving
-account order untouched. Closure needs the exact deployed source identified first, then the broader
-source-to-IDL comparison, of which the account-order diff is one component.
+What this does **not** establish: that the deployed *behaviour* is unchanged. Dispatch proves every
+declared discriminator still reaches a handler, not that the handler does the same thing, nor that
+argument layouts or semantics held. A redeploy can change any of those while every instruction
+still dispatches. Settling that needs the deployed source; the account-order diff in §2 is one
+component of it and covers one axis.
 
 The generating run's own report is in commit `40e1533`; `sources.json` carries the slot at all
 times.

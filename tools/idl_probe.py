@@ -47,6 +47,27 @@ ACCEPTED_UNDEPLOYED = {
 ALPH = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 
 
+
+# Anchor's dispatch errors. 102 means the discriminator matched and the *arguments* did not
+# deserialize, which is what a probe carrying no args should expect from a live instruction;
+# NotEnoughAccountKeys means it matched and validated accounts first. Either proves dispatch.
+DISPATCHED_CODES = frozenset([102, 'NotEnoughAccountKeys'])
+# 101 is Anchor's explicit "no such instruction". InvalidAccountData is what a program without a
+# fallback handler returns once dispatch has already failed.
+NOT_DISPATCHED_CODES = frozenset([101, 'InvalidAccountData'])
+
+
+def _error_code(err):
+    """The instruction error, as a Custom int or a bare string, or None."""
+    if not isinstance(err, dict):
+        return None
+    ie = err.get('InstructionError')
+    if not isinstance(ie, list) or len(ie) < 2:
+        return None
+    detail = ie[1]
+    return detail.get('Custom') if isinstance(detail, dict) else detail
+
+
 def b58d(s):
     n = 0
     for c in s:
@@ -96,7 +117,22 @@ def probe_many(pid: bytes, discs):
             v = (by_id.get(j) or {}).get('result', {})
             v = v.get('value', {}) if isinstance(v, dict) else {}
             logs = v.get('logs') or []
-            if any('FallbackNotFound' in l for l in logs):
+            # Dispatch is decided by the *error*, not by the logs.
+            #
+            # 101 InstructionFallbackNotFound is one shape of "no such instruction" and the probe
+            # used to treat it as the only one. Jupiter Swap answers a garbage discriminator with
+            # InvalidAccountData instead, which is just as decisive: a declared discriminator there
+            # returns 102 InstructionDidNotDeserialize or NotEnoughAccountKeys, because dispatch
+            # succeeded and only the empty args or account list failed afterwards.
+            #
+            # Deliberately NOT keyed on `Program log: Instruction: <Name>`. That line is emitted by
+            # Anchor's dispatch and can be stripped: Jupiter's `route` and `route_v2` — its two
+            # busiest instructions — emit none, so a log-based check calls them dead. That failure
+            # is quiet and convincing, which makes it worse than an inconclusive answer.
+            code = _error_code(v.get('err'))
+            if code in DISPATCHED_CODES:
+                results.append('LIVE')
+            elif code in NOT_DISPATCHED_CODES:
                 results.append('DEAD')
             elif logs:
                 results.append('LIVE')

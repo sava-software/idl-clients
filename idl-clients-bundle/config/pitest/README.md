@@ -1123,7 +1123,11 @@ error, and neither does an Anchor program whose own `#[fallback]` handles the
 unknown discriminator — the two read identically from outside. Jupiter Swap is on
 this list and is an ordinary Anchor program.
 
-The eight: Jupiter Swap, Metaplex Token Metadata, Phoenix Ember, Phoenix
+**Seven, since 2026-08-13.** Jupiter Swap left the list when the probe stopped keying dispatch on
+error 101 alone: it answers a garbage discriminator with `InvalidAccountData` and a declared one
+with 102, which is just as decisive. It now reads `OK 17 ix, 0 dead`.
+
+The seven: Metaplex Token Metadata, Phoenix Ember, Phoenix
 Perpetuals (+ Dev), Solana Attestation Service, and the two Wormhole shims. The
 probe cannot speak to these; they need the Rust-diff treatment instead — which is
 exactly how Phoenix's global-vault bug was found, so the gap is real rather than

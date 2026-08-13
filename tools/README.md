@@ -33,8 +33,12 @@ That is all the result means: no fallback error. A native, Shank or pinocchio
 program emits no fallback error, and neither does an Anchor program whose own
 `#[fallback]` handles the unknown discriminator, so the outcome does not identify
 the dispatch implementation —
-Jupiter Swap reads this way and is an ordinary Anchor program. Use
-`ground_truth.py` there, remembering it compares account order only.
+Use `ground_truth.py` there, remembering it compares account order only.
+
+Dispatch is decided by the error, not the logs. `Program log: Instruction: <Name>` looks like the
+obvious signal and is not one: Anchor's dispatch emits it and a program can strip it, which
+Jupiter does on `route` and `route_v2` — its two busiest instructions. A log-based probe calls
+exactly those dead, quietly and convincingly.
 
 Running this at generation time inside idl-src-gen was considered and rejected:
 doing it properly means tracking program deploys over time, which is a
