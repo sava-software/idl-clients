@@ -2315,9 +2315,7 @@ public final class TokenMetadataProgram {
     keys.add(createRead(mintKey));
     keys.add(createReadOnlySigner(mintAuthorityKey));
     keys.add(createWritableSigner(payerKey));
-    if (updateAuthorityKey != null) {
-      keys.add(createReadOnlySigner(updateAuthorityKey));
-    }
+    keys.add(createReadOnlySigner(updateAuthorityKey));
     keys.add(createRead(systemProgramKey));
     if (rentKey != null) {
       keys.add(createRead(rentKey));
@@ -4706,7 +4704,7 @@ public final class TokenMetadataProgram {
       createWrite(masterEditionKey),
       createWrite(editionMarkerPdaKey),
       createWritableSigner(payerKey),
-      masterTokenAccountOwnerKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(masterTokenAccountOwnerKey),
+      createReadOnlySigner(masterTokenAccountOwnerKey),
       createRead(masterTokenAccountKey),
       createRead(masterMetadataKey),
       createRead(updateAuthorityKey),
@@ -4841,7 +4839,7 @@ public final class TokenMetadataProgram {
       createWrite(metadataKey),
       createWrite(editionKey),
       createRead(mintKey),
-      payerKey == null ? createWrite(invokedTokenMetadataProgramMeta.publicKey()) : createWritableSigner(payerKey),
+      createWritableSigner(payerKey),
       authorityKey == null ? createRead(invokedTokenMetadataProgramMeta.publicKey()) : createReadOnlySigner(authorityKey),
       createRead(requireNonNullElse(tokenKey, invokedTokenMetadataProgramMeta.publicKey())),
       createRead(systemProgramKey)

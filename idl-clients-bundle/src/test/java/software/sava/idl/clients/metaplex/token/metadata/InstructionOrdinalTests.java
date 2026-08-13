@@ -154,6 +154,42 @@ final class InstructionOrdinalTests {
   }
 
 
+  /// An optional *signer* is not an optional *account*, and conflating them moves accounts.
+  ///
+  /// `CreateMetadataAccountV3` declares `updateAuthority` as `isOptionalSigner` at index 4 — a
+  /// required, positional account whose signer privilege the caller chooses, which
+  /// mpl-token-metadata's Rust client models as `(Pubkey, bool)` and always supplies. Its only
+  /// genuine optional is the trailing `rent`.
+  ///
+  /// The parser collapsed `isOptionalSigner` into signer + optional, so once absent optionals
+  /// began being omitted rather than sentinel-substituted, a null update authority dropped the
+  /// account and `systemProgram` slid into index 4 — the position the processor reads as update
+  /// authority. Every account after it moved with it.
+  ///
+  /// This pins the resulting *layout*, not the defect: with a key supplied both the broken and the
+  /// fixed generator emit the same six accounts, because the drop only happens on null — and null
+  /// is not a valid argument once the account is required. The regression itself is caught in
+  /// idl-src-gen by `anOptionalSignerIsPositionalAndAnOptionalAccountIsNot`.
+  @Test
+  void anOptionalSignerKeepsItsPosition() {
+    final var key = software.sava.core.accounts.PublicKey.fromBase58Encoded(
+        "11111111111111111111111111111111");
+
+    // rent absent: the only account that may be omitted is the trailing one.
+    final var keys = TokenMetadataProgram.createMetadataAccountV3Keys(
+        key, key, key, key, key, key, null);
+
+    assertEquals(6, keys.size(), "six required accounts, the trailing optional omitted");
+    assertTrue(keys.get(4).signer(), "index 4 is the update authority, and it signs");
+    assertFalse(keys.get(5).signer(), "index 5 is the system program");
+
+    // ...and with rent supplied it is appended, never inserted.
+    final var withRent = TokenMetadataProgram.createMetadataAccountV3Keys(
+        key, key, key, key, key, key, key);
+    assertEquals(7, withRent.size());
+    assertTrue(withRent.get(4).signer(), "the update authority does not move when rent is present");
+  }
+
   /// The regression itself, stated as the thing that must never come back: no instruction in this
   /// program may carry the eight-byte width an Anchor discriminator would have.
   @Test
