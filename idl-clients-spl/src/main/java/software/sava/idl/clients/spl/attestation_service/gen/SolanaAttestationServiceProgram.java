@@ -23,12 +23,12 @@ import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public final class SolanaAttestationServiceProgram {
 
-  public static final Discriminator CREATE_CREDENTIAL_DISCRIMINATOR = toDiscriminator(205, 74, 60, 212, 63, 198, 196, 109);
+  public static final Discriminator CREATE_CREDENTIAL_DISCRIMINATOR = toDiscriminator(0);
 
   public static List<AccountMeta> createCredentialKeys(final PublicKey payerKey,
                                                        final PublicKey credentialKey,
@@ -63,7 +63,7 @@ public final class SolanaAttestationServiceProgram {
                                              final String name,
                                              final PublicKey[] signers) {
     final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + _name.length + SerDeUtil.lenVector(4, signers)];
+    final byte[] _data = new byte[5 + _name.length + SerDeUtil.lenVector(4, signers)];
     int i = CREATE_CREDENTIAL_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _name, _data, i);
     SerDeUtil.writeVector(4, signers, _data, i);
@@ -77,7 +77,7 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int NAME_OFFSET = 8;
+    public static final int NAME_OFFSET = 1;
 
     public static CreateCredentialIxData createRecord(final Discriminator discriminator, final String name, final PublicKey[] signers) {
       return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
@@ -87,7 +87,7 @@ public final class SolanaAttestationServiceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
@@ -108,11 +108,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 4 + _name.length + SerDeUtil.lenVector(4, signers);
+      return 1 + 4 + _name.length + SerDeUtil.lenVector(4, signers);
     }
   }
 
-  public static final Discriminator CREATE_SCHEMA_DISCRIMINATOR = toDiscriminator(105, 171, 40, 140, 30, 91, 30, 134);
+  public static final Discriminator CREATE_SCHEMA_DISCRIMINATOR = toDiscriminator(1);
 
   /// @param credentialKey Credential the Schema is associated with
   public static List<AccountMeta> createSchemaKeys(final PublicKey payerKey,
@@ -165,7 +165,7 @@ public final class SolanaAttestationServiceProgram {
                                          final String[] fieldNames) {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _description = description.getBytes(UTF_8);
-    final byte[] _data = new byte[16 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
+    final byte[] _data = new byte[9 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
     int i = CREATE_SCHEMA_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _name, _data, i);
     i += SerDeUtil.writeVector(4, _description, _data, i);
@@ -185,7 +185,7 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int NAME_OFFSET = 8;
+    public static final int NAME_OFFSET = 1;
 
     public static CreateSchemaIxData createRecord(final Discriminator discriminator,
                                                   final String name,
@@ -203,7 +203,7 @@ public final class SolanaAttestationServiceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
@@ -237,11 +237,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 4 + _name.length + 4 + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
+      return 1 + 4 + _name.length + 4 + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
     }
   }
 
-  public static final Discriminator CHANGE_SCHEMA_STATUS_DISCRIMINATOR = toDiscriminator(192, 74, 106, 154, 28, 210, 26, 87);
+  public static final Discriminator CHANGE_SCHEMA_STATUS_DISCRIMINATOR = toDiscriminator(2);
 
   /// @param credentialKey Credential the Schema is associated with
   /// @param schemaKey Credential the Schema is associated with
@@ -273,7 +273,7 @@ public final class SolanaAttestationServiceProgram {
   public static Instruction changeSchemaStatus(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                final List<AccountMeta> keys,
                                                final boolean isPaused) {
-    final byte[] _data = new byte[9];
+    final byte[] _data = new byte[2];
     int i = CHANGE_SCHEMA_STATUS_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) (isPaused ? 1 : 0);
 
@@ -286,15 +286,15 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 9;
+    public static final int BYTES = 2;
 
-    public static final int IS_PAUSED_OFFSET = 8;
+    public static final int IS_PAUSED_OFFSET = 1;
 
     public static ChangeSchemaStatusIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var isPaused = _data[i] == 1;
       return new ChangeSchemaStatusIxData(discriminator, isPaused);
@@ -314,7 +314,7 @@ public final class SolanaAttestationServiceProgram {
     }
   }
 
-  public static final Discriminator CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR = toDiscriminator(98, 184, 218, 252, 193, 76, 188, 159);
+  public static final Discriminator CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR = toDiscriminator(3);
 
   /// @param credentialKey Credential the Schema is associated with
   public static List<AccountMeta> changeAuthorizedSignersKeys(final PublicKey payerKey,
@@ -348,7 +348,7 @@ public final class SolanaAttestationServiceProgram {
   public static Instruction changeAuthorizedSigners(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final PublicKey[] signers) {
-    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, signers)];
+    final byte[] _data = new byte[1 + SerDeUtil.lenVector(4, signers)];
     int i = CHANGE_AUTHORIZED_SIGNERS_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, signers, _data, i);
 
@@ -361,13 +361,13 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int SIGNERS_OFFSET = 8;
+    public static final int SIGNERS_OFFSET = 1;
 
     public static ChangeAuthorizedSignersIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var signers = SerDeUtil.readPublicKeyVector(4, _data, i);
       return new ChangeAuthorizedSignersIxData(discriminator, signers);
@@ -382,11 +382,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + SerDeUtil.lenVector(4, signers);
+      return 1 + SerDeUtil.lenVector(4, signers);
     }
   }
 
-  public static final Discriminator CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR = toDiscriminator(23, 198, 58, 25, 69, 192, 93, 204);
+  public static final Discriminator CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR = toDiscriminator(4);
 
   /// @param credentialKey Credential the Schema is associated with
   /// @param schemaKey Credential the Schema is associated with
@@ -427,7 +427,7 @@ public final class SolanaAttestationServiceProgram {
                                                     final List<AccountMeta> keys,
                                                     final String description) {
     final byte[] _description = description.getBytes(UTF_8);
-    final byte[] _data = new byte[12 + _description.length];
+    final byte[] _data = new byte[5 + _description.length];
     int i = CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, _description, _data, i);
 
@@ -440,7 +440,7 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int DESCRIPTION_OFFSET = 8;
+    public static final int DESCRIPTION_OFFSET = 1;
 
     public static ChangeSchemaDescriptionIxData createRecord(final Discriminator discriminator, final String description) {
       return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
@@ -450,7 +450,7 @@ public final class SolanaAttestationServiceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final int _descriptionLength = getInt32LE(_data, i);
       i += 4;
@@ -468,11 +468,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 4 + _description.length;
+      return 1 + 4 + _description.length;
     }
   }
 
-  public static final Discriminator CHANGE_SCHEMA_VERSION_DISCRIMINATOR = toDiscriminator(151, 8, 113, 1, 168, 170, 69, 139);
+  public static final Discriminator CHANGE_SCHEMA_VERSION_DISCRIMINATOR = toDiscriminator(5);
 
   /// @param credentialKey Credential the Schema is associated with
   public static List<AccountMeta> changeSchemaVersionKeys(final PublicKey payerKey,
@@ -516,7 +516,7 @@ public final class SolanaAttestationServiceProgram {
                                                 final List<AccountMeta> keys,
                                                 final byte[] layout,
                                                 final String[] fieldNames) {
-    final byte[] _data = new byte[8 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
+    final byte[] _data = new byte[1 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
     int i = CHANGE_SCHEMA_VERSION_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, layout, _data, i);
     SerDeUtil.writeVector(4, 4, fieldNames, _data, i);
@@ -530,13 +530,13 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int LAYOUT_OFFSET = 8;
+    public static final int LAYOUT_OFFSET = 1;
 
     public static ChangeSchemaVersionIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var layout = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, layout);
@@ -554,11 +554,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
+      return 1 + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames);
     }
   }
 
-  public static final Discriminator CREATE_ATTESTATION_DISCRIMINATOR = toDiscriminator(49, 24, 67, 80, 12, 249, 96, 239);
+  public static final Discriminator CREATE_ATTESTATION_DISCRIMINATOR = toDiscriminator(6);
 
   /// @param authorityKey Authorized signer of the Schema's Credential
   /// @param credentialKey Credential the Schema is associated with
@@ -614,7 +614,7 @@ public final class SolanaAttestationServiceProgram {
                                               final PublicKey nonce,
                                               final byte[] data,
                                               final long expiry) {
-    final byte[] _data = new byte[48 + SerDeUtil.lenVector(4, data)];
+    final byte[] _data = new byte[41 + SerDeUtil.lenVector(4, data)];
     int i = CREATE_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
     i += 32;
@@ -633,14 +633,14 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int NONCE_OFFSET = 8;
-    public static final int DATA_OFFSET = 40;
+    public static final int NONCE_OFFSET = 1;
+    public static final int DATA_OFFSET = 33;
 
     public static CreateAttestationIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var nonce = readPubKey(_data, i);
       i += 32;
@@ -663,11 +663,11 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 32 + SerDeUtil.lenVector(4, data) + 8;
+      return 1 + 32 + SerDeUtil.lenVector(4, data) + 8;
     }
   }
 
-  public static final Discriminator CLOSE_ATTESTATION_DISCRIMINATOR = toDiscriminator(249, 84, 133, 23, 48, 175, 252, 221);
+  public static final Discriminator CLOSE_ATTESTATION_DISCRIMINATOR = toDiscriminator(7);
 
   /// @param authorityKey Authorized signer of the Schema's Credential
   public static List<AccountMeta> closeAttestationKeys(final PublicKey payerKey,
@@ -714,7 +714,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, CLOSE_ATTESTATION_DISCRIMINATOR);
   }
 
-  public static final Discriminator TOKENIZE_SCHEMA_DISCRIMINATOR = toDiscriminator(126, 227, 119, 227, 60, 162, 243, 251);
+  public static final Discriminator TOKENIZE_SCHEMA_DISCRIMINATOR = toDiscriminator(9);
 
   /// @param credentialKey Credential the Schema is associated with
   /// @param mintKey Mint of Schema Token
@@ -770,7 +770,7 @@ public final class SolanaAttestationServiceProgram {
   public static Instruction tokenizeSchema(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                            final List<AccountMeta> keys,
                                            final long maxSize) {
-    final byte[] _data = new byte[16];
+    final byte[] _data = new byte[9];
     int i = TOKENIZE_SCHEMA_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, maxSize);
 
@@ -784,15 +784,15 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int MAX_SIZE_OFFSET = 8;
+    public static final int MAX_SIZE_OFFSET = 1;
 
     public static TokenizeSchemaIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var maxSize = getInt64LE(_data, i);
       return new TokenizeSchemaIxData(discriminator, maxSize);
@@ -812,7 +812,7 @@ public final class SolanaAttestationServiceProgram {
     }
   }
 
-  public static final Discriminator CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR = toDiscriminator(122, 136, 219, 186, 101, 126, 20, 154);
+  public static final Discriminator CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR = toDiscriminator(10);
 
   /// @param authorityKey Authorized signer of the Schema's Credential
   /// @param credentialKey Credential the Schema is associated with
@@ -923,7 +923,7 @@ public final class SolanaAttestationServiceProgram {
     final byte[] _name = name.getBytes(UTF_8);
     final byte[] _uri = uri.getBytes(UTF_8);
     final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _data = new byte[62 + SerDeUtil.lenVector(4, data) + _name.length + _uri.length + _symbol.length];
+    final byte[] _data = new byte[55 + SerDeUtil.lenVector(4, data) + _name.length + _uri.length + _symbol.length];
     int i = CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
     i += 32;
@@ -952,8 +952,8 @@ public final class SolanaAttestationServiceProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int NONCE_OFFSET = 8;
-    public static final int DATA_OFFSET = 40;
+    public static final int NONCE_OFFSET = 1;
+    public static final int DATA_OFFSET = 33;
 
     public static CreateTokenizedAttestationIxData createRecord(final Discriminator discriminator,
                                                                 final PublicKey nonce,
@@ -977,7 +977,7 @@ public final class SolanaAttestationServiceProgram {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var nonce = readPubKey(_data, i);
       i += 32;
@@ -1029,7 +1029,7 @@ public final class SolanaAttestationServiceProgram {
 
     @Override
     public int l() {
-      return 8 + 32
+      return 1 + 32
            + SerDeUtil.lenVector(4, data)
            + 8
            + 4 + _name.length
@@ -1039,7 +1039,7 @@ public final class SolanaAttestationServiceProgram {
     }
   }
 
-  public static final Discriminator CLOSE_TOKENIZED_ATTESTATION_DISCRIMINATOR = toDiscriminator(12, 88, 1, 126, 90, 2, 191, 48);
+  public static final Discriminator CLOSE_TOKENIZED_ATTESTATION_DISCRIMINATOR = toDiscriminator(11);
 
   /// @param authorityKey Authorized signer of the Schema's Credential
   /// @param attestationMintKey Mint of Attestation Token
@@ -1108,7 +1108,7 @@ public final class SolanaAttestationServiceProgram {
     return Instruction.createInstruction(invokedSolanaAttestationServiceProgramMeta, keys, CLOSE_TOKENIZED_ATTESTATION_DISCRIMINATOR);
   }
 
-  public static final Discriminator EMIT_EVENT_DISCRIMINATOR = toDiscriminator(82, 133, 188, 136, 167, 139, 209, 52);
+  public static final Discriminator EMIT_EVENT_DISCRIMINATOR = toDiscriminator(228);
 
   public static List<AccountMeta> emitEventKeys(final PublicKey eventAuthorityKey) {
     return List.of(

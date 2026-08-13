@@ -103,4 +103,4 @@ Every channel that is not what the previous sources.json recorded for it. An eve
 on the run that first sees a change and is silent afterwards, so nothing here means nothing
 moved and not that nothing was compared.
 
-Exponent: the vcsHead IDL at github:exponent-finance/exponent-core@main/target/idl/exponent_core.json appeared since the last generation
+Jupiter Swap: the program was redeployed at slot 438982144, up from 437349164, and no IDL channel moved with it

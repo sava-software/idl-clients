@@ -35,12 +35,12 @@ import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWrite;
-import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
+import static software.sava.core.programs.Discriminator.createDiscriminator;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
 public final class TokenMetadataProgram {
 
-  public static final Discriminator CREATE_METADATA_ACCOUNT_DISCRIMINATOR = toDiscriminator(75, 73, 45, 178, 212, 194, 127, 113);
+  public static final Discriminator CREATE_METADATA_ACCOUNT_DISCRIMINATOR = toDiscriminator(0);
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
   /// @param mintKey Mint of token asset
@@ -99,7 +99,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CREATE_METADATA_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator UPDATE_METADATA_ACCOUNT_DISCRIMINATOR = toDiscriminator(141, 14, 23, 104, 247, 192, 53, 173);
+  public static final Discriminator UPDATE_METADATA_ACCOUNT_DISCRIMINATOR = toDiscriminator(1);
 
   /// @param metadataKey Metadata account
   /// @param updateAuthorityKey Update authority key
@@ -128,7 +128,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, UPDATE_METADATA_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_CREATE_MASTER_EDITION_DISCRIMINATOR = toDiscriminator(155, 127, 165, 159, 236, 92, 79, 21);
+  public static final Discriminator DEPRECATED_CREATE_MASTER_EDITION_DISCRIMINATOR = toDiscriminator(2);
 
   /// @param editionKey Unallocated edition V1 account with address as pda of 'metadata', program id, mint, 'edition'
   /// @param mintKey Metadata mint
@@ -223,7 +223,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_CREATE_MASTER_EDITION_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN_DISCRIMINATOR = toDiscriminator(154, 36, 174, 111, 190, 80, 155, 228);
+  public static final Discriminator DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN_DISCRIMINATOR = toDiscriminator(3);
 
   /// @param metadataKey New Metadata key (pda of 'metadata', program id, mint id)
   /// @param editionKey New Edition V1 (pda of 'metadata', program id, mint id, 'edition')
@@ -338,7 +338,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_PRINTING_TOKEN_DISCRIMINATOR);
   }
 
-  public static final Discriminator UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(172, 129, 173, 210, 222, 129, 243, 98);
+  public static final Discriminator UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(4);
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
   /// @param ownerKey Owner on the token account
@@ -373,7 +373,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, UPDATE_PRIMARY_SALE_HAPPENED_VIA_TOKEN_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_SET_RESERVATION_LIST_DISCRIMINATOR = toDiscriminator(68, 28, 66, 19, 59, 203, 190, 142);
+  public static final Discriminator DEPRECATED_SET_RESERVATION_LIST_DISCRIMINATOR = toDiscriminator(5);
 
   /// @param masterEditionKey Master Edition V1 key (pda of 'metadata', program id, mint id, 'edition')
   /// @param reservationListKey PDA for ReservationList of 'metadata', program id, master edition key, 'reservation', resource-key
@@ -408,7 +408,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_SET_RESERVATION_LIST_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_CREATE_RESERVATION_LIST_DISCRIMINATOR = toDiscriminator(171, 227, 161, 158, 1, 176, 105, 72);
+  public static final Discriminator DEPRECATED_CREATE_RESERVATION_LIST_DISCRIMINATOR = toDiscriminator(6);
 
   /// @param reservationListKey PDA for ReservationList of 'metadata', program id, master edition key, 'reservation', resource-key
   /// @param payerKey Payer
@@ -473,7 +473,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_CREATE_RESERVATION_LIST_DISCRIMINATOR);
   }
 
-  public static final Discriminator SIGN_METADATA_DISCRIMINATOR = toDiscriminator(178, 245, 253, 205, 236, 250, 233, 209);
+  public static final Discriminator SIGN_METADATA_DISCRIMINATOR = toDiscriminator(7);
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
   /// @param creatorKey Creator
@@ -502,7 +502,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, SIGN_METADATA_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(84, 34, 152, 133, 145, 48, 4, 223);
+  public static final Discriminator DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(8);
 
   /// @param destinationKey Destination account
   /// @param tokenKey Token account containing one time authorization token
@@ -573,7 +573,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_MINT_PRINTING_TOKENS_VIA_TOKEN_DISCRIMINATOR);
   }
 
-  public static final Discriminator DEPRECATED_MINT_PRINTING_TOKENS_DISCRIMINATOR = toDiscriminator(194, 107, 144, 9, 126, 143, 53, 121);
+  public static final Discriminator DEPRECATED_MINT_PRINTING_TOKENS_DISCRIMINATOR = toDiscriminator(9);
 
   /// @param destinationKey Destination account
   /// @param printingMintKey Printing mint
@@ -632,7 +632,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, DEPRECATED_MINT_PRINTING_TOKENS_DISCRIMINATOR);
   }
 
-  public static final Discriminator CREATE_MASTER_EDITION_DISCRIMINATOR = toDiscriminator(179, 210, 96, 96, 57, 25, 79, 69);
+  public static final Discriminator CREATE_MASTER_EDITION_DISCRIMINATOR = toDiscriminator(10);
 
   /// @param editionKey Unallocated edition V2 account with address as pda of 'metadata', program id, mint, 'edition'
   /// @param mintKey Metadata mint
@@ -703,7 +703,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CREATE_MASTER_EDITION_DISCRIMINATOR);
   }
 
-  public static final Discriminator MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(252, 218, 191, 168, 126, 69, 125, 118);
+  public static final Discriminator MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_DISCRIMINATOR = toDiscriminator(11);
 
   /// @param newMetadataKey New Metadata key (pda of 'metadata', program id, mint id)
   /// @param newEditionKey New Edition (pda of 'metadata', program id, mint id, 'edition')
@@ -805,7 +805,7 @@ public final class TokenMetadataProgram {
   public static Instruction mintNewEditionFromMasterEditionViaToken(final AccountMeta invokedTokenMetadataProgramMeta,
                                                                     final List<AccountMeta> keys,
                                                                     final MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) {
-    final byte[] _data = new byte[8 + mintNewEditionFromMasterEditionViaTokenArgs.l()];
+    final byte[] _data = new byte[1 + mintNewEditionFromMasterEditionViaTokenArgs.l()];
     int i = MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_DISCRIMINATOR.write(_data, 0);
     mintNewEditionFromMasterEditionViaTokenArgs.write(_data, i);
 
@@ -818,15 +818,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 8;
+    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 1;
 
     public static MintNewEditionFromMasterEditionViaTokenIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var mintNewEditionFromMasterEditionViaTokenArgs = MintNewEditionFromMasterEditionViaTokenArgs.read(_data, i);
       return new MintNewEditionFromMasterEditionViaTokenIxData(discriminator, mintNewEditionFromMasterEditionViaTokenArgs);
@@ -845,7 +845,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator CONVERT_MASTER_EDITION_V_1_TO_V_2_DISCRIMINATOR = toDiscriminator(217, 26, 108, 0, 55, 126, 167, 238);
+  public static final Discriminator CONVERT_MASTER_EDITION_V_1_TO_V_2_DISCRIMINATOR = toDiscriminator(12);
 
   /// @param masterEditionKey Master Record Edition V1 (pda of 'metadata', program id, master metadata mint id, 'edition')
   /// @param oneTimeAuthKey One time authorization mint
@@ -880,7 +880,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CONVERT_MASTER_EDITION_V_1_TO_V_2_DISCRIMINATOR);
   }
 
-  public static final Discriminator MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY_DISCRIMINATOR = toDiscriminator(66, 246, 206, 73, 249, 35, 194, 47);
+  public static final Discriminator MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY_DISCRIMINATOR = toDiscriminator(13);
 
   /// @param newMetadataKey New Metadata key (pda of 'metadata', program id, mint id)
   /// @param newEditionKey New Edition (pda of 'metadata', program id, mint id, 'edition')
@@ -1000,7 +1000,7 @@ public final class TokenMetadataProgram {
   public static Instruction mintNewEditionFromMasterEditionViaVaultProxy(final AccountMeta invokedTokenMetadataProgramMeta,
                                                                          final List<AccountMeta> keys,
                                                                          final MintNewEditionFromMasterEditionViaTokenArgs mintNewEditionFromMasterEditionViaTokenArgs) {
-    final byte[] _data = new byte[8 + mintNewEditionFromMasterEditionViaTokenArgs.l()];
+    final byte[] _data = new byte[1 + mintNewEditionFromMasterEditionViaTokenArgs.l()];
     int i = MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_VAULT_PROXY_DISCRIMINATOR.write(_data, 0);
     mintNewEditionFromMasterEditionViaTokenArgs.write(_data, i);
 
@@ -1013,15 +1013,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 8;
+    public static final int MINT_NEW_EDITION_FROM_MASTER_EDITION_VIA_TOKEN_ARGS_OFFSET = 1;
 
     public static MintNewEditionFromMasterEditionViaVaultProxyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var mintNewEditionFromMasterEditionViaTokenArgs = MintNewEditionFromMasterEditionViaTokenArgs.read(_data, i);
       return new MintNewEditionFromMasterEditionViaVaultProxyIxData(discriminator, mintNewEditionFromMasterEditionViaTokenArgs);
@@ -1040,7 +1040,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator PUFF_METADATA_DISCRIMINATOR = toDiscriminator(87, 217, 21, 132, 105, 238, 71, 114);
+  public static final Discriminator PUFF_METADATA_DISCRIMINATOR = toDiscriminator(14);
 
   /// @param metadataKey Metadata account
   public static List<AccountMeta> puffMetadataKeys(final PublicKey metadataKey) {
@@ -1063,7 +1063,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, PUFF_METADATA_DISCRIMINATOR);
   }
 
-  public static final Discriminator UPDATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR = toDiscriminator(202, 132, 152, 229, 216, 217, 137, 212);
+  public static final Discriminator UPDATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR = toDiscriminator(15);
 
   /// @param metadataKey Metadata account
   /// @param updateAuthorityKey Update authority key
@@ -1091,7 +1091,7 @@ public final class TokenMetadataProgram {
   public static Instruction updateMetadataAccountV2(final AccountMeta invokedTokenMetadataProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final UpdateMetadataAccountArgsV2 updateMetadataAccountArgsV2) {
-    final byte[] _data = new byte[8 + updateMetadataAccountArgsV2.l()];
+    final byte[] _data = new byte[1 + updateMetadataAccountArgsV2.l()];
     int i = UPDATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR.write(_data, 0);
     updateMetadataAccountArgsV2.write(_data, i);
 
@@ -1104,13 +1104,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int UPDATE_METADATA_ACCOUNT_ARGS_V_2_OFFSET = 8;
+    public static final int UPDATE_METADATA_ACCOUNT_ARGS_V_2_OFFSET = 1;
 
     public static UpdateMetadataAccountV2IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var updateMetadataAccountArgsV2 = UpdateMetadataAccountArgsV2.read(_data, i);
       return new UpdateMetadataAccountV2IxData(discriminator, updateMetadataAccountArgsV2);
@@ -1125,11 +1125,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + updateMetadataAccountArgsV2.l();
+      return 1 + updateMetadataAccountArgsV2.l();
     }
   }
 
-  public static final Discriminator CREATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR = toDiscriminator(24, 73, 41, 237, 44, 142, 194, 254);
+  public static final Discriminator CREATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR = toDiscriminator(16);
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
   /// @param mintKey Mint of token asset
@@ -1190,7 +1190,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CREATE_METADATA_ACCOUNT_V_2_DISCRIMINATOR);
   }
 
-  public static final Discriminator CREATE_MASTER_EDITION_V_3_DISCRIMINATOR = toDiscriminator(147, 149, 17, 159, 74, 134, 114, 237);
+  public static final Discriminator CREATE_MASTER_EDITION_V_3_DISCRIMINATOR = toDiscriminator(17);
 
   /// @param editionKey Unallocated edition V2 account with address as pda of 'metadata', program id, mint, 'edition'
   /// @param mintKey Metadata mint
@@ -1262,7 +1262,7 @@ public final class TokenMetadataProgram {
   public static Instruction createMasterEditionV3(final AccountMeta invokedTokenMetadataProgramMeta,
                                                   final List<AccountMeta> keys,
                                                   final CreateMasterEditionArgs createMasterEditionArgs) {
-    final byte[] _data = new byte[8 + createMasterEditionArgs.l()];
+    final byte[] _data = new byte[1 + createMasterEditionArgs.l()];
     int i = CREATE_MASTER_EDITION_V_3_DISCRIMINATOR.write(_data, 0);
     createMasterEditionArgs.write(_data, i);
 
@@ -1275,13 +1275,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int CREATE_MASTER_EDITION_ARGS_OFFSET = 8;
+    public static final int CREATE_MASTER_EDITION_ARGS_OFFSET = 1;
 
     public static CreateMasterEditionV3IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var createMasterEditionArgs = CreateMasterEditionArgs.read(_data, i);
       return new CreateMasterEditionV3IxData(discriminator, createMasterEditionArgs);
@@ -1296,11 +1296,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + createMasterEditionArgs.l();
+      return 1 + createMasterEditionArgs.l();
     }
   }
 
-  public static final Discriminator VERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(56, 113, 101, 253, 79, 55, 122, 169);
+  public static final Discriminator VERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(18);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -1361,7 +1361,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, VERIFY_COLLECTION_DISCRIMINATOR);
   }
 
-  public static final Discriminator UTILIZE_DISCRIMINATOR = toDiscriminator(104, 146, 242, 209, 176, 174, 185, 163);
+  public static final Discriminator UTILIZE_DISCRIMINATOR = toDiscriminator(19);
 
   /// @param metadataKey Metadata account
   /// @param tokenAccountKey Token Account Of NFT
@@ -1445,7 +1445,7 @@ public final class TokenMetadataProgram {
   public static Instruction utilize(final AccountMeta invokedTokenMetadataProgramMeta,
                                     final List<AccountMeta> keys,
                                     final UtilizeArgs utilizeArgs) {
-    final byte[] _data = new byte[8 + utilizeArgs.l()];
+    final byte[] _data = new byte[1 + utilizeArgs.l()];
     int i = UTILIZE_DISCRIMINATOR.write(_data, 0);
     utilizeArgs.write(_data, i);
 
@@ -1458,15 +1458,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int UTILIZE_ARGS_OFFSET = 8;
+    public static final int UTILIZE_ARGS_OFFSET = 1;
 
     public static UtilizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var utilizeArgs = UtilizeArgs.read(_data, i);
       return new UtilizeIxData(discriminator, utilizeArgs);
@@ -1485,7 +1485,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator APPROVE_USE_AUTHORITY_DISCRIMINATOR = toDiscriminator(14, 4, 77, 134, 86, 23, 37, 236);
+  public static final Discriminator APPROVE_USE_AUTHORITY_DISCRIMINATOR = toDiscriminator(20);
 
   /// @param useAuthorityRecordKey Use Authority Record PDA
   /// @param ownerKey Owner
@@ -1569,7 +1569,7 @@ public final class TokenMetadataProgram {
   public static Instruction approveUseAuthority(final AccountMeta invokedTokenMetadataProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final ApproveUseAuthorityArgs approveUseAuthorityArgs) {
-    final byte[] _data = new byte[8 + approveUseAuthorityArgs.l()];
+    final byte[] _data = new byte[1 + approveUseAuthorityArgs.l()];
     int i = APPROVE_USE_AUTHORITY_DISCRIMINATOR.write(_data, 0);
     approveUseAuthorityArgs.write(_data, i);
 
@@ -1582,15 +1582,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int APPROVE_USE_AUTHORITY_ARGS_OFFSET = 8;
+    public static final int APPROVE_USE_AUTHORITY_ARGS_OFFSET = 1;
 
     public static ApproveUseAuthorityIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var approveUseAuthorityArgs = ApproveUseAuthorityArgs.read(_data, i);
       return new ApproveUseAuthorityIxData(discriminator, approveUseAuthorityArgs);
@@ -1609,7 +1609,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator REVOKE_USE_AUTHORITY_DISCRIMINATOR = toDiscriminator(204, 194, 208, 141, 142, 221, 109, 84);
+  public static final Discriminator REVOKE_USE_AUTHORITY_DISCRIMINATOR = toDiscriminator(21);
 
   /// @param useAuthorityRecordKey Use Authority Record PDA
   /// @param ownerKey Owner
@@ -1682,7 +1682,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, REVOKE_USE_AUTHORITY_DISCRIMINATOR);
   }
 
-  public static final Discriminator UNVERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(250, 251, 42, 106, 41, 137, 186, 168);
+  public static final Discriminator UNVERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(22);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Authority
@@ -1737,7 +1737,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, UNVERIFY_COLLECTION_DISCRIMINATOR);
   }
 
-  public static final Discriminator APPROVE_COLLECTION_AUTHORITY_DISCRIMINATOR = toDiscriminator(254, 136, 208, 39, 65, 66, 27, 111);
+  public static final Discriminator APPROVE_COLLECTION_AUTHORITY_DISCRIMINATOR = toDiscriminator(23);
 
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
   /// @param newCollectionAuthorityKey A Collection Authority
@@ -1804,7 +1804,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, APPROVE_COLLECTION_AUTHORITY_DISCRIMINATOR);
   }
 
-  public static final Discriminator REVOKE_COLLECTION_AUTHORITY_DISCRIMINATOR = toDiscriminator(31, 139, 135, 198, 29, 48, 160, 154);
+  public static final Discriminator REVOKE_COLLECTION_AUTHORITY_DISCRIMINATOR = toDiscriminator(24);
 
   /// @param collectionAuthorityRecordKey Collection Authority Record PDA
   /// @param delegateAuthorityKey Delegated Collection Authority
@@ -1851,7 +1851,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, REVOKE_COLLECTION_AUTHORITY_DISCRIMINATOR);
   }
 
-  public static final Discriminator SET_AND_VERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(235, 242, 121, 216, 158, 234, 180, 234);
+  public static final Discriminator SET_AND_VERIFY_COLLECTION_DISCRIMINATOR = toDiscriminator(25);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -1918,7 +1918,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, SET_AND_VERIFY_COLLECTION_DISCRIMINATOR);
   }
 
-  public static final Discriminator FREEZE_DELEGATED_ACCOUNT_DISCRIMINATOR = toDiscriminator(14, 16, 189, 180, 116, 19, 96, 127);
+  public static final Discriminator FREEZE_DELEGATED_ACCOUNT_DISCRIMINATOR = toDiscriminator(26);
 
   /// @param delegateKey Delegate
   /// @param tokenAccountKey Token account to freeze
@@ -1965,7 +1965,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, FREEZE_DELEGATED_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator THAW_DELEGATED_ACCOUNT_DISCRIMINATOR = toDiscriminator(239, 152, 227, 34, 225, 200, 206, 170);
+  public static final Discriminator THAW_DELEGATED_ACCOUNT_DISCRIMINATOR = toDiscriminator(27);
 
   /// @param delegateKey Delegate
   /// @param tokenAccountKey Token account to thaw
@@ -2012,7 +2012,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, THAW_DELEGATED_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator REMOVE_CREATOR_VERIFICATION_DISCRIMINATOR = toDiscriminator(41, 194, 140, 217, 90, 160, 139, 6);
+  public static final Discriminator REMOVE_CREATOR_VERIFICATION_DISCRIMINATOR = toDiscriminator(28);
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
   /// @param creatorKey Creator
@@ -2041,7 +2041,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, REMOVE_CREATOR_VERIFICATION_DISCRIMINATOR);
   }
 
-  public static final Discriminator BURN_NFT_DISCRIMINATOR = toDiscriminator(119, 13, 183, 17, 194, 243, 38, 31);
+  public static final Discriminator BURN_NFT_DISCRIMINATOR = toDiscriminator(29);
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
   /// @param ownerKey NFT owner
@@ -2102,7 +2102,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, BURN_NFT_DISCRIMINATOR);
   }
 
-  public static final Discriminator VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(86, 111, 223, 68, 17, 99, 180, 147);
+  public static final Discriminator VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(30);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -2163,7 +2163,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR);
   }
 
-  public static final Discriminator UNVERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(161, 187, 194, 156, 158, 154, 144, 221);
+  public static final Discriminator UNVERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(31);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Authority
@@ -2224,7 +2224,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, UNVERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR);
   }
 
-  public static final Discriminator SET_AND_VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(184, 105, 169, 35, 3, 88, 238, 67);
+  public static final Discriminator SET_AND_VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR = toDiscriminator(32);
 
   /// @param metadataKey Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -2291,7 +2291,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, SET_AND_VERIFY_SIZED_COLLECTION_ITEM_DISCRIMINATOR);
   }
 
-  public static final Discriminator CREATE_METADATA_ACCOUNT_V_3_DISCRIMINATOR = toDiscriminator(43, 12, 175, 14, 252, 45, 188, 155);
+  public static final Discriminator CREATE_METADATA_ACCOUNT_V_3_DISCRIMINATOR = toDiscriminator(33);
 
   /// @param metadataKey Metadata key (pda of 'metadata', program id, mint id)
   /// @param mintKey Mint of token asset
@@ -2351,7 +2351,7 @@ public final class TokenMetadataProgram {
   public static Instruction createMetadataAccountV3(final AccountMeta invokedTokenMetadataProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final CreateMetadataAccountArgsV3 createMetadataAccountArgsV3) {
-    final byte[] _data = new byte[8 + createMetadataAccountArgsV3.l()];
+    final byte[] _data = new byte[1 + createMetadataAccountArgsV3.l()];
     int i = CREATE_METADATA_ACCOUNT_V_3_DISCRIMINATOR.write(_data, 0);
     createMetadataAccountArgsV3.write(_data, i);
 
@@ -2364,13 +2364,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int CREATE_METADATA_ACCOUNT_ARGS_V_3_OFFSET = 8;
+    public static final int CREATE_METADATA_ACCOUNT_ARGS_V_3_OFFSET = 1;
 
     public static CreateMetadataAccountV3IxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var createMetadataAccountArgsV3 = CreateMetadataAccountArgsV3.read(_data, i);
       return new CreateMetadataAccountV3IxData(discriminator, createMetadataAccountArgsV3);
@@ -2385,11 +2385,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + createMetadataAccountArgsV3.l();
+      return 1 + createMetadataAccountArgsV3.l();
     }
   }
 
-  public static final Discriminator SET_COLLECTION_SIZE_DISCRIMINATOR = toDiscriminator(157, 254, 166, 144, 43, 223, 199, 39);
+  public static final Discriminator SET_COLLECTION_SIZE_DISCRIMINATOR = toDiscriminator(34);
 
   /// @param collectionMetadataKey Collection Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -2431,7 +2431,7 @@ public final class TokenMetadataProgram {
   public static Instruction setCollectionSize(final AccountMeta invokedTokenMetadataProgramMeta,
                                               final List<AccountMeta> keys,
                                               final SetCollectionSizeArgs setCollectionSizeArgs) {
-    final byte[] _data = new byte[8 + setCollectionSizeArgs.l()];
+    final byte[] _data = new byte[1 + setCollectionSizeArgs.l()];
     int i = SET_COLLECTION_SIZE_DISCRIMINATOR.write(_data, 0);
     setCollectionSizeArgs.write(_data, i);
 
@@ -2444,15 +2444,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 8;
+    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 1;
 
     public static SetCollectionSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var setCollectionSizeArgs = SetCollectionSizeArgs.read(_data, i);
       return new SetCollectionSizeIxData(discriminator, setCollectionSizeArgs);
@@ -2471,7 +2471,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator SET_TOKEN_STANDARD_DISCRIMINATOR = toDiscriminator(147, 212, 106, 195, 30, 170, 209, 128);
+  public static final Discriminator SET_TOKEN_STANDARD_DISCRIMINATOR = toDiscriminator(35);
 
   /// @param metadataKey Metadata account
   /// @param updateAuthorityKey Metadata update authority
@@ -2514,7 +2514,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, SET_TOKEN_STANDARD_DISCRIMINATOR);
   }
 
-  public static final Discriminator BUBBLEGUM_SET_COLLECTION_SIZE_DISCRIMINATOR = toDiscriminator(230, 215, 231, 226, 156, 188, 56, 6);
+  public static final Discriminator BUBBLEGUM_SET_COLLECTION_SIZE_DISCRIMINATOR = toDiscriminator(36);
 
   /// @param collectionMetadataKey Collection Metadata account
   /// @param collectionAuthorityKey Collection Update authority
@@ -2562,7 +2562,7 @@ public final class TokenMetadataProgram {
   public static Instruction bubblegumSetCollectionSize(final AccountMeta invokedTokenMetadataProgramMeta,
                                                        final List<AccountMeta> keys,
                                                        final SetCollectionSizeArgs setCollectionSizeArgs) {
-    final byte[] _data = new byte[8 + setCollectionSizeArgs.l()];
+    final byte[] _data = new byte[1 + setCollectionSizeArgs.l()];
     int i = BUBBLEGUM_SET_COLLECTION_SIZE_DISCRIMINATOR.write(_data, 0);
     setCollectionSizeArgs.write(_data, i);
 
@@ -2575,15 +2575,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 8;
+    public static final int SET_COLLECTION_SIZE_ARGS_OFFSET = 1;
 
     public static BubblegumSetCollectionSizeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var setCollectionSizeArgs = SetCollectionSizeArgs.read(_data, i);
       return new BubblegumSetCollectionSizeIxData(discriminator, setCollectionSizeArgs);
@@ -2602,7 +2602,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator BURN_EDITION_NFT_DISCRIMINATOR = toDiscriminator(221, 105, 196, 64, 164, 27, 93, 197);
+  public static final Discriminator BURN_EDITION_NFT_DISCRIMINATOR = toDiscriminator(37);
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
   /// @param ownerKey NFT owner
@@ -2679,7 +2679,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, BURN_EDITION_NFT_DISCRIMINATOR);
   }
 
-  public static final Discriminator CREATE_ESCROW_ACCOUNT_DISCRIMINATOR = toDiscriminator(146, 147, 225, 47, 51, 64, 112, 1);
+  public static final Discriminator CREATE_ESCROW_ACCOUNT_DISCRIMINATOR = toDiscriminator(38);
 
   /// @param escrowKey Escrow account
   /// @param metadataKey Metadata account
@@ -2752,7 +2752,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CREATE_ESCROW_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator CLOSE_ESCROW_ACCOUNT_DISCRIMINATOR = toDiscriminator(209, 42, 208, 179, 140, 78, 18, 43);
+  public static final Discriminator CLOSE_ESCROW_ACCOUNT_DISCRIMINATOR = toDiscriminator(39);
 
   /// @param escrowKey Escrow account
   /// @param metadataKey Metadata account
@@ -2817,7 +2817,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, CLOSE_ESCROW_ACCOUNT_DISCRIMINATOR);
   }
 
-  public static final Discriminator TRANSFER_OUT_OF_ESCROW_DISCRIMINATOR = toDiscriminator(55, 186, 186, 216, 115, 158, 58, 153);
+  public static final Discriminator TRANSFER_OUT_OF_ESCROW_DISCRIMINATOR = toDiscriminator(40);
 
   /// @param escrowKey Escrow account
   /// @param metadataKey Metadata account
@@ -2913,7 +2913,7 @@ public final class TokenMetadataProgram {
   public static Instruction transferOutOfEscrow(final AccountMeta invokedTokenMetadataProgramMeta,
                                                 final List<AccountMeta> keys,
                                                 final TransferOutOfEscrowArgs transferOutOfEscrowArgs) {
-    final byte[] _data = new byte[8 + transferOutOfEscrowArgs.l()];
+    final byte[] _data = new byte[1 + transferOutOfEscrowArgs.l()];
     int i = TRANSFER_OUT_OF_ESCROW_DISCRIMINATOR.write(_data, 0);
     transferOutOfEscrowArgs.write(_data, i);
 
@@ -2926,15 +2926,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 16;
+    public static final int BYTES = 9;
 
-    public static final int TRANSFER_OUT_OF_ESCROW_ARGS_OFFSET = 8;
+    public static final int TRANSFER_OUT_OF_ESCROW_ARGS_OFFSET = 1;
 
     public static TransferOutOfEscrowIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var transferOutOfEscrowArgs = TransferOutOfEscrowArgs.read(_data, i);
       return new TransferOutOfEscrowIxData(discriminator, transferOutOfEscrowArgs);
@@ -2953,7 +2953,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator BURN_DISCRIMINATOR = toDiscriminator(116, 110, 29, 56, 107, 219, 42, 93);
+  public static final Discriminator BURN_DISCRIMINATOR = toDiscriminator(41);
 
   /// @param authorityKey Asset owner or Utility delegate
   /// @param collectionMetadataKey Metadata of the Collection
@@ -3055,7 +3055,7 @@ public final class TokenMetadataProgram {
   public static Instruction burn(final AccountMeta invokedTokenMetadataProgramMeta,
                                  final List<AccountMeta> keys,
                                  final BurnArgs burnArgs) {
-    final byte[] _data = new byte[8 + burnArgs.l()];
+    final byte[] _data = new byte[1 + burnArgs.l()];
     int i = BURN_DISCRIMINATOR.write(_data, 0);
     burnArgs.write(_data, i);
 
@@ -3068,13 +3068,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BURN_ARGS_OFFSET = 8;
+    public static final int BURN_ARGS_OFFSET = 1;
 
     public static BurnIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var burnArgs = BurnArgs.read(_data, i);
       return new BurnIxData(discriminator, burnArgs);
@@ -3089,11 +3089,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + burnArgs.l();
+      return 1 + burnArgs.l();
     }
   }
 
-  public static final Discriminator CREATE_DISCRIMINATOR = toDiscriminator(24, 30, 200, 40, 5, 28, 7, 119);
+  public static final Discriminator CREATE_DISCRIMINATOR = toDiscriminator(42);
 
   /// @param metadataKey Unallocated metadata account with address as pda of 'metadata', program id, mint id
   /// @param masterEditionKey Unallocated edition account with address as pda of 'metadata', program id, mint, 'edition'
@@ -3165,7 +3165,7 @@ public final class TokenMetadataProgram {
   public static Instruction create(final AccountMeta invokedTokenMetadataProgramMeta,
                                    final List<AccountMeta> keys,
                                    final CreateArgs createArgs) {
-    final byte[] _data = new byte[8 + createArgs.l()];
+    final byte[] _data = new byte[1 + createArgs.l()];
     int i = CREATE_DISCRIMINATOR.write(_data, 0);
     createArgs.write(_data, i);
 
@@ -3178,13 +3178,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int CREATE_ARGS_OFFSET = 8;
+    public static final int CREATE_ARGS_OFFSET = 1;
 
     public static CreateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var createArgs = CreateArgs.read(_data, i);
       return new CreateIxData(discriminator, createArgs);
@@ -3199,11 +3199,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + createArgs.l();
+      return 1 + createArgs.l();
     }
   }
 
-  public static final Discriminator MINT_DISCRIMINATOR = toDiscriminator(51, 57, 225, 47, 182, 146, 137, 166);
+  public static final Discriminator MINT_DISCRIMINATOR = toDiscriminator(43);
 
   /// @param tokenKey Token or Associated Token account
   /// @param tokenOwnerKey Owner of the token account
@@ -3311,7 +3311,7 @@ public final class TokenMetadataProgram {
   public static Instruction mint(final AccountMeta invokedTokenMetadataProgramMeta,
                                  final List<AccountMeta> keys,
                                  final MintArgs mintArgs) {
-    final byte[] _data = new byte[8 + mintArgs.l()];
+    final byte[] _data = new byte[1 + mintArgs.l()];
     int i = MINT_DISCRIMINATOR.write(_data, 0);
     mintArgs.write(_data, i);
 
@@ -3324,13 +3324,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int MINT_ARGS_OFFSET = 8;
+    public static final int MINT_ARGS_OFFSET = 1;
 
     public static MintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var mintArgs = MintArgs.read(_data, i);
       return new MintIxData(discriminator, mintArgs);
@@ -3345,11 +3345,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + mintArgs.l();
+      return 1 + mintArgs.l();
     }
   }
 
-  public static final Discriminator DELEGATE_DISCRIMINATOR = toDiscriminator(90, 147, 75, 178, 85, 88, 4, 137);
+  public static final Discriminator DELEGATE_DISCRIMINATOR = toDiscriminator(44);
 
   /// @param delegateRecordKey Delegate record account
   /// @param delegateKey Owner of the delegated account
@@ -3451,7 +3451,7 @@ public final class TokenMetadataProgram {
   public static Instruction delegate(final AccountMeta invokedTokenMetadataProgramMeta,
                                      final List<AccountMeta> keys,
                                      final DelegateArgs delegateArgs) {
-    final byte[] _data = new byte[8 + delegateArgs.l()];
+    final byte[] _data = new byte[1 + delegateArgs.l()];
     int i = DELEGATE_DISCRIMINATOR.write(_data, 0);
     delegateArgs.write(_data, i);
 
@@ -3464,13 +3464,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int DELEGATE_ARGS_OFFSET = 8;
+    public static final int DELEGATE_ARGS_OFFSET = 1;
 
     public static DelegateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var delegateArgs = DelegateArgs.read(_data, i);
       return new DelegateIxData(discriminator, delegateArgs);
@@ -3485,11 +3485,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + delegateArgs.l();
+      return 1 + delegateArgs.l();
     }
   }
 
-  public static final Discriminator REVOKE_DISCRIMINATOR = toDiscriminator(170, 23, 31, 34, 133, 173, 93, 242);
+  public static final Discriminator REVOKE_DISCRIMINATOR = toDiscriminator(45);
 
   /// @param delegateRecordKey Delegate record account
   /// @param delegateKey Owner of the delegated account
@@ -3591,7 +3591,7 @@ public final class TokenMetadataProgram {
   public static Instruction revoke(final AccountMeta invokedTokenMetadataProgramMeta,
                                    final List<AccountMeta> keys,
                                    final RevokeArgs revokeArgs) {
-    final byte[] _data = new byte[8 + revokeArgs.l()];
+    final byte[] _data = new byte[1 + revokeArgs.l()];
     int i = REVOKE_DISCRIMINATOR.write(_data, 0);
     revokeArgs.write(_data, i);
 
@@ -3604,15 +3604,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 9;
+    public static final int BYTES = 2;
 
-    public static final int REVOKE_ARGS_OFFSET = 8;
+    public static final int REVOKE_ARGS_OFFSET = 1;
 
     public static RevokeIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var revokeArgs = RevokeArgs.read(_data, i);
       return new RevokeIxData(discriminator, revokeArgs);
@@ -3631,7 +3631,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator LOCK_DISCRIMINATOR = toDiscriminator(21, 19, 208, 43, 237, 62, 255, 87);
+  public static final Discriminator LOCK_DISCRIMINATOR = toDiscriminator(46);
 
   /// @param authorityKey Delegate or freeze authority
   /// @param tokenOwnerKey Token owner account
@@ -3727,7 +3727,7 @@ public final class TokenMetadataProgram {
   public static Instruction lock(final AccountMeta invokedTokenMetadataProgramMeta,
                                  final List<AccountMeta> keys,
                                  final LockArgs lockArgs) {
-    final byte[] _data = new byte[8 + lockArgs.l()];
+    final byte[] _data = new byte[1 + lockArgs.l()];
     int i = LOCK_DISCRIMINATOR.write(_data, 0);
     lockArgs.write(_data, i);
 
@@ -3740,13 +3740,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int LOCK_ARGS_OFFSET = 8;
+    public static final int LOCK_ARGS_OFFSET = 1;
 
     public static LockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var lockArgs = LockArgs.read(_data, i);
       return new LockIxData(discriminator, lockArgs);
@@ -3761,11 +3761,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + lockArgs.l();
+      return 1 + lockArgs.l();
     }
   }
 
-  public static final Discriminator UNLOCK_DISCRIMINATOR = toDiscriminator(101, 155, 40, 21, 158, 189, 56, 203);
+  public static final Discriminator UNLOCK_DISCRIMINATOR = toDiscriminator(47);
 
   /// @param authorityKey Delegate or freeze authority
   /// @param tokenOwnerKey Token owner account
@@ -3861,7 +3861,7 @@ public final class TokenMetadataProgram {
   public static Instruction unlock(final AccountMeta invokedTokenMetadataProgramMeta,
                                    final List<AccountMeta> keys,
                                    final UnlockArgs unlockArgs) {
-    final byte[] _data = new byte[8 + unlockArgs.l()];
+    final byte[] _data = new byte[1 + unlockArgs.l()];
     int i = UNLOCK_DISCRIMINATOR.write(_data, 0);
     unlockArgs.write(_data, i);
 
@@ -3874,13 +3874,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int UNLOCK_ARGS_OFFSET = 8;
+    public static final int UNLOCK_ARGS_OFFSET = 1;
 
     public static UnlockIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var unlockArgs = UnlockArgs.read(_data, i);
       return new UnlockIxData(discriminator, unlockArgs);
@@ -3895,11 +3895,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + unlockArgs.l();
+      return 1 + unlockArgs.l();
     }
   }
 
-  public static final Discriminator MIGRATE_DISCRIMINATOR = toDiscriminator(155, 234, 231, 146, 236, 158, 162, 30);
+  public static final Discriminator MIGRATE_DISCRIMINATOR = toDiscriminator(48);
 
   /// @param metadataKey Metadata account
   /// @param editionKey Edition account
@@ -4008,7 +4008,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, MIGRATE_DISCRIMINATOR);
   }
 
-  public static final Discriminator TRANSFER_DISCRIMINATOR = toDiscriminator(163, 52, 200, 231, 140, 3, 69, 186);
+  public static final Discriminator TRANSFER_DISCRIMINATOR = toDiscriminator(49);
 
   /// @param tokenKey Token account
   /// @param tokenOwnerKey Token account owner
@@ -4128,7 +4128,7 @@ public final class TokenMetadataProgram {
   public static Instruction transfer(final AccountMeta invokedTokenMetadataProgramMeta,
                                      final List<AccountMeta> keys,
                                      final TransferArgs transferArgs) {
-    final byte[] _data = new byte[8 + transferArgs.l()];
+    final byte[] _data = new byte[1 + transferArgs.l()];
     int i = TRANSFER_DISCRIMINATOR.write(_data, 0);
     transferArgs.write(_data, i);
 
@@ -4141,13 +4141,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int TRANSFER_ARGS_OFFSET = 8;
+    public static final int TRANSFER_ARGS_OFFSET = 1;
 
     public static TransferIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var transferArgs = TransferArgs.read(_data, i);
       return new TransferIxData(discriminator, transferArgs);
@@ -4162,11 +4162,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + transferArgs.l();
+      return 1 + transferArgs.l();
     }
   }
 
-  public static final Discriminator UPDATE_DISCRIMINATOR = toDiscriminator(219, 200, 88, 176, 158, 63, 253, 127);
+  public static final Discriminator UPDATE_DISCRIMINATOR = toDiscriminator(50);
 
   /// @param authorityKey Update authority or delegate
   /// @param delegateRecordKey Delegate record PDA
@@ -4250,7 +4250,7 @@ public final class TokenMetadataProgram {
   public static Instruction update(final AccountMeta invokedTokenMetadataProgramMeta,
                                    final List<AccountMeta> keys,
                                    final UpdateArgs updateArgs) {
-    final byte[] _data = new byte[8 + updateArgs.l()];
+    final byte[] _data = new byte[1 + updateArgs.l()];
     int i = UPDATE_DISCRIMINATOR.write(_data, 0);
     updateArgs.write(_data, i);
 
@@ -4263,13 +4263,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int UPDATE_ARGS_OFFSET = 8;
+    public static final int UPDATE_ARGS_OFFSET = 1;
 
     public static UpdateIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var updateArgs = UpdateArgs.read(_data, i);
       return new UpdateIxData(discriminator, updateArgs);
@@ -4284,11 +4284,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + updateArgs.l();
+      return 1 + updateArgs.l();
     }
   }
 
-  public static final Discriminator USE_DISCRIMINATOR = toDiscriminator(86, 205, 116, 166, 12, 177, 252, 83);
+  public static final Discriminator USE_DISCRIMINATOR = toDiscriminator(51);
 
   /// @param authorityKey Token owner or delegate
   /// @param delegateRecordKey Delegate record PDA
@@ -4378,7 +4378,7 @@ public final class TokenMetadataProgram {
   public static Instruction use(final AccountMeta invokedTokenMetadataProgramMeta,
                                 final List<AccountMeta> keys,
                                 final UseArgs useArgs) {
-    final byte[] _data = new byte[8 + useArgs.l()];
+    final byte[] _data = new byte[1 + useArgs.l()];
     int i = USE_DISCRIMINATOR.write(_data, 0);
     useArgs.write(_data, i);
 
@@ -4391,13 +4391,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int USE_ARGS_OFFSET = 8;
+    public static final int USE_ARGS_OFFSET = 1;
 
     public static UseIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var useArgs = UseArgs.read(_data, i);
       return new UseIxData(discriminator, useArgs);
@@ -4412,11 +4412,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + useArgs.l();
+      return 1 + useArgs.l();
     }
   }
 
-  public static final Discriminator VERIFY_DISCRIMINATOR = toDiscriminator(133, 161, 141, 48, 120, 198, 88, 150);
+  public static final Discriminator VERIFY_DISCRIMINATOR = toDiscriminator(52);
 
   /// @param authorityKey Creator to verify, collection update authority or delegate
   /// @param delegateRecordKey Delegate record PDA
@@ -4482,7 +4482,7 @@ public final class TokenMetadataProgram {
   public static Instruction verify(final AccountMeta invokedTokenMetadataProgramMeta,
                                    final List<AccountMeta> keys,
                                    final VerificationArgs verificationArgs) {
-    final byte[] _data = new byte[8 + verificationArgs.l()];
+    final byte[] _data = new byte[1 + verificationArgs.l()];
     int i = VERIFY_DISCRIMINATOR.write(_data, 0);
     verificationArgs.write(_data, i);
 
@@ -4495,15 +4495,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 9;
+    public static final int BYTES = 2;
 
-    public static final int VERIFICATION_ARGS_OFFSET = 8;
+    public static final int VERIFICATION_ARGS_OFFSET = 1;
 
     public static VerifyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var verificationArgs = VerificationArgs.read(_data, i);
       return new VerifyIxData(discriminator, verificationArgs);
@@ -4522,7 +4522,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator UNVERIFY_DISCRIMINATOR = toDiscriminator(55, 1, 25, 88, 115, 67, 20, 24);
+  public static final Discriminator UNVERIFY_DISCRIMINATOR = toDiscriminator(53);
 
   /// @param authorityKey Creator to verify, collection (or metadata if parent burned) update authority or delegate
   /// @param delegateRecordKey Delegate record PDA
@@ -4582,7 +4582,7 @@ public final class TokenMetadataProgram {
   public static Instruction unverify(final AccountMeta invokedTokenMetadataProgramMeta,
                                      final List<AccountMeta> keys,
                                      final VerificationArgs verificationArgs) {
-    final byte[] _data = new byte[8 + verificationArgs.l()];
+    final byte[] _data = new byte[1 + verificationArgs.l()];
     int i = UNVERIFY_DISCRIMINATOR.write(_data, 0);
     verificationArgs.write(_data, i);
 
@@ -4595,15 +4595,15 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int BYTES = 9;
+    public static final int BYTES = 2;
 
-    public static final int VERIFICATION_ARGS_OFFSET = 8;
+    public static final int VERIFICATION_ARGS_OFFSET = 1;
 
     public static UnverifyIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var verificationArgs = VerificationArgs.read(_data, i);
       return new UnverifyIxData(discriminator, verificationArgs);
@@ -4622,7 +4622,7 @@ public final class TokenMetadataProgram {
     }
   }
 
-  public static final Discriminator COLLECT_DISCRIMINATOR = toDiscriminator(208, 47, 194, 155, 17, 98, 82, 236);
+  public static final Discriminator COLLECT_DISCRIMINATOR = toDiscriminator(54);
 
   /// @param authorityKey Authority to collect fees
   /// @param recipientKey The account to transfer collected fees to
@@ -4651,7 +4651,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, COLLECT_DISCRIMINATOR);
   }
 
-  public static final Discriminator PRINT_DISCRIMINATOR = toDiscriminator(195, 207, 47, 76, 90, 172, 115, 105);
+  public static final Discriminator PRINT_DISCRIMINATOR = toDiscriminator(55);
 
   /// @param editionMetadataKey New Metadata key (pda of 'metadata', program id, mint id)
   /// @param editionKey New Edition (pda of 'metadata', program id, mint id, 'edition')
@@ -4777,7 +4777,7 @@ public final class TokenMetadataProgram {
   public static Instruction print(final AccountMeta invokedTokenMetadataProgramMeta,
                                   final List<AccountMeta> keys,
                                   final PrintArgs printArgs) {
-    final byte[] _data = new byte[8 + printArgs.l()];
+    final byte[] _data = new byte[1 + printArgs.l()];
     int i = PRINT_DISCRIMINATOR.write(_data, 0);
     printArgs.write(_data, i);
 
@@ -4790,13 +4790,13 @@ public final class TokenMetadataProgram {
       return read(instruction.data(), instruction.offset());
     }
 
-    public static final int PRINT_ARGS_OFFSET = 8;
+    public static final int PRINT_ARGS_OFFSET = 1;
 
     public static PrintIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
         return null;
       }
-      final var discriminator = createAnchorDiscriminator(_data, _offset);
+      final var discriminator = createDiscriminator(_data, _offset, 1);
       int i = _offset + discriminator.length();
       final var printArgs = PrintArgs.read(_data, i);
       return new PrintIxData(discriminator, printArgs);
@@ -4811,11 +4811,11 @@ public final class TokenMetadataProgram {
 
     @Override
     public int l() {
-      return 8 + printArgs.l();
+      return 1 + printArgs.l();
     }
   }
 
-  public static final Discriminator RESIZE_DISCRIMINATOR = toDiscriminator(74, 27, 74, 155, 56, 134, 175, 125);
+  public static final Discriminator RESIZE_DISCRIMINATOR = toDiscriminator(56);
 
   /// @param metadataKey The metadata account of the digital asset
   /// @param editionKey The master edition or edition account of the digital asset, an uninitialized account for fungible assets
@@ -4876,7 +4876,7 @@ public final class TokenMetadataProgram {
     return Instruction.createInstruction(invokedTokenMetadataProgramMeta, keys, RESIZE_DISCRIMINATOR);
   }
 
-  public static final Discriminator CLOSE_ACCOUNTS_DISCRIMINATOR = toDiscriminator(171, 222, 94, 233, 34, 250, 202, 1);
+  public static final Discriminator CLOSE_ACCOUNTS_DISCRIMINATOR = toDiscriminator(57);
 
   /// @param metadataKey Metadata (pda of 'metadata', program id, mint id)
   /// @param editionKey Edition of the asset
