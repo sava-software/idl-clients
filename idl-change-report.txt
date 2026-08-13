@@ -97,10 +97,10 @@ Stake: the vcs IDL at github:solana-program/stake@main/idl.json differs from the
   instructions changed (18): every one arguments changed
   types removed (6): authorizeCheckedWithSeedArgs, authorizeWithSeedArgs, epoch, lockupArgs, lockupCheckedArgs, unixTimestamp
 
-== Movement (1) ==
+== Movement (0) ==
 
 Every channel that is not what the previous sources.json recorded for it. An event: it fires
 on the run that first sees a change and is silent afterwards, so nothing here means nothing
 moved and not that nothing was compared.
 
-Jupiter Swap: the program was redeployed at slot 438982144, up from 437349164, and no IDL channel moved with it
+Nothing moved since the last generation.
