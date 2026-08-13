@@ -134,34 +134,55 @@ slot and hashes at all times.
 
 ### A second worked example: the SPL programs, 2026-08-13
 
-Recorded here for the opposite reason to Kamino's: this movement **did not** appear in
-`idl-change-report.txt`, and the rule above — a changed `sources.json` hash with no
-matching report entry means a run threw its evidence away — is what catches that.
+Five SPL clients moved their `vcs` hash on this branch, in **two separate generations**.
+Recorded together because a squash flattens them into one diff in which four have their
+evidence and the fifth does not, and telling those apart afterwards means re-deriving it
+from `sources.json` blame.
 
-Four programs moved: `token` (+620 IDL lines), `token_2022` (+2357), `system`, and
-`compute_budget`. Token-2022's `vcs` hash went `e3e5e9ff… → f5f3375f…`.
+**Event one — commit `c2563a4`, the parser-recovery run.** Four programs, all reported
+in that commit's `idl-change-report.txt` under `== Movement (6) ==` (the other two are
+Kamino's IDL move and redeploy, above).
 
-**Why the report is silent, and why that is not a second bug.** Movement is an *event*:
-it fires on the run that first sees a channel differ from the previous `sources.json`.
-These four are precisely the programs the silent-failure defect was dropping — a codama
-`display` node threw out of the parser, the exception escaped its worker without setting
-`fatal`, and the run exited 0 with them missing. A dropped program never reaches
-`recordChannels`, so its old `sources.json` stayed on disk and no comparison was ever
-made. The first run after the parser fix compared against a record written before
-upstream added those nodes, and the event had already been consumed by a run that could
-not report it.
+| program | before → after |
+|---|---|
+| Address Lookup Table | `f1b98bfdea01eabba840427ca7461a790e70fbdc70d392a42d042f7e954bb6b0` → `ce3a6296a726387fb7d9167e06751395c133a44cc16603ded34b1ce7beef3a86` |
+| Compute Budget | `72815adca6fb6f9127ccb31216a335a7bcb2ed955e710ebd033a767c60236489` → `a2f12fbebef6b7a467e71efc5d74c92198b3a63ceaf06953080cd0d583528fb2` |
+| System | `2139d7aebc9bb6411af2c8c2d58d25df079b498ce5f199961dba1946e13849be` → `e6e1a93dee7b9e07c08bd177f452b77926509748299f9211e5ffa6aedc11998b` |
+| Token | `94491b922b4c820f2f4f74228d067c5d48793dc6cebda495c83db61bfbe0370e` → `ce401c7ffa66b424bc6568dff5cc49adfb20db1ac486c91f756b6327218bbf74` |
 
-**What actually changed is presentational.** The added nodes are `structFieldDisplayNode`
-(237), `instructionAccountDisplayNode` (148), `instructionDisplayNode` (103),
-`amountNumberDisplayNode` (21) and similar — codama's rendering hints. Verified rather
-than assumed: every generated `.java` file under all four packages is byte-identical to
-its previous version once whitespace is stripped. The visible Java diff is the trailing
--whitespace normalisation in the same branch, not this movement. No wire layout,
-discriminator, account order or field offset moved.
+These are the programs the silent-failure defect had been dropping — a codama `display`
+node threw out of the parser, the exception escaped its worker without setting `fatal`,
+and the run exited 0 with them missing. The first run after the parser fix compared each
+against the record last written before they started vanishing, and **reported every one
+of them.** The mechanism worked; nothing is owed here.
 
-The lesson is the one the deploy-slot signal already teaches, in a new place: **a channel
-that stops being read stops being compared, and silence then looks like agreement.** A
-program absent from a run is not a program that agreed with its record.
+**Event two — commit `1722033`, Token-2022 only.**
+
+| program | before → after |
+|---|---|
+| Token-2022 | `e3e5e9ffeb0ce567174e1e8995d7b8209d484bd9f8a0e5b79239c1a6d2b3db0f` → `f5f3375f2f19e831732e76792078cdee253206d4ba09fef3150c54b94bbd564f` |
+
+This one has **no report entry**, and that is the rule above firing exactly as intended:
+a changed `sources.json` hash with no matching report change means a generation ran
+without retaining its channel-movement evidence. `1722033` is a test commit; a
+regeneration inside it moved the hash and its report was not carried with it. Token-2022
+is not one of the four above and did not move with them — it is later and separate.
+
+**What changed, in both events, is presentational.** The added nodes are
+`structFieldDisplayNode` (237 in Token-2022), `instructionAccountDisplayNode` (148),
+`instructionDisplayNode` (103), `amountNumberDisplayNode` (21) and similar — codama's
+rendering hints. Verified rather than assumed: every generated `.java` file under all
+five packages is byte-identical to its previous version once whitespace is stripped, so
+the visible Java diff is this branch's trailing-whitespace normalisation and not these
+movements. No wire layout, discriminator, account order or field offset moved.
+
+Two lessons, and the second is the one that cost a correction here. The deploy-slot
+lesson, in a new place: **a channel that stops being read stops being compared, and
+silence then looks like agreement.** And: *a missing report entry is a claim about a
+specific generation*, so it has to be checked against that generation's report rather
+than against the branch's net diff. An earlier draft of this section asserted all
+five had lost their evidence and named Token-2022 among the parser-recovery four; both
+were wrong, and reading `c2563a4`'s own report is what settles it.
 
 The trigger to key on is the **deploy**, not the IDL edit:
 

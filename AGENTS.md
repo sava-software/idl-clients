@@ -76,7 +76,10 @@ An Anchor instruction may declare `"returns"`, the type the program hands back t
 surfaces along with the producing program id. `idl-src-gen` ignores the field, so no
 decoder is generated for it and consumers Borsh-decode the payload by hand.
 
-**Scope, as of 2026-08-13** — 45 instructions across 8 programs:
+**Scope, as of 2026-08-13** — 45 declarations across 8 generated packages, which is **43 unique
+instructions across 7 on-chain programs**: `kamino.lend` and `kamino.lend.next` are the deployed
+and staged clients for one program address and duplicate two declarations between them. Count
+packages when sizing the generator work, program addresses when describing the gap on chain.
 
 | instructions | program |
 |---:|---|
@@ -84,7 +87,7 @@ decoder is generated for it and consumers Borsh-decode the payload by hand.
 | 12 | `jupiter.swap` |
 | 6 | `jupiter.lend` |
 | 3 | `jupiter.perpetuals` |
-| 2 + 2 | `kamino.lend`, `kamino.lend.next` |
+| 2 + 2 | `kamino.lend`, `kamino.lend.next` — same program, staged and deployed |
 | 1 | `cctp.message_transmitter.v2` |
 | 1 | `oracles.pyth.lazer` |
 
@@ -104,11 +107,12 @@ for k, v in sorted(tot.items(), key=lambda x: -x[1]):
 PY
 ```
 
-Two things this is **not**. It is not a transaction-safety problem: `returns` describes
-what comes back, so nothing about instruction encoding, account order or wire layout
-depends on it, and every client here builds correct instructions today. And events are
-not a substitute — an event reader expects an event discriminator, which return data
-does not carry.
+Two things this is **not**. It is not a transaction-safety problem: `returns` describes what comes
+back, so no instruction encoding, account order or wire layout depends on it — a client that
+ignores the field builds exactly the same instruction as one that reads it. That is the whole of
+the claim; it is not evidence that these clients are correct in other respects, which is what the
+dispatch probe and the account-order diff are for. And events are not a substitute — an event
+reader expects an event discriminator, which return data does not carry.
 
 Closing it is a generator feature (a decoder record per declared return type), not a
 per-client fix. Until then, "the client covers the IDL" is true of everything except
