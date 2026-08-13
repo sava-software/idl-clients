@@ -74,17 +74,15 @@ was `ji.skip()`, unlike the type parser's, which throws — so every such instru
 Anchor instruction with a missing discriminator and got the eight-byte `sha256("global:<name>")`
 fallback. The result was builders that no such program can dispatch at all.
 
-Fixed for the two programs in this repo, and **the inventory is wider than this repo**:
+Both affected programs here are fixed — **Metaplex Token Metadata (58)** and **Solana Attestation
+Service (12)**, every instruction each declares.
 
-| program | instructions | where |
-|---|---:|---|
-| Metaplex Token Metadata | 58 | this repo, fixed |
-| Solana Attestation Service | 12 | this repo, fixed |
-| Jito Tip Router | 35 | `anchor-programs`, **still emitting eight-byte hashes** |
-
-**105 known affected instructions across three programs.** Any other project generating from a
-Shank IDL with a version of the generator older than that fix has the same defect; the check is
-whether its `gen/idl.json` carries `"origin": "shank"` and per-instruction `"discriminant"`.
+Nothing else in this repo is affected, and no work is outstanding. A third program exists —
+Jito Tip Router, 35 instructions, in the **unmaintained** `anchor-programs` — and it is recorded
+as evidence rather than as a task: it shows the defect is a property of the generator, not of
+these two IDLs, so any project generating from a Shank IDL with a pre-fix generator carries it.
+The check is whether a `gen/idl.json` declares `"origin": "shank"` with per-instruction
+`"discriminant"`.
 
 The generator now rejects, rather than guesses, in three places that previously passed silently: an
 unmodelled instruction field, a `discriminant` that is not a complete `u8` in range, and a Shank
