@@ -10,24 +10,27 @@ import java.util.Base64;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/// Real mainnet instruction data, pinning the discriminant **width** against an upstream IDL that
-/// gets it wrong.
+/// Real mainnet instruction data, pinning the discriminant **width**.
 ///
 /// `StakeInstruction` is serialized with bincode — every builder in `solana-program/stake`'s
 /// `interface/src/instruction.rs` calls `Instruction::new_with_bincode`, and the enum derives
-/// `serde_derive::Serialize`. Bincode tags enum variants with a **4-byte little-endian** integer.
+/// `serde_derive::Serialize`. Bincode tags enum variants with a **4-byte little-endian** integer,
+/// which is what the bytes below carry.
 ///
-/// The `idl.json` that repository publishes declares the discriminator as `u8`, one byte, almost
-/// certainly because the `CodamaInstructions` derive emits Borsh's convention. Generating from that
-/// IDL produces a client that writes a one-byte tag and shifts every argument offset down by three,
-/// so the deployed program rejects everything it builds. Tried on a branch 2026-08-14: the
-/// generated `INITIALIZE_DISCRIMINATOR` became `toDiscriminator(0)` and `BYTES` fell from 116 to
-/// 113.
+/// **The `idl.json` at that repository's root declares `u8`, and that is not a bug in it.** It is
+/// an *intermediate* artifact: `codama.mjs` there applies a `before` pipeline — rewriting the
+/// discriminator to `u32`, injecting the `epoch` and `unixTimestamp` aliases, renaming four
+/// `…Args` types to `…Params` — and every client upstream publishes is generated after those
+/// transforms run. Consuming the raw file skips the half of the process that makes it correct.
+/// Generating from it on a branch (2026-08-14) produced `toDiscriminator(0)` and `BYTES` of 113
+/// instead of 116, shifting every argument offset down by three.
 ///
-/// This repository therefore pins its own copy of the IDL rather than tracking upstream, and this
-/// test is why that pin exists. The Stake program is immutable — `Authority: none`, last deployed
-/// at slot 427248000 — so the deployed encoding cannot change and upstream cannot become right
-/// about it later.
+/// So this repository pins its own copy, and the `definedTypes` overrides in
+/// `main_net_programs.json` are a hand-maintained equivalent of upstream's visitors rather than a
+/// repair of something broken. Replacing them with that pipeline's actual output would be
+/// strictly better; until then this test is what holds the encoding down. The Stake program is
+/// immutable — `Authority: none`, last deployed at slot 427248000 — so the bytes below cannot go
+/// out of date.
 final class StakeOnChainInstructionTests {
 
   /// Captured with `getTransaction` from mainnet: transaction
