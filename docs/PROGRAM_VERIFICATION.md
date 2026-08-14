@@ -231,8 +231,12 @@ clean here, because the document genuinely did not change; only the program did.
 above, a deploy-slot move with no IDL movement warrants probing that program's **full instruction
 set**, not the added-and-removed subset — there is no subset to derive.
 
-**Resolved 2026-08-13: the interface did not change.** All 17 declared instructions dispatch on
-the redeployed program. The upgrade landed at **2026-08-13T08:17:56Z**, the previous at
+**Narrowed 2026-08-13, not closed.** All 17 declared discriminators still reach a handler on the
+redeployed program — each answers with a post-dispatch error rather than the "no such instruction"
+the control produces. That is the whole of what was established, and it is narrower than "the
+interface did not change", which an earlier revision of this section claimed: dispatch says nothing
+about account lists, argument layouts or semantics, any of which a redeploy can move while every
+discriminator still resolves. The upgrade landed at **2026-08-13T08:17:56Z**, the previous at
 **2026-08-05T08:57:58Z** — an eight-day cadence, under an upgrade authority
 (`CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ`) that has not changed. Consistent with routine
 release process rather than an interface move, which is what the unchanged channel hashes already
@@ -262,11 +266,13 @@ the probe reports `INCONCLUSIVE` rather than guessing. That proves only that the
 Anchor-fallback-shaped** — an Anchor program carrying its own fallback handler looks identical from
 outside — so it is not evidence about the dispatch style, and no re-run of that tool will settle it.
 
-What this does **not** establish: that the deployed *behaviour* is unchanged. Dispatch proves every
-declared discriminator still reaches a handler, not that the handler does the same thing, nor that
-argument layouts or semantics held. A redeploy can change any of those while every instruction
-still dispatches. Settling that needs the deployed source; the account-order diff in §2 is one
-component of it and covers one axis.
+So the deployed-source comparison **remains unresolved**. What the probe closed is the cheapest and
+weakest question — are any declared instructions simply gone — and the answer is no. Settling the
+rest needs the deployed source identified; the account-order diff in §2 is one component of that
+and covers one axis.
+
+The upgrade cadence and unchanged channel hashes make a routine rebuild the likeliest reading, but
+that is an inference from process, not a verification.
 
 `sources.json` carries the slot and both hashes at all times, and the table above is the durable
 copy — the generating run's own report was in commit `40e1533`, which a squash will take.

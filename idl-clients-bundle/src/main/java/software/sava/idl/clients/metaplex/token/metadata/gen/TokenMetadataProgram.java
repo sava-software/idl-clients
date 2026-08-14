@@ -2301,7 +2301,7 @@ public final class TokenMetadataProgram {
   /// @param mintAuthorityKey Mint authority
   /// @param payerKey payer
   /// @param updateAuthorityKey update authority info
-  /// @param updateAuthorityIsSigner whether `updateAuthorityKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param updateAuthorityIsSigner whether the `updateAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
   public static List<AccountMeta> createMetadataAccountV3Keys(final PublicKey metadataKey,
@@ -2330,7 +2330,7 @@ public final class TokenMetadataProgram {
   /// @param mintAuthorityKey Mint authority
   /// @param payerKey payer
   /// @param updateAuthorityKey update authority info
-  /// @param updateAuthorityIsSigner whether `updateAuthorityKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param updateAuthorityIsSigner whether the `updateAuthority` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param systemProgramKey System program
   /// @param rentKey Rent info
   public static Instruction createMetadataAccountV3(final AccountMeta invokedTokenMetadataProgramMeta,
@@ -4672,7 +4672,7 @@ public final class TokenMetadataProgram {
   /// @param editionMarkerPdaKey Edition pda to mark creation - will be checked for pre-existence. (pda of 'metadata', program id, master metadata mint id, 'edition', edition_number) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
   /// @param payerKey payer
   /// @param masterTokenAccountOwnerKey owner of token account containing master token
-  /// @param masterTokenAccountOwnerIsSigner whether `masterTokenAccountOwnerKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param masterTokenAccountOwnerIsSigner whether the `masterTokenAccountOwner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param masterTokenAccountKey token account containing token from master metadata mint
   /// @param masterMetadataKey Master record metadata account
   /// @param updateAuthorityKey The update authority of the master edition.
@@ -4733,7 +4733,7 @@ public final class TokenMetadataProgram {
   /// @param editionMarkerPdaKey Edition pda to mark creation - will be checked for pre-existence. (pda of 'metadata', program id, master metadata mint id, 'edition', edition_number) where edition_number is NOT the edition number you pass in args but actually edition_number = floor(edition/EDITION_MARKER_BIT_SIZE).
   /// @param payerKey payer
   /// @param masterTokenAccountOwnerKey owner of token account containing master token
-  /// @param masterTokenAccountOwnerIsSigner whether `masterTokenAccountOwnerKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param masterTokenAccountOwnerIsSigner whether the `masterTokenAccountOwner` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param masterTokenAccountKey token account containing token from master metadata mint
   /// @param masterMetadataKey Master record metadata account
   /// @param updateAuthorityKey The update authority of the master edition.
@@ -4834,7 +4834,7 @@ public final class TokenMetadataProgram {
   /// @param editionKey The master edition or edition account of the digital asset, an uninitialized account for fungible assets
   /// @param mintKey Mint of token asset
   /// @param payerKey The recipient of the excess rent and authority if the authority account is not present
-  /// @param payerIsSigner whether `payerKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param payerIsSigner whether the `payer` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param authorityKey Owner of the asset for (p)NFTs, or mint authority for fungible assets, if different from the payer
   /// @param tokenKey Token or Associated Token account
   /// @param systemProgramKey System program
@@ -4862,7 +4862,7 @@ public final class TokenMetadataProgram {
   /// @param editionKey The master edition or edition account of the digital asset, an uninitialized account for fungible assets
   /// @param mintKey Mint of token asset
   /// @param payerKey The recipient of the excess rent and authority if the authority account is not present
-  /// @param payerIsSigner whether `payerKey` signs this instruction. The account is required either way and keeps its position; only the privilege changes.
+  /// @param payerIsSigner whether the `payer` account signs this instruction. It is required either way and keeps its position; only the privilege changes.
   /// @param authorityKey Owner of the asset for (p)NFTs, or mint authority for fungible assets, if different from the payer
   /// @param tokenKey Token or Associated Token account
   /// @param systemProgramKey System program

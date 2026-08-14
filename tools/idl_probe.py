@@ -17,6 +17,14 @@ stale, and any client method wrapping it can never succeed.
 Each program is calibrated with a garbage discriminator first. If that does not
 return 101 the probe reports INCONCLUSIVE rather than guessing.
 
+PENDING REWRITE (2026-08-13). This tool is being ported to Java so it can use sava-core for
+transaction building rather than hand-rolling base58 and the message layout, which is the part of
+it least safe to duplicate. Two known defects are deliberately left for that port rather than
+patched here: the error classification below treats 102 / NotEnoughAccountKeys as universally
+meaning "dispatched" and InvalidAccountData as universally meaning "not", which holds for Anchor
+programs and is not a general rule; and the undeployed-instruction total mis-reads its report row.
+Neither is covered by a test, because this file has none — also a gap the port should close.
+
 INCONCLUSIVE means only that the control did not produce error 101. It does not
 establish how the program dispatches: a native, Shank or pinocchio program
 emits no fallback error, and neither does an Anchor program whose own #[fallback]
