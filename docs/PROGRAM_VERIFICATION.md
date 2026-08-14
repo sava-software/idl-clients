@@ -268,8 +268,8 @@ argument layouts or semantics held. A redeploy can change any of those while eve
 still dispatches. Settling that needs the deployed source; the account-order diff in §2 is one
 component of it and covers one axis.
 
-The generating run's own report is in commit `40e1533`; `sources.json` carries the slot at all
-times.
+`sources.json` carries the slot and both hashes at all times, and the table above is the durable
+copy — the generating run's own report was in commit `40e1533`, which a squash will take.
 
 ---
 

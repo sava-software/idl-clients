@@ -163,9 +163,19 @@ def main():
         pid = b58d(pid_b58)
 
         calib = probe_many(pid, [GARBAGE])[0]
+        if calib == 'UNKNOWN':
+            # An exhausted or malformed RPC response, not a fact about the program. Reported as an
+            # operational failure rather than folded into INCONCLUSIVE: with the endpoint down,
+            # every control answers UNKNOWN, every program is "structurally inconclusive", and the
+            # sweep exits 0 having probed nothing. A tool whose whole job is to notice a stale IDL
+            # must not report success because it could not ask.
+            report.append((p['name'], pid_b58, 'UNREACHABLE', len(ixs), [],
+                           'control did not answer; RPC exhausted or malformed', 0))
+            print(f"  {p['name']:34} UNREACHABLE (no control response)", file=sys.stderr)
+            continue
         if calib != 'DEAD':
             report.append((p['name'], pid_b58, 'INCONCLUSIVE', len(ixs), [],
-                           f'garbage discriminator -> {calib}, no fallback error 101'))
+                           f'garbage discriminator -> {calib}, no fallback error 101', 0))
             print(f"  {p['name']:34} INCONCLUSIVE ({calib})", file=sys.stderr)
             continue
 
@@ -176,16 +186,16 @@ def main():
         unk = sum(1 for s in states if s == 'UNKNOWN')
         status = 'STALE' if dead else ('OK' if unk == 0 else 'OK*')
         report.append((p['name'], pid_b58, status, len(named), dead,
-                       f'{unk} inconclusive' if unk else ''))
+                       f'{unk} inconclusive' if unk else '', unk))
         print(f"  {p['name']:34} {status:6} {len(named):3} ix, {len(dead)} dead"
               + (f", {unk} unknown" if unk else ""), file=sys.stderr)
 
     print("\n" + "=" * 72)
     stale = [r for r in report if r[2] == 'STALE']
     unexpected = [(name, pid, n, [d for d in dead if (name, d) not in ACCEPTED_UNDEPLOYED])
-                  for name, pid, st, n, dead, note in stale]
+                  for name, pid, st, n, dead, note, _ in stale]
     unexpected = [u for u in unexpected if u[3]]
-    accepted = sum(1 for name, _, _, _, dead, _ in stale for d in dead
+    accepted = sum(1 for name, _, _, _, dead, _, _ in stale for d in dead
                    if (name, d) in ACCEPTED_UNDEPLOYED)
     print(f"programs probed: {len(report)}   "
           f"undeployed instructions: {sum(len(d) for *_, d, _ in stale)} "
@@ -204,7 +214,23 @@ def main():
         print("  all it establishes: a native, Shank or pinocchio program has no fallback")
         print("  error, and neither does an Anchor program whose own #[fallback] handles it.")
         print("  Verify these against their Rust instead — see docs/PROGRAM_VERIFICATION.md.")
-    sys.exit(1 if unexpected else 0)
+    unreachable = [r for r in report if r[2] == 'UNREACHABLE']
+    if unreachable:
+        print(f"\nUNREACHABLE ({len(unreachable)}): {', '.join(r[0] for r in unreachable)}")
+        print("  The control never answered for these, so nothing was probed. This is an RPC")
+        print("  failure, not a result: re-run, or point SOLANA_RPC at an endpoint that answers.")
+
+    # An instruction that never answered is not an instruction that dispatched. Counting it as a
+    # pass would let a partly-failed sweep read exactly like a clean one.
+    partial = [(name, unk) for name, _, st, _, _, _, unk in report if unk]
+    if partial:
+        print(f"\nincomplete ({len(partial)} program(s)): some instructions never answered")
+        for name, unk in partial:
+            print(f"    {name}: {unk} instruction(s) with no response")
+        print("  An instruction that did not answer is not one that dispatched, so this is a")
+        print("  failed sweep rather than a clean one.")
+
+    sys.exit(1 if (unexpected or unreachable or partial) else 0)
 
 
 if __name__ == '__main__':

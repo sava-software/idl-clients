@@ -1098,7 +1098,7 @@ which both layouts predict.
 Marginfi's `clearEmissions` was a *dead* method — not wrong, but incapable of
 succeeding — and nothing in the mutation baseline could have found it. So the
 dispatch probe was run across every configured program to bound how much more of
-that exists: **1026 declared instructions across 34 Anchor programs**, each
+that exists: **1026 declared instructions across 34 programs with an Anchor-shaped IDL (several of which dispatch differently — see the inconclusive list below, which is about dispatch, not IDL shape)**, each
 probed for `InstructionFallbackNotFound`, with a garbage-discriminator control
 per program to confirm the program is Anchor-dispatch-shaped before trusting any
 verdict.
