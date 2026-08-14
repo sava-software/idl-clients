@@ -1104,9 +1104,8 @@ dispatch probe was run to bound how much more of that exists. Its coverage was
 narrower than this section originally claimed: it selected only instructions
 carrying a top-level Anchor `discriminator`, so Shank instructions and Codama
 programs were never probed at all, and programs whose control was inconclusive
-dropped out too. The figures below are outcomes over that reduced selection, not
-totals over what the corpus declares,
-not a record of what was simulated. Each selected instruction was
+dropped out too. The figures below are neither corpus-wide totals nor a complete
+count of what was simulated. Each selected instruction was
 probed for `InstructionFallbackNotFound`, with a garbage-discriminator control
 per program to confirm the program is Anchor-dispatch-shaped before trusting any
 verdict.

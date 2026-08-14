@@ -248,24 +248,32 @@ release rather than an interface move — but only consistent with. Nothing here
 the 17 remain uncharacterised, and cadence plus a stable upgrade authority look identical either
 way.
 
-Two things had to be worked around, and both were defects in the since-removed `idl_probe.py`
-rather than facts about Jupiter. Recorded because they are the reasoning anyone simulating by hand
-still needs, and because between them they are why that tool is gone:
+Two things had to be worked around during this investigation. Recorded because they are the
+reasoning anyone simulating by hand still needs:
 
-- **The calibration is too narrow.** The probe looks for `InstructionFallbackNotFound` (101) and
-  reports `INCONCLUSIVE` otherwise. Jupiter answers a garbage discriminator with
-  `InvalidAccountData` at 71 compute units, which is just as decisive: a *declared* discriminator
-  instead returns `InstructionDidNotDeserialize` (102) or `NotEnoughAccountKeys`, because dispatch
-  succeeded and the empty args or account list failed afterwards. Error 101 is one shape of "no
-  such instruction", not the only one.
-- **The instruction-name log is not a dispatch signal.** `route` and `route_v2` — the two most used
-  instructions in a sample of recent traffic — emit no `Program log: Instruction: …` line at all,
-  almost certainly because that `msg!` is stripped on the hot path to save compute. A probe keying
-  on the log reports exactly those two as dead. They are not: they answer 102, and real
-  transactions carrying their discriminators succeed.
+- **Calibrating on error 101 alone tells you nothing here.** Jupiter answers a garbage
+  discriminator with `InvalidAccountData` at 71 compute units, and a *declared* discriminator with
+  `InstructionDidNotDeserialize` (102) or `NotEnoughAccountKeys`. Error 101 is one shape of "no
+  such instruction", not the only one, and `idl_probe.py` reported `INCONCLUSIVE` until it was
+  taught the second. Widening it made the responses *readable*; it did not make them decisive —
+  §1 no longer treats a differing error as proof of dispatch, which is why the conclusion above is
+  2 confirmed and 15 uncharacterised rather than 17 live.
+- **Logs are not a dispatch signal.** `route` and `route_v2` — the two most used instructions in a
+  sample of recent traffic — emit no `Program log: Instruction: …` line, almost certainly because
+  that `msg!` is stripped on the hot path to save compute. Any check treating log output as
+  liveness therefore reads a program's busiest instructions as dead. They are not: they answer 102,
+  and real transactions carrying their discriminators succeed, which is why these two are the only
+  ones confirmed above.
+
+  This was found with a scratch experiment during this investigation, not with `idl_probe.py`. No
+  tracked version of that script keyed on the instruction-name line: the first classified logs
+  containing `FallbackNotFound` as dead and any other non-empty logs as live, and the last
+  classified recognised errors first while keeping `elif logs:` as a fallback. It never stopped
+  reading logs — it stopped *requiring* that specific line, which it never required. An earlier
+  revision of this section attributed the trap to the tool outright.
 
 The second is the sharper trap. A log-based check does not fail loudly; it names a program's
-busiest instructions as broken, which reads as a serious finding and is an artifact of the probe.
+busiest instructions as broken, which reads as a serious finding and is an artifact of the check.
 
 **Historic note.** Before this was resolved the entry read "attempted, structurally inconclusive". `tools/idl_probe.py`, removed 2026-08-14, calibrated each program with a
 garbage discriminator; in its earliest form it expected `InstructionFallbackNotFound` only and
