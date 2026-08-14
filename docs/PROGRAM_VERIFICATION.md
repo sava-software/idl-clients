@@ -14,10 +14,17 @@ disagreement has a different fix.
 
 ## 1. Is the IDL describing the deployed program?
 
-**Ask the program.** Simulate a transaction carrying nothing but a candidate
-8-byte discriminator, with `sigVerify: false` and `replaceRecentBlockhash: true`.
-The fee payer must be a real funded account, or simulation aborts with
-`AccountNotFound` before reaching the program.
+**Ask the program.** Simulate a transaction carrying nothing but the candidate
+dispatch key, with `sigVerify: false` and `replaceRecentBlockhash: true`. The fee
+payer must be a real funded account, or simulation aborts with `AccountNotFound`
+before reaching the program.
+
+**Send the key at its declared width.** An Anchor IDL declares
+`"discriminator": [...]`, eight bytes; a Shank IDL declares
+`"discriminant": {"type": "u8", "value": n}`, one byte, and Exponent's is one byte
+too. Padding a one-byte ordinal to eight sends a prefix the program never matches,
+so every Shank instruction answers as though absent. Read the width from the IDL
+entry rather than assuming Anchor's.
 
 | Result | Meaning |
 |---|---|
@@ -44,9 +51,18 @@ set, recorded here so the evidence outlives its container:
 
 Both would read as findings to anyone probing those programs fresh.
 
-**This only works where the control returns 101.** When it does not, the tool
-reports `INCONCLUSIVE`, and that is the whole of what the result means: no
-fallback error was produced. Native, Shank and pinocchio programs emit no
+**Compare against the program's own control, not against error 101.** Send a
+discriminator the program certainly does not declare, at a width it would
+recognise, and whatever it answers *is* that program's "no such instruction"
+signature. A declared key answering the same way is absent; any other answer got
+past dispatch and failed later on the accounts and arguments you withheld.
+
+Error 101 is one such signature, not the definition. Treating it as the only one
+is what made Jupiter — which answers `InvalidAccountData` — unreadable, and an
+earlier revision of this section said the method worked only where the control
+returned 101. The control is inconclusive only when it produces *no* failure at
+all, or when it fails identically to everything else, since neither distinguishes
+anything. Native, Shank and pinocchio programs emit no
 fallback error — and neither does an Anchor program whose own `#[fallback]`
 handles the unknown discriminator itself. The two are indistinguishable from
 outside. Jupiter Swap reads
@@ -84,8 +100,9 @@ address we actually call. An IDL in a repo or SDK carries the opposite risk: the
 default branch may describe code that is **not yet deployed**, which breaks the
 client just as quietly because it still compiles.
 
-An override needs the dispatch probe to show the deployed program is *ahead* of
-its IDL, and the replacement to match what is deployed.
+An override needs the dispatch check above to show the deployed program is
+*ahead* of its IDL, and the replacement to match what is deployed. That check is
+now run by hand for the one program in question; there is no sweep.
 
 **Check how the URL versions itself.** A path tracking a branch
 (`marinade_finance.json`) keeps following upstream; a version-pinned filename

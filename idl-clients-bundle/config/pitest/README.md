@@ -1082,8 +1082,11 @@ regenerating (31 files, 0.1.8 → 0.1.9):
 ⚠️ **This URL is version-pinned.** Unlike Marinade's `marinade_finance.json`,
 which tracks `main`, a future 0.1.10 lands at a *new filename* and this override
 silently freezes at 0.1.9 — failing closed into exactly the staleness it was
-added to fix. Re-run the dispatch probe on a 0.1.9-only instruction after any
-marginfi deploy, and bump the path when the version changes.
+added to fix. After any marginfi deploy, simulate one 0.1.9-only instruction by
+hand — its declared key, no accounts, against a control discriminator the program
+does not declare — and bump the path when the version changes.
+`docs/PROGRAM_VERIFICATION.md` has the procedure; the tool that automated it was
+removed on 2026-08-14.
 
 Techniques that did *not* settle this, for the record: grepping the deployed
 `.so` for account-name string literals found all three disputed names, but a
@@ -1133,9 +1136,11 @@ probe cannot speak to these; they need the Rust-diff treatment instead — which
 exactly how Phoenix's global-vault bug was found, so the gap is real rather than
 theoretical.
 
-Worth re-running after any upstream deploy. The script lives in the session
-scratchpad (`idl_staleness_sweep.py`); committing it would mean whitelisting a
-new tracked-file kind in `.gitignore`, which is a deliberate decision and has not
+Worth re-checking after any upstream deploy, by hand — the sweep this described
+lived in a session scratchpad (`idl_staleness_sweep.py`) that no longer exists,
+and pointing at it was pointing at nothing. Committing it would have meant
+whitelisting a new tracked-file kind in `.gitignore`, which is a deliberate
+decision and has not
 been taken.
 
 ### Marinade: a stale *on-chain* IDL

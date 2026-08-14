@@ -7,16 +7,32 @@ the same false positives.
 
 They are **investigative aids, not gates**. `qualityGate` is the gate.
 
-`idl_probe.py` was removed on 2026-08-14. It simulated each declared instruction
+`idl_probe.py` was removed on 2026-08-14. It simulated declared instructions
 against the deployed program to find ones the program no longer dispatches. The
 failure it looked for reports itself: an instruction that is gone fails every
 call, immediately and visibly, for anyone using it — so the probe bought advance
 notice of something that announces itself, at the cost of one simulation per
-declared instruction (1,109 across the corpus) against a rate-limited endpoint.
-It also carried two documented false-negative defects and no tests, and a check
-nobody should fully trust is worse than no check: its `InvalidAccountData`
-misclassification reported Jupiter's entire swap program dead and cost a day's
-investigation to disprove.
+instruction against a rate-limited endpoint.
+
+It never covered the whole corpus, and an earlier draft of this note priced it as
+though it did. Its selection was `if i.get('discriminator')`, so it probed only
+instructions carrying an Anchor-style `discriminator` and skipped every Shank
+`discriminant` one — 1,039 against 70 when the corpus was counted on 2026-08-14,
+and `idl-clients-bundle/config/pitest/README.md` records 1026 across 34
+Anchor-shaped programs at the time of its own sweep —
+blind to precisely the instructions whose one-byte dispatch was this repository's
+largest generator defect. It also had no path for Codama's nested instruction
+arrays, latent today only because the corpus has none.
+
+Two defects, with distinct effects rather than one shared label. Reading the
+`Program log: Instruction: …` line as the dispatch signal reported `route` and
+`route_v2` **dead** when both were live, because Jupiter strips that `msg!` on
+the hot path — a false finding. Calibrating only on error 101 made Jupiter come
+back **inconclusive**, because it answers a garbage discriminator with
+`InvalidAccountData`; that one produced no answer rather than a wrong one. The
+first cost a day's investigation to disprove. Neither was covered by a test,
+because the file had none, and a check nobody should fully trust is worse than no
+check.
 
 | Script | Answers | Cost |
 |---|---|---|

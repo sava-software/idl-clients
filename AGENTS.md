@@ -146,7 +146,7 @@ Two things this is **not**. It is not a transaction-safety problem: `returns` de
 back, so no instruction encoding, account order or wire layout depends on it — a client that
 ignores the field builds exactly the same instruction as one that reads it. That is the whole of
 the claim; it is not evidence that these clients are correct in other respects, which is what the
-dispatch probe and the account-order diff are for. And events are not a substitute — an event
+dispatch check and the account-order diff are for. And events are not a substitute — an event
 reader expects an event discriminator, which return data does not carry.
 
 Closing it is a generator feature (a decoder record per declared return type), not a
@@ -407,11 +407,12 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 
 ### Verification tools
 
-`tools/` holds one dependency-free script (Python 3) for a check that is
-otherwise re-derived by hand: `ground_truth.py` diffs a generated client's
-account order against the program's Rust. It is not wired into Gradle or CI —
-`hardeningCertify` is the release gate; it is an
-investigative aid whose output needs triage. It is also part of what carries the
+`tools/` holds dependency-free scripts (Python 3) for checks otherwise
+re-derived by hand: `ground_truth.py` diffs a generated client's account order
+against the program's Rust, and `tick_margin_sweep.py`. Neither is wired into
+Gradle or CI — `hardeningCertify` is the release gate; they are
+investigative aids whose output needs triage. `ground_truth.py` is also part of
+what carries the
 correctness of the generated `**.gen.*` code the mutation suites deliberately do
 not mutate. See [tools/README.md](tools/README.md).
 
