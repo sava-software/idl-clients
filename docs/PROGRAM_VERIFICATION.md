@@ -19,86 +19,29 @@ dispatch key, with `sigVerify: false` and `replaceRecentBlockhash: true`. The fe
 payer must be a real funded account, or simulation aborts with `AccountNotFound`
 before reaching the program.
 
-**Send the key at its declared width, to preserve the argument boundary.** An
-Anchor IDL declares `"discriminator": [...]`, usually eight bytes; a Shank IDL
-declares `"discriminant": {"type": "u8", "value": n}`, one byte; Exponent declares
-one-byte Anchor discriminators. Padding a short key does **not** necessarily miss
-dispatch — Anchor matches with `data.starts_with(&DISCRIMINATOR)` and slices only
-`DISCRIMINATOR.len()`, so a zero-padded eight-byte form still dispatches and hands
-the surplus bytes to Borsh as the leading bytes of the arguments. That is the
-hazard: the probe goes green while a real client corrupts its own arguments. See
-`idl-clients-bundle/config/pitest/README.md` on Exponent, where this was found.
-Read the width from the IDL entry rather than assuming Anchor's.
+**Send the key at its declared width.** Read it from the IDL entry —
+`"discriminator": [...]` or `"discriminant": {"type": "u8", "value": n}` — and do
+not pad. Padding can still dispatch while shifting the argument boundary, which
+is how Exponent's clients were wrong; `idl-clients-bundle/config/pitest/README.md`
+has that case.
 
-**This table applies only to a standard Anchor dispatcher you have established
-is one** — no user `#[fallback]`, and 101/102 observed to separate "no such
-instruction" from "ran and rejected the arguments". Everything below is void
-otherwise; see the caveats in the next section before relying on it.
+**Establish the dispatcher's oracle before reading anything into the result.**
+What an error means is a property of the program, not of Solana, and this
+document does not attempt to enumerate it — Anchor's own dispatch, including the
+user `#[fallback]` path, is in
+`anchor/lang/syn/src/codegen/program/dispatch.rs`. Two things are worth knowing
+before you start, because both have produced confident wrong answers here:
 
-| Result | Meaning |
-|---|---|
-| `InstructionFallbackNotFound` (custom error 101) | **not deployed**, on such a dispatcher — identical to what a garbage discriminator returns, so always probe one as a control |
-| logs `Instruction: <Name>`, then fails on validation (102, 3005, …) | **deployed** |
+- An error matching what an undeclared key returns does **not** prove absence
+  unless the dispatcher distinguishes "no such instruction" from "ran and
+  rejected the empty arguments". The Solana Attestation Service returns
+  `InvalidInstructionData` for both.
+- A differing error does not prove presence either, if the program has a user
+  fallback that can answer two absent keys differently.
 
-On such a dispatcher, probing an instruction the candidate IDL *adds* and one it
-*removes* settles both halves at once. On any other, neither half is settled by
-this table.
-
-There is no longer a tool that sweeps this: `tools/idl_probe.py` was removed on
-2026-08-14 (`tools/README.md` has the reasoning). Simulate the one program in
-question by hand and judge its errors against its own answer to a discriminator
-it does not have, never against a fixed table.
-
-Two known-benign cases the removed sweep carried in its `ACCEPTED_UNDEPLOYED`
-set, recorded here so the evidence outlives its container:
-
-- **Meteora DLMM `for_idl_type_generation_do_not_call`** — a stub that exists
-  only to force the IDL to emit zero-copy types. Declared, never dispatched, by
-  design.
-- **Switchboard On-Demand `pull_feed_submit_response_svm`** — a variant for
-  another SVM chain, not enabled on Solana mainnet. Its four
-  `pull_feed_submit_response*` siblings all dispatch.
-
-Both would read as findings to anyone probing those programs fresh.
-
-**Compare against the program's own control, not against error 101.** Send a
-discriminator the program certainly does not declare, at a width it would
-recognise, and whatever it answers is a candidate for that program's "no such
-instruction" signature. An answer *differing* from it usually means the key got past dispatch and failed
-later on the accounts and arguments you withheld — but that direction is not
-airtight either. Anchor hands unmatched data to a user-supplied `#[fallback]` if
-the program declares one, so two keys the program does not have can produce two
-different errors. And the control itself is only *presumed* absent: it is chosen
-from the same IDL whose accuracy is the thing in question.
-
-**An answer matching it does not prove absence.** Equality is decisive only once
-you have an oracle that separates "no such instruction" from "instruction ran and
-rejected the empty arguments", and many dispatchers do not give you one. The
-Solana Attestation Service returns `InvalidInstructionData` both for an unknown
-ordinal and for a live `CreateCredential` whose arguments are missing, so a probe
-withholding arguments cannot tell its live instructions from absent ones at all.
-Anchor supplies the oracle by answering 101 for the first case and 102 for the
-second; a program that answers identically to both supplies none, and the honest
-verdict there is inconclusive rather than absent.
-
-Error 101 is one such signature, not the definition. Treating it as the only one
-is what made Jupiter — which answers `InvalidAccountData` — unreadable, and an
-earlier revision of this section said the method worked only where the control
-returned 101. The control is inconclusive only when it produces *no* failure at
-all, or when it fails identically to everything else, since neither distinguishes
-anything. Native, Shank and pinocchio programs emit no
-fallback error — and neither does an Anchor program whose own `#[fallback]`
-handles the unknown discriminator itself. The two are indistinguishable from
-outside. Jupiter Swap read `INCONCLUSIVE` **under the narrow calibration only**:
-it answers a garbage discriminator with `InvalidAccountData` rather than 101, and
-a tool looking for 101 alone therefore learned nothing. Calibrated relatively —
-against its own answer — it reads cleanly, and all 17 declared instructions
-dispatch, which is what `idl-clients-bundle/config/pitest/README.md` records. It
-is an ordinary Anchor program. The `INCONCLUSIVE` was a property of the question,
-not of Jupiter.
-
-So `INCONCLUSIVE` does not identify the dispatch implementation and no re-run
-settles it; those programs need §2, and §2 compares account order only.
+Where neither can be established, the honest result is inconclusive. That is not
+a gap to work around; it is most of why the automated probe was removed —
+`tools/README.md`.
 
 ### Two traps
 

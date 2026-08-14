@@ -7,46 +7,12 @@ the same false positives.
 
 They are **investigative aids, not gates**. `qualityGate` is the gate.
 
-`idl_probe.py` was removed on 2026-08-14. It simulated declared instructions
-against the deployed program to find ones the program no longer dispatches. The
-failure it looked for reports itself: an instruction that is gone fails every
-call, immediately and visibly, for anyone using it — so the probe bought advance
-notice of something that announces itself, at the cost of one simulation per
-instruction against a rate-limited endpoint.
-
-It never covered the whole corpus, and two drafts of this note misdescribed how
-far short it fell. Its selection was `if i.get('discriminator')` over a
-document's top-level `instructions`, which misses two whole classes: every Shank
-`discriminant` instruction, and every Codama program, whose instructions nest
-under `program` and `additionalPrograms` rather than at the top level. Those
-candidates were then reduced again by programs whose control came back
-inconclusive, so fewer were simulated than were selected.
-
-No count is quoted here, on purpose. Both earlier attempts were wrong — the
-second because it reused the probe's own blind spot to measure the probe, and so
-undercounted in exactly the way it was describing.
-
-The figures recorded in `idl-clients-bundle/config/pitest/README.md` beside the
-sweep overstate it too, and should be read with that in mind: of the 40 programs
-then configured, six Codama programs were skipped entirely, 70 Shank instructions
-were never selected, and eight inconclusive controls dropped a further 184
-candidates. The tracked implementation simulated 772 instructions and 34
-controls — not the full corpus, and not the 1,026 declarations that record
-claims.
-
-What matters is the shape of the gap rather than its size: the tool was blind to
-precisely the instructions whose one-byte dispatch was this repository's largest
-generator defect, so it could never have caught that class of drift.
-
-Two defects, with distinct effects rather than one shared label. Reading the
-`Program log: Instruction: …` line as the dispatch signal reported `route` and
-`route_v2` **dead** when both were live, because Jupiter strips that `msg!` on
-the hot path — a false finding. Calibrating only on error 101 made Jupiter come
-back **inconclusive**, because it answers a garbage discriminator with
-`InvalidAccountData`; that one produced no answer rather than a wrong one. The
-first cost a day's investigation to disprove. Neither was covered by a test,
-because the file had none, and a check nobody should fully trust is worse than no
-check.
+`idl_probe.py` was removed on 2026-08-14. It simulated declared instructions to
+find ones the deployed program no longer dispatches; that failure reports itself,
+because an instruction which is gone fails every call immediately for anyone
+using it. It also had known defects and no tests. `docs/PROGRAM_VERIFICATION.md`
+has the manual procedure and its limits; the reasoning and the coverage
+measurements are in the commits that removed it.
 
 | Script | Answers | Cost |
 |---|---|---|
