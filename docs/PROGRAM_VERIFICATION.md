@@ -72,9 +72,12 @@ address we actually call. An IDL in a repo or SDK carries the opposite risk: the
 default branch may describe code that is **not yet deployed**, which breaks the
 client just as quietly because it still compiles.
 
-An override needs the dispatch check above to show the deployed program is
-*ahead* of its IDL, and the replacement to match what is deployed. That check is
-now run by hand for the one program in question; there is no sweep.
+An override needs independent evidence that the deployed program is *ahead* of
+its IDL, and the replacement to match what is deployed. The dispatch check above
+is one way to get it, and often will not settle anything — where the dispatcher
+gives no oracle, it cannot. Marinade's override rested on the deploy slot plus
+live account layout instead. Any evidence that is actually conclusive will do;
+the requirement is on the evidence, not on the method.
 
 **Check how the URL versions itself.** A path tracking a branch
 (`marinade_finance.json`) keeps following upstream; a version-pinned filename
@@ -230,9 +233,12 @@ clean here, because the document genuinely did not change; only the program did.
 above, a deploy-slot move with no IDL movement warrants probing that program's **full instruction
 set**, not the added-and-removed subset — there is no subset to derive.
 
-**Narrowed 2026-08-13, not closed.** All 17 declared discriminators still reach a handler on the
-redeployed program — each answers with a post-dispatch error rather than the "no such instruction"
-the control produces. That is the whole of what was established, and it is narrower than "the
+**Narrowed 2026-08-13, not closed.** Of the 17 declared discriminators, `route` and `route_v2`
+are confirmed live by real mainnet transactions carrying them. The other 15 answered *differently*
+from the control, which is weaker than it was first written up as: §1 no longer treats a differing
+error as proof of dispatch, because a user `#[fallback]` can answer two absent keys differently and
+Jupiter's dispatcher-specific oracle was never established. So 15 are observed-differing, not
+confirmed. That is the whole of what was established, and it is narrower than "the
 interface did not change", which an earlier revision of this section claimed: dispatch says nothing
 about account lists, argument layouts or semantics, any of which a redeploy can move while every
 discriminator still resolves. The upgrade landed at **2026-08-13T08:17:56Z**, the previous at
