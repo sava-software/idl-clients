@@ -5,9 +5,9 @@ import software.sava.core.accounts.PublicKey;
 import software.sava.core.accounts.SolanaAccounts;
 import software.sava.core.encoding.Base58;
 import software.sava.core.tx.TransactionSkeleton;
-import software.sava.idl.clients.spl.stake.gen.SolanaStakeInterfaceProgram;
-import software.sava.idl.clients.spl.stake.gen.SolanaStakeInterfaceProgram.AuthorizeIxData;
-import software.sava.idl.clients.spl.stake.gen.SolanaStakeInterfaceProgram.SplitIxData;
+import software.sava.idl.clients.spl.stake.gen.StakeProgram;
+import software.sava.idl.clients.spl.stake.gen.StakeProgram.AuthorizeIxData;
+import software.sava.idl.clients.spl.stake.gen.StakeProgram.SplitIxData;
 import software.sava.idl.clients.spl.stake.gen.types.StakeAuthorize;
 import software.sava.idl.clients.spl.system.gen.SystemProgram;
 import software.sava.idl.clients.spl.system.gen.SystemProgram.AllocateWithSeedIxData;
@@ -40,7 +40,7 @@ final class StakeProgramTests {
 
     var splitIx = instructions[1];
     var splitData = SplitIxData.read(splitIx);
-    assertArrayEquals(SolanaStakeInterfaceProgram.SPLIT_DISCRIMINATOR.data(), discriminatorBytes(splitData.discriminator()));
+    assertArrayEquals(StakeProgram.SPLIT_DISCRIMINATOR.data(), discriminatorBytes(splitData.discriminator()));
     assertEquals(4230000000000L, splitData.args());
   }
 
@@ -48,12 +48,12 @@ final class StakeProgramTests {
   void authorizeData() {
     byte[] data = Base58.decode("3t9dD1DMBKjQBnMKfD6zcqBgYJE8LDDw42WTR29f8AVNx6xfDrMJJK");
     var authorize = AuthorizeIxData.read(data, 0);
-    assertArrayEquals(SolanaStakeInterfaceProgram.AUTHORIZE_DISCRIMINATOR.data(), discriminatorBytes(authorize.discriminator()));
+    assertArrayEquals(StakeProgram.AUTHORIZE_DISCRIMINATOR.data(), discriminatorBytes(authorize.discriminator()));
     assertEquals("4zeVNswbjb8x2FnEkGpmuhUQbPLR4MB4ZKj4NNrz5KeC", authorize.arg0().toBase58());
     assertEquals(StakeAuthorize.staker, authorize.arg1());
 
     final var solanaAccounts = SolanaAccounts.MAIN_NET;
-    var ix = SolanaStakeInterfaceProgram.authorize(
+    var ix = StakeProgram.authorize(
         solanaAccounts.invokedStakeProgram(),
         List.of(),
         authorize.arg0(),
@@ -63,11 +63,11 @@ final class StakeProgramTests {
 
     data = Base58.decode("3t9dD1DMBKjQBnMKfD6zcqBgYJE8LDDw42WTR29f8AVNx6xfDsqHaf");
     authorize = AuthorizeIxData.read(data, 0);
-    assertArrayEquals(SolanaStakeInterfaceProgram.AUTHORIZE_DISCRIMINATOR.data(), discriminatorBytes(authorize.discriminator()));
+    assertArrayEquals(StakeProgram.AUTHORIZE_DISCRIMINATOR.data(), discriminatorBytes(authorize.discriminator()));
     assertEquals("4zeVNswbjb8x2FnEkGpmuhUQbPLR4MB4ZKj4NNrz5KeC", authorize.arg0().toBase58());
     assertEquals(StakeAuthorize.withdrawer, authorize.arg1());
 
-    ix = SolanaStakeInterfaceProgram.authorize(
+    ix = StakeProgram.authorize(
         solanaAccounts.invokedStakeProgram(),
         List.of(),
         authorize.arg0(),

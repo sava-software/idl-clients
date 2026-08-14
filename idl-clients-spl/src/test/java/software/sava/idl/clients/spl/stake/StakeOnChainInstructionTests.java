@@ -1,7 +1,7 @@
 package software.sava.idl.clients.spl.stake;
 
 import org.junit.jupiter.api.Test;
-import software.sava.idl.clients.spl.stake.gen.SolanaStakeInterfaceProgram;
+import software.sava.idl.clients.spl.stake.gen.StakeProgram;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -54,7 +54,7 @@ final class StakeOnChainInstructionTests {
 
     assertEquals(116, data.length,
         "4-byte discriminant + 64-byte Authorized + 48-byte Lockup");
-    assertEquals(SolanaStakeInterfaceProgram.InitializeIxData.BYTES, data.length,
+    assertEquals(StakeProgram.InitializeIxData.BYTES, data.length,
         "the generated layout and the chain must agree on the size of this instruction");
   }
 
@@ -67,10 +67,10 @@ final class StakeOnChainInstructionTests {
   void theDiscriminantIsFourLittleEndianBytes() {
     final byte[] data = instruction("initialize-0");
 
-    assertEquals(0, SolanaStakeInterfaceProgram.InitializeIxData.DISCRIMINATOR_OFFSET);
-    assertEquals(4, SolanaStakeInterfaceProgram.InitializeIxData.ARG_0_OFFSET,
+    assertEquals(0, StakeProgram.InitializeIxData.DISCRIMINATOR_OFFSET);
+    assertEquals(4, StakeProgram.InitializeIxData.ARG_0_OFFSET,
         "the first argument begins after a 4-byte tag; upstream's u8 IDL puts it at 1");
-    assertEquals(68, SolanaStakeInterfaceProgram.InitializeIxData.ARG_1_OFFSET);
+    assertEquals(68, StakeProgram.InitializeIxData.ARG_1_OFFSET);
 
     for (int i = 0; i < 4; ++i) {
       assertEquals(0, data[i], "byte " + i + " of the Initialize discriminant");
@@ -82,7 +82,7 @@ final class StakeOnChainInstructionTests {
   void theCapturedInstructionDecodesAsInitialize() {
     final byte[] data = instruction("initialize-0");
 
-    final var decoded = SolanaStakeInterfaceProgram.InitializeIxData.read(data, 0);
+    final var decoded = StakeProgram.InitializeIxData.read(data, 0);
 
     assertNotNull(decoded);
     assertEquals(0L, decoded.discriminator());

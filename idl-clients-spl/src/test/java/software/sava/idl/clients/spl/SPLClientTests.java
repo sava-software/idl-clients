@@ -9,7 +9,7 @@ import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.spl.stake.LockUp;
 import software.sava.idl.clients.spl.stake.StakeAccount;
 import software.sava.idl.clients.spl.stake.StakeState;
-import software.sava.idl.clients.spl.stake.gen.SolanaStakeInterfaceProgram;
+import software.sava.idl.clients.spl.stake.gen.StakeProgram;
 import software.sava.idl.clients.spl.stake.gen.types.StakeAuthorize;
 
 import java.time.Instant;
@@ -107,7 +107,7 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, ACCOUNTS.rentSysVar()), keys(ix));
     assertEquals(List.of(STAKE), writable(ix));
 
-    final var data = SolanaStakeInterfaceProgram.InitializeIxData.read(ix);
+    final var data = StakeProgram.InitializeIxData.read(ix);
     assertEquals(STAKER, data.arg0().staker());
     assertEquals(WITHDRAWER, data.arg0().withdrawer());
     // toLockup(null) -> the zero lockup with no custodian
@@ -120,14 +120,14 @@ final class SPLClientTests {
   void initializeStakeAccountCarriesAnExplicitLockup() {
     final var ix = CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER, new LockUp(1_700L, 9L, CUSTODIAN));
 
-    final var data = SolanaStakeInterfaceProgram.InitializeIxData.read(ix);
+    final var data = StakeProgram.InitializeIxData.read(ix);
     assertEquals(1_700L, data.arg1().unixTimestamp().val());
     assertEquals(9L, data.arg1().epoch().val());
     assertEquals(CUSTODIAN, data.arg1().custodian());
 
     // a lockup with no custodian still serializes a key
     final var noCustodian = CLIENT.initializeStakeAccount(STAKE, STAKER, WITHDRAWER, new LockUp(1L, 2L, null));
-    assertEquals(PublicKey.NONE, SolanaStakeInterfaceProgram.InitializeIxData.read(noCustodian).arg1().custodian());
+    assertEquals(PublicKey.NONE, StakeProgram.InitializeIxData.read(noCustodian).arg1().custodian());
 
     // the no-lockup convenience overload matches an explicit NO_LOCKUP
     assertArrayEquals(
@@ -159,7 +159,7 @@ final class SPLClientTests {
     assertEquals(List.of(STAKER, CUSTODIAN), signers(withLockup));
 
     // the new authority travels in the data, not the accounts
-    final var data = SolanaStakeInterfaceProgram.AuthorizeIxData.read(withLockup);
+    final var data = StakeProgram.AuthorizeIxData.read(withLockup);
     assertEquals(NEW_AUTHORITY, data.arg0());
     assertEquals(StakeAuthorize.staker, data.arg1());
   }
@@ -173,11 +173,11 @@ final class SPLClientTests {
 
     final var staker = CLIENT.authorizeStakeAccount(account, NEW_AUTHORITY, StakeAuthorize.staker);
     assertEquals(List.of(STAKER), signers(staker));
-    assertEquals(StakeAuthorize.staker, SolanaStakeInterfaceProgram.AuthorizeIxData.read(staker).arg1());
+    assertEquals(StakeAuthorize.staker, StakeProgram.AuthorizeIxData.read(staker).arg1());
 
     final var withdrawer = CLIENT.authorizeStakeAccount(account, NEW_AUTHORITY, StakeAuthorize.withdrawer);
     assertEquals(List.of(WITHDRAWER), signers(withdrawer));
-    assertEquals(StakeAuthorize.withdrawer, SolanaStakeInterfaceProgram.AuthorizeIxData.read(withdrawer).arg1());
+    assertEquals(StakeAuthorize.withdrawer, StakeProgram.AuthorizeIxData.read(withdrawer).arg1());
 
     // and the three-arg overload defaults to no lockup authority
     assertEquals(
@@ -228,12 +228,12 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar(), CUSTODIAN), keys(ix));
     assertEquals(List.of(base, CUSTODIAN), signers(ix));
 
-    final var data = SolanaStakeInterfaceProgram.AuthorizeWithSeedIxData.read(ix);
-    assertEquals(NEW_AUTHORITY, data.arg0().newAuthorizedPubkey());
-    assertEquals(StakeAuthorize.staker, data.arg0().stakeAuthorize());
+    final var data = StakeProgram.AuthorizeWithSeedIxData.read(ix);
+    assertEquals(NEW_AUTHORITY, data.newAuthorizedPubkey());
+    assertEquals(StakeAuthorize.staker, data.stakeAuthorize());
     // the account's actual seed, not the requested one — the off-curve search may extend it
-    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.arg0().authoritySeed());
-    assertEquals(PROGRAM_OWNER, data.arg0().authorityOwner());
+    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.authoritySeed());
+    assertEquals(PROGRAM_OWNER, data.authorityOwner());
 
     // the overload without a lockup authority omits that account
     final var noLockup = CLIENT.authorizeStakeAccountWithSeed(
@@ -256,20 +256,10 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, base, ACCOUNTS.clockSysVar(), NEW_AUTHORITY, CUSTODIAN), keys(ix));
     assertEquals(List.of(base, NEW_AUTHORITY, CUSTODIAN), signers(ix));
 
-    final var data = SolanaStakeInterfaceProgram.AuthorizeCheckedWithSeedIxData.read(ix);
-    assertEquals(StakeAuthorize.withdrawer, data.arg0().stakeAuthorize());
-    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.arg0().authoritySeed());
-    assertEquals(PROGRAM_OWNER, data.arg0().authorityOwner());
-  }
-
-  /// Redelegation was removed from the runtime, so the builder emits the bare discriminator
-  /// with no accounts — it must not silently assemble something that looks usable.
-  @Test
-  void reDelegateStakeAccount() {
-    final var ix = CLIENT.reDelegateStakeAccount(stakeAccount(LockUp.NO_LOCKUP), DESTINATION, VOTE);
-
-    assertEquals(ACCOUNTS.invokedStakeProgram(), ix.programId());
-    assertEquals(List.of(), keys(ix));
+    final var data = StakeProgram.AuthorizeCheckedWithSeedIxData.read(ix);
+    assertEquals(StakeAuthorize.withdrawer, data.stakeAuthorize());
+    assertEquals(new String(seeded.asciiSeed(), java.nio.charset.StandardCharsets.US_ASCII), data.authoritySeed());
+    assertEquals(PROGRAM_OWNER, data.authorityOwner());
   }
 
   @Test
@@ -295,7 +285,7 @@ final class SPLClientTests {
     assertEquals(List.of(STAKER), signers(ix));
     // both stake accounts are mutated
     assertEquals(List.of(STAKE, DESTINATION), writable(ix));
-    assertEquals(5_000L, SolanaStakeInterfaceProgram.SplitIxData.read(ix).args());
+    assertEquals(5_000L, StakeProgram.SplitIxData.read(ix).args());
   }
 
   /// Merge is directional: the destination is the account that survives.
@@ -323,7 +313,7 @@ final class SPLClientTests {
         keys(unlocked));
     assertEquals(List.of(WITHDRAWER), signers(unlocked));
     assertEquals(List.of(STAKE, RECIPIENT), writable(unlocked));
-    assertEquals(1_234L, SolanaStakeInterfaceProgram.WithdrawIxData.read(unlocked).args());
+    assertEquals(1_234L, StakeProgram.WithdrawIxData.read(unlocked).args());
 
     // an absent lockup is treated the same as an empty one
     assertEquals(keys(unlocked), keys(CLIENT.withdrawStakeAccount(stakeAccount(null), RECIPIENT, 1_234L)));
@@ -365,17 +355,17 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, WITHDRAWER), keys(ix));
     assertEquals(List.of(WITHDRAWER), signers(ix));
 
-    final var data = SolanaStakeInterfaceProgram.SetLockupIxData.read(ix);
-    assertEquals(1_700_000_000L, data.arg0().unixTimestamp().val());
-    assertEquals(9L, data.arg0().epoch().val());
-    assertEquals(CUSTODIAN, data.arg0().custodian());
+    final var data = StakeProgram.SetLockupIxData.read(ix);
+    assertEquals(1_700_000_000L, data.unixTimestamp().val());
+    assertEquals(9L, data.epoch().val());
+    assertEquals(CUSTODIAN, data.custodian());
 
     // each lockup field is independently optional
     final var noneSet = CLIENT.setStakeAccountLockup(STAKE, WITHDRAWER, null, OptionalLong.empty(), null);
-    final var empty = SolanaStakeInterfaceProgram.SetLockupIxData.read(noneSet);
-    assertNull(empty.arg0().unixTimestamp());
-    assertNull(empty.arg0().epoch());
-    assertNull(empty.arg0().custodian());
+    final var empty = StakeProgram.SetLockupIxData.read(noneSet);
+    assertNull(empty.unixTimestamp());
+    assertNull(empty.epoch());
+    assertNull(empty.custodian());
   }
 
   @Test
@@ -388,19 +378,19 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, WITHDRAWER, NEW_AUTHORITY), keys(ix));
     assertEquals(List.of(WITHDRAWER, NEW_AUTHORITY), signers(ix));
 
-    final var data = SolanaStakeInterfaceProgram.SetLockupCheckedIxData.read(ix);
-    assertEquals(1_700_000_000L, data.arg0().unixTimestamp().val());
-    assertEquals(9L, data.arg0().epoch().val());
+    final var data = StakeProgram.SetLockupCheckedIxData.read(ix);
+    assertEquals(1_700_000_000L, data.unixTimestamp().val());
+    assertEquals(9L, data.epoch().val());
 
     // the overload without a new authority omits that account entirely
     final var noNewAuthority = CLIENT.setStakeAccountLockupChecked(
         STAKE, WITHDRAWER, timestamp, OptionalLong.of(9L));
     assertEquals(List.of(STAKE, WITHDRAWER), keys(noNewAuthority));
 
-    final var cleared = SolanaStakeInterfaceProgram.SetLockupCheckedIxData.read(
+    final var cleared = StakeProgram.SetLockupCheckedIxData.read(
         CLIENT.setStakeAccountLockupChecked(STAKE, WITHDRAWER, null, OptionalLong.empty()));
-    assertNull(cleared.arg0().unixTimestamp());
-    assertNull(cleared.arg0().epoch());
+    assertNull(cleared.unixTimestamp());
+    assertNull(cleared.epoch());
   }
 
   @Test
@@ -409,11 +399,11 @@ final class SPLClientTests {
     assertEquals(List.of(STAKE, DESTINATION, STAKER), keys(move));
     assertEquals(List.of(STAKER), signers(move));
     assertEquals(List.of(STAKE, DESTINATION), writable(move));
-    assertEquals(700L, SolanaStakeInterfaceProgram.MoveStakeIxData.read(move).args());
+    assertEquals(700L, StakeProgram.MoveStakeIxData.read(move).args());
 
     final var lamports = CLIENT.moveLamports(STAKE, DESTINATION, STAKER, 800L);
     assertEquals(keys(move), keys(lamports));
-    assertEquals(800L, SolanaStakeInterfaceProgram.MoveLamportsIxData.read(lamports).args());
+    assertEquals(800L, StakeProgram.MoveLamportsIxData.read(lamports).args());
 
     // the two are distinct instructions, not aliases
     assertNotEquals(move.data()[0], lamports.data()[0]);

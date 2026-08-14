@@ -17,6 +17,7 @@ measurements are in the commits that removed it.
 | Script | Answers | Cost |
 |---|---|---|
 | `ground_truth.py` | Does our account order match the program's Rust? | instant, local |
+| `stake-idl.mjs` | Derives Stake's IDL by running upstream's own codama pipeline | seconds, needs their checkout |
 
 
 ## `ground_truth.py`

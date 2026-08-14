@@ -3,26 +3,26 @@ package software.sava.idl.clients.spl.stake.gen;
 
 import software.sava.idl.clients.core.gen.ProgramError;
 
-public sealed interface SolanaStakeInterfaceError extends ProgramError permits
-    SolanaStakeInterfaceError.NoCreditsToRedeem,
-    SolanaStakeInterfaceError.LockupInForce,
-    SolanaStakeInterfaceError.AlreadyDeactivated,
-    SolanaStakeInterfaceError.TooSoonToRedelegate,
-    SolanaStakeInterfaceError.InsufficientStake,
-    SolanaStakeInterfaceError.MergeTransientStake,
-    SolanaStakeInterfaceError.MergeMismatch,
-    SolanaStakeInterfaceError.CustodianMissing,
-    SolanaStakeInterfaceError.CustodianSignatureMissing,
-    SolanaStakeInterfaceError.InsufficientReferenceVotes,
-    SolanaStakeInterfaceError.VoteAddressMismatch,
-    SolanaStakeInterfaceError.MinimumDelinquentEpochsForDeactivationNotMet,
-    SolanaStakeInterfaceError.InsufficientDelegation,
-    SolanaStakeInterfaceError.RedelegateTransientOrInactiveStake,
-    SolanaStakeInterfaceError.RedelegateToSameVoteAccount,
-    SolanaStakeInterfaceError.RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted,
-    SolanaStakeInterfaceError.EpochRewardsActive {
+public sealed interface StakeError extends ProgramError permits
+    StakeError.NoCreditsToRedeem,
+    StakeError.LockupInForce,
+    StakeError.AlreadyDeactivated,
+    StakeError.TooSoonToRedelegate,
+    StakeError.InsufficientStake,
+    StakeError.MergeTransientStake,
+    StakeError.MergeMismatch,
+    StakeError.CustodianMissing,
+    StakeError.CustodianSignatureMissing,
+    StakeError.InsufficientReferenceVotes,
+    StakeError.VoteAddressMismatch,
+    StakeError.MinimumDelinquentEpochsForDeactivationNotMet,
+    StakeError.InsufficientDelegation,
+    StakeError.RedelegateTransientOrInactiveStake,
+    StakeError.RedelegateToSameVoteAccount,
+    StakeError.RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted,
+    StakeError.EpochRewardsActive {
 
-  static SolanaStakeInterfaceError getInstance(final int errorCode) {
+  static StakeError getInstance(final int errorCode) {
     return switch (errorCode) {
       case 0 -> NoCreditsToRedeem.INSTANCE;
       case 1 -> LockupInForce.INSTANCE;
@@ -45,119 +45,119 @@ public sealed interface SolanaStakeInterfaceError extends ProgramError permits
     };
   }
 
-  record NoCreditsToRedeem(int code, String msg) implements SolanaStakeInterfaceError {
+  record NoCreditsToRedeem(int code, String msg) implements StakeError {
 
     public static final NoCreditsToRedeem INSTANCE = new NoCreditsToRedeem(
         0, "Not enough credits to redeem"
     );
   }
 
-  record LockupInForce(int code, String msg) implements SolanaStakeInterfaceError {
+  record LockupInForce(int code, String msg) implements StakeError {
 
     public static final LockupInForce INSTANCE = new LockupInForce(
         1, "Lockup has not yet expired"
     );
   }
 
-  record AlreadyDeactivated(int code, String msg) implements SolanaStakeInterfaceError {
+  record AlreadyDeactivated(int code, String msg) implements StakeError {
 
     public static final AlreadyDeactivated INSTANCE = new AlreadyDeactivated(
         2, "Stake already deactivated"
     );
   }
 
-  record TooSoonToRedelegate(int code, String msg) implements SolanaStakeInterfaceError {
+  record TooSoonToRedelegate(int code, String msg) implements StakeError {
 
     public static final TooSoonToRedelegate INSTANCE = new TooSoonToRedelegate(
         3, "One re-delegation permitted per epoch"
     );
   }
 
-  record InsufficientStake(int code, String msg) implements SolanaStakeInterfaceError {
+  record InsufficientStake(int code, String msg) implements StakeError {
 
     public static final InsufficientStake INSTANCE = new InsufficientStake(
         4, "Split amount is more than is staked"
     );
   }
 
-  record MergeTransientStake(int code, String msg) implements SolanaStakeInterfaceError {
+  record MergeTransientStake(int code, String msg) implements StakeError {
 
     public static final MergeTransientStake INSTANCE = new MergeTransientStake(
         5, "Stake account with transient stake cannot be merged"
     );
   }
 
-  record MergeMismatch(int code, String msg) implements SolanaStakeInterfaceError {
+  record MergeMismatch(int code, String msg) implements StakeError {
 
     public static final MergeMismatch INSTANCE = new MergeMismatch(
         6, "Stake account merge failed due to different authority, lockups or state"
     );
   }
 
-  record CustodianMissing(int code, String msg) implements SolanaStakeInterfaceError {
+  record CustodianMissing(int code, String msg) implements StakeError {
 
     public static final CustodianMissing INSTANCE = new CustodianMissing(
         7, "Custodian address not present"
     );
   }
 
-  record CustodianSignatureMissing(int code, String msg) implements SolanaStakeInterfaceError {
+  record CustodianSignatureMissing(int code, String msg) implements StakeError {
 
     public static final CustodianSignatureMissing INSTANCE = new CustodianSignatureMissing(
         8, "Custodian signature not present"
     );
   }
 
-  record InsufficientReferenceVotes(int code, String msg) implements SolanaStakeInterfaceError {
+  record InsufficientReferenceVotes(int code, String msg) implements StakeError {
 
     public static final InsufficientReferenceVotes INSTANCE = new InsufficientReferenceVotes(
         9, "Insufficient voting activity in the reference vote account"
     );
   }
 
-  record VoteAddressMismatch(int code, String msg) implements SolanaStakeInterfaceError {
+  record VoteAddressMismatch(int code, String msg) implements StakeError {
 
     public static final VoteAddressMismatch INSTANCE = new VoteAddressMismatch(
         10, "Stake account is not delegated to the provided vote account"
     );
   }
 
-  record MinimumDelinquentEpochsForDeactivationNotMet(int code, String msg) implements SolanaStakeInterfaceError {
+  record MinimumDelinquentEpochsForDeactivationNotMet(int code, String msg) implements StakeError {
 
     public static final MinimumDelinquentEpochsForDeactivationNotMet INSTANCE = new MinimumDelinquentEpochsForDeactivationNotMet(
         11, "Stake account has not been delinquent for the minimum epochs required for deactivation"
     );
   }
 
-  record InsufficientDelegation(int code, String msg) implements SolanaStakeInterfaceError {
+  record InsufficientDelegation(int code, String msg) implements StakeError {
 
     public static final InsufficientDelegation INSTANCE = new InsufficientDelegation(
         12, "Delegation amount is less than the minimum"
     );
   }
 
-  record RedelegateTransientOrInactiveStake(int code, String msg) implements SolanaStakeInterfaceError {
+  record RedelegateTransientOrInactiveStake(int code, String msg) implements StakeError {
 
     public static final RedelegateTransientOrInactiveStake INSTANCE = new RedelegateTransientOrInactiveStake(
         13, "Stake account with transient or inactive stake cannot be redelegated"
     );
   }
 
-  record RedelegateToSameVoteAccount(int code, String msg) implements SolanaStakeInterfaceError {
+  record RedelegateToSameVoteAccount(int code, String msg) implements StakeError {
 
     public static final RedelegateToSameVoteAccount INSTANCE = new RedelegateToSameVoteAccount(
         14, "Stake redelegation to the same vote account is not permitted"
     );
   }
 
-  record RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted(int code, String msg) implements SolanaStakeInterfaceError {
+  record RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted(int code, String msg) implements StakeError {
 
     public static final RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted INSTANCE = new RedelegatedStakeMustFullyActivateBeforeDeactivationIsPermitted(
         15, "Redelegated stake must be fully activated before deactivation"
     );
   }
 
-  record EpochRewardsActive(int code, String msg) implements SolanaStakeInterfaceError {
+  record EpochRewardsActive(int code, String msg) implements StakeError {
 
     public static final EpochRewardsActive INSTANCE = new EpochRewardsActive(
         16, "Stake action is not permitted while the epoch rewards period is active"

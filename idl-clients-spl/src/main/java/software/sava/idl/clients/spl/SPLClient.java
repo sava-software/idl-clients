@@ -211,10 +211,6 @@ public interface SPLClient {
     );
   }
 
-  Instruction reDelegateStakeAccount(final StakeAccount delegatedStakeAccount,
-                                     final PublicKey uninitializedStakeAccount,
-                                     final PublicKey validatorVoteAccount);
-
   Instruction splitStakeAccount(final StakeAccount splitStakeAccount,
                                 final PublicKey unInitializedStakeAccount,
                                 final long lamports);

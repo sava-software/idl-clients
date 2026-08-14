@@ -7,16 +7,18 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
-import software.sava.idl.clients.spl.stake.gen.types.AuthorizeCheckedWithSeedArgs;
-import software.sava.idl.clients.spl.stake.gen.types.AuthorizeWithSeedArgs;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 import software.sava.idl.clients.spl.stake.gen.types.Authorized;
+import software.sava.idl.clients.spl.stake.gen.types.Epoch;
 import software.sava.idl.clients.spl.stake.gen.types.Lockup;
-import software.sava.idl.clients.spl.stake.gen.types.LockupArgs;
-import software.sava.idl.clients.spl.stake.gen.types.LockupCheckedArgs;
 import software.sava.idl.clients.spl.stake.gen.types.StakeAuthorize;
+import software.sava.idl.clients.spl.stake.gen.types.UnixTimestamp;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -28,7 +30,7 @@ import static software.sava.core.encoding.ByteUtil.putInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 import static software.sava.core.programs.Discriminator.toDiscriminator;
 
-public final class SolanaStakeInterfaceProgram {
+public final class StakeProgram {
 
   public static final Discriminator INITIALIZE_DISCRIMINATOR = toDiscriminator(0, 0, 0, 0);
 
@@ -42,7 +44,7 @@ public final class SolanaStakeInterfaceProgram {
   }
 
   /// @param stakeKey Uninitialized stake account
-  public static Instruction initialize(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction initialize(final AccountMeta invokedStakeProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey stakeKey,
                                        final Authorized arg0,
@@ -52,14 +54,14 @@ public final class SolanaStakeInterfaceProgram {
       stakeKey
     );
     return initialize(
-      invokedSolanaStakeInterfaceProgramMeta,
+      invokedStakeProgramMeta,
       keys,
       arg0,
       arg1
     );
   }
 
-  public static Instruction initialize(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction initialize(final AccountMeta invokedStakeProgramMeta,
                                        final List<AccountMeta> keys,
                                        final Authorized arg0,
                                        final Lockup arg1) {
@@ -68,7 +70,7 @@ public final class SolanaStakeInterfaceProgram {
     i += arg0.write(_data, i);
     arg1.write(_data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record InitializeIxData(long discriminator,
@@ -137,7 +139,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Stake account to be updated
   /// @param authorityKey The stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static Instruction authorize(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorize(final AccountMeta invokedStakeProgramMeta,
                                       final SolanaAccounts solanaAccounts,
                                       final PublicKey stakeKey,
                                       final PublicKey authorityKey,
@@ -151,14 +153,14 @@ public final class SolanaStakeInterfaceProgram {
       lockupAuthorityKey
     );
     return authorize(
-      invokedSolanaStakeInterfaceProgramMeta,
+      invokedStakeProgramMeta,
       keys,
       arg0,
       arg1
     );
   }
 
-  public static Instruction authorize(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorize(final AccountMeta invokedStakeProgramMeta,
                                       final List<AccountMeta> keys,
                                       final PublicKey arg0,
                                       final StakeAuthorize arg1) {
@@ -168,7 +170,7 @@ public final class SolanaStakeInterfaceProgram {
     i += 32;
     arg1.write(_data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record AuthorizeIxData(long discriminator,
@@ -241,7 +243,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param voteKey Vote account to which this stake will be delegated
   /// @param unusedKey Unused account, formerly the stake config
   /// @param stakeAuthorityKey Stake authority
-  public static Instruction delegateStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction delegateStake(final AccountMeta invokedStakeProgramMeta,
                                           final SolanaAccounts solanaAccounts,
                                           final PublicKey stakeKey,
                                           final PublicKey voteKey,
@@ -254,15 +256,15 @@ public final class SolanaStakeInterfaceProgram {
       unusedKey,
       stakeAuthorityKey
     );
-    return delegateStake(invokedSolanaStakeInterfaceProgramMeta, keys);
+    return delegateStake(invokedStakeProgramMeta, keys);
   }
 
-  public static Instruction delegateStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction delegateStake(final AccountMeta invokedStakeProgramMeta,
                                           final List<AccountMeta> keys) {
     final byte[] _data = new byte[4];
     DELEGATE_STAKE_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record DelegateStakeIxData(long discriminator) implements SerDe {
@@ -316,7 +318,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param splitStakeKey Uninitialized stake account that will take the split-off amount
   /// @param stakeAuthorityKey Stake authority
   /// @param args: u64
-  public static Instruction split(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction split(final AccountMeta invokedStakeProgramMeta,
                                   final PublicKey stakeKey,
                                   final PublicKey splitStakeKey,
                                   final PublicKey stakeAuthorityKey,
@@ -326,18 +328,18 @@ public final class SolanaStakeInterfaceProgram {
       splitStakeKey,
       stakeAuthorityKey
     );
-    return split(invokedSolanaStakeInterfaceProgramMeta, keys, args);
+    return split(invokedStakeProgramMeta, keys, args);
   }
 
   /// @param args: u64
-  public static Instruction split(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction split(final AccountMeta invokedStakeProgramMeta,
                                   final List<AccountMeta> keys,
                                   final long args) {
     final byte[] _data = new byte[12];
     int i = SPLIT_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, args);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   /// @param args: u64
@@ -408,7 +410,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param withdrawAuthorityKey Withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if before lockup expiration
   /// @param args: u64
-  public static Instruction withdraw(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction withdraw(final AccountMeta invokedStakeProgramMeta,
                                      final SolanaAccounts solanaAccounts,
                                      final PublicKey stakeKey,
                                      final PublicKey recipientKey,
@@ -422,18 +424,18 @@ public final class SolanaStakeInterfaceProgram {
       withdrawAuthorityKey,
       lockupAuthorityKey
     );
-    return withdraw(invokedSolanaStakeInterfaceProgramMeta, keys, args);
+    return withdraw(invokedStakeProgramMeta, keys, args);
   }
 
   /// @param args: u64
-  public static Instruction withdraw(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction withdraw(final AccountMeta invokedStakeProgramMeta,
                                      final List<AccountMeta> keys,
                                      final long args) {
     final byte[] _data = new byte[12];
     int i = WITHDRAW_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, args);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   /// @param args: u64
@@ -492,7 +494,7 @@ public final class SolanaStakeInterfaceProgram {
 
   /// @param stakeKey Delegated stake account to be deactivated
   /// @param stakeAuthorityKey Stake authority
-  public static Instruction deactivate(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction deactivate(final AccountMeta invokedStakeProgramMeta,
                                        final SolanaAccounts solanaAccounts,
                                        final PublicKey stakeKey,
                                        final PublicKey stakeAuthorityKey) {
@@ -501,15 +503,15 @@ public final class SolanaStakeInterfaceProgram {
       stakeKey,
       stakeAuthorityKey
     );
-    return deactivate(invokedSolanaStakeInterfaceProgramMeta, keys);
+    return deactivate(invokedStakeProgramMeta, keys);
   }
 
-  public static Instruction deactivate(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction deactivate(final AccountMeta invokedStakeProgramMeta,
                                        final List<AccountMeta> keys) {
     final byte[] _data = new byte[4];
     DEACTIVATE_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record DeactivateIxData(long discriminator) implements SerDe {
@@ -558,35 +560,55 @@ public final class SolanaStakeInterfaceProgram {
 
   /// @param stakeKey Initialized stake account
   /// @param authorityKey Lockup authority or withdraw authority
-  public static Instruction setLockup(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction setLockup(final AccountMeta invokedStakeProgramMeta,
                                       final PublicKey stakeKey,
                                       final PublicKey authorityKey,
-                                      final LockupArgs arg0) {
+                                      final UnixTimestamp unixTimestamp,
+                                      final Epoch epoch,
+                                      final PublicKey custodian) {
     final var keys = setLockupKeys(
       stakeKey,
       authorityKey
     );
-    return setLockup(invokedSolanaStakeInterfaceProgramMeta, keys, arg0);
+    return setLockup(
+      invokedStakeProgramMeta,
+      keys,
+      unixTimestamp,
+      epoch,
+      custodian
+    );
   }
 
-  public static Instruction setLockup(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction setLockup(final AccountMeta invokedStakeProgramMeta,
                                       final List<AccountMeta> keys,
-                                      final LockupArgs arg0) {
-    final byte[] _data = new byte[4 + arg0.l()];
+                                      final UnixTimestamp unixTimestamp,
+                                      final Epoch epoch,
+                                      final PublicKey custodian) {
+    final byte[] _data = new byte[
+    4
+    + (unixTimestamp == null ? 1 : (1 + unixTimestamp.l()))
+    + (epoch == null ? 1 : (1 + epoch.l()))
+    + (custodian == null ? 1 : 33)
+    ];
     int i = SET_LOCKUP_DISCRIMINATOR.write(_data, 0);
-    arg0.write(_data, i);
+    i += SerDeUtil.writeOptional(1, unixTimestamp, _data, i);
+    i += SerDeUtil.writeOptional(1, epoch, _data, i);
+    SerDeUtil.writeOptional(1, custodian, _data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
-  public record SetLockupIxData(long discriminator, LockupArgs arg0) implements SerDe {
+  public record SetLockupIxData(long discriminator,
+                                UnixTimestamp unixTimestamp,
+                                Epoch epoch,
+                                PublicKey custodian) implements SerDe {
 
     public static SetLockupIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
-    public static final int ARG_0_OFFSET = 4;
+    public static final int UNIX_TIMESTAMP_OFFSET = 5;
 
     public static SetLockupIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -596,8 +618,37 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var arg0 = LockupArgs.read(_data, i);
-      return new SetLockupIxData(discriminator, arg0);
+      final UnixTimestamp unixTimestamp;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        unixTimestamp = null;
+        ++i;
+
+      } else {
+        ++i;
+        unixTimestamp = UnixTimestamp.read(_data, i);
+        i += unixTimestamp.l();
+      }
+      final Epoch epoch;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        epoch = null;
+        ++i;
+
+      } else {
+        ++i;
+        epoch = Epoch.read(_data, i);
+        i += epoch.l();
+      }
+      final PublicKey custodian;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        custodian = null;
+      } else {
+        ++i;
+        custodian = readPubKey(_data, i);
+      }
+      return new SetLockupIxData(discriminator,
+                                 unixTimestamp,
+                                 epoch,
+                                 custodian);
     }
 
     @Override
@@ -605,13 +656,15 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       putInt32LE(_data, i, (int) discriminator);
       i += 4;
-      i += arg0.write(_data, i);
+      i += SerDeUtil.writeOptional(1, unixTimestamp, _data, i);
+      i += SerDeUtil.writeOptional(1, epoch, _data, i);
+      i += SerDeUtil.writeOptional(1, custodian, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 4 + arg0.l();
+      return 4 + (unixTimestamp == null ? 1 : (1 + unixTimestamp.l())) + (epoch == null ? 1 : (1 + epoch.l())) + (custodian == null ? 1 : (1 + 32));
     }
   }
 
@@ -636,7 +689,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param destinationStakeKey Destination stake account for the merge
   /// @param sourceStakeKey Source stake account for to merge.  This account will be drained
   /// @param stakeAuthorityKey Stake authority
-  public static Instruction merge(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction merge(final AccountMeta invokedStakeProgramMeta,
                                   final SolanaAccounts solanaAccounts,
                                   final PublicKey destinationStakeKey,
                                   final PublicKey sourceStakeKey,
@@ -647,15 +700,15 @@ public final class SolanaStakeInterfaceProgram {
       sourceStakeKey,
       stakeAuthorityKey
     );
-    return merge(invokedSolanaStakeInterfaceProgramMeta, keys);
+    return merge(invokedStakeProgramMeta, keys);
   }
 
-  public static Instruction merge(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction merge(final AccountMeta invokedStakeProgramMeta,
                                   final List<AccountMeta> keys) {
     final byte[] _data = new byte[4];
     MERGE_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record MergeIxData(long discriminator) implements SerDe {
@@ -712,39 +765,78 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Stake account to be updated
   /// @param baseKey Base key of stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static Instruction authorizeWithSeed(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeWithSeed(final AccountMeta invokedStakeProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey stakeKey,
                                               final PublicKey baseKey,
                                               final PublicKey lockupAuthorityKey,
-                                              final AuthorizeWithSeedArgs arg0) {
+                                              final PublicKey newAuthorizedPubkey,
+                                              final StakeAuthorize stakeAuthorize,
+                                              final String authoritySeed,
+                                              final PublicKey authorityOwner) {
     final var keys = authorizeWithSeedKeys(
       solanaAccounts,
       stakeKey,
       baseKey,
       lockupAuthorityKey
     );
-    return authorizeWithSeed(invokedSolanaStakeInterfaceProgramMeta, keys, arg0);
+    return authorizeWithSeed(
+      invokedStakeProgramMeta,
+      keys,
+      newAuthorizedPubkey,
+      stakeAuthorize,
+      authoritySeed,
+      authorityOwner
+    );
   }
 
-  public static Instruction authorizeWithSeed(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeWithSeed(final AccountMeta invokedStakeProgramMeta,
                                               final List<AccountMeta> keys,
-                                              final AuthorizeWithSeedArgs arg0) {
-    final byte[] _data = new byte[4 + arg0.l()];
+                                              final PublicKey newAuthorizedPubkey,
+                                              final StakeAuthorize stakeAuthorize,
+                                              final String authoritySeed,
+                                              final PublicKey authorityOwner) {
+    final byte[] _authoritySeed = authoritySeed.getBytes(UTF_8);
+    final byte[] _data = new byte[68 + stakeAuthorize.l() + 8 + _authoritySeed.length];
     int i = AUTHORIZE_WITH_SEED_DISCRIMINATOR.write(_data, 0);
-    arg0.write(_data, i);
+    newAuthorizedPubkey.write(_data, i);
+    i += 32;
+    i += stakeAuthorize.write(_data, i);
+    putInt64LE(_data, i, _authoritySeed.length);
+    i += 8;
+    System.arraycopy(_authoritySeed, 0, _data, i, _authoritySeed.length);
+    i += _authoritySeed.length;
+    authorityOwner.write(_data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
-  public record AuthorizeWithSeedIxData(long discriminator, AuthorizeWithSeedArgs arg0) implements SerDe {
+  public record AuthorizeWithSeedIxData(long discriminator,
+                                        PublicKey newAuthorizedPubkey,
+                                        StakeAuthorize stakeAuthorize,
+                                        String authoritySeed, byte[] _authoritySeed,
+                                        PublicKey authorityOwner) implements SerDe {
 
     public static AuthorizeWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
-    public static final int ARG_0_OFFSET = 4;
+    public static final int NEW_AUTHORIZED_PUBKEY_OFFSET = 4;
+    public static final int STAKE_AUTHORIZE_OFFSET = 36;
+    public static final int AUTHORITY_SEED_OFFSET = 40;
+
+    public static AuthorizeWithSeedIxData createRecord(final long discriminator,
+                                                       final PublicKey newAuthorizedPubkey,
+                                                       final StakeAuthorize stakeAuthorize,
+                                                       final String authoritySeed,
+                                                       final PublicKey authorityOwner) {
+      return new AuthorizeWithSeedIxData(discriminator,
+                                         newAuthorizedPubkey,
+                                         stakeAuthorize,
+                                         authoritySeed, authoritySeed.getBytes(UTF_8),
+                                         authorityOwner);
+    }
 
     public static AuthorizeWithSeedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -754,8 +846,21 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var arg0 = AuthorizeWithSeedArgs.read(_data, i);
-      return new AuthorizeWithSeedIxData(discriminator, arg0);
+      final var newAuthorizedPubkey = readPubKey(_data, i);
+      i += 32;
+      final var stakeAuthorize = StakeAuthorize.read(_data, i);
+      i += stakeAuthorize.l();
+      final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
+      i += 8;
+      final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
+      final var authoritySeed = new String(_authoritySeed, UTF_8);
+      i += _authoritySeedLength;
+      final var authorityOwner = readPubKey(_data, i);
+      return new AuthorizeWithSeedIxData(discriminator,
+                                         newAuthorizedPubkey,
+                                         stakeAuthorize,
+                                         authoritySeed, _authoritySeed,
+                                         authorityOwner);
     }
 
     @Override
@@ -763,13 +868,25 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       putInt32LE(_data, i, (int) discriminator);
       i += 4;
-      i += arg0.write(_data, i);
+      newAuthorizedPubkey.write(_data, i);
+      i += 32;
+      i += stakeAuthorize.write(_data, i);
+      putInt64LE(_data, i, _authoritySeed.length);
+      i += 8;
+      System.arraycopy(_authoritySeed, 0, _data, i, _authoritySeed.length);
+      i += _authoritySeed.length;
+      authorityOwner.write(_data, i);
+      i += 32;
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 4 + arg0.l();
+      return 4
+           + 32
+           + stakeAuthorize.l()
+           + 8 + _authoritySeed.length
+           + 32;
     }
   }
 
@@ -793,7 +910,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Uninitialized stake account
   /// @param stakeAuthorityKey The stake authority
   /// @param withdrawAuthorityKey The withdraw authority
-  public static Instruction initializeChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction initializeChecked(final AccountMeta invokedStakeProgramMeta,
                                               final SolanaAccounts solanaAccounts,
                                               final PublicKey stakeKey,
                                               final PublicKey stakeAuthorityKey,
@@ -804,15 +921,15 @@ public final class SolanaStakeInterfaceProgram {
       stakeAuthorityKey,
       withdrawAuthorityKey
     );
-    return initializeChecked(invokedSolanaStakeInterfaceProgramMeta, keys);
+    return initializeChecked(invokedStakeProgramMeta, keys);
   }
 
-  public static Instruction initializeChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction initializeChecked(final AccountMeta invokedStakeProgramMeta,
                                               final List<AccountMeta> keys) {
     final byte[] _data = new byte[4];
     INITIALIZE_CHECKED_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record InitializeCheckedIxData(long discriminator) implements SerDe {
@@ -873,7 +990,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param authorityKey The stake or withdraw authority
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static Instruction authorizeChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeChecked(final AccountMeta invokedStakeProgramMeta,
                                              final SolanaAccounts solanaAccounts,
                                              final PublicKey stakeKey,
                                              final PublicKey authorityKey,
@@ -887,17 +1004,17 @@ public final class SolanaStakeInterfaceProgram {
       newAuthorityKey,
       lockupAuthorityKey
     );
-    return authorizeChecked(invokedSolanaStakeInterfaceProgramMeta, keys, stakeAuthorize);
+    return authorizeChecked(invokedStakeProgramMeta, keys, stakeAuthorize);
   }
 
-  public static Instruction authorizeChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeChecked(final AccountMeta invokedStakeProgramMeta,
                                              final List<AccountMeta> keys,
                                              final StakeAuthorize stakeAuthorize) {
     final byte[] _data = new byte[4 + stakeAuthorize.l()];
     int i = AUTHORIZE_CHECKED_DISCRIMINATOR.write(_data, 0);
     stakeAuthorize.write(_data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record AuthorizeCheckedIxData(long discriminator, StakeAuthorize stakeAuthorize) implements SerDe {
@@ -964,13 +1081,15 @@ public final class SolanaStakeInterfaceProgram {
   /// @param baseKey Base key of stake or withdraw authority
   /// @param newAuthorityKey The new stake or withdraw authority
   /// @param lockupAuthorityKey Lockup authority, if updating `StakeAuthorize::Withdrawer` before lockup expiration
-  public static Instruction authorizeCheckedWithSeed(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeCheckedWithSeed(final AccountMeta invokedStakeProgramMeta,
                                                      final SolanaAccounts solanaAccounts,
                                                      final PublicKey stakeKey,
                                                      final PublicKey baseKey,
                                                      final PublicKey newAuthorityKey,
                                                      final PublicKey lockupAuthorityKey,
-                                                     final AuthorizeCheckedWithSeedArgs arg0) {
+                                                     final StakeAuthorize stakeAuthorize,
+                                                     final String authoritySeed,
+                                                     final PublicKey authorityOwner) {
     final var keys = authorizeCheckedWithSeedKeys(
       solanaAccounts,
       stakeKey,
@@ -978,27 +1097,55 @@ public final class SolanaStakeInterfaceProgram {
       newAuthorityKey,
       lockupAuthorityKey
     );
-    return authorizeCheckedWithSeed(invokedSolanaStakeInterfaceProgramMeta, keys, arg0);
+    return authorizeCheckedWithSeed(
+      invokedStakeProgramMeta,
+      keys,
+      stakeAuthorize,
+      authoritySeed,
+      authorityOwner
+    );
   }
 
-  public static Instruction authorizeCheckedWithSeed(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction authorizeCheckedWithSeed(final AccountMeta invokedStakeProgramMeta,
                                                      final List<AccountMeta> keys,
-                                                     final AuthorizeCheckedWithSeedArgs arg0) {
-    final byte[] _data = new byte[4 + arg0.l()];
+                                                     final StakeAuthorize stakeAuthorize,
+                                                     final String authoritySeed,
+                                                     final PublicKey authorityOwner) {
+    final byte[] _authoritySeed = authoritySeed.getBytes(UTF_8);
+    final byte[] _data = new byte[36 + stakeAuthorize.l() + 8 + _authoritySeed.length];
     int i = AUTHORIZE_CHECKED_WITH_SEED_DISCRIMINATOR.write(_data, 0);
-    arg0.write(_data, i);
+    i += stakeAuthorize.write(_data, i);
+    putInt64LE(_data, i, _authoritySeed.length);
+    i += 8;
+    System.arraycopy(_authoritySeed, 0, _data, i, _authoritySeed.length);
+    i += _authoritySeed.length;
+    authorityOwner.write(_data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
-  public record AuthorizeCheckedWithSeedIxData(long discriminator, AuthorizeCheckedWithSeedArgs arg0) implements SerDe {
+  public record AuthorizeCheckedWithSeedIxData(long discriminator,
+                                               StakeAuthorize stakeAuthorize,
+                                               String authoritySeed, byte[] _authoritySeed,
+                                               PublicKey authorityOwner) implements SerDe {
 
     public static AuthorizeCheckedWithSeedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
-    public static final int ARG_0_OFFSET = 4;
+    public static final int STAKE_AUTHORIZE_OFFSET = 4;
+    public static final int AUTHORITY_SEED_OFFSET = 8;
+
+    public static AuthorizeCheckedWithSeedIxData createRecord(final long discriminator,
+                                                              final StakeAuthorize stakeAuthorize,
+                                                              final String authoritySeed,
+                                                              final PublicKey authorityOwner) {
+      return new AuthorizeCheckedWithSeedIxData(discriminator,
+                                                stakeAuthorize,
+                                                authoritySeed, authoritySeed.getBytes(UTF_8),
+                                                authorityOwner);
+    }
 
     public static AuthorizeCheckedWithSeedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1008,8 +1155,18 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var arg0 = AuthorizeCheckedWithSeedArgs.read(_data, i);
-      return new AuthorizeCheckedWithSeedIxData(discriminator, arg0);
+      final var stakeAuthorize = StakeAuthorize.read(_data, i);
+      i += stakeAuthorize.l();
+      final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
+      i += 8;
+      final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
+      final var authoritySeed = new String(_authoritySeed, UTF_8);
+      i += _authoritySeedLength;
+      final var authorityOwner = readPubKey(_data, i);
+      return new AuthorizeCheckedWithSeedIxData(discriminator,
+                                                stakeAuthorize,
+                                                authoritySeed, _authoritySeed,
+                                                authorityOwner);
     }
 
     @Override
@@ -1017,13 +1174,19 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       putInt32LE(_data, i, (int) discriminator);
       i += 4;
-      i += arg0.write(_data, i);
+      i += stakeAuthorize.write(_data, i);
+      putInt64LE(_data, i, _authoritySeed.length);
+      i += 8;
+      System.arraycopy(_authoritySeed, 0, _data, i, _authoritySeed.length);
+      i += _authoritySeed.length;
+      authorityOwner.write(_data, i);
+      i += 32;
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 4 + arg0.l();
+      return 4 + stakeAuthorize.l() + 8 + _authoritySeed.length + 32;
     }
   }
 
@@ -1047,37 +1210,51 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Initialized stake account
   /// @param authorityKey Lockup authority or withdraw authority
   /// @param newAuthorityKey New lockup authority
-  public static Instruction setLockupChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction setLockupChecked(final AccountMeta invokedStakeProgramMeta,
                                              final PublicKey stakeKey,
                                              final PublicKey authorityKey,
                                              final PublicKey newAuthorityKey,
-                                             final LockupCheckedArgs arg0) {
+                                             final UnixTimestamp unixTimestamp,
+                                             final Epoch epoch) {
     final var keys = setLockupCheckedKeys(
       stakeKey,
       authorityKey,
       newAuthorityKey
     );
-    return setLockupChecked(invokedSolanaStakeInterfaceProgramMeta, keys, arg0);
+    return setLockupChecked(
+      invokedStakeProgramMeta,
+      keys,
+      unixTimestamp,
+      epoch
+    );
   }
 
-  public static Instruction setLockupChecked(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction setLockupChecked(final AccountMeta invokedStakeProgramMeta,
                                              final List<AccountMeta> keys,
-                                             final LockupCheckedArgs arg0) {
-    final byte[] _data = new byte[4 + arg0.l()];
+                                             final UnixTimestamp unixTimestamp,
+                                             final Epoch epoch) {
+    final byte[] _data = new byte[
+    4
+    + (unixTimestamp == null ? 1 : (1 + unixTimestamp.l()))
+    + (epoch == null ? 1 : (1 + epoch.l()))
+    ];
     int i = SET_LOCKUP_CHECKED_DISCRIMINATOR.write(_data, 0);
-    arg0.write(_data, i);
+    i += SerDeUtil.writeOptional(1, unixTimestamp, _data, i);
+    SerDeUtil.writeOptional(1, epoch, _data, i);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
-  public record SetLockupCheckedIxData(long discriminator, LockupCheckedArgs arg0) implements SerDe {
+  public record SetLockupCheckedIxData(long discriminator,
+                                       UnixTimestamp unixTimestamp,
+                                       Epoch epoch) implements SerDe {
 
     public static SetLockupCheckedIxData read(final Instruction instruction) {
       return read(instruction.data(), instruction.offset());
     }
 
     public static final int DISCRIMINATOR_OFFSET = 0;
-    public static final int ARG_0_OFFSET = 4;
+    public static final int UNIX_TIMESTAMP_OFFSET = 5;
 
     public static SetLockupCheckedIxData read(final byte[] _data, final int _offset) {
       if (_data == null || _data.length == 0) {
@@ -1087,8 +1264,24 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, i));
       i += 4;
-      final var arg0 = LockupCheckedArgs.read(_data, i);
-      return new SetLockupCheckedIxData(discriminator, arg0);
+      final UnixTimestamp unixTimestamp;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        unixTimestamp = null;
+        ++i;
+
+      } else {
+        ++i;
+        unixTimestamp = UnixTimestamp.read(_data, i);
+        i += unixTimestamp.l();
+      }
+      final Epoch epoch;
+      if (SerDeUtil.isAbsent(1, _data, i)) {
+        epoch = null;
+      } else {
+        ++i;
+        epoch = Epoch.read(_data, i);
+      }
+      return new SetLockupCheckedIxData(discriminator, unixTimestamp, epoch);
     }
 
     @Override
@@ -1096,23 +1289,24 @@ public final class SolanaStakeInterfaceProgram {
       int i = _offset;
       putInt32LE(_data, i, (int) discriminator);
       i += 4;
-      i += arg0.write(_data, i);
+      i += SerDeUtil.writeOptional(1, unixTimestamp, _data, i);
+      i += SerDeUtil.writeOptional(1, epoch, _data, i);
       return i - _offset;
     }
 
     @Override
     public int l() {
-      return 4 + arg0.l();
+      return 4 + (unixTimestamp == null ? 1 : (1 + unixTimestamp.l())) + (epoch == null ? 1 : (1 + epoch.l()));
     }
   }
 
   public static final Discriminator GET_MINIMUM_DELEGATION_DISCRIMINATOR = toDiscriminator(13, 0, 0, 0);
 
-  public static Instruction getMinimumDelegation(final AccountMeta invokedSolanaStakeInterfaceProgramMeta) {
+  public static Instruction getMinimumDelegation(final AccountMeta invokedStakeProgramMeta) {
     final byte[] _data = new byte[4];
     GET_MINIMUM_DELEGATION_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, List.of(), _data);
   }
 
   public record GetMinimumDelegationIxData(long discriminator) implements SerDe {
@@ -1165,7 +1359,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param stakeKey Delegated stake account
   /// @param delinquentVoteKey Delinquent vote account for the delegated stake account
   /// @param referenceVoteKey Reference vote account that has voted at least once in the last `MINIMUM_DELINQUENT_EPOCHS_FOR_DEACTIVATION` epochs
-  public static Instruction deactivateDelinquent(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction deactivateDelinquent(final AccountMeta invokedStakeProgramMeta,
                                                  final PublicKey stakeKey,
                                                  final PublicKey delinquentVoteKey,
                                                  final PublicKey referenceVoteKey) {
@@ -1174,15 +1368,15 @@ public final class SolanaStakeInterfaceProgram {
       delinquentVoteKey,
       referenceVoteKey
     );
-    return deactivateDelinquent(invokedSolanaStakeInterfaceProgramMeta, keys);
+    return deactivateDelinquent(invokedStakeProgramMeta, keys);
   }
 
-  public static Instruction deactivateDelinquent(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction deactivateDelinquent(final AccountMeta invokedStakeProgramMeta,
                                                  final List<AccountMeta> keys) {
     final byte[] _data = new byte[4];
     DEACTIVATE_DELINQUENT_DISCRIMINATOR.write(_data, 0);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   public record DeactivateDelinquentIxData(long discriminator) implements SerDe {
@@ -1201,47 +1395,6 @@ public final class SolanaStakeInterfaceProgram {
       }
       final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
       return new DeactivateDelinquentIxData(discriminator);
-    }
-
-    @Override
-    public int write(final byte[] _data, final int _offset) {
-      int i = _offset;
-      putInt32LE(_data, i, (int) discriminator);
-      i += 4;
-      return i - _offset;
-    }
-
-    @Override
-    public int l() {
-      return BYTES;
-    }
-  }
-
-  public static final Discriminator REDELEGATE_DISCRIMINATOR = toDiscriminator(15, 0, 0, 0);
-
-  public static Instruction redelegate(final AccountMeta invokedSolanaStakeInterfaceProgramMeta) {
-    final byte[] _data = new byte[4];
-    REDELEGATE_DISCRIMINATOR.write(_data, 0);
-
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, List.of(), _data);
-  }
-
-  public record RedelegateIxData(long discriminator) implements SerDe {
-
-    public static RedelegateIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
-    }
-
-    public static final int BYTES = 4;
-
-    public static final int DISCRIMINATOR_OFFSET = 0;
-
-    public static RedelegateIxData read(final byte[] _data, final int _offset) {
-      if (_data == null || _data.length == 0) {
-        return null;
-      }
-      final var discriminator = Integer.toUnsignedLong(getInt32LE(_data, _offset));
-      return new RedelegateIxData(discriminator);
     }
 
     @Override
@@ -1277,7 +1430,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param destinationStakeKey Active or inactive destination stake account
   /// @param stakeAuthorityKey Stake authority
   /// @param args: u64
-  public static Instruction moveStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction moveStake(final AccountMeta invokedStakeProgramMeta,
                                       final PublicKey sourceStakeKey,
                                       final PublicKey destinationStakeKey,
                                       final PublicKey stakeAuthorityKey,
@@ -1287,18 +1440,18 @@ public final class SolanaStakeInterfaceProgram {
       destinationStakeKey,
       stakeAuthorityKey
     );
-    return moveStake(invokedSolanaStakeInterfaceProgramMeta, keys, args);
+    return moveStake(invokedStakeProgramMeta, keys, args);
   }
 
   /// @param args: u64
-  public static Instruction moveStake(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction moveStake(final AccountMeta invokedStakeProgramMeta,
                                       final List<AccountMeta> keys,
                                       final long args) {
     final byte[] _data = new byte[12];
     int i = MOVE_STAKE_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, args);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   /// @param args: u64
@@ -1360,7 +1513,7 @@ public final class SolanaStakeInterfaceProgram {
   /// @param destinationStakeKey Mergeable destination stake account
   /// @param stakeAuthorityKey Stake authority
   /// @param args: u64
-  public static Instruction moveLamports(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction moveLamports(final AccountMeta invokedStakeProgramMeta,
                                          final PublicKey sourceStakeKey,
                                          final PublicKey destinationStakeKey,
                                          final PublicKey stakeAuthorityKey,
@@ -1370,18 +1523,18 @@ public final class SolanaStakeInterfaceProgram {
       destinationStakeKey,
       stakeAuthorityKey
     );
-    return moveLamports(invokedSolanaStakeInterfaceProgramMeta, keys, args);
+    return moveLamports(invokedStakeProgramMeta, keys, args);
   }
 
   /// @param args: u64
-  public static Instruction moveLamports(final AccountMeta invokedSolanaStakeInterfaceProgramMeta,
+  public static Instruction moveLamports(final AccountMeta invokedStakeProgramMeta,
                                          final List<AccountMeta> keys,
                                          final long args) {
     final byte[] _data = new byte[12];
     int i = MOVE_LAMPORTS_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, args);
 
-    return Instruction.createInstruction(invokedSolanaStakeInterfaceProgramMeta, keys, _data);
+    return Instruction.createInstruction(invokedStakeProgramMeta, keys, _data);
   }
 
   /// @param args: u64
@@ -1424,6 +1577,6 @@ public final class SolanaStakeInterfaceProgram {
     }
   }
 
-  private SolanaStakeInterfaceProgram() {
+  private StakeProgram() {
   }
 }

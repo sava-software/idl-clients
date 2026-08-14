@@ -36,6 +36,9 @@
 !/docs/**
 !/tools/*.py
 !/tools/*.md
+# stake-idl.mjs derives Stake's IDL by running solana-program/stake's own codama
+# pipeline; committed because the derivation is the provenance of a tracked artifact.
+!/tools/*.mjs
 
 # Deterministic channel movement report emitted by idl-src-gen.
 !/idl-change-report.txt
