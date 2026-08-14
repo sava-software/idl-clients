@@ -27,12 +27,22 @@ The fee payer must be a real funded account, or simulation aborts with
 Probe an instruction the candidate IDL *adds* and one it *removes* and both
 halves are settled at once.
 
-```shell
-python3 tools/idl_probe.py          # sweeps every program in main_net_programs.json
-```
+There is no longer a tool that sweeps this: `tools/idl_probe.py` was removed on
+2026-08-14 (`tools/README.md` has the reasoning). Simulate the one program in
+question by hand and judge its errors against its own answer to a discriminator
+it does not have, never against a fixed table.
 
-The tool carries an `ACCEPTED_UNDEPLOYED` set for known-benign cases, so it
-exits non-zero only on something new. Re-run it after any upstream deploy.
+Two known-benign cases the removed sweep carried in its `ACCEPTED_UNDEPLOYED`
+set, recorded here so the evidence outlives its container:
+
+- **Meteora DLMM `for_idl_type_generation_do_not_call`** — a stub that exists
+  only to force the IDL to emit zero-copy types. Declared, never dispatched, by
+  design.
+- **Switchboard On-Demand `pull_feed_submit_response_svm`** — a variant for
+  another SVM chain, not enabled on Solana mainnet. Its four
+  `pull_feed_submit_response*` siblings all dispatch.
+
+Both would read as findings to anyone probing those programs fresh.
 
 **This only works where the control returns 101.** When it does not, the tool
 reports `INCONCLUSIVE`, and that is the whole of what the result means: no
@@ -242,8 +252,9 @@ discriminator still resolves. The upgrade landed at **2026-08-13T08:17:56Z**, th
 release process rather than an interface move, which is what the unchanged channel hashes already
 suggested and this confirms rather than assumes.
 
-Two things had to be worked around, and both are defects in `idl_probe.py` rather than facts about
-Jupiter — see the tool's own notes:
+Two things had to be worked around, and both were defects in the since-removed `idl_probe.py`
+rather than facts about Jupiter. Recorded because they are the reasoning anyone simulating by hand
+still needs, and because between them they are why that tool is gone:
 
 - **The calibration is too narrow.** The probe looks for `InstructionFallbackNotFound` (101) and
   reports `INCONCLUSIVE` otherwise. Jupiter answers a garbage discriminator with
@@ -260,7 +271,7 @@ Jupiter — see the tool's own notes:
 The second is the sharper trap. A log-based check does not fail loudly; it names a program's
 busiest instructions as broken, which reads as a serious finding and is an artifact of the probe.
 
-**Historic note.** Before this was resolved the entry read "attempted, structurally inconclusive". `tools/idl_probe.py` calibrates each program with a
+**Historic note.** Before this was resolved the entry read "attempted, structurally inconclusive". `tools/idl_probe.py`, removed 2026-08-14, calibrated each program with a
 garbage discriminator and expects `InstructionFallbackNotFound`; Jupiter Swap returns `LIVE`, so
 the probe reports `INCONCLUSIVE` rather than guessing. That proves only that the program is **not
 Anchor-fallback-shaped** — an Anchor program carrying its own fallback handler looks identical from

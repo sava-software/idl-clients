@@ -58,7 +58,7 @@ hardening {
           "the shared generated commons in software.sava.idl.clients.core.gen — SerDe, " +
           "SerDeUtil, RustEnum, Factory, ProgramError — which every program's generated code " +
           "compiles against: same generator, same ownership. Correctness is carried instead by " +
-          "the generator's own tests; by tools/idl_probe.py and tools/ground_truth.py " +
+          "the generator's own tests; by tools/ground_truth.py " +
           "(docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — six test " +
           "sources (SPLClientTests, StakeProgramTests, TokenProgramTests, " +
           "AddressLookupTableTests, SystemProgramTest, Token2022ProgramTests) build and decode " +

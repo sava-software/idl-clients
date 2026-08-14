@@ -1,51 +1,27 @@
 # tools/
 
-Standalone verification scripts. Python 3 and `curl` only — no packages to
-install, nothing wired into Gradle, nothing run by CI. They exist because the
-checks they automate were otherwise re-derived by hand each time, and each
-re-derivation reintroduced the same false positives.
+Standalone verification scripts. Python 3 only — no packages to install, nothing
+wired into Gradle, nothing run by CI. They exist because the checks they automate
+were otherwise re-derived by hand each time, and each re-derivation reintroduced
+the same false positives.
 
-Both are **investigative aids, not gates**. `qualityGate` is the gate.
+They are **investigative aids, not gates**. `qualityGate` is the gate.
+
+`idl_probe.py` was removed on 2026-08-14. It simulated each declared instruction
+against the deployed program to find ones the program no longer dispatches. The
+failure it looked for reports itself: an instruction that is gone fails every
+call, immediately and visibly, for anyone using it — so the probe bought advance
+notice of something that announces itself, at the cost of one simulation per
+declared instruction (1,109 across the corpus) against a rate-limited endpoint.
+It also carried two documented false-negative defects and no tests, and a check
+nobody should fully trust is worse than no check: its `InvalidAccountData`
+misclassification reported Jupiter's entire swap program dead and cost a day's
+investigation to disprove.
 
 | Script | Answers | Cost |
 |---|---|---|
-| `idl_probe.py` | Does the deployed program still have every instruction our IDL declares? | a few min, read-only RPC |
 | `ground_truth.py` | Does our account order match the program's Rust? | instant, local |
 
-## `idl_probe.py`
-
-```shell
-python3 tools/idl_probe.py                    # from the repo root
-SOLANA_RPC=https://my-endpoint python3 tools/idl_probe.py
-```
-
-Simulates a transaction carrying nothing but each instruction's discriminator
-and reads the dispatch result. Never signs or sends. Exits non-zero only on an
-*unexpected* undeployed instruction — known-benign ones live in
-`ACCEPTED_UNDEPLOYED` with a reason, so it is safe to re-run as a periodic check.
-
-Worth running after any upstream program deploy. It found a shipped bug once:
-marginfi removed `lending_account_clear_emissions`, and our client kept calling
-it, failing 100% of the time on mainnet.
-
-Reports `INCONCLUSIVE` rather than guessing when the control does not return 101.
-That is all the result means: no fallback error. A native, Shank or pinocchio
-program emits no fallback error, and neither does an Anchor program whose own
-`#[fallback]` handles the unknown discriminator, so the outcome does not identify
-the dispatch implementation —
-Use `ground_truth.py` there, remembering it compares account order only.
-
-Dispatch is decided by the error, not the logs. `Program log: Instruction: <Name>` looks like the
-obvious signal and is not one: Anchor's dispatch emits it and a program can strip it, which
-Jupiter does on `route` and `route_v2` — its two busiest instructions. A log-based probe calls
-exactly those dead, quietly and convincingly.
-
-Running this at generation time inside idl-src-gen was considered and rejected:
-doing it properly means tracking program deploys over time, which is a
-monitoring service rather than a generator feature. See "If this ever becomes a
-service" in [../docs/PROGRAM_VERIFICATION.md](../docs/PROGRAM_VERIFICATION.md)
-for the design conclusion, which is worth reading first — the obvious approach
-does not work.
 
 ## `ground_truth.py`
 

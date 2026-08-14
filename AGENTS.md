@@ -183,13 +183,17 @@ Two traps are worth carrying around even when you are not investigating:
 - **A repo under a different org may still be the program's home.** Teams
   rebrand; treat provenance as a question to answer, not a disqualifier.
 
-The program can be asked directly, and there is a tool for it:
+The program can be asked directly, by simulating an instruction and reading the
+dispatch error. There is no tool for it: `tools/idl_probe.py` did this and was
+removed on 2026-08-14, because the failure it looked for reports itself — an
+instruction the program no longer has fails every call, immediately, for anyone
+using it. `tools/README.md` carries the full argument.
 
-```shell
-python3 tools/idl_probe.py     # every program in main_net_programs.json
-```
-
-Run it after any upstream deploy. Full method — the dispatch probe, the weaker
+Simulating by hand for one program is still worth doing, but judge the error
+*relative to that program's own answer to a discriminator it does not have*,
+never against a fixed table: 101 is one shape of "no such instruction", not the
+only one, and treating `InvalidAccountData` as universal is what reported
+Jupiter's entire swap program dead. Full method — the dispatch check, the weaker
 signals and why they disappoint, and the bar for an `idlURL` override — is in
 **[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md)**. Current
 overrides and their evidence: `idl-clients-bundle/config/pitest/README.md`.
@@ -403,12 +407,11 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 
 ### Verification tools
 
-`tools/` holds two dependency-free scripts (Python 3 + `curl`) for the checks
-that are otherwise re-derived by hand: `idl_probe.py` asks each deployed program
-whether it still has the instructions our IDL declares, and `ground_truth.py`
-diffs a generated client's account order against the program's Rust. Neither is
-wired into Gradle or CI — `hardeningCertify` is the release gate; these are
-investigative aids whose output needs triage. They are also what carries the
+`tools/` holds one dependency-free script (Python 3) for a check that is
+otherwise re-derived by hand: `ground_truth.py` diffs a generated client's
+account order against the program's Rust. It is not wired into Gradle or CI —
+`hardeningCertify` is the release gate; it is an
+investigative aid whose output needs triage. It is also part of what carries the
 correctness of the generated `**.gen.*` code the mutation suites deliberately do
 not mutate. See [tools/README.md](tools/README.md).
 
@@ -755,8 +758,8 @@ bundle README under "Audited timeout-detected mutants".
 **Exclusion ownership.** Suites are targeted by package wildcard with explicit
 exclusions, **never by allowlist** — an allowlist silently exempts every class
 added after it was written. Generated `**.gen.*` code is excluded everywhere
-(its correctness belongs to idl-src-gen, and `tools/idl_probe.py` /
-`tools/ground_truth.py` are what check it), as are the git-ignored `Integ.*`
+(its correctness belongs to idl-src-gen, and `tools/ground_truth.py` plus the
+execution tests are what check it), as are the git-ignored `Integ.*`
 scratch mains, which would otherwise make the baseline differ between a dev
 machine and CI. Both arguments are declared to the ownership audit as
 `declineExclusionAudit(...)` in each module's `hardening {}` block — that DSL

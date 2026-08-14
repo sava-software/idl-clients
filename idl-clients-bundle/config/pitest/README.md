@@ -1215,7 +1215,8 @@ copy over a stale chain copy — there is nothing on chain to prefer over.
    why no client is generated for it.
 2. **The repository copy is what the deployed program answers to.** All 42
    declared discriminators dispatch on mainnet, against a garbage-discriminator
-   control returning `InstructionFallbackNotFound` (`tools/idl_probe.py`).
+   control returning `InstructionFallbackNotFound` (measured with the since-removed
+   `tools/idl_probe.py`; the observation stands, the tool does not).
 
 **The dispatch probe does not validate discriminator width, and that matters
 here.** Exponent declares one-byte instruction discriminators
