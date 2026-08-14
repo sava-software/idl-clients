@@ -243,9 +243,10 @@ interface did not change", which an earlier revision of this section claimed: di
 about account lists, argument layouts or semantics, any of which a redeploy can move while every
 discriminator still resolves. The upgrade landed at **2026-08-13T08:17:56Z**, the previous at
 **2026-08-05T08:57:58Z** — an eight-day cadence, under an upgrade authority
-(`CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ`) that has not changed. Consistent with routine
-release process rather than an interface move, which is what the unchanged channel hashes already
-suggested and this confirms rather than assumes.
+(`CvQZZ23qYDWF2RUpxYJ8y9K4skmuvYEEjH7fK58jtipQ`) that has not changed. Consistent with a routine
+release rather than an interface move — but only consistent with. Nothing here confirms it: 15 of
+the 17 remain uncharacterised, and cadence plus a stable upgrade authority look identical either
+way.
 
 Two things had to be worked around, and both were defects in the since-removed `idl_probe.py`
 rather than facts about Jupiter. Recorded because they are the reasoning anyone simulating by hand
@@ -267,15 +268,17 @@ The second is the sharper trap. A log-based check does not fail loudly; it names
 busiest instructions as broken, which reads as a serious finding and is an artifact of the probe.
 
 **Historic note.** Before this was resolved the entry read "attempted, structurally inconclusive". `tools/idl_probe.py`, removed 2026-08-14, calibrated each program with a
-garbage discriminator and expects `InstructionFallbackNotFound`; Jupiter Swap returns `LIVE`, so
-the probe reports `INCONCLUSIVE` rather than guessing. That proves only that the program is **not
+garbage discriminator; in its earliest form it expected `InstructionFallbackNotFound` only and
+reported `INCONCLUSIVE` for Jupiter, though the version finally deleted accepted
+`InvalidAccountData` as well. Either way the result proves only that the program is **not
 Anchor-fallback-shaped** — an Anchor program carrying its own fallback handler looks identical from
 outside — so it is not evidence about the dispatch style, and no re-run of that tool will settle it.
 
-So the deployed-source comparison **remains unresolved**. What the probe closed is the cheapest and
-weakest question — are any declared instructions simply gone — and the answer is no. Settling the
-rest needs the deployed source identified; the account-order diff in §2 is one component of that
-and covers one axis.
+So the deployed-source comparison **remains unresolved**, and so does most of the cheaper question
+beneath it. Two instructions are confirmed present by real transactions; the other 15 produced
+responses differing from the control, which §1 no longer treats as proof of dispatch. Nothing
+establishes that no declared instruction is gone. Settling the rest needs the deployed source
+identified; the account-order diff in §2 covers one axis of that.
 
 The upgrade cadence and unchanged channel hashes make a routine rebuild the likeliest reading, but
 that is an inference from process, not a verification.

@@ -1104,7 +1104,8 @@ dispatch probe was run to bound how much more of that exists. Its coverage was
 narrower than this section originally claimed: it selected only instructions
 carrying a top-level Anchor `discriminator`, so Shank instructions and Codama
 programs were never probed at all, and programs whose control was inconclusive
-dropped out too. Treat the counts below as an upper bound on what was declared,
+dropped out too. The figures below are outcomes over that reduced selection, not
+totals over what the corpus declares,
 not a record of what was simulated. Each selected instruction was
 probed for `InstructionFallbackNotFound`, with a garbage-discriminator control
 per program to confirm the program is Anchor-dispatch-shaped before trusting any
@@ -1132,7 +1133,10 @@ this list and is an ordinary Anchor program.
 
 **Seven, since 2026-08-13.** Jupiter Swap left the list when the probe stopped keying dispatch on
 error 101 alone: it answers a garbage discriminator with `InvalidAccountData` and a declared one
-with 102, which is just as decisive. It now reads `OK 17 ix, 0 dead`.
+with 102. It read `OK 17 ix, 0 dead` — which overstates it. A differing response is not proof of
+dispatch where the dispatcher's oracle is unestablished and a user `#[fallback]` is possible, so
+the standing position is 2 confirmed by real transactions and 15 uncharacterised. See
+`docs/PROGRAM_VERIFICATION.md`.
 
 The seven: Metaplex Token Metadata, Phoenix Ember, Phoenix
 Perpetuals (+ Dev), Solana Attestation Service, and the two Wormhole shims. The
