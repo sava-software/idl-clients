@@ -14,15 +14,23 @@ call, immediately and visibly, for anyone using it — so the probe bought advan
 notice of something that announces itself, at the cost of one simulation per
 instruction against a rate-limited endpoint.
 
-It never covered the whole corpus, and an earlier draft of this note priced it as
-though it did. Its selection was `if i.get('discriminator')`, so it probed only
-instructions carrying an Anchor-style `discriminator` and skipped every Shank
-`discriminant` one — 1,039 against 70 when the corpus was counted on 2026-08-14,
-and `idl-clients-bundle/config/pitest/README.md` records 1026 across 34
-Anchor-shaped programs at the time of its own sweep —
-blind to precisely the instructions whose one-byte dispatch was this repository's
-largest generator defect. It also had no path for Codama's nested instruction
-arrays, latent today only because the corpus has none.
+It never covered the whole corpus, and two drafts of this note misdescribed how
+far short it fell. Its selection was `if i.get('discriminator')` over a
+document's top-level `instructions`, which misses two whole classes: every Shank
+`discriminant` instruction, and every Codama program, whose instructions nest
+under `program` and `additionalPrograms` rather than at the top level. Those
+candidates were then reduced again by programs whose control came back
+inconclusive, so fewer were simulated than were selected.
+
+No count is quoted here, on purpose. Both earlier attempts were wrong — the
+second because it reused the probe's own blind spot to measure the probe, and so
+undercounted in exactly the way it was describing. The recorded figures live in
+`idl-clients-bundle/config/pitest/README.md`, beside the sweep that produced
+them.
+
+What matters is the shape of the gap rather than its size: the tool was blind to
+precisely the instructions whose one-byte dispatch was this repository's largest
+generator defect, so it could never have caught that class of drift.
 
 Two defects, with distinct effects rather than one shared label. Reading the
 `Program log: Instruction: …` line as the dispatch signal reported `route` and

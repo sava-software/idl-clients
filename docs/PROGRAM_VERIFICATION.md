@@ -19,12 +19,16 @@ dispatch key, with `sigVerify: false` and `replaceRecentBlockhash: true`. The fe
 payer must be a real funded account, or simulation aborts with `AccountNotFound`
 before reaching the program.
 
-**Send the key at its declared width.** An Anchor IDL declares
-`"discriminator": [...]`, eight bytes; a Shank IDL declares
-`"discriminant": {"type": "u8", "value": n}`, one byte, and Exponent's is one byte
-too. Padding a one-byte ordinal to eight sends a prefix the program never matches,
-so every Shank instruction answers as though absent. Read the width from the IDL
-entry rather than assuming Anchor's.
+**Send the key at its declared width, to preserve the argument boundary.** An
+Anchor IDL declares `"discriminator": [...]`, usually eight bytes; a Shank IDL
+declares `"discriminant": {"type": "u8", "value": n}`, one byte; Exponent declares
+one-byte Anchor discriminators. Padding a short key does **not** necessarily miss
+dispatch — Anchor matches with `data.starts_with(&DISCRIMINATOR)` and slices only
+`DISCRIMINATOR.len()`, so a zero-padded eight-byte form still dispatches and hands
+the surplus bytes to Borsh as the leading bytes of the arguments. That is the
+hazard: the probe goes green while a real client corrupts its own arguments. See
+`idl-clients-bundle/config/pitest/README.md` on Exponent, where this was found.
+Read the width from the IDL entry rather than assuming Anchor's.
 
 | Result | Meaning |
 |---|---|
@@ -53,9 +57,19 @@ Both would read as findings to anyone probing those programs fresh.
 
 **Compare against the program's own control, not against error 101.** Send a
 discriminator the program certainly does not declare, at a width it would
-recognise, and whatever it answers *is* that program's "no such instruction"
-signature. A declared key answering the same way is absent; any other answer got
-past dispatch and failed later on the accounts and arguments you withheld.
+recognise, and whatever it answers is a candidate for that program's "no such
+instruction" signature. An answer *differing* from it got past dispatch and failed
+later on the accounts and arguments you withheld — that direction is sound.
+
+**An answer matching it does not prove absence.** Equality is decisive only once
+you have an oracle that separates "no such instruction" from "instruction ran and
+rejected the empty arguments", and many dispatchers do not give you one. The
+Solana Attestation Service returns `InvalidInstructionData` both for an unknown
+ordinal and for a live `CreateCredential` whose arguments are missing, so a probe
+withholding arguments cannot tell its live instructions from absent ones at all.
+Anchor supplies the oracle by answering 101 for the first case and 102 for the
+second; a program that answers identically to both supplies none, and the honest
+verdict there is inconclusive rather than absent.
 
 Error 101 is one such signature, not the definition. Treating it as the only one
 is what made Jupiter — which answers `InvalidAccountData` — unreadable, and an
@@ -65,8 +79,13 @@ all, or when it fails identically to everything else, since neither distinguishe
 anything. Native, Shank and pinocchio programs emit no
 fallback error — and neither does an Anchor program whose own `#[fallback]`
 handles the unknown discriminator itself. The two are indistinguishable from
-outside. Jupiter Swap reads
-`INCONCLUSIVE` and is an ordinary Anchor program.
+outside. Jupiter Swap read `INCONCLUSIVE` **under the narrow calibration only**:
+it answers a garbage discriminator with `InvalidAccountData` rather than 101, and
+a tool looking for 101 alone therefore learned nothing. Calibrated relatively —
+against its own answer — it reads cleanly, and all 17 declared instructions
+dispatch, which is what `idl-clients-bundle/config/pitest/README.md` records. It
+is an ordinary Anchor program. The `INCONCLUSIVE` was a property of the question,
+not of Jupiter.
 
 So `INCONCLUSIVE` does not identify the dispatch implementation and no re-run
 settles it; those programs need §2, and §2 compares account order only.

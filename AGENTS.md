@@ -192,8 +192,11 @@ using it. `tools/README.md` carries the full argument.
 Simulating by hand for one program is still worth doing, but judge the error
 *relative to that program's own answer to a discriminator it does not have*,
 never against a fixed table: 101 is one shape of "no such instruction", not the
-only one, and treating `InvalidAccountData` as universal is what reported
-Jupiter's entire swap program dead. Full method — the dispatch check, the weaker
+only one, and looking for it alone is what made Jupiter — which answers
+`InvalidAccountData` — unreadable rather than wrong. A matching answer still does
+not prove absence unless the dispatcher distinguishes "unknown instruction" from
+"ran and rejected empty arguments"; several do not. Full method — the dispatch
+check, the weaker
 signals and why they disappoint, and the bar for an `idlURL` override — is in
 **[docs/PROGRAM_VERIFICATION.md](docs/PROGRAM_VERIFICATION.md)**. Current
 overrides and their evidence: `idl-clients-bundle/config/pitest/README.md`.
