@@ -30,13 +30,19 @@ hazard: the probe goes green while a real client corrupts its own arguments. See
 `idl-clients-bundle/config/pitest/README.md` on Exponent, where this was found.
 Read the width from the IDL entry rather than assuming Anchor's.
 
+**This table applies only to a standard Anchor dispatcher you have established
+is one** — no user `#[fallback]`, and 101/102 observed to separate "no such
+instruction" from "ran and rejected the arguments". Everything below is void
+otherwise; see the caveats in the next section before relying on it.
+
 | Result | Meaning |
 |---|---|
-| `InstructionFallbackNotFound` (custom error 101) | **not deployed** — identical to what a garbage discriminator returns, so always probe one as a control |
+| `InstructionFallbackNotFound` (custom error 101) | **not deployed**, on such a dispatcher — identical to what a garbage discriminator returns, so always probe one as a control |
 | logs `Instruction: <Name>`, then fails on validation (102, 3005, …) | **deployed** |
 
-Probe an instruction the candidate IDL *adds* and one it *removes* and both
-halves are settled at once.
+On such a dispatcher, probing an instruction the candidate IDL *adds* and one it
+*removes* settles both halves at once. On any other, neither half is settled by
+this table.
 
 There is no longer a tool that sweeps this: `tools/idl_probe.py` was removed on
 2026-08-14 (`tools/README.md` has the reasoning). Simulate the one program in
@@ -58,8 +64,12 @@ Both would read as findings to anyone probing those programs fresh.
 **Compare against the program's own control, not against error 101.** Send a
 discriminator the program certainly does not declare, at a width it would
 recognise, and whatever it answers is a candidate for that program's "no such
-instruction" signature. An answer *differing* from it got past dispatch and failed
-later on the accounts and arguments you withheld — that direction is sound.
+instruction" signature. An answer *differing* from it usually means the key got past dispatch and failed
+later on the accounts and arguments you withheld — but that direction is not
+airtight either. Anchor hands unmatched data to a user-supplied `#[fallback]` if
+the program declares one, so two keys the program does not have can produce two
+different errors. And the control itself is only *presumed* absent: it is chosen
+from the same IDL whose accuracy is the thing in question.
 
 **An answer matching it does not prove absence.** Equality is decisive only once
 you have an oracle that separates "no such instruction" from "instruction ran and

@@ -24,9 +24,15 @@ inconclusive, so fewer were simulated than were selected.
 
 No count is quoted here, on purpose. Both earlier attempts were wrong — the
 second because it reused the probe's own blind spot to measure the probe, and so
-undercounted in exactly the way it was describing. The recorded figures live in
-`idl-clients-bundle/config/pitest/README.md`, beside the sweep that produced
-them.
+undercounted in exactly the way it was describing.
+
+The figures recorded in `idl-clients-bundle/config/pitest/README.md` beside the
+sweep overstate it too, and should be read with that in mind: of the 40 programs
+then configured, six Codama programs were skipped entirely, 70 Shank instructions
+were never selected, and eight inconclusive controls dropped a further 184
+candidates. The tracked implementation simulated 772 instructions and 34
+controls — not the full corpus, and not the 1,026 declarations that record
+claims.
 
 What matters is the shape of the gap rather than its size: the tool was blind to
 precisely the instructions whose one-byte dispatch was this repository's largest
