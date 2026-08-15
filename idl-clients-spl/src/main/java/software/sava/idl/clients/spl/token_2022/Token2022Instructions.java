@@ -148,14 +148,32 @@ public final class Token2022Instructions {
                                                String key, byte[] _key,
                                                String value, byte[] _value) implements SerDe {
 
+    /// Decodes an instruction parsed off a transaction.
+    ///
+    /// `TransactionSkeleton` hands back instructions that *slice* one shared transaction
+    /// buffer, so `data()` is the whole transaction and `offset()`/`len()` bound this
+    /// instruction's own payload. Reading without that bound is not a range error — the
+    /// surrounding bytes are real, so an oversized length prefix returns the neighbouring
+    /// instruction's bytes as a successfully parsed metadata value, with nothing thrown.
     public static UpdateTokenMetadataFieldIxData read(final Instruction instruction) {
-      return read(instruction.data(), instruction.offset());
+      final int offset = instruction.offset();
+      return read(instruction.data(), offset, offset + instruction.len());
     }
 
     public static UpdateTokenMetadataFieldIxData read(final byte[] _data, final int offset) {
+      return read(_data, offset, _data == null ? 0 : _data.length);
+    }
+
+    /// `end` bounds this instruction's payload. Each length prefix is checked against the bytes
+    /// actually remaining before it sizes an array: an over-long one would otherwise read past
+    /// this instruction into its neighbour, and `0x7FFFFFFF` would allocate two gigabytes and
+    /// raise `OutOfMemoryError` — an `Error`, not something a caller decoding a transaction
+    /// would catch.
+    public static UpdateTokenMetadataFieldIxData read(final byte[] _data, final int offset, final int end) {
       if (_data == null || _data.length == 0) {
         return null;
       }
+      final int limit = Math.min(end, _data.length);
       final var discriminator = new byte[8];
       System.arraycopy(_data, offset, discriminator, 0, 8);
       int i = offset + 8;
@@ -163,12 +181,16 @@ public final class Token2022Instructions {
       final var field = fieldOrdinal < TokenMetadataField.VALUES.length
           ? TokenMetadataField.VALUES[fieldOrdinal]
           : null;
+      if (field == null) {
+        throw new IllegalArgumentException("unknown TokenMetadataField ordinal: " + fieldOrdinal);
+      }
       ++i;
       final String key;
       final byte[] _key;
       if (field == TokenMetadataField.Key) {
         final int keyLen = getInt32LE(_data, i);
         i += Integer.BYTES;
+        require(i, keyLen, limit, "key");
         _key = new byte[keyLen];
         System.arraycopy(_data, i, _key, 0, keyLen);
         key = new String(_key, UTF_8);
@@ -179,10 +201,25 @@ public final class Token2022Instructions {
       }
       final int valueLen = getInt32LE(_data, i);
       i += Integer.BYTES;
+      require(i, valueLen, limit, "value");
       final byte[] _value = new byte[valueLen];
       System.arraycopy(_data, i, _value, 0, valueLen);
       final var value = new String(_value, UTF_8);
       return new UpdateTokenMetadataFieldIxData(discriminator, field, key, _key, value, _value);
+    }
+
+    /// The only check that earns its place: a length prefix longer than the instruction's own
+    /// payload would otherwise copy whatever follows it in the shared transaction buffer and
+    /// return it as a parsed value, with nothing thrown. Every other malformed shape here —
+    /// a truncated header, a prefix that runs off the end, a negative length — already raises a
+    /// `RuntimeException` from the array access itself, and restating those as nicer messages
+    /// would be noise rather than safety.
+    private static void require(final int from, final int need, final int limit, final String what) {
+      if (from > limit - need) {
+        throw new IllegalArgumentException(
+            "UpdateTokenMetadataField " + what + " needs " + need
+                + " byte(s) at offset " + from + " but the instruction ends at " + limit);
+      }
     }
 
     @Override
