@@ -298,8 +298,8 @@ copy — the generating run's own report was in commit `40e1533`, which a squash
 ## 2. Does the account order match the program's Rust?
 
 ```shell
-python3 tools/ground_truth.py anchor <rust-dir>          <Program.java>
-python3 tools/ground_truth.py shank  <instructions.rs>   <Program.java>
+java tools/GroundTruth.java anchor <rust-dir>          <Program.java>
+java tools/GroundTruth.java shank  <instructions.rs>   <Program.java>
 ```
 
 This is what surfaced most of the account-ordering defects this repo has fixed.

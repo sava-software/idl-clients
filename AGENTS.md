@@ -129,17 +129,10 @@ packages when sizing the generator work, program addresses when describing the g
 Re-measure rather than trusting this table:
 
 ```shell
-python3 - <<'PY'
-import json, glob, collections
-tot = collections.Counter()
-for p in glob.glob('idl-clients-*/src/main/java/**/gen/idl.json', recursive=True):
-    d = json.load(open(p))
-    n = sum(1 for i in d.get('instructions', []) if i.get('returns'))
-    if n:
-        tot[p.split('/clients/')[1].rsplit('/gen/', 1)[0].replace('/', '.')] += n
-for k, v in sorted(tot.items(), key=lambda x: -x[1]):
-    print(f'{v:3d}  {k}')
-PY
+find idl-clients-*/src/main/java -path '*/gen/idl.json' -print0 |
+  xargs -0 jq -r '[.instructions[]? | select(.returns)] | length as $n |
+    if $n > 0 then "\($n) \(input_filename | sub(".*/clients/"; "") | sub("/gen/idl.json$"; "") | gsub("/"; "."))" else empty end' |
+  sort -k1,1nr -k2,2 | awk '{printf "%3d  %s\n", $1, $2}'
 ```
 
 Two things this is **not**. It is not a transaction-safety problem: `returns` describes what comes
@@ -307,8 +300,8 @@ the generation was run without retaining its channel-movement evidence.
 ### Diffing account order against the Rust
 
 ```shell
-python3 tools/ground_truth.py anchor <rust-dir>        <Program.java>
-python3 tools/ground_truth.py shank  <instructions.rs> <Program.java>
+java tools/GroundTruth.java anchor <rust-dir>        <Program.java>
+java tools/GroundTruth.java shank  <instructions.rs> <Program.java>
 ```
 
 This is what has surfaced most of the account-ordering defects fixed here — a
@@ -410,18 +403,21 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 
 ### Verification tools
 
-`tools/` holds standalone scripts for checks otherwise re-derived by hand:
-`ground_truth.py` diffs a generated client's account order against the program's
-Rust, `tick_margin_sweep.py` proves an accepted mutant family equivalent, and two
+`tools/` holds standalone scripts for checks otherwise re-derived by hand, and the
+rule for what belongs there is that it needs something outside the repository — a
+check that does not is a test. `GroundTruth.java` diffs a generated client's account
+order against the program's Rust, and two
 `.mjs` scripts run against a `solana-program/stake` checkout — `stake-idl.mjs`
 derives Stake's IDL from upstream's codama pipeline, `stake-vectors.mjs`
 regenerates the reference encodings `StakeReferenceEncodingTests` compares
-against. None is wired into Gradle or CI — `hardeningCertify` is the release
-gate; they are investigative aids whose output needs triage, except that what
-`stake-vectors.mjs` writes is a committed fixture and so is checked on every
-build. `ground_truth.py` and those vectors are also part of what carries the
-correctness of the generated `**.gen.*` code the mutation suites deliberately do
-not mutate. See [tools/README.md](tools/README.md).
+against. The `.java` ones run straight from source (`java tools/GroundTruth.java`)
+and are deliberately not Gradle modules, so they stay out of the build, the
+publish, and `mutationOwnershipAudit`. None is wired into Gradle or CI —
+`hardeningCertify` is the release gate; they are investigative aids whose output
+needs triage, except that what `stake-vectors.mjs` writes is a committed fixture
+and so is checked on every build. `GroundTruth.java` and those vectors are also
+part of what carries the correctness of the generated `**.gen.*` code the mutation
+suites deliberately do not mutate. See [tools/README.md](tools/README.md).
 
 ## Hardening: mutation testing & fuzzing
 
@@ -766,7 +762,7 @@ bundle README under "Audited timeout-detected mutants".
 **Exclusion ownership.** Suites are targeted by package wildcard with explicit
 exclusions, **never by allowlist** — an allowlist silently exempts every class
 added after it was written. Generated `**.gen.*` code is excluded everywhere
-(its correctness belongs to idl-src-gen, and `tools/ground_truth.py` plus the
+(its correctness belongs to idl-src-gen, and `tools/GroundTruth.java` plus the
 execution tests are what check it), as are the git-ignored `Integ.*`
 scratch mains, which would otherwise make the baseline differ between a dev
 machine and CI. Both arguments are declared to the ownership audit as

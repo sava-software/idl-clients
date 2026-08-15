@@ -34,8 +34,10 @@
 # Agent/developer tooling and the long-form docs AGENTS.md links to. Both are a
 # new kind of tracked file, so they need explicit rules under the whitelist.
 !/docs/**
-!/tools/*.py
 !/tools/*.md
+# Run straight from source (`java tools/GroundTruth.java`) — deliberately not Gradle
+# modules, so they stay out of the build, the publish, and the mutation-ownership audit.
+!/tools/*.java
 # stake-idl.mjs derives Stake's IDL by running solana-program/stake's own codama
 # pipeline; committed because the derivation is the provenance of a tracked artifact.
 !/tools/*.mjs

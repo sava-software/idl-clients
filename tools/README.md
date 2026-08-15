@@ -4,9 +4,25 @@ Standalone verification scripts. Nothing wired into Gradle, nothing run by CI.
 They exist because the checks they automate were otherwise re-derived by hand each
 time, and each re-derivation reintroduced the same false positives.
 
-The `.py` scripts need Python 3 and nothing else. The two `.mjs` scripts run
-against a `solana-program/stake` checkout and resolve their dependencies from its
-`node_modules`; neither installs anything here.
+**Everything here needs something outside the repository.** That is the rule for what
+belongs in `tools/` rather than in a test: `GroundTruth.java` needs a checkout of the
+program's Rust, and the two `.mjs` scripts need a `solana-program/stake` checkout to
+resolve against. A check that needs nothing outside the repo is a test, and lives with
+the code it reasons about — `tick_margin_sweep.py` was here until 2026-08-15 and is
+now `OrcaTickMarginSweep` in `idl-clients-bundle`'s test sources, beside the
+`OrcaUtil` whose accepted mutants it clears.
+
+`GroundTruth.java` runs straight from source on the JDK the build already requires —
+`java tools/GroundTruth.java`, no build step — and is deliberately **not** a Gradle
+module: a module would join the publish and would owe `mutationOwnershipAudit` either
+a mutation suite or an argued decline, which is a lot of ceremony for a diff tool.
+Neither `.mjs` script installs anything here.
+
+These were Python until 2026-08-14. The port was verified byte-for-byte against the
+scripts it replaced, over every invocation recorded below plus three error paths, with
+outputs and exit statuses matching exactly — the only intended difference being the
+`java …` command in the usage text. Two defects found while doing that are described
+under `GroundTruth.java`.
 
 They are **investigative aids, not gates** — with one exception, noted below:
 `stake-vectors.mjs` writes a test fixture, so what it produces *is* checked by
@@ -21,52 +37,79 @@ measurements are in the commits that removed it.
 
 | Script | Answers | Cost |
 |---|---|---|
-| `ground_truth.py` | Does our account order match the program's Rust? | instant, local |
+| `GroundTruth.java` | Does our account order match the program's Rust? | instant, local |
 | `stake-idl.mjs` | Derives Stake's IDL by running upstream's own codama pipeline | seconds, needs their checkout |
 | `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
 
 
-## `ground_truth.py`
+## `GroundTruth.java`
 
 ```shell
-python3 tools/ground_truth.py anchor <rust-dir>        <Program.java>
-python3 tools/ground_truth.py shank  <instructions.rs> <Program.java>
+java tools/GroundTruth.java anchor <rust-dir>        <Program.java>
+java tools/GroundTruth.java shank  <instructions.rs> <Program.java>
 
-# per-program normalisations, see the docstring
+# per-program normalisations, see the class doc
 --strip-suffix=Context            # CCTP names its structs AcceptOwnershipContext
 --drop-trailing=whirlpoolProgram  # Orca's IDL adds an account its Rust has not
 ```
 
 **Read the output critically.** Most differences it reports are artifacts, and
-the docstring enumerates the traps that have each cost real time: auto-wired
+the class doc enumerates the traps that have each cost real time: auto-wired
 sysvars, structs matched against the wrong program in a monorepo, per-program
 struct naming, and published IDLs that do not match their repo. `compared 0` is
 a failure to compare, not a pass — hence the compared count is always printed.
 
-Known-good invocations, useful as a smoke test after changing the script:
+What the six recorded invocations print, **measured 2026-08-14** against the
+reference clones as they stood that day:
 
-| Program | Expected |
+| Program | Output |
 |---|---|
-| Squads v4 | `compared 18 match 18` |
+| Squads v4 | `compared 23 match 23` |
 | CCTP Message Transmitter V2 (`--strip-suffix=Context`) | `compared 15 match 15` |
 | Orca Whirlpools (`--drop-trailing=whirlpoolProgram`) | `compared 61 match 61` |
 | Pyth Solana Receiver | `compared 7 match 7` |
-| Metaplex Token Metadata (shank) | `compared 58 match 57` — the known `print` IDL gap |
+| Metaplex Token Metadata (shank) | `compared 58 match 58` |
 | Solana Attestation Service (shank) | `compared 12 match 12` |
+
+These are a smoke test for *the tool*: change it, re-run, expect the same output
+against the same clones. They are not a standing claim about the clients, because
+both inputs move — a `git pull` in a reference clone or a regeneration here shifts
+the counts without anything being wrong. Date any number you put in this table.
+
+Squads read `compared 18 match 18` when it was last recorded and has gained account
+structs upstream since. Metaplex read `compared 58 match 57`, described as a `print`
+IDL gap; both halves of that were wrong, and finding out why fixed two defects in
+this tool rather than in any client — see below.
 
 Paths to the Rust live in `AGENTS.local.md`.
 
-## `tick_margin_sweep.py`
+### What the 2026-08-14 triage found
 
-Proves the equivalence of the `OrcaUtil.sqrtPriceX64ToTickIndex` lower-margin
-mutants (the `log-margin family` rows in
-`idl-clients-bundle/config/pitest/orca-accepted.csv`): a Python mirror of both
-tick ladders and the 14-bit log approximation, pinned to
-`MIN/MAX_SQRT_PRICE_X64` and tick 0, that checks every one of the 887,272 tick
-boundaries for an approximation overshoot — the only condition under which the
-mutants could diverge (see the sweep's docstring and the acceptance section in
-the bundle's `config/pitest/README.md`). Zero overshoots as of 2026-07-23;
-re-run after any change to the log constants, error margins, or factor tables.
+The tool reported nine differences against Metaplex Token Metadata. **All nine were
+its own fault**, and the two causes were costing coverage everywhere, not just there.
+
+*Names bound to the wrong account list.* The Java side was read with one regex,
+`List<AccountMeta> (\w+)Keys\(.*?\)\s*\{\s*return List\.of\(` under DOTALL. A builder
+with an optional account does not return `List.of(..)` — it fills an `ArrayList` with
+`keys.add(..)` behind a null check — so from such a builder's name the `.*?` ran on
+past the whole method and paired it with the *next* builder's accounts. Eight of the
+nine were that: `mintNewEditionFromMasterEditionViaVaultProxy` was reported with one
+account against the Rust's seventeen, while its builder had all seventeen in the right
+order and `puffMetadata`'s list had been read in its place. Across this repository the
+regex mis-bound 18 of the 1,337 `*Keys` builders and never saw another 44 at all. It
+now locates each declaration and reads only that declaration's body, in both shapes.
+
+*Commented-out Rust counted as declarations.* The ninth was `print`, rust=20 java=18.
+Metaplex keeps `#[account(18, ..)]` and `#[account(19, ..)]` commented out above
+`Print`, with a doc comment saying those accounts arrive through remaining-accounts
+instead. The Anchor path had always stripped comments; the Shank path had not. Our
+18-account client was correct and the IDL was correct.
+
+Both fixes narrow what the tool reports rather than widen it, which is the direction
+that matters: this thing is cited in both modules' `declineExclusionAudit` as part of
+what carries the correctness of generated code, so a confident false positive spends
+someone's afternoon and a false negative hides a real transposition. Every one of the
+six invocations now matches.
 
 ## `stake-vectors.mjs`
 
@@ -92,9 +135,14 @@ The diff is the review.
 
 ## Adding to these
 
-Keep them runnable from the repo root, and keep what they need out of it — the
-Python scripts take no packages, and the `.mjs` scripts borrow a checkout's
-`node_modules` rather than adding a package manifest here. If a script starts
+First ask whether it belongs here at all: if the check needs nothing outside this
+repository, it is a test, and it should live next to the code it reasons about where
+`check` will run it. Otherwise keep it runnable from the repo root, and keep what it
+needs out of the repo — `GroundTruth.java` uses nothing but the JDK and stays out of
+`settings.gradle.kts`, and the
+`.mjs` ones borrow a checkout's `node_modules` rather than adding a package manifest
+here. A new language is a decision, not a convenience: it needs a `.gitignore`
+whitelist rule, and whoever runs the tool next has to already have it. If a script starts
 needing per-program special cases beyond a flag, that is a sign the case belongs
 in `docs/PROGRAM_VERIFICATION.md` as prose rather than in code — the analysis is
 the durable part, the parsing is not.

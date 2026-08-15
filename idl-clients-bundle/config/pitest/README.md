@@ -1377,11 +1377,15 @@ descends monotonically to `floor(sqrt(value))` from *any* starting point at or
 above the true root, and `v/2`, `2v` and `v` all qualify for `v >= 2` (`v < 2`
 returns early). Only the iteration count changes.
 
-Verified as well as reasoned: the variants were reimplemented and compared over
-200,490 inputs — every value below 200,000 plus `2^e ± 3` for `e` in 60..129 —
-with **zero** differences; the `guess = v` variant additionally over 122,765
-cases (0..1999, `2^k ± 1` for k in 2..256, and 120k random values up to
-256 bits), all also agreeing with `math.isqrt`.
+Verified as well as reasoned, and the verification is now a test:
+`OrcaSqrtFloorSweep` reimplements the iteration with the seed left open and
+compares all three variants over 200,490 inputs — every value below 200,000 plus
+`2^e ± 3` for `e` in 60..129 — with **zero** differences; the `guess = v` variant
+additionally over 122,765 cases (0..1999, `2^k ± 1` for k in 2..256, and 120k
+seeded-random values up to 256 bits), all also agreeing with `BigInteger.sqrt()`.
+Both set sizes are asserted, so a silently smaller sweep cannot pass as this one.
+Until 2026-08-15 those numbers were this paragraph and nothing else — the sweep had
+been run once in a session and never committed.
 
 ### BigInteger tick-index lower error margin (2 mutants, orca)
 
@@ -1401,9 +1405,13 @@ the refinement that would have chosen `tickLow` — which requires the 14-bit
 log approximation to *overshoot*: some price `p` below the tick-`k` boundary
 with `x(p) >= k`. Because `x(p)` is (weakly) monotone in `p`, overshoot at
 boundary `k` is equivalent to `x(sqrtPrice(k) - 1) >= k` — one evaluation per
-boundary is an exhaustive search. `tools/tick_margin_sweep.py` (a Python
-mirror of both ladders, pinned to `MIN/MAX_SQRT_PRICE_X64` and tick 0) ran
-all 887,272 boundaries: **zero overshoots**, monotonicity violated nowhere.
+boundary is an exhaustive search. `OrcaTickMarginSweep` (an independent
+mirror of both ladders, pinned to `MIN/MAX_SQRT_PRICE_X64` and tick 0) runs
+all 887,272 boundaries on every `check`: **zero overshoots**, monotonicity violated
+nowhere. It clears by less than it looks: the tightest boundary has 34,045,085,876,224
+of Q64.64 headroom — 0.0000018 ticks — at k=283,388, which is a thirty-fourth of the
+approximation's own quantum, and biasing the log up by one such unit puts two
+boundaries over. The margin is printed on every run so a shrinking one is visible.
 The approximation only ever errs downward in the valid domain, so the lower
 margin never changes an output — it is genuine safety margin, kept as such.
 `fuzzOrcaTickMath` independently drives the same bracketing contract on the
