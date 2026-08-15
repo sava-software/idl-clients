@@ -7,15 +7,13 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /// @param memo: Option<string>
 public record ProposalVoteArgs(String memo, byte[] _memo) implements SerDe {
 
   public static final int MEMO_OFFSET = 1;
 
   public static ProposalVoteArgs createRecord(final String memo) {
-    return new ProposalVoteArgs(memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new ProposalVoteArgs(memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static ProposalVoteArgs read(final byte[] _data, final int _offset) {
@@ -32,7 +30,7 @@ public record ProposalVoteArgs(String memo, byte[] _memo) implements SerDe {
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new ProposalVoteArgs(memo, _memo);

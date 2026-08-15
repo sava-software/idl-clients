@@ -12,8 +12,6 @@ import software.sava.idl.clients.jupiter.voter.gen.types.LockerParams;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -887,7 +885,7 @@ public final class LockedVoterProgram {
                                                  final List<AccountMeta> keys,
                                                  final long amount,
                                                  final String memo) {
-    final byte[] _memo = memo.getBytes(UTF_8);
+    final byte[] _memo = SerDeUtil.encodeString(memo);
     final byte[] _data = new byte[20 + _memo.length];
     int i = OPEN_PARTIAL_UNSTAKING_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
@@ -908,7 +906,7 @@ public final class LockedVoterProgram {
     public static final int MEMO_OFFSET = 16;
 
     public static OpenPartialUnstakingIxData createRecord(final Discriminator discriminator, final long amount, final String memo) {
-      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : memo.getBytes(UTF_8));
+      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : SerDeUtil.encodeString(memo));
     }
 
     public static OpenPartialUnstakingIxData read(final byte[] _data, final int _offset) {
@@ -922,8 +920,8 @@ public final class LockedVoterProgram {
       final int _memoLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
-      final var memo = new String(_memo, UTF_8);
-      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : memo.getBytes(UTF_8));
+      final var memo = SerDeUtil.decodeString(_memo);
+      return new OpenPartialUnstakingIxData(discriminator, amount, memo, memo == null ? null : SerDeUtil.encodeString(memo));
     }
 
     @Override

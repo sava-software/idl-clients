@@ -17,8 +17,6 @@ import software.sava.idl.clients.jupiter.stable.gen.types.VaultManagementAction;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
@@ -413,9 +411,9 @@ public final class JupStableProgram {
                                  final String name,
                                  final String symbol,
                                  final String uri) {
-    final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _uri = uri.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
+    final byte[] _uri = SerDeUtil.encodeString(uri);
     final byte[] _data = new byte[21 + _name.length + _symbol.length + _uri.length];
     int i = INIT_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) decimals;
@@ -448,9 +446,9 @@ public final class JupStableProgram {
                                           final String uri) {
       return new InitIxData(discriminator,
                             decimals,
-                            name, name == null ? null : name.getBytes(UTF_8),
-                            symbol, symbol == null ? null : symbol.getBytes(UTF_8),
-                            uri, uri == null ? null : uri.getBytes(UTF_8));
+                            name, name == null ? null : SerDeUtil.encodeString(name),
+                            symbol, symbol == null ? null : SerDeUtil.encodeString(symbol),
+                            uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
 
     public static InitIxData read(final byte[] _data, final int _offset) {
@@ -464,22 +462,22 @@ public final class JupStableProgram {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _name.length;
       final int _symbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-      final var symbol = new String(_symbol, UTF_8);
+      final var symbol = SerDeUtil.decodeString(_symbol);
       i += _symbol.length;
       final int _uriLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-      final var uri = new String(_uri, UTF_8);
+      final var uri = SerDeUtil.decodeString(_uri);
       return new InitIxData(discriminator,
                             decimals,
-                            name, name == null ? null : name.getBytes(UTF_8),
-                            symbol, symbol == null ? null : symbol.getBytes(UTF_8),
-                            uri, uri == null ? null : uri.getBytes(UTF_8));
+                            name, name == null ? null : SerDeUtil.encodeString(name),
+                            symbol, symbol == null ? null : SerDeUtil.encodeString(symbol),
+                            uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
 
     @Override

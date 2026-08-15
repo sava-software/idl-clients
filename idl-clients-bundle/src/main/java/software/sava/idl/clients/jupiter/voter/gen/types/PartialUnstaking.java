@@ -13,8 +13,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -76,7 +74,7 @@ public record PartialUnstaking(PublicKey _address,
                                 amount,
                                 expiration,
                                 buffers,
-                                memo, memo == null ? null : memo.getBytes(UTF_8));
+                                memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static PartialUnstaking read(final byte[] _data, final int _offset) {
@@ -110,14 +108,14 @@ public record PartialUnstaking(PublicKey _address,
     final int _memoLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _memo = Arrays.copyOfRange(_data, i, i + _memoLength);
-    final var memo = new String(_memo, UTF_8);
+    final var memo = SerDeUtil.decodeString(_memo);
     return new PartialUnstaking(_address,
                                 discriminator,
                                 escrow,
                                 amount,
                                 expiration,
                                 buffers,
-                                memo, memo == null ? null : memo.getBytes(UTF_8));
+                                memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   @Override

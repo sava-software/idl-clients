@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.putInt32LE;
 
@@ -20,7 +18,7 @@ public record MultisigSetTimeLockArgs(long timeLock, String memo, byte[] _memo) 
   public static final int MEMO_OFFSET = 5;
 
   public static MultisigSetTimeLockArgs createRecord(final long timeLock, final String memo) {
-    return new MultisigSetTimeLockArgs(timeLock, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new MultisigSetTimeLockArgs(timeLock, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static MultisigSetTimeLockArgs read(final byte[] _data, final int _offset) {
@@ -40,7 +38,7 @@ public record MultisigSetTimeLockArgs(long timeLock, String memo, byte[] _memo) 
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new MultisigSetTimeLockArgs(timeLock, memo, _memo);

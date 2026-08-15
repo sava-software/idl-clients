@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /// @param vaultIndex: u8 Index of the vault this transaction belongs to.
 /// @param ephemeralSigners: u8 Number of ephemeral signing PDAs required by the transaction.
 /// @param memo: Option<string>
@@ -28,7 +26,7 @@ public record VaultTransactionCreateArgs(int vaultIndex,
     return new VaultTransactionCreateArgs(vaultIndex,
                                           ephemeralSigners,
                                           transactionMessage,
-                                          memo, memo == null ? null : memo.getBytes(UTF_8));
+                                          memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static VaultTransactionCreateArgs read(final byte[] _data, final int _offset) {
@@ -52,7 +50,7 @@ public record VaultTransactionCreateArgs(int vaultIndex,
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new VaultTransactionCreateArgs(vaultIndex,

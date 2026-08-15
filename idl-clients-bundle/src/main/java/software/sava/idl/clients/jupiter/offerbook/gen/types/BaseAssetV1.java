@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.OptionalLong;
 import java.util.function.BiFunction;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
@@ -58,8 +56,8 @@ public record BaseAssetV1(PublicKey _address,
                            key,
                            owner,
                            updateAuthority,
-                           name, name == null ? null : name.getBytes(UTF_8),
-                           uri, uri == null ? null : uri.getBytes(UTF_8),
+                           name, name == null ? null : SerDeUtil.encodeString(name),
+                           uri, uri == null ? null : SerDeUtil.encodeString(uri),
                            seq);
   }
 
@@ -92,12 +90,12 @@ public record BaseAssetV1(PublicKey _address,
     final int _nameLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-    final var name = new String(_name, UTF_8);
+    final var name = SerDeUtil.decodeString(_name);
     i += _name.length;
     final int _uriLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-    final var uri = new String(_uri, UTF_8);
+    final var uri = SerDeUtil.decodeString(_uri);
     i += _uri.length;
     final OptionalLong seq;
     if (SerDeUtil.isAbsent(1, _data, i)) {
@@ -110,8 +108,8 @@ public record BaseAssetV1(PublicKey _address,
                            key,
                            owner,
                            updateAuthority,
-                           name, name == null ? null : name.getBytes(UTF_8),
-                           uri, uri == null ? null : uri.getBytes(UTF_8),
+                           name, name == null ? null : SerDeUtil.encodeString(name),
+                           uri, uri == null ? null : SerDeUtil.encodeString(uri),
                            seq);
   }
 

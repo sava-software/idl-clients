@@ -7,12 +7,11 @@ import software.sava.core.accounts.meta.AccountMeta;
 import software.sava.core.programs.Discriminator;
 import software.sava.core.tx.Instruction;
 import software.sava.idl.clients.core.gen.SerDe;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
@@ -322,7 +321,7 @@ public final class SystemProgram {
                                                   final long amount,
                                                   final long space,
                                                   final PublicKey programAddress) {
-    final byte[] _seed = seed.getBytes(UTF_8);
+    final byte[] _seed = SerDeUtil.encodeString(seed);
     final byte[] _data = new byte[84 + 8 + _seed.length];
     int i = CREATE_ACCOUNT_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
@@ -365,7 +364,7 @@ public final class SystemProgram {
                                                            final PublicKey programAddress) {
       return new CreateAccountWithSeedIxData(discriminator,
                                              base,
-                                             seed, seed.getBytes(UTF_8),
+                                             seed, SerDeUtil.encodeString(seed),
                                              amount,
                                              space,
                                              programAddress);
@@ -384,7 +383,7 @@ public final class SystemProgram {
       final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
-      final var seed = new String(_seed, UTF_8);
+      final var seed = SerDeUtil.decodeString(_seed);
       i += _seedLength;
       final var amount = getInt64LE(_data, i);
       i += 8;
@@ -825,7 +824,7 @@ public final class SystemProgram {
                                              final String seed,
                                              final long space,
                                              final PublicKey programAddress) {
-    final byte[] _seed = seed.getBytes(UTF_8);
+    final byte[] _seed = SerDeUtil.encodeString(seed);
     final byte[] _data = new byte[76 + 8 + _seed.length];
     int i = ALLOCATE_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
@@ -863,7 +862,7 @@ public final class SystemProgram {
                                                       final PublicKey programAddress) {
       return new AllocateWithSeedIxData(discriminator,
                                         base,
-                                        seed, seed.getBytes(UTF_8),
+                                        seed, SerDeUtil.encodeString(seed),
                                         space,
                                         programAddress);
     }
@@ -881,7 +880,7 @@ public final class SystemProgram {
       final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
-      final var seed = new String(_seed, UTF_8);
+      final var seed = SerDeUtil.decodeString(_seed);
       i += _seedLength;
       final var space = getInt64LE(_data, i);
       i += 8;
@@ -955,7 +954,7 @@ public final class SystemProgram {
                                            final PublicKey base,
                                            final String seed,
                                            final PublicKey programAddress) {
-    final byte[] _seed = seed.getBytes(UTF_8);
+    final byte[] _seed = SerDeUtil.encodeString(seed);
     final byte[] _data = new byte[68 + 8 + _seed.length];
     int i = ASSIGN_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     base.write(_data, i);
@@ -988,7 +987,7 @@ public final class SystemProgram {
                                                     final PublicKey programAddress) {
       return new AssignWithSeedIxData(discriminator,
                                       base,
-                                      seed, seed.getBytes(UTF_8),
+                                      seed, SerDeUtil.encodeString(seed),
                                       programAddress);
     }
 
@@ -1005,7 +1004,7 @@ public final class SystemProgram {
       final int _seedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _seed = Arrays.copyOfRange(_data, i, i + _seedLength);
-      final var seed = new String(_seed, UTF_8);
+      final var seed = SerDeUtil.decodeString(_seed);
       i += _seedLength;
       final var programAddress = readPubKey(_data, i);
       return new AssignWithSeedIxData(discriminator,
@@ -1076,7 +1075,7 @@ public final class SystemProgram {
                                                 final long amount,
                                                 final String fromSeed,
                                                 final PublicKey fromOwner) {
-    final byte[] _fromSeed = fromSeed.getBytes(UTF_8);
+    final byte[] _fromSeed = SerDeUtil.encodeString(fromSeed);
     final byte[] _data = new byte[44 + 8 + _fromSeed.length];
     int i = TRANSFER_SOL_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, amount);
@@ -1110,7 +1109,7 @@ public final class SystemProgram {
                                                          final PublicKey fromOwner) {
       return new TransferSolWithSeedIxData(discriminator,
                                            amount,
-                                           fromSeed, fromSeed.getBytes(UTF_8),
+                                           fromSeed, SerDeUtil.encodeString(fromSeed),
                                            fromOwner);
     }
 
@@ -1127,7 +1126,7 @@ public final class SystemProgram {
       final int _fromSeedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _fromSeed = Arrays.copyOfRange(_data, i, i + _fromSeedLength);
-      final var fromSeed = new String(_fromSeed, UTF_8);
+      final var fromSeed = SerDeUtil.decodeString(_fromSeed);
       i += _fromSeedLength;
       final var fromOwner = readPubKey(_data, i);
       return new TransferSolWithSeedIxData(discriminator,

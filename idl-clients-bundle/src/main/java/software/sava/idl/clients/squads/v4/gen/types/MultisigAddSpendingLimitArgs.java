@@ -8,8 +8,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -58,7 +56,7 @@ public record MultisigAddSpendingLimitArgs(PublicKey createKey,
                                             period,
                                             members,
                                             destinations,
-                                            memo, memo == null ? null : memo.getBytes(UTF_8));
+                                            memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static MultisigAddSpendingLimitArgs read(final byte[] _data, final int _offset) {
@@ -90,7 +88,7 @@ public record MultisigAddSpendingLimitArgs(PublicKey createKey,
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new MultisigAddSpendingLimitArgs(createKey,

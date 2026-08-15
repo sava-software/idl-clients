@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
 
@@ -20,7 +18,7 @@ public record MultisigChangeThresholdArgs(int newThreshold, String memo, byte[] 
   public static final int MEMO_OFFSET = 3;
 
   public static MultisigChangeThresholdArgs createRecord(final int newThreshold, final String memo) {
-    return new MultisigChangeThresholdArgs(newThreshold, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new MultisigChangeThresholdArgs(newThreshold, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static MultisigChangeThresholdArgs read(final byte[] _data, final int _offset) {
@@ -40,7 +38,7 @@ public record MultisigChangeThresholdArgs(int newThreshold, String memo, byte[] 
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new MultisigChangeThresholdArgs(newThreshold, memo, _memo);

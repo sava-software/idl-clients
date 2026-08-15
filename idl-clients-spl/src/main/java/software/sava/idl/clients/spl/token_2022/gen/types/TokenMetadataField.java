@@ -2,10 +2,9 @@
 package software.sava.idl.clients.spl.token_2022.gen.types;
 
 import software.sava.idl.clients.core.gen.RustEnum;
+import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
@@ -65,7 +64,7 @@ public sealed interface TokenMetadataField extends RustEnum permits
   record key(byte[] val, java.lang.String _val) implements EnumString, TokenMetadataField {
 
     public static key createRecord(final java.lang.String val) {
-      return new key(val.getBytes(UTF_8), val);
+      return new key(SerDeUtil.encodeString(val), val);
     }
 
     public static key read(final byte[] _data, final int _offset) {
@@ -73,7 +72,7 @@ public sealed interface TokenMetadataField extends RustEnum permits
       final int _valLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _val = Arrays.copyOfRange(_data, i, i + _valLength);
-      final var val = new String(_val, UTF_8);
+      final var val = SerDeUtil.decodeString(_val);
       return new key(_val, val);
     }
 

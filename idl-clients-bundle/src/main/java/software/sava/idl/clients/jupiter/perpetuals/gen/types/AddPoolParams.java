@@ -6,8 +6,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -23,7 +21,7 @@ public record AddPoolParams(String name, byte[] _name,
                                            final Limit limit,
                                            final Fees fees,
                                            final long maxRequestExecutionSec) {
-    return new AddPoolParams(name, name == null ? null : name.getBytes(UTF_8),
+    return new AddPoolParams(name, name == null ? null : SerDeUtil.encodeString(name),
                              limit,
                              fees,
                              maxRequestExecutionSec);
@@ -37,14 +35,14 @@ public record AddPoolParams(String name, byte[] _name,
     final int _nameLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-    final var name = new String(_name, UTF_8);
+    final var name = SerDeUtil.decodeString(_name);
     i += _name.length;
     final var limit = Limit.read(_data, i);
     i += limit.l();
     final var fees = Fees.read(_data, i);
     i += fees.l();
     final var maxRequestExecutionSec = getInt64LE(_data, i);
-    return new AddPoolParams(name, name == null ? null : name.getBytes(UTF_8),
+    return new AddPoolParams(name, name == null ? null : SerDeUtil.encodeString(name),
                              limit,
                              fees,
                              maxRequestExecutionSec);

@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
 
@@ -26,7 +24,7 @@ public record SpendingLimitUseArgs(long amount,
   public static SpendingLimitUseArgs createRecord(final long amount,
                                                   final int decimals,
                                                   final String memo) {
-    return new SpendingLimitUseArgs(amount, decimals, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new SpendingLimitUseArgs(amount, decimals, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static SpendingLimitUseArgs read(final byte[] _data, final int _offset) {
@@ -48,7 +46,7 @@ public record SpendingLimitUseArgs(long amount,
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new SpendingLimitUseArgs(amount, decimals, memo, _memo);

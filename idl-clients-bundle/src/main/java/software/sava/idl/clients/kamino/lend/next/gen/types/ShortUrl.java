@@ -11,8 +11,6 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -31,7 +29,7 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
   }
 
   public static ShortUrl createRecord(final PublicKey _address, final Discriminator discriminator, final PublicKey referrer, final String shortUrl) {
-    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
+    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : SerDeUtil.encodeString(shortUrl));
   }
 
   public static ShortUrl read(final byte[] _data, final int _offset) {
@@ -59,8 +57,8 @@ public record ShortUrl(PublicKey _address, Discriminator discriminator, PublicKe
     final int _shortUrlLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
-    final var shortUrl = new String(_shortUrl, UTF_8);
-    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
+    final var shortUrl = SerDeUtil.decodeString(_shortUrl);
+    return new ShortUrl(_address, discriminator, referrer, shortUrl, shortUrl == null ? null : SerDeUtil.encodeString(shortUrl));
   }
 
   @Override

@@ -24,8 +24,6 @@ import software.sava.idl.clients.kamino.lend.next.gen.types.UpdateObligationConf
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static java.util.Objects.requireNonNullElse;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -4393,7 +4391,7 @@ public final class KaminoLendingProgram {
   public static Instruction initReferrerStateAndShortUrl(final AccountMeta invokedKaminoLendingProgramMeta,
                                                          final List<AccountMeta> keys,
                                                          final String shortUrl) {
-    final byte[] _shortUrl = shortUrl.getBytes(UTF_8);
+    final byte[] _shortUrl = SerDeUtil.encodeString(shortUrl);
     final byte[] _data = new byte[12 + _shortUrl.length];
     int i = INIT_REFERRER_STATE_AND_SHORT_URL_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, _shortUrl, _data, i);
@@ -4410,7 +4408,7 @@ public final class KaminoLendingProgram {
     public static final int SHORT_URL_OFFSET = 8;
 
     public static InitReferrerStateAndShortUrlIxData createRecord(final Discriminator discriminator, final String shortUrl) {
-      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
+      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, shortUrl == null ? null : SerDeUtil.encodeString(shortUrl));
     }
 
     public static InitReferrerStateAndShortUrlIxData read(final byte[] _data, final int _offset) {
@@ -4422,8 +4420,8 @@ public final class KaminoLendingProgram {
       final int _shortUrlLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _shortUrl = Arrays.copyOfRange(_data, i, i + _shortUrlLength);
-      final var shortUrl = new String(_shortUrl, UTF_8);
-      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, shortUrl == null ? null : shortUrl.getBytes(UTF_8));
+      final var shortUrl = SerDeUtil.decodeString(_shortUrl);
+      return new InitReferrerStateAndShortUrlIxData(discriminator, shortUrl, shortUrl == null ? null : SerDeUtil.encodeString(shortUrl));
     }
 
     @Override

@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
@@ -25,9 +23,9 @@ public record CreateVaultParams(String tokenName, byte[] _tokenName,
                                                final String tokenUri,
                                                final PublicKey manager,
                                                final CreateStrategyParams createStrategyParams) {
-    return new CreateVaultParams(tokenName, tokenName == null ? null : tokenName.getBytes(UTF_8),
-                                 tokenSymbol, tokenSymbol == null ? null : tokenSymbol.getBytes(UTF_8),
-                                 tokenUri, tokenUri == null ? null : tokenUri.getBytes(UTF_8),
+    return new CreateVaultParams(tokenName, tokenName == null ? null : SerDeUtil.encodeString(tokenName),
+                                 tokenSymbol, tokenSymbol == null ? null : SerDeUtil.encodeString(tokenSymbol),
+                                 tokenUri, tokenUri == null ? null : SerDeUtil.encodeString(tokenUri),
                                  manager,
                                  createStrategyParams);
   }
@@ -40,24 +38,24 @@ public record CreateVaultParams(String tokenName, byte[] _tokenName,
     final int _tokenNameLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _tokenName = Arrays.copyOfRange(_data, i, i + _tokenNameLength);
-    final var tokenName = new String(_tokenName, UTF_8);
+    final var tokenName = SerDeUtil.decodeString(_tokenName);
     i += _tokenName.length;
     final int _tokenSymbolLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _tokenSymbol = Arrays.copyOfRange(_data, i, i + _tokenSymbolLength);
-    final var tokenSymbol = new String(_tokenSymbol, UTF_8);
+    final var tokenSymbol = SerDeUtil.decodeString(_tokenSymbol);
     i += _tokenSymbol.length;
     final int _tokenUriLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _tokenUri = Arrays.copyOfRange(_data, i, i + _tokenUriLength);
-    final var tokenUri = new String(_tokenUri, UTF_8);
+    final var tokenUri = SerDeUtil.decodeString(_tokenUri);
     i += _tokenUri.length;
     final var manager = readPubKey(_data, i);
     i += 32;
     final var createStrategyParams = CreateStrategyParams.read(_data, i);
-    return new CreateVaultParams(tokenName, tokenName == null ? null : tokenName.getBytes(UTF_8),
-                                 tokenSymbol, tokenSymbol == null ? null : tokenSymbol.getBytes(UTF_8),
-                                 tokenUri, tokenUri == null ? null : tokenUri.getBytes(UTF_8),
+    return new CreateVaultParams(tokenName, tokenName == null ? null : SerDeUtil.encodeString(tokenName),
+                                 tokenSymbol, tokenSymbol == null ? null : SerDeUtil.encodeString(tokenSymbol),
+                                 tokenUri, tokenUri == null ? null : SerDeUtil.encodeString(tokenUri),
                                  manager,
                                  createStrategyParams);
   }

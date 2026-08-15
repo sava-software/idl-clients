@@ -18,8 +18,6 @@ import software.sava.idl.clients.exponent.gen.types.Number;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
 import static software.sava.core.accounts.meta.AccountMeta.createWritableSigner;
@@ -307,9 +305,9 @@ public final class ExponentCoreProgram {
                                                 final String name,
                                                 final String symbol,
                                                 final String uri) {
-    final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _uri = uri.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
+    final byte[] _uri = SerDeUtil.encodeString(uri);
     final byte[] _data = new byte[13 + _name.length + _symbol.length + _uri.length];
     int i = ADD_LP_TOKENS_METADATA_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _name, _data, i);
@@ -334,7 +332,7 @@ public final class ExponentCoreProgram {
                                                          final String name,
                                                          final String symbol,
                                                          final String uri) {
-      return new AddLpTokensMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
+      return new AddLpTokensMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
 
     public static AddLpTokensMetadataIxData read(final byte[] _data, final int _offset) {
@@ -346,18 +344,18 @@ public final class ExponentCoreProgram {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _name.length;
       final int _symbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-      final var symbol = new String(_symbol, UTF_8);
+      final var symbol = SerDeUtil.decodeString(_symbol);
       i += _symbol.length;
       final int _uriLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-      final var uri = new String(_uri, UTF_8);
-      return new AddLpTokensMetadataIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
+      final var uri = SerDeUtil.decodeString(_uri);
+      return new AddLpTokensMetadataIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
     }
 
     @Override
@@ -1755,9 +1753,9 @@ public final class ExponentCoreProgram {
                                             final String ptMetadataName,
                                             final String ptMetadataSymbol,
                                             final String ptMetadataUri) {
-    final byte[] _ptMetadataName = ptMetadataName.getBytes(UTF_8);
-    final byte[] _ptMetadataSymbol = ptMetadataSymbol.getBytes(UTF_8);
-    final byte[] _ptMetadataUri = ptMetadataUri.getBytes(UTF_8);
+    final byte[] _ptMetadataName = SerDeUtil.encodeString(ptMetadataName);
+    final byte[] _ptMetadataSymbol = SerDeUtil.encodeString(ptMetadataSymbol);
+    final byte[] _ptMetadataUri = SerDeUtil.encodeString(ptMetadataUri);
     final byte[] _data = new byte[39 + cpiAccounts.l() + _ptMetadataName.length + _ptMetadataSymbol.length + _ptMetadataUri.length];
     int i = INITIALIZE_VAULT_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) startTimestamp);
@@ -1820,9 +1818,9 @@ public final class ExponentCoreProgram {
                                        cpiAccounts,
                                        minOpSizeStrip,
                                        minOpSizeMerge,
-                                       ptMetadataName, ptMetadataName == null ? null : ptMetadataName.getBytes(UTF_8),
-                                       ptMetadataSymbol, ptMetadataSymbol == null ? null : ptMetadataSymbol.getBytes(UTF_8),
-                                       ptMetadataUri, ptMetadataUri == null ? null : ptMetadataUri.getBytes(UTF_8));
+                                       ptMetadataName, ptMetadataName == null ? null : SerDeUtil.encodeString(ptMetadataName),
+                                       ptMetadataSymbol, ptMetadataSymbol == null ? null : SerDeUtil.encodeString(ptMetadataSymbol),
+                                       ptMetadataUri, ptMetadataUri == null ? null : SerDeUtil.encodeString(ptMetadataUri));
     }
 
     public static InitializeVaultIxData read(final byte[] _data, final int _offset) {
@@ -1846,17 +1844,17 @@ public final class ExponentCoreProgram {
       final int _ptMetadataNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _ptMetadataName = Arrays.copyOfRange(_data, i, i + _ptMetadataNameLength);
-      final var ptMetadataName = new String(_ptMetadataName, UTF_8);
+      final var ptMetadataName = SerDeUtil.decodeString(_ptMetadataName);
       i += _ptMetadataName.length;
       final int _ptMetadataSymbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _ptMetadataSymbol = Arrays.copyOfRange(_data, i, i + _ptMetadataSymbolLength);
-      final var ptMetadataSymbol = new String(_ptMetadataSymbol, UTF_8);
+      final var ptMetadataSymbol = SerDeUtil.decodeString(_ptMetadataSymbol);
       i += _ptMetadataSymbol.length;
       final int _ptMetadataUriLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _ptMetadataUri = Arrays.copyOfRange(_data, i, i + _ptMetadataUriLength);
-      final var ptMetadataUri = new String(_ptMetadataUri, UTF_8);
+      final var ptMetadataUri = SerDeUtil.decodeString(_ptMetadataUri);
       return new InitializeVaultIxData(discriminator,
                                        startTimestamp,
                                        duration,
@@ -1864,9 +1862,9 @@ public final class ExponentCoreProgram {
                                        cpiAccounts,
                                        minOpSizeStrip,
                                        minOpSizeMerge,
-                                       ptMetadataName, ptMetadataName == null ? null : ptMetadataName.getBytes(UTF_8),
-                                       ptMetadataSymbol, ptMetadataSymbol == null ? null : ptMetadataSymbol.getBytes(UTF_8),
-                                       ptMetadataUri, ptMetadataUri == null ? null : ptMetadataUri.getBytes(UTF_8));
+                                       ptMetadataName, ptMetadataName == null ? null : SerDeUtil.encodeString(ptMetadataName),
+                                       ptMetadataSymbol, ptMetadataSymbol == null ? null : SerDeUtil.encodeString(ptMetadataSymbol),
+                                       ptMetadataUri, ptMetadataUri == null ? null : SerDeUtil.encodeString(ptMetadataUri));
     }
 
     @Override

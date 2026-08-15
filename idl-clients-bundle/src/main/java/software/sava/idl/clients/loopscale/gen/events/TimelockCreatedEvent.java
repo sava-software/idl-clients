@@ -7,8 +7,6 @@ import software.sava.idl.clients.loopscale.gen.types.TimelockUpdateParams;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt64LE;
@@ -33,8 +31,8 @@ public record TimelockCreatedEvent(Discriminator discriminator,
                                                   final long timelockInitTimestamp,
                                                   final long timelockExecutionDelay) {
     return new TimelockCreatedEvent(discriminator,
-                                    timelockAddress, timelockAddress == null ? null : timelockAddress.getBytes(UTF_8),
-                                    vaultAddress, vaultAddress == null ? null : vaultAddress.getBytes(UTF_8),
+                                    timelockAddress, timelockAddress == null ? null : SerDeUtil.encodeString(timelockAddress),
+                                    vaultAddress, vaultAddress == null ? null : SerDeUtil.encodeString(vaultAddress),
                                     timelockParams,
                                     timelockInitTimestamp,
                                     timelockExecutionDelay);
@@ -49,12 +47,12 @@ public record TimelockCreatedEvent(Discriminator discriminator,
     final int _timelockAddressLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _timelockAddress = Arrays.copyOfRange(_data, i, i + _timelockAddressLength);
-    final var timelockAddress = new String(_timelockAddress, UTF_8);
+    final var timelockAddress = SerDeUtil.decodeString(_timelockAddress);
     i += _timelockAddress.length;
     final int _vaultAddressLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _vaultAddress = Arrays.copyOfRange(_data, i, i + _vaultAddressLength);
-    final var vaultAddress = new String(_vaultAddress, UTF_8);
+    final var vaultAddress = SerDeUtil.decodeString(_vaultAddress);
     i += _vaultAddress.length;
     final var timelockParams = TimelockUpdateParams.read(_data, i);
     i += timelockParams.l();
@@ -62,8 +60,8 @@ public record TimelockCreatedEvent(Discriminator discriminator,
     i += 8;
     final var timelockExecutionDelay = getInt64LE(_data, i);
     return new TimelockCreatedEvent(discriminator,
-                                    timelockAddress, timelockAddress == null ? null : timelockAddress.getBytes(UTF_8),
-                                    vaultAddress, vaultAddress == null ? null : vaultAddress.getBytes(UTF_8),
+                                    timelockAddress, timelockAddress == null ? null : SerDeUtil.encodeString(timelockAddress),
+                                    vaultAddress, vaultAddress == null ? null : SerDeUtil.encodeString(vaultAddress),
                                     timelockParams,
                                     timelockInitTimestamp,
                                     timelockExecutionDelay);

@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -796,7 +794,7 @@ public final class StakeProgram {
                                               final StakeAuthorize stakeAuthorize,
                                               final String authoritySeed,
                                               final PublicKey authorityOwner) {
-    final byte[] _authoritySeed = authoritySeed.getBytes(UTF_8);
+    final byte[] _authoritySeed = SerDeUtil.encodeString(authoritySeed);
     final byte[] _data = new byte[68 + stakeAuthorize.l() + 8 + _authoritySeed.length];
     int i = AUTHORIZE_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     newAuthorizedPubkey.write(_data, i);
@@ -834,7 +832,7 @@ public final class StakeProgram {
       return new AuthorizeWithSeedIxData(discriminator,
                                          newAuthorizedPubkey,
                                          stakeAuthorize,
-                                         authoritySeed, authoritySeed.getBytes(UTF_8),
+                                         authoritySeed, SerDeUtil.encodeString(authoritySeed),
                                          authorityOwner);
     }
 
@@ -853,7 +851,7 @@ public final class StakeProgram {
       final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
-      final var authoritySeed = new String(_authoritySeed, UTF_8);
+      final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
       i += _authoritySeedLength;
       final var authorityOwner = readPubKey(_data, i);
       return new AuthorizeWithSeedIxData(discriminator,
@@ -1111,7 +1109,7 @@ public final class StakeProgram {
                                                      final StakeAuthorize stakeAuthorize,
                                                      final String authoritySeed,
                                                      final PublicKey authorityOwner) {
-    final byte[] _authoritySeed = authoritySeed.getBytes(UTF_8);
+    final byte[] _authoritySeed = SerDeUtil.encodeString(authoritySeed);
     final byte[] _data = new byte[36 + stakeAuthorize.l() + 8 + _authoritySeed.length];
     int i = AUTHORIZE_CHECKED_WITH_SEED_DISCRIMINATOR.write(_data, 0);
     i += stakeAuthorize.write(_data, i);
@@ -1143,7 +1141,7 @@ public final class StakeProgram {
                                                               final PublicKey authorityOwner) {
       return new AuthorizeCheckedWithSeedIxData(discriminator,
                                                 stakeAuthorize,
-                                                authoritySeed, authoritySeed.getBytes(UTF_8),
+                                                authoritySeed, SerDeUtil.encodeString(authoritySeed),
                                                 authorityOwner);
     }
 
@@ -1160,7 +1158,7 @@ public final class StakeProgram {
       final int _authoritySeedLength = Math.toIntExact(getInt64LE(_data, i));
       i += 8;
       final byte[] _authoritySeed = Arrays.copyOfRange(_data, i, i + _authoritySeedLength);
-      final var authoritySeed = new String(_authoritySeed, UTF_8);
+      final var authoritySeed = SerDeUtil.decodeString(_authoritySeed);
       i += _authoritySeedLength;
       final var authorityOwner = readPubKey(_data, i);
       return new AuthorizeCheckedWithSeedIxData(discriminator,

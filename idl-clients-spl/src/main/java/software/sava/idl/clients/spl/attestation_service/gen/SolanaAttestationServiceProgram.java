@@ -11,8 +11,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -62,7 +60,7 @@ public final class SolanaAttestationServiceProgram {
                                              final List<AccountMeta> keys,
                                              final String name,
                                              final PublicKey[] signers) {
-    final byte[] _name = name.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
     final byte[] _data = new byte[5 + _name.length + SerDeUtil.lenVector(4, signers)];
     int i = CREATE_CREDENTIAL_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _name, _data, i);
@@ -80,7 +78,7 @@ public final class SolanaAttestationServiceProgram {
     public static final int NAME_OFFSET = 1;
 
     public static CreateCredentialIxData createRecord(final Discriminator discriminator, final String name, final PublicKey[] signers) {
-      return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
+      return new CreateCredentialIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), signers);
     }
 
     public static CreateCredentialIxData read(final byte[] _data, final int _offset) {
@@ -92,10 +90,10 @@ public final class SolanaAttestationServiceProgram {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _name.length;
       final var signers = SerDeUtil.readPublicKeyVector(4, _data, i);
-      return new CreateCredentialIxData(discriminator, name, name == null ? null : name.getBytes(UTF_8), signers);
+      return new CreateCredentialIxData(discriminator, name, name == null ? null : SerDeUtil.encodeString(name), signers);
     }
 
     @Override
@@ -163,8 +161,8 @@ public final class SolanaAttestationServiceProgram {
                                          final String description,
                                          final byte[] layout,
                                          final String[] fieldNames) {
-    final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _description = description.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _description = SerDeUtil.encodeString(description);
     final byte[] _data = new byte[9 + _name.length + _description.length + SerDeUtil.lenVector(4, layout) + SerDeUtil.lenVector(4, 4, fieldNames)];
     int i = CREATE_SCHEMA_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _name, _data, i);
@@ -193,8 +191,8 @@ public final class SolanaAttestationServiceProgram {
                                                   final byte[] layout,
                                                   final String[] fieldNames) {
       return new CreateSchemaIxData(discriminator,
-                                    name, name == null ? null : name.getBytes(UTF_8),
-                                    description, description == null ? null : description.getBytes(UTF_8),
+                                    name, name == null ? null : SerDeUtil.encodeString(name),
+                                    description, description == null ? null : SerDeUtil.encodeString(description),
                                     layout,
                                     fieldNames);
     }
@@ -208,19 +206,19 @@ public final class SolanaAttestationServiceProgram {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _name.length;
       final int _descriptionLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
-      final var description = new String(_description, UTF_8);
+      final var description = SerDeUtil.decodeString(_description);
       i += _description.length;
       final var layout = SerDeUtil.readbyteVector(4, _data, i);
       i += SerDeUtil.lenVector(4, layout);
       final var fieldNames = SerDeUtil.readStringVector(4, 4, _data, i);
       return new CreateSchemaIxData(discriminator,
-                                    name, name == null ? null : name.getBytes(UTF_8),
-                                    description, description == null ? null : description.getBytes(UTF_8),
+                                    name, name == null ? null : SerDeUtil.encodeString(name),
+                                    description, description == null ? null : SerDeUtil.encodeString(description),
                                     layout,
                                     fieldNames);
     }
@@ -426,7 +424,7 @@ public final class SolanaAttestationServiceProgram {
   public static Instruction changeSchemaDescription(final AccountMeta invokedSolanaAttestationServiceProgramMeta,
                                                     final List<AccountMeta> keys,
                                                     final String description) {
-    final byte[] _description = description.getBytes(UTF_8);
+    final byte[] _description = SerDeUtil.encodeString(description);
     final byte[] _data = new byte[5 + _description.length];
     int i = CHANGE_SCHEMA_DESCRIPTION_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, _description, _data, i);
@@ -443,7 +441,7 @@ public final class SolanaAttestationServiceProgram {
     public static final int DESCRIPTION_OFFSET = 1;
 
     public static ChangeSchemaDescriptionIxData createRecord(final Discriminator discriminator, final String description) {
-      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
+      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : SerDeUtil.encodeString(description));
     }
 
     public static ChangeSchemaDescriptionIxData read(final byte[] _data, final int _offset) {
@@ -455,8 +453,8 @@ public final class SolanaAttestationServiceProgram {
       final int _descriptionLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _description = Arrays.copyOfRange(_data, i, i + _descriptionLength);
-      final var description = new String(_description, UTF_8);
-      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : description.getBytes(UTF_8));
+      final var description = SerDeUtil.decodeString(_description);
+      return new ChangeSchemaDescriptionIxData(discriminator, description, description == null ? null : SerDeUtil.encodeString(description));
     }
 
     @Override
@@ -920,9 +918,9 @@ public final class SolanaAttestationServiceProgram {
                                                        final String uri,
                                                        final String symbol,
                                                        final int mintAccountSpace) {
-    final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _uri = uri.getBytes(UTF_8);
-    final byte[] _symbol = symbol.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _uri = SerDeUtil.encodeString(uri);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
     final byte[] _data = new byte[55 + SerDeUtil.lenVector(4, data) + _name.length + _uri.length + _symbol.length];
     int i = CREATE_TOKENIZED_ATTESTATION_DISCRIMINATOR.write(_data, 0);
     nonce.write(_data, i);
@@ -967,9 +965,9 @@ public final class SolanaAttestationServiceProgram {
                                                   nonce,
                                                   data,
                                                   expiry,
-                                                  name, name == null ? null : name.getBytes(UTF_8),
-                                                  uri, uri == null ? null : uri.getBytes(UTF_8),
-                                                  symbol, symbol == null ? null : symbol.getBytes(UTF_8),
+                                                  name, name == null ? null : SerDeUtil.encodeString(name),
+                                                  uri, uri == null ? null : SerDeUtil.encodeString(uri),
+                                                  symbol, symbol == null ? null : SerDeUtil.encodeString(symbol),
                                                   mintAccountSpace);
     }
 
@@ -988,26 +986,26 @@ public final class SolanaAttestationServiceProgram {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _name.length;
       final int _uriLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-      final var uri = new String(_uri, UTF_8);
+      final var uri = SerDeUtil.decodeString(_uri);
       i += _uri.length;
       final int _symbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-      final var symbol = new String(_symbol, UTF_8);
+      final var symbol = SerDeUtil.decodeString(_symbol);
       i += _symbol.length;
       final var mintAccountSpace = Short.toUnsignedInt(getInt16LE(_data, i));
       return new CreateTokenizedAttestationIxData(discriminator,
                                                   nonce,
                                                   data,
                                                   expiry,
-                                                  name, name == null ? null : name.getBytes(UTF_8),
-                                                  uri, uri == null ? null : uri.getBytes(UTF_8),
-                                                  symbol, symbol == null ? null : symbol.getBytes(UTF_8),
+                                                  name, name == null ? null : SerDeUtil.encodeString(name),
+                                                  uri, uri == null ? null : SerDeUtil.encodeString(uri),
+                                                  symbol, symbol == null ? null : SerDeUtil.encodeString(symbol),
                                                   mintAccountSpace);
     }
 

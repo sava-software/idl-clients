@@ -12,8 +12,6 @@ import software.sava.idl.clients.kamino.scope.gen.types.UpdateOracleMappingAndMe
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -73,7 +71,7 @@ public final class ScopeProgram {
   public static Instruction initialize(final AccountMeta invokedScopeProgramMeta,
                                        final List<AccountMeta> keys,
                                        final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[12 + _feedName.length];
     int i = INITIALIZE_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, _feedName, _data, i);
@@ -90,7 +88,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 8;
 
     public static InitializeIxData createRecord(final Discriminator discriminator, final String feedName) {
-      return new InitializeIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new InitializeIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static InitializeIxData read(final byte[] _data, final int _offset) {
@@ -102,8 +100,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new InitializeIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new InitializeIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -477,7 +475,7 @@ public final class ScopeProgram {
                                                      final List<AccountMeta> keys,
                                                      final String feedName,
                                                      final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[12 + _feedName.length + SerDeUtil.lenVector(4, updates)];
     int i = UPDATE_MAPPING_AND_METADATA_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _feedName, _data, i);
@@ -495,7 +493,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 8;
 
     public static UpdateMappingAndMetadataIxData createRecord(final Discriminator discriminator, final String feedName, final UpdateOracleMappingAndMetadataEntriesWithId[] updates) {
-      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8), updates);
+      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), updates);
     }
 
     public static UpdateMappingAndMetadataIxData read(final byte[] _data, final int _offset) {
@@ -507,10 +505,10 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
+      final var feedName = SerDeUtil.decodeString(_feedName);
       i += _feedName.length;
       final var updates = SerDeUtil.readVector(4, UpdateOracleMappingAndMetadataEntriesWithId.class, UpdateOracleMappingAndMetadataEntriesWithId::read, _data, i);
-      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8), updates);
+      return new UpdateMappingAndMetadataIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), updates);
     }
 
     @Override
@@ -563,7 +561,7 @@ public final class ScopeProgram {
                                       final List<AccountMeta> keys,
                                       final long token,
                                       final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[20 + _feedName.length];
     int i = RESET_TWAP_DISCRIMINATOR.write(_data, 0);
     putInt64LE(_data, i, token);
@@ -584,7 +582,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 16;
 
     public static ResetTwapIxData createRecord(final Discriminator discriminator, final long token, final String feedName) {
-      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static ResetTwapIxData read(final byte[] _data, final int _offset) {
@@ -598,8 +596,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new ResetTwapIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -643,7 +641,7 @@ public final class ScopeProgram {
                                            final List<AccountMeta> keys,
                                            final PublicKey newAdmin,
                                            final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[44 + _feedName.length];
     int i = SET_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
     newAdmin.write(_data, i);
@@ -663,7 +661,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 40;
 
     public static SetAdminCachedIxData createRecord(final Discriminator discriminator, final PublicKey newAdmin, final String feedName) {
-      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static SetAdminCachedIxData read(final byte[] _data, final int _offset) {
@@ -677,8 +675,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new SetAdminCachedIxData(discriminator, newAdmin, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -720,7 +718,7 @@ public final class ScopeProgram {
   public static Instruction approveAdminCached(final AccountMeta invokedScopeProgramMeta,
                                                final List<AccountMeta> keys,
                                                final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[12 + _feedName.length];
     int i = APPROVE_ADMIN_CACHED_DISCRIMINATOR.write(_data, 0);
     SerDeUtil.writeVector(4, _feedName, _data, i);
@@ -737,7 +735,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 8;
 
     public static ApproveAdminCachedIxData createRecord(final Discriminator discriminator, final String feedName) {
-      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static ApproveAdminCachedIxData read(final byte[] _data, final int _offset) {
@@ -749,8 +747,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new ApproveAdminCachedIxData(discriminator, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -960,7 +958,7 @@ public final class ScopeProgram {
                                                   final List<AccountMeta> keys,
                                                   final int token,
                                                   final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[14 + _feedName.length];
     int i = RESUME_CHAINLINKX_PRICE_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, token);
@@ -981,7 +979,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 10;
 
     public static ResumeChainlinkxPriceIxData createRecord(final Discriminator discriminator, final int token, final String feedName) {
-      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static ResumeChainlinkxPriceIxData read(final byte[] _data, final int _offset) {
@@ -995,8 +993,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new ResumeChainlinkxPriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -1054,7 +1052,7 @@ public final class ScopeProgram {
                                         final int token,
                                         final String feedName,
                                         final boolean freeze) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[15 + _feedName.length];
     int i = FREEZE_PRICE_DISCRIMINATOR.write(_data, 0);
     putInt16LE(_data, i, token);
@@ -1082,7 +1080,7 @@ public final class ScopeProgram {
                                                  final int token,
                                                  final String feedName,
                                                  final boolean freeze) {
-      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8), freeze);
+      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), freeze);
     }
 
     public static FreezePriceIxData read(final byte[] _data, final int _offset) {
@@ -1096,10 +1094,10 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
+      final var feedName = SerDeUtil.decodeString(_feedName);
       i += _feedName.length;
       final var freeze = _data[i] == 1;
-      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : feedName.getBytes(UTF_8), freeze);
+      return new FreezePriceIxData(discriminator, token, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName), freeze);
     }
 
     @Override
@@ -1145,7 +1143,7 @@ public final class ScopeProgram {
                                                 final List<AccountMeta> keys,
                                                 final PublicKey newEmergencyCouncil,
                                                 final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[44 + _feedName.length];
     int i = SET_EMERGENCY_COUNCIL_DISCRIMINATOR.write(_data, 0);
     newEmergencyCouncil.write(_data, i);
@@ -1165,7 +1163,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 40;
 
     public static SetEmergencyCouncilIxData createRecord(final Discriminator discriminator, final PublicKey newEmergencyCouncil, final String feedName) {
-      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static SetEmergencyCouncilIxData read(final byte[] _data, final int _offset) {
@@ -1179,8 +1177,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new SetEmergencyCouncilIxData(discriminator, newEmergencyCouncil, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override
@@ -1224,7 +1222,7 @@ public final class ScopeProgram {
                                                final List<AccountMeta> keys,
                                                final PublicKey newResumeAuthority,
                                                final String feedName) {
-    final byte[] _feedName = feedName.getBytes(UTF_8);
+    final byte[] _feedName = SerDeUtil.encodeString(feedName);
     final byte[] _data = new byte[44 + _feedName.length];
     int i = SET_RESUME_AUTHORITY_DISCRIMINATOR.write(_data, 0);
     newResumeAuthority.write(_data, i);
@@ -1244,7 +1242,7 @@ public final class ScopeProgram {
     public static final int FEED_NAME_OFFSET = 40;
 
     public static SetResumeAuthorityIxData createRecord(final Discriminator discriminator, final PublicKey newResumeAuthority, final String feedName) {
-      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     public static SetResumeAuthorityIxData read(final byte[] _data, final int _offset) {
@@ -1258,8 +1256,8 @@ public final class ScopeProgram {
       final int _feedNameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _feedName = Arrays.copyOfRange(_data, i, i + _feedNameLength);
-      final var feedName = new String(_feedName, UTF_8);
-      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : feedName.getBytes(UTF_8));
+      final var feedName = SerDeUtil.decodeString(_feedName);
+      return new SetResumeAuthorityIxData(discriminator, newResumeAuthority, feedName, feedName == null ? null : SerDeUtil.encodeString(feedName));
     }
 
     @Override

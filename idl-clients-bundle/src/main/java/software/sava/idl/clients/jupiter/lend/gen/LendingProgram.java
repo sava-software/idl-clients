@@ -14,8 +14,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static java.util.Objects.requireNonNullElse;
 
 import static software.sava.core.accounts.PublicKey.readPubKey;
@@ -357,7 +355,7 @@ public final class LendingProgram {
                                         final List<AccountMeta> keys,
                                         final String symbol,
                                         final PublicKey liquidityProgram) {
-    final byte[] _symbol = symbol.getBytes(UTF_8);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
     final byte[] _data = new byte[44 + _symbol.length];
     int i = INIT_LENDING_DISCRIMINATOR.write(_data, 0);
     i += SerDeUtil.writeVector(4, _symbol, _data, i);
@@ -375,7 +373,7 @@ public final class LendingProgram {
     public static final int SYMBOL_OFFSET = 8;
 
     public static InitLendingIxData createRecord(final Discriminator discriminator, final String symbol, final PublicKey liquidityProgram) {
-      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : symbol.getBytes(UTF_8), liquidityProgram);
+      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), liquidityProgram);
     }
 
     public static InitLendingIxData read(final byte[] _data, final int _offset) {
@@ -387,10 +385,10 @@ public final class LendingProgram {
       final int _symbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-      final var symbol = new String(_symbol, UTF_8);
+      final var symbol = SerDeUtil.decodeString(_symbol);
       i += _symbol.length;
       final var liquidityProgram = readPubKey(_data, i);
-      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : symbol.getBytes(UTF_8), liquidityProgram);
+      return new InitLendingIxData(discriminator, symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), liquidityProgram);
     }
 
     @Override

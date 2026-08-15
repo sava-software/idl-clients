@@ -6,8 +6,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.OptionalInt;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt16LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.putInt16LE;
@@ -190,7 +188,7 @@ public sealed interface UpdateOracleMappingAndMetadataEntry extends RustEnum per
   record MetadataName(byte[] val, java.lang.String _val) implements EnumString, UpdateOracleMappingAndMetadataEntry {
 
     public static MetadataName createRecord(final java.lang.String val) {
-      return new MetadataName(val.getBytes(UTF_8), val);
+      return new MetadataName(SerDeUtil.encodeString(val), val);
     }
 
     public static MetadataName read(final byte[] data, final int _offset) {

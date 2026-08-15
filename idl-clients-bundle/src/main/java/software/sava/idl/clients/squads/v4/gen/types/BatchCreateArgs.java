@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /// @param vaultIndex: u8 Index of the vault this transaction belongs to.
 /// @param memo: Option<string>
 public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) implements SerDe {
@@ -17,7 +15,7 @@ public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) impleme
   public static final int MEMO_OFFSET = 2;
 
   public static BatchCreateArgs createRecord(final int vaultIndex, final String memo) {
-    return new BatchCreateArgs(vaultIndex, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new BatchCreateArgs(vaultIndex, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static BatchCreateArgs read(final byte[] _data, final int _offset) {
@@ -37,7 +35,7 @@ public record BatchCreateArgs(int vaultIndex, String memo, byte[] _memo) impleme
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new BatchCreateArgs(vaultIndex, memo, _memo);

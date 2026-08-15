@@ -11,8 +11,6 @@ import software.sava.rpc.json.http.response.AccountInfo;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -44,7 +42,7 @@ public record ProposalMeta(PublicKey _address,
                                           final PublicKey proposal,
                                           final String title,
                                           final String descriptionLink) {
-    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : SerDeUtil.encodeString(title), descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
   }
 
   public static ProposalMeta read(final byte[] _data, final int _offset) {
@@ -72,13 +70,13 @@ public record ProposalMeta(PublicKey _address,
     final int _titleLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
-    final var title = new String(_title, UTF_8);
+    final var title = SerDeUtil.decodeString(_title);
     i += _title.length;
     final int _descriptionLinkLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
-    final var descriptionLink = new String(_descriptionLink, UTF_8);
-    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+    final var descriptionLink = SerDeUtil.decodeString(_descriptionLink);
+    return new ProposalMeta(_address, discriminator, proposal, title, title == null ? null : SerDeUtil.encodeString(title), descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
   }
 
   @Override

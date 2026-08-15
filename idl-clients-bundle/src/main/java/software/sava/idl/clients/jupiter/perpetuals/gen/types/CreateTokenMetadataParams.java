@@ -6,8 +6,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 
 public record CreateTokenMetadataParams(String name, byte[] _name,
@@ -19,7 +17,7 @@ public record CreateTokenMetadataParams(String name, byte[] _name,
   public static CreateTokenMetadataParams createRecord(final String name,
                                                        final String symbol,
                                                        final String uri) {
-    return new CreateTokenMetadataParams(name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
+    return new CreateTokenMetadataParams(name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
   }
 
   public static CreateTokenMetadataParams read(final byte[] _data, final int _offset) {
@@ -30,18 +28,18 @@ public record CreateTokenMetadataParams(String name, byte[] _name,
     final int _nameLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-    final var name = new String(_name, UTF_8);
+    final var name = SerDeUtil.decodeString(_name);
     i += _name.length;
     final int _symbolLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-    final var symbol = new String(_symbol, UTF_8);
+    final var symbol = SerDeUtil.decodeString(_symbol);
     i += _symbol.length;
     final int _uriLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-    final var uri = new String(_uri, UTF_8);
-    return new CreateTokenMetadataParams(name, name == null ? null : name.getBytes(UTF_8), symbol, symbol == null ? null : symbol.getBytes(UTF_8), uri, uri == null ? null : uri.getBytes(UTF_8));
+    final var uri = SerDeUtil.decodeString(_uri);
+    return new CreateTokenMetadataParams(name, name == null ? null : SerDeUtil.encodeString(name), symbol, symbol == null ? null : SerDeUtil.encodeString(symbol), uri, uri == null ? null : SerDeUtil.encodeString(uri));
   }
 
   @Override

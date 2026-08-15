@@ -6,6 +6,8 @@ import software.sava.core.encoding.ByteUtil;
 
 import java.lang.reflect.Array;
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -104,7 +106,11 @@ public final class SerDeUtil {
     if (i < from) {
       return null;
     } else {
-      final var str = new String(data, from, (i - from) + 1);
+      // A fixed-width on-chain field is not a Borsh string: it carries no length prefix,
+      // its trailing padding is trimmed above, and a partially written field can end
+      // mid-sequence — so this one stays lenient. Only the charset is pinned, because a
+      // wire format must not depend on the platform default.
+      final var str = new String(data, from, (i - from) + 1, StandardCharsets.UTF_8);
       return str.isBlank() ? null : str;
     }
   }
@@ -388,24 +394,78 @@ public final class SerDeUtil {
   }
 
   // Strings
+  //
+  // Borsh strings are UTF-8 on the wire, matching Rust `String`. Readers reject bytes
+  // the charset cannot represent: Rust's `String::from_utf8` is strict, so a Rust
+  // program never wrote them, and `String(byte[], Charset)` would substitute U+FFFD and
+  // return a value that re-encodes to a different length than the one just read.
+  // Writers reject unpaired UTF-16 surrogates, which a Java `String` can hold and a Rust
+  // `String` cannot; the default encoder substitutes `?` for them, changing the value
+  // without telling the caller.
 
+  /// @throws IllegalArgumentException if the bytes are not valid UTF-8
+  public static String decodeString(final byte[] data) {
+    return decodeString(data, 0, data.length, StandardCharsets.UTF_8);
+  }
+
+  /// @throws IllegalArgumentException if the bytes are not valid UTF-8
+  public static String decodeString(final byte[] data, final int offset, final int len) {
+    return decodeString(data, offset, len, StandardCharsets.UTF_8);
+  }
+
+  /// @throws IllegalArgumentException if the bytes cannot be decoded by `charset`
+  public static String decodeString(final byte[] data, final int offset, final int len, final Charset charset) {
+    try {
+      // A fresh decoder reports malformed and unmappable input; the shared decoder
+      // behind String(byte[], Charset) replaces it.
+      return charset.newDecoder().decode(ByteBuffer.wrap(data, offset, len)).toString();
+    } catch (final CharacterCodingException e) {
+      throw new IllegalArgumentException("Invalid " + charset.name() + " string.", e);
+    }
+  }
+
+  /// @throws IllegalArgumentException if `str` contains unpaired UTF-16 surrogates
+  public static byte[] encodeString(final String str) {
+    return encodeString(str, StandardCharsets.UTF_8);
+  }
+
+  /// @throws IllegalArgumentException if `str` contains unpaired UTF-16 surrogates
+  public static byte[] encodeString(final String str, final Charset charset) {
+    // Scan the Java String's UTF-16 code units once and skip the low half of a recognized
+    // pair. A surrogate is legal only as a high immediately followed by a low; anything
+    // else is not a Unicode scalar value, so no charset can encode it.
+    final int length = str.length();
+    for (int i = 0; i < length; ++i) {
+      final char c = str.charAt(i);
+      if (c >= Character.MIN_SURROGATE && c <= Character.MAX_SURROGATE) {
+        if (!Character.isHighSurrogate(c) || ++i >= length || !Character.isLowSurrogate(str.charAt(i))) {
+          throw new IllegalArgumentException("Unpaired UTF-16 surrogate in string.");
+        }
+      }
+    }
+    return str.getBytes(charset);
+  }
+
+  /// @throws IllegalArgumentException if the encoded value cannot be decoded by `charset`
   public static String readString(final int prefixBytes,
                                   final byte[] data,
                                   final int offset,
                                   final Charset charset) {
     final int len = readLen(prefixBytes, data, offset);
-    return new String(data, offset + prefixBytes, len, charset);
+    return decodeString(data, offset + prefixBytes, len, charset);
   }
 
+  /// @throws IllegalArgumentException if the encoded value is not valid UTF-8
   public static String readString(final int prefixBytes,
                                   final byte[] data,
                                   final int offset) {
     final int len = readLen(prefixBytes, data, offset);
-    return new String(data, offset + prefixBytes, len, StandardCharsets.UTF_8);
+    return decodeString(data, offset + prefixBytes, len, StandardCharsets.UTF_8);
   }
 
+  /// @throws IllegalArgumentException if `str` contains unpaired UTF-16 surrogates
   public static byte[] getBytes(final String str, final Charset charset) {
-    return str == null || str.isBlank() ? null : str.getBytes(charset);
+    return str == null || str.isBlank() ? null : encodeString(str, charset);
   }
 
   public static byte[][] getBytes(final String[] strings, final Charset charset) {
@@ -417,8 +477,9 @@ public final class SerDeUtil {
     return bytes;
   }
 
+  /// @throws IllegalArgumentException if `val` contains unpaired UTF-16 surrogates
   public static int len(final int prefix, final String val, final Charset charset) {
-    final int len = val.getBytes(charset).length;
+    final int len = encodeString(val, charset).length;
     return prefix + len;
   }
 
@@ -461,7 +522,7 @@ public final class SerDeUtil {
     for (int i = 0, len; i < result.length; ++i) {
       len = readLen(stringPrefix, data, o);
       o += stringPrefix;
-      s = new String(data, o, len, charset);
+      s = decodeString(data, o, len, charset);
       result[i] = s;
       o += len;
     }
@@ -528,7 +589,7 @@ public final class SerDeUtil {
                           final byte[] data,
                           final int offset,
                           final Charset charset) {
-    return writeVector(stringPrefix, str.getBytes(charset), data, offset);
+    return writeVector(stringPrefix, encodeString(str, charset), data, offset);
   }
 
   public static int writeArray(final int stringPrefix,
@@ -3205,7 +3266,7 @@ public final class SerDeUtil {
     for (int i = 0, o = offset + vectorPrefix, strLen; i < len; ++i) {
       strLen = readLen(stringPrefix, data, o);
       o += stringPrefix;
-      result.add(new String(data, o, strLen, StandardCharsets.UTF_8));
+      result.add(decodeString(data, o, strLen, StandardCharsets.UTF_8));
       o += strLen;
     }
     return result;

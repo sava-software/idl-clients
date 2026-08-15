@@ -15,8 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -2545,7 +2543,7 @@ public final class TokenProgram {
   public static Instruction uiAmountToAmount(final AccountMeta invokedTokenProgramMeta,
                                              final List<AccountMeta> keys,
                                              final String uiAmount) {
-    final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
+    final byte[] _uiAmount = SerDeUtil.encodeString(uiAmount);
     final byte[] _data = new byte[1 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
     System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
@@ -2571,7 +2569,7 @@ public final class TokenProgram {
     public static final int UI_AMOUNT_OFFSET = 1;
 
     public static UiAmountToAmountIxData createRecord(final int discriminator, final String uiAmount) {
-      return new UiAmountToAmountIxData(discriminator, uiAmount, uiAmount.getBytes(UTF_8));
+      return new UiAmountToAmountIxData(discriminator, uiAmount, SerDeUtil.encodeString(uiAmount));
     }
 
     public static UiAmountToAmountIxData read(final byte[] _data, final int _offset) {
@@ -2584,7 +2582,7 @@ public final class TokenProgram {
       ++i;
       final int _uiAmountLength = _data.length - i;
       final byte[] _uiAmount = Arrays.copyOfRange(_data, i, i + _uiAmountLength);
-      final var uiAmount = new String(_uiAmount, UTF_8);
+      final var uiAmount = SerDeUtil.decodeString(_uiAmount);
       return new UiAmountToAmountIxData(discriminator, uiAmount, _uiAmount);
     }
 

@@ -7,15 +7,13 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /// @param memo: Option<string>
 public record ConfigTransactionCreateArgs(ConfigAction[] actions, String memo, byte[] _memo) implements SerDe {
 
   public static final int ACTIONS_OFFSET = 0;
 
   public static ConfigTransactionCreateArgs createRecord(final ConfigAction[] actions, final String memo) {
-    return new ConfigTransactionCreateArgs(actions, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new ConfigTransactionCreateArgs(actions, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static ConfigTransactionCreateArgs read(final byte[] _data, final int _offset) {
@@ -35,7 +33,7 @@ public record ConfigTransactionCreateArgs(ConfigAction[] actions, String memo, b
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new ConfigTransactionCreateArgs(actions, memo, _memo);

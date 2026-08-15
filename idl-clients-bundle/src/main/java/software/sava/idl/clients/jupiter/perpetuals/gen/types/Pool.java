@@ -13,8 +13,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.encoding.ByteUtil.getInt64LE;
 import static software.sava.core.encoding.ByteUtil.getUInt128LE;
@@ -72,7 +70,7 @@ public record Pool(PublicKey _address,
                                   final long aumUsdRefreshedAtSlot) {
     return new Pool(_address,
                     discriminator,
-                    name, name == null ? null : name.getBytes(UTF_8),
+                    name, name == null ? null : SerDeUtil.encodeString(name),
                     custodies,
                     aumUsd,
                     limit,
@@ -113,7 +111,7 @@ public record Pool(PublicKey _address,
     final int _nameLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-    final var name = new String(_name, UTF_8);
+    final var name = SerDeUtil.decodeString(_name);
     i += _name.length;
     final var custodies = SerDeUtil.readPublicKeyVector(4, _data, i);
     i += SerDeUtil.lenVector(4, custodies);
@@ -146,7 +144,7 @@ public record Pool(PublicKey _address,
     final var aumUsdRefreshedAtSlot = getInt64LE(_data, i);
     return new Pool(_address,
                     discriminator,
-                    name, name == null ? null : name.getBytes(UTF_8),
+                    name, name == null ? null : SerDeUtil.encodeString(name),
                     custodies,
                     aumUsd,
                     limit,

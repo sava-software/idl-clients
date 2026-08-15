@@ -6,7 +6,6 @@ import software.sava.idl.clients.core.gen.Factory;
 import software.sava.idl.clients.core.gen.SerDe;
 import software.sava.idl.clients.core.gen.SerDeUtil;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -30,7 +29,7 @@ final class MapSerDe {
   /// rather than above every BMP code point. Comparing the encoded keys is what
   /// reproduces the on-chain byte order for every key set.
   private static int compareKeys(final String a, final String b) {
-    return Arrays.compareUnsigned(a.getBytes(StandardCharsets.UTF_8), b.getBytes(StandardCharsets.UTF_8));
+    return Arrays.compareUnsigned(SerDeUtil.encodeString(a), SerDeUtil.encodeString(b));
   }
 
   private static <V> List<Map.Entry<String, V>> sortedEntries(final Map<String, V> map) {
@@ -66,7 +65,7 @@ final class MapSerDe {
     for (int e = 0, i = offset + mapPrefix, keyLen; e < numEntries; ++e) {
       keyLen = SerDeUtil.readLen(keyPrefix, data, i);
       i += keyPrefix;
-      final var key = new String(data, i, keyLen, StandardCharsets.UTF_8);
+      final var key = SerDeUtil.decodeString(data, i, keyLen);
       i += keyLen;
       final var value = factory.read(data, i);
       map.put(key, value);
@@ -107,11 +106,11 @@ final class MapSerDe {
     for (int e = 0, i = offset + mapPrefix, strLen; e < numEntries; ++e) {
       strLen = SerDeUtil.readLen(keyPrefix, data, i);
       i += keyPrefix;
-      final var key = new String(data, i, strLen, StandardCharsets.UTF_8);
+      final var key = SerDeUtil.decodeString(data, i, strLen);
       i += strLen;
       strLen = SerDeUtil.readLen(valuePrefix, data, i);
       i += valuePrefix;
-      map.put(key, new String(data, i, strLen, StandardCharsets.UTF_8));
+      map.put(key, SerDeUtil.decodeString(data, i, strLen));
       i += strLen;
     }
     return map;

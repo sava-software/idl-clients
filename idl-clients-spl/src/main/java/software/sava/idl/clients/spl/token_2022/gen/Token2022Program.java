@@ -20,8 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.OptionalLong;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -2558,7 +2556,7 @@ public final class Token2022Program {
   public static Instruction uiAmountToAmount(final AccountMeta invokedToken2022ProgramMeta,
                                              final List<AccountMeta> keys,
                                              final String uiAmount) {
-    final byte[] _uiAmount = uiAmount.getBytes(UTF_8);
+    final byte[] _uiAmount = SerDeUtil.encodeString(uiAmount);
     final byte[] _data = new byte[1 + _uiAmount.length];
     int i = UI_AMOUNT_TO_AMOUNT_DISCRIMINATOR.write(_data, 0);
     System.arraycopy(_uiAmount, 0, _data, i, _uiAmount.length);
@@ -2584,7 +2582,7 @@ public final class Token2022Program {
     public static final int UI_AMOUNT_OFFSET = 1;
 
     public static UiAmountToAmountIxData createRecord(final int discriminator, final String uiAmount) {
-      return new UiAmountToAmountIxData(discriminator, uiAmount, uiAmount.getBytes(UTF_8));
+      return new UiAmountToAmountIxData(discriminator, uiAmount, SerDeUtil.encodeString(uiAmount));
     }
 
     public static UiAmountToAmountIxData read(final byte[] _data, final int _offset) {
@@ -2597,7 +2595,7 @@ public final class Token2022Program {
       ++i;
       final int _uiAmountLength = _data.length - i;
       final byte[] _uiAmount = Arrays.copyOfRange(_data, i, i + _uiAmountLength);
-      final var uiAmount = new String(_uiAmount, UTF_8);
+      final var uiAmount = SerDeUtil.decodeString(_uiAmount);
       return new UiAmountToAmountIxData(discriminator, uiAmount, _uiAmount);
     }
 
@@ -10754,9 +10752,9 @@ public final class Token2022Program {
                                                     final String name,
                                                     final String symbol,
                                                     final String uri) {
-    final byte[] _name = name.getBytes(UTF_8);
-    final byte[] _symbol = symbol.getBytes(UTF_8);
-    final byte[] _uri = uri.getBytes(UTF_8);
+    final byte[] _name = SerDeUtil.encodeString(name);
+    final byte[] _symbol = SerDeUtil.encodeString(symbol);
+    final byte[] _uri = SerDeUtil.encodeString(uri);
     final byte[] _data = new byte[8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length];
     int i = INITIALIZE_TOKEN_METADATA_DISCRIMINATOR.write(_data, 0);
     putInt32LE(_data, i, (int) _name.length);
@@ -10801,9 +10799,9 @@ public final class Token2022Program {
                                                              final String symbol,
                                                              final String uri) {
       return new InitializeTokenMetadataIxData(checkMaxLength(discriminator, 8),
-                                               name, name.getBytes(UTF_8),
-                                               symbol, symbol.getBytes(UTF_8),
-                                               uri, uri.getBytes(UTF_8));
+                                               name, SerDeUtil.encodeString(name),
+                                               symbol, SerDeUtil.encodeString(symbol),
+                                               uri, SerDeUtil.encodeString(uri));
     }
 
     public static InitializeTokenMetadataIxData read(final byte[] _data, final int _offset) {
@@ -10819,17 +10817,17 @@ public final class Token2022Program {
       final int _nameLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _name = Arrays.copyOfRange(_data, i, i + _nameLength);
-      final var name = new String(_name, UTF_8);
+      final var name = SerDeUtil.decodeString(_name);
       i += _nameLength;
       final int _symbolLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _symbol = Arrays.copyOfRange(_data, i, i + _symbolLength);
-      final var symbol = new String(_symbol, UTF_8);
+      final var symbol = SerDeUtil.decodeString(_symbol);
       i += _symbolLength;
       final int _uriLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _uri = Arrays.copyOfRange(_data, i, i + _uriLength);
-      final var uri = new String(_uri, UTF_8);
+      final var uri = SerDeUtil.decodeString(_uri);
       return new InitializeTokenMetadataIxData(checkMaxLength(discriminator, 8),
                                                name, _name,
                                                symbol, _symbol,
@@ -10943,7 +10941,7 @@ public final class Token2022Program {
                                                      final List<AccountMeta> keys,
                                                      final TokenMetadataField field,
                                                      final String value) {
-    final byte[] _value = value.getBytes(UTF_8);
+    final byte[] _value = SerDeUtil.encodeString(value);
     final byte[] _data = new byte[8 + field.l() + 4 + _value.length];
     int i = UPDATE_TOKEN_METADATA_FIELD_DISCRIMINATOR.write(_data, 0);
     i += field.write(_data, i);
@@ -10984,7 +10982,7 @@ public final class Token2022Program {
     public static UpdateTokenMetadataFieldIxData createRecord(final byte[] discriminator,
                                                               final TokenMetadataField field,
                                                               final String value) {
-      return new UpdateTokenMetadataFieldIxData(checkMaxLength(discriminator, 8), field, value, value.getBytes(UTF_8));
+      return new UpdateTokenMetadataFieldIxData(checkMaxLength(discriminator, 8), field, value, SerDeUtil.encodeString(value));
     }
 
     public static UpdateTokenMetadataFieldIxData read(final byte[] _data, final int _offset) {
@@ -11002,7 +11000,7 @@ public final class Token2022Program {
       final int _valueLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _value = Arrays.copyOfRange(_data, i, i + _valueLength);
-      final var value = new String(_value, UTF_8);
+      final var value = SerDeUtil.decodeString(_value);
       return new UpdateTokenMetadataFieldIxData(checkMaxLength(discriminator, 8), field, value, _value);
     }
 
@@ -11093,7 +11091,7 @@ public final class Token2022Program {
                                                    final List<AccountMeta> keys,
                                                    final boolean idempotent,
                                                    final String key) {
-    final byte[] _key = key.getBytes(UTF_8);
+    final byte[] _key = SerDeUtil.encodeString(key);
     final byte[] _data = new byte[9 + 4 + _key.length];
     int i = REMOVE_TOKEN_METADATA_KEY_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) (idempotent ? 1 : 0);
@@ -11132,7 +11130,7 @@ public final class Token2022Program {
     public static RemoveTokenMetadataKeyIxData createRecord(final byte[] discriminator,
                                                             final boolean idempotent,
                                                             final String key) {
-      return new RemoveTokenMetadataKeyIxData(checkMaxLength(discriminator, 8), idempotent, key, key.getBytes(UTF_8));
+      return new RemoveTokenMetadataKeyIxData(checkMaxLength(discriminator, 8), idempotent, key, SerDeUtil.encodeString(key));
     }
 
     public static RemoveTokenMetadataKeyIxData read(final byte[] _data, final int _offset) {
@@ -11150,7 +11148,7 @@ public final class Token2022Program {
       final int _keyLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _key = Arrays.copyOfRange(_data, i, i + _keyLength);
-      final var key = new String(_key, UTF_8);
+      final var key = SerDeUtil.decodeString(_key);
       return new RemoveTokenMetadataKeyIxData(checkMaxLength(discriminator, 8), idempotent, key, _key);
     }
 

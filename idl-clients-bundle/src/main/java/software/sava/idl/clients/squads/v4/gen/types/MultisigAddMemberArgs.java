@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /// @param memo: Option<string> Memo is used for indexing only.
 public record MultisigAddMemberArgs(Member newMember, String memo, byte[] _memo) implements SerDe {
 
@@ -16,7 +14,7 @@ public record MultisigAddMemberArgs(Member newMember, String memo, byte[] _memo)
   public static final int MEMO_OFFSET = 34;
 
   public static MultisigAddMemberArgs createRecord(final Member newMember, final String memo) {
-    return new MultisigAddMemberArgs(newMember, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new MultisigAddMemberArgs(newMember, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static MultisigAddMemberArgs read(final byte[] _data, final int _offset) {
@@ -36,7 +34,7 @@ public record MultisigAddMemberArgs(Member newMember, String memo, byte[] _memo)
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new MultisigAddMemberArgs(newMember, memo, _memo);

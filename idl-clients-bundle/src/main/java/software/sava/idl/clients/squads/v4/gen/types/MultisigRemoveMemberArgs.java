@@ -8,8 +8,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 
 /// @param memo: Option<string> Memo is used for indexing only.
@@ -19,7 +17,7 @@ public record MultisigRemoveMemberArgs(PublicKey oldMember, String memo, byte[] 
   public static final int MEMO_OFFSET = 33;
 
   public static MultisigRemoveMemberArgs createRecord(final PublicKey oldMember, final String memo) {
-    return new MultisigRemoveMemberArgs(oldMember, memo, memo == null ? null : memo.getBytes(UTF_8));
+    return new MultisigRemoveMemberArgs(oldMember, memo, memo == null ? null : SerDeUtil.encodeString(memo));
   }
 
   public static MultisigRemoveMemberArgs read(final byte[] _data, final int _offset) {
@@ -39,7 +37,7 @@ public record MultisigRemoveMemberArgs(PublicKey oldMember, String memo, byte[] 
       final int _memoLength = ByteUtil.getInt32LE(_data, _from);
       _from += 4;
       _memo = Arrays.copyOfRange(_data, _from, _from + _memoLength);
-      memo = new String(_memo);
+      memo = SerDeUtil.decodeString(_memo);
     }
 
     return new MultisigRemoveMemberArgs(oldMember, memo, _memo);

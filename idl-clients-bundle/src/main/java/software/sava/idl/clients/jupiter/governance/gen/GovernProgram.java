@@ -13,8 +13,6 @@ import software.sava.idl.clients.jupiter.governance.gen.types.ProposalInstructio
 import java.util.Arrays;
 import java.util.List;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.accounts.meta.AccountMeta.createRead;
 import static software.sava.core.accounts.meta.AccountMeta.createReadOnlySigner;
@@ -1026,8 +1024,8 @@ public final class GovernProgram {
                                                final int bump,
                                                final String title,
                                                final String descriptionLink) {
-    final byte[] _title = title.getBytes(UTF_8);
-    final byte[] _descriptionLink = descriptionLink.getBytes(UTF_8);
+    final byte[] _title = SerDeUtil.encodeString(title);
+    final byte[] _descriptionLink = SerDeUtil.encodeString(descriptionLink);
     final byte[] _data = new byte[17 + _title.length + _descriptionLink.length];
     int i = CREATE_PROPOSAL_META_DISCRIMINATOR.write(_data, 0);
     _data[i] = (byte) bump;
@@ -1055,7 +1053,7 @@ public final class GovernProgram {
                                                         final int bump,
                                                         final String title,
                                                         final String descriptionLink) {
-      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : SerDeUtil.encodeString(title), descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
     }
 
     public static CreateProposalMetaIxData read(final byte[] _data, final int _offset) {
@@ -1069,13 +1067,13 @@ public final class GovernProgram {
       final int _titleLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
-      final var title = new String(_title, UTF_8);
+      final var title = SerDeUtil.decodeString(_title);
       i += _title.length;
       final int _descriptionLinkLength = getInt32LE(_data, i);
       i += 4;
       final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
-      final var descriptionLink = new String(_descriptionLink, UTF_8);
-      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : title.getBytes(UTF_8), descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+      final var descriptionLink = SerDeUtil.decodeString(_descriptionLink);
+      return new CreateProposalMetaIxData(discriminator, bump, title, title == null ? null : SerDeUtil.encodeString(title), descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
     }
 
     @Override

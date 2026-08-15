@@ -7,8 +7,6 @@ import software.sava.idl.clients.core.gen.SerDeUtil;
 
 import java.util.Arrays;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import static software.sava.core.accounts.PublicKey.readPubKey;
 import static software.sava.core.encoding.ByteUtil.getInt32LE;
 import static software.sava.core.programs.Discriminator.createAnchorDiscriminator;
@@ -34,8 +32,8 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,
                                        proposal,
-                                       title, title == null ? null : title.getBytes(UTF_8),
-                                       descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+                                       title, title == null ? null : SerDeUtil.encodeString(title),
+                                       descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
   }
 
   public static ProposalMetaCreateEvent read(final byte[] _data, final int _offset) {
@@ -51,17 +49,17 @@ public record ProposalMetaCreateEvent(Discriminator discriminator,
     final int _titleLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _title = Arrays.copyOfRange(_data, i, i + _titleLength);
-    final var title = new String(_title, UTF_8);
+    final var title = SerDeUtil.decodeString(_title);
     i += _title.length;
     final int _descriptionLinkLength = getInt32LE(_data, i);
     i += 4;
     final byte[] _descriptionLink = Arrays.copyOfRange(_data, i, i + _descriptionLinkLength);
-    final var descriptionLink = new String(_descriptionLink, UTF_8);
+    final var descriptionLink = SerDeUtil.decodeString(_descriptionLink);
     return new ProposalMetaCreateEvent(discriminator,
                                        governor,
                                        proposal,
-                                       title, title == null ? null : title.getBytes(UTF_8),
-                                       descriptionLink, descriptionLink == null ? null : descriptionLink.getBytes(UTF_8));
+                                       title, title == null ? null : SerDeUtil.encodeString(title),
+                                       descriptionLink, descriptionLink == null ? null : SerDeUtil.encodeString(descriptionLink));
   }
 
   @Override
