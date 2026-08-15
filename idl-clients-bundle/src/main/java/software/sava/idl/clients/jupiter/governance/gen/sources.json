@@ -1,6 +1,11 @@
 {
+  "program": "GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY",
   "deployed": "anchor",
   "lastDeploySlot": 253884130,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "08eb7be1c32c431b765a1c1161c6d66c139796d7fe9bca90ddc192e021bfc4c6",
+  "programDataPayloadLength": 969232,
   "channels": {
     "anchor": {
       "origin": "FqH2xAFxiBV3hitXxcCTeShV4G8qKwkw9nQph1be5MFb",

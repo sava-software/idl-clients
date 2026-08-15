@@ -1,6 +1,11 @@
 {
+  "program": "jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9",
   "deployed": "vcs",
   "lastDeploySlot": 430476341,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "62074317119d817857665ed8e04cd5e81a2252450267a5b0aa07ba997b698fea",
+  "programDataPayloadLength": 650420,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/lending.json",

@@ -1,6 +1,11 @@
 {
+  "program": "ComputeBudget111111111111111111111111111111",
   "deployed": "vcs",
   "lastDeploySlot": null,
+  "programDataState": "nativeProgram",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": null,
+  "programDataPayloadLength": null,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/compute-budget/refs/heads/main/idl.json",

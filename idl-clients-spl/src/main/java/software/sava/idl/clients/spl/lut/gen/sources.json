@@ -1,6 +1,11 @@
 {
+  "program": "AddressLookupTab1e1111111111111111111111111",
   "deployed": "vcs",
   "lastDeploySlot": 329184000,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "e264e1537c5ee1252aae1fa476c25000b641357bc6af4efab65f314160a99570",
+  "programDataPayloadLength": 170144,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/address-lookup-table/refs/heads/main/idl.json",

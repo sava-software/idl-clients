@@ -1,6 +1,11 @@
 {
+  "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
   "deployed": "vcs",
   "lastDeploySlot": 419472000,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "8190d3f7ceb6cb7a7a8d8924bff89f9f611e15ce1f806f2b6237f3311a98f697",
+  "programDataPayloadLength": 108600,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/solana-program/token/refs/heads/main/idl.json",

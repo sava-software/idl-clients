@@ -1,6 +1,11 @@
 {
+  "program": "DoVEsk76QybCEHQGzkvYPWLQu9gzNoZZZt3TPiL597e",
   "deployed": "anchor",
   "lastDeploySlot": 425741699,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "3e4bc49a32a4b08894630d01a73977bda3dfeb48e77cc5467d13264e20a96c2b",
+  "programDataPayloadLength": 456272,
   "channels": {
     "anchor": {
       "origin": "4D2RLxRVWjGUp7E45noWC6x7BfmSQbQ4mQevHvTV5ai6",

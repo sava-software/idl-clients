@@ -1,6 +1,11 @@
 {
+  "program": "EtZMZM22ViKMo4r5y4Anovs3wKQ2owUmDpjygnMMcdEX",
   "deployed": "vcs",
   "lastDeploySlot": 332193784,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "8236cfe59f9ba74f13d20a7f124371e0a51484c2b84882e51892696f7293c290",
+  "programDataPayloadLength": 40344,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/wormhole-foundation/wormhole/refs/heads/main/svm/wormhole-core-shims/anchor/idls/wormhole_post_message_shim.json",

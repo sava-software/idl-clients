@@ -1,6 +1,11 @@
 {
+  "program": "jupr81YtYssSyPt8jbnGuiWon5f6x9TcDEFxYe3Bdzi",
   "deployed": "vcs",
   "lastDeploySlot": 433245735,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "3d1003f482d28c6f4581da39004700e594538a00236293eecc68cec2e403e0a5",
+  "programDataPayloadLength": 2187996,
   "channels": {
     "vcs": {
       "origin": "https://raw.githubusercontent.com/jup-ag/jupiter-lend/refs/heads/main/target/idl/vaults.json",

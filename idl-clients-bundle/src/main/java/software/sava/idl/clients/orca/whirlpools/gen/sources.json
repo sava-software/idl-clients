@@ -1,6 +1,11 @@
 {
+  "program": "whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc",
   "deployed": "anchor",
   "lastDeploySlot": 398059635,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "9cccfcaa9ae4ed306552711c253d9aa046e463d07691f35187430eb11463a536",
+  "programDataPayloadLength": 10485715,
   "channels": {
     "anchor": {
       "origin": "2KFqE4RWoPVbvodo8vbggCFeHPS8TDvgpwp79ALMrcyn",

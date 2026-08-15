@@ -1,6 +1,11 @@
 {
+  "program": "CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC",
   "deployed": "anchor",
   "lastDeploySlot": 343321624,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "abbe67181ec4edcad11f4a0773d8bf658b2e599d6f1365ebfee1ab0f85fe9bb4",
+  "programDataPayloadLength": 493512,
   "channels": {
     "anchor": {
       "origin": "DcdWSsAT3RvYGjQzeBHdSJPVmdePNuFGXPn55UUXM9Xd",

@@ -1,6 +1,11 @@
 {
+  "program": "EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy",
   "deployed": "metadata",
   "lastDeploySlot": 395020704,
+  "programDataState": "upgradeable",
+  "programDataStateSlot": 439302329,
+  "programDataPayloadSha256": "cbf33bb02b0f6b30dcc8083e80ee7e3e9565647236b084074fc754aa6753ded0",
+  "programDataPayloadLength": 91480,
   "channels": {
     "metadata": {
       "origin": "HBWQuFtcu9nKpsZ85QH9LQsWdg3MfHExTvd2tzH8N2JY",

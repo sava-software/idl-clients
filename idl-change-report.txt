@@ -93,9 +93,12 @@ Squads V4: the anchor IDL at 6i4UjrDtkc7dqEmCyNDRfoxnAhDKSrY92u96Z74nRFdX differ
   types changed (1): MultisigAddSpendingLimitArgs
   errors removed (5): FinalBufferHashMismatch, FinalBufferSizeExceeded, FinalBufferSizeMismatch, InvalidInstructionArgs, MultisigCreateDeprecated
 
-Stake: the vcs IDL at github:solana-program/stake@main/idl.json differs from the deployed idl.json: instructions ~18, types -6; program.version 4.1.0 -> 4.4.0
-  instructions changed (18): every one arguments changed
-  types removed (6): authorizeCheckedWithSeedArgs, authorizeWithSeedArgs, epoch, lockupArgs, lockupCheckedArgs, unixTimestamp
+Stake: the vcs IDL at github:solana-program/stake@main/idl.json differs from the deployed idl.json: instructions +1 ~17, accounts -1, types +4 -2; program.name stake -> solanaStakeInterface
+  instructions added (1): redelegate
+  instructions changed (17): authorize, authorizeChecked, authorizeCheckedWithSeed, authorizeWithSeed, deactivate, deactivateDelinquent, delegateStake, getMinimumDelegation, initialize, initializeChecked, merge, moveLamports, moveStake, setLockup, setLockupChecked, split, withdraw
+  accounts removed (1): stakeStateAccount
+  types added (4): authorizeCheckedWithSeedParams, authorizeWithSeedParams, lockupCheckedParams, lockupParams
+  types removed (2): epoch, unixTimestamp
 
 == Movement (0) ==
 
