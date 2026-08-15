@@ -13,6 +13,7 @@ import software.sava.idl.clients.spl.token_2022.gen.types.AuthorityType;
 import software.sava.idl.clients.spl.token_2022.gen.types.DecryptableBalance;
 import software.sava.idl.clients.spl.token_2022.gen.types.EncryptedBalance;
 import software.sava.idl.clients.spl.token_2022.gen.types.ExtensionType;
+import software.sava.idl.clients.spl.token_2022.gen.types.TokenMetadataField;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10865,6 +10866,169 @@ public final class Token2022Program {
     @Override
     public int l() {
       return 8 + 4 + _name.length + 4 + _symbol.length + 4 + _uri.length;
+    }
+  }
+
+  public static final Discriminator UPDATE_TOKEN_METADATA_FIELD_DISCRIMINATOR = toDiscriminator(221, 233, 49, 45, 181, 202, 220, 200);
+
+  /// Updates a field in a token-metadata account.
+  ///
+  /// The field can be one of the required fields (name, symbol, URI), or a
+  /// totally new field denoted by a "key" string.
+  ///
+  /// By the end of the instruction, the metadata account must be properly
+  /// resized based on the new size of the TLV entry.
+  /// * If the new size is larger, the program must first reallocate to
+  /// avoid
+  /// overwriting other TLV entries.
+  /// * If the new size is smaller, the program must reallocate at the end
+  /// so that it's possible to iterate over TLV entries
+  ///
+  public static List<AccountMeta> updateTokenMetadataFieldKeys(final PublicKey metadataKey,
+                                                               final PublicKey updateAuthorityKey) {
+    return List.of(
+      createWrite(metadataKey),
+      createReadOnlySigner(updateAuthorityKey)
+    );
+  }
+
+  /// Updates a field in a token-metadata account.
+  ///
+  /// The field can be one of the required fields (name, symbol, URI), or a
+  /// totally new field denoted by a "key" string.
+  ///
+  /// By the end of the instruction, the metadata account must be properly
+  /// resized based on the new size of the TLV entry.
+  /// * If the new size is larger, the program must first reallocate to
+  /// avoid
+  /// overwriting other TLV entries.
+  /// * If the new size is smaller, the program must reallocate at the end
+  /// so that it's possible to iterate over TLV entries
+  ///
+  /// @param field Field to update in the metadata.
+  /// @param value Value to write for the field.
+  public static Instruction updateTokenMetadataField(final AccountMeta invokedToken2022ProgramMeta,
+                                                     final PublicKey metadataKey,
+                                                     final PublicKey updateAuthorityKey,
+                                                     final TokenMetadataField field,
+                                                     final String value) {
+    final var keys = updateTokenMetadataFieldKeys(
+      metadataKey,
+      updateAuthorityKey
+    );
+    return updateTokenMetadataField(
+      invokedToken2022ProgramMeta,
+      keys,
+      field,
+      value
+    );
+  }
+
+  /// Updates a field in a token-metadata account.
+  ///
+  /// The field can be one of the required fields (name, symbol, URI), or a
+  /// totally new field denoted by a "key" string.
+  ///
+  /// By the end of the instruction, the metadata account must be properly
+  /// resized based on the new size of the TLV entry.
+  /// * If the new size is larger, the program must first reallocate to
+  /// avoid
+  /// overwriting other TLV entries.
+  /// * If the new size is smaller, the program must reallocate at the end
+  /// so that it's possible to iterate over TLV entries
+  ///
+  /// @param field Field to update in the metadata.
+  /// @param value Value to write for the field.
+  public static Instruction updateTokenMetadataField(final AccountMeta invokedToken2022ProgramMeta,
+                                                     final List<AccountMeta> keys,
+                                                     final TokenMetadataField field,
+                                                     final String value) {
+    final byte[] _value = value.getBytes(UTF_8);
+    final byte[] _data = new byte[8 + field.l() + 4 + _value.length];
+    int i = UPDATE_TOKEN_METADATA_FIELD_DISCRIMINATOR.write(_data, 0);
+    i += field.write(_data, i);
+    putInt32LE(_data, i, (int) _value.length);
+    i += 4;
+    System.arraycopy(_value, 0, _data, i, _value.length);
+
+    return Instruction.createInstruction(invokedToken2022ProgramMeta, keys, _data);
+  }
+
+  /// Updates a field in a token-metadata account.
+  ///
+  /// The field can be one of the required fields (name, symbol, URI), or a
+  /// totally new field denoted by a "key" string.
+  ///
+  /// By the end of the instruction, the metadata account must be properly
+  /// resized based on the new size of the TLV entry.
+  /// * If the new size is larger, the program must first reallocate to
+  /// avoid
+  /// overwriting other TLV entries.
+  /// * If the new size is smaller, the program must reallocate at the end
+  /// so that it's possible to iterate over TLV entries
+  ///
+  /// @param field Field to update in the metadata.
+  /// @param value Value to write for the field.
+  public record UpdateTokenMetadataFieldIxData(byte[] discriminator,
+                                               TokenMetadataField field,
+                                               String value, byte[] _value) implements SerDe {
+
+    public static UpdateTokenMetadataFieldIxData read(final Instruction instruction) {
+      return read(instruction.data(), instruction.offset());
+    }
+
+    public static final int DISCRIMINATOR_SIZE = 8;
+    public static final int DISCRIMINATOR_OFFSET = 0;
+    public static final int FIELD_OFFSET = 8;
+
+    public static UpdateTokenMetadataFieldIxData createRecord(final byte[] discriminator,
+                                                              final TokenMetadataField field,
+                                                              final String value) {
+      return new UpdateTokenMetadataFieldIxData(checkMaxLength(discriminator, 8), field, value, value.getBytes(UTF_8));
+    }
+
+    public static UpdateTokenMetadataFieldIxData read(final byte[] _data, final int _offset) {
+      if (_data == null || _data.length == 0) {
+        return null;
+      }
+
+      int i = _offset;
+      final byte[] discriminator = new byte[8];
+      System.arraycopy(_data, i, discriminator, 0, discriminator.length);
+      i += 8;
+
+      final var field = TokenMetadataField.read(_data, i);
+      i += field.l();
+      final int _valueLength = getInt32LE(_data, i);
+      i += 4;
+      final byte[] _value = Arrays.copyOfRange(_data, i, i + _valueLength);
+      final var value = new String(_value, UTF_8);
+      return new UpdateTokenMetadataFieldIxData(checkMaxLength(discriminator, 8), field, value, _value);
+    }
+
+    @Override
+    public int write(final byte[] _data, final int _offset) {
+      int i = _offset;
+      if (discriminator.length > 8) {
+        throw new IllegalStateException(String.format(
+            "Encoded [length=%d] of [discriminator=%s] cannot be greater than 8.",
+            discriminator.length, Arrays.toString(discriminator)
+        ));
+      }
+      System.arraycopy(discriminator, 0, _data, i, discriminator.length);
+      i += 8;
+
+      i += field.write(_data, i);
+      putInt32LE(_data, i, (int) _value.length);
+      i += 4;
+      System.arraycopy(_value, 0, _data, i, _value.length);
+      i += _value.length;
+      return i - _offset;
+    }
+
+    @Override
+    public int l() {
+      return 8 + field.l() + 4 + _value.length;
     }
   }
 

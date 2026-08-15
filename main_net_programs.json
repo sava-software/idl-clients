@@ -466,7 +466,6 @@
       "idlType": "codama",
       "idlURL": "https://raw.githubusercontent.com/solana-program/token-2022/refs/heads/main/idl.json",
       "ignoreInstructions": [
-        "updateTokenMetadataField",
         "batch"
       ],
       "externalTypes": {
@@ -475,7 +474,6 @@
         "Extension": "software.sava.core.accounts.token.extensions.TokenExtension"
       },
       "excludeTypes": [
-        "TokenMetadataField"
       ]
     },
     {
