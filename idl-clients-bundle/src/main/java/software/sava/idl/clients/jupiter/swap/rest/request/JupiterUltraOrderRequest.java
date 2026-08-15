@@ -1,6 +1,10 @@
 package software.sava.idl.clients.jupiter.swap.rest.request;
 
 import software.sava.core.accounts.PublicKey;
+
+import java.net.URLEncoder;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import systems.comodal.jsoniter.JsonIterator;
 
 import java.math.BigInteger;
@@ -68,11 +72,11 @@ public interface JupiterUltraOrderRequest {
     }
     final var excludeRouters = excludeRouters();
     if (excludeRouters != null && !excludeRouters.isEmpty()) {
-      builder.append("&excludeRouters=").append(String.join(",", excludeRouters));
+      builder.append("&excludeRouters=").append(URLEncoder.encode(String.join(",", excludeRouters), US_ASCII));
     }
     final var excludeDexes = excludeDexes();
     if (excludeDexes != null && !excludeDexes.isEmpty()) {
-      builder.append("&excludeDexes=").append(String.join(",", excludeDexes));
+      builder.append("&excludeDexes=").append(URLEncoder.encode(String.join(",", excludeDexes), US_ASCII));
     }
     return builder.toString();
   }

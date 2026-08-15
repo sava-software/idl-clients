@@ -95,7 +95,10 @@ public interface JupiterQuoteRequest {
     }
     final var instructionVersion = instructionVersion();
     if (instructionVersion != null && !instructionVersion.isBlank()) {
-      builder.append("&instructionVersion=").append(instructionVersion);
+      // Encoded like every other caller-supplied component here. Unencoded, a value such as
+      // "V2&slippageBps=9999" appends a second slippageBps to the query and silently overrides
+      // the one this request was built with.
+      builder.append("&instructionVersion=").append(URLEncoder.encode(instructionVersion, US_ASCII));
     }
     return builder.toString();
   }

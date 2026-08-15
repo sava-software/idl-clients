@@ -411,4 +411,36 @@ final class JupiterQuoteRequestTests {
         builder.serialize()
     );
   }
+  /// Caller-supplied text cannot add a parameter of its own.
+  ///
+  /// `serialize()` builds a raw query string that the client hands to `URI.resolve`, so any
+  /// component carrying an unescaped `&` or `=` becomes extra parameters. `instructionVersion`
+  /// comes from `ji.readString()` — arbitrary text from whoever built the request — and until
+  /// 2026-08-15 it was appended unencoded while every neighbour was escaped. A value of
+  /// `"V2&slippageBps=9999"` appended a second `slippageBps`, and Jupiter honours one of the two;
+  /// the caller's own slippage was silently overridden on a live swap quote.
+  @Test
+  void aHostileInstructionVersionCannotAppendItsOwnParameter() {
+    final var request = JupiterQuoteRequest.parseRequest(JsonIterator.parse(("""
+        {"inputMint":"So11111111111111111111111111111111111111112",
+         "outputMint":"EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+         "amount":1000000,"slippageBps":50,
+         "instructionVersion":"V2&slippageBps=9999"}
+        """).getBytes(UTF_8)));
+
+    final var query = request.serialize();
+    final long slippageParameters = Arrays.stream(query.split("&"))
+        .filter(parameter -> parameter.startsWith("slippageBps="))
+        .count();
+    assertEquals(1, slippageParameters, () -> "injected a second slippageBps: " + query);
+    assertTrue(query.contains("instructionVersion=V2%26slippageBps%3D9999"), query);
+
+    // The property that matters is structural, so assert it on the parsed query rather than on
+    // the escaping: no key may appear twice once the URL is actually resolved.
+    final var raw = java.net.URI.create("https://lite-api.jup.ag")
+        .resolve("/swap/v1/quote?" + query).getRawQuery();
+    final var keys = Arrays.stream(raw.split("&")).map(parameter -> parameter.split("=")[0]).toList();
+    assertEquals(keys.size(), keys.stream().distinct().count(), () -> "duplicate key in " + raw);
+  }
+
 }
