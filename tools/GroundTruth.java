@@ -502,10 +502,32 @@ final class GroundTruth {
   // Comparison
   // ---------------------------------------------------------------------------
 
-  private static final Set<String> AUTOWIRED = Set.of(
-      "systemprogram", "tokenprogram", "token2022program", "rent", "rentsysvar", "sysvarrent",
-      "clock", "clocksysvar", "instructionssysvar", "sysvarinstructions", "instructionsysvaraccount",
-      "associatedtokenprogram", "associatedtokenaccountprogram", "memoprogram", "memoprogramv2");
+  /// Names for the *same* auto-wired account, grouped. `_core` already folds case, punctuation, a
+  /// `Key` suffix and a `solanaAccounts.` prefix, so what is left here is genuine aliasing: the
+  /// Rust calls it `rent` and the client resolves it as `solanaAccounts.rentSysVar()`.
+  ///
+  /// **Grouped, not a flat set.** A flat set makes every auto-wired name equal to every other, so a
+  /// client passing the system program where the Rust wants rent compares clean — the instruction
+  /// still fails on chain, and this tool exists to catch exactly that. Two names match only when
+  /// they name the same account.
+  private static final List<Set<String>> AUTOWIRED = List.of(
+      Set.of("rent", "rentsysvar", "sysvarrent"),
+      Set.of("clock", "clocksysvar"),
+      Set.of("instructionssysvar", "sysvarinstructions", "instructionsysvaraccount"),
+      Set.of("associatedtokenprogram", "associatedtokenaccountprogram"),
+      Set.of("memoprogram", "memoprogramv2"),
+      Set.of("systemprogram"),
+      Set.of("tokenprogram"),
+      Set.of("token2022program"));
+
+  private static boolean sameAutowiredAccount(final String x, final String y) {
+    for (final var group : AUTOWIRED) {
+      if (group.contains(x)) {
+        return group.contains(y);
+      }
+    }
+    return false;
+  }
 
   private static String camel(final String sn) {
     final var parts = new ArrayList<String>();
@@ -577,7 +599,7 @@ final class GroundTruth {
       for (int i = 0; i < exp.size(); ++i) {
         final var x = core(exp.get(i));
         final var y = core(act.get(i));
-        if (!x.equals(y) && !(AUTOWIRED.contains(x) && AUTOWIRED.contains(y))) {
+        if (!x.equals(y) && !sameAutowiredAccount(x, y)) {
           badIdx.add(new int[]{i});
           badExp.add(exp.get(i));
           badAct.add(act.get(i));
