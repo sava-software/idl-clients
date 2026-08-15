@@ -1387,33 +1387,57 @@ Both set sizes are asserted, so a silently smaller sweep cannot pass as this one
 Until 2026-08-15 those numbers were this paragraph and nothing else — the sweep had
 been run once in a session and never committed.
 
-### BigInteger tick-index lower error margin (2 mutants, orca)
+### BigInteger tick-index lower error margin (1 mutant, orca)
 
-`OrcaUtil.sqrtPriceX64ToTickIndex:681` computes `tickLow` as
-`logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64)`; the `BIG_INTEGER` mutant
-adds instead, and the `NakedReceiver` mutant drops the subtraction —
-`tickLow = floor(x)` rather than `floor(x - 0.01)`, which diverges in the same
-`frac(x) < 0.01` sliver the analysis below covers, so both siblings share it.
+`OrcaUtil.sqrtPriceX64ToTickIndex:622` computes `tickLow` as
+`logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64)`. Two mutants touch it, and
+**they are not the same case** — an error this entry made until 2026-08-15,
+which kept a behaviour-changing mutant accepted for that whole time.
 
-**Sweep-verified equivalent over the whole valid domain (2026-07-23;
-previously "accepted as untriaged").** Writing `x = logbpX64 / 2^64`, the
-margins are ~0.01 and ~0.856 of a tick, so `tickLow = floor(x - 0.01)`, the
-mutants' `floor(x)` / `floor(x + 0.01)`, and `tickHigh = floor(x + 0.856)`.
-Working through every case: the only reachable divergence is when
-`frac(x) < 0.01` collapses the mutant's `tickLow` onto `tickHigh` and skips
-the refinement that would have chosen `tickLow` — which requires the 14-bit
-log approximation to *overshoot*: some price `p` below the tick-`k` boundary
-with `x(p) >= k`. Because `x(p)` is (weakly) monotone in `p`, overshoot at
-boundary `k` is equivalent to `x(sqrtPrice(k) - 1) >= k` — one evaluation per
-boundary is an exhaustive search. `OrcaTickMarginSweep` (an independent
-mirror of both ladders, pinned to `MIN/MAX_SQRT_PRICE_X64` and tick 0) runs
-all 887,272 boundaries on every `check`: **zero overshoots**, monotonicity violated
-nowhere. It clears by less than it looks: the tightest boundary has 34,045,085,876,224
-of Q64.64 headroom — 0.0000018 ticks — at k=283,388, which is a thirty-fourth of the
-approximation's own quantum, and biasing the log up by one such unit puts two
-boundaries over. The margin is printed on every run so a shrinking one is visible.
-The approximation only ever errs downward in the valid domain, so the lower
-margin never changes an output — it is genuine safety margin, kept as such.
+`NakedReceiver` drops the subtraction: `tickLow = floor(x)` rather than
+`floor(x - 0.01)`. `BIG_INTEGER` adds instead: `floor(x + 0.01)`. Writing
+`x = logbpX64 / 2^64`, the margins are ~0.01 and ~0.856 of a tick, and
+`tickHigh = floor(x + 0.856)`. Divergence needs the mutant's `tickLow` to
+collapse onto `tickHigh`, taking the equal-estimates fast return and skipping
+the refinement that would have stepped back down.
+
+For `floor(x)` that needs `frac(x) < 0.01` **and** the approximation to
+overshoot the boundary — some price `p` below the tick-`k` boundary with
+`x(p) >= k`. For `floor(x + 0.01)` it needs only that `x` lands within 0.01
+below the boundary. The second condition is far weaker than the first, and the
+old text asserted the siblings "share it".
+
+**`NakedReceiver`: equivalent, and still accepted.** Because `x(p)` is weakly
+monotone in `p`, overshoot at boundary `k` is equivalent to
+`x(sqrtPrice(k) - 1) >= k`, so one evaluation per boundary is an exhaustive
+search. `OrcaTickMarginSweep` runs all 887,272 boundaries on every `check`,
+pinned to `MIN/MAX_SQRT_PRICE_X64` and tick 0. It seeds from the shipped
+`OrcaUtil.logbpX64` and margins — a copy would only be evidence while it still
+matched, and a shifted log leaves `sqrtPriceX64ToTickIndex` correct while making
+this mutant behavioural — and mirrors only the *forward* ladder, which is the
+oracle the refinement consults. Result: **zero overshoots**, monotonicity violated nowhere. It clears by less
+than it looks — the tightest boundary has 34,045,085,876,224 of Q64.64 headroom,
+0.0000018 ticks, at k=283,388, a thirty-fourth of the approximation's own
+quantum; biasing the log up by one such unit puts two boundaries over. The
+margin is printed on every run so a shrinking one is visible.
+
+**`BIG_INTEGER`: not equivalent, no longer accepted.** The same sweep now
+compares all three variants at every boundary rather than only where an
+overshoot occurs, and this one resolves a different tick at **10,452** of the
+887,272 — first at `p=5,042,765,844` (correct -440,427, mutant -440,426), last
+at `p=79,214,790,999,700,809,360,952,498,414` (443,632 against 443,633). A tick
+array spans `88 * tickSpacing` ticks, so one tick is not always a different
+array — but it is always the wrong tick, and at an array edge it is the wrong
+account too. It is killed by
+`OrcaUtilTests.theLowerMarginMustBeSubtractedNotAdded`, which is inside the
+suite's `targetTests` where PIT can see it; the sweep is deliberately outside
+`*Test*` and can describe a divergence but never kill anything.
+
+The lesson is narrower than "check the analysis": the sweep computed all three
+variants and then only compared them inside the overshoot branch, so it held the
+counter-example in its hand every run and never looked. Verify the claim you are
+making, not the condition you happened to derive it from.
+
 `fuzzOrcaTickMath` independently drives the same bracketing contract on the
 unmutated code (21M+ random in-range prices, clean). Re-run the sweep if the
 log constants, margins, or factor tables ever change.
@@ -1544,23 +1568,29 @@ sides of the range and so is killed rather than accepted. That is the argument
 for consolidation stated as a baseline diff: the same guard accepted twice in
 two files became one guard with a test.
 
-### BigInteger shift symmetry (5 mutants, orca)
+### BigInteger shift symmetry (2 mutants, orca)
 
 The `msb >= 64` normalize conditional and its boundary variants in
-`sqrtPriceX64ToTickIndex`: `BigInteger.shiftLeft(-n)` **is**
+`logbpX64` (extracted from `sqrtPriceX64ToTickIndex` on 2026-08-15;
+the heading read 5 against a baseline of 2 before that):
+`BigInteger.shiftLeft(-n)` **is**
 `shiftRight(n)`, so both branches compute the same expression and the
 conditional is purely cosmetic.
 
-### Log-approximation precision headroom (5 mutants, orca)
+### Log-approximation precision headroom (4 mutants, orca)
 
-The `precision < BIT_PRECISION` loop bound and `precision++` in
-`sqrtPriceX64ToTickIndex`, and the `tickLow == tickHigh` fast return: the
+The `precision < BIT_PRECISION` loop bound and `precision++`, now in
+`logbpX64`, and the `tickLow == tickHigh` fast return, which stays in
+`sqrtPriceX64ToTickIndex` (the heading read 5 against a baseline of 4 before
+2026-08-15): the
 tick is derived from a 14-bit log approximation with error margins
 (`LOG_B_P_ERR_MARGIN_*`) sized so that *extra* iterations or taking the slow
 path cannot change the resolved tick — verified by round-trip tests across the
-full tick range including both extremes. Two of the 5 are same-coordinate
-siblings on the line-663 comparison surfaced by the 21.5.9 multiset
-comparison — annotated `# log-approx headroom sibling` in the CSV.
+full tick range including both extremes. Two of the four are same-coordinate
+siblings surfaced by the 21.5.9 multiset comparison, now at `logbpX64:658` —
+the loop bound. They carry no distinguishing annotation in the CSV; earlier
+text here claimed a `# log-approx headroom sibling` marker that has never
+existed in it.
 
 ### u128 truncation masks that cannot fire (3 mutants, orca)
 

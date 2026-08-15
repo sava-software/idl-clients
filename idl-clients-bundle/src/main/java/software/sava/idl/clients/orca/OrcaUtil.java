@@ -602,10 +602,11 @@ public final class OrcaUtil {
 
   // log_b(2) in Q32.32 form (one bit per 2^32). Source: `LOG_B_2_X32`.
   private static final BigInteger LOG_B_2_X32 = BigInteger.valueOf(59543866431248L);
-  private static final BigInteger LOG_B_P_ERR_MARGIN_LOWER_X64 =
+  // Package-private so OrcaTickMarginSweep seeds its variants from the shipped margins.
+  static final BigInteger LOG_B_P_ERR_MARGIN_LOWER_X64 =
       BigInteger.valueOf(184467440737095516L);
   // 15793534762490258745 > Long.MAX_VALUE, declare as unsigned via String.
-  private static final BigInteger LOG_B_P_ERR_MARGIN_UPPER_X64 =
+  static final BigInteger LOG_B_P_ERR_MARGIN_UPPER_X64 =
       new BigInteger("15793534762490258745");
   private static final int BIT_PRECISION = 14;
 
@@ -616,6 +617,31 @@ public final class OrcaUtil {
     if (sqrtPriceX64.signum() <= 0) {
       throw new IllegalArgumentException("sqrtPriceX64 must be positive: " + sqrtPriceX64);
     }
+    final BigInteger logbpX64 = logbpX64(sqrtPriceX64);
+
+    final int tickLow = arithmeticShiftRightToInt(logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64), 64);
+    final int tickHigh = arithmeticShiftRightToInt(logbpX64.add(LOG_B_P_ERR_MARGIN_UPPER_X64), 64);
+
+    if (tickLow == tickHigh) {
+      return tickLow;
+    }
+    final BigInteger actualTickHighSqrtPrice = tickIndexToSqrtPriceX64(tickHigh);
+    return actualTickHighSqrtPrice.compareTo(sqrtPriceX64) <= 0 ? tickHigh : tickLow;
+  }
+
+  /// `log_1.0001(sqrtPriceX64)` in Q64.64, via a 14-bit base-2 log approximation.
+  ///
+  /// Extracted from [#sqrtPriceX64ToTickIndex] rather than inlined so that
+  /// `OrcaTickMarginSweep` can seed the accepted-mutant equivalence argument from *this*
+  /// value instead of from a copy. A copy is only evidence while it still matches: biasing
+  /// this approximation by one `LOG_B_2_X32` quantum leaves `sqrtPriceX64ToTickIndex`
+  /// returning the right tick — the refinement below absorbs it — while making the accepted
+  /// `NakedReceiver` mutant behavioural. A sweep reading its own unbiased copy reports zero
+  /// divergences throughout and the acceptance silently stops being true.
+  ///
+  /// Package-private on purpose: this is an intermediate, not an API. Callers want
+  /// [#sqrtPriceX64ToTickIndex].
+  static BigInteger logbpX64(final BigInteger sqrtPriceX64) {
     // msb = 128 - leading_zeros - 1 = bitLength - 1 for u128 (BigInteger is unsigned positive here).
     final int msb = sqrtPriceX64.bitLength() - 1;
     final BigInteger log2pIntegerX32 = BigInteger.valueOf((long) msb - 64L).shiftLeft(32);
@@ -645,16 +671,7 @@ public final class OrcaUtil {
     final BigInteger log2pX32 = log2pIntegerX32.add(log2pFractionX32);
 
     // Transform from base 2 to base 1.0001.
-    final BigInteger logbpX64 = log2pX32.multiply(LOG_B_2_X32);
-
-    final int tickLow = arithmeticShiftRightToInt(logbpX64.subtract(LOG_B_P_ERR_MARGIN_LOWER_X64), 64);
-    final int tickHigh = arithmeticShiftRightToInt(logbpX64.add(LOG_B_P_ERR_MARGIN_UPPER_X64), 64);
-
-    if (tickLow == tickHigh) {
-      return tickLow;
-    }
-    final BigInteger actualTickHighSqrtPrice = tickIndexToSqrtPriceX64(tickHigh);
-    return actualTickHighSqrtPrice.compareTo(sqrtPriceX64) <= 0 ? tickHigh : tickLow;
+    return log2pX32.multiply(LOG_B_2_X32);
   }
 
   /// Arithmetic (sign-preserving) shift-right of a signed BigInteger by `n`

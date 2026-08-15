@@ -119,6 +119,28 @@ final class OrcaUtilTests {
     assertEquals(-443_303, OrcaUtil.sqrtPriceX64ToTickIndex(BigInteger.valueOf(4_367_167_935L)));
   }
 
+  /// The lower error margin is load-bearing, not slack.
+  ///
+  /// `sqrtPriceX64ToTickIndex` seeds `tickLow` with `logbpX64 - LOG_B_P_ERR_MARGIN_LOWER_X64`.
+  /// Adding that margin instead of subtracting it lifts `tickLow` to `tickHigh` wherever the
+  /// approximation lands within the margin below a boundary, and the resulting `tickLow == tickHigh`
+  /// fast return skips the exact refinement — returning the tick above the price's own. A tick
+  /// array spans `TICK_ARRAY_SIZE * tickSpacing` ticks, so one tick off is not always a different
+  /// array — but it is always the wrong tick, and at an array edge it selects the wrong account.
+  ///
+  /// The prices below are the first and last of the 10,452 boundaries where that happens, out of
+  /// 887,272. Until 2026-08-15 the mutant was in `config/pitest/orca-accepted.csv` as equivalent:
+  /// the analysis behind that acceptance held for the sibling that drops the subtraction entirely
+  /// — which is equivalent, at every boundary — and was assumed to cover this one too. It does not.
+  /// The sibling needs the approximation to overshoot a boundary, which never happens; this one
+  /// only needs it to land within the margin, which happens constantly.
+  @Test
+  void theLowerMarginMustBeSubtractedNotAdded() {
+    assertEquals(-440_427, OrcaUtil.sqrtPriceX64ToTickIndex(BigInteger.valueOf(5_042_765_844L)));
+    assertEquals(443_632,
+        OrcaUtil.sqrtPriceX64ToTickIndex(new BigInteger("79214790999700809360952498414")));
+  }
+
   @Test
   void sqrtPriceX64ToTickIndexRejectsNonPositive() {
     assertThrows(IllegalArgumentException.class, () -> OrcaUtil.sqrtPriceX64ToTickIndex(BigInteger.ZERO));

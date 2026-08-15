@@ -8,30 +8,33 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/// Exhaustive equivalence evidence for the two accepted-baseline mutant families on
-/// `OrcaUtil.sqrtPriceX64ToTickIndex` — the `log-margin family` rows in
-/// `config/pitest/orca-accepted.csv`.
+/// Equivalence evidence for the accepted `log-margin family` row on
+/// `OrcaUtil.sqrtPriceX64ToTickIndex` — and the counter-evidence that removed its sibling.
 ///
-/// **The subject is three variants of the production method, none of which exists in the
-/// codebase.** `sqrtPriceX64ToTickIndex` computes `tickLow` as `x - LOG_B_P_ERR_MARGIN_LOWER_X64`;
-/// the `EXPERIMENTAL_BIG_INTEGER` mutant adds instead, and the `NAKED_RECEIVER` mutant drops the
-/// subtraction. PIT reports both as SURVIVED, the baseline accepts them, and this is the evidence
-/// for that acceptance. Rewriting the comparison to call `OrcaUtil.sqrtPriceX64ToTickIndex` would
-/// make it a tautology that justifies nothing — the ladder and the approximation below are a
-/// deliberate second implementation, and [#theMirrorStillMatchesTheProduction] is what keeps them
-/// honest without collapsing them together.
+/// Two mutants seed `tickLow` differently. `NAKED_RECEIVER` drops the margin
+/// (`tickLow = floor(x)`); `EXPERIMENTAL_BIG_INTEGER` adds it rather than subtracting
+/// (`floor(x + 0.01)`). They are **not** the same case, and treating them as one is what kept a
+/// behaviour-changing mutant accepted until 2026-08-15:
 ///
-/// The analysis: all three variants change only `tickLow`, and with `frac(x) < 0.01` the fast-path
-/// collapse `tickLow == tickHigh == floor(x)` is the only reachable divergence — it returns
-/// `floor(x)` where the refinement would return `floor(x) - 1`. That needs the 14-bit log
-/// approximation to *overshoot*: some price p below the tick-k boundary with `x(p) >= k`. Because
-/// `x(p)` is weakly monotone in p, overshoot at boundary k is equivalent to
-/// `x(sqrtPrice(k) - 1) >= k`, so one evaluation per boundary is an exhaustive search.
+///   - naked needs the approximation to *overshoot* a boundary — `x(p) >= k` for some p below the
+///     tick-k boundary. That never happens, so it is equivalent and stays accepted.
+///   - add needs only that `x` lands within the margin below a boundary. That happens at 10,452 of
+///     the 887,272 boundaries, so it is not equivalent. It is out of the baseline and killed by
+///     `OrcaUtilTests.theLowerMarginMustBeSubtractedNotAdded`.
+///
+/// **What is shared with production and what is not.** The reverse log and both margins come from
+/// `OrcaUtil` — the mutants are mutations of *that* code, so seeding from a copy would prove
+/// something about the copy. It is not a tautology: the refinement absorbs a shifted log, so
+/// `sqrtPriceX64ToTickIndex` keeps returning the right tick while the naked mutant quietly becomes
+/// behavioural, and a sweep reading its own copy reports zero divergences throughout. The *forward*
+/// ladder below stays an independent mirror, because it is the oracle the refinement consults, and
+/// [#theMirrorStillMatchesTheProduction] holds it to `tickIndexToSqrtPriceX64`.
 ///
 /// Named outside `*Test*` on purpose. JUnit discovers it by annotation so `check` runs it, but the
 /// `orca` mutation suite selects tests by `software.sava.idl.clients.orca.*Test*`, so PIT does not
 /// re-run this sweep against every mutant — which would both cost minutes and inflate the timeout
-/// budget that `orca-timeouts.csv` already records a liveness kill against.
+/// budget that `orca-timeouts.csv` already records a liveness kill against. It can describe a
+/// divergence; it can never kill anything.
 final class OrcaTickMarginSweep {
 
   private static final BigInteger U128 = BigInteger.ONE.shiftLeft(128).subtract(BigInteger.ONE);
@@ -59,11 +62,6 @@ final class OrcaTickMarginSweep {
       "12247334978882834399", "8131365268884726200", "3584323654723342297",
       "696457651847595233", "26294789957452057", "37481735321082");
 
-  private static final BigInteger LOG_B_2_X32 = BigInteger.valueOf(59_543_866_431_248L);
-  private static final BigInteger LOWER = BigInteger.valueOf(184_467_440_737_095_516L);
-  private static final BigInteger UPPER = new BigInteger("15793534762490258745");
-  private static final int BIT_PRECISION = 14;
-
   private static BigInteger[] factors(final String... values) {
     final var out = new BigInteger[values.length];
     for (int i = 0; i < values.length; ++i) {
@@ -72,7 +70,8 @@ final class OrcaTickMarginSweep {
     return out;
   }
 
-  /// The exact factor-table forward function, mirrored rather than called.
+  /// The exact factor-table forward function, and the only thing here that is a mirror rather
+  /// than a call: it is the oracle the refinement consults, so it has to be independent.
   private static BigInteger sqrtPrice(final long tick) {
     if (tick >= 0) {
       var ratio = (tick & 1) != 0 ? POS_BASE_ODD : POS_BASE_EVEN;
@@ -93,34 +92,15 @@ final class OrcaTickMarginSweep {
     return ratio;
   }
 
-  /// The 14-bit base-2 log approximation, scaled to base b and Q64.64.
-  private static BigInteger logbpX64(final BigInteger p) {
-    final int msb = p.bitLength() - 1;
-    final var intX32 = BigInteger.valueOf(msb - 64L).shiftLeft(32);
-    var r = msb >= 64 ? p.shiftRight(msb - 63) : p.shiftLeft(63 - msb);
-    var bit = BigInteger.ONE.shiftLeft(63);
-    var frac = BigInteger.ZERO;
-    for (int precision = 0; bit.signum() > 0 && precision < BIT_PRECISION; ++precision) {
-      r = r.multiply(r);
-      final int is2 = r.testBit(127) ? 1 : 0;
-      r = r.shiftRight(63 + is2);
-      if (is2 == 1) {
-        frac = frac.add(bit);
-      }
-      bit = bit.shiftRight(1);
-    }
-    return intX32.add(frac.shiftRight(32)).multiply(LOG_B_2_X32);
-  }
-
   /// The resolved tick under each of the three `tickLow` seeds: original, the NAKED_RECEIVER
   /// mutant (no margin), and the BIG_INTEGER mutant (margin added rather than subtracted).
   private static BigInteger[] variants(final BigInteger p) {
-    final var x = logbpX64(p);
-    final var th = x.add(UPPER).shiftRight(64);
+    final var x = OrcaUtil.logbpX64(p);
+    final var th = x.add(OrcaUtil.LOG_B_P_ERR_MARGIN_UPPER_X64).shiftRight(64);
     final var seeds = new BigInteger[]{
-        x.subtract(LOWER).shiftRight(64),
+        x.subtract(OrcaUtil.LOG_B_P_ERR_MARGIN_LOWER_X64).shiftRight(64),
         x.shiftRight(64),
-        x.add(LOWER).shiftRight(64),
+        x.add(OrcaUtil.LOG_B_P_ERR_MARGIN_LOWER_X64).shiftRight(64),
     };
     final var out = new BigInteger[seeds.length];
     for (int i = 0; i < seeds.length; ++i) {
@@ -143,6 +123,11 @@ final class OrcaTickMarginSweep {
   /// approximation's own quantum (`LOG_B_2_X32`, 59,543,866,431,248): biasing `logbpX64` up by a
   /// single unit of that quantum puts two boundaries over the line. The headroom is reported on
   /// every run so a shrinking margin is visible before it reaches zero rather than after.
+  ///
+  /// **Overshoot is the naked-receiver mutant's condition, and only its.** This test says nothing
+  /// about the subtract-to-add sibling, which diverges on a far weaker condition and is checked by
+  /// [#onlyTheNakedReceiverVariantAgreesAtEveryBoundary]. Reading "zero overshoots" as clearing both is the mistake
+  /// that kept a behaviour-changing mutant in the accepted baseline until 2026-08-15.
   @Test
   void theApproximationNeverOvershootsATickBoundary() {
     final var overshoots = new ArrayList<String>();
@@ -152,7 +137,7 @@ final class OrcaTickMarginSweep {
     int tightestAt = 0;
     for (int k = OrcaUtil.MIN_TICK_INDEX + 1; k <= OrcaUtil.MAX_TICK_INDEX; ++k) {
       final var p = sqrtPrice(k).subtract(BigInteger.ONE);
-      final var x = logbpX64(p);
+      final var x = OrcaUtil.logbpX64(p);
       final var headroom = BigInteger.valueOf(k).shiftLeft(64).subtract(x);
       if (tightest == null || headroom.compareTo(tightest) < 0) {
         tightest = headroom;
@@ -176,6 +161,43 @@ final class OrcaTickMarginSweep {
     assertTrue(nonMonotonic.isEmpty(),
         () -> "x(p) is not monotone at " + nonMonotonic.size() + " boundaries, so one evaluation "
             + "per boundary is no longer an exhaustive search: " + nonMonotonic.subList(0, Math.min(5, nonMonotonic.size())));
+  }
+
+  /// What the equivalence claim actually needs: run all three variants at every boundary and
+  /// compare the resolved ticks, rather than inferring agreement from a condition only one of them
+  /// depends on. The name is the finding — one of the two survives the comparison, not both.
+  ///
+  /// The naked-receiver mutant agrees everywhere. The subtract-to-add mutant does not, and this is
+  /// the assertion that says so: it disagrees at **10,452** of the 887,272 boundaries, first at
+  /// p=5,042,765,844 (correct tick -440,427, mutant -440,426) and last at
+  /// p=79,214,790,999,700,809,360,952,498,414 (443,632 against 443,633). Adding the margin lifts
+  /// `tickLow` onto `tickHigh` wherever the approximation lands inside it, and the resulting
+  /// equal-estimates fast return skips the refinement that would have stepped back down.
+  ///
+  /// So this expects exactly one surviving equivalence, not three. The mutant that is not
+  /// equivalent is killed by `OrcaUtilTests.theLowerMarginMustBeSubtractedNotAdded`, which is
+  /// inside the suite's `targetTests` where PIT can see it — this sweep is not, by design, so it
+  /// can describe the divergence but can never kill anything on its own.
+  @Test
+  void onlyTheNakedReceiverVariantAgreesAtEveryBoundary() {
+    int nakedDiverges = 0;
+    int addDiverges = 0;
+    for (int k = OrcaUtil.MIN_TICK_INDEX + 1; k <= OrcaUtil.MAX_TICK_INDEX; ++k) {
+      final var resolved = variants(sqrtPrice(k).subtract(BigInteger.ONE));
+      if (!resolved[0].equals(resolved[1])) {
+        ++nakedDiverges;
+      }
+      if (!resolved[0].equals(resolved[2])) {
+        ++addDiverges;
+      }
+    }
+    assertEquals(0, nakedDiverges,
+        "dropping the lower margin altogether resolves a different tick, so the accepted "
+            + "NakedReceiverMutator row in orca-accepted.csv is no longer equivalent");
+    assertEquals(10_452, addDiverges,
+        "the count of boundaries where adding the lower margin instead of subtracting it resolves "
+            + "the tick above the price's own — 0 would mean the mutant became equivalent and "
+            + "theLowerMarginMustBeSubtractedNotAdded can no longer kill it");
   }
 
   /// The mirror above is only evidence while it is still a mirror.
