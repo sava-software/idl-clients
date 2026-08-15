@@ -59,10 +59,14 @@ hardening {
           "SerDeUtil, RustEnum, Factory, ProgramError — which every program's generated code " +
           "compiles against: same generator, same ownership. Correctness is carried instead by " +
           "the generator's own tests; by tools/ground_truth.py " +
-          "(docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — six test " +
-          "sources (SPLClientTests, StakeProgramTests, TokenProgramTests, " +
-          "AddressLookupTableTests, SystemProgramTest, Token2022ProgramTests) build and decode " +
-          "through the generated instruction builders and account types. The hand-written " +
+          "(docs/PROGRAM_VERIFICATION.md); and by execution rather than mutation — seven test " +
+          "sources (SPLClientTests, StakeProgramTests, StakeReferenceEncodingTests, " +
+          "TokenProgramTests, AddressLookupTableTests, SystemProgramTest, Token2022ProgramTests) " +
+          "build and decode through the generated instruction builders and account types. " +
+          "StakeReferenceEncodingTests carries the most weight of the seven: it compares every " +
+          "Stake instruction's data against solana-program/stake's own generated JS client, so " +
+          "that program's generated encoder is pinned to an implementation neither this " +
+          "repository nor its generator produced. The hand-written " +
           "layer stays mutated: core.math.SafeMath and the stake/stake-pool parsers are this " +
           "suite's own baseline rows, and the four fuzz harnesses target them, not gen.",
     )

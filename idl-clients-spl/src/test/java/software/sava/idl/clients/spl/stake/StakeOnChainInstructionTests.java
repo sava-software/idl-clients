@@ -25,12 +25,17 @@ import static org.junit.jupiter.api.Assertions.*;
 /// Generating from it on a branch (2026-08-14) produced `toDiscriminator(0)` and `BYTES` of 113
 /// instead of 116, shifting every argument offset down by three.
 ///
-/// So this repository pins its own copy, and the `definedTypes` overrides in
-/// `main_net_programs.json` are a hand-maintained equivalent of upstream's visitors rather than a
-/// repair of something broken. Replacing them with that pipeline's actual output would be
-/// strictly better; until then this test is what holds the encoding down. The Stake program is
-/// immutable — `Authority: none`, last deployed at slot 427248000 — so the bytes below cannot go
-/// out of date.
+/// So the IDL this repository generates from is that pipeline's own output, written by
+/// `tools/stake-idl.mjs`. It was a pinned copy paired with 393 lines of hand-maintained
+/// `definedTypes` in `main_net_programs.json` until 2026-08-14; both are gone. What did not change
+/// is why this test exists. The pipeline, the builders generated from it and the readers generated
+/// beside them all descend from one IDL, so none of them can testify that the IDL matches the
+/// program that is deployed. These bytes can, and nothing else here does. The Stake program is
+/// immutable — `Authority: none`, last deployed at slot 427248000 — so they cannot go out of date.
+///
+/// [StakeReferenceEncodingTests] holds all seventeen instructions, this one included, against
+/// upstream's generated JavaScript client. That is a second *encoder*, not a second source: it
+/// agrees with the chain only by way of the fixture below.
 final class StakeOnChainInstructionTests {
 
   /// Captured with `getTransaction` from mainnet: transaction

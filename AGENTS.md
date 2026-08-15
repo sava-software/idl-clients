@@ -410,12 +410,16 @@ Integration-style tests named `Integ.*` are git-ignored scratch files.
 
 ### Verification tools
 
-`tools/` holds dependency-free scripts (Python 3) for checks otherwise
-re-derived by hand: `ground_truth.py` diffs a generated client's account order
-against the program's Rust, and `tick_margin_sweep.py`. Neither is wired into
-Gradle or CI — `hardeningCertify` is the release gate; they are
-investigative aids whose output needs triage. `ground_truth.py` is also part of
-what carries the
+`tools/` holds standalone scripts for checks otherwise re-derived by hand:
+`ground_truth.py` diffs a generated client's account order against the program's
+Rust, `tick_margin_sweep.py` proves an accepted mutant family equivalent, and two
+`.mjs` scripts run against a `solana-program/stake` checkout — `stake-idl.mjs`
+derives Stake's IDL from upstream's codama pipeline, `stake-vectors.mjs`
+regenerates the reference encodings `StakeReferenceEncodingTests` compares
+against. None is wired into Gradle or CI — `hardeningCertify` is the release
+gate; they are investigative aids whose output needs triage, except that what
+`stake-vectors.mjs` writes is a committed fixture and so is checked on every
+build. `ground_truth.py` and those vectors are also part of what carries the
 correctness of the generated `**.gen.*` code the mutation suites deliberately do
 not mutate. See [tools/README.md](tools/README.md).
 

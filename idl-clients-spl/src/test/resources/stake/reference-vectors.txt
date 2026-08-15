@@ -1,0 +1,120 @@
+# Differential encoding vectors for the Stake program. Generated — do not hand-edit.
+#
+# Produced by tools/stake-vectors.mjs from solana-program/stake's own generated JavaScript
+# client, which @codama/renderers-js renders from the pipeline tools/stake-idl.mjs runs. It
+# is an independent encoder, not ground truth: the mainnet fixture in
+# StakeOnChainInstructionTests is what ties that pipeline to the deployed program.
+#
+# upstream: solana-program/stake @ ce816f799ad53f1fe946922a99a68d71e8904b9b
+# client:   @solana-program/stake 0.8.0
+#
+# One vector per line, "<instruction>.<case> <base64 instruction data>", preceded by the
+# arguments it encodes. k(0xNN) is the 32-byte key whose byte i is (0xNN + i * 7) & 0xff.
+
+# arg0: {staker: k(0x11), withdrawer: k(0x22)}, arg1: {unixTimestamp: 1700000000, epoch: 512, custodian: k(0x33)}
+initialize.basic AAAAABEYHyYtNDtCSVBXXmVsc3qBiI+WnaSrsrnAx87V3OPqIikwNz5FTFNaYWhvdn2Ei5KZoKeutbzDytHY3+bt9PsA8VNlAAAAAAACAAAAAAAAMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQw=
+
+# arg0: {staker: k(0x11), withdrawer: k(0x22)}, arg1: {unixTimestamp: -1, epoch: 0, custodian: k(0x33)}
+initialize.negative-timestamp AAAAABEYHyYtNDtCSVBXXmVsc3qBiI+WnaSrsrnAx87V3OPqIikwNz5FTFNaYWhvdn2Ei5KZoKeutbzDytHY3+bt9Pv//////////wAAAAAAAAAAMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQw=
+
+# arg0: k(0x44), arg1: 0
+authorize.staker AQAAAERLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gEIDxYdAAAAAA==
+
+# arg0: k(0x44), arg1: 1
+authorize.withdrawer AQAAAERLUllgZ251fIOKkZifpq20u8LJ0Nfe5ezz+gEIDxYdAQAAAA==
+
+# (no arguments)
+delegateStake.bare AgAAAA==
+
+# args: 5000
+split.lamports AwAAAIgTAAAAAAAA
+
+# args: 18446744073709551615
+split.max-u64 AwAAAP//////////
+
+# args: 4230000000000
+withdraw.lamports BAAAAAC8pd/YAwAA
+
+# (no arguments)
+deactivate.bare BQAAAA==
+
+# unixTimestamp: some(1700000000), epoch: some(512), custodian: some(k(0x33))
+setLockup.all BgAAAAEA8VNlAAAAAAEAAgAAAAAAAAEzOkFIT1ZdZGtyeYCHjpWco6qxuL/GzdTb4unw9/4FDA==
+
+# unixTimestamp: none, epoch: none, custodian: none
+setLockup.none BgAAAAAAAA==
+
+# unixTimestamp: some(1700000000), epoch: none, custodian: none
+setLockup.timestamp-only BgAAAAEA8VNlAAAAAAAA
+
+# unixTimestamp: none, epoch: some(512), custodian: none
+setLockup.epoch-only BgAAAAABAAIAAAAAAAAA
+
+# unixTimestamp: none, epoch: none, custodian: some(k(0x33))
+setLockup.custodian-only BgAAAAAAATM6QUhPVl1ka3J5gIeOlZyjqrG4v8bN1Nvi6fD3/gUM
+
+# unixTimestamp: some(-1), epoch: some(0), custodian: none
+setLockup.negative-timestamp BgAAAAH//////////wEAAAAAAAAAAAA=
+
+# (no arguments)
+merge.bare BwAAAA==
+
+# newAuthorizedPubkey: k(0x55), stakeAuthorize: 0, authoritySeed: "authority-seed", authorityOwner: k(0x66)
+authorizeWithSeed.staker CAAAAFVcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuAAAAAA4AAAAAAAAAYXV0aG9yaXR5LXNlZWRmbXR7gomQl56lrLO6wcjP1t3k6/L5AAcOFRwjKjE4Pw==
+
+# newAuthorizedPubkey: k(0x55), stakeAuthorize: 1, authoritySeed: "stake:9", authorityOwner: k(0x66)
+authorizeWithSeed.withdrawer CAAAAFVcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuAQAAAAcAAAAAAAAAc3Rha2U6OWZtdHuCiZCXnqWss7rByM/W3eTr8vkABw4VHCMqMTg/
+
+# newAuthorizedPubkey: k(0x55), stakeAuthorize: 0, authoritySeed: "", authorityOwner: k(0x66)
+authorizeWithSeed.empty-seed CAAAAFVcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuAAAAAAAAAAAAAAAAZm10e4KJkJeepayzusHIz9bd5Ovy+QAHDhUcIyoxOD8=
+
+# newAuthorizedPubkey: k(0x55), stakeAuthorize: 0, authoritySeed: "seed-é€𝄞", authorityOwner: k(0x66)
+authorizeWithSeed.multibyte-seed CAAAAFVcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuAAAAAA4AAAAAAAAAc2VlZC3DqeKCrPCdhJ5mbXR7gomQl56lrLO6wcjP1t3k6/L5AAcOFRwjKjE4Pw==
+
+# newAuthorizedPubkey: k(0x55), stakeAuthorize: 0, authoritySeed: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", authorityOwner: k(0x66)
+authorizeWithSeed.max-length-seed CAAAAFVcY2pxeH+GjZSboqmwt77FzNPa4ejv9v0ECxIZICcuAAAAACAAAAAAAAAAeHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHhmbXR7gomQl56lrLO6wcjP1t3k6/L5AAcOFRwjKjE4Pw==
+
+# (no arguments)
+initializeChecked.bare CQAAAA==
+
+# stakeAuthorize: 0
+authorizeChecked.staker CgAAAAAAAAA=
+
+# stakeAuthorize: 1
+authorizeChecked.withdrawer CgAAAAEAAAA=
+
+# stakeAuthorize: 1, authoritySeed: "checked-seed", authorityOwner: k(0x77)
+authorizeCheckedWithSeed.withdrawer CwAAAAEAAAAMAAAAAAAAAGNoZWNrZWQtc2VlZHd+hYyTmqGor7a9xMvS2eDn7vX8AwoRGB8mLTQ7QklQ
+
+# stakeAuthorize: 0, authoritySeed: "", authorityOwner: k(0x77)
+authorizeCheckedWithSeed.empty-seed CwAAAAAAAAAAAAAAAAAAAHd+hYyTmqGor7a9xMvS2eDn7vX8AwoRGB8mLTQ7QklQ
+
+# stakeAuthorize: 0, authoritySeed: "seed-é€𝄞", authorityOwner: k(0x77)
+authorizeCheckedWithSeed.multibyte-seed CwAAAAAAAAAOAAAAAAAAAHNlZWQtw6nigqzwnYSed36FjJOaoaivtr3Ey9LZ4Ofu9fwDChEYHyYtNDtCSVA=
+
+# stakeAuthorize: 1, authoritySeed: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", authorityOwner: k(0x77)
+authorizeCheckedWithSeed.max-length-seed CwAAAAEAAAAgAAAAAAAAAHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4d36FjJOaoaivtr3Ey9LZ4Ofu9fwDChEYHyYtNDtCSVA=
+
+# unixTimestamp: some(1700000000), epoch: some(512)
+setLockupChecked.both DAAAAAEA8VNlAAAAAAEAAgAAAAAAAA==
+
+# unixTimestamp: none, epoch: none
+setLockupChecked.none DAAAAAAA
+
+# unixTimestamp: some(1700000000), epoch: none
+setLockupChecked.timestamp-only DAAAAAEA8VNlAAAAAAA=
+
+# unixTimestamp: none, epoch: some(512)
+setLockupChecked.epoch-only DAAAAAABAAIAAAAAAAA=
+
+# (no arguments)
+getMinimumDelegation.bare DQAAAA==
+
+# (no arguments)
+deactivateDelinquent.bare DgAAAA==
+
+# args: 1000000000
+moveStake.lamports EAAAAADKmjsAAAAA
+
+# args: 2500000000
+moveLamports.lamports EQAAAAD5ApUAAAAA

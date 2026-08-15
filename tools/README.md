@@ -1,11 +1,16 @@
 # tools/
 
-Standalone verification scripts. Python 3 only — no packages to install, nothing
-wired into Gradle, nothing run by CI. They exist because the checks they automate
-were otherwise re-derived by hand each time, and each re-derivation reintroduced
-the same false positives.
+Standalone verification scripts. Nothing wired into Gradle, nothing run by CI.
+They exist because the checks they automate were otherwise re-derived by hand each
+time, and each re-derivation reintroduced the same false positives.
 
-They are **investigative aids, not gates**. `qualityGate` is the gate.
+The `.py` scripts need Python 3 and nothing else. The two `.mjs` scripts run
+against a `solana-program/stake` checkout and resolve their dependencies from its
+`node_modules`; neither installs anything here.
+
+They are **investigative aids, not gates** — with one exception, noted below:
+`stake-vectors.mjs` writes a test fixture, so what it produces *is* checked by
+`qualityGate`, even though running it is not.
 
 `idl_probe.py` was removed on 2026-08-14. It simulated declared instructions to
 find ones the deployed program no longer dispatches; that failure reports itself,
@@ -18,6 +23,7 @@ measurements are in the commits that removed it.
 |---|---|---|
 | `ground_truth.py` | Does our account order match the program's Rust? | instant, local |
 | `stake-idl.mjs` | Derives Stake's IDL by running upstream's own codama pipeline | seconds, needs their checkout |
+| `stake-vectors.mjs` | Does our Stake encoder agree with upstream's generated JS client? | seconds, needs their checkout |
 
 
 ## `ground_truth.py`
@@ -62,9 +68,33 @@ mutants could diverge (see the sweep's docstring and the acceptance section in
 the bundle's `config/pitest/README.md`). Zero overshoots as of 2026-07-23;
 re-run after any change to the log constants, error margins, or factor tables.
 
+## `stake-vectors.mjs`
+
+```shell
+cd <solana-program/stake checkout>/clients/js && pnpm install --frozen-lockfile
+cd <this repo> && node tools/stake-vectors.mjs <that checkout>
+```
+
+Writes `idl-clients-spl/src/test/resources/stake/reference-vectors.txt`: one
+instruction-data encoding per line, produced by upstream's own generated
+JavaScript client. `StakeReferenceEncodingTests` builds the same arguments through
+our generated builders and compares, which is the only Stake check that is not a
+round trip through code this repository generated — a builder and the reader
+beside it come from one IDL and agree by construction, so on their own they cannot
+see a systematic change to the wire format.
+
+Two things it is not. It is not ground truth: upstream's client descends from the
+same pipeline `stake-idl.mjs` runs, and the only evidence that pipeline matches the
+deployed program is the mainnet fixture in `StakeOnChainInstructionTests`. And it
+is not a check you run — the bytes are committed, `qualityGate` compares against
+them on every build, and this script exists to regenerate them when upstream moves.
+The diff is the review.
+
 ## Adding to these
 
-Keep them dependency-free and runnable from the repo root. If a script starts
+Keep them runnable from the repo root, and keep what they need out of it — the
+Python scripts take no packages, and the `.mjs` scripts borrow a checkout's
+`node_modules` rather than adding a package manifest here. If a script starts
 needing per-program special cases beyond a flag, that is a sign the case belongs
 in `docs/PROGRAM_VERIFICATION.md` as prose rather than in code — the analysis is
 the durable part, the parsing is not.
