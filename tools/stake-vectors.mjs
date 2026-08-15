@@ -25,7 +25,8 @@
 // the review. A vector's name is `<instruction>.<case>`; StakeReferenceEncodingTests requires
 // every instruction StakeProgram declares to have at least one.
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -75,17 +76,41 @@ try {
   rmSync(work, { recursive: true, force: true });
 }
 
+/// What the bytes were actually produced from.
+///
+/// This used to record only the last commit touching `clients/js/src/generated`, on the reasoning
+/// that unrelated upstream commits should not churn the header. That identified too little: the
+/// encoders are codec combinators from `@solana/kit`, so a dependency bump changes what they emit
+/// without touching that directory at all — upstream went from Kit 6 to Kit 7 exactly that way.
+/// Two runs could then disagree byte for byte under identical provenance, which is the one thing
+/// provenance exists to prevent.
+///
+/// So: the checkout revision, the generated client's own revision, and a digest of the lockfile
+/// that pins every encoder actually loaded. A dirty tree under either input is refused rather than
+/// recorded, because there is no revision that describes it.
 function provenance(repo, clientsJs) {
   const git = (...args) => spawnSync('git', args, { cwd: repo, encoding: 'utf8' }).stdout?.trim();
+
+  const dirty = git('status', '--porcelain', '--', 'clients/js/src/generated', 'clients/js/pnpm-lock.yaml');
+  if (dirty) {
+    console.error('the checkout has uncommitted changes under the inputs these vectors depend on:\n'
+        + dirty + '\ncommit or stash them — a recorded revision that does not describe the bytes is'
+        + ' worse than none.');
+    process.exit(2);
+  }
+
+  const lock = createHash('sha256')
+      .update(readFileSync(resolve(clientsJs, 'pnpm-lock.yaml')))
+      .digest('hex');
   return {
-    // the last commit to touch the generated client, not HEAD: unrelated upstream commits should
-    // not show up as a diff here, and this is the revision the bytes below actually came from.
-    commit: git('log', '-1', '--format=%H', '--', 'clients/js/src/generated') || '(unknown)',
+    head: git('rev-parse', 'HEAD') || '(unknown)',
+    generated: git('log', '-1', '--format=%H', '--', 'clients/js/src/generated') || '(unknown)',
+    lock,
     version: createRequire(resolve(clientsJs, 'package.json'))('./package.json').version,
   };
 }
 
-function render(client, kit, { commit, version }) {
+function render(client, kit, { head, generated, lock, version }) {
   // A key whose bytes all differ and ascend: byte i is (seed + i * 7) & 0xff. A pubkey of
   // repeated bytes would survive being written backwards; this one does not. Mirrored by
   // StakeReferenceEncodingTests.key(int).
@@ -140,8 +165,8 @@ function render(client, kit, { commit, version }) {
 
     // SetLockup's three fields were one wrapped `LockupArgs` before upstream's pipeline flattened
     // them; each is an independent Option with a one-byte prefix, and absent means "leave it".
-    // Every combination that changes the layout is here — the presence byte of a later field
-    // moves by the size of an earlier one, so a mixed case is where an off-by-one shows.
+    // All eight presence combinations are here — the presence byte of a later field moves by the
+    // size of an earlier one, so the mixed cases are where an off-by-one shows.
     ix('setLockup.all', client.getSetLockupInstructionDataEncoder(), {
       unixTimestamp: some(1_700_000_000n), epoch: some(512n), custodian: some(k(0x33)),
     }),
@@ -156,6 +181,15 @@ function render(client, kit, { commit, version }) {
     }),
     ix('setLockup.custodian-only', client.getSetLockupInstructionDataEncoder(), {
       unixTimestamp: none(), epoch: none(), custodian: some(k(0x33)),
+    }),
+    // The two mixed cases that put the custodian's presence byte after exactly one earlier
+    // optional. Without them the custodian is only ever seen at offset 6 (nothing before it) or 22
+    // (both before it), and the offset an off-by-one would land on is never encoded.
+    ix('setLockup.timestamp-and-custodian', client.getSetLockupInstructionDataEncoder(), {
+      unixTimestamp: some(1_700_000_000n), epoch: none(), custodian: some(k(0x33)),
+    }),
+    ix('setLockup.epoch-and-custodian', client.getSetLockupInstructionDataEncoder(), {
+      unixTimestamp: none(), epoch: some(512n), custodian: some(k(0x33)),
     }),
     ix('setLockup.negative-timestamp', client.getSetLockupInstructionDataEncoder(), {
       unixTimestamp: some(-1n), epoch: some(0n), custodian: none(),
@@ -242,8 +276,9 @@ function render(client, kit, { commit, version }) {
     '# is an independent encoder, not ground truth: the mainnet fixture in',
     '# StakeOnChainInstructionTests is what ties that pipeline to the deployed program.',
     '#',
-    `# upstream: solana-program/stake @ ${commit}`,
-    `# client:   @solana-program/stake ${version}`,
+    `# upstream: solana-program/stake @ ${head}`,
+    `# client:   @solana-program/stake ${version}, generated at ${generated}`,
+    `# lockfile: sha256 ${lock}`,
     '#',
     '# One vector per line, "<instruction>.<case> <base64 instruction data>", preceded by the',
     '# arguments it encodes. k(0xNN) is the 32-byte key whose byte i is (0xNN + i * 7) & 0xff.',

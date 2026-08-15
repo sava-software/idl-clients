@@ -5,8 +5,9 @@
 # is an independent encoder, not ground truth: the mainnet fixture in
 # StakeOnChainInstructionTests is what ties that pipeline to the deployed program.
 #
-# upstream: solana-program/stake @ ce816f799ad53f1fe946922a99a68d71e8904b9b
-# client:   @solana-program/stake 0.8.0
+# upstream: solana-program/stake @ 5f22394ed81333e1e9cb65715e64dd7111d4ad1b
+# client:   @solana-program/stake 0.8.0, generated at ce816f799ad53f1fe946922a99a68d71e8904b9b
+# lockfile: sha256 e618b7247ac834c90e257428a2271eb15423042d00f876d501c64d5aa6ccf344
 #
 # One vector per line, "<instruction>.<case> <base64 instruction data>", preceded by the
 # arguments it encodes. k(0xNN) is the 32-byte key whose byte i is (0xNN + i * 7) & 0xff.
@@ -52,6 +53,12 @@ setLockup.epoch-only BgAAAAABAAIAAAAAAAAA
 
 # unixTimestamp: none, epoch: none, custodian: some(k(0x33))
 setLockup.custodian-only BgAAAAAAATM6QUhPVl1ka3J5gIeOlZyjqrG4v8bN1Nvi6fD3/gUM
+
+# unixTimestamp: some(1700000000), epoch: none, custodian: some(k(0x33))
+setLockup.timestamp-and-custodian BgAAAAEA8VNlAAAAAAABMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQw=
+
+# unixTimestamp: none, epoch: some(512), custodian: some(k(0x33))
+setLockup.epoch-and-custodian BgAAAAABAAIAAAAAAAABMzpBSE9WXWRrcnmAh46VnKOqsbi/xs3U2+Lp8Pf+BQw=
 
 # unixTimestamp: some(-1), epoch: some(0), custodian: none
 setLockup.negative-timestamp BgAAAAH//////////wEAAAAAAAAAAAA=

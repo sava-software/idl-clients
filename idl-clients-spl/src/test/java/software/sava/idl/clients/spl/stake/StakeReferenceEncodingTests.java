@@ -199,11 +199,23 @@ final class StakeReferenceEncodingTests {
   /// asked to preserve.
   @Test
   void anAbsentLockupFieldIsOneZeroByte() {
+    // All eight presence combinations, so no field's offset is left to inference.
     assertEquals(4 + 1 + 1 + 1, VECTORS.get("setLockup.none").length, "three absent fields");
     assertEquals(4 + 9 + 1 + 1, VECTORS.get("setLockup.timestamp-only").length);
     assertEquals(4 + 1 + 9 + 1, VECTORS.get("setLockup.epoch-only").length);
     assertEquals(4 + 1 + 1 + 33, VECTORS.get("setLockup.custodian-only").length);
+    assertEquals(4 + 9 + 1 + 33, VECTORS.get("setLockup.timestamp-and-custodian").length);
+    assertEquals(4 + 1 + 9 + 33, VECTORS.get("setLockup.epoch-and-custodian").length);
+    assertEquals(4 + 9 + 9 + 1, VECTORS.get("setLockup.negative-timestamp").length);
     assertEquals(4 + 9 + 9 + 33, VECTORS.get("setLockup.all").length);
+
+    // The custodian's presence byte after exactly one earlier optional — offset 14 either way, and
+    // the only offset the other six combinations never place it at. An off-by-one in the preceding
+    // field lands here and nowhere else.
+    assertEquals(1, VECTORS.get("setLockup.timestamp-and-custodian")[14], "custodian present at 14");
+    assertEquals(1, VECTORS.get("setLockup.epoch-and-custodian")[14], "custodian present at 14");
+    assertEquals(0, VECTORS.get("setLockup.timestamp-and-custodian")[13], "epoch absent");
+    assertEquals(0, VECTORS.get("setLockup.epoch-and-custodian")[4], "unixTimestamp absent");
 
     assertEquals(4 + 1 + 1, VECTORS.get("setLockupChecked.none").length,
         "the checked variant takes the custodian as an account, leaving two options");
@@ -272,6 +284,10 @@ final class StakeReferenceEncodingTests {
       case "setLockup.epoch-only" -> StakeProgram.setLockup(PROGRAM, NO_KEYS,
           null, new Epoch(LOCKUP_EPOCH), null);
       case "setLockup.custodian-only" -> StakeProgram.setLockup(PROGRAM, NO_KEYS, null, null, CUSTODIAN);
+      case "setLockup.timestamp-and-custodian" -> StakeProgram.setLockup(PROGRAM, NO_KEYS,
+          new UnixTimestamp(LOCKUP_TIMESTAMP), null, CUSTODIAN);
+      case "setLockup.epoch-and-custodian" -> StakeProgram.setLockup(PROGRAM, NO_KEYS,
+          null, new Epoch(LOCKUP_EPOCH), CUSTODIAN);
       case "setLockup.negative-timestamp" -> StakeProgram.setLockup(PROGRAM, NO_KEYS,
           new UnixTimestamp(-1L), new Epoch(0L), null);
 
