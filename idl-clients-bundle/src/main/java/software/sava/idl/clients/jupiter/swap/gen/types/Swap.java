@@ -186,7 +186,12 @@ public sealed interface Swap extends RustEnum permits
   Swap.Denali,
   Swap.PerenaStarV2Deposit,
   Swap.PerenaStarV2WithdrawFromExternal,
-  Swap.SanctumSols {
+  Swap.SanctumSols,
+  Swap.HyloV2,
+  Swap.SanctumPamm,
+  Swap.Archer,
+  Swap.TrenchWrappedBuy,
+  Swap.TrenchWrappedSell {
 
   static Swap read(final byte[] _data, final int _offset) {
     final int ordinal = _data[_offset] & 0xFF;
@@ -364,6 +369,11 @@ public sealed interface Swap extends RustEnum permits
       case 169 -> PerenaStarV2Deposit.INSTANCE;
       case 170 -> PerenaStarV2WithdrawFromExternal.read(_data, i);
       case 171 -> SanctumSols.read(_data, i);
+      case 172 -> HyloV2.read(_data, i);
+      case 173 -> SanctumPamm.INSTANCE;
+      case 174 -> Archer.read(_data, i);
+      case 175 -> TrenchWrappedBuy.INSTANCE;
+      case 176 -> TrenchWrappedSell.INSTANCE;
       default -> null;
     };
   }
@@ -2964,6 +2974,60 @@ public sealed interface Swap extends RustEnum permits
     @Override
     public int ordinal() {
       return 171;
+    }
+  }
+
+  record HyloV2(HyloSwapType val) implements SerDeEnum, Swap {
+
+    public static HyloV2 read(final byte[] _data, final int _offset) {
+      return new HyloV2(HyloSwapType.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 172;
+    }
+  }
+
+  record SanctumPamm() implements EnumNone, Swap {
+
+    public static final SanctumPamm INSTANCE = new SanctumPamm();
+
+    @Override
+    public int ordinal() {
+      return 173;
+    }
+  }
+
+  record Archer(Side val) implements SerDeEnum, Swap {
+
+    public static Archer read(final byte[] _data, final int _offset) {
+      return new Archer(Side.read(_data, _offset));
+    }
+
+    @Override
+    public int ordinal() {
+      return 174;
+    }
+  }
+
+  record TrenchWrappedBuy() implements EnumNone, Swap {
+
+    public static final TrenchWrappedBuy INSTANCE = new TrenchWrappedBuy();
+
+    @Override
+    public int ordinal() {
+      return 175;
+    }
+  }
+
+  record TrenchWrappedSell() implements EnumNone, Swap {
+
+    public static final TrenchWrappedSell INSTANCE = new TrenchWrappedSell();
+
+    @Override
+    public int ordinal() {
+      return 176;
     }
   }
 }
